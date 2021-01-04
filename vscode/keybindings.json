@@ -39,5 +39,5 @@
     "key": "ctrl+j",
     "command": "list.focusDown",
     "when": "listFocus && !inputFocus"
-  },
+  }
 ]
