@@ -55,6 +55,10 @@ else
 	hostStyle="${yellow}";
 fi;
 
+git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+}
+
 # Set the terminal title and prompt.
 PS1="\[\033]0;\W\007\]"; # working directory base name
 PS1+="\[${bold}\]\n"; # newline
@@ -62,9 +66,11 @@ PS1+="\[${userStyle}\]\u"; # username
 PS1+="\[${white}\] at ";
 PS1+="\[${hostStyle}\]\h"; # host
 PS1+="\[${white}\] in ";
-PS1+="\[${green}\]\w"; # working directory full path
+PS1+="\[${green}\]\w "; # working directory full path
+# PS1+="\[${white}\] on ";
+PS1+="\[\e[1;34m$(git_branch)"; # Git repository details
 PS1+="\n";
-PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
+PS1+="\[${white}\]λ \[${reset}\]"; # `$` (and reset color)
 export PS1;
 
 PS2="\[${yellow}\]→ \[${reset}\]";
