@@ -4,7 +4,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
+alias _="cd -"
 
 # Shortcuts
 alias d="cd ~/dev"
@@ -46,5 +46,10 @@ alias path='echo -e ${PATH//:/\\n}'
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
 
+# searchable process list
+alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
+
 # URL-encode strings
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+
+alias myip="curl http://ipecho.net/plain; echo"
