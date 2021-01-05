@@ -23,6 +23,8 @@ nmap <leader>w :w!<cr>
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+" allow mouse nav
+set mouse+=a
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -86,15 +88,33 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
-
+" line numbers
 set number
+set nocompatible
+" Add the g flag to search/replace by default
+set gdefault
+" Enable syntax highlighting
+syntax on
+" Highlight current line
+set cursorline
+" Don’t reset cursor to start of line when moving around.
+set nostartofline
+" Don’t show the intro message when starting Vim
+set shortmess=atI
+" Show the current mode
+set showmode
+" Show the filename in the window titlebar
+set title
+" Show the (partial) command as it’s being typed
+set showcmd
 
-" Properly disable sound on errors on MacVim
-if has("gui_macvim")
-    autocmd GUIEnter * set vb t_vb=
-endif
-
-
+" Show 'invisible' characters
+set list
+" Set characters used to indicate 'invisible' characters
+set listchars=tab:▸\
+set listchars+=trail:·
+set listchars+=nbsp:_
+"set listchars+=eol:¬
 " Add a bit extra margin to the left
 set foldcolumn=1
 
@@ -119,6 +139,7 @@ set smarttab
 " 1 tab == 4 spaces
 set shiftwidth=4
 set tabstop=4
+set softtabstop=4
 
 " Linebreak on 800 characters
 set lbr
@@ -192,10 +213,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " Always show the status line
 set laststatus=2
 
-" Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-
-" Delete trailing white space on save, useful for some filetypes ;)
+" Delete trailing white space on save, useful for some filetypes
 fun! CleanExtraSpaces()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -225,18 +243,15 @@ map <leader>s? z=
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Quickly open a buffer for scribble
-map <leader>q :e ~/buffer<cr>
+" Quickly open a buffer for javascript
+map <leader>js :e ~/buffer.js<cr>
 
 " Quickly open a markdown buffer for scribble
 map <leader>x :e ~/buffer.md<cr>
 
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -291,8 +306,19 @@ function! VisualSelection(direction, extra_filter) range
     let @" = l:saved_reg
 endfunction
 
+" Strip trailing whitespace (<leader>sw)
+function! StripWhitespace()
+	let save_cursor = getpos(".")
+	let old_query = getreg('/')
+	:%s/\s\+$//e
+	call setpos('.', save_cursor)
+	call setreg('/', old_query)
+endfunction
+noremap <leader>sw :call StripWhitespace()<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Other Remaps
+" => Other Key Remaps
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 imap jj <esc>
 nmap Y y$
+map <C-a> <Nop>
+map <C-x> <Nop>

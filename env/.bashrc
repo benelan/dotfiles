@@ -1,3 +1,1 @@
-export LANG=C.UTF-8
-set bell-style none
-eval $(thefuck --alias)
+[ -n "$PS1" ] && source ~/.bash_profile;
