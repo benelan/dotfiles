@@ -9,6 +9,8 @@
 	# Pull in remote changes for the current repository and all its submodules.
   up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
+	# push
+	pu = !git push
 	# checkout branch
   cb = checkout -b
 
@@ -18,8 +20,13 @@
 	# add and commit all changes.
 	aca = !git add -A && git commit -av
 
+	# add, commit, and push all changes.
+	acap = !git add -A && git commit -av && git push
+  acmp = "!f() { !git add -A && git commit -m \"$1\" && git push; }; f"
+
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
-	logger = log --pretty=oneline -n 20 --graph --abbrev-commit
+	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
+	ln = "!f() { git log --pretty=oneline -n \"$1\" --graph --abbrev-commit; }; f"
 
 	# View the current working tree status using the short format.
 	stat = status -s
@@ -84,3 +91,6 @@
 	bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
 	# full cleaned workflow after merge
 	bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
+
+  # full list of branches
+	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
