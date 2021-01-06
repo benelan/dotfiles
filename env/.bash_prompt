@@ -70,7 +70,8 @@ PS1+="\[${green}\]\w "; # working directory full path
 # PS1+="\[${white}\] on ";
 PS1+="\[\e[1;34m$(git_branch)"; # Git repository details
 PS1+="\n";
-PS1+="\[${white}\]λ \[${reset}\]"; # `$` (and reset color)
+PS1+="\[${white}\]☕ \[${reset}\]"; # symbol (and reset color)
+# λ ⏩ ॐ ℷ⚡⚪☕✋✨ ∃ ∑ ∴ ↪ ↳
 export PS1;
 
 PS2="\[${yellow}\]→ \[${reset}\]";
