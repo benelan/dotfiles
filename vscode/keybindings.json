@@ -39,5 +39,9 @@
     "key": "ctrl+j",
     "command": "list.focusDown",
     "when": "listFocus && !inputFocus"
-  }
+  },
+  {
+    "key": "space t",
+    "command": "explorer.newFile"
+  },
 ]
