@@ -58,10 +58,6 @@
       "after": ["<leader>", "<leader>", "k"]
     },
     {
-      "before": ["leader", "t"],
-      "commands": ["explorer.newFile"]
-    },
-    {
       "before": ["<C-n>"],
       "commands": [":nohl"]
     },
@@ -85,10 +81,6 @@
     }
   ],
   "vim.insertModeKeyBindings": [
-    {
-      "before": ["leader", "t"],
-      "commands": ["explorer.newFile"]
-    },
     {
       "before": ["j", "k"],
       "after": ["<Esc>"]

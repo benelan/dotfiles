@@ -41,7 +41,7 @@
     "when": "listFocus && !inputFocus"
   },
   {
-    "key": "space t",
+    "key": "ctrl+alt+t",
     "command": "explorer.newFile"
-  },
+  }
 ]
