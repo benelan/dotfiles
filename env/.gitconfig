@@ -22,7 +22,7 @@
 
 	# add, commit, and push all changes.
 	acap = !git add -A && git commit -av && git push
-  acmp = "!f() { !git add -A && git commit -m \"$1\" && git push; }; f"
+  acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
 
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
 	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
@@ -94,3 +94,5 @@
 
   # full list of branches
 	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+[github]
+	user = benelan

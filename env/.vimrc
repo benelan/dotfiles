@@ -29,7 +29,7 @@ set mouse+=a
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the cursor - when moving vertically using j/k
+" Set 7 lines to the cursor - when moving vertically using /k
 set so=7
 
 " Avoid garbled characters in Chinese language windows OS
@@ -223,7 +223,7 @@ fun! CleanExtraSpaces()
 endfun
 
 if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+    autocmd BufWritePre *.txt,*.s,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 endif
 
 
@@ -244,8 +244,8 @@ map <leader>s? z=
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Quickly open a buffer for javascript
-map <leader>js :e ~/buffer.js<cr>
+" Quickly open a buffer for avascript
+map <leader>s :e ~/buffer.js<cr>
 
 " Quickly open a markdown buffer for scribble
 map <leader>x :e ~/buffer.md<cr>
@@ -318,7 +318,7 @@ noremap <leader>sw :call StripWhitespace()<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Other Key Remaps
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-imap jj <esc>
+imap jk <esc>
 nmap Y y$
 map <C-a> <Nop>
 map <C-x> <Nop>

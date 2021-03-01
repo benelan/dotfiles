@@ -1,6 +1,8 @@
 {
   "workbench.startupEditor": "newUntitledFile",
   "editor.suggestSelection": "first",
+  "editor.wordWrap": "on",
+  "files.eol": "\r\n",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -23,7 +25,7 @@
   "editor.insertSpaces": true,
   "editor.snippetSuggestions": "top",
   "editor.fontLigatures": true,
-  "diffEditor.ignoreTrimWhitespace": true,
+  "diffEditor.ignoreTrimWhitespace": false,
   "eslint.workingDirectories": [
     {
       "mode": "auto"
@@ -108,5 +110,8 @@
     "transpilation",
     "transpiled",
     "transpiling"
-  ]
+  ],
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "python.languageServer": "Microsoft",
+  "window.zoomLevel": 1
 }
