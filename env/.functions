@@ -48,3 +48,22 @@ function extract {
     done
 fi
 }
+
+
+# git functions for work
+gout () {
+	git checkout $(get_default_branch)
+	git pull
+	git checkout -b "benelan/$1" 2> /dev/null || git checkout "benelan/$1"
+}
+
+# git-find-checkout-branch
+# Makes sure everything is up to date with master
+# You can checkout using any word in the commit
+# Usage (to checkout user/consistent-slot-doc): gfcb slot
+gfcb () {
+	git checkout $(get_default_branch)
+	git pull
+	git branch | grep $1 | xargs git checkout
+	git merge $(get_default_branch)
+}
