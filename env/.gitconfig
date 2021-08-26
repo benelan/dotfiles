@@ -3,18 +3,18 @@
 	email = benelan@protonmail.com
 
 [include]
-  path = .gitalias
+  	path = .gitalias
 
 [alias]
 	# Pull in remote changes for the current repository and all its submodules.
-  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+  	up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
 	# push
 	pu = !git push
 	# checkout branch
-  cb = checkout -b
+  	cb = checkout -b
 
-  # add and commit with message
+  	# add and commit with message
 	acm = !git add -A && git commit -m
 
 	# add and commit all changes.
@@ -22,7 +22,7 @@
 
 	# add, commit, and push all changes.
 	acap = !git add -A && git commit -av && git push
-  acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
+  	acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
 
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
 	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
@@ -52,7 +52,7 @@
 	amend = commit --amend --reuse-message=HEAD
 
 	# commits and then resets, saving work just in case
-  wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+  	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
 
 	# Credit an author on the latest commit.
 	credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
@@ -85,14 +85,16 @@
 	# Show the user email for the current repository.
 	whoami = config user.email
 
-  # gets the default branch for the current repo
+  	# gets the default branch for the current repo
 	default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
-  # cleans up merged branches
+  	# cleans up merged branches
 	bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
 	# full cleaned workflow after merge
 	bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
 
-  # full list of branches
+  	# full list of branches
 	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+	# checks out new branch
+	newb = "!f() { git checkout master && git pull && git checkout -b \"benelan/$1\"; }; f"
 [github]
 	user = benelan
