@@ -50,20 +50,24 @@ fi
 }
 
 
-# git functions for work
-gout () {
-	git checkout $(get_default_branch)
-	git pull
-	git checkout -b "benelan/$1" 2> /dev/null || git checkout "benelan/$1"
+# git checkout (new)
+# creates a new branch starting with my username
+# usage (to create branch benelan/2807-slots): gcon 2807-slots
+gcon () {
+  git checkout $(get_default_branch)
+  git pull
+  git checkout -b benelan/$1 2> /dev/null || git checkout benelan/$1
+  git merge $(get_default_branch)
 }
 
-# git-find-checkout-branch
-# Makes sure everything is up to date with master
-# You can checkout using any word in the commit
-# Usage (to checkout user/consistent-slot-doc): gfcb slot
-gfcb () {
-	git checkout $(get_default_branch)
-	git pull
-	git branch | grep $1 | xargs git checkout
-	git merge $(get_default_branch)
+# git checkout (find)
+# makes sure everything is up to date with master
+# you can checkout using any word in the commit
+# usage (to checkout benelan/2807-consistent-slot-doc): gcof slot
+gcof () {
+  git checkout $(get_default_branch)
+  git pull
+  git branch | grep $1 | xargs git checkout
+  git merge $(get_default_branch)
 }
+
