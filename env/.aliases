@@ -1,4 +1,4 @@
-# Easier navigation: .., ..., ...., ....., ~ and -
+# Easier navigation
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -10,8 +10,14 @@ alias _="cd -"
 alias d="cd ~/dev"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
-alias p="cd ~/projects"
-alias g="git"
+alias dc="cd ~/Documents"
+
+alias vpn="protonvpn-cli"
+alias wttr="curl wttr.in"
+
+# copy/paste from clipboard
+alias cc="echo @{0} | xclip -selection c"
+alias pc="echo @{0} | xclip -selection c -o"
 
 
 # List all files colorized in long format
