@@ -18,6 +18,8 @@ alias wttr="curl wttr.in"
 # copy/paste from clipboard
 alias cc="echo @{0} | xclip -selection c"
 alias pc="echo @{0} | xclip -selection c -o"
+# copy to clipboard from file
+alias ccf="xclip -se c <"
 
 
 # List all files colorized in long format
