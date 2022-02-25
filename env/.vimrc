@@ -84,6 +84,7 @@ set showmatch
 set mat=2
 
 " No annoying sound on errors
+set belloff=all
 set noerrorbells
 set novisualbell
 set t_vb=
@@ -244,7 +245,7 @@ map <leader>s? z=
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Quickly open a buffer for avascript
+" Quickly open a buffer for javascript
 map <leader>s :e ~/buffer.js<cr>
 
 " Quickly open a markdown buffer for scribble
