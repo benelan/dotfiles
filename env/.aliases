@@ -66,22 +66,22 @@ alias myip="curl http://ipecho.net/plain; echo"
 
 # git-extras-big-blobs
 # human readably list the blobs by size, excluding HEAD
-alias gxbigblobs="git rev-list --objects --all |
-  git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
-  sed -n 's/^blob //p' |
+alias gxbigblobs='git rev-list --objects --all |
+  git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
+  sed -n "s/^blob //p" |
   sort --numeric-sort --key=2 |
   cut -c 1-12,41- |
   $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
-  
+  grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")'
+
 # git-branch-default
 # gets the default git branch
 alias gbdefault='git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"'
 
 # git-branch-clean
 # removes all local branches which have been merged into the default branch
-alias gbclean='git checkout -q $(gbdefault) && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop | while read branch; do mergeBase=$(git merge-base $(gbdefault) $branch) && [[ $(git cherry $(gbdefault) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done'
+alias gbclean='git checkout -q $(gbdefault) && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop | while read branch; do mergeBase=$(git merge-base $(gbdefault) $branch) && [[ $(git cherry $(gbdefault) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
 
 # git-branch-dry-clean
 # dry run for `gbclean` alias
-alias gbdryclean=`git checkout -q $(gbdefault) && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev -e testing -e qa | while read branch; do mergeBase=$(git merge-base $(gbdefault) $branch) && [[ $(git cherry $(gbdefault) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && echo "$branch is merged into master and can be deleted"; done'
-  grep -vF --file=<(git ls-tree -r HEAD | awk '{print $3}')"
+alias gbdryclean='git checkout -q $(gbdefault) && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev -e testing -e qa | while read branch; do mergeBase=$(git merge-base $(gbdefault) $branch) && [[ $(git cherry $(gbdefault) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && echo "$branch is merged into $(gbdefault) and can be deleted"; done'
