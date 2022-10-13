@@ -1,9 +1,132 @@
 [user]
 	name = Ben Elan
-	email = benelan@protonmail.com
+	email = belan@esri.com
 
 [include]
-	path = .gitalias
+  path = .gitalias
+
+[apply]
+    # Detect whitespace errors when applying a patch.
+    whitespace = fix
+
+[branch]
+
+	# Show most recently changed branches first.
+	sort = -committerdate
+
+[core]
+    # Disable line endings output conversion.
+    autocrlf = input
+
+	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
+	# [default] trailing-space: looks for spaces at the end of a line
+	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+
+    # Set comment character to something that allows mentioning issue numbers.
+    commentChar = ";"
+
+    # Speed up commands involving untracked files such as `git status`.
+    # See https://git-scm.com/docs/git-update-index#_untracked_cache
+    untrackedCache = true
+
+[color]
+
+	# Use colors in Git commands that are capable of colored output when
+	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+	ui = auto
+    interactive = auto
+
+[color "branch"]
+
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red # deletions
+	new = green # additions
+
+[color "status"]
+
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[diff]
+	tool = vimdiff
+
+	# Detect copies as well as renames.
+	renames = copies
+
+[diff "bin"]
+
+	# Use `hexdump` to diff binary files.
+	textconv = hexdump -v -C
+
+[help]
+
+
+[fetch]
+    # Remove any remote-tracking references that no longer exist on the remote.
+    prune = true
+
+[help]
+    # Correct and execute mistyped commands.
+    autocorrect = 1
+
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages.
+    log = true
+
+[mergetool]
+    # Avoid saving an `.orig` backup file after a merge.
+    keepBackup = false
+
+[push]
+
+	# https://git-scm.com/docs/git-config#git-config-pushdefault
+	default = simple
+	# Make `git push` push relevant annotated tags when pushing branches out.
+	followTags = true
+
+[rebase]
+    # Create a temporary stash entry before the operation begins.
+    autostash = true
+
+[status]
+    # Enable submodule summary of commits.
+    submoduleSummary = true
+
+
+# URL shorthands
+
+[url "git@github.com:"]
+
+	insteadOf = "gh:"
+	pushInsteadOf = "github:"
+	pushInsteadOf = "git://github.com/"
+
+[url "git://github.com/"]
+
+	insteadOf = "github:"
+
+[url "git@gist.github.com:"]
+
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
+
+[url "git://gist.github.com/"]
+
+	insteadOf = "gist:"
+
+[init]
+
+	defaultBranch = master
 
 [alias]
 	# Pull in remote changes for the current repository and all its submodules.
@@ -22,7 +145,7 @@
 
 	# add, commit, and push all changes.
 	acap = !git add -A && git commit -av && git push
-	acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
+  	acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
 
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
 	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
@@ -52,7 +175,7 @@
 	amend = commit --amend --reuse-message=HEAD
 
 	# commits and then resets, saving work just in case
-	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+  	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
 
 	# Credit an author on the latest commit.
 	credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
@@ -85,16 +208,21 @@
 	# Show the user email for the current repository.
 	whoami = config user.email
 
-	# gets the default branch for the current repo
+  # gets the default branch for the current repo
 	default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
-	# cleans up merged branches
-	bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v "${1-$DEFAULT}$" | xargs git branch -d; }; f"
+  # cleans up merged branches
+	bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
 	# full cleaned workflow after merge
 	bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
 
-	# full list of branches
+  # full list of branches
 	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
-	# checks out new branch
-	newb = "!f() { git checkout master && git pull && git checkout -b \"benelan/$1\"; }; f"
+
 [github]
 	user = benelan
+
+[pull]
+	rebase = false
+
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential

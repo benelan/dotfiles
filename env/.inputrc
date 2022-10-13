@@ -4,6 +4,8 @@ set completion-ignore-case on
 
 set show-all-if-ambiguous on
 
+set mark-symlinked-directories on
+
 set match-hidden-files off
 
 set page-completions off
@@ -16,3 +18,12 @@ set skip-completed-text on
 
 set input-meta on
 set output-meta on
+set convert-meta off
+
+# Use the string that has already been typed as the prefix for searching
+# through commands (i.e. more intelligent Up/Down-arrow behavior)
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+
+# Use Alt/Meta + Delete to delete the preceding word
+"\e[3;3~": kill-word
