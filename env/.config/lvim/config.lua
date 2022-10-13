@@ -165,7 +165,7 @@ linters.setup {
 
 -- Additional Plugins
 lvim.plugins = {
-  { "folke/tokyonight.nvim" },
+  -- { "folke/tokyonight.nvim" },
   { "sainnhe/gruvbox-material" }
   -- {
   --   "folke/trouble.nvim",
