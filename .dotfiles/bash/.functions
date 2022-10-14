@@ -1,6 +1,6 @@
-# `s` with no arguments opens the current directory, otherwise opens the given
+# `start` with no arguments opens the current directory, otherwise opens the given
 # location
-function s() {
+function start() {
 	if [ $# -eq 0 ]; then
 		start .;
 	else

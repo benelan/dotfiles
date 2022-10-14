@@ -3,7 +3,7 @@
 	email = belan@esri.com
 
 [include]
-  path = .gitalias
+  path = .dotfiles/git/.gitalias
 
 [apply]
     # Detect whitespace errors when applying a patch.

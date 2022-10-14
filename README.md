@@ -1,2 +1,3 @@
-# configfiles
-my config files for development
+# dotfiles
+
+My minimal setup.
