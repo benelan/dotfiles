@@ -17,3 +17,7 @@ done
 for file in ~/.dotfiles/bash/plugins*; do
    [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done
+
+
+# Misc
+source "$HOME/.cargo/env";

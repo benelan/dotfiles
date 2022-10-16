@@ -132,12 +132,7 @@
 	# Pull in remote changes for the current repository and all its submodules.
   	up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-	# push
-	pu = !git push
-	# checkout branch
-  	cb = checkout -b
-
-  	# add and commit with message
+  # add and commit with message
 	acm = !git add -A && git commit -m
 
 	# add and commit all changes.
@@ -145,7 +140,7 @@
 
 	# add, commit, and push all changes.
 	acap = !git add -A && git commit -av && git push
-  	acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
+  acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
 
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
 	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
@@ -155,10 +150,10 @@
 	stat = status -s
 
 	# Show the diff between the latest commit and the current state.
-	di = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 
 	# `git di $number` shows the diff between the state `$number` revisions ago and the current state.
-	din = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+	dn = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
 
 	# Switch to a branch, creating it if necessary.
 	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
@@ -175,13 +170,13 @@
 	amend = commit --amend --reuse-message=HEAD
 
 	# commits and then resets, saving work just in case
-  	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+  wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
 
 	# Credit an author on the latest commit.
 	credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
 
 	# Interactive rebase with the given number of latest commits.
-	reb = "!r() { git rebase -i HEAD~$1; }; r"
+	rebi = "!r() { git rebase -i HEAD~$1; }; r"
 
 	# Remove the old tag with this name and tag the latest commit with it.
 	retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"

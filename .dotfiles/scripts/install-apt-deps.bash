@@ -24,22 +24,19 @@ function add_ppa() {
 # WHAT DO WE NEED TO INSTALL?
 #############################
 
-# Fun
-apt_packages+=(
-  cmatrix
-  cowsay
-  hollywood
-  sl
-)
-# Misc.
+# Core
 apt_packages+=(
   wget
   gpg
+  git
   apt-transport-https
   build-essential
   make
+  cargo
+  golang
+  python3
+  pip
   curl
-  git-core
   htop
   id3tool
   imagemagick
@@ -57,7 +54,7 @@ apt_packages+=(
   neofetch
   mount
   grep
-  git
+  ripgrep
   fzf
   fasd
   findutils
@@ -65,51 +62,36 @@ apt_packages+=(
   golang
   cron
   coreutils
+  handbrake-cli
+  vim
 )
 
-apt_packages+=(vim vim-gnome vim-common vim-tiny)
+# Fun
+# apt_packages+=(
+#   cmatrix
+#   cowsay
+#   hollywood
+#   sl
+# )
+
 
 # https://github.com/neovim/neovim/wiki/Installing-Neovim
 add_ppa ppa:neovim-ppa/stable
 apt_packages+=(neovim)
 
-# https://launchpad.net/~stebbins/+archive/ubuntu/handbrake-releases
-add_ppa ppa:stebbins/handbrake-releases
-apt_packages+=(handbrake-cli)
 
-# https://github.com/rvm/ubuntu_rvm
-# add_ppa ppa:rael-gc/rvm
-# apt_packages+=(rvm)
-
-# https://github.com/rbenv/ruby-build/wiki
-# apt_packages+=(
-#   autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev
-#   libncurses5-dev libffi-dev libgdbm3 libgdbm-dev zlib1g-dev
-# )
-
-# https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-ansible-on-ubuntu-16-04
-# add_ppa ppa:ansible/ansible
-# apt_packages+=(ansible)
-
-# https://launchpad.net/~hnakamur/+archive/ubuntu/tmux
-# add_ppa ppa:hnakamur/tmux
-
-# https://github.com/greymd/tmux-xpanes
-# add_ppa ppa:greymd/tmux-xpanes
-# apt_packages+=(tmux-xpanes)
+# https://protonvpn.com/support/linux-vpn-tool/
+deb_installed+=(/usr/bin/protonvpn-cli)
+deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
 
 
-  # https://protonvpn.com/support/linux-vpn-tool/
-  deb_installed+=(/usr/bin/protonvpn-cli)
-  deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
-
-if [[ -z "$IS_SERVER_INSTALL"]]; then
-
+# only install GUI deps on servers by running script like:
+# IS_SERVER_DOTFILE_INSTALL=true && install-apt-deps.bash
+if [[ -z "$IS_SERVER_DOTFILE_INSTALL"]]; then
 
   # https://code.visualstudio.com/Download
   deb_installed+=(/usr/bin/code)
   deb_sources+=(https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64)
-
 
   # https://brave.com/linux/
   gpg_keys+=(https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg)
@@ -117,26 +99,30 @@ if [[ -z "$IS_SERVER_INSTALL"]]; then
   apt_source_texts+=("deb [signed-by=/usr/share/keyrings/brave-browser-release-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main")
   apt_packages+=(brave-browser)
 
-  # Misc
-  apt_packages+=(adb fastboot)
+  # More
   apt_packages+=(
     chromium-browser
     fonts-mplus
-    gnome-tweak-tool
+    gnome-tweaks
     # rofi
     vlc
     xclip
     zenmap
-    handbrake-gtk
+    handbrake
     tilda
-    alacritty
     calibre
+    transmission
   )
 
   # https://be5invis.github.io/Iosevka/
   # https://launchpad.net/~laurent-boulard/+archive/ubuntu/fonts
   add_ppa ppa:laurent-boulard/fonts
   apt_packages+=(fonts-iosevka)
+
+  # https://github.com/alacritty/alacritty
+  # https://launchpad.net/~aslatter/+archive/ubuntu/ppa
+  add_ppa ppa aslatter/ppa
+  apt_package+=(alacritty)
   
 fi
 
@@ -153,6 +139,31 @@ function other_stuff() {
   # Install misc bins from zip file.
   # install_from_zip ngrok 'https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip'
 
+  # Install SourceCodePro Patched Nerd Font if they aren't already there
+  # https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro
+  mkdir -p ~./fonts
+  if [[ $(find ~/.fonts -iname 'Sauce Code Pro*Nerd Font Complete.ttf' | wc -l) -lt 5 ]]; then 
+    cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Medium Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Medium/complete/Sauce%20Code%20Pro%20Medium%20Nerd%20Font%20Complete.ttf
+    cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Regular Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
+    cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Bold Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
+    cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
+    cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Bold Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Black-Italic/complete/Sauce%20Code%20Pro%20Black%20Italic%20Nerd%20Font%20Complete.ttf
+  fi
+
+  # Install volta if necessary
+  if [[ ! "$VOLTA_HOME" ]]; then
+    curl https://get.volta.sh | bash -s -- --skip-setup
+    export VOLTA_HOME=~/.volta
+    grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
+    volta install node
+    volta install yarn
+    volta install tsc
+  fi
+
+
+  # Install LunarVim
+  # https://www.lunarvim.org/docs/installation
+  bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) --install-dependencies --yes
 }
 
 ####################

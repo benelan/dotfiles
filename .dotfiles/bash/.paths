@@ -3,6 +3,19 @@
 paths=(
   ~/.local/bin
   ~/.bin
+  ~/.cargo/bin:
+  ~/go/bin
+  ~/.volta/bin
+  ~/.fzf/bin
+  /usr/local/sbin
+  /usr/local/bin
+  /usr/sbin
+  /usr/bin
+  /sbin
+  /bin
+  /usr/games
+  /usr/local/games
+  /snap/bin
 )
 
 export PATH
