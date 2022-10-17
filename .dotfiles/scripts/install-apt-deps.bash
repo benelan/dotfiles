@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 gpg_keys=()
 apt_source_files=()
 apt_source_texts=()
@@ -8,14 +10,15 @@ deb_sources=()
 installers_path="$DOTFILES/caches/installers"
 
 # Logging stuff.
-function e_header()   { echo -e "\n\033[1m$@\033[0m"; }
-function e_success()  { echo -e " \033[1;32m✔\033[0m  $@"; }
-function e_error()    { echo -e " \033[1;31m✖\033[0m  $@"; }
-function e_arrow()    { echo -e " \033[1;34m➜\033[0m  $@"; }
+function e_header()   { echo -e "\n\033[1m" "$@" "\033[0m"; }
+function e_success()  { echo -e " \033[1;32m✔\033[0m"  "$@"; }
+function e_error()    { echo -e " \033[1;31m✖\033[0m"  "$@"; }
+function e_arrow()    { echo -e " \033[1;34m➜\033[0m"  "$@"; }
 
+release_name=$(lsb_release -c | awk '{print $2}')
 
 function add_ppa() {
-  apt_source_texts+=($1)
+  apt_source_texts+=("$1")
   IFS=':/' eval 'local parts=($1)'
   apt_source_files+=("${parts[1]}-ubuntu-${parts[2]}-$release_name")
 }
@@ -32,7 +35,6 @@ apt_packages+=(
   apt-transport-https
   build-essential
   make
-  cargo
   golang
   python3
   pip
@@ -49,8 +51,6 @@ apt_packages+=(
   tree
   taskwarrior
   shellcheck
-  python3
-  python3-pip
   neofetch
   mount
   grep
@@ -64,6 +64,15 @@ apt_packages+=(
   coreutils
   handbrake-cli
   vim
+  # packages below needed to build Alacritty from source
+  cargo
+  cmake
+  pkg-config
+  libfreetype6-dev
+  libfontconfig1-dev
+  libxcb-xfixes0-dev
+  libxkbcommon-dev
+  python3
 )
 
 # Fun
@@ -82,19 +91,19 @@ apt_packages+=(neovim)
 
 # https://protonvpn.com/support/linux-vpn-tool/
 deb_installed+=(/usr/bin/protonvpn-cli)
-deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
+deb_sources+=("https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb")
 
 
 # only install GUI deps on servers by running script like:
 # IS_SERVER_DOTFILE_INSTALL=true && install-apt-deps.bash
-if [[ -z "$IS_SERVER_DOTFILE_INSTALL"]]; then
+if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
 
   # https://code.visualstudio.com/Download
   deb_installed+=(/usr/bin/code)
-  deb_sources+=(https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64)
+  deb_sources+=("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64")
 
   # https://brave.com/linux/
-  gpg_keys+=(https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg)
+  gpg_keys+=("https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg")
   apt_source_files+=(brave-browser-release)
   apt_source_texts+=("deb [signed-by=/usr/share/keyrings/brave-browser-release-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main")
   apt_packages+=(brave-browser)
@@ -114,11 +123,6 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL"]]; then
     transmission
   )
 
-  # https://be5invis.github.io/Iosevka/
-  # https://launchpad.net/~laurent-boulard/+archive/ubuntu/fonts
-  add_ppa ppa:laurent-boulard/fonts
-  apt_packages+=(fonts-iosevka)
-
   # https://github.com/alacritty/alacritty
   # https://launchpad.net/~aslatter/+archive/ubuntu/ppa
   add_ppa ppa aslatter/ppa
@@ -126,7 +130,7 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL"]]; then
   
 fi
 
-function other_stuff() {
+function install_last() {
   # Install Git Extras
   # if [[ ! "$(type -P git-extras)" ]]; then
   #   e_header "Installing Git Extras"
@@ -135,6 +139,23 @@ function other_stuff() {
   #     sudo make install
   #   )
   # fi
+
+
+  # Install Alacritty
+  if [[ ! "$(type -P alacritty)" ]]; then
+    e_header "Installing Alacritty"
+    (
+      cd $DOTFILES/vendor/alacritty
+      cargo build --release
+      # Add Terminfo if necessary
+      if ! $(infocmp alacritty); then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info fi
+      # Add Desktop Entry
+      sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
+      sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
+      sudo desktop-file-install extra/linux/Alacritty.desktop
+      sudo update-desktop-database
+    )
+  fi
 
   # Install misc bins from zip file.
   # install_from_zip ngrok 'https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip'
@@ -154,7 +175,7 @@ function other_stuff() {
   if [[ ! "$VOLTA_HOME" ]]; then
     curl https://get.volta.sh | bash -s -- --skip-setup
     export VOLTA_HOME=~/.volta
-    grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
+    grep --silent "$VOLTA_HOME/bin" <<< "$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
     volta install node
     volta install yarn
     volta install tsc
@@ -195,7 +216,7 @@ if (( ${#source_i[@]} > 0 )); then
     source_text=${apt_source_texts[i]}
     if [[ "$source_text" =~ ppa: ]]; then
       e_arrow "$source_text"
-      sudo add-apt-repository -y $source_text
+      sudo add-apt-repository -y "$source_text"
     else
       e_arrow "$source_file"
       sudo sh -c "echo '$source_text' > /etc/apt/sources.list.d/$source_file.list"
@@ -218,9 +239,9 @@ if (( ${#apt_packages[@]} > 0 )); then
   e_header "Installing APT packages (${#apt_packages[@]})"
   for package in "${apt_packages[@]}"; do
     e_arrow "$package"
-    [[ "$(type -t preinstall_$package)" == function ]] && preinstall_$package
+    [[ "$(type -t preinstall_$package)" == function ]] && preinstall_"$package"
     sudo apt -qq install "$package" && \
-    [[ "$(type -t postinstall_$package)" == function ]] && postinstall_$package
+    [[ "$(type -t postinstall_$package)" == function ]] && postinstall_"$package"
   done
 fi
 
@@ -244,7 +265,7 @@ fi
 # install bins from zip file
 function install_from_zip() {
   local name=$1 url=$2 bins b zip tmp
-  shift 2; bins=("$@"); [[ "${#bins[@]}" == 0 ]] && bins=($name)
+  shift 2; bins=("$@"); [[ "${#bins[@]}" == 0 ]] && bins=("$name")
   if [[ ! "$(which $name)" ]]; then
     mkdir -p "$installers_path"
     e_header "Installing $name"
@@ -255,7 +276,7 @@ function install_from_zip() {
     for b in "${bins[@]}"; do
       sudo cp "$tmp/$b" "/usr/local/bin/$(basename $b)"
     done
-    rm -rf $tmp
+    rm -rf "$tmp"
   fi
 }
 
