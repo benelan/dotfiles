@@ -59,4 +59,4 @@ shopt -s no_empty_cmd_completion
 shopt -s checkwinsize
 
 
-export VOLTA_HOME=~/.volta
+export VOLTA_HOME="$HOME/.volta"

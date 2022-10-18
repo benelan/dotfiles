@@ -103,6 +103,11 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
   deb_installed+=(/usr/bin/code)
   deb_sources+=("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64")
 
+  # https://discord.com/download
+  deb_installed+=(/usr/bin/discord)
+  deb_sources+=("https://discord.com/api/download?platform=linux&format=deb")
+
+
   # https://brave.com/linux/
   gpg_keys+=("https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg")
   apt_source_files+=(brave-browser-release)
