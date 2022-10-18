@@ -368,7 +368,7 @@ function array_map() {
   for __i__ in $(eval echo "\${!$__arr__[@]}"); do
     __val__="$(eval echo "\"\${$__arr__[__i__]}\"")"
     if [[ "$1" ]]; then
-      "$@" "$__val__" $__i__
+      "$@" "$__val__" "$__i__"
     else
       echo "$__val__"
     fi
@@ -376,7 +376,7 @@ function array_map() {
 }
 
 # Print bash array in the format "i <val>" (one per line) for debugging.
-function array_print() { array_map $1 __array_print; }
+function array_print() { array_map "$1" __array_print; }
 function __array_print() { echo "$2 <$1>"; }
 
 # Array filter. Calls filter_fn for each item ($1) and index ($2) in array_name
@@ -395,7 +395,7 @@ function __array_filter() {
   for __i__ in $(eval echo "\${!$__arr__[@]}"); do
     __val__="$(eval echo "\${$__arr__[__i__]}")"
     if [[ "$1" ]]; then
-      "$@" "$__val__" $__i__ >/dev/null
+      "$@" "$__val__" "$__i__" >/dev/null
     else
       [[ "$__val__" ]]
     fi
@@ -403,7 +403,7 @@ function __array_filter() {
       if [[ $__mode__ == 1 ]]; then
         eval echo "\"\${$__arr__[__i__]}\""
       else
-        echo $__i__
+        echo "$__i__"
       fi
     fi
   done
@@ -449,7 +449,7 @@ function setdiff() {
   if [[ "$1" == 1 ]]; then debug=1; shift; fi
   if [[ "$1" ]]; then
     local setdiff_new setdiff_cur setdiff_out
-    setdiff_new=($1); setdiff_cur=($2)
+    setdiff_new="($1)"; setdiff_cur="($2)"
   fi
   setdiff_out=()
   for a in "${setdiff_new[@]}"; do
@@ -463,5 +463,55 @@ function setdiff() {
     echo "$a ($(eval echo "\${#$a[*]}")) $(eval echo "\${$a[*]}")" 1>&2
   done
   [[ "$1" ]] && echo "${setdiff_out[@]}"
+}
+
+
+
+
+# Usage: indirect_expand PATH -> $PATH
+indirect_expand () {
+    env |sed -n "s/^$1=//p"
+}
+
+# Usage: pathremove /path/to/bin [PATH]
+# Eg, to remove ~/bin from $PATH
+#     pathremove ~/bin PATH
+pathremove () {
+    local IFS=':'
+    local newpath
+    local dir
+    local var=${2:-PATH}
+    # Bash has ${!var}, but this is not portable.
+    for dir in $(indirect_expand "$var"); do
+        IFS=''
+        if [ "$dir" != "$1" ]; then
+            newpath=$newpath:$dir
+        fi
+    done
+    export "$var"="${newpath#:}"
+}
+
+# Usage: pathprepend /path/to/bin [PATH]
+# Eg, to prepend ~/bin to $PATH
+#     pathprepend ~/bin PATH
+pathprepend () {
+    # if the path is already in the variable,
+    # remove it so we can move it to the front
+    pathremove "$1" "$2"
+    #[ -d "${1}" ] || return
+    local var="${2:-PATH}"
+    local value=$(indirect_expand "$var")
+    export "${var}"="${1}${value:+:${value}}"
+}
+
+# Usage: pathappend /path/to/bin [PATH]
+# Eg, to append ~/bin to $PATH
+#     pathappend ~/bin PATH
+pathappend () {
+    pathremove "${1}" "${2}"
+    #[ -d "${1}" ] || return
+    local var=${2:-PATH}
+    local value=(indirect_expand "$var")
+    export "$var"="${value:+${value}:}${1}"
 }
 

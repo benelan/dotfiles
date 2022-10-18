@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Load the shell dotfiles
 for file in ~/.dotfiles/bash/.{paths,exports,aliases,functions,prompt}; do

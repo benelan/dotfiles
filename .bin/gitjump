@@ -58,7 +58,7 @@ function git_repo_toplevel() {
 
 # Get subject of specified commit
 function git_commit_subject() {
-  git log --format='%s' -n 1 $1
+  git log --format='%s' -n 1 "$1"
 }
 
 # Save changes for later retrieval
@@ -66,7 +66,7 @@ function save() {
   local status=""
   local head_sha=$(git_head_sha)
   # Checkout current HEAD by SHA to force detached state
-  git checkout -q $head_sha
+  git checkout -q "$head_sha"
   # Add all files in repo
   git add "$(git_repo_toplevel)"
   # Commit changes (if there were any)
@@ -76,7 +76,7 @@ function save() {
     status="*"
     git tag -f "git-jump-$head_sha" >/dev/null
   fi
-  echo "Previous HEAD was $head_sha$status, $(git_commit_subject $head_sha)"
+  echo "Previous HEAD was $head_sha$status, $(git_commit_subject "$head_sha")"
 }
 
 # Restore previously-saved changes
@@ -85,8 +85,7 @@ function restore() {
   # Save current changes before restoring
   save
   # Attempt to restore saved changes for specified commit
-  git checkout "git-jump-$1" 2>/dev/null
-  if [[ $? == 0 ]]; then
+  if git checkout "git-jump-$1" 2>/dev/null; then
     # If the restore was successful, figure out exactly what was saved, check
     # out the original commit, then restore the saved changes on top of it
     status="*"
@@ -97,14 +96,13 @@ function restore() {
     # Otherwise, just restore the original commit
     git checkout "$1" 2>/dev/null
   fi
-  echo "HEAD is now $1$status, $(git_commit_subject $1)"
+  echo "HEAD is now $1$status, $(git_commit_subject "$1")"
 }
 
 # Clean (permanently) current changes and remove the current saved tag
 function clean() {
   local head_sha=$(git_head_sha)
-  git tag -d "git-jump-$head_sha" &>/dev/null
-  if [[ $? == 0 ]]; then
+  if git tag -d "git-jump-$head_sha" &>/dev/null; then
     echo "Removed stored data for commit $head_sha."
   fi
   local repo_root="$(git_repo_toplevel)"
@@ -117,7 +115,7 @@ function clean() {
 # Remove (permanently) all saved tags
 function clean_all_tags() {
   git for-each-ref refs/tags --format='%(refname:short)' | \
-  while read tag; do
+  while read -r tag; do
     if [[ "$tag" =~ ^git-jump- ]]; then
       git tag -d "$tag"
     fi
@@ -136,7 +134,7 @@ function next() {
       next_sha="$git_branch"
     fi
     echo "Jumping ahead to next commit."
-    restore $next_sha
+    restore "$next_sha"
   fi
 }
 
@@ -148,7 +146,7 @@ function prev() {
     echo "Already at first commit in $git_branch."
   else
     echo "Jumping back to previous commit."
-    restore $prev_sha
+    restore "$prev_sha"
   fi
 }
 
@@ -159,8 +157,7 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 fi
 
 # Check if branch is valid
-git rev-parse "$git_branch" &>/dev/null
-if [[ $? != 0 ]]; then
+if git rev-parse "$git_branch" &>/dev/null; then
   echo "Error: Branch \"$git_branch\" does not appear to be valid."
   echo "Try $(basename "$0") --help for more information."
   exit 1

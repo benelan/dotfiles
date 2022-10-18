@@ -58,7 +58,7 @@ for d in "${dirs[@]}"; do
   # If the dir isn't /, strip the trailing /.
   [[ "$d" != "/" ]] && d="${d%/}"
   # Execute the command, grabbing all stdout and stderr.
-  output="$( (cd "$d"; eval "$@") 2>&1 )"
+  output="$( (cd "$d" || return; eval "$@") 2>&1 )"
   if [[ "$output" ]]; then
     # If the command had output, display a header and that output.
     echo -e "${h1}${d}${h2}\n$output\n"
@@ -69,7 +69,7 @@ for d in "${dirs[@]}"; do
 done
 
 # List any dirs that had no output.
-if [[ ${#nops[@]} > 0 ]]; then
+if [[ ${#nops[@]} -gt 0 ]]; then
   echo "${h1}no output from${h2}"
   for d in "${nops[@]}"; do echo "$d"; done
 fi

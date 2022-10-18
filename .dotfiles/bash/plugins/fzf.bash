@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ -r ~/.fzf.bash ] ; then
-  source ~/.fzf.bash
+if [ -r "$HOME/.fzf.bash" ] ; then
+  source "$HOME/.fzf.bash"
 elif [ -r "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ] ; then
   source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
 fi
@@ -22,7 +22,7 @@ fe() {
   local IFS=$'\n'
   local files
   files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+  [[ -n "$files" ]] && "${EDITOR:-vim}" "${files[@]}"
 }
 
 fcd() {
@@ -32,7 +32,7 @@ fcd() {
   example "fcd aliases"
 
   local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
+  dir="$(find "${1:-.}" -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m)" &&
+  cd "$dir" || return
 }

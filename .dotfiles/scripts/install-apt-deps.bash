@@ -7,6 +7,7 @@ apt_packages=()
 deb_installed=()
 deb_sources=()
 
+DOTFILES="$HOME/.dotfiles"
 installers_path="$DOTFILES/caches/installers"
 
 # Logging stuff.
@@ -125,12 +126,12 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
 
   # https://github.com/alacritty/alacritty
   # https://launchpad.net/~aslatter/+archive/ubuntu/ppa
-  add_ppa ppa aslatter/ppa
-  apt_package+=(alacritty)
+  # add_ppa ppa aslatter/ppa
+  # apt_package+=(alacritty)
   
 fi
 
-function install_last() {
+function install_stuff_last() {
   # Install Git Extras
   # if [[ ! "$(type -P git-extras)" ]]; then
   #   e_header "Installing Git Extras"
@@ -144,21 +145,21 @@ function install_last() {
   # Install Alacritty
   if [[ ! "$(type -P alacritty)" ]]; then
     e_header "Installing Alacritty"
-    (
-      cd $DOTFILES/vendor/alacritty
+    
+      cd "$DOTFILES"/vendor/alacritty || return
       cargo build --release
       # Add Terminfo if necessary
-      if ! $(infocmp alacritty); then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info fi
+      if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
       # Add Desktop Entry
       sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
       sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
       sudo desktop-file-install extra/linux/Alacritty.desktop
       sudo update-desktop-database
-    )
+    
   fi
 
-  # Install misc bins from zip file.
-  # install_from_zip ngrok 'https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip'
+  # Install bins from zip file.
+  # install_from_zip ngrok 'https://github.com/inconshreveable/ngrok/archive/refs/tags/1.7.1.zip'
 
   # Install SourceCodePro Patched Nerd Font if they aren't already there
   # https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro
@@ -239,9 +240,9 @@ if (( ${#apt_packages[@]} > 0 )); then
   e_header "Installing APT packages (${#apt_packages[@]})"
   for package in "${apt_packages[@]}"; do
     e_arrow "$package"
-    [[ "$(type -t preinstall_$package)" == function ]] && preinstall_"$package"
+    [[ "$(type -t preinstall_"$package")" == function ]] && preinstall_"$package"
     sudo apt -qq install "$package" && \
-    [[ "$(type -t postinstall_$package)" == function ]] && postinstall_"$package"
+    [[ "$(type -t postinstall_"$package")" == function ]] && postinstall_"$package"
   done
 fi
 
@@ -264,9 +265,9 @@ fi
 
 # install bins from zip file
 function install_from_zip() {
-  local name=$1 url=$2 bins b zip tmp
+  local name="$1" url="$2" bins b zip tmp
   shift 2; bins=("$@"); [[ "${#bins[@]}" == 0 ]] && bins=("$name")
-  if [[ ! "$(which $name)" ]]; then
+  if [[ ! "$(which "$name")" ]]; then
     mkdir -p "$installers_path"
     e_header "Installing $name"
     zip="$installers_path/$(echo "$url" | sed 's#.*/##')"
@@ -274,11 +275,11 @@ function install_from_zip() {
     tmp=$(mktemp -d)
     unzip "$zip" -d "$tmp"
     for b in "${bins[@]}"; do
-      sudo cp "$tmp/$b" "/usr/local/bin/$(basename $b)"
+      sudo cp "$tmp/$b" "/usr/local/bin/$(basename "$b")"
     done
     rm -rf "$tmp"
   fi
 }
 
-# Run anything else that may need to be run.
-type -t other_stuff >/dev/null && other_stuff
+# install stuff that relies on other deps
+type -t install_stuff_last >/dev/null && install_stuff_last
