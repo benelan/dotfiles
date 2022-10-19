@@ -1,7 +1,19 @@
 #!/bin/bash
 
-# Load the shell dotfiles
-for file in $HOME/.dotfiles/bash/.{paths,functions,exports,aliases,prompt}; do
+# If not running interactively, don't do anything
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
+# Load the shell dotfiles - order matters!
+for file in ~/.dotfiles/bash/.{paths,functions,exports,prompt}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
+
+# Load the commandline aliases
+for file in ~/.dotfiles/bash/aliases/*; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
@@ -20,6 +32,6 @@ done;
 
 
 # Load other stuff
-cargo="$HOME/.cargo/env";
+cargo=~/.cargo/env;
 [ -r "$cargo" ] && [ -f "$cargo" ] && source "$cargo";
 unset cargo;

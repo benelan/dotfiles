@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+
+# Fuzzy search
+# https://github.com/junegunn/fzf
+
 if [ -r "$HOME/.fzf.bash" ] ; then
   source "$HOME/.fzf.bash"
 elif [ -r "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ] ; then

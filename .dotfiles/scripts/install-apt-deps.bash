@@ -7,7 +7,7 @@ apt_packages=()
 deb_installed=()
 deb_sources=()
 
-DOTFILES="$HOME/.dotfiles"
+DOTFILES=~/.dotfiles
 installers_path="$DOTFILES/caches/installers"
 
 # Logging stuff.

@@ -1,3 +1,6 @@
 [submodule ".dotfiles/vendor/alacritty"]
 	path = .dotfiles/vendor/alacritty
 	url = https://github.com/alacritty/alacritty.git
+[submodule ".dotfiles/vendor/fzf"]
+	path = .dotfiles/vendor/fzf
+	url = https://github.com/junegunn/fzf.git

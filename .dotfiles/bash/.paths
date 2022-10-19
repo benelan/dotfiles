@@ -2,7 +2,7 @@
 
 paths=(
   ~/.volta/bin
-  ~/.fzf/bin
+  ~/.dotfiles/vendor/.fzf/bin
   ~/.cargo/bin:
   ~/.local/bin
   ~/go/bin
@@ -33,7 +33,7 @@ pathremove () {
     local dir
     local var=${2:-PATH}
     # Bash has ${!var}, but this is not portable.
-    for dir in `indirect_expand "$var"`; do
+    for dir in $(indirect_expand "$var"); do
         IFS=''
         if [ "$dir" != "$1" ]; then
             newpath=$newpath:$dir
@@ -51,7 +51,7 @@ pathprepend () {
     pathremove "$1" "$2"
     #[ -d "${1}" ] || return
     local var="${2:-PATH}"
-    local value=`indirect_expand "$var"`
+    local value=$(indirect_expand "$var")
     export ${var}="${1}${value:+:${value}}"
 }
 
@@ -62,7 +62,7 @@ pathappend () {
     pathremove "${1}" "${2}"
     #[ -d "${1}" ] || return
     local var=${2:-PATH}
-    local value=`indirect_expand "$var"`
+    local value=$(indirect_expand "$var")
     export $var="${value:+${value}:}${1}"
 }
 
