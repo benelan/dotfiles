@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # Load the shell dotfiles
-for file in $HOME/.dotfiles/bash/.{functions,paths,exports,aliases,prompt}; do
+for file in $HOME/.dotfiles/bash/.{paths,functions,exports,aliases,prompt}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
 
 
 # Load commandline completions
-for file in ~/.dotfiles/bash/completions*; do
+for file in ~/.dotfiles/bash/completions/*; do
    [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 
 
 # Load plugins
-for file in ~/.dotfiles/bash/plugins*; do
+for file in ~/.dotfiles/bash/plugins/*; do
    [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 

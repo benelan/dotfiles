@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 
-
+function is-supported() {
+  if [ $# -eq 1 ]; then
+    if eval "$1" > /dev/null 2>&1; then 
+      exit 0
+    else
+      exit 1
+    fi
+  else
+    if eval "$1" > /dev/null 2>&1; then
+      echo -n "$2"
+    else
+      echo -n "$3"
+    fi
+  fi
+}
 
 # This function searches an array for an exact match against the term passed
 # as the first argument to the function. This function exits as soon as
@@ -51,7 +65,7 @@ function _command_exists() {
 	if type -t "$1" > /dev/null; then
 		return 0
 	else
-		echo "$msg"
+		# echo "$msg"
 		return 1
 	fi
 }
@@ -66,7 +80,7 @@ function _binary_exists() {
 	if type -P "$1" > /dev/null; then
 		return 0
 	else
-		echo "$msg"
+		# echo "$msg"
 		return 1
 	fi
 }
@@ -79,7 +93,7 @@ function _completion_exists() {
 
 	local msg="${2:-Completion for '$1' already exists}"
 	if complete -p "$1" &> /dev/null; then
-		echo "$msg"
+		# echo "$msg"
 		return 0
 	else
 		return 1
