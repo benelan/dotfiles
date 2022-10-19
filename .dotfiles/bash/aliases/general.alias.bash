@@ -3,6 +3,13 @@
 # General
 # -----------------------------------------------------------------------------
 
+
+# setup the alias for managing dotfiles
+# It behaves like git, e.g.
+# $ dotfiles add .nuxtrc && dotfiles commit -m "chore: add nuxtrc"
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
+
+
 alias c='clear'
 alias q='exit'
 alias quit="exit"

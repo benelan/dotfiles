@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# setup the dotfiles git alias
-function dotfiles {
-   /usr/bin/git --git-dir=~/.myconf/ --work-tree="$HOME" "$@"
-}
-
 function is-supported() {
   if [ $# -eq 1 ]; then
     if eval "$1" > /dev/null 2>&1; then 
