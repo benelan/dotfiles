@@ -41,7 +41,7 @@ apt_packages+=(
   pip
   curl
   htop
-  id3tool
+  btop
   imagemagick
   nmap
   postgresql
@@ -56,8 +56,6 @@ apt_packages+=(
   mount
   grep
   ripgrep
-  fzf
-  fasd
   findutils
   gzip
   golang
@@ -147,20 +145,19 @@ function install_stuff_last() {
   # fi
 
 
-  # Install Alacritty
-  if [[ ! "$(type -P alacritty)" ]]; then
+  # Install Alacritty if it isn't already installed, and all of the preqs are installed
+  if [[ ! "$(type -P alacritty)" && ("$(type -P python)" && "$(type -P cargo )" && "$(type -P cmake)" && "$(type -P pkg-config)" && "$(type -P libfreetype6-dev)" && "$(type -P libxcb-xfixes0-dev)" && "$(type -P libxkbcommon)") ]]; then
     e_header "Installing Alacritty"
     
-      cd "$DOTFILES"/vendor/alacritty || return
-      cargo build --release
-      # Add Terminfo if necessary
-      if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
-      # Add Desktop Entry
-      sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
-      sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
-      sudo desktop-file-install extra/linux/Alacritty.desktop
-      sudo update-desktop-database
-    
+    cd "$DOTFILES"/vendor/alacritty || return
+    cargo build --release
+    # Add Terminfo if necessary
+    if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
+    # Add Desktop Entry
+    sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
+    sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
+    sudo desktop-file-install extra/linux/Alacritty.desktop
+    sudo update-desktop-database
   fi
 
   # Install bins from zip file.
@@ -170,6 +167,7 @@ function install_stuff_last() {
   # https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro
   mkdir -p ~./fonts
   if [[ $(find ~/.fonts -iname 'Sauce Code Pro*Nerd Font Complete.ttf' | wc -l) -lt 5 ]]; then 
+    e_header "Installing SauceCodePro Nerd Fonts"
     cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Medium Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Medium/complete/Sauce%20Code%20Pro%20Medium%20Nerd%20Font%20Complete.ttf
     cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Regular Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
     cd ~/.local/share/fonts && curl -fLo "Sauce Code Pro Bold Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
@@ -179,6 +177,7 @@ function install_stuff_last() {
 
   # Install volta if necessary
   if [[ ! "$VOLTA_HOME" ]]; then
+    e_header "Installing Volta to manage node/yarn/tsc"
     curl https://get.volta.sh | bash -s -- --skip-setup
     export VOLTA_HOME=~/.volta
     grep --silent "$VOLTA_HOME/bin" <<< "$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
@@ -188,9 +187,18 @@ function install_stuff_last() {
   fi
 
 
-  # Install LunarVim
+  # Install LunarVim if it isn't installed, and all the preqs are
   # https://www.lunarvim.org/docs/installation
-  bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) --install-dependencies --yes
+  if [[ ! "$(type -P lvim)" && ("$(type -P pip)" && "$(type -P cargo )" && "$(type -P make)" && "$(type -P node)" && "$(type -P npm)" && "$(type -P nvim)") ]]; then
+    e_header "Installing LunarVim"
+    bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) --install-dependencies --yes
+  fi
+  # Install Starship
+  if [[ ! "$(type -P starship)" ]]; then
+    e_header "Installing Starship"
+    sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$HOME/.bin" >/dev/null
+  fi
+  
 }
 
 ####################
@@ -271,7 +279,9 @@ fi
 # install bins from zip file
 function install_from_zip() {
   local name="$1" url="$2" bins b zip tmp
-  shift 2; bins=("$@"); [[ "${#bins[@]}" == 0 ]] && bins=("$name")
+  shift 2;
+  bins=("$@"); 
+  [[ "${#bins[@]}" == 0 ]] && bins=("$name")
   if [[ ! "$(which "$name")" ]]; then
     mkdir -p "$installers_path"
     e_header "Installing $name"

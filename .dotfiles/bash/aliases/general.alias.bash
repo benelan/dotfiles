@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# General
-# -----------------------------------------------------------------------------
-
-
 # setup the alias for managing dotfiles
 # It behaves like git, e.g.
 # $ dotfiles add .nuxtrc && dotfiles commit -m "chore: add nuxtrc"

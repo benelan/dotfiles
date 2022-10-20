@@ -1,3 +1,4 @@
+#!/bin/sh
 
 alias g='git'
 alias get='git'

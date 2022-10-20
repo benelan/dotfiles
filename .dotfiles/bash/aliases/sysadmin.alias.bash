@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 alias hosts='sudo $EDITOR /etc/hosts'
 
 # searchable process list

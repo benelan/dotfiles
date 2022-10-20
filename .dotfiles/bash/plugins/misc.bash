@@ -19,4 +19,4 @@ unset fasd_cache
 
 
 
-eval "$(thefuck --alias)"
+[[ "$(command -v thefuck)" ]] && eval "$(thefuck --alias)"

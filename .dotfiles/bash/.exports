@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export DOTFILES=~/.dotfiles;
-
 # Make vim the default editor.
 export EDITOR='vim';
 
@@ -59,4 +57,5 @@ shopt -s no_empty_cmd_completion
 shopt -s checkwinsize
 
 
+export DOTFILES=~/.dotfiles;
 export VOLTA_HOME=~/.volta
