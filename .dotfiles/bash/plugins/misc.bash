@@ -10,11 +10,11 @@ function fasd() {
   [ -r "$fasd" ] && [ -f "$fasd" ] && source "$fasd"
 }
 
-fasd_cache=~/.dotfiles/cache/fasd
+fasd_cache="$HOME/.dotfiles/cache/fasd_startup"
 if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
   fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
 fi
-. "$fasd_cache"
+source "$fasd_cache"
 unset fasd_cache
 
 
