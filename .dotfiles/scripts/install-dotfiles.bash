@@ -48,7 +48,7 @@ fi
 # Install fzf
 if [[ ! "$(command -v fzf)" ]]; then
   /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" submodule update --init .dotfiles/vendor/fzf
-  ~/.dotfiles/vendor/fzf/install --key-bindings --completion --no-fish --no-update-rc
+  ~/.dotfiles/vendor/fzf/install --bin
 fi
 
 # Install SourceCodePro Patched Nerd Font if they aren't already there
@@ -61,16 +61,16 @@ if [[ $(find "$fonts" -iname 'Sauce Code Pro*Nerd Font Complete.ttf' | wc -l) -l
   cd "$fonts" && curl -fLo "Sauce Code Pro Bold Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
   cd "$fonts" && curl -fLo "Sauce Code Pro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
   cd "$fonts" && curl -fLo "Sauce Code Pro Bold Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Black-Italic/complete/Sauce%20Code%20Pro%20Black%20Italic%20Nerd%20Font%20Complete.ttf
+  
+  # reload the font cache
+  fc-cache -rf
 fi
-
-# reload the font cache
-fc-cache -rf
 
 unset fonts
 unset files
 unset GIT_URL
 unset BACKUP_DIR
 
-
+# Remove extra files
 rm -f "$HOME/README.md"
 rm -f "$HOME/LICENSE.md"
