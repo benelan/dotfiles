@@ -26,10 +26,10 @@ else
   # removing everything after the last "/" from file paths
   # files in ~ will end up being blank lines, which need to be stripped
   folders=$(echo "$files" | awk 'BEGIN{FS=OFS="/"} {NF--} 1' | sed '/^[[:blank:]]*$/d')
+  
   # finally create the directories in the BACKUP_DIR
   mkdir -p "$BACKUP_DIR"
   echo "$folders" | xargs -I{} mkdir -p "$BACKUP_DIR{}"
-
   # move the files to the new directories
   echo "$files" | xargs -I{} mv {} "$BACKUP_DIR/{}"
 
