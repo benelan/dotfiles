@@ -38,11 +38,20 @@ LS_COLORS=$(is-supported "ls --color" --color -G)
 LS_TIMESTYLEISO=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
 LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-directories-first)
 
-alias l='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
-alias lsd='ls -dogchart */ $LS_COLORS $LS_TIMESTYLEISO' # List only directories
-alias lsh='ls -dogchart .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST' # Lists hidden files in long format.
-alias lt='ls -thArchgod $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
-alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS'
+# list all files/dirs, short format, sort by time
+alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST';
+# list all files/dirs, long format, sort by time
+alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+# list all files/dirs, long format, sort by name
+alias lsa='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+# list all files/dirs, long format, sort by size
+alias lss='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+# List directories, long format, sort by time
+alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO';
+# Lists hidden files, long format, sort by time
+alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+# all files/dirs recursively, excluding common auto-generated content
+alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS';
 alias lp="stat -c '%a %n' *"
 
 unset LS_COLORS LS_TIMESTYLEISO LS_GROUPDIRSFIRST
