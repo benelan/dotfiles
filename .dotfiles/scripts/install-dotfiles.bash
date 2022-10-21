@@ -71,6 +71,8 @@ unset files
 unset GIT_URL
 unset BACKUP_DIR
 
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/LICENSE.md"
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/README.md"
 # Remove extra files
-rm -f "$HOME/README.md"
+rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 rm -f "$HOME/LICENSE.md"

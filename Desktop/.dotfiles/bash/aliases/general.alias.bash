@@ -1,9 +1,10 @@
 #!/bin/sh
 
 # setup the alias for managing dotfiles
-# It behaves like git, and can be called from any directory, e.g.
-# $ dots add .nuxtrc && dots commit -m "chore: add nuxtrc" && dots push
-alias dots='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
+# It behaves like git, e.g.
+# $ dotfiles add .nuxtrc && dotfiles commit -m "chore: add nuxtrc"
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
+
 
 alias c='clear'
 alias q='exit'
@@ -34,26 +35,19 @@ alias ccf="xclip -se c <"
 
 # Directory listing/traversal
 
-LS_COLORS=$(is-supported "ls --color" --color -G)
+LS_COLORS="$(is-supported "ls --color" --color -G)"
 LS_TIMESTYLEISO=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
 LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-directories-first)
 
-# list all files/dirs, short format, sort by time
-alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST';
-# list all files/dirs, long format, sort by time
-alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
-# list all files/dirs, long format, sort by name
-alias lsa='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
-# list all files/dirs, long format, sort by size
-alias lss='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
-# List directories, long format, sort by time
-alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO';
-# Lists hidden files, long format, sort by time
-alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
-# all files/dirs recursively, excluding common auto-generated content
-alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS';
+alias l='ls -lahA $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
+alias la='ls -lAF $LS_COLORS' # List all files colorized in long format, excluding . and ..
+alias lsd='ls -lF $LS_COLORS | grep --color=never ^d' # List only directories
+alias lsh='ls -dlA .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST' # Lists hidden files in long format.
+alias lt='ls -lhAtr $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
+alias ld='ls -ld $LS_COLORS */'
 alias lp="stat -c '%a %n' *"
 
+unset LS_COLORS LS_TIMESTYLEISO LS_GROUPDIRSFIRST
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
