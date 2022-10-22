@@ -1,4 +1,4 @@
-vendor/*
+.dotfiles/vendor/*
 LICENSE.md
 README.md
-cache/fasd_history
+.dotfiles/cache/*
