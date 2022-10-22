@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# git-branch-default
+# gets the default git branch
+alias gbdefault='git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"'
+
+# git-branch-clean
+# removes all local branches which have been merged into the default branch
+alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
+
 alias g='git'
 alias get='git'
 
@@ -35,8 +43,8 @@ alias gcb='git checkout -b'
 alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcobu='git checkout -b ${USER}/'
-alias gcom='git checkout $(get_default_branch)'
-alias gcpd='git checkout $(get_default_branch); git pull; git branch -D'
+alias gcom='git checkout "$(gbdefault)"'
+alias gcpd='git checkout "$(gbdefault)"; git pull; git branch -D'
 alias gct='git checkout --track'
 
 # clone
@@ -62,7 +70,7 @@ alias gf='git fetch --all --prune'
 alias gft='git fetch --all --prune --tags'
 alias gftv='git fetch --all --prune --tags --verbose'
 alias gfv='git fetch --all --prune --verbose'
-alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/$(get_default_branch)'
+alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 alias gup='git fetch && git rebase'
 
 # log
@@ -103,7 +111,7 @@ alias gp='git push'
 alias gpd='git push --delete'
 alias gpf='git push --force'
 alias gpo='git push origin HEAD'
-alias gpom='git push origin $(get_default_branch)'
+alias gpom='git push origin "$(gbdefault)"'
 alias gpu='git push --set-upstream'
 alias gpunch='git push --force-with-lease'
 alias gpuo='git push --set-upstream origin'
@@ -111,7 +119,7 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 alias gl='git pull'
-alias glum='git pull upstream $(get_default_branch)'
+alias glum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
 alias gpp='git pull && git push'
 alias gpr='git pull --rebase'
@@ -127,10 +135,10 @@ alias grm='git rm'
 # rebase
 alias grb='git rebase'
 alias grbc='git rebase --continue'
-alias grm='git rebase $(get_default_branch)'
-alias grmi='git rebase $(get_default_branch) -i'
-alias grma='GIT_SEQUENCE_EDITOR=: git rebase  $(get_default_branch) -i --autosquash'
-alias gprom='git fetch origin $(get_default_branch) && git rebase origin/$(get_default_branch) && git update-ref refs/heads/$(get_default_branch) origin/$(get_default_branch)' # Rebase with latest remote
+alias grm='git rebase "$(gbdefault)"'
+alias grmi='git rebase "$(gbdefault)" -i'
+alias grma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
+alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"' # Rebase with latest remote
 
 # reset
 alias gus='git reset HEAD'
@@ -174,7 +182,7 @@ alias gsu='git submodule update --init --recursive'
 # these aliases requires git v2.23+
 alias gsw='git switch'
 alias gswc='git switch --create'
-alias gswm='git switch $(get_default_branch)'
+alias gswm='git switch "$(gbdefault)"'
 alias gswt='git switch --track'
 
 # tag
@@ -182,11 +190,3 @@ alias gt='git tag'
 alias gta='git tag -a'
 alias gtd='git tag -d'
 alias gtl='git tag -l'
-
-# git-branch-default
-# gets the default git branch
-alias gbdefault='git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"'
-
-# git-branch-clean
-# removes all local branches which have been merged into the default branch
-alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'

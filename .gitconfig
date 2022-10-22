@@ -2,8 +2,12 @@
 	name = Ben Elan
 	email = belan@esri.com
 
+[github]
+	user = benelan
+
 [include]
   path = .dotfiles/git/gitalias.txt
+  path = .dotfiles/git/delta.gitconfig
 
 [apply]
     # Detect whitespace errors when applying a patch.
@@ -15,16 +19,16 @@
 	sort = -committerdate
 
 [core]
-    # Disable line endings output conversion.
-    autocrlf = input
+  # Disable line endings output conversion.
+  autocrlf = input
 
 	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
 	# [default] trailing-space: looks for spaces at the end of a line
 	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
-    # Set comment character to something that allows mentioning issue numbers.
-    commentChar = ";"
+  # Set comment character to something that allows mentioning issue numbers.
+  commentChar = ";"
 
     # Speed up commands involving untracked files such as `git status`.
     # See https://git-scm.com/docs/git-update-index#_untracked_cache
@@ -35,7 +39,7 @@
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
 	ui = auto
-    interactive = auto
+  interactive = auto
 
 [color "branch"]
 
@@ -58,7 +62,7 @@
 
 [diff]
 	tool = vimdiff
-
+  colorMoved: default
 	# Detect copies as well as renames.
 	renames = copies
 
@@ -71,20 +75,20 @@
 
 
 [fetch]
-    # Remove any remote-tracking references that no longer exist on the remote.
-    prune = true
+  # Remove any remote-tracking references that no longer exist on the remote.
+  prune = true
 
 [help]
-    # Correct and execute mistyped commands.
-    autocorrect = 1
+  # Correct and execute mistyped commands.
+  autocorrect = 1
 
 [merge]
-    # Include summaries of merged commits in newly created merge commit messages.
-    log = true
+  # Include summaries of merged commits in newly created merge commit messages.
+  log = true
 
 [mergetool]
-    # Avoid saving an `.orig` backup file after a merge.
-    keepBackup = false
+  # Avoid saving an `.orig` backup file after a merge.
+  keepBackup = false
 
 [push]
 
@@ -93,14 +97,20 @@
 	# Make `git push` push relevant annotated tags when pushing branches out.
 	followTags = true
 
+[pull]
+	rebase = false
+
 [rebase]
     # Create a temporary stash entry before the operation begins.
     autostash = true
 
 [status]
-    # Enable submodule summary of commits.
-    submoduleSummary = true
+  # Enable submodule summary of commits.
+   submoduleSummary = true
 
+[init]
+
+	defaultBranch = master
 
 # URL shorthands
 
@@ -124,13 +134,9 @@
 
 	insteadOf = "gist:"
 
-[init]
-
-	defaultBranch = master
-
 [alias]
 	# Pull in remote changes for the current repository and all its submodules.
-  	up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
   # add and commit with message
 	acm = !git add -A && git commit -m
@@ -212,9 +218,3 @@
 
   # full list of branches
 	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
-
-[github]
-	user = benelan
-
-[pull]
-	rebase = false
