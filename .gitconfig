@@ -1,220 +1,212 @@
 [user]
-	name = Ben Elan
-	email = belan@esri.com
+    name = Ben Elan
+    email = belan@esri.com
 
 [github]
-	user = benelan
+    user = benelan
 
 [include]
-  path = .dotfiles/git/gitalias.txt
-  path = .dotfiles/git/delta.gitconfig
+    path = ~/.dotfiles/git/gitalias.gitconfig
+    path = ~/.dotfiles/git/delta.gitconfig
 
 [apply]
     # Detect whitespace errors when applying a patch.
     whitespace = fix
 
 [branch]
-
-	# Show most recently changed branches first.
-	sort = -committerdate
+    # Show most recently changed branches first.
+    sort = -committerdate
 
 [core]
-  # Disable line endings output conversion.
-  autocrlf = input
+    # Disable line endings output conversion.
+    autocrlf = input
 
-	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
-	# [default] trailing-space: looks for spaces at the end of a line
-	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
-	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-
-  # Set comment character to something that allows mentioning issue numbers.
-  commentChar = ";"
+    # Treat spaces before tabs and all kinds of trailing whitespace as an error.
+    # [default] trailing-space: looks for spaces at the end of a line
+    # [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+    whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+    #
+    # Set comment character to something that allows mentioning issue numbers.
+    commentChar = ";"
 
     # Speed up commands involving untracked files such as `git status`.
     # See https://git-scm.com/docs/git-update-index#_untracked_cache
     untrackedCache = true
 
 [color]
-
-	# Use colors in Git commands that are capable of colored output when
-	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
-	ui = auto
-  interactive = auto
+    # Use colors in Git commands that are capable of colored output when
+    # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+    ui = auto
+    interactive = auto
 
 [color "branch"]
-
-	current = yellow reverse
-	local = yellow
-	remote = green
+    current = yellow reverse
+    local = yellow
+    remote = green
 
 [color "diff"]
-
-	meta = yellow bold
-	frag = magenta bold # line info
-	old = red # deletions
-	new = green # additions
+    meta = yellow bold
+    frag = magenta bold # line info
+    old = red           # deletions
+    new = green         # additions
 
 [color "status"]
-
-	added = yellow
-	changed = green
-	untracked = cyan
+    added = yellow
+    changed = green
+    untracked = cyan
 
 [diff]
-	tool = vimdiff
-  colorMoved: default
-	# Detect copies as well as renames.
-	renames = copies
+    tool = vimdiff
+    colorMoved = default
+    # Detect copies as well as renames.
+    renames = copies
 
 [diff "bin"]
-
-	# Use `hexdump` to diff binary files.
-	textconv = hexdump -v -C
+    # Use `hexdump` to diff binary files.
+    textconv = hexdump -v -C
 
 [help]
-
 
 [fetch]
-  # Remove any remote-tracking references that no longer exist on the remote.
-  prune = true
+    # Remove any remote-tracking references that no longer exist on the remote.
+    prune = true
 
 [help]
-  # Correct and execute mistyped commands.
-  autocorrect = 1
+    # Correct and execute mistyped commands.
+    autocorrect = 1
 
 [merge]
-  # Include summaries of merged commits in newly created merge commit messages.
-  log = true
+    # Include summaries of merged commits in newly created merge commit messages.
+    log = true
 
 [mergetool]
-  # Avoid saving an `.orig` backup file after a merge.
-  keepBackup = false
+    # Avoid saving an `.orig` backup file after a merge.
+    keepBackup = false
 
 [push]
-
-	# https://git-scm.com/docs/git-config#git-config-pushdefault
-	default = simple
-	# Make `git push` push relevant annotated tags when pushing branches out.
-	followTags = true
+    # https://git-scm.com/docs/git-config#git-config-pushdefault
+    default = simple
+    # Make `git push` push relevant annotated tags when pushing branches out.
+    followTags = true
 
 [pull]
-	rebase = false
+    rebase = false
 
 [rebase]
     # Create a temporary stash entry before the operation begins.
     autostash = true
 
 [status]
-  # Enable submodule summary of commits.
-   submoduleSummary = true
+    # Enable submodule summary of commits.
+    submoduleSummary = true
 
 [init]
-
-	defaultBranch = master
+    defaultBranch = master
 
 # URL shorthands
 
 [url "git@github.com:"]
 
-	insteadOf = "gh:"
-	pushInsteadOf = "github:"
-	pushInsteadOf = "git://github.com/"
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
 
 [url "git://github.com/"]
 
-	insteadOf = "github:"
+    insteadOf = "github:"
 
 [url "git@gist.github.com:"]
 
-	insteadOf = "gst:"
-	pushInsteadOf = "gist:"
-	pushInsteadOf = "git://gist.github.com/"
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
 
-	insteadOf = "gist:"
+    insteadOf = "gist:"
 
 [alias]
-	# Pull in remote changes for the current repository and all its submodules.
-  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-  # add and commit with message
-	acm = !git add -A && git commit -m
+    # Pull in remote changes for the current repository and all its submodules.
+    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-	# add and commit all changes.
-	aca = !git add -A && git commit -av
+    # add and commit with message
+    acm = !git add -A && git commit -m
 
-	# add, commit, and push all changes.
-	acap = !git add -A && git commit -av && git push
-  acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
+    # add and commit all changes.
+    aca = !git add -A && git commit -av
 
-	# View abbreviated SHA, description, and history graph of the latest 20 commits.
-	ll = log --pretty=oneline -n 20 --graph --abbrev-commit
-	ln = "!f() { git log --pretty=oneline -n \"$1\" --graph --abbrev-commit; }; f"
+    # add, commit, and push all changes.
+    acap = !git add -A && git commit -av && git push
+    acmp = "!f() { git add -A && git commit -m \"$1\" && git push; }; f"
 
-	# View the current working tree status using the short format.
-	stat = status -s
+    # View abbreviated SHA, description, and history graph of the latest 20 commits.
+    ll = log --pretty=oneline -n 20 --graph --abbrev-commit
+    ln = "!f() { git log --pretty=oneline -n \"$1\" --graph --abbrev-commit; }; f"
 
-	# Show the diff between the latest commit and the current state.
-	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+    # View the current working tree status using the short format.
+    stat = status -s
 
-	# `git di $number` shows the diff between the state `$number` revisions ago and the current state.
-	dn = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+    # Show the diff between the latest commit and the current state.
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 
-	# Switch to a branch, creating it if necessary.
-	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
+    dn = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
 
-	# Show verbose output about tags, branches or remotes
-	tags = tag -l
-	branches = branch --all
-	remotes = remote --verbose
+    # Switch to a branch, creating it if necessary.
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
-	# List aliases.
-	aliases = config --get-regexp alias
+    # Show verbose output about tags, branches or remotes
+    tags = tag -l
+    branches = branch --all
+    remotes = remote --verbose
 
-	# Amend the currently staged files to the latest commit.
-	amend = commit --amend --reuse-message=HEAD
+    # List aliases.
+    aliases = config --get-regexp alias
 
-	# commits and then resets, saving work just in case
-  wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+    # Amend the currently staged files to the latest commit.
+    amend = commit --amend --reuse-message=HEAD
 
-	# Credit an author on the latest commit.
-	credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+    # commits and then resets, saving work just in case
+    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
 
-	# Interactive rebase with the given number of latest commits.
-	rebi = "!r() { git rebase -i HEAD~$1; }; r"
+    # Credit an author on the latest commit.
+    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
 
-	# Remove the old tag with this name and tag the latest commit with it.
-	retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+    # Interactive rebase with the given number of latest commits.
+    rebi = "!r() { git rebase -i HEAD~$1; }; r"
 
-	# Find branches containing commit
-	fb = "!f() { git branch -a --contains $1; }; f"
+    # Remove the old tag with this name and tag the latest commit with it.
+    retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
 
-	# Find tags containing commit
-	ft = "!f() { git describe --always --contains $1; }; f"
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
 
-	# Find commits by source code
-	fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
 
-	# Find commits by commit message
-	fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
 
-	# Remove branches that have already been merged with main.
-	# a.k.a. ‘delete merged’
-	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
-	# List contributors with number of commits.
-	contributors = shortlog --summary --numbered
+    # Remove branches that have already been merged with main.
+    # a.k.a. ‘delete merged’
+    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
-	# Show the user email for the current repository.
-	whoami = config user.email
+    # List contributors with number of commits.
+    contributors = shortlog --summary --numbered
 
-  # gets the default branch for the current repo
-	default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
-  # cleans up merged branches
-	bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
-	# full cleaned workflow after merge
-	bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
+    # Show the user email for the current repository.
+    whoami = config user.email
 
-  # full list of branches
-	blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+    # gets the default branch for the current repo
+    default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+    # cleans up merged branches
+    bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
+    # full cleaned workflow after merge
+    bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
+
+    # full list of branches
+    blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
