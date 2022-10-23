@@ -7,8 +7,7 @@ apt_packages=()
 deb_installed=()
 deb_sources=()
 
-DOTFILES="$HOME/.dotfiles"
-installers_path="$DOTFILES/caches/installers"
+installers_path=~/.dotfiles/caches/installers
 
 # Logging stuff.
 function e_header() { echo -e "\n\033[1m" "$@" "\033[0m"; }
@@ -156,7 +155,7 @@ function install_stuff_last() {
   "$(type -P libxkbcommon)") ]]; then
     e_header "Installing Alacritty"
 
-    cd "$DOTFILES"/vendor/alacritty || return
+    cd ~/.dotfiles/vendor/alacritty || return
     cargo build --release
     # Add Terminfo if necessary
     if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi

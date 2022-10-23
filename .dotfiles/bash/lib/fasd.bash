@@ -331,7 +331,7 @@ EOS
       | tr '\n' '|')"
 
     # add current pwd if the option is set
-    [ "$_FASD_TRACK_PWD" = "1" -a "$PWD" != "$HOME" ] && paths="$paths|$PWD"
+    [ "$_FASD_TRACK_PWD" = "1" -a "$PWD" != ~ ] && paths="$paths|$PWD"
 
     [ -z "${paths##\|}" ] && return # stop if we have nothing to add
 
@@ -481,7 +481,7 @@ $(fasd --backend $each)"
     case $2 in
       native) cat "$_FASD_DATA";;
       viminfo)
-        < "$_FASD_VIMINFO" sed -n '/^>/{s@~@'"$HOME"'@
+        < "$_FASD_VIMINFO" sed -n '/^>/{s@~@'~'@
           s/^..//
           p
           }' | $_FASD_AWK -v t="$(date +%s)" '{

@@ -6,7 +6,7 @@ DOTFILES="$HOME/.dotfiles"
 if [[ ! "$(type -P alacritty)" && ("$(type -P python)" && "$(type -P cargo)" && "$(type -P cmake)" && "$(type -P pkg-config)" && "$(type -P libfreetype6-dev)" && "$(type -P libxcb-xfixes0-dev)" && "$(type -P libxkbcommon)") ]]; then
   echo "Installing Alacritty"
 
-  cd "$DOTFILES"/vendor/alacritty || return
+  cd ~/.dotfiles/vendor/alacritty || return
   cargo build --release
   # Add Terminfo if necessary
   if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
