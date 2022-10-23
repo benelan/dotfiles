@@ -9,7 +9,7 @@ indirect_expand () {
 # Eg, to remove ~/bin from $PATH
 #     pathremove ~/bin PATH
 pathremove () {
-    local IFS=':'
+    IFS=':'
     var=${2:-PATH}
     # Bash has ${!var}, but this is not portable.
     for dir in $(indirect_expand "$var"); do
@@ -58,7 +58,7 @@ pathappend "$HOME/.cargo/bin"
 pathappend "$HOME/.dotfiles/vendor/.fzf/bin"
 pathappend "$HOME/go/bin"
 pathappend "/snap/bin"
-pathappend "/usr/local/game"
+pathappend "/usr/local/games"
 pathappend "/usr/local/sbin"
 pathappend "/usr/local/bin"
 pathappend "/usr/games"

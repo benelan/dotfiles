@@ -6,10 +6,20 @@ case $- in
     *) return ;;
 esac
 
-# Source ~/.profile for the PATH, exports, and aliases
-[ -r "$HOME/.profile" ] && [ -f "$HOME/.profile" ] && . "$HOME/.profile"
-
+# Don't do anything if restricted. Testing
+# whether $- contains 'r' doesn't work, because Bash doesn't set that flag
+# until after .bashrc has evaluated
 ! shopt -q restricted_shell 2>/dev/null || return
+
+
+#-----------------------------#
+# SHELL - ALIASES             #
+#-----------------------------#
+for file in ~/.dotfiles/sh/aliases/*; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
+
 
 [ -n "$BASH_VERSINFO" ] || return    # Check version array exists (>=2.0)
 ((BASH_VERSINFO[0] >= 3)) || return  # Check actual major version number
