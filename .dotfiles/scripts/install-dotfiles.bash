@@ -15,12 +15,12 @@ git clone --bare "$GIT_URL" "$HOME/.git"
 
 
 
-if /usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ checkout; then
+if /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout; then
   echo "Checked out dotfiles"
 else
   echo "Backing up pre-existing dotfiles"
   # get the list of files that need to be backed up
-  files=$(/usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ checkout 2>&1 | grep -e "^\s")
+  files=$(/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 2>&1 | grep -e "^\s")
  
   # get names of the directories by
   # removing everything after the last "/" from file paths
@@ -38,16 +38,16 @@ else
   #     $(dotfiles checkout 2>&1 | grep -E "\s+\." | awk {'print $1'}) "$BACKUP_DIR"
 
   # check out the dotfiles now that there are no conflicts
-  /usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ checkout 
+  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 
 fi
 
 # prevents showing everything in ~
 # to track files: "dot add ~/.npmrc"
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ config status.showUntrackedFiles no
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" config status.showUntrackedFiles no
 
 # Install fzf
 if [[ ! "$(command -v fzf)" ]]; then
-  /usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ submodule update --init .dotfiles/vendor/fzf
+  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" submodule update --init .dotfiles/vendor/fzf
   ~/.dotfiles/vendor/fzf/install --bin
 fi
 
@@ -55,8 +55,8 @@ unset files
 unset GIT_URL
 unset BACKUP_DIR
 
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ update-index --assume-unchanged "$HOME/LICENSE.md"
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree=~ update-index --assume-unchanged "$HOME/README.md"
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/LICENSE.md"
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/README.md"
 # Remove extra files
 rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 rm -f "$HOME/LICENSE.md"

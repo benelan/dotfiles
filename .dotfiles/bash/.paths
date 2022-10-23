@@ -1,23 +1,4 @@
-#!/usr/bin/env 
-
-paths=(
-  ~/.volta/bin
-  ~/.dotfiles/vendor/.fzf/bin
-  ~/.cargo/bin:
-  ~/.local/bin
-  ~/go/bin
-  ~/.bin
-  /snap/bin
-  /usr/local/games
-  /usr/local/sbin
-  /usr/local/bin
-  /usr/games
-  /usr/sbin
-  /usr/bin
-  /sbin
-  /bin
-)
-
+#!/bin/sh
 
 # Usage: indirect_expand PATH -> $PATH
 indirect_expand () {
@@ -29,9 +10,7 @@ indirect_expand () {
 #     pathremove ~/bin PATH
 pathremove () {
     local IFS=':'
-    local newpath
-    local dir
-    local var=${2:-PATH}
+    var=${2:-PATH}
     # Bash has ${!var}, but this is not portable.
     for dir in $(indirect_expand "$var"); do
         IFS=''
@@ -40,6 +19,7 @@ pathremove () {
         fi
     done
     export $var=${newpath#:}
+    unset newpath dir var
 }
 
 # Usage: pathprepend /path/to/bin [PATH]
@@ -50,9 +30,10 @@ pathprepend () {
     # remove it so we can move it to the front
     pathremove "$1" "$2"
     #[ -d "${1}" ] || return
-    local var="${2:-PATH}"
-    local value=$(indirect_expand "$var")
+    var="${2:-PATH}"
+    value=$(indirect_expand "$var")
     export ${var}="${1}${value:+:${value}}"
+    unset var value
 }
 
 # Usage: pathappend /path/to/bin [PATH]
@@ -61,14 +42,27 @@ pathprepend () {
 pathappend () {
     pathremove "${1}" "${2}"
     #[ -d "${1}" ] || return
-    local var=${2:-PATH}
-    local value=$(indirect_expand "$var")
+    var=${2:-PATH}
+    value=$(indirect_expand "$var")
     export $var="${value:+${value}:}${1}"
+    unset var value
 }
 
 
 
-for p in "${paths[@]}"; do
-  [[ -d "$p" ]] && pathappend "$p" PATH
-done
-unset p paths
+# Array aren't POSIX compliant
+pathappend "$HOME/.bin"
+pathappend "$HOME/.local/bin"
+pathappend "$HOME/.volta/bin"
+pathappend "$HOME/.cargo/bin"
+pathappend "$HOME/.dotfiles/vendor/.fzf/bin"
+pathappend "$HOME/go/bin"
+pathappend "/snap/bin"
+pathappend "/usr/local/game"
+pathappend "/usr/local/sbin"
+pathappend "/usr/local/bin"
+pathappend "/usr/games"
+pathappend "/usr/sbin"
+pathappend "/usr/bin"
+pathappend "/sbin"
+pathappend "/bin"
