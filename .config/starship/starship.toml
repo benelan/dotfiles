@@ -39,7 +39,7 @@ bg4 = "#7c6f64"
 full_symbol = "🔋 "
 empty_symbol = "🪫 "
 charging_symbol = "⚡ "
-discharging_symbol = "💀 "
+discharging_symbol = "🕱 "
 
 [[battery.display]]
 # "bold orange" style when capacity is between 20% and 30%
@@ -52,12 +52,12 @@ threshold = 20
 style = "bold red"
 
 [character]
-success_symbol = "[➜](bold green-light) "
+success_symbol = "[➜](bold green-light) " # ☛ ☞
 error_symbol = "[✗](bold red-light) "
-vimcmd_symbol = "[](bold green-light) "
-vimcmd_replace_one_symbol = "[](bold yellow-light) "
-vimcmd_replace_symbol = "[](bold yellow-light) "
-vimcmd_visual_symbol = "[](bold purple-light) "
+vimcmd_symbol = "[V](bold green-light) "
+vimcmd_replace_one_symbol = "[V](bold yellow-light) "
+vimcmd_replace_symbol = "[V](bold yellow-light) "
+vimcmd_visual_symbol = "[V](bold purple-light) "
 
 [cmd_duration]
 format = "[took](fg) [$duration]($style) "
@@ -70,9 +70,16 @@ style = "bold yellow"
 style = "bold aqua"
 truncation_length = 0
 
+[erlang]
+symbol = ""
+
+[hg_branch]
+symbol = "⎇ "
+
 [git_branch]
 format = "[on](fg) [$symbol$branch(:$remote_branch)]($style) "
 style = "bold blue"
+symbol = "⎇  "
 
 [git_metrics]
 disabled = true
@@ -85,17 +92,19 @@ behind = "[⇣$count](yellow-light)"
 staged = "[+$count](green)"
 deleted = "[X$count](red)"
 untracked = "[?$count](yellow)"
-modified = "[*$count](orange)"
+modified = "[!$count](orange)"
 stashed = "[\\$$count](purple)"
 renamed = "[»$count](purple-light)"
-conflicted = "[!$count](red-light)"
+conflicted = "[=$count](red-light)"
 
 [package]
 format = "[is](fg) [$symbol$version]($style) "
 style = "bold orange"
+symbol = "⧠ "
 
 [nodejs]
 format = "[via](fg) [$symbol($version )]($style)"
+symbol = "⌬ "
 
 [sudo]
 format = "[[as](fg) $symbol]($style)"
@@ -109,7 +118,5 @@ time_format = "%T"
 [username]
 format = "[$user]($style) [in](fg) "
 
-
-[custom.hist]
-command = "\!" # shows output of command
-format = "[$output]($style) "
+[pulumi]
+symbol = "⧠ "

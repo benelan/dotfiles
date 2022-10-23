@@ -6,9 +6,9 @@ if [[ "$(type -P starship)" ]]; then
   # Only use Nerd Font symbols if one of the fonts is installed
   FONTS_DIR="$HOME/.local/share/fonts"
   if [[ $(find "$FONTS_DIR" -iname '*Nerd Font*') ]]; then
-    export STARSHIP_CONFIG=~/.config/starship/starship.toml
+    export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
   else
-    export STARSHIP_CONFIG=~/.config/starship/unicode.starship.toml
+    export STARSHIP_CONFIG=~/.config/starship/starship.toml
   fi
   eval "$(starship init bash)"
 else
