@@ -73,12 +73,12 @@ alias fdf='find . -type f -name'
 
 
 # Global aliases
-if $(is-supported "alias -g"); then
-  alias -g G="| grep -i"
-  alias -g H="| head"
-  alias -g T="| tail"
-  alias -g L="| less"
-fi
+# if $(is-supported "alias -g"); then
+#   alias -g G="| grep -i"
+#   alias -g H="| head"
+#   alias -g T="| tail"
+#   alias -g L="| less"
+# fi
 
 
 # List declared aliases, functions, paths

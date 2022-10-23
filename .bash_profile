@@ -1,37 +1,20 @@
-#!/bin/bash
+#! /bin/sh
 
-# If not running interactively, don't do anything
-case $- in
-  *i*) ;;
-    *) return;;
-esac
+# Load ~/.profile regardless of shell version
+if [ -e "$HOME"/.profile ] ; then
+    . "$HOME"/.profile
+fi
 
-# Load the shell dotfiles - order matters!
-for file in ~/.dotfiles/bash/.{paths,functions,exports,prompt}; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
-
-# Load the commandline aliases
-for file in ~/.dotfiles/bash/aliases/*; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
+# If POSIXLY_CORRECT is set after doing that, force the `posix` option on and
+# don't load the rest of this stuff
+if [ -n "$POSIXLY_CORRECT" ] ; then
+    set -o posix
+    return
+fi
 
 
-# Load commandline completions
-for file in ~/.dotfiles/bash/completions/*; do
-   [ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-
-
-# Load plugins
-for file in ~/.dotfiles/bash/plugins/*; do
-   [ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-
-
-# Load other stuff
-cargo=~/.cargo/env;
-[ -r "$cargo" ] && [ -f "$cargo" ] && source "$cargo";
-unset cargo;
+# If ~/.bashrc exists, source that too; the tests for both interactivity and
+# minimum version numbers are in there
+if [ -f "$HOME"/.bashrc ] ; then
+    . "$HOME"/.bashrc
+fi
