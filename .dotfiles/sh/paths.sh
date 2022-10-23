@@ -19,7 +19,7 @@ pathremove () {
         fi
     done
     export $var=${newpath#:}
-    unset newpath dir var
+    unset newpath dir var IFS
 }
 
 # Usage: pathprepend /path/to/bin [PATH]

@@ -517,7 +517,7 @@ __git_ps1 ()
 	local conflict="" # state indicator for unresolved conflicts
 	if [[ "${GIT_PS1_SHOWCONFLICTSTATE}" == "yes" ]] &&
 	   [[ $(git ls-files --unmerged 2>/dev/null) ]]; then
-		conflict="|CONFLICT"
+		conflict="!"
 	fi
 
 	local w=""
@@ -555,12 +555,12 @@ __git_ps1 ()
 		   [ "$(git config --bool bash.showUntrackedFiles)" != "false" ] &&
 		   git ls-files --others --exclude-standard --directory --no-empty-directory --error-unmatch -- ':/*' >/dev/null 2>/dev/null
 		then
-			u="%${ZSH_VERSION+%}"
+			u="?${ZSH_VERSION+%}"
 		fi
 
 		if [ -n "${GIT_PS1_COMPRESSSPARSESTATE-}" ] &&
 		   [ "$(git config --bool core.sparseCheckout)" = "true" ]; then
-			h="?"
+			h="%"
 		fi
 
 		if [ -n "${GIT_PS1_SHOWUPSTREAM-}" ]; then

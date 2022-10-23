@@ -62,25 +62,30 @@ else
     hostStyle="${yellow}"
   fi
 
-  # Set the terminal title and prompt.
-  PS1="\[\033]0;\W\007\]"   # working directory base name
-  PS1+="\[${bold}\]\n"      # newline
-  PS1+="\[${userStyle}\]\u" # username
-  PS1+="\[${white}\] at "
-  PS1+="\[${hostStyle}\]\h" # host
-  PS1+="\[${white}\] in "
-  PS1+="\[${aqua}\]\w" # working directory full path
-  # PS1+="\[${white}\] on ";
-  PS1+="\[${green}\]"'`__git_ps1`' # Git repository details
-  PS1+="\n"
-  PS1+="\[${white}\]☕ \[${reset}\]" # symbol (and reset color)
-  # λ ⏩ ॐ ℷ⚡⚪☕✋✨ ∃ ∑ ∴ ↪ ↳
+  # get status of git repo in prompt
+  GIT_PS1_SHOWDIRTYSTATE="yes"
+  GIT_PS1_SHOWSTASHSTATE="yes"
+  GIT_PS1_SHOWUNTRACKEDFILES="yes"
+  GIT_PS1_SHOWUPSTREAM="verbose"
+  GIT_PS1_SHOWCONFLICTSTATE="yes"
+  GIT_PS1_SHOWCOLORHINTS="yes"
 
-  # prompt with background color
-  # PS1='\n\n\[\e[97;104m\] \u \[\e[30;43m\] \w \[\e[97;45m\] `__git_ps1` \[\e[0m\]\n\n'
+  pre_prompt="\n"
+  pre_prompt+="\[${bold}\]\[${userStyle}\]\u" # username
+  pre_prompt+="\[${reset}\] at "
+  pre_prompt+="\[${bold}\]\[${hostStyle}\]\h" # host
+  pre_prompt+="\[${reset}\] in "
+  pre_prompt+="\[${bold}\]\[${aqua}\]\w" # working directory full path
+  pre_prompt+="\[${reset}\]" # reset styling
 
-  export PS1
+  post_prompt="\n"
+  post_prompt+="\[${blue}\]\! " # history line number for easy hist expansion
+  post_prompt+="\[${white}\]☕  " # add symbol, other options: ∴ ↪ ↳
+  post_prompt+="\[${reset}\]" # reset styling
+
+  PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 
   PS2="\[${yellow}\]→ \[${reset}\]"
+
   export PS2
 fi
