@@ -4,15 +4,15 @@
 # Fuzzy search
 # https://github.com/junegunn/fzf
 
-[ -r "$DOTFILES/vendor/fzf/bin/fzf" ] && pathprepend "$DOTFILES/vendor/fzf/bin" PATH
+[ -r "$HOME/.dotfiles/vendor/fzf/bin/fzf" ] && pathprepend "$HOME/.dotfiles/vendor/fzf/bin" PATH
 
 # Auto-completion
 # ---------------
-[[ $- == *i* ]] && source "$DOTFILES/vendor/fzf/shell/completion.bash" 2> /dev/null
+[[ $- == *i* ]] && source "$HOME/.dotfiles/vendor/fzf/shell/completion.bash" 2> /dev/null
 
 # Key bindings
 # ------------
-[ -r "$DOTFILES/vendor/fzf/shell/key-bindings.bash" ] && source "$DOTFILES/vendor/fzf/shell/key-bindings.bash"
+[ -r "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash" ] && source "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash"
 
 
 # No need to continue if the command is not present
