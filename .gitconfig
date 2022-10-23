@@ -56,6 +56,7 @@
     untracked = cyan
 
 [diff]
+    algorithm = patience
     tool = vimdiff
     colorMoved = default
     # Detect copies as well as renames.
@@ -66,8 +67,6 @@
     # Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
-[help]
-
 [fetch]
     # Remove any remote-tracking references that no longer exist on the remote.
     prune = true
@@ -75,6 +74,10 @@
 [help]
     # Correct and execute mistyped commands.
     autocorrect = 1
+
+
+[log]
+    date = local
 
 [merge]
     # Include summaries of merged commits in newly created merge commit messages.
@@ -100,6 +103,10 @@
 [status]
     # Enable submodule summary of commits.
     submoduleSummary = true
+    short = true
+
+[format]
+    pretty = fuller
 
 [init]
     defaultBranch = master
