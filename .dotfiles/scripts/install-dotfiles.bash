@@ -14,8 +14,8 @@ GIT_URL=git@github.com:benelan/dotfiles
 git clone --bare "$GIT_URL" "$HOME/.git"
 
 
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 
-if [ "$?" == 0 ]; then
+
+if /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout; then
   echo "Checked out dotfiles"
 else
   echo "Backing up pre-existing dotfiles"
@@ -42,7 +42,7 @@ else
 fi
 
 # prevents showing everything in ~
-# to track files: "dots add ~/.npmrc"
+# to track files: "dot add ~/.npmrc"
 /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" config status.showUntrackedFiles no
 
 # Install fzf
@@ -51,22 +51,6 @@ if [[ ! "$(command -v fzf)" ]]; then
   ~/.dotfiles/vendor/fzf/install --bin
 fi
 
-# Install SourceCodePro Patched Nerd Font if they aren't already there
-# https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro
-fonts="$HOME/.fonts"
-mkdir -p "$fonts"
-if [[ $(find "$fonts" -iname 'Sauce Code Pro*Nerd Font Complete.ttf' | wc -l) -lt 5 ]]; then
-  cd "$fonts" && curl -fLo "Sauce Code Pro Medium Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Medium/complete/Sauce%20Code%20Pro%20Medium%20Nerd%20Font%20Complete.ttf
-  cd "$fonts" && curl -fLo "Sauce Code Pro Regular Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
-  cd "$fonts" && curl -fLo "Sauce Code Pro Bold Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
-  cd "$fonts" && curl -fLo "Sauce Code Pro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
-  cd "$fonts" && curl -fLo "Sauce Code Pro Bold Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Black-Italic/complete/Sauce%20Code%20Pro%20Black%20Italic%20Nerd%20Font%20Complete.ttf
-  
-  # reload the font cache
-  fc-cache -rf
-fi
-
-unset fonts
 unset files
 unset GIT_URL
 unset BACKUP_DIR
