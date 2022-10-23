@@ -42,7 +42,6 @@ LANG='en_US.UTF-8'
 LC_ALL='en_US.UTF-8'
 export LANG LC_ALL
 
-
 CLICOLOR=1
 GREP_COLOR=31
 NOSPLASH=1
@@ -59,6 +58,5 @@ unset -v MAILCHECK
 
 # Tool settings
 VOLTA_HOME=~/.volta
-BAT_THEME="GruvboxDark"
-STARSHIP_CONFIG=~/.config/starship/starship.toml
-export VOLTA_HOME BAT_THEME STARSHIP_CONFIG
+BAT_THEME="gruvbox-dark"
+export VOLTA_HOME BAT_THEME
