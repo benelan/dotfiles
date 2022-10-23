@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
 export DOTFILES=~/.dotfiles;
-export VOLTA_HOME=~/.volta
 
 # Make vim the default editor.
-export EDITOR='vim';
+export EDITOR='lvim';
 
 # Enable persistent REPL history for `node`.
 export NODE_REPL_HISTORY=~/.node_history;
@@ -58,3 +57,10 @@ shopt -s no_empty_cmd_completion
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+
+
+# Tool settings
+export VOLTA_HOME=~/.volta
+export BAT_THEME="GruvboxDark"
+export STARSHIP_CONFIG=~/.config/starship/starship.toml

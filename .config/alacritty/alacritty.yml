@@ -120,13 +120,13 @@ font:
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
     family: SauceCodePro Nerd Font
-    style: Bold
+    style: Semibold
   italic:
     family: SauceCodePro Nerd Font
-    style: Italic
+    style: Light
   bold_italic:
     family: SauceCodePro Nerd Font
-    style: Bold Italic
+    style: Semibold
 
   # Point size
   size: 12.0

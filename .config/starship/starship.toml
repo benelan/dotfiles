@@ -1,0 +1,110 @@
+add_newline = true
+format = "$all$time$cmd_duration$line_break$jobs$battery$status$container$shell$character"
+palette = "gruvbox"
+
+# from https://github.com/morhetz/gruvbox
+[palettes.gruvbox]
+red = "#cc2418"
+red-light = "#fb4934"
+green = "#98971a"
+green-light = "#b8bb26"
+yellow = "#d79921"
+yellow-light = "#fabd2f"
+purple = "#b16286"
+purple-light = "#d3869b"
+aqua = "#689d6a"
+aqua-light = "#8ec07c"
+orange = "#d65d0e"
+orange-light = "#fe8019"
+gray = "#928374"
+gray-light = "#a89984"
+gray-dark = "#928374"
+fg = "#ebdbb2"
+fg0 = "#fbf1c7"
+fg1 = "#ebdbb2"
+fg2 = "#d5c4a1"
+fg3 = "#bdae93"
+fg4 = "#a89984"
+bg = "#282828"
+bg0-h = "#1d2021"
+bg0-s = "#32302f"
+bg0 = "#282828"
+bg1 = "#3c3836"
+bg2 = "#504945"
+bg3 = "#665c54"
+bg4 = "#7c6f64"
+
+
+[battery]
+full_symbol = "🔋 "
+empty_symbol = "🪫 "
+charging_symbol = "⚡ "
+discharging_symbol = "💀 "
+
+[[battery.display]]
+# "bold orange" style when capacity is between 20% and 30%
+threshold = 30
+style = "bold orange"
+
+[[battery.display]]
+# "bold red" style when capacity is between 0% and 20%
+threshold = 20
+style = "bold red"
+
+[character]
+success_symbol = "[➜](bold green-light) "
+error_symbol = "[✗](bold red-light) "
+vimcmd_symbol = "[](bold green-light) "
+vimcmd_replace_one_symbol = "[](bold yellow-light) "
+vimcmd_replace_symbol = "[](bold yellow-light) "
+vimcmd_visual_symbol = "[](bold purple-light) "
+
+[cmd_duration]
+format = "[took](fg) [$duration]($style) "
+show_notifications = true
+min_time_to_notify = 45000
+min_time = 3000
+style = "bold yellow"
+
+[directory]
+style = "bold aqua"
+truncation_length = 0
+
+[git_branch]
+format = "[on](fg) [$symbol$branch(:$remote_branch)]($style) "
+style = "bold blue"
+
+[git_metrics]
+disabled = true
+
+[git_status]
+style = "bold blue"
+ahead = "[⇡$count](aqua-light)"
+diverged = "[⇡$ahead_count](aqua-light)[⇣$behind_count](yellow-light)"
+behind = "[⇣$count](yellow-light)"
+staged = "[+$count](green)"
+deleted = "[X$count](red)"
+untracked = "[?$count](yellow)"
+modified = "[!$count](orange)"
+stashed = "[\\$$count](purple)"
+renamed = "[»$count](purple-light)"
+conflicted = "[=$count](red-light)"
+
+[package]
+format = "[is](fg) [$symbol$version]($style) "
+style = "bold orange"
+
+[nodejs]
+format = "[via](fg) [$symbol($version )]($style)"
+
+[sudo]
+format = "[[as](fg) $symbol]($style)"
+
+[time]
+disabled = false
+format = "[at](fg) [ $time]($style) "
+style = "yellow bold"
+time_format = "%T"
+
+[username]
+format = "[$user]($style) [in](fg) "
