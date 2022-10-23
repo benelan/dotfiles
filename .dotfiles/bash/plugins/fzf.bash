@@ -4,8 +4,6 @@
 # Fuzzy search
 # https://github.com/junegunn/fzf
 
-[ -r "$HOME/.dotfiles/vendor/fzf/bin/fzf" ] && pathprepend "$HOME/.dotfiles/vendor/fzf/bin" PATH
-
 # Auto-completion
 # ---------------
 [[ $- == *i* ]] && source "$HOME/.dotfiles/vendor/fzf/shell/completion.bash" 2> /dev/null

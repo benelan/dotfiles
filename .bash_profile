@@ -7,17 +7,21 @@ case $- in
 esac
 
 # Load the shell dotfiles - order matters!
-for file in ~/.dotfiles/bash/.{paths,functions,exports,prompt}; do
+for file in ~/.dotfiles/sh/{paths,exports}.sh; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
 
 # Load the commandline aliases
-for file in ~/.dotfiles/bash/aliases/*; do
+for file in ~/.dotfiles/sh/aliases/*; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
 
+for file in ~/.dotfiles/bash/.{functions,prompt}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
 
 # Load commandline completions
 for file in ~/.dotfiles/bash/completions/*; do
