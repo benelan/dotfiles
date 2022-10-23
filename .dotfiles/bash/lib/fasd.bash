@@ -42,7 +42,7 @@ fasd() {
           [ -s "$HOME/.fasdrc" ] && . "$HOME/.fasdrc"
 
           # set default options
-          [ -z "$_FASD_DATA" ] && _FASD_DATA="$DOTFILES"/cache/.fasd_history
+          [ -z "$_FASD_DATA" ] && _FASD_DATA=~/.dotfiles/cache/.fasd_history
           [ -z "$_FASD_BLACKLIST" ] && _FASD_BLACKLIST="--help"
           [ -z "$_FASD_SHIFT" ] && _FASD_SHIFT="sudo busybox"
           [ -z "$_FASD_IGNORE" ] && _FASD_IGNORE="fasd ls echo"
@@ -51,9 +51,9 @@ fasd() {
           [ -z "$_FASD_MAX" ] && _FASD_MAX=2000
           [ -z "$_FASD_BACKENDS" ] && _FASD_BACKENDS=native
           [ -z "$_FASD_FUZZY" ] && _FASD_FUZZY=2
-          [ -z "$_FASD_VIMINFO" ] && _FASD_VIMINFO="$HOME"/.viminfo
+          [ -z "$_FASD_VIMINFO" ] && _FASD_VIMINFO=~/.viminfo
           [ -z "$_FASD_RECENTLY_USED_XBEL" ] && \
-            _FASD_RECENTLY_USED_XBEL="$HOME"/.local/share/recently-used.xbel
+            _FASD_RECENTLY_USED_XBEL=~/.local/share/recently-used.xbel
 
           if [ -z "$_FASD_AWK" ]; then
             # awk preferences
@@ -331,7 +331,7 @@ EOS
       | tr '\n' '|')"
 
     # add current pwd if the option is set
-    [ "$_FASD_TRACK_PWD" = "1" -a "$PWD" != "$HOME" ] && paths="$paths|$PWD"
+    [ "$_FASD_TRACK_PWD" = "1" -a "$PWD" != ~ ] && paths="$paths|$PWD"
 
     [ -z "${paths##\|}" ] && return # stop if we have nothing to add
 
@@ -481,7 +481,7 @@ $(fasd --backend $each)"
     case $2 in
       native) cat "$_FASD_DATA";;
       viminfo)
-        < "$_FASD_VIMINFO" sed -n '/^>/{s@~@'"$HOME"'@
+        < "$_FASD_VIMINFO" sed -n '/^>/{s@~@'~'@
           s/^..//
           p
           }' | $_FASD_AWK -v t="$(date +%s)" '{
