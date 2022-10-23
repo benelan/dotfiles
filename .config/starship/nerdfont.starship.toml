@@ -108,8 +108,3 @@ time_format = "%T"
 
 [username]
 format = "[$user]($style) [in](fg) "
-
-
-[custom.hist]
-command = "\!" # shows output of command
-format = "[$output]($style) "
