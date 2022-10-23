@@ -92,10 +92,6 @@ alias ggui='git gui'
 
 # home
 alias ghm='cd "$(git rev-parse --show-toplevel)"' # Git home
-# appendage to ghm
-if ! _command_exists gh; then
-	alias gh='ghm'
-fi
 
 # merge
 alias gm='git merge'

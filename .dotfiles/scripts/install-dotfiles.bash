@@ -60,3 +60,12 @@ unset BACKUP_DIR
 # Remove extra files
 rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 rm -f "$HOME/LICENSE.md"
+
+
+#-----------------------------#
+# SHELL - BIN                 #
+#-----------------------------#
+for file in ~/.dotfiles/.bin/*; do
+	[ -r "$file" ] && [ -f "$file" ] && chmod +x "$file";
+done;
+unset file;
