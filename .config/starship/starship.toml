@@ -38,18 +38,23 @@ bg4 = "#7c6f64"
 [battery]
 full_symbol = "🔋 "
 empty_symbol = "🪫 "
-charging_symbol = "⚡ "
+charging_symbol = "🗲 "
 discharging_symbol = "🕱 "
 
 [[battery.display]]
+# "bold red" style when capacity is between 0% and 20%
+threshold = 15
+style = "bold red"
+
+[[battery.display]]
 # "bold orange" style when capacity is between 20% and 30%
-threshold = 30
+threshold = 25
 style = "bold orange"
 
 [[battery.display]]
-# "bold red" style when capacity is between 0% and 20%
-threshold = 20
-style = "bold red"
+# "bold orange" style when capacity is between 20% and 30%
+threshold = 35
+style = "bold orange"
 
 [character]
 success_symbol = "[➜](bold green-light) " # ☛ ☞
