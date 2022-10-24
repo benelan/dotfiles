@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
 FONTS_DIR="$HOME/.local/share/fonts"
-DOTFILES="$HOME/.dotfiles"
 
 # Install Alacritty if it isn't already installed, and all of the preqs are installed
 if [[ ! "$(type -P alacritty)" && ("$(type -P python)" && "$(type -P cargo)" && "$(type -P cmake)" && "$(type -P pkg-config)" && "$(type -P libfreetype6-dev)" && "$(type -P libxcb-xfixes0-dev)" && "$(type -P libxkbcommon)") ]]; then
   echo "Installing Alacritty"
 
-  cd "$DOTFILES/vendor/alacritty" || return
+  cd "$HOME/.dotfiles/vendor/alacritty" || return
   cargo build --release
   # Add Terminfo if necessary
   if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
