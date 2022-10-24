@@ -2,8 +2,8 @@
 
 # setup the alias for managing dotfiles
 # It behaves like git, and can be called from any directory, e.g.
-# $ dots add .nuxtrc && dots commit -m "chore: add nuxtrc" && dots push
-alias dots='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
+# $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
+alias dot='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
 
 alias c='clear'
 alias q='exit'
