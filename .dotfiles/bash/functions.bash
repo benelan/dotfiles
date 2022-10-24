@@ -333,6 +333,36 @@ function gxbigblobs() {
 
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Search history.
+
+h() {
+    #           ┌─ Enable colors for pipe.
+    #           │  ("--color=auto" enables colors only
+   #           │   if the output is in the terminal.)
+    grep --color=always "$*" "$HISTFILE" \
+        | less --no-init --raw-control-chars
+          #    │         └─ Display ANSI color escape sequences in raw form.
+          #    └─ Don't clear the screen after quitting less.
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Search for text within the current directory.
+
+s() {
+    grep --color=always "$*" \
+         --exclude-dir=".git" \
+         --exclude-dir="node_modules" \
+         --ignore-case \
+         --recursive \
+         . \
+        | less --no-init --raw-control-chars
+          #    │         └─ Display ANSI color escape sequences in raw form.
+          #    └─ Don't clear the screen after quitting less.
+}
+
 # Arrays
 #---------------------------------------------------------------------------------
 
