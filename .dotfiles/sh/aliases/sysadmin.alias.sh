@@ -85,7 +85,7 @@ alias flushdns='sudo /etc/init.d/dns-clean restart && echo DNS cache flushed'
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
 # Gets local IP address.
-alias localip="ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')"
+alias localip="ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'"
 
 # Gets external IP address.
 if command -v dig > /dev/null 2>&1; then
@@ -98,7 +98,6 @@ fi
 
 # Sends HTTP requests.
 command -v lwp-request > /dev/null 2>&1 && for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-    #shellcheck disable=SC2139
     alias $method="lwp-request -m '$method'"
 done
 unset method;

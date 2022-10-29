@@ -3,7 +3,15 @@
 # setup the alias for managing dotfiles
 # It behaves like git, and can be called from any directory, e.g.
 # $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
-alias dot='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
+# The whole home directory besides the dotfiles is untracked.
+# Prevent `dot clean` so everything isn't deleted
+ dot() {
+  if [ "$1" = "clean" ] ; then 
+    echo "Don't delete your home directory, dumbass"
+    else
+      /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
+  fi
+ }
 
 alias c='clear'
 alias q='exit'
