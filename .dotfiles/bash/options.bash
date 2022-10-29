@@ -66,6 +66,11 @@ shopt -s no_empty_cmd_completion
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+bind '"\t":menu-complete'
+bind "set show-all-if-ambiguous on"
+bind "set completion-ignore-case on"
+bind "set menu-complete-display-prefix on"
+
 # These options only exist since Bash 4.0-alpha
 if ((BASH_VERSINFO[0] >= 4)); then
 
