@@ -185,7 +185,8 @@ set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
     set wildignore+=.git\*,.hg\*,.svn\*
 else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store/*,*/node_modules/*,*/dist/*,*/build/*,*/public/*
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store/*
+    set wildignore+=*/node_modules/*,*/dist/*,*/build/*,*/public/*
 endif
 
 " Delete comment character when joining commented lines
@@ -509,10 +510,10 @@ hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
 hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
 hi SpellLocal cterm=underline ctermfg=Magenta ctermbg=NONE
 hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=White guibg=Red
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=White guibg=Red
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=White guibg=Red
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=White guibg=Red
+hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
