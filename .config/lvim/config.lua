@@ -20,12 +20,13 @@ lvim.plugins = {
   -- },
 }
 
+
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "gruvbox"
-
-
+lvim.builtin.lualine.options.theme = "gruvbox"
+-- lvim.builtin.theme.name = "gruvbox"
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -33,8 +34,8 @@ lvim.colorscheme = "gruvbox"
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
--- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
--- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
 -- override a default keymapping
@@ -70,6 +71,17 @@ lvim.builtin.telescope.defaults.mappings = {
 --   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
 -- }
 
+lvim.builtin.which_key.mappings["-"] = {
+  function()
+    local previous_buf = vim.api.nvim_get_current_buf()
+    require("nvim-tree").open_replacing_current_buffer()
+    require("nvim-tree").find_file(false, previous_buf)
+  end,
+  "NvimTree in place",
+}
+
+
+
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
@@ -77,12 +89,60 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+-- lvim.builtin.nvimtree.setup.actions.open_file.quit_on_open = true
+lvim.builtin.nvimtree.setup.hijack_netrw = true
+lvim.builtin.nvimtree.setup.view.preserve_window_proportions = true
 
+lvim.builtin.nvimtree.setup = {
+  view = {
+    mappings = {
+      list = {
+        -- NOTE: default to editing the file in place, netrw-style
+        {
+          key = { "<C-e>", "o", "-" },
+          action = "edit_in_place",
+        },
+        -- NOTE: override the "split" to avoid treating nvim-tree
+        -- window as special. Splits will appear as if nvim-tree was a
+        -- regular window
+        {
+          key = "<C-v>",
+          action = "split_right",
+          action_cb = function(node)
+            vim.cmd("vsplit " .. vim.fn.fnameescape(node.absolute_path))
+          end,
+        },
+        {
+          key = "<C-x>",
+          action = "split_bottom",
+          action_cb = function(node)
+            vim.cmd("split " .. vim.fn.fnameescape(node.absolute_path))
+          end,
+        },
+        -- NOTE: override the "open in new tab" mapping to fix the error
+        -- that occurs there
+        {
+          key = "<C-t>",
+          action = "new_tab",
+          action_cb = function(node)
+            vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
+          end,
+        },
+      },
+    },
+  },
+  actions = {
+    change_dir = {
+      -- NOTE: netrw-style, do not change the cwd when navigating
+      enable = false,
+    },
+  },
+}
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
   "bash",
   "c",
+  "css",
   "javascript",
   "json",
   "lua",
@@ -91,11 +151,10 @@ lvim.builtin.treesitter.ensure_installed = {
   "tsx",
   "css",
   "rust",
-  "java",
   "yaml",
 }
 
-lvim.builtin.treesitter.ignore_install = { "haskell" }
+lvim.builtin.treesitter.ignore_install = { "java", "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
 -- generic LSP settings
@@ -212,4 +271,59 @@ end
 vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
 
 
-require("local-config")
+
+------------------------------------------------------------------------
+-----> Vim Keymappings                                                 |
+------------------------------------------------------------------------
+
+
+vim.cmd [[ 
+  " remove highlight from search term after pressing Return
+  nnoremap <silent> <CR> :noh<CR><CR>
+
+  " find/replace the current word
+  nnoremap <silent> <leader>* :%s/<c-r><c-w>/<c-r><c-w>/gc<c-f>$F/i
+
+  " Quickly open a buffer for javascript
+  map <leader>bjs :e ~/buffer.js<cr>
+
+  " Quickly open a buffer for markdown
+  map <leader>bmd :e ~/buffer.md<cr>
+ ]]
+
+
+vim.cmd [[
+  function! VisualSelection(direction, extra_filter) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'gv'
+        call CmdLine("Ack '" . l:pattern . "' " )
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+  endfunction
+
+  " Visual mode pressing * or # searches for the current selection
+  vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+  vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+]]
+
+vim.cmd [[
+  " toggle relative line numbers
+  nnoremap <silent> <leader>ln :set relativenumber!<CR>
+  
+  " Automatically switch back and forth
+  " between absolute and relative line numbers
+  augroup relative_line_numbers
+    autocmd!
+      autocmd FocusLost,InsertEnter * :set norelativenumber
+      autocmd FocusGained,InsertLeave * :set relativenumber
+  augroup END
+]]
