@@ -66,8 +66,7 @@ vimcmd_visual_symbol = "[](bold purple-light) "
 
 [cmd_duration]
 format = "[took](fg) [$duration]($style) "
-show_notifications = true
-min_time_to_notify = 45000
+show_notifications = false
 min_time = 3000
 style = "bold yellow"
 
@@ -113,3 +112,4 @@ time_format = "%T"
 
 [username]
 format = "[$user]($style) [in](fg) "
+
