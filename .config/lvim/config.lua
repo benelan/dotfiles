@@ -80,7 +80,8 @@ lvim.builtin.which_key.mappings["-"] = {
   "NvimTree in place",
 }
 
-
+lvim.builtin.which_key.mappings["lh"] = { "<cmd>HideDiagnostic<CR>", "Hide Diagnostics" }
+lvim.builtin.which_key.mappings["lg"] = { "<cmd>ShowDiagnostic<CR>", "Show Diagnostics" }
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
@@ -269,6 +270,22 @@ local function organize_imports()
 end
 
 vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
+
+vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'HideDiagnostic',
+  function()
+    vim.diagnostic.hide()
+    -- lvim.lsp.diagnostics.virtual_text = false
+  end,
+  { nargs = 0 }
+)
+
+vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'ShowDiagnostic',
+  function()
+    vim.diagnostic.show()
+    -- lvim.lsp.diagnostics.virtual_text = true
+  end,
+  { nargs = 0 }
+)
 
 
 
