@@ -340,7 +340,7 @@ function gxbigblobs() {
 h() {
     #           ┌─ Enable colors for pipe.
     #           │  ("--color=auto" enables colors only
-   #           │   if the output is in the terminal.)
+    #           │   if the output is in the terminal.)
     grep --color=always "$*" "$HISTFILE" \
         | less --no-init --raw-control-chars
           #    │         └─ Display ANSI color escape sequences in raw form.
@@ -351,7 +351,7 @@ h() {
 
 # Search for text within the current directory.
 
-s() {
+function s() {
     grep --color=always "$*" \
          --exclude-dir=".git" \
          --exclude-dir="node_modules" \
