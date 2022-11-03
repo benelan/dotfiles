@@ -23,7 +23,6 @@ alias gba='git branch -a'
 alias gbd='git branch -d'
 alias gbm='git branch -m'
 alias gbt='git branch --track'
-alias gdel='git branch -D'
 
 # for-each-ref
 alias gbc='git for-each-ref --format="%(authorname) %09 %(if)%(HEAD)%(then)*%(else)%(refname:short)%(end) %09 %(creatordate)" refs/remotes/ --sort=authorname DESC' # FROM https://stackoverflow.com/a/58623139/10362396
@@ -114,7 +113,6 @@ alias gpuo='git push --set-upstream origin'
 alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
-alias gl='git pull'
 alias glum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
 alias gpp='git pull && git push'
@@ -167,10 +165,6 @@ alias gstpo='git stash pop' # recommended for it's symmetry with gstpu (push)
 alias gstpu='git stash push'
 alias gstpum='git stash push -m'
 
-## 'stash save' deprecated since git v2.16.0, alias is now push
-alias gsts='git stash push'
-alias gstsm='git stash push -m'
-
 # submodules
 alias gsu='git submodule update --init --recursive'
 
@@ -186,3 +180,97 @@ alias gt='git tag'
 alias gta='git tag -a'
 alias gtd='git tag -d'
 alias gtl='git tag -l'
+
+
+# Dotfiles
+# -----------------------------------------------------------------------------
+
+alias d='dot'
+# add
+alias da='dot add'
+alias dall='dot add -u'
+alias dap='dot add -p'
+
+# branch
+alias db='dot branch'
+alias dbD='dot branch -D'
+alias dba='dot branch -a'
+alias dbd='dot branch -d'
+alias dbm='dot branch -m'
+alias dbt='dot branch --track'
+
+# commit
+alias dc='dot commit -v'
+alias dcamd='dot commit --amend'
+alias dcm='dot commit -v -m'
+alias dci='dot commit --interactive'
+
+# stash
+alias dst='dot stash'
+alias dstb='dot stash branch'
+alias dstd='dot stash drop'
+alias dstl='dot stash list'
+alias dstp='dot stash pop'  # kept due to long-standing usage
+alias dstpo='dot stash pop' # recommended for it's symmetry with gstpu (push)
+alias dstpu='dot stash push'
+alias dstpum='dot stash push -m'
+
+# reset
+alias dus='dot reset HEAD'
+alias drh='dot reset --hard'
+
+# status
+alias ds='dot status'
+alias dss='dot status -s'
+
+# shortlog
+alias dcount='dot shortlog -sn'
+alias dsl='dot shortlog -sn'
+
+# show
+alias dsh='dot show'
+
+# diff
+alias dd='dot diff'
+alias dds='dot diff --staged'
+alias ddt='dot difftool'
+
+# fetch
+alias df='dot fetch --all --prune'
+alias dft='dot fetch --all --prune --tags'
+alias dftv='dot fetch --all --prune --tags --verbose'
+alias dfv='dot fetch --all --prune --verbose'
+alias dup='dot fetch && dot rebase'
+
+# log
+alias dg='dot log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
+alias dgf='dot log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
+alias dgs='gg --stat'
+alias dgup='dot log --branches --not --remotes --no-walk --decorate --oneline'
+alias dll='dot log --graph --pretty=oneline --abbrev-commit'
+alias dnew='dot log HEAD@{1}..HEAD@{0}' # Show commits since last pull
+alias dwc='dot whatchanged'
+
+# ls-files
+alias dlsum='dot diff --name-only --diff-filter=U' # Show unmerged (conflicted) files
+
+# gui
+alias dgui='dot gui'
+
+# merge
+alias dm='dot merge'
+
+# push
+alias dp='dot push'
+alias dpd='dot push --delete'
+alias dpf='dot push --force'
+alias dpo='dot push origin HEAD'
+alias dpu='dot push --set-upstream'
+alias dpunch='dot push --force-with-lease'
+alias dpuo='dot push --set-upstream origin'
+alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
+
+# pull
+alias dpl='dot pull'
+alias dpp='dot pull && dot push'
+alias dpr='dot pull --rebase'
