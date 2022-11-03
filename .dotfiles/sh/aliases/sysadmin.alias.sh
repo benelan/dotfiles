@@ -45,7 +45,6 @@ alias headerc='curl -I --compress'
 alias path='echo -e ${PATH//:/\\n}'
 
 
-
 # systemd shortcuts (Linux)
 alias sc='systemctl'
 alias scu='systemctl --user'
@@ -101,3 +100,22 @@ command -v lwp-request > /dev/null 2>&1 && for method in GET HEAD POST PUT DELET
     alias $method="lwp-request -m '$method'"
 done
 unset method;
+
+
+
+# Docker
+# -----------------------------------------------------------------------------
+
+# display names of running containers
+alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"                  
+# delete every containers / images
+alias dockRr='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'   
+alias dockstats='docker stats $(docker ps -q)'                                  
+# stats on images
+# list images installed
+alias dockimg='docker images'                                                   
+# prune everything
+alias dockprune='docker system prune -a'                                        
+# run as the host user
+alias dockceu='docker-compose run --rm -u $(id -u):$(id -g)'                    
+alias dockce='docker-compose run --rm'
