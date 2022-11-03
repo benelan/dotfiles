@@ -5,95 +5,102 @@
 
 set nocompatible
 if has('autocmd')
-  filetype plugin indent on
+    filetype plugin indent on
 endif
-if has('syntax') && !exists('g:syntax_on')
-  syntax enable
+if has('syntax') && !exists('syntax_on')
+    syntax enable
 endif
 
 set backspace=indent,eol,start
 set complete-=i
-set wildmenu
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set smarttab
-set expandtab
-set linebreak
-set wrap
-set textwidth=800
+set wildmenu wildmode=list:longest,full
+set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
+set linebreak wrap textwidth=800
 set ttyfast
 set laststatus=2
 set lazyredraw
-set ignorecase
-set smartcase
-set autoindent
-set smartindent
+set ignorecase smartcase
+set autoindent smartindent
 set langmenu=en
 set encoding=utf-8 nobomb
 set magic
-set mouse+=a
-set mousehide
+set mouse+=a mousehide
 set nojoinspaces
 set report=0
 set nomodeline
 set nostartofline
 set number
 set showmatch
-set splitbelow
-set splitright
-set scrolloff=5
-set sidescrolloff=5
+set splitbelow splitright
+set scrolloff=5 sidescrolloff=5
 set display+=lastline
 set autoread
+set confirm
+set notitle
 set t_vb=
 set foldcolumn=1
-set sessionoptions-=options
-set viewoptions-=options
-set backupdir=~/.vim/backups
-set directory=~/.vim/swaps
-set wildignore=*/.git/*,*/node_modules/*,*/dist/*,*/build/*,*/public/*
+set sessionoptions-=options viewoptions-=options
+set backupdir=~/.vim/backups directory=~/.vim/swaps
+set wildignore=*/.git/*,*/node_modules/*,*/dist/*,*/build/*,*/public
+set comments= commentstring= define= include=
+set path-=/usr/include
+set nrformats-=octal
 
 if !has('nvim') && &ttimeoutlen == -1
-  set ttimeout
-  set ttimeoutlen=100
+    set ttimeout ttimeoutlen=100
 endif
 
 set clipboard=unnamed
 if has('unnamedplus')
-    set clipboard+=unnamedplus
+     set clipboard+=unnamedplus
 endif
 
 if has('extra_search')
-    set hlsearch
-    set incsearch
+    set hlsearch incsearch
 endif
 
 if has('linebreak')
     set numberwidth=5
 endif
 
-if has('cmdline_info')
-    set showcmd
-    set ruler
+if has('multi_byte_encoding')
+    set listchars=tab:▸\
+    set listchars+=trail:·
+    set listchars+=eol:↴
+    set listchars+=nbsp:_
+    set showbreak=…
+else
+     set showbreak=...
+endif
+if exists('+breakindent')
+    set breakindent
 endif
 
 if has('syntax')
     set spelllang=en_us
     set cursorline
+    set colorcolumn=+1
+endif
+
+if exists('+wildignorecase')
+    set wildignorecase
+endif
+
+if exists('+spelloptions')
+    set spelloptions+=camel
 endif
 
 if &history < 1000
-  set history=1000
+     set history=1000
 endif
 if has('cmdline_hist')
-  set history=1000
+    set history=1000
 endif
 if &tabpagemax < 50
-  set tabpagemax=50
+     set tabpagemax=50
 endif
 if !empty(&viminfo)
-  set viminfo^=!
+     set viminfo^=!
 endif
 
 if has('virtualedit')
@@ -101,15 +108,15 @@ if has('virtualedit')
 endif
 
 if &t_Co == 8 && $TERM !~# '^Eterm'
-  set t_Co=16
+     set t_Co=16
 endif
 
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
+if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+     runtime! macros/matchit.vim
 endif
 
 if v:version > 703 || v:version == 703 && has("patch541")
-  set formatoptions+=j
+     set formatoptions+=j
 endif
 
 if has('persistent_undo')
@@ -118,8 +125,8 @@ if has('persistent_undo')
 endif
 
 try
-  set switchbuf=useopen,usetab,newtab
-  set showtabline=2
+     set switchbuf=useopen,usetab,newtab
+     set showtabline=2
 catch
 endtry
 
@@ -128,10 +135,23 @@ endtry
 " | Key Mappings                                                       |
 " ----------------------------------------------------------------------
 
-let mapleader = " "
-
 imap jk <esc>
 nmap Y y$
+
+nnoremap <Backspace> <C-^>
+
+nnoremap <expr> ,
+      \ line('w$') < line('$')
+        \ ? "\<PageDown>"
+        \ : ":\<C-U>next\<CR>"
+
+nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
+inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
+vmap <C-L> <Esc><C-L>gv
+
+noremap & :&&<CR>
+ounmap &
+sunmap &
 
 if empty(mapcheck('<C-U>', 'i'))
   inoremap <C-U> <C-G>u<C-U>
@@ -140,64 +160,131 @@ if empty(mapcheck('<C-W>', 'i'))
   inoremap <C-W> <C-G>u<C-W>
 endif
 
-" Use <C-L> to clear the highlighting of :set hlsearch
-if maparg('<C-L>', 'n') ==# ''
-  nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-endif
+let mapleader = " "
 
-" Fast saving/quiting
-nmap <leader>w :w!<cr>
-nmap <leader>q :q<cr>
+"" Fast saving/quiting
+nmap <leader>W :w!<cr>
+nmap <leader>Q :q<cr>
 
-" :W sudo saves the file
+"" :W sudo saves the file
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
-" Toggle relative line numbers
-nmap <leader>ln :call ToggleRelativeLineNumbers()<CR>
-
-" Search and replace the word under the cursor
+"" Search and replace the word under the cursor
 nmap <leader>* :%s/\<<C-r><C-w>\>//<Left>
 
-" Visual mode pressing * or # searches for the current selection
+"" Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
-" Close all the buffers
+"" Argument list
+nnoremap [a :previous<CR>
+nnoremap ]a :next<CR>
+"" Buffers
+nnoremap [b :bprevious<CR>
+nnoremap ]b :bnext<CR>
+"" Quickfix list
+nnoremap [c :cprevious<CR>
+nnoremap ]c :cnext<CR>
+"" Location list
+nnoremap [l :lprevious<CR>
+nnoremap ]l :lnext<CR>
+
+"" Close the current buffer
+map <leader>bd :Bclose<cr>:tabclose<cr>
+"" Close all the buffers
 map <leader>bda :bufdo bd<cr>
 map <leader>bn :bnext<cr>
 map <leader>bb :bprevious<cr>
 
-" Managing tabs
+"" deletes the current buffer
+nnoremap <Leader><Delete> :bdelete<CR>
+"" INS edits a new buffer
+nnoremap <Leader><Insert> :<C-U>enew<CR>
+"" jumps to buffers
+nnoremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
+
+"" Quickly open a buffer for javascript
+map <leader>bjs :e ~/buffer.js<cr>
+
+"" Quickly open a markdown buffer for scribble
+map <leader>bmd :e ~/buffer.md<cr>
+
+"" Managing tabs
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 map <leader>t<leader> :tabnext
 
-" Let 'tl' toggle between this and the last accessed tab
+"" toggles between this and the last accessed tab
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-" Opens a new tab with the current buffer's path
+"" Opens a new tab with the current buffer's path
 map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+"" shortcut for window mappings
+nnoremap <leader>w <C-W>
 
-" Quickly open a buffer for javascript
-map <leader>bjs :e ~/buffer.js<cr>
+"" toggles automatic indentation based on the previous line
+nnoremap <Leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
+"" toggles highlighted cursor row; doesn't work in visual mode
+nnoremap <Leader>sc :<C-U>set cursorline! cursorline?<CR>
+"" toggles highlighting search results
+nnoremap <Leader>sh :<C-U>set hlsearch! hlsearch?<CR>
+"" toggles showing matches as I enter my pattern
+nnoremap <Leader>si :<C-U>set incsearch! incsearch?<CR>
+"" toggles spell checking
+nnoremap <Leader>ss :<C-U>set spell! spell?<CR>
 
-" Quickly open a markdown buffer for scribble
-map <leader>bmd :e ~/buffer.md<cr>
 
-" Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
+"" Leader,C toggles highlighted cursor column; works in visual mode
+noremap <Leader>sC :<C-U>set cursorcolumn! cursorcolumn?<CR>
+ounmap <Leader>sC
+sunmap <Leader>sC
+"" Leader,l toggles showing tab, end-of-line, and trailing white space
+noremap <Leader>sl :<C-U>set list! list?<CR>
+ounmap <Leader>sl
+sunmap <Leader>sl
+"" Leader,n toggles line number display
+noremap <Leader>sn :call ToggleRelativeLineNumbers()<CR>
+ounmap <Leader>sn
+sunmap <Leader>sn
+"" Leader,N toggles position display in bottom right
+noremap <Leader>sr :<C-U>set ruler! ruler?<CR>
+ounmap <Leader>sr
+sunmap <Leader>sr
+"" Leader,w toggles soft wrapping
+noremap <Leader>sw :<C-U>set wrap! wrap?<CR>
+ounmap <Leader>sw
+sunmap <Leader>sw
 
-" Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+"" shows the current file's fully expanded path
+nnoremap <Leader>pd :<C-U>echo expand('%:p')<CR>
+"" changes directory to the current file's location
+nnoremap <Leader>cd :<C-U>cd %:h <Bar> pwd<CR>
+"" creates the path to the current file if it doesn't exist
+nnoremap <Leader>mkd :<C-U>call mkdir(expand('%:h'), 'p')<CR>
+
+"" shows command history
+nnoremap <Leader>H :<C-U>history :<CR>
+"" shows my marks
+nnoremap <Leader>` :<C-U>marks<CR>
+"" shows all registers
+nnoremap <Leader>" :<C-U>registers<CR>
+
+"" uses last changed or yanked text as an object
+onoremap <Leader>_ :<C-U>execute 'normal! `[v`]'<CR>
+"" uses entire buffer as an object
+onoremap <Leader>% :<C-U>execute 'normal! 1GVG'<CR>
+omap <Leader>5 <Leader>%
+
+"" types :vimgrep for me ready to enter a search pattern
+nnoremap <Leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+"" types :lhelpgrep for me ready to enter a search pattern
+nnoremap <Leader>? :<C-U>lhelpgrep \c<S-Left>
+
 
 " ----------------------------------------------------------------------
 " | Automatic Commands                                                 |
@@ -207,7 +294,8 @@ if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Return to last edit position when opening files
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
+                \ | exe "normal! g'\"" | endif
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -228,8 +316,10 @@ if has("autocmd")
 
     augroup relative_line_numbers
         autocmd!
-        autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
-        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
+        autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
+                    \ if &nu && mode() != "i" | set rnu   | endif
+        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
+                    \ if &nu | set nornu | endif
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,6 +411,11 @@ highlight ColorColumn
     \ gui=NONE    guibg=#073642  guifg=NONE
 
 highlight CursorLine
+    \ term=NONE
+    \ cterm=NONE  ctermbg=235  ctermfg=NONE
+    \ gui=NONE    guibg=#073642  guifg=NONE
+
+highlight CursorColumn
     \ term=NONE
     \ cterm=NONE  ctermbg=235  ctermfg=NONE
     \ gui=NONE    guibg=#073642  guifg=NONE
