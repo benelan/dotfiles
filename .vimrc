@@ -11,40 +11,19 @@ if has('syntax') && !exists('syntax_on')
     syntax enable
 endif
 
-set backspace=indent,eol,start
-set complete-=i
-set wildmenu wildmode=list:longest,full
+set langmenu=en encoding=utf-8 nobomb
+set ttyfast lazyredraw autoread confirm hidden
+set ignorecase smartcase autoindent smartindent
+set nojoinspaces nomodeline nostartofline notitle
 set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
-set linebreak wrap textwidth=800
-set ttyfast
-set laststatus=2
-set lazyredraw
-set ignorecase smartcase
-set autoindent smartindent
-set langmenu=en
-set encoding=utf-8 nobomb
-set magic
-set mouse+=a mousehide
-set nojoinspaces
-set report=0
-set nomodeline
-set nostartofline
-set number
-set showmatch
-set splitbelow splitright
-set scrolloff=5 sidescrolloff=5
-set display+=lastline
-set autoread
-set confirm
-set notitle
-set t_vb=
-set foldcolumn=1
+set complete-=i wildmenu wildmode=list:longest,full
+set report=0 laststatus=2 display+=lastline t_vb=
+set splitbelow splitright scrolloff=5 sidescrolloff=5
 set sessionoptions-=options viewoptions-=options
 set backupdir=~/.vim/backups directory=~/.vim/swaps
+set comments= commentstring= define= include= path-=/usr/include
+set foldcolumn=1 nrformats-=octal backspace=indent,eol,start
 set wildignore=*/.git/*,*/node_modules/*,*/dist/*,*/build/*,*/public
-set comments= commentstring= define= include=
-set path-=/usr/include
-set nrformats-=octal
 
 if !has('nvim') && &ttimeoutlen == -1
     set ttimeout ttimeoutlen=100
@@ -90,25 +69,18 @@ if exists('+spelloptions')
     set spelloptions+=camel
 endif
 
-if &history < 1000
-     set history=1000
-endif
-if has('cmdline_hist')
+if has('cmdline_hist') && &history < 1000
     set history=1000
 endif
 if &tabpagemax < 50
      set tabpagemax=50
 endif
 if !empty(&viminfo)
-     set viminfo^=!
+    set viminfo^=!
 endif
 
 if has('virtualedit')
     set virtualedit=all
-endif
-
-if &t_Co == 8 && $TERM !~# '^Eterm'
-     set t_Co=16
 endif
 
 if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
@@ -137,7 +109,7 @@ endtry
 
 imap jk <esc>
 nmap Y y$
-
+nmap Q <Nop>
 nnoremap <Backspace> <C-^>
 
 nnoremap <expr> ,
@@ -188,6 +160,9 @@ nnoremap ]c :cnext<CR>
 "" Location list
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
+"" Quickfix list
+nnoremap [q :cnext<CR>
+nnoremap ]q :clast<CR>
 
 "" Close the current buffer
 map <leader>bd :Bclose<cr>:tabclose<cr>
@@ -214,7 +189,6 @@ map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
 
 "" toggles between this and the last accessed tab
 let g:lasttab = 1
@@ -239,23 +213,23 @@ nnoremap <Leader>si :<C-U>set incsearch! incsearch?<CR>
 nnoremap <Leader>ss :<C-U>set spell! spell?<CR>
 
 
-"" Leader,C toggles highlighted cursor column; works in visual mode
+"" toggles highlighted cursor column; works in visual mode
 noremap <Leader>sC :<C-U>set cursorcolumn! cursorcolumn?<CR>
 ounmap <Leader>sC
 sunmap <Leader>sC
-"" Leader,l toggles showing tab, end-of-line, and trailing white space
+"" toggles showing tab, end-of-line, and trailing white space
 noremap <Leader>sl :<C-U>set list! list?<CR>
 ounmap <Leader>sl
 sunmap <Leader>sl
-"" Leader,n toggles line number display
+"" toggles line number display
 noremap <Leader>sn :call ToggleRelativeLineNumbers()<CR>
 ounmap <Leader>sn
 sunmap <Leader>sn
-"" Leader,N toggles position display in bottom right
+"" toggles position display in bottom right
 noremap <Leader>sr :<C-U>set ruler! ruler?<CR>
 ounmap <Leader>sr
 sunmap <Leader>sr
-"" Leader,w toggles soft wrapping
+"" toggles soft wrapping
 noremap <Leader>sw :<C-U>set wrap! wrap?<CR>
 ounmap <Leader>sw
 sunmap <Leader>sw
@@ -398,6 +372,10 @@ endfunction
 
 colorscheme pablo
 set background=dark
+
+if &t_Co == 8 && $TERM !~# '^Eterm'
+     set t_Co=16
+endif
 
 " Terminal types:
 "
