@@ -11,6 +11,7 @@ if has('syntax') && !exists('syntax_on')
     syntax enable
 endif
 
+set number showmatch mat=3 mouse+=a mousehide
 set langmenu=en encoding=utf-8 nobomb
 set ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
@@ -80,7 +81,7 @@ if !empty(&viminfo)
 endif
 
 if has('virtualedit')
-    set virtualedit=all
+    set virtualedit=block
 endif
 
 if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
@@ -268,18 +269,36 @@ if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Return to last edit position when opening files
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
                 \ | exe "normal! g'\"" | endif
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Correctly recognize files.
+    " Set up Linting, only available in Vim 8+
+    augroup Linting
+        autocmd!
+        " python linting
+        autocmd FileType python compiler pylint
+        autocmd BufWritePost *.py silent make! <afile> | silent redraw!
+        " shell linting
+        autocmd FileType bash,sh compiler shellcheck
+        autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
+        " javascript/typescript linting
+        autocmd FileType javascript,typescript,javascriptreact,typescriptreact compiler eslint
+        autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
+        " javascript/typescript formatting
+        autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
 
+        autocmd QuickFixCmdPost [^l]* cwindow
+    augroup END
+
+    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    " Correctly recognize files.
     augroup correctly_recognize_files
         autocmd!
-        autocmd BufEnter  gitconfig       :setlocal filetype=gitconfig
-        autocmd BufEnter .gitconfig.local :setlocal filetype=gitconfig
-        autocmd BufEnter **bash**         :setlocal filetype=bash
+        autocmd BufEnter  *gitconfig*     :setlocal filetype=gitconfig
+        autocmd BufEnter  *bash*          :setlocal filetype=bash
         autocmd BufEnter ~/.dotfiles/sh/* :setlocal filetype=sh
     augroup END
 
@@ -287,7 +306,6 @@ if has("autocmd")
 
     " Automatically switch back and forth between absolute and relative line numbers
     " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-
     augroup relative_line_numbers
         autocmd!
         autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
@@ -307,12 +325,45 @@ if has("autocmd")
             \ :call StripTrailingWhitespace()
     augroup END
 
+    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    " Automatically reapply highlights when changing colorscheme
+    augroup InitColors
+        autocmd!
+        autocmd ColorScheme * call InitHighlights()
+    augroup END
+
+    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif
 
 
 " ----------------------------------------------------------------------
 " | Helper Functions                                                   |
 " ----------------------------------------------------------------------
+
+function! InitHighlights() abort
+  " Terminal types:
+  "
+  "   1) term  (normal terminals, e.g.: vt100, xterm)
+  "   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
+  "   3) gui   (GUIs)
+
+  " legible error and spelling highlighting
+  hi clear Search SpellBad SpellCap SpellLocal SpellRare
+  hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
+  hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
+  hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
+  hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
+  hi Search cterm=bold,underline ctermfg=Magenta ctermbg=NONE
+  hi IncSearch ctermfg=Magenta ctermbg=NONE
+  hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+  hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+  hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+  hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+
+endfunction
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function! StripTrailingWhitespace()
     let save_cursor = getpos(".")
@@ -370,65 +421,13 @@ endfunction
 " | Colors and Status Line                                             |
 " ----------------------------------------------------------------------
 
-colorscheme pablo
-set background=dark
-
 if &t_Co == 8 && $TERM !~# '^Eterm'
      set t_Co=16
 endif
 
-" Terminal types:
-"
-"   1) term  (normal terminals, e.g.: vt100, xterm)
-"   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
-"   3) gui   (GUIs)
-
-highlight ColorColumn
-    \ term=NONE
-    \ cterm=NONE  ctermbg=237    ctermfg=NONE
-    \ gui=NONE    guibg=#073642  guifg=NONE
-
-highlight CursorLine
-    \ term=NONE
-    \ cterm=NONE  ctermbg=235  ctermfg=NONE
-    \ gui=NONE    guibg=#073642  guifg=NONE
-
-highlight CursorColumn
-    \ term=NONE
-    \ cterm=NONE  ctermbg=235  ctermfg=NONE
-    \ gui=NONE    guibg=#073642  guifg=NONE
-
-highlight CursorLineNr
-    \ term=bold
-    \ cterm=bold  ctermbg=NONE   ctermfg=178
-    \ gui=bold    guibg=#073642  guifg=Orange
-
-highlight LineNr
-    \ term=NONE
-    \ cterm=NONE  ctermfg=241    ctermbg=NONE
-    \ gui=NONE    guifg=#839497  guibg=#073642
-
-  highlight TabLineFill
-  \ term=NONE
-  \ cterm=NONE  ctermbg=237    ctermfg=Grey
-  \ gui=NONE    guibg=#073642  guifg=#839496
-
-highlight User1
-    \ term=NONE
-    \ cterm=NONE  ctermbg=237    ctermfg=Grey
-    \ gui=NONE    guibg=#073642  guifg=#839496
-
-
-" Make error and spelling legible
-hi clear SpellBad SpellCap SpellLocal SpellRare
-hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
-hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
-hi SpellLocal cterm=underline ctermfg=Magenta ctermbg=NONE
-hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+let g:gruvbox_termcolors=16
+set background=dark
+colorscheme gruvbox
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
