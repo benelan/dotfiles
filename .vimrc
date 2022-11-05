@@ -1,4 +1,3 @@
-
 " ----------------------------------------------------------------------
 " | General Settings                                                   |
 " ----------------------------------------------------------------------
@@ -11,28 +10,39 @@ if has('syntax') && !exists('syntax_on')
     syntax enable
 endif
 
-set number showmatch mat=3 mouse+=a mousehide
-set langmenu=en encoding=utf-8 nobomb
-set ttyfast lazyredraw autoread confirm hidden
+set number wrap linebreak formatoptions+=l1 cpoptions+=J
+set mouse+=a mousehide clipboard^=unnamed,unnamedplus
+set langmenu=en_US encoding=utf-8 nobomb
+set showmatch mat=3 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
-set nojoinspaces nomodeline nostartofline notitle
+set nomodeline noruler noshowcmd nostartofline notitle
 set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
-set report=0 laststatus=2 display+=lastline t_vb=
+set report=0 laststatus=2 display+=lastline shortmess+=I t_vb=
 set splitbelow splitright scrolloff=5 sidescrolloff=5
+set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
 set sessionoptions-=options viewoptions-=options
-set backupdir=~/.vim/backups directory=~/.vim/swaps
 set comments= commentstring= define= include= path-=/usr/include
 set foldcolumn=1 nrformats-=octal backspace=indent,eol,start
-set wildignore=*/.git/*,*/node_modules/*,*/dist/*,*/build/*,*/public
+set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
+    \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,
+    \*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,
+    \*.gif,*.gifv,*.gmo,*.gpg,*.gz,*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg,
+    \*.m4a,*.mid,*.mp3,*.mp4,*.o,*.odp,*.ods,*.odt,*.ogg,*.ogv,*.opus,
+    \*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,*.rm
+    \,*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,
+    \*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,
+    \*/node_modules/*,*/dist/*,*/build/*,*/public/*
+
+
+" don't backup some system files for security
+if v:version > 801 || v:version == 801 && has("patch1519")
+    set backupskip&
+endif
+set backupskip+=/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*
 
 if !has('nvim') && &ttimeoutlen == -1
     set ttimeout ttimeoutlen=100
-endif
-
-set clipboard=unnamed
-if has('unnamedplus')
-     set clipboard+=unnamedplus
 endif
 
 if has('extra_search')
@@ -44,10 +54,8 @@ if has('linebreak')
 endif
 
 if has('multi_byte_encoding')
-    set listchars=tab:▸\
-    set listchars+=trail:·
-    set listchars+=eol:↴
-    set listchars+=nbsp:_
+    set listchars=trail:·,nbsp:_,eol:↴,tab:▸\
+    set listchars+=extends:»,precedes:«
     set showbreak=…
 else
      set showbreak=...
@@ -58,6 +66,7 @@ endif
 
 if has('syntax')
     set spelllang=en_us
+    set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
     set cursorline
     set colorcolumn=+1
 endif
@@ -81,7 +90,7 @@ if !empty(&viminfo)
 endif
 
 if has('virtualedit')
-    set virtualedit=block
+    set virtualedit+=block
 endif
 
 if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
@@ -91,10 +100,13 @@ endif
 if v:version > 703 || v:version == 703 && has("patch541")
      set formatoptions+=j
 endif
+if v:version > 801 || v:version == 801 && has("patch728")
+    set formatoptions+=p
+endif
 
 if has('persistent_undo')
-    set undodir=~/.vim/undos
-    set undofile
+  set undodir=$HOME/.vim/undos
+  set undofile
 endif
 
 try
@@ -136,7 +148,7 @@ endif
 let mapleader = " "
 
 "" Fast saving/quiting
-nmap <leader>W :w!<cr>
+nmap <leader>W :w<cr>
 nmap <leader>Q :q<cr>
 
 "" :W sudo saves the file
@@ -144,6 +156,8 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 "" Search and replace the word under the cursor
 nmap <leader>* :%s/\<<C-r><C-w>\>//<Left>
+"" search and find lind number for jumping
+nnoremap <leader># :g//#<Left><Left>
 
 "" Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
@@ -164,20 +178,18 @@ nnoremap ]l :lnext<CR>
 "" Quickfix list
 nnoremap [q :cnext<CR>
 nnoremap ]q :clast<CR>
+"" Tab list
+nnoremap [t :tabnext<CR>
+nnoremap ]t :tabprevious<CR>
 
-"" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>
-"" Close all the buffers
-map <leader>bda :bufdo bd<cr>
-map <leader>bn :bnext<cr>
-map <leader>bb :bprevious<cr>
-
-"" deletes the current buffer
-nnoremap <Leader><Delete> :bdelete<CR>
-"" INS edits a new buffer
-nnoremap <Leader><Insert> :<C-U>enew<CR>
+"" close the current buffer
+nnoremap <leader>bd :bdelete<cr>
+"" close all the buffers
+nnoremap <leader>bda :bufdo bd<cr>
+"" edits a new buffer
+nnoremap <leader>bn :<C-U>enew<CR>
 "" jumps to buffers
-nnoremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
+nnoremap <Leader>bj :<C-U>buffers<CR>:buffer<Space>
 
 "" Quickly open a buffer for javascript
 map <leader>bjs :e ~/buffer.js<cr>
@@ -191,16 +203,34 @@ map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 
+"" Opens a new tab with the current buffer's path
+map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
+
 "" toggles between this and the last accessed tab
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-"" Opens a new tab with the current buffer's path
-map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 "" shortcut for window mappings
 nnoremap <leader>w <C-W>
+
+" Switch panes
+nnoremap <silent> <C-Left> <C-W>h
+nnoremap <silent> <C-Right> <C-W>l
+vnoremap <silent> <C-Left> <C-W>h
+vnoremap <silent> <C-Right> <C-W>l
+nnoremap <silent> <C-Up> <C-W>k
+nnoremap <silent> <C-Down> <C-W>j
+vnoremap <silent> <C-Up> <C-W>k
+vnoremap <silent> <C-Down> <C-W>j
+
+" Resize panes
+nnoremap <silent> <C-Up> :resize +5<CR>
+nnoremap <silent> <C-Down> :resize -5<CR>
+nnoremap <silent> <C-Right> :vertical resize +5<CR>
+nnoremap <silent> <C-Left> :vertical resize -5<CR>
+
 
 "" toggles automatic indentation based on the previous line
 nnoremap <Leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
@@ -247,7 +277,7 @@ nnoremap <Leader>H :<C-U>history :<CR>
 "" shows my marks
 nnoremap <Leader>` :<C-U>marks<CR>
 "" shows all registers
-nnoremap <Leader>" :<C-U>registers<CR>
+nnoremap <Leader>R :<C-U>registers<CR>
 
 "" uses last changed or yanked text as an object
 onoremap <Leader>_ :<C-U>execute 'normal! `[v`]'<CR>
@@ -268,39 +298,45 @@ nnoremap <Leader>? :<C-U>lhelpgrep \c<S-Left>
 if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Return to last edit position when opening files
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
-                \ | exe "normal! g'\"" | endif
+    " Misc autocmds
+    augroup vimrc
+        autocmd!
+        " Automatically reload .vimrc
+        autocmd BufWritePost $MYVIMRC Src
+        if exists('##SourceCmd')
+          autocmd  SourceCmd $MYVIMRC Src
+        endif
+
+        " Return to last edit position when opening files
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
+                    \ | exe "normal! g'\"" | endif
+
+        " Automatically reapply highlights when changing colorscheme
+        autocmd ColorScheme * call InitHighlights()
+    augroup END
+
+    command! Src :source $MYVIMRC
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Set up Linting, only available in Vim 8+
-    augroup Linting
+    " Set up linting
+    augroup linting
         autocmd!
-        " python linting
         autocmd FileType python compiler pylint
-        autocmd BufWritePost *.py silent make! <afile> | silent redraw!
-        " shell linting
+        " autocmd BufWritePost *.py silent make! <afile> | silent redraw!
         autocmd FileType bash,sh compiler shellcheck
-        autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
-        " javascript/typescript linting
+        " autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
         autocmd FileType javascript,typescript,javascriptreact,typescriptreact compiler eslint
-        autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
+        " autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
+
         " javascript/typescript formatting
-        autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
+        autocmd FileType set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
 
         autocmd QuickFixCmdPost [^l]* cwindow
     augroup END
 
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    command! Lint silent make % | silent redraw!
 
-    " Correctly recognize files.
-    augroup correctly_recognize_files
-        autocmd!
-        autocmd BufEnter  *gitconfig*     :setlocal filetype=gitconfig
-        autocmd BufEnter  *bash*          :setlocal filetype=bash
-        autocmd BufEnter ~/.dotfiles/sh/* :setlocal filetype=sh
-    augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -326,20 +362,13 @@ if has("autocmd")
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    " Automatically reapply highlights when changing colorscheme
-    augroup InitColors
-        autocmd!
-        autocmd ColorScheme * call InitHighlights()
-    augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif
 
 
 " ----------------------------------------------------------------------
 " | Helper Functions                                                   |
 " ----------------------------------------------------------------------
+
 
 function! InitHighlights() abort
   " Terminal types:
@@ -360,7 +389,6 @@ function! InitHighlights() abort
   hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
   hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
   hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-
 endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -417,15 +445,15 @@ function! VisualSelection(direction, extra_filter) range
     let @" = l:saved_reg
 endfunction
 
+
 " ----------------------------------------------------------------------
 " | Colors and Status Line                                             |
 " ----------------------------------------------------------------------
 
-if &t_Co == 8 && $TERM !~# '^Eterm'
-     set t_Co=16
-endif
 
-let g:gruvbox_termcolors=16
+let g:gruvbox_bold = 1
+let g:gruvbox_italic = 1
+let g:gruvbox_contrast_dark = 'medium'
 set background=dark
 colorscheme gruvbox
 
@@ -456,4 +484,9 @@ set statusline+=\ (%P)\        " Percent through file
 " Example result:
 "
 "  [1] [main] [vim/vimrc][vim][unix:utf-8]            17,238/381 (59%)
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" a lot was learned and barrowed from:
+" https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/vim/vimrc
 
