@@ -11,9 +11,15 @@ end
 local tree_cb = nvim_tree_config.nvim_tree_callback
 
 nvim_tree.setup {
+  disable_netrw = true,
+  hijack_cursor = true,
+  filters = {
+    dotfiles = false,
+    custom = { "node_modules", ".cache", "build", "dist" },
+  },
   update_focused_file = {
     enable = true,
-    update_cwd = true,
+    update_root = true,
   },
   renderer = {
     root_folder_modifier = ":t",
@@ -43,6 +49,14 @@ nvim_tree.setup {
       },
     },
   },
+  actions = {
+    change_dir = {
+      enable = false
+    },
+    open_file = {
+      quit_on_open = true
+    },
+  },
   diagnostics = {
     enable = true,
     show_on_dirs = true,
@@ -54,14 +68,23 @@ nvim_tree.setup {
     },
   },
   view = {
-    width = 30,
-    side = "left",
+    side = "right",
+    number = true,
+    relativenumber = true,
     mappings = {
       list = {
-        { key = { "l", "<CR>", "o" }, cb = tree_cb "edit" },
+        { key = { "<CR>", "l" }, cb = tree_cb "edit_in_place" },
+        { key = { "o" }, cb = tree_cb "edit" },
         { key = "h", cb = tree_cb "close_node" },
-        { key = "v", cb = tree_cb "vsplit" },
+        { key = "<C-s>", cb = tree_cb "split" },
       },
     },
   },
 }
+
+-- disable fixed nvim-tree width and height
+-- to allow creating splits naturally
+local winopts = require("nvim-tree.view").View.winopts
+winopts.winfixwidth = false
+winopts.winfixheight = false
+

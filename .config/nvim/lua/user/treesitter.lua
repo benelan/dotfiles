@@ -11,9 +11,7 @@ end
 configs.setup({
   ensure_installed = { 
     "bash", 
-    "diff",
     "css",
-    "gitignore",
     "go",
     "graphql",
     "help",
