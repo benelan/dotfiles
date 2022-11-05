@@ -1,11 +1,6 @@
 -- Additional Plugins
 lvim.plugins = {
-{ "sainnhe/gruvbox-material" }
--- {"morhetz/gruvbox"} 
--- {
---   "folke/trouble.nvim",
---   cmd = "TroubleToggle",
--- },
+    { "sainnhe/gruvbox-material" }
 }
 
 -- general
@@ -58,14 +53,14 @@ lvim.builtin.telescope.defaults.mappings = {
 --   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
 -- }
 
-lvim.builtin.which_key.mappings["-"] = {function()
+lvim.builtin.which_key.mappings["-"] = { function()
     local previous_buf = vim.api.nvim_get_current_buf()
     require("nvim-tree").open_replacing_current_buffer()
     require("nvim-tree").find_file(false, previous_buf)
-end, "NvimTree in place"}
+end, "NvimTree in place" }
 
-lvim.builtin.which_key.mappings["lh"] = {"<cmd>HideDiagnostic<CR>", "Hide Diagnostics"}
-lvim.builtin.which_key.mappings["lg"] = {"<cmd>ShowDiagnostic<CR>", "Show Diagnostics"}
+lvim.builtin.which_key.mappings["lh"] = { "<cmd>HideDiagnostic<CR>", "Hide Diagnostics" }
+lvim.builtin.which_key.mappings["lg"] = { "<cmd>ShowDiagnostic<CR>", "Show Diagnostics" }
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
@@ -81,36 +76,37 @@ lvim.builtin.nvimtree.setup = {
     view = {
         mappings = {
             list = {
-              -- NOTE: default to editing the file in place, netrw-style
-            {
-                key = {"<C-e>", "o", "-"},
-                action = "edit_in_place"
-            },
-            -- NOTE: override the "split" to avoid treating nvim-tree
-            -- window as special. Splits will appear as if nvim-tree was a
-            -- regular window
-            {
-                key = "<C-v>",
-                action = "split_right",
-                action_cb = function(node)
-                    vim.cmd("vsplit " .. vim.fn.fnameescape(node.absolute_path))
-                end
-            }, {
-                key = "<C-x>",
-                action = "split_bottom",
-                action_cb = function(node)
-                    vim.cmd("split " .. vim.fn.fnameescape(node.absolute_path))
-                end
-            },
-            -- NOTE: override the "open in new tab" mapping to fix the error
-            -- that occurs there
-            {
-                key = "<C-t>",
-                action = "new_tab",
-                action_cb = function(node)
-                    vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
-                end
-            }}
+                -- NOTE: default to editing the file in place, netrw-style
+                {
+                    key = { "<C-e>", "o", "-" },
+                    action = "edit_in_place"
+                },
+                -- NOTE: override the "split" to avoid treating nvim-tree
+                -- window as special. Splits will appear as if nvim-tree was a
+                -- regular window
+                {
+                    key = "<C-v>",
+                    action = "split_right",
+                    action_cb = function(node)
+                        vim.cmd("vsplit " .. vim.fn.fnameescape(node.absolute_path))
+                    end
+                }, {
+                    key = "<C-x>",
+                    action = "split_bottom",
+                    action_cb = function(node)
+                        vim.cmd("split " .. vim.fn.fnameescape(node.absolute_path))
+                    end
+                },
+                -- NOTE: override the "open in new tab" mapping to fix the error
+                -- that occurs there
+                {
+                    key = "<C-t>",
+                    action = "new_tab",
+                    action_cb = function(node)
+                        vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
+                    end
+                }
+            }
         }
     },
     actions = {
@@ -122,52 +118,46 @@ lvim.builtin.nvimtree.setup = {
 }
 
 lvim.builtin.treesitter.ensure_installed = {
-  "bash",
-  "c",
-  "css",
-  "javascript",
-  "json",
-  "lua",
-  "python",
-  "typescript",
-  "tsx",
-  "rust",
-  "yaml",
+    "bash",
+    "c",
+    "css",
+    "javascript",
+    "json",
+    "lua",
+    "python",
+    "typescript",
+    "tsx",
+    "rust",
+    "yaml",
 }
 
-lvim.builtin.treesitter.ignore_install = {"java", "haskell"}
+lvim.builtin.treesitter.ignore_install = { "java", "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
-
--- remove a server from the skipped list, e.g. eslint, or emmet_ls. !!Requires `:LvimCacheReset` to take effect!!
--- `:LvimInfo` lists which server(s) are skipped for the current filetype
-lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
-    return server ~= "eslint"
-end, lvim.lsp.automatic_configuration.skipped_servers)
 
 -- setup formatters, this will override the language server formatting capabilities (if it exists)
 local formatters = require "lvim.lsp.null-ls.formatters"
-formatters.setup {{
+formatters.setup { {
     command = "prettier"
-}}
+} }
 
 -- setup additional linters
 local linters = require "lvim.lsp.null-ls.linters"
-linters.setup {{
+linters.setup { {
     command = "eslint_d"
 }, {
     command = "shellcheck",
-    extra_args = {"--severity", "warning"}
-}}
+    extra_args = { "--severity", "warning" }
+} }
 
 -- setup code actions
 local code_actions = require "lvim.lsp.null-ls.code_actions"
-code_actions.setup {{
+code_actions.setup { {
     command = "eslint_d"
-}}
+} }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = {"*.json", "*.jsonc"},
+    pattern = { "*.json", "*.jsonc" },
     -- enable wrap mode for json files only
     command = "setlocal wrap"
 })
@@ -175,7 +165,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 local function organize_imports()
     local params = {
         command = "_typescript.organizeImports",
-        arguments = {vim.api.nvim_buf_get_name(0)},
+        arguments = { vim.api.nvim_buf_get_name(0) },
         title = ""
     }
     vim.lsp.buf.execute_command(params)
@@ -183,7 +173,7 @@ end
 
 vim.lsp.buf.execute_command({
     command = "_typescript.organizeImports",
-    arguments = {vim.fn.expand("%:p")}
+    arguments = { vim.fn.expand("%:p") }
 })
 
 vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'HideDiagnostic', function()
