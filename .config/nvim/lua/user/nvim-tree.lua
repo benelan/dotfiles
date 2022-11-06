@@ -76,7 +76,31 @@ nvim_tree.setup {
         { key = { "<CR>", "l" }, cb = tree_cb "edit_in_place" },
         { key = { "o" }, cb = tree_cb "edit" },
         { key = "h", cb = tree_cb "close_node" },
-        { key = "<C-s>", cb = tree_cb "split" },
+        -- override the "split" to avoid treating nvim-tree
+        -- window as special. Splits will appear as if nvim-tree was a
+        -- regular window
+        {
+          key = "<C-v>",
+          action = "split_right",
+          action_cb = function(node)
+            vim.cmd("vsplit " .. vim.fn.fnameescape(node.absolute_path))
+          end
+        }, {
+          key = "<C-s>",
+          action = "split_bottom",
+          action_cb = function(node)
+            vim.cmd("split " .. vim.fn.fnameescape(node.absolute_path))
+          end
+        },
+        -- override the "open in new tab" mapping to fix the error
+        -- that occurs there
+        {
+          key = "<C-t>",
+          action = "new_tab",
+          action_cb = function(node)
+            vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
+          end
+        }
       },
     },
   },

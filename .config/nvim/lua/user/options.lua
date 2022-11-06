@@ -25,7 +25,8 @@ vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.cursorline = true                       -- highlight the current line
-vim.opt.number = true                           -- set numbered lines
+vim.opt.relativenumber = true                   -- show +/- offset number from the current line
+vim.opt.number = true                           -- show the current line number instead of 0
 vim.opt.laststatus = 3                          -- only the last window will always have a status line
 vim.opt.showcmd = false                         -- hide (partial) command in the last line of the screen (for performance)
 vim.opt.ruler = false                           -- hide the line and column number of the cursor position
@@ -43,3 +44,4 @@ vim.opt.iskeyword:append("-")                   -- treats words with `-` as sing
 vim.opt.confirm=true                            -- raise a dialog instead of failing operations like quit or write
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
 vim.opt.formatoptions:append("l,1,j,p")
+

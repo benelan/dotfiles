@@ -33,6 +33,11 @@ keymap("n", "<M-Down>", ":resize +5<CR>", opts)
 keymap("n", "<M-Left>", ":vertical resize -5<CR>", opts)
 keymap("n", "<M-Right>", ":vertical resize +5<CR>", opts)
 
+keymap("n", "<C-Left>", "<C-w>H", opts)
+keymap("n", "<C-Down>", "<C-w>J", opts)
+keymap("n", "<C-Up>", "<C-w>K", opts)
+keymap("n", "<C-Right>", "<C-w>L", opts)
+
 -- Navigate buffers
 keymap("n", "<S-l>", ":bnext<CR>", opts)
 keymap("n", "<S-h>", ":bprevious<CR>", opts)
@@ -42,6 +47,7 @@ keymap("n", "<leader>h", "<cmd>nohlsearch<CR>", opts)
 
 -- Close buffers
 keymap("n", "<C-q>", "<cmd>Bdelete!<CR>", opts)
+keymap("n", "<C-w>", "<cmd>write<CR>", opts)
 
 -- Insert --
 
@@ -60,7 +66,19 @@ keymap("v", "p", '"_dP', opts)
 -- Plugins --
 
 -- NvimTree
-keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+keymap("n", "<leader><S-e>", ":NvimTreeToggle<CR>", opts)
+
+keymap("n", "<leader>e",
+  function()
+    local view = require "nvim-tree.view"
+    if view.is_visible() then
+      view.close()
+    else
+      -- local previous_buf = vim.api.nvim_get_current_buf()
+      require("nvim-tree").open_replacing_current_buffer()
+      -- require("nvim-tree").find_file(false, previous_buf)
+    end
+  end, opts)
 
 -- Telescope
 keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
