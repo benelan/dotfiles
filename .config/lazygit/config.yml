@@ -1,0 +1,37 @@
+gui:
+  showBottomLine: false
+  showIcons: true
+  theme:
+    activeBorderColor:
+      - '#98971a'
+      - bold
+    inactiveBorderColor:
+      - '#a89984'
+    optionsTextColor:
+      - '#458588'
+    selectedLineBgColor:
+      - bold 
+      - '#3c3836' 
+    selectedRangeBgColor:
+      - bold 
+      - '#3c3836'
+    cherryPickedCommitBgColor:
+      - '#689d6a'
+    cherryPickedCommitFgColor:
+      - '#458588'
+    unstagedChangesColor:
+      - '#cc2418'
+  branchColors:
+    'master': '#689d6a'
+    'main': '#689d6a'
+    'docs': '#d79921'
+    'dev': '#b16286'
+    'benelan': '#d65d0e'
+  authorColors:
+    'Ben Elan': '#d65d0e'
+git:
+  disableForcePushing: true
+reporting: 'off'
+os:
+  editCommand: 'nvim'
+  editCommandTemplate: '{{editor}} +{{line}} -- {{filename}}'

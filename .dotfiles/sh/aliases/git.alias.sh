@@ -1,12 +1,10 @@
 #!/bin/sh
 
+alias lg="lazygit"
+
 # git-branch-default
 # gets the default git branch
 alias gbdefault='git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"'
-
-# git-branch-clean
-# removes all local branches which have been merged into the default branch
-alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
 
 alias g='git'
 alias get='git'
@@ -181,11 +179,16 @@ alias gta='git tag -a'
 alias gtd='git tag -d'
 alias gtl='git tag -l'
 
+# git-branch-clean
+# removes all local branches which have been merged into the default branch
+alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
+
 
 # Dotfiles
 # -----------------------------------------------------------------------------
 
 alias d='dot'
+
 # add
 alias da='dot add'
 alias dall='dot add -u'
