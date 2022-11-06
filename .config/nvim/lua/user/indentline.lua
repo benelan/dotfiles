@@ -16,3 +16,4 @@ indent_blankline.setup {
     "NvimTree",
   },
 }
+
