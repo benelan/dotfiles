@@ -6,6 +6,8 @@ palette = "gruvbox"
 [palettes.gruvbox]
 red = "#cc2418"
 red-light = "#fb4934"
+blue = "#458588"
+blue-light = "#83a598"
 green = "#98971a"
 green-light = "#b8bb26"
 yellow = "#d79921"
