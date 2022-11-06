@@ -23,30 +23,28 @@ keymap("n", "<M-j>", "<C-w>j", opts)
 keymap("n", "<M-k>", "<C-w>k", opts)
 keymap("n", "<M-l>", "<C-w>l", opts)
 
--- Split panes
+-- Create splits
 keymap("n", "<M-v>", "<C-w>v", opts)
 keymap("n", "<M-s>", "<C-w>s", opts)
 
--- Resize with arrows
-keymap("n", "<M-Up>", ":resize -5<CR>", opts)
-keymap("n", "<M-Down>", ":resize +5<CR>", opts)
-keymap("n", "<M-Left>", ":vertical resize -5<CR>", opts)
-keymap("n", "<M-Right>", ":vertical resize +5<CR>", opts)
+-- Resize windows
+keymap("n", "<C-Up>", ":resize -5<CR>", opts)
+keymap("n", "<C-Down>", ":resize +5<CR>", opts)
+keymap("n", "<C-Left>", ":vertical resize -5<CR>", opts)
+keymap("n", "<C-Right>", ":vertical resize +5<CR>", opts)
 
-keymap("n", "<C-Left>", "<C-w>H", opts)
-keymap("n", "<C-Down>", "<C-w>J", opts)
-keymap("n", "<C-Up>", "<C-w>K", opts)
-keymap("n", "<C-Right>", "<C-w>L", opts)
+-- Move windows
+keymap("n", "<M-Left>", "<C-w>H", opts)
+keymap("n", "<M-Down>", "<C-w>J", opts)
+keymap("n", "<M-Up>", "<C-w>K", opts)
+keymap("n", "<M-Right>", "<C-w>L", opts)
 
 -- Navigate buffers
 keymap("n", "<S-l>", ":bnext<CR>", opts)
 keymap("n", "<S-h>", ":bprevious<CR>", opts)
 
--- Clear highlights
-keymap("n", "<leader>h", "<cmd>nohlsearch<CR>", opts)
-
 -- Close buffers
-keymap("n", "<C-q>", "<cmd>Bdelete!<CR>", opts)
+keymap("n", "<C-q>", "<cmd>Bdelete<CR>", opts)
 keymap("n", "<C-w>", "<cmd>write<CR>", opts)
 
 -- Insert --
@@ -112,3 +110,35 @@ end, {
   nargs = 0
 })
 
+
+-- Vimscript --
+
+
+vim.cmd [[
+" clear search highlights
+nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
+inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
+vmap <C-L> <Esc><C-L>gv
+
+" Don't close window when deleting a buffer
+function! BufcloseCloseIt()
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
+
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
+
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
+
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction
+
+command! Bdelete call BufcloseCloseIt()
+]]

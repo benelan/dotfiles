@@ -148,7 +148,6 @@ endif
 let mapleader = " "
 
 "" Fast saving/quiting
-nmap <leader>W :w<cr>
 nmap <leader>Q :q<cr>
 
 "" :W sudo saves the file
@@ -215,21 +214,21 @@ au TabLeave * let g:lasttab = tabpagenr()
 "" shortcut for window mappings
 nnoremap <leader>w <C-W>
 
-" Switch panes
-nnoremap <silent> <C-Left> <C-W>h
-nnoremap <silent> <C-Right> <C-W>l
-vnoremap <silent> <C-Left> <C-W>h
-vnoremap <silent> <C-Right> <C-W>l
-nnoremap <silent> <C-Up> <C-W>k
-nnoremap <silent> <C-Down> <C-W>j
-vnoremap <silent> <C-Up> <C-W>k
-vnoremap <silent> <C-Down> <C-W>j
+" Save/delete buffers
+nnoremap <C-Q> :Bdelete<cr>
+nnoremap <C-W> :write<cr>
 
-" Resize panes
-nnoremap <silent> <C-Up> :resize +5<CR>
-nnoremap <silent> <C-Down> :resize -5<CR>
-nnoremap <silent> <C-Right> :vertical resize +5<CR>
-nnoremap <silent> <C-Left> :vertical resize -5<CR>
+" Move splits
+nnoremap <M-Left> <C-W>H
+nnoremap <M-Down> <C-W>J
+nnoremap <M-Up> <C-W>K
+nnoremap <M-Right> <C-W>L
+
+" Resize splits
+nnoremap <C-Up> :resize +5<CR>
+nnoremap <C-Down> :resize -5<CR>
+nnoremap <C-Right> :vertical resize +5<CR>
+nnoremap <C-Left> :vertical resize -5<CR>
 
 
 "" toggles automatic indentation based on the previous line
@@ -445,6 +444,28 @@ function! VisualSelection(direction, extra_filter) range
     let @" = l:saved_reg
 endfunction
 
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" Don't close window, when deleting a buffer
+command! Bclose call <SID>BufcloseCloseIt()
+function! <SID>BufcloseCloseIt()
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
+
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
+
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
+
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction
 
 " ----------------------------------------------------------------------
 " | Colors and Status Line                                             |
