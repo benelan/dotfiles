@@ -3,7 +3,8 @@ alias s='fasd -si'
 alias sd='fasd -sid'
 alias sf='fasd -sif'
 alias d='fasd -d'
-alias f='fasd -f'
+alias ff='fasd -f'
+
 # function to execute built-in cd
 fasd_cd() {
   if [ $# -le 1 ]; then
@@ -14,6 +15,7 @@ fasd_cd() {
     [ -d "$_fasd_ret" ] && cd "$_fasd_ret" || printf %s\n "$_fasd_ret"
   fi
 }
+
 alias z='fasd_cd -d'
 alias zz='fasd_cd -d -i'
 
@@ -55,5 +57,5 @@ _fasd_bash_hook_cmd_complete() {
 }
 
 # enable bash command mode completion
-_fasd_bash_hook_cmd_complete fasd a s d f sd sf z zz
+_fasd_bash_hook_cmd_complete fasd a s d ff sd sf z zz
 
