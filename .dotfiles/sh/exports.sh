@@ -4,10 +4,9 @@ exists() {
     test -x "$(command -v "$1")"
 }
 
-EDITOR='ed'
-exists lvim && EDITOR='lvim'        || {
+EDITOR='vi'
+exists lvim && EDITOR='nvim'        || {
 exists vim && EDITOR='vim';       } || {
-exists vi && EDITOR='vi';         } || {
 exists nano && EDITOR='nano'; 
 }
 export EDITOR
@@ -21,9 +20,10 @@ export LESS LESSHISTFILE LESS_TERMCAP_md
 # Keep around 16K lines of history in memory
 HISTSIZE=16384
 
+VISUAL=$EDITOR
 PAGER=less
 MANPAGER=$PAGER
-export PAGER MANPAGER
+export PAGER MANPAGER VISUAL
 
 # Enable persistent REPL history for `node`.
 NODE_REPL_HISTORY=~/.node_history
