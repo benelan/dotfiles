@@ -16,6 +16,8 @@ function is-supported() {
   fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # checks for existence of a command
 function _command_exists() {
 	# _param '1: command to check'
@@ -30,6 +32,8 @@ function _command_exists() {
 		return 1
 	fi
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # checks for existence of a binary
 function _binary_exists() {
@@ -46,6 +50,8 @@ function _binary_exists() {
 	fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # checks for existence of a completion
 function _completion_exists() {
 	# _param '1: command to check'
@@ -61,6 +67,7 @@ function _completion_exists() {
 	fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # `start` with no arguments opens the current directory, otherwise opens the given
 # location
@@ -71,6 +78,8 @@ function start() {
 		start "$@";
 	fi;
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function extract {
  if [ -z "$1" ]; then
@@ -108,11 +117,13 @@ function extract {
 fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 duf() {
   du --max-depth="${1:-0}" -c | sort -r -n | awk '{split("K M G",v); s=1; while($1>1024){$1/=1024; s++} print int($1)v[s]"\t"$2}'
 }
 
-
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Get gzipped file size
 gz() {
@@ -123,6 +134,8 @@ gz() {
   printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Create a data URL from a file
 dataurl() {
   local MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
@@ -132,12 +145,15 @@ dataurl() {
   echo "data:${MIMETYPE};base64,$(openssl base64 -in "$1" | tr -d '\n')"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
 # Find real from shortened url
 unshorten() {
   curl -sIL "$1" | sed -n 's/Location: *//p'
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Show 256 TERM colors
 colors() {
@@ -148,6 +164,8 @@ colors() {
   echo -e "${o:${#o}-3:3}" $(tput setaf "$i";tput setab "$i")"${Y// /=}""$X";
   done
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # toggle sudo at the beginning of the current or the previous command by hitting the ESC key twice
 function sudo-command-line() {
@@ -167,6 +185,7 @@ if [ "$BASH_VERSINFO" -ge 4 ]; then
   bind -x '"\e\e": sudo-command-line'
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	# prevent duplicate directories in your PATH variable
 	# "pathmunge /path/to/dir" is equivalent to PATH=/path/to/dir:$PATH
@@ -181,6 +200,7 @@ function pathmunge() {
 	fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # add entry to ssh config
 function add_ssh() {
@@ -190,17 +210,21 @@ function add_ssh() {
   echo -en "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" >> ~/.ssh/config
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # list hosts defined in ssh config
 function sshlist() {
   awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # add all ssh private keys to agent
 function ssh-add-all() {
   grep -slR "PRIVATE" ~/.ssh | xargs ssh-add
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # display all ip addresses for this host
 function ips() {
@@ -213,6 +237,7 @@ function ips() {
 	fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # checks whether a website is down for you, or everybody
 function down4me() {
@@ -220,6 +245,8 @@ function down4me() {
 	# example '$ down4me http://www.google.com
 	curl -Ls "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # displays your ip address, as seen by the Internet
 function myip() {
@@ -233,6 +260,7 @@ function myip() {
 	echo -e "Your public IP is: ${echo_bold_green-} $res ${echo_normal-}"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # generates random password from dictionary words, w optional integer length
 function passgen() {
@@ -244,6 +272,7 @@ function passgen() {
 	echo "Without spaces (easier to brute force): ${pass//$'\n'/}"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # preview markdown file in a browser
 if _command_exists markdown && _command_exists browser; then
@@ -254,11 +283,14 @@ if _command_exists markdown && _command_exists browser; then
 	}
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # runs argument in background
 function quiet() {
 	nohup "$@" &> /dev/null < /dev/null &
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # disk usage per directory, in Mac OS X and Linux
 function usage() {
@@ -272,6 +304,7 @@ function usage() {
 	esac
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # back up file with timestamp
 function buf() {
@@ -280,6 +313,8 @@ function buf() {
 	filetime=$(date +%Y%m%d_%H%M%S)
 	cp -a "${filename}" "${filename}_${filetime}"
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # move files to hidden folder in tmp, that gets cleared on each reboot
 if ! _command_exists del; then
@@ -290,48 +325,12 @@ if ! _command_exists del; then
 	}
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # make one or more directories and cd into the last one
 function mcd() {
-  mkdir -p -- "$@" && cd -- "${!#}" || return
+  mkdir -p -- $@ && cd -- "${!#}" || return
 }
-
-# Lists drive mounts.
-function mnt() {
-  mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
-}
-
-# Git
-#---------------------------------------------------------------------------------
-
-# git checkout (find)
-# makes sure everything is up to date with master
-# you can checkout using any word in the commit
-# usage (to checkout benelan/2807-consistent-slot-doc): gcof slot
-function gcof() {
-  git checkout "$(gbdefault)" && git pull && git branch | grep "$1" | xargs git checkout && git merge "$(gbdefault)"
-}
-
-# git checkout (new)
-# creates a new branch starting with my username
-# usage (to create branch benelan/2807-slots): gcon 2807-slots
-function gcon() {
-  git checkout "$(gbdefault)" && git pull && git checkout -b benelan/"$1" 2> /dev/null || git checkout benelan/"$1" && git merge "$(gbdefault)"
-}
-
-# git-extras-big-blobs
-# human readably list the blobs by size, excluding HEAD
-function gxbigblobs() {
-  git rev-list --objects --all |
-  git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
-  sed -n "s/^blob //p" |
-  sort --numeric-sort --key=2 |
-  cut -c 1-12,41- |
-  $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
-  grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")
-}
-
-
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -362,6 +361,55 @@ function s() {
           #    │         └─ Display ANSI color escape sequences in raw form.
           #    └─ Don't clear the screen after quitting less.
 }
+# Lists drive mounts.
+function mnt() {
+  mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
+}
+
+# Git
+#---------------------------------------------------------------------------------
+
+#-----> git wipe
+## commit all changes for safety and reset
+gwipe() {
+  git add -A
+  git commit -qm "WIPEPOINT $(printf "$(%Y-%m-%d %H:%M:%S)T\n" -1)"
+  git reset HEAD --hard
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#-----> git checkout (find)
+## makes sure everything is up to date with master
+## you can checkout using any word in the commit
+## e.g. to checkout benelan/2807-consistent-slot-doc: gcof slot
+function gcof() {
+  git checkout "$(gbdefault)" && git pull && git branch | grep "$1" | xargs git checkout && git merge "$(gbdefault)"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#-----> git checkout (new)
+## creates a new branch starting with my username
+## usage (to create branch benelan/2807-slots): gcon 2807-slots
+function gcon() {
+  git checkout "$(gbdefault)" && git pull && git checkout -b benelan/"$1" 2> /dev/null || git checkout benelan/"$1" && git merge "$(gbdefault)"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#-----> git-extras-big-blobs
+## human readably list the blobs by size, excluding HEAD
+function gxbigblobs() {
+  git rev-list --objects --all |
+  git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
+  sed -n "s/^blob //p" |
+  sort --numeric-sort --key=2 |
+  cut -c 1-12,41- |
+  $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
+  grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")
+}
+
 
 # Arrays
 #---------------------------------------------------------------------------------

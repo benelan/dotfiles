@@ -109,6 +109,9 @@ function _init-alias_completion() {
 
 _init-alias_completion
 
+# enable git completion for "g" alias
+__git_complete g git
+
 
 # MIT License
 

@@ -31,13 +31,6 @@ done
 unset file
 
 #-----------------------------#
-# BASH - COMPLETIONS          #
-#-----------------------------#
-for file in ~/.dotfiles/bash/completions/*; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file"
-done
-
-#-----------------------------#
 # BASH - PLUGINS              #
 #-----------------------------#
 for file in ~/.dotfiles/bash/plugins/*; do
@@ -45,8 +38,19 @@ for file in ~/.dotfiles/bash/plugins/*; do
 done
 
 #-----------------------------#
-# SOURCE - MISC.              #
+# MISC                        #
 #-----------------------------#
 cargo=~/.cargo/env
 [ -r "$cargo" ] && [ -f "$cargo" ] && source "$cargo"
 unset cargo
+
+
+#-----------------------------#
+# BASH - COMPLETIONS          #
+#-----------------------------#
+
+# completions go last because some require
+# their tools/plugins to have already loaded
+for file in ~/.dotfiles/bash/completions/*; do
+  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+done

@@ -3592,6 +3592,3 @@ if [ "$OSTYPE" = cygwin ]; then
 	___git_complete git.exe __git_main
 fi
 
-
-# enable git completion for "g" alias
-__git_complete g git
