@@ -5,8 +5,8 @@ exists() {
 }
 
 EDITOR='vi'
-exists lvim && EDITOR='nvim'        || {
-exists vim && EDITOR='vim';       } || {
+exists nvim && EDITOR='nvim'        || {
+exists vim && EDITOR='vim';   } || {
 exists nano && EDITOR='nano'; 
 }
 export EDITOR

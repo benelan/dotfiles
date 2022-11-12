@@ -95,7 +95,7 @@ alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
 alias paths='echo -e ${PATH//:/\\n}'
 
 # Sets editors and defaults.
-alias edit='${EDITOR:-${ALTERNATE_EDITOR:-vi}}'
+alias edit='${EDITOR:-vi}'
 alias e='edit'
 alias se='sudo e'
 alias vi='vim'
