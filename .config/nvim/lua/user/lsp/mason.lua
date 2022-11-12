@@ -1,14 +1,12 @@
 local servers = {
   "bashls",
   "cssls",
-  "denols",
   "dockerls",
   "eslint",
   "gopls",
   "html",
   "jsonls",
   "marksman",
-  "rust-analyzer",
   "sumneko_lua",
   "svelte",
   "tailwindcss",
@@ -59,4 +57,3 @@ for _, server in pairs(servers) do
 
   lspconfig[server].setup(opts)
 end
-
