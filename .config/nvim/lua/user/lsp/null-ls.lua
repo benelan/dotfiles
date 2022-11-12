@@ -23,14 +23,9 @@ null_ls.setup {
     formatting.stylelint,
     formatting.trim_whitespace,
     diagnostics.actionlint,
-    diagnostics.eslint_d,
     diagnostics.stylelint,
     diagnostics.shellcheck,
     diagnostics.gitlint,
-    code_actions.eslint_d,
-    code_actions.shellcheck,
     code_actions.gitsigns,
-
   },
 }
-
