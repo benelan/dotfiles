@@ -1,7 +1,8 @@
 vim.opt.backup = false                          -- creates a backup file
 vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
-vim.opt.completeopt = { "menuone", "noselect" } -- mostly just for cmp
+vim.opt.completeopt = { "menuone", "noselect", "noselect" } -- options for cmp
+vim.opt.pastetoggle = "<Leader><C-v>"           -- toggle automatically indenting pastes
 vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
 vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
@@ -10,7 +11,7 @@ vim.opt.smartcase = true                        -- smart case
 vim.opt.mouse = "a"                             -- allow the mouse to be used in neovim
 vim.opt.mousehide = true                        -- hide the mouse while typing
 vim.opt.pumheight = 10                          -- pop up menu height
-vim.opt.showmode = false                        -- we don't need to see things like -- INSERT -- anymore
+vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
 vim.opt.showtabline = 0                         -- always show tabs
 vim.opt.smartindent = true                      -- make indenting smarter again
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
@@ -24,6 +25,7 @@ vim.opt.writebackup = false                     -- if a file is being edited by 
 vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
+vim.opt.breakindentopt = "shift:2"              -- Shift two characters left when breakindent-ing
 vim.opt.cursorline = true                       -- highlight the current line
 vim.opt.relativenumber = true                   -- show +/- offset number from the current line
 vim.opt.number = true                           -- show the current line number instead of 0
@@ -36,12 +38,23 @@ vim.opt.wrap = true                             -- display lines as one long lin
 vim.opt.linebreak = true                        -- don't wrap in the middle of words
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
+vim.opt.foldenable = true                       -- enable folding
+vim.opt.foldmethod = "expr"                     -- use foldexpr to set fold (below)
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine fold
+vim.opt.foldlevelstart = 99                     -- start with all folds closed
+vim.opt.foldlevel = 99                          -- set the fold level to closed
+vim.opt.foldcolumn = "1"                        -- how many fold columns to display
+vim.opt.fillchars.fold = " "                    -- set fold characters
+vim.opt.fillchars.foldsep = " "                 -- don't show any character to separate folds
+vim.opt.fillchars.foldopen = "▼"                -- character to show for open folds
+vim.opt.fillchars.foldclose = "⏵"               -- character show for closed folds
+vim.opt.fillchars.eob = " "                     -- show empty lines at the end of a buffer as ` ` {default `~`}
+vim.opt.grepprg = "rg --vimgrep"                -- Use ripgrep instead of grep
 vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
-vim.opt.fillchars.eob=" "                       -- show empty lines at the end of a buffer as ` ` {default `~`}
-vim.opt.shortmess:append("c")                   -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
-vim.opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
+vim.opt.shortmess:append("c")                   -- hide all the completion messages, e.g. "match 1 of 2", "The only match", "Pattern not found"
+vim.opt.whichwrap:append("<,>,[,]")             -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
-vim.opt.confirm=true                            -- raise a dialog instead of failing operations like quit or write
+vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
-vim.opt.formatoptions:append("l,1,j,p")
+vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
 
