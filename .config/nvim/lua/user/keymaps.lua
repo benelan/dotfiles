@@ -85,30 +85,11 @@ keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
 keymap("n", "<leader>fb", ":Telescope buffers<CR>", opts)
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gl", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
 
 -- Comment
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
 keymap("x", "<leader>/", '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
-
--- LSP: TypeScript
-local function organize_imports()
-  local params = {
-    command = "_typescript.organizeImports",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = ""
-  }
-  vim.lsp.buf.execute_command(params)
-end
-
-vim.api.nvim_buf_create_user_command(vim.api.nvim_get_current_buf(), 'TypeScriptOrganizeImports', function()
-  vim.lsp.buf.execute_command({
-    command = "_typescript.organizeImports",
-    arguments = { vim.fn.expand("%:p") }
-  })
-end, {
-  nargs = 0
-})
 
 
 -- Vimscript --
