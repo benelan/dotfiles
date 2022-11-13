@@ -44,11 +44,6 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine f
 vim.opt.foldlevelstart = 99                     -- start with all folds closed
 vim.opt.foldlevel = 99                          -- set the fold level to closed
 vim.opt.foldcolumn = "1"                        -- how many fold columns to display
-vim.opt.fillchars.fold = " "                    -- set fold characters
-vim.opt.fillchars.foldsep = " "                 -- don't show any character to separate folds
-vim.opt.fillchars.foldopen = "▼"                -- character to show for open folds
-vim.opt.fillchars.foldclose = "⏵"               -- character show for closed folds
-vim.opt.fillchars.eob = " "                     -- show empty lines at the end of a buffer as ` ` {default `~`}
 vim.opt.grepprg = "rg --vimgrep"                -- Use ripgrep instead of grep
 vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
 vim.opt.shortmess:append("c")                   -- hide all the completion messages, e.g. "match 1 of 2", "The only match", "Pattern not found"
@@ -57,4 +52,5 @@ vim.opt.iskeyword:append("-")                   -- treats words with `-` as sing
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
+vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
