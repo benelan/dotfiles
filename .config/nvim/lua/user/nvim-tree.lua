@@ -106,9 +106,26 @@ nvim_tree.setup {
   },
 }
 
+local view_status_ok, nvim_tree_view = pcall(require, "nvim-tree.view")
+if not view_status_ok then
+  return
+end
+
 -- disable fixed nvim-tree width and height
 -- to allow creating splits naturally
-local winopts = require("nvim-tree.view").View.winopts
-winopts.winfixwidth = false
-winopts.winfixheight = false
+nvim_tree_view.View.winopts.winfixwidth = false
+nvim_tree_view.View.winopts.winfixheight = false
 
+-- keymaps to open NvimTree
+local opts = { silent = true }
+vim.keymap.set("n", "<leader><S-e>", ":NvimTreeToggle<CR>", opts)
+vim.keymap.set("n", "<leader>e",
+  function()
+    if nvim_tree_view.is_visible() then
+      nvim_tree_view.close()
+    else
+      -- local previous_buf = vim.api.nvim_get_current_buf()
+      require("nvim-tree").open_replacing_current_buffer()
+      -- require("nvim-tree").find_file(false, previous_buf)
+    end
+  end, opts)

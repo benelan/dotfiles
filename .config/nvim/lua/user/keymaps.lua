@@ -63,21 +63,6 @@ keymap("v", "p", '"_dP', opts)
 
 -- Plugins --
 
--- NvimTree
-keymap("n", "<leader><S-e>", ":NvimTreeToggle<CR>", opts)
-
-keymap("n", "<leader>e",
-  function()
-    local view = require "nvim-tree.view"
-    if view.is_visible() then
-      view.close()
-    else
-      -- local previous_buf = vim.api.nvim_get_current_buf()
-      require("nvim-tree").open_replacing_current_buffer()
-      -- require("nvim-tree").find_file(false, previous_buf)
-    end
-  end, opts)
-
 -- Telescope
 keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
 keymap("n", "<leader>ft", ":Telescope live_grep<CR>", opts)
