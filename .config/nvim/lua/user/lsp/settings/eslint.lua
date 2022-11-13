@@ -24,7 +24,6 @@ return {
     validate = "on",
     workingDirectory = {
       mode = "location"
-    } 
+    }
   },
 }
-

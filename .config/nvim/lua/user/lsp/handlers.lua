@@ -8,6 +8,8 @@ end
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 M.capabilities = cmp_nvim_lsp.update_capabilities(M.capabilities)
+
+-- required for ufo plugin
 M.capabilities.textDocument.foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true
@@ -80,8 +82,12 @@ M.on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
   end
 
-  if client.name == "sumneko_lua" then
-    client.server_capabilities.documentFormattingProvider = false
+  -- if client.name == "sumneko_lua" then
+  --   client.server_capabilities.documentFormattingProvider = false
+  -- end
+
+  if client.name == "eslint" then
+    client.server_capabilities.documentFormattingProvider = true
   end
 
   lsp_keymaps(bufnr)

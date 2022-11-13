@@ -13,18 +13,18 @@ local code_actions = null_ls.builtins.code_actions
 null_ls.setup {
   debug = false,
   sources = {
-    formatting.prettier.with {
-      extra_filetypes = { "toml" },
-      extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
-    },
-    formatting.shfmt,
-    formatting.shellharden,
-    formatting.stylua,
-    formatting.stylelint,
-    formatting.trim_whitespace,
-    diagnostics.actionlint,
-    diagnostics.stylelint,
-    diagnostics.gitlint,
     code_actions.gitsigns,
+    code_actions.proselint,
+    diagnostics.actionlint,
+    diagnostics.codespell,
+    diagnostics.gitlint,
+    diagnostics.proselint,
+    diagnostics.stylelint,
+    formatting.codespell,
+    formatting.prettier,
+    formatting.shellharden,
+    formatting.shfmt,
+    formatting.stylelint,
+    formatting.trim_whitespace
   },
 }
