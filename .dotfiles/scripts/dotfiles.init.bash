@@ -13,8 +13,6 @@ GIT_URL=git@github.com:benelan/dotfiles
 
 git clone --bare "$GIT_URL" "$HOME/.git"
 
-
-
 if /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout; then
   echo "Checked out dotfiles"
 else
@@ -37,12 +35,12 @@ else
   # rsync --remove-source-files -avh \
   #     $(dotfiles checkout 2>&1 | grep -E "\s+\." | awk {'print $1'}) "$BACKUP_DIR"
 
-  # check out the dotfiles now that there are no conflicts
+  # checkout the dotfiles now that there are no conflicts
   /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 
 fi
 
 # prevents showing everything in ~
-# to track files: "dot add ~/.npmrc"
+# to track new files: "dot add ~/.npmrc"
 /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" config status.showUntrackedFiles no
 
 # Install fzf
@@ -55,13 +53,11 @@ unset files
 unset GIT_URL
 unset BACKUP_DIR
 
+# Remove extra files
 /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/LICENSE.md"
 /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/README.md"
-# Remove extra files
 rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 rm -f "$HOME/LICENSE.md"
-
-
 
 # make the bins executable
 [ -d ~/.bin/ ] && chmod +x ~/.bin/*;
