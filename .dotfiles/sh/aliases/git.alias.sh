@@ -234,9 +234,9 @@ alias dsl='dot shortlog -sn'
 alias dsh='dot show'
 
 # diff
-alias dd='dot diff'
-alias dds='dot diff --staged'
-alias ddt='dot difftool'
+alias ddiff='dot diff'
+alias ddiffs='dot diff --staged'
+alias ddifft='dot difftool'
 
 # fetch
 alias df='dot fetch --all --prune'
