@@ -1,4 +1,4 @@
-require "user.disabled"
+require "user.globals"
 require "user.impatient"
 require "user.options"
 require "user.keymaps"

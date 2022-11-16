@@ -1,4 +1,9 @@
-local disabled_built_ins = {
+vim.g.python3_host_prog = "/usr/bin/python3"
+
+-- disable unused builtins
+vim.tbl_map(function(p)
+  vim.g['loaded_' .. p] = vim.endswith(p, 'provider') and 0 or 1
+end, {
   'netrw',
   'netrwPlugin',
   'netrwSettings',
@@ -17,9 +22,6 @@ local disabled_built_ins = {
   'rrhelper',
   'spellfile_plugin',
   'matchit',
-}
-
-for _, plugin in pairs(disabled_built_ins) do
-  vim.g['loaded_' .. plugin] = 1
-end
-
+  'pearl_provider',
+  'ruby_provider'
+})
