@@ -9,7 +9,6 @@ deb_sources=()
 
 installers_path=~/.dotfiles/cache/installers
 
-
 # Logging stuff.
 function e_header() { echo -e "\n\033[1m" "$@" "\033[0m"; }
 function e_success() { echo -e " \033[1;32m✔\033[0m" "$@"; }
@@ -92,7 +91,7 @@ fi
 if [[ ! "$(type -P protonvpn-cli)" ]]; then
   # https://protonvpn.com/support/linux-vpn-tool/
   deb_installed+=(/usr/bin/protonvpn-cli)
-  deb_sources+=("https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb")
+  deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
 fi
 
 
@@ -106,13 +105,13 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
   if [[ -z "$(which code)" ]]; then
     # https://code.visualstudio.com/Download
     deb_installed+=(/usr/bin/code)
-    deb_sources+=("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64")
+    deb_sources+=(https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64)
   fi
 
   if [[ -z "$(which discord)" ]]; then
     # https://discord.com/download
     deb_installed+=(/usr/bin/discord)
-    deb_sources+=("https://discord.com/api/download?platform=linux&format=deb")
+    deb_sources+=(https://discord.com/api/download?platform=linux&format=deb)
   fi
   
   if [[ -z "$(which brave-browser)" ]]; then
@@ -149,7 +148,6 @@ fi
 
 # Anything that needs to run after packages are installed
 #----------------------------------------------------------------------
-
 
 function post_install() {
   mkdir -p ~/.local/bin
