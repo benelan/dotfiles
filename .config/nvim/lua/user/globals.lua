@@ -1,4 +1,6 @@
-vim.g.python3_host_prog = "/usr/bin/python3"
+if vim.fn.executable("/usr/bin/python3") then
+  vim.g.python3_host_prog = "/usr/bin/python3"
+end
 
 -- disable unused builtins
 vim.tbl_map(function(p)
@@ -22,6 +24,6 @@ end, {
   'rrhelper',
   'spellfile_plugin',
   'matchit',
-  'pearl_provider',
+  'perl_provider',
   'ruby_provider'
 })

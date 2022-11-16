@@ -3,12 +3,12 @@ if not status_ok then
   return
 end
 
-local status_ok_configs, configs = pcall(require, "nvim-treesitter.configs")
+local status_ok_configs, treesitter_configs = pcall(require, "nvim-treesitter.configs")
 if not status_ok_configs then
   return
 end
 
-configs.setup({
+treesitter_configs.setup({
   ensure_installed = {
     "bash",
     "css",
@@ -33,7 +33,7 @@ configs.setup({
     "vue",
     "yaml"
   },
-  ignore_install = { "haskell" }, -- List of parsers to ignore installing
+  ignore_install = { "beancount" }, -- List of parsers to ignore installing
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
 
   highlight = {
@@ -49,6 +49,4 @@ configs.setup({
     enable = true,
     enable_autocmd = false,
   },
-
 })
-
