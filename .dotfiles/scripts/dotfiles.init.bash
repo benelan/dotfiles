@@ -4,12 +4,13 @@
 BACKUP_DIR="$HOME/.dotfiles-backup/"
 
 # Check if there is an ssh key that _might_ be for github
-# if find ~/.ssh -type f -name 'id_rsa.pub' -o -name 'id_ed25519.pub' -o -name 'id_ecdsa.pub' |
-#   wc -l | xargs test 0 -eq; then
-#   GIT_URL=https://github.com/benelan/dotfiles
-# else
-GIT_URL=git@github.com:benelan/dotfiles
-# fi
+# Don't use SSH to clone if there is no SSH key
+if find ~/.ssh -type f -name 'id_rsa.pub' -o -name 'id_ed25519.pub' -o -name 'id_ecdsa.pub' |
+  wc -l | xargs test 0 -eq; then
+  GIT_URL=https://github.com/benelan/dotfiles
+else
+  GIT_URL=git@github.com:benelan/dotfiles
+fi
 
 git clone --bare "$GIT_URL" "$HOME/.git"
 
