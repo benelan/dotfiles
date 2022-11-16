@@ -17,7 +17,6 @@ null_ls.setup {
     code_actions.proselint,
     diagnostics.actionlint,
     diagnostics.codespell,
-    diagnostics.gitlint,
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
