@@ -7,7 +7,7 @@ apt_packages=()
 deb_installed=()
 deb_sources=()
 
-installers_path=~/.dotfiles/caches/installers
+installers_path=~/.dotfiles/cache/installers
 
 # Logging stuff.
 function e_header() { echo -e "\n\033[1m" "$@" "\033[0m"; }
@@ -37,8 +37,6 @@ apt_packages+=(
   make
   golang
   python3
-  pip
-  bat
   curl
   htop
   btop
@@ -46,23 +44,28 @@ apt_packages+=(
   nmap
   postgresql
   duf
-  silversearcher-ag
   telnet
-  thefuck
   tree
-  taskwarrior
-  shellcheck
   neofetch
   mount
-  grep
-  ripgrep
-  findutils
   gzip
-  golang
   cron
   coreutils
-  handbrake-cli
   vim
+  grep
+  ripgrep
+  fd-find
+  findutils
+  silversearcher-ag
+  bat
+  thefuck
+  taskwarrior
+  handbrake-cli
+  codespell
+  actionlint
+  proselint
+  shellcheck
+  shfmt
   # packages below needed to build Alacritty from source
   cargo
   cmake
@@ -134,6 +137,7 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
 fi
 
 function install_stuff_last() {
+  mkdir -p ~/.local/bin
   # Install Git Extras
   # if [[ ! "$(type -P git-extras)" ]]; then
   #   e_header "Installing Git Extras"
@@ -147,32 +151,30 @@ function install_stuff_last() {
   # install_from_zip ngrok 'https://github.com/inconshreveable/ngrok/archive/refs/tags/1.7.1.zip'
 
   # Install Alacritty if it isn't already installed, and all of the preqs are installed
-  if [[ ! "$(type -P alacritty)" &&
-  -d ~/.dotfiles/vendor/alacritty &&
-  ("$(type -P python)" && "$(type -P cargo)" &&
-  "$(type -P cmake)" && "$(type -P pkg-config)" &&
-  "$(type -P libfreetype6-dev)" && "$(type -P libxcb-xfixes0-dev)" &&
-  "$(type -P libxkbcommon)") ]]; then
-    e_header "Installing Alacritty"
+  if [[ -z "$IS_SERVER_DOTFILE_INSTALL" &&
+    ! "$(type -P alacritty)" &&
+    -d ~/.dotfiles/vendor/alacritty &&
+    ("$(type -P python)" && "$(type -P cargo)" &&
+    "$(type -P cmake)" && "$(type -P pkg-config)" &&
+    "$(type -P libfreetype6-dev)" &&
+    "$(type -P libxcb-xfixes0-dev)" &&
+    "$(type -P libxkbcommon)") ]]; then
 
+    e_header "Installing Alacritty"
     cd ~/.dotfiles/vendor/alacritty || return
     cargo build --release
     # Add Terminfo if necessary
     if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
     # Add Desktop Entry
-    sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
+    sudo cp target/release/alacritty ~/.local/bin
     sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
     sudo desktop-file-install extra/linux/Alacritty.desktop
     sudo update-desktop-database
   fi
 
-  # Install bins from zip file.
-  # install_from_zip ngrok 'https://github.com/inconshreveable/ngrok/archive/refs/tags/1.7.1.zip'
-
   # link batcat to bat due to package name conflict
-  mkdir -p ~/.local/bin
   ln -s /usr/bin/batcat ~/.local/bin/bat
-
+  ln -s "$(which fdfind)" ~/.local/bin/fd
 }
 
 ####################
