@@ -32,19 +32,19 @@ end
 
 return {
   commands = {
-    TsOrganizeImports = {
+    TypescriptOrganizeImports = {
       organize_imports,
       description = "Organizes and removes unused imports"
     },
-    TsAddMissingImports = {
+    TypescriptAddMissingImports = {
       add_missing_imports,
       description = "Add imports for used but not imported symbols"
     },
-    TsFixAll = {
+    TypescriptFixAll = {
       fix_all,
       description = "Fix common TypeScript problems"
     },
-    TsRemoveUnused = {
+    TypescriptRemoveUnused = {
       remove_unused,
       description = "Remove declared but unused variables"
     }
