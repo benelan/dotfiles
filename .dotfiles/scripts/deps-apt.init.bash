@@ -97,6 +97,13 @@ if [[ ! "$(type -P protonvpn-cli)" ]]; then
   deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
 fi
 
+  if [[ ! "$(type -P gh)" ]]; then
+    # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+    gpg_keys+=("https://cli.github.com/packages/githubcli-archive-keyring.gpg")
+    apt_source_files+=(github-cli)
+    apt_source_texts+=("deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/github-cli-archive-keyring.gpg] https://cli.github.com/packages stable main")
+    apt_packages+=(gh)
+  fi
 
 # Desktop Environment packages
 #----------------------------------------------------------------------
@@ -118,7 +125,6 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
   fi
   
   if [[ ! "$(type -P brave-browser)" ]]; then
-    # https://protonvpn.com/support/linux-vpn-tool/
     # https://brave.com/linux/
     gpg_keys+=("https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg")
     apt_source_files+=(brave-browser-release)
