@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script installs the Ubuntu/Debian packages I use
+# The dotfiles.init.bash script needs to run first
+
 gpg_keys=()
 apt_source_files=()
 apt_source_texts=()
@@ -84,8 +87,8 @@ apt_packages+=(
 
 if [[ ! "$(type -P nvim)" ]]; then
   # https://github.com/neovim/neovim/wiki/Installing-Neovim
-  add_ppa ppa:neovim-ppa/stable
-  apt_packages+=(neovim)
+  deb_installed+=(/usr/bin/nvim)
+  deb_sources+=(https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.deb)
 fi
 
 if [[ ! "$(type -P protonvpn-cli)" ]]; then
@@ -102,19 +105,19 @@ fi
 # IS_SERVER_DOTFILE_INSTALL=true && install-apt-deps.bash
 if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
 
-  if [[ -z "$(which code)" ]]; then
+  if [[ ! "$(type -P code)" ]]; then
     # https://code.visualstudio.com/Download
     deb_installed+=(/usr/bin/code)
-    deb_sources+=(https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64)
+    deb_sources+=(https://code.visualstudio.com/sha/download?build=stable\&os=linux-deb-x64)
   fi
 
-  if [[ -z "$(which discord)" ]]; then
+  if [[ ! "$(type -P discord)" ]]; then
     # https://discord.com/download
     deb_installed+=(/usr/bin/discord)
-    deb_sources+=(https://discord.com/api/download?platform=linux&format=deb)
+    deb_sources+=(https://discord.com/api/download?platform=linux\&format=deb)
   fi
   
-  if [[ -z "$(which brave-browser)" ]]; then
+  if [[ ! "$(type -P brave-browser)" ]]; then
     # https://protonvpn.com/support/linux-vpn-tool/
     # https://brave.com/linux/
     gpg_keys+=("https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg")
@@ -163,7 +166,7 @@ function post_install() {
   # Install bins from zip file.
   # install_from_zip ngrok 'https://github.com/inconshreveable/ngrok/archive/refs/tags/1.7.1.zip'
 
-  # Install Alacritty if it isn't already installed, and all of the preqs are installed
+  # Install Alacritty if all of the prereqs are installed
   if [[ -z "$IS_SERVER_DOTFILE_INSTALL" &&
     ! "$(type -P alacritty)" &&
     -d ~/.dotfiles/vendor/alacritty &&
@@ -186,8 +189,11 @@ function post_install() {
   fi
 
   # link batcat to bat due to package name conflict
-  [[ ! "$(type -P bat)" ]] && ln -s /usr/bin/batcat ~/.local/bin/bat
-  [[ ! "$(type -P fd)" ]] && ln -s "$(which fdfind)" ~/.local/bin/fd
+  [[ ! "$(type -P bat)" ]] && ln -s "$(type -P batcat)" ~/.local/bin/bat
+  [[ ! "$(type -P fd)" ]] && ln -s "$(type -P fdfind)" ~/.local/bin/fd
+
+  # clean up
+  sudo apt autoclean
 }
 
 
@@ -238,7 +244,7 @@ function setdiff() {
 }
 
 
-# Install everything
+# Do the installs
 #----------------------------------------------------------------------
 
 # Add GPG keys.
@@ -304,7 +310,7 @@ if ((${#deb_installed_i[@]} > 0)); then
     e_arrow "${deb_installed[i]}"
     deb="${deb_sources[i]}"
     [[ "$(type -t "$deb")" == function ]] && deb="$($deb)"
-    installer_file="$installers_path/$(echo "$deb" | sed 's#.*/##')"
+    installer_file="$installers_path/$(basename "${deb_installed[i]}" | sed 's#.*/##').deb"
     wget -O "$installer_file" "$deb"
     sudo apt install "$installer_file"
   done
@@ -327,5 +333,6 @@ function install_from_zip() {
     rm -rf $tmp
   fi
 }
+
 # install stuff that relies on other deps
 type -t post_install >/dev/null && post_install

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# This script installs the distro-agnostic tools I use
+# The script uses Cargo and Go to install binaries
+# If on Ubuntu/Debian, I recommend running deps-apt.init.bash first
+
 FONTS_DIR="$HOME/.local/share/fonts"
 
 # add any other zipped fonts to download and install
@@ -30,6 +34,12 @@ if [[ ! "$(type -P cargo)" ]]; then
 
   # https://github.com/BurntSushi/ripgrep
   [[ ! "$(type -P rg)" ]] && cargo install ripgrep && echo "--> Installed ripgrep"
+  
+  # https://github.com/sharkdp/fd
+  [[ ! "$(type -P fd)" && "$(type -P make)" ]] && cargo install fd-find && echo "--> Installed fd-find"
+
+  # https://github.com/sharkdp/bat
+  ! [[ "$(type -P bat)" || "$(type -P batcat)" ]] && cargo install --locked bat && echo "--> Installed bat"
 
   # https://github.com/dandavison/delta
   [[ ! "$(type -P delta)" ]] && cargo install git-delta && echo "--> Installed git-delta"
@@ -71,10 +81,9 @@ if [[ ! "$VOLTA_HOME" ]]; then
   curl https://get.volta.sh | bash -s -- --skip-setup
   export VOLTA_HOME=~/.volta
   grep --silent "$VOLTA_HOME/bin" <<<"$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
-  volta install node
-  volta install yarn
+  volta install node yarn
   echo "--> Install Volta to manage node/npm/yarn"
-  npm install --global neovim prettier eslint stylelint pm2 build-sizes typescript
+  volta install neovim prettier eslint stylelint pm2 build-sizes typescript
   echo "--> Installed global npm packages"
 fi
 
