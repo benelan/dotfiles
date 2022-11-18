@@ -10,8 +10,7 @@
 BACKUP_DIR="$HOME/.dotfiles-backup/"
 
 # Don't use SSH to clone if there is no SSH key on the machine
-if find ~/.ssh -type f -name 'id_rsa.pub' -o -name 'id_ed25519.pub' -o -name 'id_ecdsa.pub' |
-  wc -l | xargs test 0 -eq; then
+if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
   GIT_URL=https://github.com/benelan/dotfiles
 else
   GIT_URL=git@github.com:benelan/dotfiles
@@ -24,32 +23,34 @@ if /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout; then
 else
   echo "Backing up pre-existing dotfiles"
   # Get the list of files that need to be backed up
-  files=$(/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 2>&1 | grep -e "^\s")
- 
+  files=$(/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
+    checkout 2>&1 | grep -e "^\s")
+
   # Get the directories by removing everything after the last "/" from file paths
   # Files in $HOME will end up being blank lines, which need to be stripped
-  dirs=$(echo "$files" | awk 'BEGIN{FS=OFS="/"} {NF--} 1' | sed '/^[[:blank:]]*$/d')
-  
+  dirs=$(echo "$files" | sed 's:[^/]*$::' | grep .)
   # Create the directories in $BACKUP_DIR
   mkdir -p "$BACKUP_DIR"
   echo "$dirs" | xargs -I{} mkdir -p "$BACKUP_DIR{}"
   # Move the conflicting files to the new directories
   echo "$files" | xargs -I{} mv {} "$BACKUP_DIR/{}"
-  
+
   # Checkout the dotfiles now that there are no conflicts
   # To undo this script, move the files from $BACKUP_DIR to $HOME
   # $ mv ~/.dotfiles-backup/* ~/
-  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout 
+  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" checkout
 fi
 
 # Prevents showing everything in $HOME when using status/diff
 # Dotfiles need to be manually added for them to show up
 # $ dot add ~/.npmrc
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" config status.showUntrackedFiles no
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
+  config status.showUntrackedFiles no
 
 # Install fzf
-if [[ ! "$(command -v fzf)" ]]; then
-  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" submodule update --init .dotfiles/vendor/fzf
+if [ ! "$(command -v fzf)" ]; then
+  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
+    submodule update --init .dotfiles/vendor/fzf
   ~/.dotfiles/vendor/fzf/install --bin
 fi
 
@@ -58,8 +59,8 @@ unset GIT_URL
 unset BACKUP_DIR
 
 # Remove extra files
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/LICENSE.md"
-/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" update-index --assume-unchanged "$HOME/README.md"
+/usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
+  update-index --assume-unchanged "$HOME/LICENSE.md" "$HOME/README.md"
 rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 
 # Make the bins executable
