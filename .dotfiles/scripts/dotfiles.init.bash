@@ -28,7 +28,7 @@ else
 
   # Get the directories by removing everything after the last "/" from file paths
   # Files in $HOME will end up being blank lines, which need to be stripped
-  dirs=$(echo "$files" | sed 's:[^/]*$::' | grep .)
+   dirs=$(echo "$files" | awk 'BEGIN{FS=OFS="/"} {NF--} 1' | grep .)
   # Create the directories in $BACKUP_DIR
   mkdir -p "$BACKUP_DIR"
   echo "$dirs" | xargs -I{} mkdir -p "$BACKUP_DIR{}"
@@ -48,7 +48,7 @@ fi
   config status.showUntrackedFiles no
 
 # Install fzf
-if [ ! "$(command -v fzf)" ]; then
+if [ ! "$(command -v fzf)" ] ; then
   /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
     submodule update --init .dotfiles/vendor/fzf
   ~/.dotfiles/vendor/fzf/install --bin
