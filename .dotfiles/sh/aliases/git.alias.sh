@@ -179,6 +179,9 @@ alias gta='git tag -a'
 alias gtd='git tag -d'
 alias gtl='git tag -l'
 
+alias ghide='git update-index --assume-unchanged'
+alias gunhide='git update-index --no-assume-unchanged'
+
 # git-branch-clean
 # removes all local branches which have been merged into the default branch
 alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
@@ -290,3 +293,6 @@ alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
 alias dpl='dot pull'
 alias dpp='dot pull && dot push'
 alias dpr='dot pull --rebase'
+
+alias dhide='dot update-index --assume-unchanged'
+alias dunhide='dot update-index --no-assume-unchanged'
