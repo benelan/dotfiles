@@ -47,13 +47,6 @@ fi
 /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
   config status.showUntrackedFiles no
 
-# Install fzf
-if [ ! "$(command -v fzf)" ] ; then
-  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
-    submodule update --init .dotfiles/vendor/fzf
-  ~/.dotfiles/vendor/fzf/install --bin
-fi
-
 unset files
 unset GIT_URL
 unset BACKUP_DIR
@@ -65,3 +58,10 @@ rm -f "$HOME/README.md" "$HOME/LICENSE.md"
 
 # Make the bins executable
 [ -d ~/.bin/ ] && chmod +x ~/.bin/*
+
+# Install fzf
+if [ ! "$(command -v fzf)" ] ; then
+  /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" \
+    submodule update --init .dotfiles/vendor/fzf
+  ~/.dotfiles/vendor/fzf/install --bin
+fi
