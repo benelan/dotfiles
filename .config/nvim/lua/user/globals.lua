@@ -27,3 +27,11 @@ end, {
   'perl_provider',
   'ruby_provider'
 })
+
+if vim.fn.exists("g:neovide") == 1 then
+  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_scroll_animation_length = 0.1
+  vim.g.neovide_confirm_quit = false
+  vim.g.neovide_cursor_animation_length = 0.05
+  vim.g.neovide_cursor_trail_size = 0.05
+end

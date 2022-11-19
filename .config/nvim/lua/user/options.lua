@@ -45,7 +45,6 @@ vim.opt.foldlevelstart = 99                     -- start with all folds closed
 vim.opt.foldlevel = 99                          -- set the fold level to closed
 vim.opt.foldcolumn = "1"                        -- how many fold columns to display
 vim.opt.grepprg = "rg --vimgrep"                -- Use ripgrep instead of grep
-vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
 vim.opt.shortmess:append("c")                   -- hide all the completion messages, e.g. "match 1 of 2", "The only match", "Pattern not found"
 vim.opt.whichwrap:append("<,>,[,]")             -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
@@ -53,4 +52,4 @@ vim.opt.confirm = true                          -- raise a dialog instead of fai
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
 vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-
+vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h12,monospace:h12"
