@@ -166,8 +166,3 @@ alias aptup='sudo apt-get update && sudo apt-get upgrade'
 # Locks the session.
 alias lock='gnome-screensaver-command --lock'
 
-# Cheatsheets
-# -----------------------------------------------------------------------------
-cht() {
-  curl -A curl "https://cheat.sh/$1"
-}

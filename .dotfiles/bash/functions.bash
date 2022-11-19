@@ -468,6 +468,83 @@ function _array-dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
+# Cheatsheets
+# -----------------------------------------------------------------------------
+# https://github.com/chubin/cheat.sh
+# $ cht :help
+
+# cheatsheet
+cht() {
+    curl "https://cheat.sh/$1"
+}
+
+# cheatsheet -> editor
+chte() {
+    local query="${*:2}"
+    curl "https://cheat.sh/$1" | $EDITOR
+}
+
+# cheatsheet -> clipboard
+chtc() {
+    local query="${*:2}"
+    curl "https://cheat.sh/$1/${query// /+}?QT" | cb
+}
+
+# cheatsheet: javascript
+cjs() {
+    local query="$*"
+    curl "https://cheat.sh/javascript/${query// /+}" 
+}
+
+# cheatsheet: javascript -> editor
+cjse() {
+    local query="$*"
+    curl "https://cheat.sh/javascript/${query// /+}?T" | $EDITOR buf.js
+}
+
+# cheatsheet: javascript -> clipboard
+cjsc() {
+    local query="$*"
+    curl "https://cheat.sh/javascript/${query// /+}?cQT" | cb 
+}
+
+# cheatsheet: typescript
+cts() {
+    local query="$*"
+    curl "https://cheat.sh/typescript/${query// /+}"
+}
+
+# cheatsheet: typescript -> editor
+ctse() {
+    local query="$*"
+    curl "https://cheat.sh/typescript/${query// /+}?T" | $EDITOR buf.ts
+}
+
+# cheatsheet: typescript -> clipboard
+ctsc() {
+    local query="$*"
+    curl "https://cheat.sh/typescript/${query// /+}?QT" | cb 
+}
+
+# cheatsheet: shell
+csh() {
+    local query="$*"
+    curl "https://cheat.sh/bash/${query// /+}"
+}
+
+# cheatsheet: shell -> editor
+cshe() {
+    local query="$*"
+    curl "https://cheat.sh/bash/${query// /+}?T" | $EDITOR buf.bash
+}
+
+# cheatsheet: shell -> clipboard
+cshc() {
+    local query="$*"
+    curl "https://cheat.sh/bash/${query// /+}?cQT" | cb 
+}
+
+
 # Misc
 #---------------------------------------------------------------------------------
 
