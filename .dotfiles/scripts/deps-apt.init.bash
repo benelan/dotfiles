@@ -32,9 +32,11 @@ function add_ppa() {
 
 apt_packages+=(
   wget
-  gpg
+  gnupg
+  lsb-release
   git
   apt-transport-https
+  ca-certificates
   build-essential
   make
   golang
@@ -97,13 +99,29 @@ if [[ ! "$(type -P protonvpn-cli)" ]]; then
   deb_sources+=(https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb)
 fi
 
-  if [[ ! "$(type -P gh)" ]]; then
-    # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
-    gpg_keys+=("https://cli.github.com/packages/githubcli-archive-keyring.gpg")
-    apt_source_files+=(github-cli)
-    apt_source_texts+=("deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/github-cli-archive-keyring.gpg] https://cli.github.com/packages stable main")
-    apt_packages+=(gh)
-  fi
+if [[ ! "$(type -P gh)" ]]; then
+  # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+  gpg_keys+=("https://cli.github.com/packages/githubcli-archive-keyring.gpg")
+  apt_source_files+=(github-cli)
+  apt_source_texts+=("deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/github-cli.gpg] https://cli.github.com/packages stable main")
+  apt_packages+=(gh)
+fi
+
+if [[ ! "$(type -P docker)" ]]; then
+  # https://docs.docker.com/engine/install/ubuntu
+  # Alternatively, an install script is provided: 
+  # https://get.docker.com/
+  gpg_keys+=("https://download.docker.com/linux/ubuntu/gpg")
+  apt_source_files+=(docker)
+  apt_source_texts+=("deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable")
+  apt_packages+=(
+    docker-ce
+    docker-ce-cli
+    containerd.io 
+    docker-compose-plugin
+  )
+fi
 
 # Desktop Environment packages
 #----------------------------------------------------------------------
@@ -128,7 +146,7 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
     # https://brave.com/linux/
     gpg_keys+=("https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg")
     apt_source_files+=(brave-browser-release)
-    apt_source_texts+=("deb [signed-by=/usr/share/keyrings/brave-browser-release-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main")
+    apt_source_texts+=("deb [signed-by=/usr/share/keyrings/brave-browser-release.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main")
     apt_packages+=(brave-browser)
   fi
 
@@ -254,7 +272,7 @@ function setdiff() {
 #----------------------------------------------------------------------
 
 # Add GPG keys.
-function __temp() { [[ ! -e /usr/share/keyrings/"$1"-archive-keyring.gpg ]]; }
+function __temp() { [[ ! -e /usr/share/keyrings/"$1".gpg ]]; }
 gpg_key_i=($(array_filter_i gpg_keys __temp))
 
 if ((${#gpg_key_i[@]} > 0)); then
@@ -262,7 +280,7 @@ if ((${#gpg_key_i[@]} > 0)); then
   for i in "${gpg_key_i[@]}"; do
     source_file=${apt_source_files[i]}
     gpg_key=${gpg_keys[i]}
-    sudo curl -fsSLo /usr/share/keyrings/"$source_file"-archive-keyring.gpg "$gpg_key"
+    sudo curl -fsSLo /usr/share/keyrings/"$source_file".gpg "$gpg_key"
   done
 fi
 
@@ -340,5 +358,5 @@ function install_from_zip() {
   fi
 }
 
-# install stuff that relies on other deps
+# install stuff that relies on other deps and cleanup
 type -t post_install >/dev/null && post_install
