@@ -186,7 +186,6 @@ alias gunhide='git update-index --no-assume-unchanged'
 # removes all local branches which have been merged into the default branch
 alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read branch; do mergeBase=$(git merge-base "$(gbdefault)" "$branch") && [[ $(git cherry "$(gbdefault)" $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done && git fetch --prune --all'
 
-
 # Dotfiles
 # -----------------------------------------------------------------------------
 
@@ -195,13 +194,13 @@ alias gbclean='git checkout -q "$(gbdefault)" && git for-each-ref refs/heads/ "-
 # $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
 # The whole home directory besides the dotfiles is untracked.
 # Prevent `dot clean` so everything isn't deleted
- dot() {
-  if [ "$1" = "clean" ] ; then 
-    echo "Don't delete your home directory, dumbass"
-  else
-    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
-  fi
- }
+dot() {
+    if [ "$1" = "clean" ]; then
+        echo "Don't delete your home directory, dumbass"
+    else
+        /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
+    fi
+}
 
 alias d='dot'
 

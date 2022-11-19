@@ -5,9 +5,10 @@ exists() {
 }
 
 EDITOR='vi'
-exists nvim && EDITOR='nvim'        || {
-exists vim && EDITOR='vim';   } || {
-exists nano && EDITOR='nano'; 
+exists nvim && EDITOR='nvim' || {
+    exists vim && EDITOR='vim'
+} || {
+    exists nano && EDITOR='nano'
 }
 export EDITOR
 
@@ -49,7 +50,7 @@ NOWELCOME=1
 export CLICOLOR GREP_COLOR NOSPLASH NOWELCOME
 
 # If HOSTNAME isn't set by this shell, we'll do it
-if [ -z "$HOSTNAME" ] ; then
+if [ -z "$HOSTNAME" ]; then
     HOSTNAME=$(uname -n)
 fi
 

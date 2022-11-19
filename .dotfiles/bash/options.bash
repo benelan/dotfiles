@@ -16,7 +16,7 @@ HISTTIMEFORMAT='%F %T  '
 # shells instead of the default "last window closed" history.
 
 if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
-  PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+    PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
 # Enable `vi` editing mode.
@@ -75,21 +75,21 @@ bind "set menu-complete-display-prefix on"
 # These options only exist since Bash 4.0-alpha
 if ((BASH_VERSINFO[0] >= 4)); then
 
-  # Correct small errors in directory names during completion
-  shopt -s dirspell
-  # Allow double-star globs to match files and recursive paths
-  shopt -s globstar
+    # Correct small errors in directory names during completion
+    shopt -s dirspell
+    # Allow double-star globs to match files and recursive paths
+    shopt -s globstar
 
-  # Warn me about stopped jobs when exiting
-  # Available since 4.0, but only set it if >=4.1 due to bug:
-  # <https://lists.gnu.org/archive/html/bug-bash/2009-02/msg00176.html>
-  if ((BASH_VERSINFO[1] >= 1)); then
-    shopt -s checkjobs
-  fi
+    # Warn me about stopped jobs when exiting
+    # Available since 4.0, but only set it if >=4.1 due to bug:
+    # <https://lists.gnu.org/archive/html/bug-bash/2009-02/msg00176.html>
+    if ((BASH_VERSINFO[1] >= 1)); then
+        shopt -s checkjobs
+    fi
 
-  # Expand variables in directory completion
-  # Only available since 4.3
-  if ((BASH_VERSINFO[1] >= 3)); then
-    shopt -s direxpand
-  fi
+    # Expand variables in directory completion
+    # Only available since 4.3
+    if ((BASH_VERSINFO[1] >= 3)); then
+        shopt -s direxpand
+    fi
 fi

@@ -10,9 +10,8 @@ alias plz='sudo $(fc -ln -1)'
 alias sudo='sudo '
 
 # Searches history.
-alias h='history_search' # see file `functions`
+alias h='history_search'          # see file `functions`
 alias hs='history_session_search' # see file `functions`
-
 
 alias md='mkdir -p'
 alias rd='rmdir'
@@ -26,7 +25,6 @@ alias pc="echo @{0} | xclip -selection c -o"
 # copy to clipboard from file
 alias ccf="xclip -se c <"
 
-
 # Directory listing/traversal
 
 LS_COLORS=$(is-supported "ls --color" --color -G)
@@ -34,21 +32,20 @@ LS_TIMESTYLEISO=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
 LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-directories-first)
 
 # list all files/dirs, short format, sort by time
-alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST';
+alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST'
 # list all files/dirs, long format, sort by time
-alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
 # list all files/dirs, long format, sort by name
-alias lsa='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+alias lsa='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
 # list all files/dirs, long format, sort by size
-alias lss='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+alias lss='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
 # List directories, long format, sort by time
-alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO';
+alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO'
 # Lists hidden files, long format, sort by time
-alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST';
+alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
 # all files/dirs recursively, excluding common auto-generated content
-alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS';
+alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS'
 alias lp="stat -c '%a %n' *"
-
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -57,7 +54,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # Colorizes diff output, if possible.
-if type 'colordiff' > /dev/null 2>&1; then
+if type 'colordiff' >/dev/null 2>&1; then
     alias diff='colordiff'
 fi
 
@@ -66,15 +63,13 @@ alias fdd='find . -type d -name'
 # Finds files.
 alias fdf='find . -type f -name'
 
-
 # Global aliases
 if $(is-supported "alias -g"); then
-  alias -g G="| grep -i"
-  alias -g H="| head"
-  alias -g T="| tail"
-  alias -g L="| less"
+    alias -g G="| grep -i"
+    alias -g H="| head"
+    alias -g T="| tail"
+    alias -g L="| less"
 fi
-
 
 # List declared aliases, functions, paths
 alias aliases="alias | sed 's/=.*//'"
@@ -91,36 +86,31 @@ alias snano='sudo nano'
 alias svim='sudo ${VISUAL:-vim}'
 alias vimh='vim -c ":h | only"'
 
-
 # Reloas the shell.
 alias reload='exec $SHELL -l'
-
 
 # Intuitive map function
 # For example, to list all directories that contain a certain file:
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
 
-
 # Navigation
 # -----------------------------------------------------------------------------
 
-alias cd..='cd ..'       # Common misspelling for going up one directory
-alias ~="cd ~"           # `cd` is probably faster to type though
-alias -- -='cd -'        # Go back
+alias cd..='cd ..' # Common misspelling for going up one directory
+alias ~="cd ~"     # `cd` is probably faster to type though
+alias -- -='cd -'  # Go back
 
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-
 # Shortcuts
 alias d="cd ~/dev"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias dc="cd ~/Documents"
-
 
 # Time
 # -----------------------------------------------------------------------------
@@ -146,26 +136,24 @@ alias week='date +"%Y-W%V"'
 # Gets weekday number.
 alias weekday='date +"%u"'
 
-
 # Weather
 # -----------------------------------------------------------------------------
 
 alias wttr="curl wttr.in"
 
 # Displays detailed weather and forecast.
-if command -v curl > /dev/null; then
+if command -v curl >/dev/null; then
     alias forecast='curl --silent --compressed --max-time 10 --url "https://wttr.in?F"'
 else
     alias forecast='wget -qO- --compression=auto --timeout=10 "https://wttr.in?F"'
 fi
 
 # Displays current weather.
-if command -v curl > /dev/null; then
+if command -v curl >/dev/null; then
     alias weather='curl --silent --compressed --max-time 10 --url "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 else
     alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 fi
-
 
 # Ubuntu
 # -----------------------------------------------------------------------------
@@ -176,4 +164,3 @@ alias aptup='sudo apt-get update && sudo apt-get upgrade'
 
 # Locks the session.
 alias lock='gnome-screensaver-command --lock'
-
