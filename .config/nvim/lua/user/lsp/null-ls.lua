@@ -15,14 +15,28 @@ null_ls.setup {
   sources = {
     code_actions.gitsigns,
     code_actions.proselint,
-    diagnostics.actionlint,
+    code_actions.shellcheck,
+    diagnostics.actionlint.with({
+      runtime_condition = function()
+        return vim.api.nvim_buf_get_name(
+          vim.api.nvim_get_current_buf()
+        ):match "github/workflows" ~= nil
+      end
+    }),
     diagnostics.codespell,
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
-    formatting.prettier,
-    formatting.shellharden,
-    formatting.shfmt,
+    formatting.prettier.with({
+      disabled_filetypes = { "json", "jsonc", "json5" }
+    }),
+    formatting.jq.with({
+      extra_filetypes = { "jsonc", "json5" }
+    }),
+    -- formatting.shellharden,
+    formatting.shfmt.with({
+      extra_args = { "-i", "4", "-ci" }
+    }),
     formatting.stylelint,
     formatting.trim_whitespace
   },
