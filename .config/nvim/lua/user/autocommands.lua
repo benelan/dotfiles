@@ -2,8 +2,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
     vim.cmd([[
-      nnoremap <silent> <buffer> q :close<CR> 
-      set nobuflisted 
+      nnoremap <silent> <buffer> q :close<CR>
+      set nobuflisted
     ]])
   end
 })
@@ -72,9 +72,8 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
 
 
 -- return to the last edit position when opening files
-vim.api.nvim_create_autocmd({ "BufReadPost"}, {
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
   callback = function()
     vim.cmd [[if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
   end
 })
-

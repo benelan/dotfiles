@@ -40,10 +40,8 @@ if not lspconfig_status_ok then
   return
 end
 
-local opts = {}
-
 for _, server in pairs(servers) do
-  opts = {
+  local opts = {
     on_attach = require("user.lsp.handlers").on_attach,
     capabilities = require("user.lsp.handlers").capabilities,
   }
