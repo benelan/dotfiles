@@ -94,6 +94,7 @@ fi
 
 # Sends HTTP requests.
 command -v lwp-request >/dev/null 2>&1 && for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+    # shellcheck disable=2139
     alias $method="lwp-request -m '$method'"
 done
 unset method

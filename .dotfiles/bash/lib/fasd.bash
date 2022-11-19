@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# shellcheck disable=all
 
 # Fasd (this file) can be sourced or executed by any POSIX compatible shell.
 
@@ -446,7 +447,7 @@ $(fasd --backend $each)"
                 *) local prior='times[i] * frecent(la[i])' ;;
             esac
 
-            if [ "$fnd" ]; then # dafault matching
+            if [ "$fnd" ]; then # default matching
                 local bre="$(printf %s\\n "$fnd" | sed 's/\([*\.\\\[]\)/\\\1/g
         s@ @[^|]*@g;s/\$$/|/')"
                 bre='^[^|]*'"$bre"'[^|/]*|'
@@ -456,7 +457,7 @@ $(fasd --backend $each)"
                 done)"
                 if [ "$_ret" ]; then
                     _fasd_data="$_ret"
-                else # no case mathcing
+                else # no case matching
                     _ret="$(printf %s\\n "$_fasd_data" | grep -i "$bre")"
                     [ "$_ret" ] && _ret="$(printf %s\\n "$_ret" | while read -r line; do
                         [ -${typ:-e} "${line%%\|*}" ] && printf %s\\n "$line"
@@ -476,7 +477,7 @@ $(fasd --backend $each)"
                         [ "$_ret" ] && _fasd_data="$_ret" || _fasd_data=
                     fi
                 fi
-            else # no query arugments
+            else # no query aruegments
                 _fasd_data="$(printf %s\\n "$_fasd_data" | while read -r line; do
                     [ -${typ:-e} "${line%%\|*}" ] && printf %s\\n "$line"
                 done)"

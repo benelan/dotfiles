@@ -13,5 +13,5 @@ export FFF_FAV9=~/.config/nvim/init.lua
 
 f() {
     fff "$@"
-    cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")"
+    cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
 }

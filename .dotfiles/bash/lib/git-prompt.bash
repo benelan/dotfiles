@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=all
 # bash/zsh git prompt support
 #
 # Copyright (C) 2006,2007 Shawn O. Pearce <spearce@spearce.org>
@@ -496,7 +496,7 @@ __git_ps1() {
                         describe)
                             git describe HEAD
                             ;;
-                        * | default)
+                        *)
                             git describe --tags --exact-match HEAD
                             ;;
                     esac 2>/dev/null

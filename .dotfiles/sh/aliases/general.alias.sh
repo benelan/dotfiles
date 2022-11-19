@@ -64,6 +64,7 @@ alias fdd='find . -type d -name'
 alias fdf='find . -type f -name'
 
 # Global aliases
+# shellcheck disable=2091
 if $(is-supported "alias -g"); then
     alias -g G="| grep -i"
     alias -g H="| head"
@@ -164,3 +165,9 @@ alias aptup='sudo apt-get update && sudo apt-get upgrade'
 
 # Locks the session.
 alias lock='gnome-screensaver-command --lock'
+
+# Cheatsheets
+# -----------------------------------------------------------------------------
+cht() {
+  curl -A curl "https://cheat.sh/$1"
+}

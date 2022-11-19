@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=2207
 
 _alacritty() {
     local i cur prev opts cmd

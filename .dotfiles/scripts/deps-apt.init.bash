@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=1087
 
 # This script installs the Ubuntu/Debian packages I use
 # The dotfiles.init.bash script needs to run first
@@ -232,14 +233,17 @@ function __array_filter() {
     for __i__ in $(eval echo "\${!$__arr__[@]}"); do
         __val__="$(eval echo "\${$__arr__[__i__]}")"
         if [[ "$1" ]]; then
+            # shellcheck disable=2086
             "$@" "$__val__" $__i__ >/dev/null
         else
             [[ "$__val__" ]]
         fi
+        # shellcheck disable=2181
         if [[ "$?" == 0 ]]; then
             if [[ $__mode__ == 1 ]]; then
                 eval echo "\"\${$__arr__[__i__]}\""
             else
+                # shellcheck disable=2086
                 echo $__i__
             fi
         fi
@@ -254,7 +258,9 @@ function setdiff() {
     fi
     if [[ "$1" ]]; then
         local setdiff_new setdiff_cur setdiff_out
+        # shellcheck disable=2206
         setdiff_new=($1)
+        # shellcheck disable=2206
         setdiff_cur=($2)
     fi
     setdiff_out=()
@@ -276,6 +282,7 @@ function setdiff() {
 
 # Add GPG keys.
 function __temp() { [[ ! -e /usr/share/keyrings/"$1".gpg ]]; }
+# shellcheck disable=2207
 gpg_key_i=($(array_filter_i gpg_keys __temp))
 
 if ((${#gpg_key_i[@]} > 0)); then
@@ -289,6 +296,7 @@ fi
 
 # Add APT sources.
 function __temp() { [[ ! -e /etc/apt/sources.list.d/"$1".list ]]; }
+# shellcheck disable=2207
 source_i=($(array_filter_i apt_source_files __temp))
 
 if ((${#source_i[@]} > 0)); then
@@ -314,6 +322,7 @@ sudo apt -qy upgrade
 
 # Install APT packages
 installed_apt_packages="$(dpkg --get-selections | grep -v deinstall | awk 'BEGIN{FS="[\t:]"}{print $1}' | uniq)"
+# shellcheck disable=2207
 apt_packages=($(setdiff "${apt_packages[*]}" "$installed_apt_packages"))
 
 if ((${#apt_packages[@]} > 0)); then
@@ -328,6 +337,7 @@ fi
 
 # Install debs
 function __temp() { [[ ! -e "$1" ]]; }
+# shellcheck disable=2207
 deb_installed_i=($(array_filter_i deb_installed __temp))
 
 if ((${#deb_installed_i[@]} > 0)); then
@@ -348,18 +358,20 @@ function install_from_zip() {
     local name=$1 url=$2 bins b zip tmp
     shift 2
     bins=("$@")
+    # shellcheck disable=2206
     [[ "${#bins[@]}" == 0 ]] && bins=($name)
-    if [[ ! "$(which $name)" ]]; then
+    if [[ ! "$(which "$name")" ]]; then
         mkdir -p "$installers_path"
         e_header "Installing $name"
+        # shellcheck disable=2001
         zip="$installers_path/$(echo "$url" | sed 's#.*/##')"
         wget -O "$zip" "$url"
         tmp=$(mktemp -d)
         unzip "$zip" -d "$tmp"
         for b in "${bins[@]}"; do
-            sudo cp "$tmp/$b" "/usr/local/bin/$(basename $b)"
+            sudo cp "$tmp/$b" "/usr/local/bin/$(basename "$b")"
         done
-        rm -rf $tmp
+        rm -rf "$tmp"
     fi
 }
 

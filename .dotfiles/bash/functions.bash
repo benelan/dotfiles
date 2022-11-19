@@ -128,10 +128,11 @@ duf() {
 
 # Get gzipped file size
 gz() {
-    local ORIGSIZE=$(wc -c <"$1")
-    local GZIPSIZE=$(gzip -c "$1" | wc -c)
-    local RATIO=$(echo "$GZIPSIZE * 100/ $ORIGSIZE" | bc -l)
-    local SAVED=$(echo "($ORIGSIZE - $GZIPSIZE) * 100/ $ORIGSIZE" | bc -l)
+    local ORIGSIZE GZIPSIZE RATIO SAVED
+    ORIGSIZE=$(wc -c <"$1")
+    GZIPSIZE=$(gzip -c "$1" | wc -c)
+    RATIO=$(echo "$GZIPSIZE * 100/ $ORIGSIZE" | bc -l)
+    SAVED=$(echo "($ORIGSIZE - $GZIPSIZE) * 100/ $ORIGSIZE" | bc -l)
     printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
 }
 
@@ -139,7 +140,8 @@ gz() {
 
 # Create a data URL from a file
 dataurl() {
-    local MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
+    local MIMETYPE
+    MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
     if [[ $MIMETYPE == "text/*" ]]; then
         MIMETYPE="${MIMETYPE};charset=utf-8"
     fi
@@ -157,14 +159,14 @@ unshorten() {
 
 # Show 256 TERM colors
 colors() {
-    local X=$(tput op)
-    local Y=$(printf %$((COLUMNS - 6))s)
+    local Y
+    Y="$(printf %$((COLUMNS - 6))s)"
     for i in {0..256}; do
         o=00$i
-        echo -e "${o:${#o}-3:3}" $(
+        echo -e "${o:${#o}-3:3}" "$(
             tput setaf "$i"
             tput setab "$i"
-        )"${Y// /=}""$X"
+        )""${Y// /=}""$(tput op)"
     done
 }
 
@@ -184,6 +186,7 @@ function sudo-command-line() {
 # Define shortcut keys: [Esc] [Esc]
 
 # Readline library requires bash version 4 or later
+# shellcheck disable=2128
 if [ "$BASH_VERSINFO" -ge 4 ]; then
     bind -x '"\e\e": sudo-command-line'
 fi
@@ -330,13 +333,6 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# make one or more directories and cd into the last one
-function mcd() {
-    mkdir -p -- $@ && cd -- "${!#}" || return
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # Search history.
 
 h() {
@@ -372,8 +368,8 @@ function mnt() {
 # Git
 #---------------------------------------------------------------------------------
 
-#-----> git wipe
-## commit all changes for safety and reset
+# git wipe
+# commit all changes for safety and reset
 gwipe() {
     git add -A
     git commit -qm "WIPEPOINT $(printf "$(%Y-%m-%d %H:%M:%S)T\n" -1)"
@@ -382,27 +378,50 @@ gwipe() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#-----> git checkout (find)
-## makes sure everything is up to date with master
-## you can checkout using any word in the commit
-## e.g. to checkout benelan/2807-consistent-slot-doc: gcof slot
+# git checkout (find)
+# makes sure everything is up to date with master
+# you can checkout using any word in the commit
+# e.g. to checkout benelan/2807-consistent-slot-doc: gcof slot
 function gcof() {
-    git checkout "$(gbdefault)" && git pull && git branch | grep "$1" | xargs git checkout && git merge "$(gbdefault)"
+    git checkout "$(gbdefault)"
+    git pull
+    git branch | grep "$1" | xargs git checkout
+    git merge "$(gbdefault)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#-----> git checkout (new)
-## creates a new branch starting with my username
-## usage (to create branch benelan/2807-slots): gcon 2807-slots
+# git checkout (new)
+# creates a new branch starting with my username
+# usage (to create branch benelan/2807-slots): gcon 2807-slots
 function gcon() {
-    git checkout "$(gbdefault)" && git pull && git checkout -b benelan/"$1" 2>/dev/null || git checkout benelan/"$1" && git merge "$(gbdefault)"
+    git checkout "$(gbdefault)"
+    git pull
+    git checkout -b "benelan/$1" 2>/dev/null || git checkout "benelan/$1"
+    git merge "$(gbdefault)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#-----> git-extras-big-blobs
-## human readably list the blobs by size, excluding HEAD
+# git-branch-clean
+# removes all local branches which have been merged into the default branch
+gbclean() {
+    git checkout -q "$(gbdefault)"
+    git for-each-ref refs/heads/ "--format=%(refname:short)" |
+        grep -v -e main -e master -e develop -e dev |
+        while read -r branch; do
+            mergeBase=$(git merge-base "$(gbdefault)" "$branch")
+            [[ "$(git cherry "$(gbdefault)" "$(
+                git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$mergeBase" -m _
+            )")" == "-"* ]] && git branch -D "$branch"
+        done
+    git fetch --prune --all
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# git-extras-big-blobs
+# human readably list the blobs by size, excluding HEAD
 function gxbigblobs() {
     git rev-list --objects --all |
         git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
@@ -447,4 +466,12 @@ function _array-contains-element() {
 # Dedupe an array (without embedded newlines).
 function _array-dedup() {
     printf '%s\n' "$@" | sort -u
+}
+
+# Misc
+#---------------------------------------------------------------------------------
+
+# make one or more directories and cd into the last one
+function mcd() {
+    mkdir -p -- "$@" && cd -- "${!#}" || return
 }

@@ -18,9 +18,9 @@ if [[ $(find "$FONTS_DIR" -iname '*Nerd Font*' | wc -l) -lt 5 ]]; then
     echo "Installing fonts"
     mkdir -p "$FONTS_DIR"
     for f in "${fonts[@]}"; do
-        curl -sS "$f" >"$FONTS_DIR/file.zip"
-        unzip "$FONTS_DIR/file.zip"
-        rm "$FONTS_DIR/file.zip"
+        curl -sS "$f" >"$FONTS_DIR/nerd.zip"
+        unzip "$FONTS_DIR/nerd.zip"
+        rm "$FONTS_DIR/nerd.zip"
     done
     # reload the font cache
     fc-cache -rf

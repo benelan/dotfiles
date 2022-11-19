@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=2207,2086,2206
 # Bash completion support for ssh.
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/\:/}

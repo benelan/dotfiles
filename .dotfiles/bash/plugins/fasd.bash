@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=1090
 
 # fasd - https://github.com/clvv/fasd
 function fasd() {
@@ -7,7 +8,7 @@ function fasd() {
 }
 
 fasd_cache=~/.dotfiles/cache/fasd_startup
-if [ "$(type -P fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
+if [ ! -s "$fasd_cache" ]; then
     fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >|"$fasd_cache"
 fi
 source "$fasd_cache"

@@ -20,10 +20,13 @@ fi
 
 # Open the selected file in the default editor
 fe() {
-    local IFS=$'\n'
     local files
-    files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-    [[ -n "$files" ]] && "${EDITOR:-vim}" "${files[@]}"
+    while IFS='' read -r line; do
+        files+=("$line")
+    done < <(fzf-tmux --query="$1" --multi --select-1 --exit-0)
+    # mapfile -t files < <(fzf-tmux --query="$1" --multi --select-1 --exit-0)
+    # files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+    [[ -n "${files[0]}" ]] && "${EDITOR:-vim}" "${files[@]}"
 }
 
 # cd to the selected directory

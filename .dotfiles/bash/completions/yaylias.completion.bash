@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck shell=bash
+# shellcheck disable=2145
 
 # References:
 # http://superuser.com/a/437508/119764

@@ -12,6 +12,7 @@ if [[ "$(type -P starship)" ]]; then
     fi
     eval "$(starship init bash)"
 else
+    # shellcheck disable=1090
     source ~/.dotfiles/bash/lib/git-prompt.bash
 
     if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
@@ -25,15 +26,16 @@ else
         bold=$(tput bold)
         reset=$(tput sgr0)
         # Gruvbox colors from: https://github.com/morhetz/gruvbox
-        export black=$(tput setaf 235)
-        export blue=$(tput setaf 66)
-        export aqua=$(tput setaf 72)
-        export green=$(tput setaf 106)
-        export orange=$(tput setaf 166)
-        export purple=$(tput setaf 132)
-        export red=$(tput setaf 124)
-        export white=$(tput setaf 230)
-        export yellow=$(tput setaf 172)
+        black=$(tput setaf 235)
+        blue=$(tput setaf 66)
+        aqua=$(tput setaf 72)
+        green=$(tput setaf 106)
+        orange=$(tput setaf 166)
+        purple=$(tput setaf 132)
+        red=$(tput setaf 124)
+        white=$(tput setaf 230)
+        yellow=$(tput setaf 172)
+        export black blue aqua green orange purple red white yellow
     else
         bold=''
         reset="\e[0m"
@@ -63,12 +65,12 @@ else
     fi
 
     # get status of git repo in prompt
-    GIT_PS1_SHOWDIRTYSTATE="yes"
-    GIT_PS1_SHOWSTASHSTATE="yes"
-    GIT_PS1_SHOWUNTRACKEDFILES="yes"
-    GIT_PS1_SHOWUPSTREAM="verbose"
-    GIT_PS1_SHOWCONFLICTSTATE="yes"
-    GIT_PS1_SHOWCOLORHINTS="yes"
+    export GIT_PS1_SHOWDIRTYSTATE="yes"
+    export GIT_PS1_SHOWSTASHSTATE="yes"
+    export GIT_PS1_SHOWUNTRACKEDFILES="yes"
+    export GIT_PS1_SHOWUPSTREAM="verbose"
+    export GIT_PS1_SHOWCONFLICTSTATE="yes"
+    export GIT_PS1_SHOWCOLORHINTS="yes"
 
     pre_prompt="\n"
     pre_prompt+="\[${bold}\]\[${userStyle}\]\u" # username
