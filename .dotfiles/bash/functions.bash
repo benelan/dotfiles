@@ -69,14 +69,24 @@ function _completion_exists() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# `start` with no arguments opens the current directory, otherwise opens the given
+# `open` with no arguments opens the current directory, otherwise opens the given
 # location
-function start() {
+function open() {
     if [ $# -eq 0 ]; then
-        start .
+        open .
     else
-        start "$@"
+        open "$@"
     fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function clip() {
+    xclip -selection clipboard "$@"
+}
+
+function paste() {
+    xclip -o -selection clipboard 
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,8 +129,8 @@ function extract {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-duf() {
+# get the human readable size of the directory
+dudir() {
     du --max-depth="${1:-0}" -c | sort -r -n | awk '{split("K M G",v); s=1; while($1>1024){$1/=1024; s++} print int($1)v[s]"\t"$2}'
 }
 
@@ -207,9 +217,15 @@ function pathmunge() {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+function crt {
+    openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
+        -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # add entry to ssh config
-function add_ssh() {
+function add-ssh() {
     [[ $# -ne 3 ]] && echo "add_ssh host hostname user" && return 1
     [[ ! -d ~/.ssh ]] && mkdir -m 700 ~/.ssh
     [[ ! -e ~/.ssh/config ]] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
@@ -245,15 +261,6 @@ function ips() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# checks whether a website is down for you, or everybody
-function down4me() {
-    # param '1: website url'
-    # example '$ down4me http://www.google.com
-    curl -Ls "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # displays your ip address, as seen by the Internet
 function myip() {
     list=("http://myip.dnsomatic.com/" "http://checkip.dyndns.com/" "http://checkip.dyndns.org/")
@@ -268,27 +275,34 @@ function myip() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# generates random password from dictionary words, w optional integer length
-function passgen() {
-    local -i i length=${1:-4}
-    local pass
-    # shellcheck disable=SC2034
-    pass="$(for i in $(eval "echo {1..$length}"); do pickfrom /usr/share/dict/words; done)"
-    echo "With spaces (easier to memorize): ${pass//$'\n'/ }"
-    echo "Without spaces (easier to brute force): ${pass//$'\n'/}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# preview markdown file in a browser
-if _command_exists markdown && _command_exists browser; then
-    function pmdown() {
-        # param '1: markdown file'
-        # example '$ pmdown README.md'
-        markdown "${1?}" | browser
+if _command_exists inotifywait; then
+    # runs a command when a target file is modified
+    # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
+    function onmodify() {
+        TARGET=${1:-.}
+        shift
+        echo "$TARGET" "$*"
+        while inotifywait --exclude '.git' -qq -r -e close_write,moved_to,move_self "$TARGET"; do
+            sleep 0.2
+            bash -c "$*"
+            echo
+        done
     }
 fi
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# https://www.uninformativ.de/git/bin-pub/file/vipe.html
+# Use $EDITOR to edit text inside a pipeline
+# Write all data to a temporary file, edit that file, then print it
+# again.
+function vipe() {
+    tmp=$(mktemp)
+    trap 'rm -f "$tmp"' 0
+    cat >"$tmp"
+    ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
+    cat "$tmp"
+}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # runs argument in background
@@ -313,7 +327,7 @@ function usage() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # back up file with timestamp
-function buf() {
+function backup-file() {
     # param 'filename'
     local filename="${1?}" filetime
     filetime=$(date +%Y%m%d_%H%M%S)
@@ -360,23 +374,98 @@ function s() {
     #    │         └─ Display ANSI color escape sequences in raw form.
     #    └─ Don't clear the screen after quitting less.
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Lists drive mounts.
 function mnt() {
     mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched Git SHA ranges (e.g., 123456..654321)
+function match-git-ranges() {
+    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+' "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched IP addresses
+function match-ips() {
+    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched URLs
+function match-urls() {
+    # shellcheck disable=2016
+    grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if _command_exists jq; then
+    function find-emoji() {
+        emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
+
+        if [ ! -r "$emoji_cache" ]; then
+            curl -sSL https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json -o "$emoji_cache"
+        fi
+
+        jq <"$emoji_cache" -r '.[] | [
+        .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
+    ] | @tsv
+' | fzf --prompt 'Search emojis > ' | cut -f1
+    }
+fi
+
 # Git
 #---------------------------------------------------------------------------------
 
-# git wipe
-# commit all changes for safety and reset
-gwipe() {
+# https://git.wiki.kernel.org/index.php/ExampleScripts#Copying_all_changed_files_from_the_last_N_commits
+# $ gcopy "/destination/path" number_of_revisions
+function gcopy() {
+    for file in $(dot diff-tree master~"$2" master --name-only -r); do
+        cp --parents "$file" "$1"
+    done
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# git wip (work in progress)
+# commit changes that will cleaned up later during rebase
+gwip() {
     git add -A
-    git commit -qm "WIPEPOINT $(printf "$(%Y-%m-%d %H:%M:%S)T\n" -1)"
+    git commit -qm "!fixup WIP POINT > $(date -Iseconds)"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# git reset
+# commit all changes for safety and reset
+greset() {
+    git add -A
+    git commit -qm "!fixup RESET POINT > $(date -Iseconds)"
     git reset HEAD --hard
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# git checkout branch (cleaned)
+# Creates a new, up to date branch with all of the changes
+# from the current branch, but without the messy commit history.
+# Helpful when used with gwip and greset (above).
+function gcob-cleaned() {
+    current_branch="$(git rev-parse --abbrev-ref HEAD)"
+    git stash
+    git checkout "$(gbdefault)"
+    git pull
+    git checkout -b "$current_branch-cleaned"
+    git merge --squash "$current_branch"
+    git reset
+    git stash pop
+}
 
 # git checkout (find)
 # makes sure everything is up to date with master
@@ -405,7 +494,7 @@ function gcon() {
 
 # git-branch-clean
 # removes all local branches which have been merged into the default branch
-gbclean() {
+gbprune() {
     git checkout -q "$(gbdefault)"
     git for-each-ref refs/heads/ "--format=%(refname:short)" |
         grep -v -e main -e master -e develop -e dev |
@@ -493,7 +582,7 @@ chtc() {
 # cheatsheet: javascript
 cjs() {
     local query="$*"
-    curl "https://cheat.sh/javascript/${query// /+}" 
+    curl "https://cheat.sh/javascript/${query// /+}"
 }
 
 # cheatsheet: javascript -> editor
@@ -505,7 +594,7 @@ cjse() {
 # cheatsheet: javascript -> clipboard
 cjsc() {
     local query="$*"
-    curl "https://cheat.sh/javascript/${query// /+}?cQT" | cb 
+    curl "https://cheat.sh/javascript/${query// /+}?cQT" | cb
 }
 
 # cheatsheet: typescript
@@ -523,7 +612,7 @@ ctse() {
 # cheatsheet: typescript -> clipboard
 ctsc() {
     local query="$*"
-    curl "https://cheat.sh/typescript/${query// /+}?QT" | cb 
+    curl "https://cheat.sh/typescript/${query// /+}?QT" | cb
 }
 
 # cheatsheet: shell
@@ -541,9 +630,8 @@ cshe() {
 # cheatsheet: shell -> clipboard
 cshc() {
     local query="$*"
-    curl "https://cheat.sh/bash/${query// /+}?cQT" | cb 
+    curl "https://cheat.sh/bash/${query// /+}?cQT" | cb
 }
-
 
 # Misc
 #---------------------------------------------------------------------------------
