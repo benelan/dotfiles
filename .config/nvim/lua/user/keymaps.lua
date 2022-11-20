@@ -78,13 +78,13 @@ keymap("x", "<leader>/", '<ESC><CMD>lua require("Comment.api").toggle.linewise(v
 
 
 vim.cmd [[
-" clear search highlights
-nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
-inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-vmap <C-L> <Esc><C-L>gv
+  " clear search highlights
+  nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
+  inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
+  vmap <C-L> <Esc><C-L>gv
 
-" Don't close window when deleting a buffer
-function! BufcloseCloseIt()
+  " Don't close window when deleting a buffer
+  function! BufcloseCloseIt()
     let l:currentBufNum = bufnr("%")
     let l:alternateBufNum = bufnr("#")
 
@@ -101,7 +101,43 @@ function! BufcloseCloseIt()
     if buflisted(l:currentBufNum)
         execute("bdelete! ".l:currentBufNum)
     endif
-endfunction
+  endfunction
 
 command! Bdelete call BufcloseCloseIt()
 ]]
+
+vim.cmd [[
+  if has('wsl')
+    let s:opencmd = 'wslview'
+  elseif (has('win32') || has('win64'))
+    let s:opencmd = 'start'
+  elseif has('mac')
+    let s:opencmd = 'open'
+  elseif has('unix')
+    let s:opencmd = 'xdg-open'
+  else
+    let s:opencmd = 'echo'
+  endif
+
+  function! HandleURL()
+    let l:line=getline(".")
+    if expand("%:t") == "package.json"
+      let l:pkg = matchlist(l:line, '\v"(.*)": "([>|^|~|0-9|=|<].*)"')
+      if len(l:pkg) > 0
+        let l:pkg_url = shellescape('https://www.npmjs.com/package/'.l:pkg[1], 1)
+        call system(s:opencmd..' '..l:pkg_url)
+        :redraw!
+      endif
+    else
+      let l:uri_match = matchstr(l:line, '[a-z]*:\/\/[^ >,;()"{}]*')
+      let l:uri = shellescape(l:uri_match, 1)
+      echom l:uri
+      if l:uri != ""
+        call system(s:opencmd..' '..l:uri)
+        :redraw!
+      endif
+    endif
+  endfunction
+
+  nnoremap <silent> gx :call HandleURL()<CR>
+  ]]
