@@ -37,16 +37,20 @@ apt_packages+=(
     git
     apt-transport-https
     ca-certificates
+    openssl
     build-essential
     make
     golang
     python3
+    ruby
+    perl
     curl
     htop
     btop
     imagemagick
     nmap
-    postgresql
+    socat
+    sqlite3
     duf
     telnet
     tree
@@ -54,6 +58,10 @@ apt_packages+=(
     mount
     gzip
     cron
+    datamash
+    pandoc
+    textlive-latex-recommended
+    librsvg2-bin
     coreutils
     vim
     grep
