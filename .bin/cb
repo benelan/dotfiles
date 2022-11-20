@@ -1,67 +1,66 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-LINUX_copy(){
+linux_copy() {
     cat | xclip -selection clipboard
 }
 
-LINUX_paste(){
+linux_paste() {
     xclip -selection clipboard -o
 }
 
-WSL_copy(){
+windows_wsl_copy() {
     cat | /mnt/c/Windows/System32/clip.exe
 }
 
-WSL_paste(){
+windows_wsl_paste() {
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Get-Clipboard | sed 's/\r//'
 }
 
-CYGWIN_copy(){
-    cat > /dev/clipboard
+windows_cygwin_copy() {
+    cat >/dev/clipboard
 }
 
-CYGWIN_paste(){
+windows_cygwin_paste() {
     cat /dev/clipboard
 }
 
-
-MAC_copy(){
+osx_copy() {
     cat | pbcopy
 }
 
-MAC_paste(){
+osx_paste() {
     pbpaste
 }
 
-stdin_is_a_pipe(){
+stdin_is_a_pipe() {
     [[ -p /dev/stdin ]]
 }
 
-stdin_is_a_tty(){
+stdin_is_a_tty() {
     [[ -t 0 ]]
 }
 
-stdin_is_pipe_like(){
+stdin_is_pipe_like() {
     stdin_is_a_pipe || ! stdin_is_a_tty
 }
 
-stdout_is_pipe_like(){
+stdout_is_pipe_like() {
     ! stdout_is_a_tty # meaning # it must be a pipe or redirection
 }
 
-stdout_is_a_tty(){
+stdout_is_a_tty() {
     [[ -t 1 ]]
 }
 
-requested_open_ended(){
+requested_open_ended() {
     [[ "${args[0]:-}" == "-" ]]
 }
 
-requested_test_suite(){
+requested_test_suite() {
     [[ "${args[0]:-}" == "--test" ]]
 }
 
-enable_tee_like_chaining(){
+enable_tee_like_chaining() {
     # see `man tee`
     if stdout_is_pipe_like; then
         "${os}"_paste
@@ -71,26 +70,13 @@ enable_tee_like_chaining(){
     fi
 }
 
-prevent_prompt_from_being_on_the_same_line(){
+prevent_prompt_from_being_on_the_same_line() {
     if stdout_is_a_tty; then # we don't have to be strict about not altering the output
         echo
     fi
 }
 
-detect_os(){
-    if [[ -f /proc/version ]] && grep -iq Microsoft /proc/version; then
-        printf WSL
-    else
-        case "$(uname -s)" in
-            Linux*)     printf LINUX;;
-            Darwin*)    printf MAC;;
-            CYGWIN*)    printf CYGWIN;;
-        esac
-    fi
-}
-
-test_suite(){
-    # setup
+test_suite() {
     printf '1234' | ${BASH_SOURCE[0]}
 
     printf "\n1. output to TTY\n"
@@ -98,25 +84,34 @@ test_suite(){
     printf "1234 should be above.\n"
 
     printf "\n2. output to pipe\n"
-    ${BASH_SOURCE[0]} | cat; echo
+    ${BASH_SOURCE[0]} | cat
+    echo
     printf "1234 should be above.\n"
 
     printf "\n3. input from pipe and output to pipe\n"
-    printf '1234' | ${BASH_SOURCE[0]} | cat; echo
+    printf '1234' | ${BASH_SOURCE[0]} | cat
+    echo
     printf "1234 should be above.\n"
 }
 
-function debug(){
-    stdin_is_a_pipe      && echo "stdin_is_a_pipe: 1"     >> /tmp/ono ||  echo "stdin_is_a_pipe: 0"     >> /tmp/ono
-    stdin_is_a_tty       && echo "stdin_is_a_tty: 1"      >> /tmp/ono ||  echo "stdin_is_a_tty: 0"      >> /tmp/ono
-    stdin_is_pipe_like   && echo "stdin_is_pipe_like: 1"  >> /tmp/ono ||  echo "stdin_is_pipe_like: 0"  >> /tmp/ono
-    stdout_is_pipe_like  && echo "stdout_is_pipe_like: 1" >> /tmp/ono ||  echo "stdout_is_pipe_like: 0" >> /tmp/ono
-    stdout_is_a_tty      && echo "stdout_is_a_tty: 1"     >> /tmp/ono ||  echo "stdout_is_a_tty: 0"     >> /tmp/ono
-    echo >> /tmp/ono
+function debug() {
+    stdin_is_a_pipe && echo "stdin_is_a_pipe: 1" >>/tmp/ono || echo "stdin_is_a_pipe: 0" >>/tmp/ono
+    stdin_is_a_tty && echo "stdin_is_a_tty: 1" >>/tmp/ono || echo "stdin_is_a_tty: 0" >>/tmp/ono
+    stdin_is_pipe_like && echo "stdin_is_pipe_like: 1" >>/tmp/ono || echo "stdin_is_pipe_like: 0" >>/tmp/ono
+    stdout_is_pipe_like && echo "stdout_is_pipe_like: 1" >>/tmp/ono || echo "stdout_is_pipe_like: 0" >>/tmp/ono
+    stdout_is_a_tty && echo "stdout_is_a_tty: 1" >>/tmp/ono || echo "stdout_is_a_tty: 0" >>/tmp/ono
+    echo >>/tmp/ono
 }
 
-main(){
-    os="$(detect_os)"
+main() {
+    # detect the operating system (uses a script in ~/.bin)
+    os="$(os-detect)"
+    # exit if the OS is not supported
+    ! [[ "$os" == @(windows_cygwin|windows_wsl|linux|osx)* ]] &&
+        echo "operating system not supported" && return 1
+    # distro doesn't matter
+    [[ "$os" == linux* ]] && os="linux"
+
     if stdin_is_pipe_like; then
         "${os}"_copy
         enable_tee_like_chaining

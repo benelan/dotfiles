@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# shellcheck disable=2076
+
+# detects the operating system
+if [[ -f /proc/version ]] && grep -iq Microsoft /proc/version; then
+    os="windows_wsl"
+elif [[ -z "$OSTYPE" ]]; then
+    case "$OSTYPE" in
+        solaris*) os="solaris" ;;
+        darwin*) os="osx" ;;
+        linux*) os="linux" ;;
+        bsd*) os="bsd" ;;
+        msys*) os="windows_msys" ;;
+        win32*) os="windows_win32" ;;
+        cygwin*) os="windows_cygwin" ;;
+        *) os="unknown_$OSTYPE" && return 1 ;;
+    esac
+else
+    uname="$(uname -s)"
+    case "$uname" in
+        Linux*) os="linux" ;;
+        Darwin*) os="mac" ;;
+        CYGWIN*) os="windows_cygwin" ;;
+        *) os="unknown_$uname" && return 1 ;;
+    esac
+fi
+
+# attempt to detect linux distro
+if [[ "$os" == "linux" ]]; then
+    # get the id from the standard "/etc/os-release" location
+    if [[ -f /etc/os-release ]]; then
+        distro="$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')"
+    else
+        # old distro versions may not follow the "os-release"
+        # standard and could have info in other files, such as:
+        # /etc/(lsb|system|redhat|centos)-release
+        # IDs found here: https://github.com/chef/os_release
+        system_info="$(cat /etc/[A-Za-z]*[_-][rv]e[lr]* | tr -d '"')"
+        case "$system_info" in
+            *"NAME=Ubuntu"*) distro="ubuntu" ;;
+            *"NAME=Pop!_OS"*) distro="pop" ;;
+            *"NAME=Linux Mint"*) distro="linuxmint" ;;
+            *"NAME=Zorin"*) distro="zorin" ;;
+            *"NAME=elementary OS"*) distro="elementary" ;;
+            *"NAME=Debian"*) distro="debian" ;;
+            *"NAME=Cumulus"*) distro="cumulus-linux" ;;
+            *"NAME=Raspbian"*) distro="raspbian" ;;
+            *"NAME=Kali"*) distro="kali" ;;
+            *"NAME=Xbian"*) distro="xbian" ;;
+            *"NAME=Gentoo"*) distro="gentoo" ;;
+            *"NAME=Arch Linux"*) distro="arch" ;;
+            *"NAME=Manjaro"*) distro="manjaro" ;;
+            *"NAME=NixOS"*) distro="nixos" ;;
+            *"NAME=CentOS"*) distro="centos" ;;
+            *"NAME=ClearOS"*) distro="clearos" ;;
+            *"NAME=Fedora"*) distro="fedora" ;;
+            *"NAME=Mageia"*) distro="mageia" ;;
+            *"NAME=Rocky"*) distro="rocky" ;;
+            *"NAME=Red Hat Enterprise Linux"*) distro="rhel" ;;
+            *"NAME=openSUSE"*) distro="opensuse" ;;
+            *"NAME=SLES"*) distro="sles" ;;
+            *"NAME=SLED"*) distro="sled" ;;
+            *"NAME=CASP"*) distro="casp" ;;
+            *"NAME=XCP-ng"*) distro="XCP-ng" ;;
+            *"NAME=XenServer"*) distro="xenenterprise" ;;
+            *"NAME=Alma"*) distro="almalinux" ;;
+            *"NAME=Alpine"*) distro="alpine" ;;
+            *"NAME=Antergos"*) distro="antergos" ;;
+            *"NAME=Slackware"*) distro="slackware" ;;
+            *) distro="unknown" ;;
+        esac
+    fi
+    debian_derivatives=(ubuntu raspbian kali xbian)
+    ubuntu_derivatives=(pop linuxmint zorin elementary)
+    if [[ " ${debian_derivatives[*]} " =~ " ${distro} " ]]; then
+        os="linux_${distro}_-_debian"
+    elif [[ " ${ubuntu_derivatives[*]} " =~ " $distro " ]]; then
+        os="linux_${distro}_-_ubuntu"
+    else
+        os="linux_$distro"
+    fi
+fi
+echo "$os"

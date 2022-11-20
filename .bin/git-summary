@@ -1,0 +1,127 @@
+#!/usr/bin/env sh
+
+# https://github.com/whiteinge/dotfiles/blob/master/bin/git-summary
+# Show a summary of the commits, authors, and files in a Git repo
+#
+# Requires GNU datamash.
+# (Avoiding file stats with `-f` is _much_ faster in large repos.)
+#
+# Usage:
+#
+#     git summary
+#     git summary -f
+
+show_files=1
+while getopts hf opt; do
+    case $opt in
+        h)
+            awk 'NR == 1 { next } /^$/ { exit } { print substr($0, 3) }' "$0"
+            exit
+            ;;
+        f) unset show_files ;;
+        *) echo "Invalid argument" && return 1 ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+test -t 1 && show_progress=1
+
+# %x09 is a tab character
+git log --no-renames ${show_files:+--numstat} \
+    --format='XXX%x09%h%x09%an%x09%ae%x09%cn%x09%ce%x09%aD%x09%cr' |
+    awk -v show_progress="$show_progress" '
+    function alen(a, i, c) { for (i in a) c += 1; return c; }
+    function isnum(x){ return (x == x + 0) }
+    BEGIN { FS="\t"; OFS="\t" }
+    /^$/ { next }
+    /^XXX/ {
+        sha=$2
+        author=$3 " <" $4 ">"
+        committer=$5 " <" $6 ">"
+        reldate=$8
+        split($7, cal_segs, " ")
+        weekday=cal_segs[1]
+        weekday=substr(weekday, 1, length(weekday) - 1)
+        day=cal_segs[2]
+        month=cal_segs[3]
+        year=cal_segs[4]
+        hour=cal_segs[5]
+        hour=substr(hour, 1, index(hour, ":") - 1)
+        tz=cal_segs[6]
+        auth_date=month ", " day " " year
+        commit_count += 1
+        author_list[author] += 1
+        committer_list[committer] += 1
+        active_days[auth_date] = 1
+        top_hours[hour] += 1
+        top_weekdays[weekday] += 1
+        if (show_progress) {
+            printf("\033[2K\033[1GCommits processed: %s", commit_count)
+        }
+    }
+    NR == 1 { last_date=auth_date; last_reldate=reldate; last_sha=sha }
+    !/^XXX/ {
+        added=isnum($1) ? $1 : 0
+        removed=isnum($2) ? $2 : 0
+        filename=$3
+        file_list[filename] += 1
+        lines_changed_count += added - removed
+    }
+    END {
+        # No Git output? (Probably an error.)
+        if (NR == 0) { exit 1 }
+        if (show_progress) { printf("\033[2K\033[1G") }
+        print "First commit:", sha " - " auth_date " (" reldate ")"
+        print "Last commit:", last_sha " - " last_date " (" last_reldate ")"
+        print ""
+        transpose_cmd = "datamash transpose"
+        print "Commits\t" commit_count \
+            "\nFiles\t" alen(file_list) \
+            "\nLines\t" lines_changed_count \
+            "\nAuthors\t" alen(author_list) \
+            "\nCommitters\t" alen(committer_list) | transpose_cmd
+        close(transpose_cmd)
+        print ""
+        print "Active days:", alen(active_days)
+        printf("\nTop days:\n\n")
+        weekday_cmd = "sort -n -r | cut -f2,3 | datamash transpose"
+        for (h in top_weekdays) {
+            wd = top_weekdays[h]
+            printf("%s\t%s\t%.0f%%\n", wd, h, (wd / commit_count) * 100 ) \
+                | weekday_cmd
+        }
+        close(weekday_cmd)
+        printf("\nTop hours:\n\n")
+        hour_cmd = "sort -n -r | cut -f2,3 | head -6 | datamash transpose"
+        for (i in top_hours) {
+            hr = top_hours[i]
+            printf("%s\t%s\t%.0f%%\n", hr, i, (hr / commit_count) * 100 ) \
+                | hour_cmd
+        }
+        close(hour_cmd)
+        printf("\nTop authors:\n\n")
+        topcom_cmd = "sort -n -r | head -5"
+        for (j in author_list) {
+            printf("%s\t%.1f%%\t%s\n",
+                author_list[j],
+                (author_list[j] / commit_count) * 100,
+                j) | topcom_cmd
+        }
+        close(topcom_cmd)
+        printf("\nTop committers:\n\n")
+        topcom_cmd = "sort -n -r | head -5"
+        for (l in committer_list) {
+            printf("%s\t%.1f%%\t%s\n",
+                committer_list[l],
+                (committer_list[l] / commit_count) * 100,
+                l) | topcom_cmd
+        }
+        close(topcom_cmd)
+        if (alen(file_list)) {
+            printf("\nTop files:\n\n")
+            topfil_cmd = "sort -n -r | head -5"
+            for (k in file_list) print file_list[k], k | topfil_cmd
+            close(topfil_cmd)
+        }
+    }
+    '
