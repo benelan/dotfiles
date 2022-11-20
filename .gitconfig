@@ -1,14 +1,11 @@
-[user]
-    useConfigOnly = true
-    name = Ben Elan
-    email = belan@esri.com
-
-[github]
-    user = benelan
-
 [include]
+    # https://github.com/GitAlias/gitalias
     path = ~/.dotfiles/git/gitalias.gitconfig
+    # https://github.com/dandavison/delta
     path = ~/.dotfiles/git/delta.gitconfig
+    # user info
+    path= ~/.dotfiles/git/personal.gitconfig
+
 
 [apply]
     # Detect whitespace errors when applying a patch.
@@ -59,15 +56,17 @@
 [color "status"]
     added = yellow
     changed = green
-    untracked = cyan
+    untracked = magenta
+    removed = red
 
 [diff]
     algorithm = patience
-    tool = vimdiff
+    tool = nvimdiff3
     colorMoved = default
     keepBackup = false
     # Detect copies as well as renames.
     renames = copies
+    renameLimit = 9328
     compactionHeuristic = true
     
 [diff "bin"]
@@ -90,6 +89,7 @@
     log = true
     keepBackup = false
     conflictstyle = diff3
+    tool = nvimdiff3
 
 [push]
     # https://git-scm.com/docs/git-config#git-config-pushdefault
@@ -110,7 +110,7 @@
     short = true
 
 [format]
-    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+    pretty = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
     #                     │        │            │            │             └─ author name
     #                     │        │            │            └─ message
     #                     │        │            └─ date (relative)
@@ -165,6 +165,8 @@
     # Find commits by commit message
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
     
+    ri = rebase --interactive --autosquash
+
     # add and remove file(s) to index
     hide = update-index --assume-unchanged
     unhide = update-index --no-assume-unchanged

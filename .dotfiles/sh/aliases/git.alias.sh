@@ -126,6 +126,8 @@ alias grm='git rm'
 
 # rebase
 alias grb='git rebase'
+alias grbi='git rebase -i'
+alias grba='git rebase -i --auto'
 alias grbc='git rebase --continue'
 alias grm='git rebase "$(gbdefault)"'
 alias grmi='git rebase "$(gbdefault)" -i'

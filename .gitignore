@@ -1,4 +1,5 @@
-.dotfiles/vendor/*
 LICENSE.md
 README.md
 .dotfiles/cache/*
+.dotfiles/vendor/*
+.dotfiles/git/personal.gitconfig
