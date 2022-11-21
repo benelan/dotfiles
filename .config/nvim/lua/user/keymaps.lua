@@ -19,7 +19,14 @@ vim.g.mapleader = " "
 --> Normal
 ------------------------------------------------------
 
+-- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", opts)
+-- open current directory with file explorer
+keymap("n", "g.", "<Plug>SystemOpenCWD", opts)
+-- change/print/make directory
+keymap("n", "<leader>cd", "<CMD>cd %:h <Bar> pwd<CR>", opts)
+keymap("n", "<leader>pwd", "<CMD>echo expand('%:h')<CR>", opts)
+keymap("n", "<leader>mkd", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", opts)
 
 -- List navigation (next/previous)
 
