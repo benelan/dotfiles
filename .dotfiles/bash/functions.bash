@@ -282,6 +282,17 @@ function myip() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# https://leahneukirchen.org/dotfiles/bin/goog
+function goog() {
+    Q=$*
+    echo -e "$(curl -A Mozilla/4.0 -skLm 10 \
+        http://www.google.com/search?nfpr=\&q="${Q// /+}" |
+        grep -oP '\/url\?q=.+?&amp' | sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g')"
+
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 if _command_exists inotifywait; then
     # runs a command when a target file is modified
     # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
