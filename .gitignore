@@ -1,6 +1,7 @@
 LICENSE.md
 README.md
 .bin/starship
+.config/nvim/plugin/packer_compiled.lua
 .dotfiles/cache/*
 .dotfiles/vendor/*
 .dotfiles/git/personal.gitconfig
