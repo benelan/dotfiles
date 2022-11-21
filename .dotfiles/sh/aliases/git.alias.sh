@@ -31,6 +31,7 @@ alias gca='git commit -v -a'
 alias gcaa='git commit -a --amend -C HEAD' # Add uncommitted and unstaged changes to the last commit
 alias gcam='git commit -v -am'
 alias gcamd='git commit --amend'
+alias gcamdne='git commit --amend --no-edit'
 alias gcm='git commit -v -m'
 alias gci='git commit --interactive'
 alias gcsam='git commit -S -am'
@@ -206,6 +207,13 @@ alias d='dot'
 alias da='dot add'
 alias dall='dot add -u'
 alias dap='dot add -p'
+# track new files in commonly added locations
+alias danvim="dot add ~/.config/nvim/*"
+alias dadots="dot add ~/.dotfiles/*"
+alias dash="dot add ~/.dotfiles/sh/*"
+alias dabash="dot add ~/.dotfiles/bash/*"
+alias dascripts="dot add ~/.dotfiles/scripts/*"
+alias dabin="dot add ~/.bin/*"
 
 # branch
 alias db='dot branch'
@@ -218,6 +226,7 @@ alias dbt='dot branch --track'
 # commit
 alias dc='dot commit -v'
 alias dcamd='dot commit --amend'
+alias dcamdne='dot commit --amend --no-edit'
 alias dcm='dot commit -v -m'
 alias dci='dot commit --interactive'
 
@@ -226,8 +235,7 @@ alias dst='dot stash'
 alias dstb='dot stash branch'
 alias dstd='dot stash drop'
 alias dstl='dot stash list'
-alias dstp='dot stash pop'  # kept due to long-standing usage
-alias dstpo='dot stash pop' # recommended for it's symmetry with gstpu (push)
+alias dstpo='dot stash pop'
 alias dstpu='dot stash push'
 alias dstpum='dot stash push -m'
 
@@ -261,7 +269,7 @@ alias dup='dot fetch && dot rebase'
 # log
 alias dg='dot log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
 alias dgf='dot log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
-alias dgs='gg --stat'
+alias dgs='dg --stat'
 alias dgup='dot log --branches --not --remotes --no-walk --decorate --oneline'
 alias dll='dot log --graph --pretty=oneline --abbrev-commit'
 alias dnew='dot log HEAD@{1}..HEAD@{0}' # Show commits since last pull
