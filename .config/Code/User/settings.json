@@ -1,50 +1,88 @@
 {
-  "workbench.startupEditor": "newUntitledFile",
-  "editor.suggestSelection": "first",
-  "editor.wordWrap": "on",
-  "files.eol": "\n",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "files.hotExit": "off",
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
-  "workbench.colorTheme": "Gruvbox Dark Medium",
-  "git.enableSmartCommit": true,
-  "git.autofetch": true,
-  "liveServer.settings.donotShowInfoMsg": true,
-  "editor.tabSize": 2,
-  "editor.autoClosingQuotes": "beforeWhitespace",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": false,
-  "editor.formatOnPaste": false,
-  "editor.insertSpaces": true,
-  "editor.snippetSuggestions": "top",
-  "editor.fontLigatures": true,
+  "workbench.colorTheme": "Gruvbox Dark Soft",
   "diffEditor.ignoreTrimWhitespace": false,
+  "diffEditor.wordWrap": "off",
+  "editor.wordWrap": "on",
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.autoClosingDelete": "never",
+  "editor.suggestSelection": "first",
+  "editor.linkedEditing": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "files.associations": {
+    "hjson": "json",
+    "jsonc": "json"
+  },
+  "editor.fontLigatures": true,
+  "editor.insertSpaces": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": true,
+  "explorer.compactFolders": false,
+  "explorer.sortOrder": "type",
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": true,
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+  "files.eol": "\n",
+  "files.defaultLanguage": "${activeEditorLanguage}",
+  "files.hotExit": "onExitAndWindowClose",
+  "files.autoSave": "off",
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.allowForcePush": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.surveys.enabled": false,
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
   },
-  "files.trimTrailingWhitespace": true,
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode",
+  },
+  "terminal.external.linuxExec": "kitty",
+  "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "search.smartCase": true,
   "search.exclude": {
     "**/node_modules": true,
     "**/bower_components": true,
-    ".build/**": true,
-    "out*/**": true,
-    "i18n/**": true,
-    "extensions/**/out/**": true,
+    "**/*.code-search": true,
+    "**/build": true,
+    "**/dist": true,
     "*.min.js": true
   },
-  "vim.easymotion": true,
+  "cSpell.userWords": [
+    "arcgis",
+    "benelan",
+    "browserslist",
+    "lazyload",
+    "outfile",
+    "JSAPI",
+    "transpilation",
+    "transpiled",
+    "transpiling",
+    "vsintellicode",
+    "easymotion",
+    "incsearch",
+    "hlsearch",
+    "autofetch",
+    "hjson",
+    "gruvbox",
+    "esbenp",
+  ],
+  "vim.easymotion": false,
   "vim.incsearch": true,
   "vim.useSystemClipboard": true,
   "vim.useCtrlKeys": true,
@@ -103,16 +141,5 @@
       "before": ["<C-x>"],
       "commands": ["editor.action.clipboardCutAction"]
     }
-  ],
-  "cSpell.userWords": [
-    "JSAPI",
-    "arcgis",
-    "transpilation",
-    "transpiled",
-    "transpiling"
-  ],
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "window.zoomLevel": -1,
-  "git.confirmSync": false,
-  "git.allowForcePush": false
+  ]
 }
