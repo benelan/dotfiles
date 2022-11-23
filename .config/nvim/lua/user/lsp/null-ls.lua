@@ -24,6 +24,7 @@ null_ls.setup {
       end
     }),
     diagnostics.codespell,
+    diagnostics.mdl,
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
@@ -33,6 +34,7 @@ null_ls.setup {
     formatting.jq.with({
       extra_filetypes = { "jsonc", "json5" }
     }),
+    formatting.markdown_toc,
     -- formatting.shellharden,
     formatting.shfmt.with({
       extra_args = { "-i", "4", "-ci" }
