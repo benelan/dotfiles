@@ -1,6 +1,15 @@
 return {
   settings = {
     tailwindCSS = {
+      files = {
+        exclude = {
+          "**/.git/**",
+          "**/node_modules/**",
+          "**/.hg/**",
+          "**/.svn/**",
+          "**/dist/**"
+        }
+      },
       lint = {
         cssConflict = "warning",
         invalidApply = "error",
@@ -10,18 +19,6 @@ return {
         invalidVariant = "error",
         recommendedVariantOrder = "warning"
       },
-      experimental = {
-        classRegex = {
-          "tw`([^`]*)",
-          "tw=\"([^\"]*)",
-          "tw={\"([^\"}]*)",
-          "tw\\.\\w+`([^`]*)",
-          "tw\\(.*?\\)`([^`]*)",
-          { "clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
-          { "classnames\\(([^)]*)\\)", "'([^']*)'" }
-        }
-      },
-      validate = true
     }
   }
 }
