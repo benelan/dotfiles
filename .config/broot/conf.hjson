@@ -77,8 +77,8 @@
 
     ###############################################################
     # Icons
-    # If you want to display icons in broot, uncomment:q
-     this line
+    # If you want to display icons in broot, uncomment
+    # this line
     # (see https://dystroy.org/broot/icons for installation and
     # troubleshooting)
     #

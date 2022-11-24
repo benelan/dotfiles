@@ -7,4 +7,5 @@
 [[ "$(type -P navi)" ]] && eval "$(navi widget bash)"
 
 # broot - https://github.com/Canop/broot
-[[ "$(type -P br)" ]] && source ~/.config/broot/launcher/bash/br
+[[ "$(type -P broot)" ]] && source ~/.config/broot/launcher/bash/br
+
