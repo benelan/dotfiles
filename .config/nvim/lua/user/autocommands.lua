@@ -49,17 +49,17 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 -- enable relative line numbers
 vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
   callback = function()
-    vim.cmd [[if &nu && mode() != "i" | set rnu | endif]]
+    vim.cmd [[ if &nu && mode() != "i" | set rnu | endif ]]
   end
 })
 -- disable relative line numbers
 vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
   callback = function()
-    vim.cmd [[if &nu | set nornu | endif]]
+    vim.cmd [[ if &nu | set nornu | endif ]]
   end
 })
 
--- change the color of the current line number
+-- change the color of the current line's number
 vim.api.nvim_create_autocmd({ "ColorScheme" }, {
   pattern = { "gruvbox-material" },
   callback = function()
@@ -74,6 +74,29 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
 -- return to the last edit position when opening files
 vim.api.nvim_create_autocmd({ "BufReadPost" }, {
   callback = function()
-    vim.cmd [[if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
+    vim.cmd [[
+      if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    ]]
   end
 })
+
+-- Use templates when creating specific file
+vim.cmd [[
+  augroup templates
+    autocmd!
+    autocmd BufNewFile *.html 0r ~/.config/nvim/templates/index.html
+    autocmd BufNewFile .gitignore 0r ~/.config/nvim/templates/.gitignore
+    autocmd BufNewFile .eslintrc.js 0r ~/.config/nvim/templates/.eslintrc.js
+    autocmd BufNewFile .prettierrc.js 0r ~/.config/nvim/templates/.prettierrc.js
+    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/license
+  augroup END
+]]
+
+
+-- reload nvim config after changes
+vim.cmd [[
+  augroup reload_user_config
+    autocmd!
+    autocmd BufWritePost ~/.config/nvim/* source <afile>
+  augroup end
+]]

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "declaration": false,
+    "experimentalDecorators": false,
+    "lib": ["dom", "es2019"],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2019",
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+  }
+}
