@@ -88,7 +88,7 @@ vim.cmd [[
     autocmd BufNewFile .gitignore 0r ~/.config/nvim/templates/.gitignore
     autocmd BufNewFile .eslintrc.js 0r ~/.config/nvim/templates/.eslintrc.js
     autocmd BufNewFile .prettierrc.js 0r ~/.config/nvim/templates/.prettierrc.js
-    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/license
+    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/LICENSE.md
   augroup END
 ]]
 

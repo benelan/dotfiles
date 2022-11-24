@@ -1,7 +1,6 @@
 vim.opt.backup = false                          -- creates a backup file
 vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
-vim.opt.completeopt = { "menuone", "noselect", "noselect" } -- options for cmp
 vim.opt.pastetoggle = "<Leader><C-v>"           -- toggle automatically indenting pastes
 vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
@@ -44,12 +43,18 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine f
 vim.opt.foldlevelstart = 99                     -- start with all folds closed
 vim.opt.foldlevel = 99                          -- set the fold level to closed
 vim.opt.foldcolumn = "1"                        -- how many fold columns to display
-vim.opt.grepprg = "rg --vimgrep"                -- Use ripgrep instead of grep
 vim.opt.shortmess:append("c")                   -- hide all completion messages ("match 1 of 2", "Pattern not found")
 vim.opt.whichwrap:append("<,>,[,]")             -- keys to move to the previous/next line when at the start/end of line
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
+if vim.fn.executable('rg') == 1 then            -- Use ripgrep instead of grep
+    vim.opt.grepprg="rg --vimgrep --hidden --glob ‘!.git’"
+end
+ -- options for cmp
+vim.opt.completeopt = { "menuone", "noselect", "noselect" }
+-- change fold characters
 vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h12,monospace:h12"
+-- set fonts with fallbacks for GUI
+vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h13,monospace:h12"

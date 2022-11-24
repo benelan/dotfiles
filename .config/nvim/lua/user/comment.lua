@@ -1,7 +1,5 @@
 local status_ok, comment = pcall(require, "Comment")
-if not status_ok then
-  return
-end
+if not status_ok then return end
 
 comment.setup({
   pre_hook = function(ctx)
@@ -28,3 +26,7 @@ comment.setup({
   end,
 })
 
+-- Keymaps
+local opts = { silent = true, noremap = true }
+vim.keymap.set("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
+vim.keymap.set("x", "<leader>/", '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', opts)

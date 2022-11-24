@@ -1,7 +1,5 @@
 local status_ok, lualine = pcall(require, "lualine")
-if not status_ok then
-  return
-end
+if not status_ok then return end
 
 local conditions = {
   buffer_not_empty = function()

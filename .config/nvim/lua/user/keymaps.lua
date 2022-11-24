@@ -1,7 +1,7 @@
 -- Shorten function name
 local keymap = vim.keymap.set
 -- Silent keymap option
-local opts = { silent = true }
+local opts = { silent = true, noremap = true }
 
 --Remap space as leader key
 keymap("", "<Space>", "<Nop>", opts)
@@ -120,9 +120,6 @@ keymap("v", "p", '"_dP', opts)
 --> Plugins
 ------------------------------------------------------
 
--- Comment
-keymap("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
-keymap("x", "<leader>/", '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', opts)
 
 
 ------------------------------------------------------
