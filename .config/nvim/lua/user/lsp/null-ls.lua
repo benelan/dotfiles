@@ -24,7 +24,9 @@ null_ls.setup {
       end
     }),
     diagnostics.codespell,
-    diagnostics.mdl,
+    diagnostics.markdownlint.with({
+      extra_args = { "--disable", "MD013"}
+    }),
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
@@ -35,6 +37,7 @@ null_ls.setup {
       extra_filetypes = { "jsonc", "json5" }
     }),
     formatting.markdown_toc,
+    formatting.markdownlint,
     -- formatting.shellharden,
     formatting.shfmt.with({
       extra_args = { "-i", "4", "-ci" }
