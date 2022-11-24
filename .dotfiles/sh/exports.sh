@@ -14,9 +14,7 @@ export EDITOR
 
 LESS="-i -M -R -W -S"
 LESSHISTFILE=-
-# Highlight section titles in manual pages.
-LESS_TERMCAP_md="\e[133m"
-export LESS LESSHISTFILE LESS_TERMCAP_md
+export LESS LESSHISTFILE
 
 # Keep around 16K lines of history in memory
 HISTSIZE=16384
@@ -25,6 +23,17 @@ VISUAL=$EDITOR
 PAGER=less
 MANPAGER=$PAGER
 export PAGER MANPAGER VISUAL
+
+# Highlight section titles in manual pages.
+LESS_TERMCAP_md=$'\e[01;32m'
+LESS_TERMCAP_me=$'\e[0m'
+LESS_TERMCAP_us=$'\e[04;33m'
+LESS_TERMCAP_ue=$'\e[0m'
+LESS_TERMCAP_so=$'\e[1;31m'
+LESS_TERMCAP_se=$'\e[0m'
+
+export LESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_so \
+    LESS_TERMCAP_us LESS_TERMCAP_se LESS_TERMCAP_ue
 
 # Enable persistent REPL history for `node`.
 NODE_REPL_HISTORY=~/.node_history
@@ -40,7 +49,7 @@ export PYTHONIOENCODING
 
 # Prefer US English and use UTF-8.
 LANG='en_US.UTF-8'
-LC_ALL='en_US.UTF-8'
+LC_ALL='C'
 export LANG LC_ALL
 
 CLICOLOR=1

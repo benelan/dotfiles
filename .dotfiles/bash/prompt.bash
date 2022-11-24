@@ -22,9 +22,10 @@ else
     fi
 
     if tput setaf 1 &>/dev/null; then
-        tput sgr0 # reset colors
-        bold=$(tput bold)
         reset=$(tput sgr0)
+        $reset
+        bold=$(tput bold)
+        underline=$(tput smul)
         # Gruvbox colors from: https://github.com/morhetz/gruvbox
         black=$(tput setaf 235)
         blue=$(tput setaf 66)
@@ -35,21 +36,23 @@ else
         red=$(tput setaf 124)
         white=$(tput setaf 230)
         yellow=$(tput setaf 172)
-        export black blue aqua green orange purple red white yellow
     else
-        bold=''
         reset="\e[0m"
-        export black="\e[1;30m"
-        export blue="\e[1;34m"
-        export aqua="\e[1;36m"
-        export green="\e[1;32m"
-        export orange="\e[1;33m"
-        export purple="\e[1;35m"
-        export red="\e[1;31m"
-        export white="\e[1;37m"
-        export yellow="\e[1;33m"
+        bold='\e[1m'
+        underline='e[4m'
+        black="\e[1;30m"
+        blue="\e[1;34m"
+        aqua="\e[1;36m"
+        green="\e[1;32m"
+        orange="\e[1;33m"
+        purple="\e[1;35m"
+        red="\e[1;31m"
+        white="\e[1;37m"
+        yellow="\e[1;33m"
     fi
-
+    export bold underline black blue aqua \
+        green orange purple red white yellow
+            
     # Highlight the user name when logged in as root.
     if [[ "${USER}" == "root" ]]; then
         userStyle="${bold}${red}"
