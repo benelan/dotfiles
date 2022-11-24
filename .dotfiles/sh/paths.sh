@@ -49,12 +49,13 @@ pathappend() {
 }
 
 # Array aren't POSIX compliant
-pathappend "$HOME/.bin"
+pathappend "$HOME/.local/share/nvim/mason/bin"
+pathappend "$HOME/.dotfiles/vendor/fzf/bin"
 pathappend "$HOME/.local/bin"
 pathappend "$HOME/.volta/bin"
 pathappend "$HOME/.cargo/bin"
-pathappend "$HOME/.dotfiles/vendor/fzf/bin"
 pathappend "$HOME/go/bin"
+pathappend "$HOME/.bin"
 pathappend "/snap/bin"
 pathappend "/usr/local/games"
 pathappend "/usr/local/sbin"
