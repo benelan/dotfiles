@@ -59,6 +59,8 @@ apt_packages+=(
     gzip
     cron
     datamash
+    qrencode
+    feh
     pandoc
     textlive-latex-recommended
     librsvg2-bin
