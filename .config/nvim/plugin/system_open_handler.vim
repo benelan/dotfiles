@@ -55,6 +55,24 @@ function s:OpenDepNPM(text)
   endif
 endfunction
 
+" Attempts to open a GitHub issue/PR number
+" for current repo (requries gh-cli)
+function s:OpenGitHubIssue(text)
+  if executable('gh')
+    let l:dirty_url=system('echo $(gh repo view --json url --jq ".url")')
+    let l:gh_url=substitute(l:dirty_url, '[[:cntrl:]]', '', 'g')
+    let l:pattern='\v(#)(\d+)'
+    let l:match = matchlist(a:text, l:pattern)
+      if len(l:match) > 1 && !empty(l:gh_url) && l:gh_url ==# "no git remote found"
+        let l:issue_url = shellescape(l:gh_url..'/issues/'..l:match[2])
+        echom l:issue_url
+        call jobstart(g:opencmd..' '..l:issue_url, {'detach': v:true})
+        :redraw!
+        return 1
+      endif
+  endif
+endfunction
+
 " Replaces gx since I disable netwr
 " Opens files/paths/urls under the cursor
 " If none are found, it checks the whole line.
@@ -65,10 +83,13 @@ function s:HandleSystemOpen()
   let l:file=expand(expand('<cfile>'))
   let l:word=expand('<cWORD>')
   let l:line=getline(".")
+
   if s:OpenPath(l:file)   | return | endif
   if s:OpenURI(l:word)    | return | endif
-  if s:OpenDepNPM(l:line) | return | endif
+  if s:OpenGitHubIssue(l:word)     | return | endif
+  if s:OpenGitHubIssue(l:line)     | return | endif
   if s:OpenURI(l:line)    | return | endif
+  if s:OpenDepNPM(l:line) | return | endif
   echom "No openable text found"
 endfunction
 
