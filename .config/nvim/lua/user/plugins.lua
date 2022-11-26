@@ -69,7 +69,7 @@ return packer.startup(function(use)
     commit = "4fc96c8f3df89b6d23e5092d31c866c53a346347"
   }
   use { "numToStr/Comment.nvim", commit = "97a188a98b5a3a6f9b1b850799ac078faa17ab67" }
-  use { "ahmedkhalf/project.nvim", commit = "628de7e433dd503e782831fe150bb750e56e55d6" }
+  -- use { "ahmedkhalf/project.nvim", commit = "628de7e433dd503e782831fe150bb750e56e55d6" }
   use { "lukas-reineke/indent-blankline.nvim", commit = "db7cbcb40cc00fc5d6074d7569fb37197705e7f6" }
   use { "folke/which-key.nvim", commit = "61553aeb3d5ca8c11eea8be6eadf478062982ac9" }
   use {
@@ -96,7 +96,7 @@ return packer.startup(function(use)
   -- LSP
   use { "neovim/nvim-lspconfig", commit = "f11fdff7e8b5b415e5ef1837bdcdd37ea6764dda" } -- enable LSP
   use { "williamboman/mason.nvim", commit = "c2002d7a6b5a72ba02388548cfaf420b864fbc12" }
-  use { "williamboman/mason-lspconfig.nvim", commit = "0051870dd728f4988110a1b2d47f4a4510213e31" }
+  use { "williamboman/mason-lspconfig.nvim", commit = "0eb7cfefbd3a87308c1875c05c3f3abac22d367c" }
   use {
     "jose-elias-alvarez/null-ls.nvim", -- for formatters and linters
     commit = "c0c19f32b614b3921e17886c541c13a72748d450"
@@ -113,11 +113,18 @@ return packer.startup(function(use)
         commit = "65c0ee3d4bb9cb696e262bca1ea5e9af3938fc90",
         run = 'make'
       },
-
       {
         "nvim-telescope/telescope-project.nvim",
         commit = "ff4d3cea905383a67d1a47b9dd210c4907d858c2"
-      }
+      },
+      -- {
+      --   "nvim-telescope/telescope-frecency.nvim",
+      --   commit = "10771fdb7b4c4b59f2b5c1e8757b0379e1314659",
+      --   requires = {
+      --     "kkharji/sqlite.lua",
+      --     commit = "47685f0adb89928fc1b2a9b812418680f29aaf27"
+      --   }
+      -- }
     }
   }
 
@@ -136,7 +143,10 @@ return packer.startup(function(use)
     "lewis6991/gitsigns.nvim",
     commit = "f98c85e7c3d65a51f45863a34feb4849c82f240f",
   }
-  use { 'pwntester/octo.nvim', commit = "cde10054abcce9eb8d53347c88f7645888df19ea" }
+  use {
+    'pwntester/octo.nvim',
+    commit = "cde10054abcce9eb8d53347c88f7645888df19ea"
+  }
 
 
   -- Automatically set up your configuration after cloning packer.nvim

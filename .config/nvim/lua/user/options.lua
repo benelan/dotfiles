@@ -49,6 +49,7 @@ vim.opt.iskeyword:append("-")                   -- treats words with `-` as sing
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
+vim.opt.formatoptions:remove("c,r,o")           -- :help formatoptions
 if vim.fn.executable('rg') == 1 then            -- Use ripgrep instead of grep
     vim.opt.grepprg="rg --vimgrep --hidden --glob ‘!.git’"
 end

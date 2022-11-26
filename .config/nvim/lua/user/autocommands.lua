@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "markdown", "gitcommit", "text", "json", "csv" },
+  pattern = { "markdown", "gitcommit", "text", "csv" },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
@@ -97,6 +97,6 @@ vim.cmd [[
 vim.cmd [[
   augroup reload_user_config
     autocmd!
-    autocmd BufWritePost ~/.config/nvim/* source <afile>
+    autocmd BufWritePost ~/.config/nvim/* source $MYVIMRC
   augroup end
 ]]
