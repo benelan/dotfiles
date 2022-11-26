@@ -33,3 +33,5 @@ gitsigns.setup {
   },
 }
 
+-- vim.keymap.set("n", "ih", "':<C-U>Gitsigns select_hunk<CR>'",
+--   { silent = true, noremap = true, desc = "Hunk Text Object" })

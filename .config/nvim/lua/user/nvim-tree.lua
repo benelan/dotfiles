@@ -111,15 +111,16 @@ nvim_tree_view.View.winopts.winfixwidth = false
 nvim_tree_view.View.winopts.winfixheight = false
 
 -- keymaps to open NvimTree
-local opts = { silent = true }
-vim.keymap.set("n", "<leader><S-e>", ":NvimTreeToggle<CR>", opts)
+local opts = { silent = true, noremap = true }
+vim.keymap.set("n", "<leader><S-e>", ":NvimTreeToggle<CR>",
+  vim.list_extend({ desc = "NvimTree toggle" }, opts))
 vim.keymap.set("n", "<leader>e",
   function()
     if nvim_tree_view.is_visible() then
       nvim_tree_view.close()
     else
       -- local previous_buf = vim.api.nvim_get_current_buf()
-      require("nvim-tree").open_replacing_current_buffer()
-      -- require("nvim-tree").find_file(false, previous_buf)
+      nvim_tree.open_replacing_current_buffer()
+      -- nvim_tree.find_file(false, previous_buf)
     end
-  end, opts)
+  end, vim.list_extend({ desc = "NvimTree in place" }, opts))
