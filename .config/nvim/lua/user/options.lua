@@ -55,6 +55,6 @@ end
  -- options for cmp
 vim.opt.completeopt = { "menuone", "noselect", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,diff:/]]
 -- set fonts with fallbacks for GUI
 vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h13,monospace:h12"

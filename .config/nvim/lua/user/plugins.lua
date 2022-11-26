@@ -108,9 +108,16 @@ return packer.startup(function(use)
     "nvim-telescope/telescope.nvim",
     commit = "76ea9a898d3307244dce3573392dcf2cc38f340f",
     requires = {
-      'nvim-telescope/telescope-fzf-native.nvim',
-      commit = "65c0ee3d4bb9cb696e262bca1ea5e9af3938fc90",
-      run = 'make'
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        commit = "65c0ee3d4bb9cb696e262bca1ea5e9af3938fc90",
+        run = 'make'
+      },
+
+      {
+        "nvim-telescope/telescope-project.nvim",
+        commit = "ff4d3cea905383a67d1a47b9dd210c4907d858c2"
+      }
     }
   }
 
@@ -129,6 +136,7 @@ return packer.startup(function(use)
     "lewis6991/gitsigns.nvim",
     commit = "f98c85e7c3d65a51f45863a34feb4849c82f240f",
   }
+  use { 'pwntester/octo.nvim', commit = "cde10054abcce9eb8d53347c88f7645888df19ea" }
 
 
   -- Automatically set up your configuration after cloning packer.nvim
