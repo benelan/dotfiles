@@ -12,7 +12,7 @@ exists nvim && EDITOR='nvim' || {
 }
 export EDITOR
 
-LESS="-i -M -R -W -S"
+LESS="-i -M -R -w"
 LESSHISTFILE=-
 export LESS LESSHISTFILE
 
@@ -20,7 +20,7 @@ export LESS LESSHISTFILE
 HISTSIZE=16384
 
 VISUAL=$EDITOR
-PAGER=less
+PAGER='less'
 MANPAGER=$PAGER
 export PAGER MANPAGER VISUAL
 
@@ -29,11 +29,9 @@ LESS_TERMCAP_md=$'\e[01;32m'
 LESS_TERMCAP_me=$'\e[0m'
 LESS_TERMCAP_us=$'\e[04;33m'
 LESS_TERMCAP_ue=$'\e[0m'
-LESS_TERMCAP_so=$'\e[1;31m'
-LESS_TERMCAP_se=$'\e[0m'
 
-export LESS_TERMCAP_md LESS_TERMCAP_me LESS_TERMCAP_so \
-    LESS_TERMCAP_us LESS_TERMCAP_se LESS_TERMCAP_ue
+export LESS_TERMCAP_md LESS_TERMCAP_me \
+    LESS_TERMCAP_us LESS_TERMCAP_ue
 
 # Enable persistent REPL history for `node`.
 NODE_REPL_HISTORY=~/.node_history

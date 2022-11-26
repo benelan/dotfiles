@@ -12,6 +12,7 @@
     side-by-side = true
     navigate = true    # use n and N to move between diff sections
     light = false      # set to true if you're in a terminal w/ a light background color
+    hyperlinks = true
 
  [include]
     path = ./delta.themes.gitconfig
