@@ -1,0 +1,93 @@
+#!/usr/bin/env sh
+
+# https://github.com/whiteinge/dotfiles/blob/master/bin/git-quickfix
+# Open Vim with Git changes as quickfix entries
+#
+# Supports a range of commits, or defaults to the HEAD commit. Also supports
+# loading unstaged or staged changes as quickfix entries. Useful for stepping
+# through changes in one or more commits, or quickly picking back up where you
+# left off after a WIP commit.
+#
+# Usage:
+#
+#     git quickfix
+#     git quickfix HEAD~3
+#     git quickfix HEAD~3..
+#     git quickfix @{u}..
+#     git quickfix -m modified
+#     git quickfix -m staged
+
+NAME=$(basename "$0")
+TEMP="${TMPDIR-/tmp}/${NAME}.${$}.$(awk \
+    'BEGIN {srand(); printf "%d\n", rand() * 10^10}')"
+
+QFLIST="${TEMP}/quickfix.txt"
+
+# shellcheck disable=2154
+trap '
+    excode=$?; trap - EXIT;
+    rm -rf -- '"$TEMP"'
+    exit $excode
+' INT TERM EXIT
+
+while getopts hm:x opt; do
+    case $opt in
+        m) mode="$OPTARG" ;;
+        h)
+            awk 'NR == 1 { next } /^$/ { exit } { print substr($0, 3) }' "$0"
+            exit
+            ;;
+        x) set -x ;;
+        *)
+            echo "Invalid flag"
+            exit
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# shellcheck disable=2174
+mkdir -p -m 700 "$TEMP"
+
+{
+    if [ "$mode" = 'modified' ]; then
+        git diff -p -U0 --diff-filter=AM
+    elif [ "$mode" = 'staged' ]; then
+        git diff --cached -p -U0 --diff-filter=AM
+    else
+        case $1 in
+            *..*) cmd='diff' ;;
+            *) cmd='diff-tree' ;;
+        esac
+
+        git "$cmd" -p -U0 --diff-filter=AM -r "${1:-HEAD}"
+    fi
+} | awk '/^diff/ {
+          in_hunk=0
+          if (NR != 1 ) { printf("--\n") }
+        }
+
+        /^\+\+\+ / {
+          fname=substr($2, 2)
+        }
+
+        /^@@ / {
+          in_hunk=1
+          nr=substr($3, 2)
+          sub(/,.*/, "", nr)
+          printf(".%s:%s:%s\n", fname, nr, $0)
+          next
+        }
+
+        in_hunk {
+          printf("%s\n", $0)
+        }
+    ' >"$QFLIST"
+
+if [ ! -s "$QFLIST" ]; then
+    printf 'No %s changes.\n' "$mode" 1>&2
+    exit 1
+fi
+
+# bd1 deletes the initial "[No Name]" buffer (reqs :set hidden). Better way?
+$EDITOR +bd1 -q "$QFLIST"
