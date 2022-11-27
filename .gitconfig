@@ -46,6 +46,12 @@
     local = yellow
     remote = green
 
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = magenta
+    removed = red
+
 [color "diff"]
     meta = yellow bold
     frag = magenta bold # line info
@@ -57,12 +63,6 @@
   oldHighlight = red bold 52
   newNormal = green bold
   newHighlight = green bold 22
-
-[color "status"]
-    added = green
-    changed = yellow
-    untracked = magenta
-    removed = red
 
 [diff]
     algorithm = patience
@@ -78,9 +78,37 @@
     # Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages.
+    log = true
+    keepBackup = false
+    conflictstyle = diff3
+	  tool = nvim3
+
+[mergetool "nvim1337"]
+	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+	trustExitCode = true
+	keepBackup = false
+
+[push]
+    # https://git-scm.com/docs/git-config#git-config-pushdefault
+    default = simple
+
+[pull]
+    rebase = false
+
 [fetch]
     # Remove any remote-tracking references that no longer exist on the remote.
     prune = true
+
+[rebase]
+    # Create a temporary stash entry before the operation begins.
+    autostash = true
+
+[status]
+    # Enable submodule summary of commits.
+    submoduleSummary = true
+    short = true
 
 [help]
     # Correct and execute mistyped commands.
@@ -91,29 +119,6 @@
 
 [log]
     date = local
-
-[merge]
-    # Include summaries of merged commits in newly created merge commit messages.
-    log = true
-    keepBackup = false
-    conflictstyle = diff3
-    tool = nvimdiff3
-
-[push]
-    # https://git-scm.com/docs/git-config#git-config-pushdefault
-    default = simple
-
-[pull]
-    rebase = false
-
-[rebase]
-    # Create a temporary stash entry before the operation begins.
-    autostash = true
-
-[status]
-    # Enable submodule summary of commits.
-    submoduleSummary = true
-    short = true
 
 [format]
 	  pretty = format:"%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
