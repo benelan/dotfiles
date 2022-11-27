@@ -14,11 +14,8 @@ null_ls.setup {
   debug = false,
   sources = {
     code_actions.gitsigns,
-    code_actions.cspell,
     code_actions.proselint,
-    code_actions.shellcheck.with({
-      extra_filetypes = { "bash" }
-    }),
+    code_actions.shellcheck,
     diagnostics.actionlint.with({
       runtime_condition = function()
         return vim.api.nvim_buf_get_name(
@@ -27,7 +24,6 @@ null_ls.setup {
       end
     }),
     diagnostics.codespell,
-    diagnostics.cspell,
     diagnostics.markdownlint.with({
       extra_args = { "--disable", "MD013" }
     }),
