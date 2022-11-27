@@ -1,22 +1,7 @@
 #!/usr/bin/env bash
 
-function is-supported() {
-    if [ $# -eq 1 ]; then
-        if eval "$1" >/dev/null 2>&1; then
-            exit 0
-        else
-            exit 1
-        fi
-    else
-        if eval "$1" >/dev/null 2>&1; then
-            echo -n "$2"
-        else
-            echo -n "$3"
-        fi
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Utilities
+#---------------------------------------------------------------------------------
 
 # checks for existence of a command
 function _command_exists() {
@@ -69,8 +54,8 @@ function _completion_exists() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# `open` with no arguments opens the current directory, otherwise opens the given
-# location
+# `open` with no arguments opens the current directory,
+# otherwise opens the given location
 function o() {
     os="$(os-detect)"
     case "$os" in
@@ -95,6 +80,125 @@ function clip() {
 function paste() {
     xclip -o -selection clipboard
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# toggle sudo at the beginning of the current or the previous command by hitting the ESC key twice
+function sudo-command-line() {
+    [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
+    if [[ $READLINE_LINE == sudo\ * ]]; then
+        READLINE_LINE="${READLINE_LINE#sudo }"
+    else
+        READLINE_LINE="sudo $READLINE_LINE"
+    fi
+    READLINE_POINT=${#READLINE_LINE}
+}
+
+# Define shortcut keys: [Esc] [Esc]
+
+# Readline library requires bash version 4 or later
+# shellcheck disable=2128
+if [ "$BASH_VERSINFO" -ge 4 ]; then
+    bind -x '"\e\e": sudo-command-line'
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# https://www.uninformativ.de/git/bin-pub/file/vipe.html
+# Use $EDITOR to edit text inside a pipeline
+# Write all data to a temporary file, edit that file, then print it
+# again.
+function vipe() {
+    tmp=$(mktemp)
+    trap 'rm -f "$tmp"' 0
+    cat >"$tmp"
+    ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
+    cat "$tmp"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# runs argument in background
+function quiet() {
+    nohup "$@" &>/dev/null </dev/null &
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# align text on a character. Useful in vim
+function align() {
+    CHAR=${1:?'Missing character to align on.'}
+    shift
+    exec column -t -s "$CHAR" -o "$CHAR" "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Search history.
+h() {
+    #           ┌─ Enable colors for pipe.
+    #           │  ("--color=auto" enables colors only
+    #           │   if the output is in the terminal.)
+    grep --color=always "$*" "$HISTFILE" |
+        less --no-init --raw-control-chars
+    #    │         └─ Display ANSI color escape sequences in raw form.
+    #    └─ Don't clear the screen after quitting less.
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Search for text within the current directory.
+function s() {
+    grep --color=always "$*" \
+        --exclude-dir=".git" \
+        --exclude-dir="node_modules" \
+        --ignore-case \
+        --recursive \
+        . |
+        less --no-init --raw-control-chars
+    #    │         └─ Display ANSI color escape sequences in raw form.
+    #    └─ Don't clear the screen after quitting less.
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched Git SHA ranges (e.g., 123456..654321)
+function match-git-ranges() {
+    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+' "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched IP addresses
+function match-ips() {
+    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' "$@"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Output all matched URLs
+function match-urls() {
+    # shellcheck disable=2016
+    grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
+}
+
+# Filesystem
+#---------------------------------------------------------------------------------
+
+if _command_exists inotifywait; then
+    # runs a command when a target file is modified
+    # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
+    function onmodify() {
+        TARGET=${1:-.}
+        shift
+        echo "$TARGET" "$*"
+        while inotifywait --exclude '.git' -qq -r -e close_write,moved_to,move_self "$TARGET"; do
+            sleep 0.2
+            bash -c "$*"
+            echo
+        done
+    }
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -136,9 +240,27 @@ function extract {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# prevent duplicate directories in your PATH variable
+# "pathmunge /path/to/dir" is equivalent to PATH=/path/to/dir:$PATH
+# "pathmunge /path/to/dir after" is equivalent to PATH=$PATH:/path/to/dir
+function pathmunge() {
+    if [[ -d "${1:-}" && ! $PATH =~ (^|:)"${1}"($|:) ]]; then
+        if [[ "${2:-before}" == "after" ]]; then
+            export PATH="$PATH:${1}"
+        else
+            export PATH="${1}:$PATH"
+        fi
+    fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # get the human readable size of the directory
 dudir() {
-    du --max-depth="${1:-0}" -c | sort -r -n | awk '{split("K M G",v); s=1; while($1>1024){$1/=1024; s++} print int($1)v[s]"\t"$2}'
+    du --max-depth="${1:-0}" -c |
+        sort -r -n |
+        awk '{split("K M G",v); s=1; while($1>1024){$1/=1024; s++} print int($1)v[s]"\t"$2}'
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,6 +277,48 @@ gz() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# disk usage per directory, in Mac OS X and Linux
+function usage() {
+    case $OSTYPE in
+        *'darwin'*)
+            du -hd 1 "$@"
+            ;;
+        *'linux'*)
+            du -h --max-depth=1 "$@"
+            ;;
+    esac
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# back up file with timestamp
+function backup-file() {
+    # param 'filename'
+    local filename="${1?}" filetime
+    filetime=$(date +%Y%m%d_%H%M%S)
+    cp -a "${filename}" "${filename}_${filetime}"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# move files to hidden folder in tmp, that gets cleared on each reboot
+if ! _command_exists del; then
+    function del() {
+        # param: file or folder to be deleted
+        # example: del ./file.txt
+        mkdir -p /tmp/.trash && mv "$@" /tmp/.trash
+    }
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Lists drive mounts.
+function mnt() {
+    mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Create a data URL from a file
 dataurl() {
     local MIMETYPE
@@ -165,7 +329,8 @@ dataurl() {
     echo "data:${MIMETYPE};base64,$(openssl base64 -in "$1" | tr -d '\n')"
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Networking
+#---------------------------------------------------------------------------------
 
 # Find real from shortened url
 unshorten() {
@@ -174,56 +339,17 @@ unshorten() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Show 256 TERM colors
-colors() {
-    local Y
-    Y="$(printf %$((COLUMNS - 6))s)"
-    for i in {0..256}; do
-        o=00$i
-        echo -e "${o:${#o}-3:3}" "$(
-            tput setaf "$i"
-            tput setab "$i"
-        )""${Y// /=}""$(tput op)"
-    done
+# https://leahneukirchen.org/dotfiles/bin/goog
+function goog() {
+    Q=$*
+    echo -e "$(curl -A Mozilla/4.0 -skLm 10 \
+        http://www.google.com/search?nfpr=\&q="${Q// /+}" |
+        grep -oP '\/url\?q=.+?&amp' | sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g')"
+
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# toggle sudo at the beginning of the current or the previous command by hitting the ESC key twice
-function sudo-command-line() {
-    [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
-    if [[ $READLINE_LINE == sudo\ * ]]; then
-        READLINE_LINE="${READLINE_LINE#sudo }"
-    else
-        READLINE_LINE="sudo $READLINE_LINE"
-    fi
-    READLINE_POINT=${#READLINE_LINE}
-}
-
-# Define shortcut keys: [Esc] [Esc]
-
-# Readline library requires bash version 4 or later
-# shellcheck disable=2128
-if [ "$BASH_VERSINFO" -ge 4 ]; then
-    bind -x '"\e\e": sudo-command-line'
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# prevent duplicate directories in your PATH variable
-# "pathmunge /path/to/dir" is equivalent to PATH=/path/to/dir:$PATH
-# "pathmunge /path/to/dir after" is equivalent to PATH=$PATH:/path/to/dir
-function pathmunge() {
-    if [[ -d "${1:-}" && ! $PATH =~ (^|:)"${1}"($|:) ]]; then
-        if [[ "${2:-before}" == "after" ]]; then
-            export PATH="$PATH:${1}"
-        else
-            export PATH="${1}:$PATH"
-        fi
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 function crt {
     openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
         -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
@@ -279,165 +405,6 @@ function myip() {
     res="$(echo "$res" | grep -Eo '[0-9\.]+')"
     echo -e "Your public IP is: ${echo_bold_green-} $res ${echo_normal-}"
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# https://leahneukirchen.org/dotfiles/bin/goog
-function goog() {
-    Q=$*
-    echo -e "$(curl -A Mozilla/4.0 -skLm 10 \
-        http://www.google.com/search?nfpr=\&q="${Q// /+}" |
-        grep -oP '\/url\?q=.+?&amp' | sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g')"
-
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-if _command_exists inotifywait; then
-    # runs a command when a target file is modified
-    # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
-    function onmodify() {
-        TARGET=${1:-.}
-        shift
-        echo "$TARGET" "$*"
-        while inotifywait --exclude '.git' -qq -r -e close_write,moved_to,move_self "$TARGET"; do
-            sleep 0.2
-            bash -c "$*"
-            echo
-        done
-    }
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# https://www.uninformativ.de/git/bin-pub/file/vipe.html
-# Use $EDITOR to edit text inside a pipeline
-# Write all data to a temporary file, edit that file, then print it
-# again.
-function vipe() {
-    tmp=$(mktemp)
-    trap 'rm -f "$tmp"' 0
-    cat >"$tmp"
-    ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
-    cat "$tmp"
-}
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# runs argument in background
-function quiet() {
-    nohup "$@" &>/dev/null </dev/null &
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# disk usage per directory, in Mac OS X and Linux
-function usage() {
-    case $OSTYPE in
-        *'darwin'*)
-            du -hd 1 "$@"
-            ;;
-        *'linux'*)
-            du -h --max-depth=1 "$@"
-            ;;
-    esac
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# back up file with timestamp
-function backup-file() {
-    # param 'filename'
-    local filename="${1?}" filetime
-    filetime=$(date +%Y%m%d_%H%M%S)
-    cp -a "${filename}" "${filename}_${filetime}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# move files to hidden folder in tmp, that gets cleared on each reboot
-if ! _command_exists del; then
-    function del() {
-        # param: file or folder to be deleted
-        # example: del ./file.txt
-        mkdir -p /tmp/.trash && mv "$@" /tmp/.trash
-    }
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Search history.
-
-h() {
-    #           ┌─ Enable colors for pipe.
-    #           │  ("--color=auto" enables colors only
-    #           │   if the output is in the terminal.)
-    grep --color=always "$*" "$HISTFILE" |
-        less --no-init --raw-control-chars
-    #    │         └─ Display ANSI color escape sequences in raw form.
-    #    └─ Don't clear the screen after quitting less.
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Search for text within the current directory.
-
-function s() {
-    grep --color=always "$*" \
-        --exclude-dir=".git" \
-        --exclude-dir="node_modules" \
-        --ignore-case \
-        --recursive \
-        . |
-        less --no-init --raw-control-chars
-    #    │         └─ Display ANSI color escape sequences in raw form.
-    #    └─ Don't clear the screen after quitting less.
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Lists drive mounts.
-function mnt() {
-    mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched Git SHA ranges (e.g., 123456..654321)
-function match-git-ranges() {
-    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched IP addresses
-function match-ips() {
-    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched URLs
-function match-urls() {
-    # shellcheck disable=2016
-    grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-if _command_exists jq; then
-    function find-emoji() {
-        emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
-
-        if [ ! -r "$emoji_cache" ]; then
-            curl -sSL https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json -o "$emoji_cache"
-        fi
-
-        jq <"$emoji_cache" -r '.[] | [
-        .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
-    ] | @tsv
-' | fzf --prompt 'Search emojis > ' | cut -f1
-    }
-fi
 
 # Git
 #---------------------------------------------------------------------------------
@@ -653,6 +620,38 @@ cshc() {
 
 # Misc
 #---------------------------------------------------------------------------------
+
+# Show 256 TERM colors
+colors() {
+    local Y
+    Y="$(printf %$((COLUMNS - 6))s)"
+    for i in {0..256}; do
+        o=00$i
+        echo -e "${o:${#o}-3:3}" "$(
+            tput setaf "$i"
+            tput setab "$i"
+        )""${Y// /=}""$(tput op)"
+    done
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if _command_exists jq; then
+    function find-emoji() {
+        emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
+
+        if [ ! -r "$emoji_cache" ]; then
+            curl -sSL https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json -o "$emoji_cache"
+        fi
+
+        jq <"$emoji_cache" -r '.[] | [
+        .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
+    ] | @tsv
+' | fzf --prompt 'Search emojis > ' | cut -f1
+    }
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # make one or more directories and cd into the last one
 function mcd() {
