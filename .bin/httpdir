@@ -1,0 +1,154 @@
+#!/usr/bin/env sh
+
+# https://github.com/whiteinge/dotfiles/blob/master/bin/httpdir
+# Serve a local directory via HTTP (via socat) with or without SSL
+#
+# Usage:
+#
+#     httpdir
+#     httpdir -p 8000
+#     httpdir -s
+
+HTTP_METHOD=''
+HTTP_PATH=''
+HTTP_VERSION=''
+
+rep() {
+    local status="${1:?Status is required.}"
+    shift 1
+
+    printf '%s %s %s\n' "$status" "$HTTP_METHOD" "$HTTP_PATH" 1>&2
+    printf 'HTTP/1.0 %s\r\n' "$status"
+    for hdr in "$@"; do
+        printf '%s\r\n' "$hdr"
+    done
+    printf '\r\n'
+}
+
+http() {
+    local crlf
+    crlf=$(printf '\r\n')
+    local accept_compressed=0
+
+    # shellcheck disable=2034
+    read -r HTTP_METHOD HTTP_PATH HTTP_VERSION
+    # shellcheck disable=2034
+    while IFS=": " read -r hdr val; do
+        # stdin never closes in a socat exec so stop after the headers end.
+        [ "$hdr" = "$crlf" ] && break
+
+        case "$hdr" in
+            Accept-Encoding) accept_compressed=1 ;;
+        esac
+    done
+
+    if [ "$HTTP_PATH" = '/favicon.ico' ]; then
+        rep 200
+        exit
+    fi
+
+    local rpath="$PWD$HTTP_PATH"
+    # shellcheck disable=2081
+    if [ "$rpath" = *..* ]; then
+        rep 400
+        exit
+    fi
+
+    # Remove query strings.
+    rpath="${rpath%%\?*}"
+
+    if [ -r "${rpath}/index.html" ]; then
+        rpath="${rpath}/index.html"
+    fi
+
+    if [ -d "$rpath" ]; then
+        # shellcheck disable=2295
+        local bpath="${rpath##$PWD}"
+        local bpath="${bpath%/}"
+        local base="//localhost:${SOCAT_SOCKPORT}${bpath}"
+        rep 200
+        tree "$rpath" \
+            -H "$base" \
+            -a \
+            -h -F -D \
+            -L 1 -x -i \
+            -T "$base"
+        exit
+    fi
+
+    if [ -r "$rpath" ]; then
+        local ctype=""
+        case "$rpath" in
+            *.css) ctype='text/css' ;;
+            *.js) ctype='application/javascript' ;;
+            *.json) ctype='application/json' ;;
+            *) ctype="$(file -L -b --mime-type "$rpath")" ;;
+        esac
+
+        local content_encoding
+        if [ "$accept_compressed" -eq 1 ] && [ -r "${rpath}.gz" ]; then
+            content_encoding="Content-Encoding: gzip"
+            rpath="${rpath}.gz"
+        fi
+
+        local clength
+        clength="$(wc -c <"$rpath")"
+
+        rep 200 \
+            "Content-Type: ${ctype}" \
+            "Content-Length: ${clength}" \
+            ${content_encoding:+"$content_encoding"}
+        cat "$rpath"
+        exit
+    fi
+
+    rep 404
+    exit
+}
+
+mk_cert() {
+    openssl req -x509 \
+        -newkey rsa:4096 \
+        -days 365 \
+        -nodes \
+        -subj "/C=US/ST=California/L=San Francisco/O=Jamin, Inc./CN=localhost" \
+        -keyout "/tmp/${NAME}.key" \
+        -out "/tmp/${NAME}.crt" \
+        2>/dev/null
+}
+
+main() {
+    local opt
+    local OPTIND
+    local OPTARG
+    local listen="TCP-LISTEN"
+    local port="8000"
+    local ssl=""
+
+    while getopts hp:s opt; do
+        case $opt in
+            h)
+                awk 'NR == 1 { next } /^$/ { exit } { print substr($0, 3) }' "$0"
+                exit
+                ;;
+            p) port="$OPTARG" ;;
+            s)
+                mk_cert
+                ssl=",cert=/tmp/${NAME}.crt,key=/tmp/${NAME}.key,verify=0"
+                listen="OPENSSL-LISTEN"
+                ;;
+            *) echo "Invalid flag" && return ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        printf '%s on port %s\n' "$listen" "$port"
+        socat "${listen}:${port},fork,reuseaddr${ssl}" EXEC:"${0} http"
+    else
+        "$1" "$@"
+    fi
+}
+
+# set -x
+main "$@"
