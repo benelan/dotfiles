@@ -121,3 +121,39 @@ octo.setup({
     }
   }
 })
+
+local opts = { silent = true, noremap = true }
+
+
+-- Find possible actions
+vim.keymap.set("n","<leader>oa", "<cmd>Octo actions<CR>",
+  vim.list_extend({ desc = "Actions" }, opts))
+
+-- Issues
+vim.keymap.set("n","<leader>oil", "<cmd>Octo issue list<CR>",
+  vim.list_extend({ desc = "List issues" }, opts))
+
+vim.keymap.set("n","<leader>oic", "<cmd>Octo issue create<CR>",
+  vim.list_extend({ desc = "Create issue" }, opts))
+
+vim.keymap.set("n","<leader>ois", "<cmd>Octo issue search<CR>",
+  vim.list_extend({ desc = "Search issues" }, opts))
+
+-- Pull requests
+vim.keymap.set("n","<leader>opl", "<cmd>Octo pr list<CR>",
+  vim.list_extend({ desc = "List pull requests" }, opts))
+
+
+vim.keymap.set("n","<leader>opc", "<cmd>Octo pr create<CR>",
+  vim.list_extend({ desc = "Create pull request" }, opts))
+
+vim.keymap.set("n","<leader>ops", "<cmd>Octo pr search<CR>",
+  vim.list_extend({ desc = "Search pull request" }, opts))
+
+-- Reviews
+vim.keymap.set("n","<leader>orr", "<cmd>Octo review resume<CR>",
+  vim.list_extend({ desc = "Resume review" }, opts))
+
+vim.keymap.set("n","<leader>ors", "<cmd>Octo review start<CR>",
+  vim.list_extend({ desc = "Start review" }, opts))
+

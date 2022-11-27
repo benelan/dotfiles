@@ -143,7 +143,21 @@ local mappings = {
       "Git Diff",
     },
   },
-
+  o = {
+    name = "GitHub",
+    i = {
+      name = "Issues"
+    },
+    p = {
+      name = "Pull requests"
+    },
+    r = {
+      name = "Reviews"
+    }
+  },
+  D = {
+    name = "Directory"
+  },
   l = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },

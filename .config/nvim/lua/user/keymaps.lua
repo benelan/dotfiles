@@ -28,14 +28,14 @@ keymap("n", "g.", "<Plug>SystemOpenCWD",
   vim.list_extend({ desc = "Open directory with system" }, opts))
 
 -- change/print/make directory
-keymap("n", "<leader>cd", "<CMD>cd %:h <Bar> pwd<CR>",
-  vim.list_extend({ desc = "Change directory to buffer" }, opts))
+keymap("n", "<leader>Dc", "<CMD>cd %:h <Bar> pwd<CR>",
+  vim.list_extend({ desc = "Change to buffer location" }, opts))
 
-keymap("n", "<leader>pwd", "<CMD>echo expand('%:h')<CR>",
-  vim.list_extend({ desc = "Present working directory" }, opts))
+keymap("n", "<leader>De", "<CMD>echo expand('%:h')<CR>",
+  vim.list_extend({ desc = "Echo buffer location" }, opts))
 
-keymap("n", "<leader>mkd", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
-  vim.list_extend({ desc = "Make directory" }, opts))
+keymap("n", "<leader>Dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
+  vim.list_extend({ desc = "Make to buffer location" }, opts))
 
 -- List navigation (next/previous)
 
@@ -131,7 +131,7 @@ keymap("n", "<C-q>", "<CMD>Bdelete<CR>",
 
 -- Open new file with the same extension
 keymap("n", "<leader>bv", "<C-w>v:e %:h/buf.%:e<CR>",
-  vim.list_extend({ desc = "New Vertial" }, opts))
+  vim.list_extend({ desc = "New Vertical" }, opts))
 keymap("n", "<leader>bs", "<C-w>s:e %:h/buf.%:e<CR>",
   vim.list_extend({ desc = "New Horizontal" }, opts))
 -- Open file with my commonly used extensions
