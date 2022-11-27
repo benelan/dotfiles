@@ -7,9 +7,10 @@
 FONTS_DIR="$HOME/.local/share/fonts"
 
 # add any other zipped fonts to download and install
-# NerdFonts are required for Starship and LunarVim
+# NerdFont glyphs are used by Starship and NeoVim
 # Find more options here: https://www.nerdfonts.com/font-downloads
 fonts=(
+    https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/JetBrainsMono.zip
     https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Iosevka.zip
     https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/SourceCodePro.zip
 )
@@ -83,13 +84,13 @@ if [[ ! "$VOLTA_HOME" ]]; then
     grep --silent "$VOLTA_HOME/bin" <<<"$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
     volta install node yarn
     echo "--> Install Volta to manage node/npm/yarn"
-    volta install neovim prettier eslint stylelint pm2 build-sizes typescript
+    volta install neovim prettier eslint stylelint pm2 build-sizes typescript ts-node markdownlint markdownlint-cli
     echo "--> Installed global npm packages"
 fi
 
 # Install Starship if necessary
 if [[ ! "$(type -P starship)" ]]; then
-    sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$HOME/.bin" >/dev/null
+    sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$HOME/.local/bin" >/dev/null
     echo "--> Installed Starship"
 fi
 
