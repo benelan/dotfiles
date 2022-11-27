@@ -31,61 +31,70 @@ function add_ppa() {
 #----------------------------------------------------------------------
 
 apt_packages+=(
-    wget
-    gnupg
-    lsb-release
-    git
     apt-transport-https
-    ca-certificates
-    openssl
-    build-essential
-    make
-    golang
-    python3
-    ruby
-    perl
-    curl
-    htop
-    btop
-    imagemagick
-    nmap
-    socat
-    sqlite3
-    duf
-    telnet
-    tree
-    neofetch
-    mount
-    gzip
-    cron
-    datamash
-    qrencode
-    feh
-    pandoc
-    textlive-latex-recommended
-    librsvg2-bin
-    coreutils
-    vim
-    grep
-    ripgrep
-    fd-find
-    findutils
-    silversearcher-ag
     bat
-    thefuck
-    taskwarrior
-    handbrake-cli
+    btop
+    build-essential
+    ca-certificates
+    clamav
     codespell
+    coreutils
+    cron
+    curl
+    datamash
+    diffutils
+    duf
+    fd-find
+    feh
+    ffmpeg
+    findutils
+    git
+    gnupg
+    golang
+    grep
+    gzip
+    handbrake-cli
+    htop
+    imagemagick
+    librsvg2-bin
+    lsb-release
+    lua5.4
+    luajit
+    lynx
+    make
+    mount
+    neofetch
+    nmap
+    openssh
+    openssl
+    pandoc
+    perl
+    python3
+    qrencode
+    ripgrep
+    rsync
+    ruby
     shellcheck
     shfmt
+    silversearcher-ag
+    socat
+    sqlite3
+    taskwarrior
+    telnet
+    textlive-latex-recommended
+    thefuck
+    tmux
+    tree
+    vim
+    wget
     # packages below needed to build Alacritty from source
     cargo
     cmake
-    pkg-config
-    libfreetype6-dev
     libfontconfig1-dev
+    libfreetype6-dev
     libxcb-xfixes0-dev
     libxkbcommon-dev
+    pkg-config
     python3
 )
 
@@ -161,18 +170,18 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
     fi
 
     apt_packages+=(
+        calibre
         chromium-browser
+        cmus
         gnome-tweaks
+        handbrake
+        kitty
+        peek
         # rofi
+        tilda
+        transmission
         vlc
         xclip
-        handbrake
-        tilda
-        calibre
-        transmission
-        cmus
-        peek
-        kitty
     )
 
     # https://github.com/alacritty/alacritty
