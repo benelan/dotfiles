@@ -146,14 +146,29 @@ local mappings = {
   o = {
     name = "Octo (GitHub)",
     i = {
-      name = "Issues"
+      name = "Issues",
+      D = {
+        name = "Remove"
+      },
+      a = {
+        name = "Add"
+      }
     },
     p = {
       name = "Pull requests",
-    r = {
-      name = "Reviews"
-    }
+      D = {
+        name = "Remove"
+      },
+      a = {
+        name = "Add"
+      },
+      r = {
+        name = "Reviews"
+      }
     },
+    r = {
+      name = "Reactions"
+    }
   },
   D = {
     name = "Directory"
