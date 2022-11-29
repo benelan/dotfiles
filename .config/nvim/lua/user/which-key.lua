@@ -144,16 +144,16 @@ local mappings = {
     },
   },
   o = {
-    name = "GitHub",
+    name = "Octo (GitHub)",
     i = {
       name = "Issues"
     },
     p = {
-      name = "Pull requests"
-    },
+      name = "Pull requests",
     r = {
       name = "Reviews"
     }
+    },
   },
   D = {
     name = "Directory"
