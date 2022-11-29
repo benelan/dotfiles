@@ -64,8 +64,10 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
   pattern = { "gruvbox-material" },
   callback = function()
     vim.cmd [[
-        let palette = gruvbox_material#get_palette('hard', 'mix', {})
-        call gruvbox_material#highlight('CursorLineNr', palette.orange, palette.none)
+        let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_yellow': ['#5A3B0A', '136'], 'orange': ['#B9510C', '172']})
+        call gruvbox_material#highlight('CursorLineNr', s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_yellow)
+        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.orange)
       ]]
   end
 })

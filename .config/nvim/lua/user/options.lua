@@ -16,7 +16,6 @@ vim.opt.smartindent = true                      -- make indenting smarter again
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
 vim.opt.swapfile = false                        -- creates a swapfile
-vim.opt.termguicolors = true                    -- set term gui colors (most terminals support this)
 vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
@@ -25,6 +24,7 @@ vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.breakindentopt = "shift:2"              -- Shift two characters left when breakindent-ing
+vim.opt.background = "dark"                     -- Specify "dark" or "light" background color
 vim.opt.cursorline = true                       -- highlight the current line
 vim.opt.relativenumber = true                   -- show +/- offset number from the current line
 vim.opt.number = true                           -- show the current line number instead of 0
@@ -56,6 +56,8 @@ end
  -- options for cmp
 vim.opt.completeopt = { "menuone", "noselect", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,diff:/]]
+vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,diff: ]]
 -- set fonts with fallbacks for GUI
 vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h13,monospace:h12"
+-- set term gui colors (most terminals support this)
+if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
