@@ -64,12 +64,12 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
   pattern = { "gruvbox-material" },
   callback = function()
     vim.cmd [[
-        let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'orange': ['#B9510C', '208']})
+        let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#A0460A', '208']})
         call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.orange)
+        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
         highlight! link CursorLineNr Purple
       ]]
   end
