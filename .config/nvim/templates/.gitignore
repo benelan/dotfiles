@@ -13,6 +13,10 @@ dist
 *.orig
 *.lock
 *.temp.*
+**__BASE__*
+*__LOCAL__*
+*__REMOTE__*
+*__BACKUP__*
 
 # Compiled source #
 ###################
