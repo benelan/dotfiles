@@ -120,6 +120,9 @@ local mappings = {
   },
   g = {
     name = "Git",
+    t = {
+      name = "Toggle options"
+    },
     g = { "<cmd>lua _LAZYGIT_TOGGLE()<CR>", "Lazygit" },
     S = { "<cmd>lua require 'gitsigns'.stage_buffer()<cr>", "Stage Buffer" },
     R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
