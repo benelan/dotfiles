@@ -80,7 +80,7 @@ local mappings = {
   -- " Debug Adapter protocol:
   -- "   https://microsoft.github.io/debug-adapter-protocol/
   -- " Debugging
-  d = {
+  D = {
     name = "Debug",
     t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
     b = { "<cmd>lua require'dap'.step_back()<cr>", "Step Back" },
@@ -97,7 +97,9 @@ local mappings = {
     q = { "<cmd>lua require'dap'.close()<cr>", "Quit" },
     U = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
   },
-
+  d = {
+    name = "Directory"
+  },
   f = {
     name = "Find",
     b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
@@ -166,12 +168,18 @@ local mappings = {
         name = "Reviews"
       }
     },
+    m = {
+      name = "My stuff",
+      i = {
+        name = "Issues"
+      },
+      p = {
+        name = "Pull requests"
+      }
+    },
     r = {
       name = "Reactions"
     }
-  },
-  D = {
-    name = "Directory"
   },
   l = {
     name = "LSP",

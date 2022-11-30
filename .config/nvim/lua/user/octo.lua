@@ -162,3 +162,23 @@ vim.keymap.set("n", "<leader>oprs", "<cmd>Octo review start<CR>",
 
 vim.keymap.set("n", "<leader>oprf", "<cmd>Octo review submit<CR>",
   vim.list_extend({ desc = "Finish review" }, opts))
+
+
+-- My stuff
+vim.keymap.set("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
+  vim.list_extend({ desc = "List my assigned issues" }, opts))
+
+vim.keymap.set("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
+  vim.list_extend({ desc = "List my created issues" }, opts))
+
+vim.keymap.set("n", "<leader>ompc", "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
+  vim.list_extend({ desc = "List my created pull requests" }, opts))
+
+vim.keymap.set("n", "<leader>ompa", "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
+  vim.list_extend({ desc = "List my assigned pull requests" }, opts))
+
+vim.keymap.set("n", "<leader>omr", "<cmd>Octo repo list<CR>",
+  vim.list_extend({ desc = "List my repos" }, opts))
+
+vim.keymap.set("n", "<leader>omg", "<cmd>Octo gist list<CR>",
+  vim.list_extend({ desc = "List my gists" }, opts))

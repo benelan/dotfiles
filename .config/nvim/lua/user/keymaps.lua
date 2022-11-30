@@ -28,13 +28,13 @@ keymap("n", "g.", "<Plug>SystemOpenCWD",
   vim.list_extend({ desc = "Open directory with system" }, opts))
 
 -- change/print/make directory
-keymap("n", "<leader>Dc", "<CMD>cd %:h <Bar> pwd<CR>",
+keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>",
   vim.list_extend({ desc = "Change to buffer location" }, opts))
 
-keymap("n", "<leader>De", "<CMD>echo expand('%:h')<CR>",
+keymap("n", "<leader>de", "<CMD>echo expand('%:h')<CR>",
   vim.list_extend({ desc = "Echo buffer location" }, opts))
 
-keymap("n", "<leader>Dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
+keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
   vim.list_extend({ desc = "Make to buffer location" }, opts))
 
 -- List navigation (next/previous)
