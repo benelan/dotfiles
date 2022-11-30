@@ -90,15 +90,31 @@ vim.cmd [[
     autocmd BufNewFile .gitignore 0r ~/.config/nvim/templates/.gitignore
     autocmd BufNewFile .eslintrc.js 0r ~/.config/nvim/templates/.eslintrc.js
     autocmd BufNewFile .prettierrc.js 0r ~/.config/nvim/templates/.prettierrc.js
-    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/LICENSE.md
+    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/license.md
   augroup END
 ]]
 
 
--- reload nvim config after changes
-vim.cmd [[
-  augroup reload_user_config
-    autocmd!
-    autocmd BufWritePost ~/.config/nvim/* source $MYVIMRC
-  augroup end
-]]
+-- Reload the NeoVim configuration after changes
+function ReloadConfig()
+  for name, _ in pairs(package.loaded) do
+    if vim.startswith(name, "user") then
+      package.loaded[name] = nil
+    end
+  end
+  dofile(vim.env.MYVIMRC)
+  print("Reloaded configuration")
+end
+
+vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig,
+  { desc = "Reloads NeoVim configuration" })
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  pattern = {
+    vim.fn.expand("~" .. "/.config/nvim/lua/user/*"),
+    vim.env.MYVIMRC
+  },
+  callback = ReloadConfig
+})
+
+
