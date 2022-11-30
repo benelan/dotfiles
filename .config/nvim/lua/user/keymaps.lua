@@ -31,8 +31,8 @@ keymap("n", "g.", "<Plug>SystemOpenCWD",
 keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>",
   vim.list_extend({ desc = "Change to buffer location" }, opts))
 
-keymap("n", "<leader>de", "<CMD>echo expand('%:h')<CR>",
-  vim.list_extend({ desc = "Echo buffer location" }, opts))
+keymap("n", "<leader>dp", "<CMD>echo expand('%:h')<CR>",
+  vim.list_extend({ desc = "Print buffer location" }, opts))
 
 keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
   vim.list_extend({ desc = "Make to buffer location" }, opts))
@@ -40,15 +40,25 @@ keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
 -- List navigation (next/previous)
 
 -- tab
-keymap("n", "]t", "<CMD>tnext<CR>",
+keymap("n", "]t", "<CMD>tabnext<CR>",
   vim.list_extend({ desc = "Next Tab" }, opts))
-keymap("n", "[t", "<CMD>tprevious<CR>",
+keymap("n", "[t", "<CMD>tabprevious<CR>",
   vim.list_extend({ desc = "Previous Tab" }, opts))
+keymap("n", "]T", "<CMD>tablast<CR>",
+  vim.list_extend({ desc = "Next Tab" }, opts))
+keymap("n", "[T", "<CMD>tabfirst<CR>",
+  vim.list_extend({ desc = "Previous Tab" }, opts))
+
 -- buffer
 keymap("n", "]b", "<CMD>bnext<CR>",
   vim.list_extend({ desc = "Next Buffer" }, opts))
 keymap("n", "[b", "<CMD>bprevious<CR>",
   vim.list_extend({ desc = "Previous Buffer" }, opts))
+keymap("n", "]B", "<CMD>blast<CR>",
+  vim.list_extend({ desc = "Last Buffer" }, opts))
+keymap("n", "[B", "<CMD>bfirst<CR>",
+  vim.list_extend({ desc = "First Buffer" }, opts))
+
 -- argument
 keymap("n", "]a", "<CMD>next<CR>",
   vim.list_extend({ desc = "Next Argument" }, opts))
@@ -65,11 +75,13 @@ keymap("n", "]l", "<CMD>lnext<CR>",
 keymap("n", "[l", "<CMD>lprevious<CR>",
   vim.list_extend({ desc = "Previous Location" }, opts))
 
--- Create splits
+-- Create/hide splits
 keymap("n", "<M-v>", "<C-w>v",
   vim.list_extend({ desc = "Vertical Split" }, opts))
 keymap("n", "<M-s>", "<C-w>s",
   vim.list_extend({ desc = "Horizontal Split" }, opts))
+keymap("n", "<M-d>", "<CMD>hide<CR>",
+  vim.list_extend({ desc = "Hide Window" }, opts))
 
 -- Window navigation
 keymap("n", "<M-h>", "<C-w>h",
@@ -134,20 +146,6 @@ keymap("n", "<leader>bv", "<C-w>v:e %:h/buf.%:e<CR>",
   vim.list_extend({ desc = "New Vertical" }, opts))
 keymap("n", "<leader>bs", "<C-w>s:e %:h/buf.%:e<CR>",
   vim.list_extend({ desc = "New Horizontal" }, opts))
--- Open file with my commonly used extensions
-keymap("n", "<leader>bjs", "<CMD>e %:h/buf.js<CR>",
-  vim.list_extend({ desc = "New JavaScript" }, opts))
-keymap("n", "<leader>bts", "<CMD>e %:h/buf.ts<CR>",
-  vim.list_extend({ desc = "New TypeScript" }, opts))
-keymap("n", "<leader>bmd", "<CMD>e %:h/buf.md<CR>",
-  vim.list_extend({ desc = "New Markdown" }, opts))
-keymap("n", "<leader>bsh", "<CMD>e %:h/buf.sh<CR>",
-  vim.list_extend({ desc = "New Shell" }, opts))
-keymap("n", "<leader>blua", "<CMD>e %:h/buf.lua<CR>",
-  vim.list_extend({ desc = "New Lua" }, opts))
-keymap("n", "<leader>bvim", "<CMD>e %:h/buf.vim<CR>",
-  vim.list_extend({ desc = "New Vim" }, opts))
-
 
 ------------------------------------------------------
 --> Insert
