@@ -30,22 +30,6 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
     })
   end
 })
-
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  callback = function()
-    vim.cmd("hi link illuminatedWord LspReferenceText")
-  end
-})
-
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-  callback = function()
-    local line_count = vim.api.nvim_buf_line_count(0)
-    if line_count >= 5000 then
-      vim.cmd("IlluminatePauseBuf")
-    end
-  end
-})
-
 -- enable relative line numbers
 vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
   callback = function()
@@ -58,23 +42,6 @@ vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave"
     vim.cmd [[ if &nu | set nornu | endif ]]
   end
 })
-
--- change the color of the current line's number
-vim.api.nvim_create_autocmd({ "ColorScheme" }, {
-  pattern = { "gruvbox-material" },
-  callback = function()
-    vim.cmd [[
-        let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#A0460A', '208']})
-        call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
-        highlight! link CursorLineNr Purple
-      ]]
-  end
-})
-
 
 -- return to the last edit position when opening files
 vim.api.nvim_create_autocmd({ "BufReadPost" }, {
@@ -106,16 +73,40 @@ function ReloadConfig()
     end
   end
   dofile(vim.env.MYVIMRC)
-  print("Reloaded configuration")
 end
-
 vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig,
   { desc = "Reloads NeoVim configuration" })
 
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  pattern = {
-    vim.fn.expand("~" .. "/.config/nvim/lua/user/*"),
-    vim.env.MYVIMRC
-  },
-  callback = ReloadConfig
+-- Plugin autocommands
+
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  callback = function()
+    vim.cmd("hi link illuminatedWord LspReferenceText")
+  end
+})
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  callback = function()
+    local line_count = vim.api.nvim_buf_line_count(0)
+    if line_count >= 5000 then
+      vim.cmd("IlluminatePauseBuf")
+    end
+  end
+})
+
+
+vim.api.nvim_create_autocmd({ "ColorScheme" }, {
+  pattern = { "gruvbox-material" },
+  callback = function()
+    vim.cmd [[
+        let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#A0460A', '208']})
+        call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
+        call gruvbox_material#highlight('DiffDelete', s:palette.bg4, s:palette.bg_diff_red)
+        call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
+        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
+        highlight! link CursorLineNr Purple
+      ]]
+  end
 })
