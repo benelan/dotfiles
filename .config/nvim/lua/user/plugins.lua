@@ -223,6 +223,10 @@ return packer.startup(function(use)
         commit = "32d9627123321db65a4f158b72b757bcaef1a3f4",
         after = 'nvim-treesitter',
       },
+      { -- Additional text objects
+        'nvim-treesitter/nvim-treesitter-textobjects', -- more text objects
+        after = 'nvim-treesitter',
+      }
     }
   }
 
