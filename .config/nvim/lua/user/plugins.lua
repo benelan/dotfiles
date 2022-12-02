@@ -234,6 +234,10 @@ return packer.startup(function(use)
     commit = "f98c85e7c3d65a51f45863a34feb4849c82f240f",
   }
   use {
+    "sindrets/diffview.nvim", -- diff and history viewer
+    commit = "6a82dfcb59f0af1e814f34bf8344d68afe8618ec"
+  }
+  use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
     commit = "cde10054abcce9eb8d53347c88f7645888df19ea",
   }
