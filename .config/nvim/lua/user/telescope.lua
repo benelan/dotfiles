@@ -41,7 +41,6 @@ telescope.setup {
         ["<C-k>"] = telescope_actions.move_selection_previous,
         ['<tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
         ['<s-tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_previous,
-        -- ['<C-p>'] = telescope_actions.toggle_preview,
         ["<esc>"] = telescope_actions.close
       },
       n = {
@@ -65,6 +64,17 @@ telescope.setup {
       }
     },
   },
+  extensions = {
+    project = {
+      hidden_files = true,
+      -- sync_with_nvim_tree = true,
+      base_dirs = {
+        '~/.dotfiles',
+        '~/.bin',
+        '~/.config/nvim',
+      }
+    }
+  }
 }
 
 telescope.load_extension('fzf')
