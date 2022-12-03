@@ -221,11 +221,11 @@ return packer.startup(function(use)
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
         commit = "32d9627123321db65a4f158b72b757bcaef1a3f4",
-        after = 'nvim-treesitter',
+        after = "nvim-treesitter",
       },
       { -- Additional text objects
-        'nvim-treesitter/nvim-treesitter-textobjects', -- more text objects
-        after = 'nvim-treesitter',
+        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        after = "nvim-treesitter",
       }
     }
   }
@@ -247,10 +247,27 @@ return packer.startup(function(use)
   }
 
 
+  -----------------------------------------------------------------------------
+  -- Debugger Adapter
+  -----------------------------------------------------------------------------
+  use {
+    "mfussenegger/nvim-dap",
+    commit = "8f396b7836b9bbda9edd9f655f12ca377ae97676",
+    requires = {
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        commit = "2971ce3e89b1711cc26e27f73d3f854b559a77d4"
+      },
+      {
+        "rcarriga/nvim-dap-ui",
+        commit = "54365d2eb4cb9cfab0371306c6a76c913c5a67e3"
+      },
+    }
+  }
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
     require("packer").sync()
   end
 end)
-
