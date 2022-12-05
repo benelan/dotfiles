@@ -45,7 +45,7 @@ keymap("n", "]t", "<CMD>tabnext<CR>",
 keymap("n", "[t", "<CMD>tabprevious<CR>",
   vim.list_extend({ desc = "Previous Tab" }, opts))
 keymap("n", "]T", "<CMD>tablast<CR>",
-  vim.list_extend({ desc = "Next Tab" }, opts))
+  vim.list_extend({ desc = "Last Tab" }, opts))
 keymap("n", "[T", "<CMD>tabfirst<CR>",
   vim.list_extend({ desc = "Previous Tab" }, opts))
 
@@ -74,6 +74,16 @@ keymap("n", "]l", "<CMD>lnext<CR>",
   vim.list_extend({ desc = "Next Location" }, opts))
 keymap("n", "[l", "<CMD>lprevious<CR>",
   vim.list_extend({ desc = "Previous Location" }, opts))
+-- jump
+keymap("n", "]j", "<C-o>",
+  vim.list_extend({ desc = "Next Jump" }, opts))
+keymap("n", "[j", "<C-i>",
+  vim.list_extend({ desc = "Previous Jump" }, opts))
+-- change
+keymap("n", "]c", "g,",
+  vim.list_extend({ desc = "Next Change" }, opts))
+keymap("n", "[c", "g;",
+  vim.list_extend({ desc = "Previous Change" }, opts))
 
 -- Create/hide splits
 keymap("n", "<M-v>", "<C-w>v",
@@ -175,3 +185,43 @@ vim.cmd [[
   inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
   vmap <C-L> <Esc><C-L>gv
 ]]
+
+
+------------------------------------------------------
+--> Utils
+------------------------------------------------------
+
+local status_ok, utils = pcall(require, "user.utils")
+if not status_ok then return end
+
+-- Toggle settings
+keymap("n", "<leader>sr", function() utils.toggle_option("relativenumber") end,
+  vim.list_extend({ desc = "Toggle relative line number" }, opts))
+keymap("n", "<leader>sw", function() utils.toggle_option("wrap") end,
+  vim.list_extend({ desc = "Toggle wrap" }, opts))
+keymap("n", "<leader>ss", function() utils.toggle_option("spell") end,
+  vim.list_extend({ desc = "Toggle spell" }, opts))
+keymap("n", "<leader>sf",
+  function() utils.toggle_option("foldcolumn", "0", "1") end,
+  vim.list_extend({ desc = "Toggle foldcolumn" }, opts))
+keymap("n", "<leader>sc",
+  function() utils.toggle_option("colorcolumn", "0", "80") end,
+  vim.list_extend({ desc = "Toggle foldcolumn" }, opts))
+keymap("n", "<leader>sh", function() utils.toggle_option("hlsearch") end,
+  vim.list_extend({ desc = "Toggle hlsearch" }, opts))
+keymap("n", "<leader>sl", function() utils.toggle_option("list") end,
+  vim.list_extend({ desc = "Toggle list" }, opts))
+keymap("n", "<leader>sh", function() utils.toggle_option("hlsearch") end,
+  vim.list_extend({ desc = "Toggle hlsearch" }, opts))
+keymap("n", "<leader>sx", function() utils.toggle_option("cursorline") end,
+  vim.list_extend({ desc = "Toggle cursorline" }, opts))
+keymap("n", "<leader>sy", function() utils.toggle_option("cursorcolumn") end,
+  vim.list_extend({ desc = "Toggle cursorcolumn" }, opts))
+
+-- Add blank lines
+keymap("n", "]<space>",
+  function() utils.paste_blank_line(vim.fn.line(".")) end,
+  vim.list_extend({ desc = "Add Space Below" }, opts))
+keymap("n", "[<space>",
+  function() utils.paste_blank_line(vim.fn.line(".") - 1) end,
+  vim.list_extend({ desc = "Add Space Above" }, opts))

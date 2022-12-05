@@ -35,6 +35,7 @@ vim.opt.numberwidth = 4                         -- minimal number of columns to 
 vim.opt.signcolumn = "yes"                      -- always show the sign column to prevent text shifting
 vim.opt.wrap = true                             -- display lines as one long line
 vim.opt.linebreak = true                        -- don't wrap in the middle of words
+vim.opt.showbreak = "…"                         -- character disabled before wrapped lines
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.sidescrolloff = 8                       -- left/right column padding, only applies when wrap=false
 vim.opt.foldenable = true                       -- enable folding
@@ -47,17 +48,31 @@ vim.opt.shortmess:append("c")                   -- hide all completion messages 
 vim.opt.whichwrap:append("<,>,[,]")             -- keys to move to the previous/next line when at the start/end of line
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
-vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is aseparate word
+vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is a separate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
 vim.opt.formatoptions:remove("c,r,o")           -- :help formatoptions
 if vim.fn.executable('rg') == 1 then            -- Use ripgrep instead of grep
-    vim.opt.grepprg="rg --vimgrep --hidden --glob ‘!.git’"
+  vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
- -- options for cmp
+-- options for cmp
 vim.opt.completeopt = { "menuone", "noselect", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:,diff: ]]
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:,foldclose:,diff: ]]
+-- change invisible characters
+vim.opt.listchars = [[tab:▸ ,extends:»,precedes:«,trail:·,nbsp:_,eol:↴]]
 -- set fonts with fallbacks for GUI
-vim.opt.guifont = "JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,Iosevka:h13,monospace:h12"
+vim.opt.guifont = "Iosevka:h13,JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,monospace:h12"
 -- set term gui colors (most terminals support this)
 if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
+-- add patterns to ignore
+-- vim.opt.wildignore:append(
+--   "*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,"..
+--   "*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,"..
+--   "*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,"..
+--   "*.gif,*.gifv,*.gmo,*.gpg,*.gz,*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg,"..
+--   "*.m4a,*.mid,*.mp3,*.mp4,*.o,*.odp,*.ods,*.odt,*.ogg,*.ogv,*.opus,"..
+--   "*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,*.rm,"..
+--   "*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,"..
+--   "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,"..
+--   "*/node_modules/*,*/dist/*,*/build/*,*/public/*"
+-- )
