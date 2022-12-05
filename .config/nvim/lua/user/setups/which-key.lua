@@ -147,6 +147,16 @@ local mappings = {
       "<cmd>Gitsigns diffthis HEAD<cr>",
       "Git Diff",
     },
+    m = {
+      name = "Mergetool",
+      U = { "<cmd>diffupdate<cr>", "Update Merge Diff" },
+      r = { "<cmd>diffget RE<cr>", "Choose Hunk From Remote" },
+      R = { "<cmd>%diffget RE<cr>", "Choose All From Remote" },
+      b = { "<cmd>diffget BA<cr>", "Choose Hunk From Base" },
+      B = { "<cmd>%diffget BA<cr>", "Choose All From Base" },
+      l = { "<cmd>diffget LO<cr>", "Choose Hunk From Local" },
+      L = { "<cmd>diffget LO<cr>", "Choose All From Local" }
+    }
   },
   o = {
     name = "Octo (GitHub)",
