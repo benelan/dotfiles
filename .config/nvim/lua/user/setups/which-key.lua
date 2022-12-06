@@ -29,7 +29,7 @@ local vmappings = {
     },
     S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer" },
     R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer" },
-    l = { "<cmd>Gitsigns blame_line<cr>", "Blame" },
+    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame" },
     j = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
     k = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
     p = { "<cmd>Gitsigns preview_hunk<cr>", "Preview Hunk" },
@@ -162,7 +162,7 @@ local mappings = {
     t = {
       name = "Toggle options"
     },
-    l = { "<cmd>Gitsigns blame_line<cr>", "Blame" },
+    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame" },
     d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Git Diff", },
     S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer" },
     R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer" },
@@ -243,9 +243,9 @@ local mappings = {
     j = { vim.diagnostic.goto_next, "Next Diagnostic" },
     k = { vim.diagnostic.goto_prev, "Prev Diagnostic" },
     l = { vim.lsp.codelens.run, "CodeLens Action" },
-    f = { vim.lsp.buf.format({ async = true }), "Format" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
     r = { vim.lsp.buf.rename, "Rename" },
+    f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format" },
     e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
     w = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },

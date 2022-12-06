@@ -24,20 +24,29 @@ gitsigns.setup {
   current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
 }
 
--- vim.keymap.set("n", "ih", ":<C-U>Gitsigns select_hunk<CR>",
---   { silent = true, noremap = true, desc = "Hunk Text Object" })
+local utils_status_ok, u = pcall(require, "user.utils")
+if not utils_status_ok then return end
 
-vim.keymap.set("n", "<leader>gtb", ":<C-U>Gitsign toggle_current_line_blame<CR>",
-  { silent = true, noremap = true, desc = "Toggle current line blame" })
+u.keymap({ "o", "x" }, "ih",
+  ":<C-U>Gitsigns select_hunk<CR>",
+  "inner git hunk")
 
-vim.keymap.set("n", "<leader>gts", ":<C-U>Gitsign toggle_signs<CR>",
-  { silent = true, noremap = true, desc = "Toggle signs" })
+u.keymap("n", "<leader>gtb",
+  "<cmd>Gitsigns toggle_current_line_blame<CR>",
+ "Toggle current line blame")
 
-vim.keymap.set("n", "<leader>gtw", ":<C-U>Gitsign toggle_word_diff<CR>",
-  { silent = true, noremap = true, desc = "Toggle word diff" })
+u.keymap("n", "<leader>gts",
+  "<cmd>Gitsigns toggle_signs<CR>",
+ "Toggle signs")
 
-vim.keymap.set("n", "<leader>gtl", ":<C-U>Gitsign toggle_linehl<CR>",
-  { silent = true, noremap = true, desc = "Toggle line highlight" })
+u.keymap("n", "<leader>gtw",
+  "<cmd>Gitsigns toggle_word_diff<CR>",
+ "Toggle word diff")
 
-vim.keymap.set("n", "<leader>gtn", ":<C-U>Gitsign toggle_numhl<CR>",
-  { silent = true, noremap = true, desc = "Toggle number highlight" })
+u.keymap("n", "<leader>gtl",
+  "<cmd>Gitsigns toggle_linehl<CR>",
+ "Toggle line highlight")
+
+u.keymap("n", "<leader>gtn",
+  "<cmd>Gitsigns toggle_numhl<CR>",
+ "Toggle number highlight")

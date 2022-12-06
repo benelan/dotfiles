@@ -110,11 +110,14 @@ end
 nvim_tree_view.View.winopts.winfixwidth = false
 nvim_tree_view.View.winopts.winfixheight = false
 
+local utils_status_ok, u = pcall(require, "user.utils")
+if not utils_status_ok then return end
+
 -- keymaps to open NvimTree
-local opts = { silent = true, noremap = true }
-vim.keymap.set("n", "<leader><S-e>", ":NvimTreeToggle<CR>",
-  vim.list_extend({ desc = "NvimTree toggle" }, opts))
-vim.keymap.set("n", "<leader>e",
+u.keymap("n", "<leader><S-e>", ":NvimTreeToggle<CR>",
+   "NvimTree toggle")
+
+u.keymap("n", "<leader>e",
   function()
     if nvim_tree_view.is_visible() then
       nvim_tree_view.close()
@@ -123,4 +126,5 @@ vim.keymap.set("n", "<leader>e",
       nvim_tree.open_replacing_current_buffer()
       -- nvim_tree.find_file(false, previous_buf)
     end
-  end, vim.list_extend({ desc = "NvimTree in place" }, opts))
+  end,
+  "NvimTree in place")

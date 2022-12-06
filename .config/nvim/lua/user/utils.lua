@@ -24,4 +24,13 @@ M.toggle_option = function(option, x, y)
   vim.cmd.set(option .. "?")
 end
 
+M.keymap = function(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs,
+    {
+      silent = true,
+      noremap = true,
+      desc = desc or nil
+    })
+end
+
 return M
