@@ -5,9 +5,9 @@
 
 # checks for existence of a command
 function _command_exists() {
-    # _param '1: command to check'
-    # _param '2: (optional) log message to include when command not found'
-    # _example '$ _command_exists ls && echo exists'
+    # param 1: command to check
+    # param 2: (optional) log message to include when command not found
+    # example: $ _command_exists ls && echo exists
 
     # local msg="${2:-Command '$1' does not exist}"
     if type -t "$1" >/dev/null; then
@@ -22,9 +22,9 @@ function _command_exists() {
 
 # checks for existence of a binary
 function _binary_exists() {
-    # _param '1: binary to check'
-    # _param '2: (optional) log message to include when binary not found'
-    # _example '$ _binary_exists ls && echo exists'
+    # param 1: binary to check
+    # param 2: (optional) log message to include when binary not found
+    # example $ _binary_exists ls && echo exists
 
     # local msg="${2:-Binary '$1' does not exist}"
     if type -P "$1" >/dev/null; then
@@ -293,7 +293,7 @@ function usage() {
 
 # back up file with timestamp
 function backup-file() {
-    # param 'filename'
+    # param filename
     local filename="${1?}" filetime
     filetime=$(date +%Y%m%d_%H%M%S)
     cp -a "${filename}" "${filename}_${filetime}"
@@ -327,6 +327,21 @@ dataurl() {
         MIMETYPE="${MIMETYPE};charset=utf-8"
     fi
     echo "data:${MIMETYPE};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Recursively search parent directory for file
+parent-find() {
+    # param 1: name of file or directory to find
+    # param 2: directory to start from (defaults to PWD)
+    # example: $ parent-find .git
+ 
+    local file="$1"
+    local dir="${2:-$PWD}"
+    test -e "$dir/$file" && echo "$dir" && return 0
+    [ '/' = "$dir" ] && return 1
+    parent-find "$file" "$(dirname "$dir")"
 }
 
 # Networking
