@@ -6,6 +6,12 @@ if not status_ok or not ui_status_ok or not vt_status_ok then
   return
 end
 
+-- Available Debug Adapters:
+--   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
+-- Adapter configuration and installation instructions:
+--   https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+-- Debug Adapter protocol:
+--   https://microsoft.github.io/debug-adapter-protocol/
 
 -----------------------------------------------------------------------------
 -- DAP Virtual Text

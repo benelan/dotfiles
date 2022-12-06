@@ -3,14 +3,14 @@ if not status_ok then return end
 
 toggleterm.setup({
   size = 20,
-  open_mapping = [[<C-t>]],
+  open_mapping = '<A-t>',
   hide_numbers = true,
   shade_terminals = true,
   shading_factor = 2,
   start_in_insert = true,
   insert_mappings = true,
   persist_size = true,
-  auto_scroll = true,
+  auto_scroll = false,
   direction = "float",
   close_on_exit = true,
   shell = vim.o.shell,
@@ -19,8 +19,21 @@ toggleterm.setup({
   },
 })
 
+local opts = { noremap = true, silent = true }
+
+-- setup a lazygit terminal if installed on the system
+if vim.fn.executable('lazygit') then
+  local status_ok_terminal, toggleterm_terminal = pcall(require, "toggleterm.terminal")
+  if not status_ok_terminal then return end
+  local lazygit = toggleterm_terminal.Terminal:new({ cmd = "lazygit", hidden = true })
+  vim.keymap.set(
+    "n", "<leader>gg",
+    function() lazygit:toggle() end,
+    opts
+  )
+end
+
 function _G.set_terminal_keymaps()
-  local opts = { noremap = true }
   vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
   vim.api.nvim_buf_set_keymap(0, 't', 'jk', [[<C-\><C-n>]], opts)
   vim.api.nvim_buf_set_keymap(0, 't', '<M-h>', [[<Cmd>wincmd h<CR>]], opts)
@@ -30,12 +43,3 @@ function _G.set_terminal_keymaps()
 end
 
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
-
-local status_ok_terminal, toggleterm_terminal = pcall(require, "toggleterm.terminal")
-if not status_ok_terminal then return end
-
-local lazygit = toggleterm_terminal.Terminal:new({ cmd = "lazygit", hidden = true })
-
-function _LAZYGIT_TOGGLE()
-  lazygit:toggle()
-end
