@@ -1,6 +1,6 @@
 tilda_config_version="1.5.4"
 command=""
-font="SauceCodePro Nerd Font Mono 11"
+font="Iosevka 13"
 key="<Primary>space"
 addtab_key="<Shift><Control>t"
 fullscreen_key="F11"
