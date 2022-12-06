@@ -191,7 +191,7 @@ alias gunhide='git update-index --no-assume-unchanged'
 # setup the alias for managing dotfiles
 # It behaves like git, and can be called from any directory, e.g.
 # $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
-# The whole home directory besides the dotfiles is untracked.
+# The whole home directory excluding the dotfiles is untracked.
 # Prevent `dot clean` so everything isn't deleted
 dot() {
     if [ "$1" = "clean" ]; then
@@ -200,6 +200,36 @@ dot() {
         /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
     fi
 }
+
+# open the home dir file tree to edit dotfiles
+# creates vim env vars so git plugins work with the bare repo
+ehome() {
+    # shellcheck disable=2016
+    nvim ~ \
+      --cmd  "cd %:h <Bar> pwd" \
+      --cmd 'let $GIT_WORK_TREE = expand("~")' \
+      --cmd 'let $GIT_DIR = expand("~/.git")'
+}
+
+# edit dotfiles with working git plugins
+edots() {
+    local path=~/.dotfiles
+    # shellcheck disable=2016
+    nvim ~/.dotfiles \
+      --cmd  "cd %:h <Bar> pwd" \
+      --cmd 'let $GIT_WORK_TREE = expand("~")' \
+      --cmd 'let $GIT_DIR = expand("~/.git")'
+}
+
+# edit neovim config with working git plugins
+envim() {
+    # shellcheck disable=2016
+    nvim ~/.config/nvim/init.lua \
+      --cmd  "cd %:h <Bar> pwd" \
+      --cmd 'let $GIT_WORK_TREE = expand("~")' \
+      --cmd 'let $GIT_DIR = expand("~/.git")'
+}
+
 
 alias d='dot'
 

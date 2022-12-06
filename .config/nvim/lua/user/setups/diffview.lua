@@ -4,7 +4,7 @@ if not status_ok or not actions_status_ok then return end
 
 diffview.setup({
   diff_binaries = false,    -- Show diffs for binaries
-  enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
+  enhanced_diff_hl = true,  -- See ':h diffview-config-enhanced_diff_hl'
   git_cmd = { "git" },      -- The git executable followed by default args.
   use_icons = true,         -- Requires nvim-web-devicons
   watch_index = true,       -- Update views and index buffers when the git index changes.
@@ -19,7 +19,7 @@ diffview.setup({
   },
   view = {
     -- Configure the layout and behavior of different types of views.
-    -- Available layouts: 
+    -- Available layouts:
     --  'diff1_plain'
     --    |'diff2_horizontal'
     --    |'diff2_vertical'
