@@ -206,7 +206,7 @@ dot() {
 ehome() {
     # shellcheck disable=2016
     nvim ~ \
-      --cmd  "cd %:h <Bar> pwd" \
+      --cmd  "cd %:h | pwd" \
       --cmd 'let $GIT_WORK_TREE = expand("~")' \
       --cmd 'let $GIT_DIR = expand("~/.git")'
 }
@@ -216,7 +216,7 @@ edots() {
     local path=~/.dotfiles
     # shellcheck disable=2016
     nvim ~/.dotfiles \
-      --cmd  "cd %:h <Bar> pwd" \
+      --cmd  "cd %:h | pwd" \
       --cmd 'let $GIT_WORK_TREE = expand("~")' \
       --cmd 'let $GIT_DIR = expand("~/.git")'
 }
@@ -225,7 +225,7 @@ edots() {
 envim() {
     # shellcheck disable=2016
     nvim ~/.config/nvim/init.lua \
-      --cmd  "cd %:h <Bar> pwd" \
+      --cmd  "cd %:h | pwd" \
       --cmd 'let $GIT_WORK_TREE = expand("~")' \
       --cmd 'let $GIT_DIR = expand("~/.git")'
 }
