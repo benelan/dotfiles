@@ -83,7 +83,7 @@
     log = true
     keepBackup = false
     conflictstyle = diff3
-	  tool = nvim3
+	  tool = nvimdiff3
 
 [mergetool "nvim1337"]
 	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
