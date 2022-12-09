@@ -336,12 +336,19 @@ parent-find() {
     # param 1: name of file or directory to find
     # param 2: directory to start from (defaults to PWD)
     # example: $ parent-find .git
- 
+
     local file="$1"
     local dir="${2:-$PWD}"
     test -e "$dir/$file" && echo "$dir" && return 0
     [ '/' = "$dir" ] && return 1
     parent-find "$file" "$(dirname "$dir")"
+}
+
+# removes duplicate lines from a file
+function dedup-lines() {
+    # param: file to dedup
+    # example: $ dedup-lines deps.txt > unique_deps.txt
+    awk '!visited[$0]++' "$@"
 }
 
 # Networking
@@ -467,14 +474,32 @@ function gcob-cleaned() {
     git stash pop
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # git checkout (find)
-# makes sure everything is up to date with master
-# you can checkout using any word in the commit
-# e.g. to checkout benelan/2807-consistent-slot-doc: gcof slot
+# Makes sure everything is up to date with master.
+# You can checkout using any word in the branch name.
+# Uses a fuzzy finder (fzf) to pick when there are multiple matches.
+# If fzf isn't installed it falls back to grep.
 function gcof() {
+    # example: $ gcof slot # => to checkout "benelan/2807-fix-slot-doc"
+
     git checkout "$(gbdefault)"
     git pull
-    git branch | grep "$1" | xargs git checkout
+    if _command_exists fzf; then
+        # all branches (remote and local)
+        git branch -a |
+            # search for arg1 or defaulting to github username
+            # remove the remote prefix from the branch names
+            awk '/'"${1:-benelan}"'/{gsub("remotes/origin/","");print}' |
+            # sort/dedup, use fzf to pick branch if necessary, and checkout
+            sort -u | fzf -0 -1 | xargs git checkout
+    else
+        # fall back to grep if fzf isn't installled
+        # it will need to be more exact because it won't work
+        # if there are multiple matches
+        git branch | grep "$1" | xargs git checkout
+    fi
     git merge "$(gbdefault)"
 }
 
@@ -492,19 +517,21 @@ function gcon() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# git-branch-clean
-# removes all local branches which have been merged into the default branch
+# git-branch-prune
+# removes all local branches which have been
+# (squash) merged into the default branch
 gbprune() {
-    git checkout -q "$(gbdefault)"
+    TARGET_BRANCH="$(gbdefault)"
+    git fetch --prune --all
+    git checkout -q "$TARGET_BRANCH"
     git for-each-ref refs/heads/ "--format=%(refname:short)" |
-        grep -v -e main -e master -e develop -e dev |
+        grep -v -e main -e master -e develop -e dev | # don't remove these branches
         while read -r branch; do
-            mergeBase=$(git merge-base "$(gbdefault)" "$branch")
-            [[ "$(git cherry "$(gbdefault)" "$(
+            mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch")
+            [[ "$(git cherry "$TARGET_BRANCH" "$(
                 git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$mergeBase" -m _
             )")" == "-"* ]] && git branch -D "$branch"
         done
-    git fetch --prune --all
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
