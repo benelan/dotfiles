@@ -59,10 +59,10 @@
     new = green         # additions
 
 [color "diff-highlight"]
-  oldNormal = red bold
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
+    oldNormal = red bold
+    oldHighlight = red bold 52
+    newNormal = green bold
+    newHighlight = green bold 22
 
 [diff]
     algorithm = patience
@@ -83,16 +83,22 @@
     log = true
     keepBackup = false
     conflictstyle = diff3
-	  tool = nvimdiff3
+	  tool = nvimdiff1337 # nvimdiff3
 
-[mergetool "nvim1337"]
-	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
-	trustExitCode = true
-	keepBackup = false
+[mergetool]
+    keepBackup = false
+    keepTemporaries = false
 
-[push]
-    # https://git-scm.com/docs/git-config#git-config-pushdefault
-    default = simple
+[mergetool "vimdiff"]
+    # layout available since git v2.37
+    # if on a later version, use "nvim1337" mergetool
+    # https://git-scm.com/docs/vimdiff
+    layout = "@LOCAL,REMOTE+BASE,REMOTE/@LOCAL+LOCAL,BASE,REMOTE/MERGED"
+    trustExitCode = true
+
+[mergetool "nvimdiff1337"]
+    cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+    trustExitCode = true
 
 [pull]
     rebase = false
@@ -132,7 +138,6 @@
     defaultBranch = master
 
 # URL shorthands
-
 [url "git@github.com:"]
     insteadOf = "gh:"
     pushInsteadOf = "github:"
