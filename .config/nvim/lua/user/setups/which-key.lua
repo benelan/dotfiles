@@ -9,8 +9,8 @@ local opts = {
   noremap = true,
   nowait = false,
 }
-local vopts = {
-  mode = "v", -- VISUAL mode
+local xopts = {
+  mode = "x", -- VISUAL mode
   prefix = "<leader>",
   buffer = nil,
   silent = true,
@@ -20,29 +20,33 @@ local vopts = {
 
 -- NOTE: Prefer using <cmd> over : to avoid changing modes
 -- see https://neovim.io/doc/user/map.html#%3CCmd%3E
-local vmappings = {
+local xmappings = {
   ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment toggle" },
   g = {
     name = "Git",
     t = {
       name = "Toggle options"
     },
+    h = { "<cmd>DiffviewFileHistory %<cr>", "Buffer File History" },
+    d = { "<cmd>DiffviewOpen<cr>", "Open Diffview" },
+    q = { "<cmd>DiffviewClose<cr>", "Close Diffview" },
+    V = { "<cmd>DiffviewRefresh<cr>", "Refresh Diffview" },
+    H = { "<cmd>DiffviewFileHistory<cr>", "All Files History" },
+    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame Line" },
     S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer" },
     R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer" },
-    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame" },
     j = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
     k = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
     p = { "<cmd>Gitsigns preview_hunk<cr>", "Preview Hunk" },
     r = { "<cmd>Gitsigns reset_hunk<cr>", "Reset Hunk" },
     s = { "<cmd>Gitsigns stage_hunk<cr>", "Stage Hunk" },
     u = { "<cmd>Gitsigns undo_stage_hunk<cr>", "Unstage Hunk" },
-    d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Git Diff", },
-    o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
+    o = { "<cmd>Telescope git_status<cr>", "Open Status" },
+    b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
+    c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
     C = {
       "<cmd>Telescope git_bcommits<cr>",
-      "Checkout commit(for current file)",
+      "Checkout Buffer Commit",
     },
     m = {
       name = "Mergetool",
@@ -54,14 +58,6 @@ local vmappings = {
       l = { "<cmd>diffget LO<cr>", "Choose Hunk From Local" },
       L = { "<cmd>diffget LO<cr>", "Choose All From Local" }
     },
-    v = {
-      name = "Diffview",
-      r = { "<cmd>DiffviewRefresh<cr>", "Refresh" },
-      l = { "<cmd>DiffviewLog<cr>", "Logs" },
-      q = { "<cmd>DiffviewClose<cr>", "Close" },
-      h = { "<cmd>DiffviewFileHistory<cr>", "File History" },
-      d = { "<cmd>DiffviewOpen<cr>", "Open Diff" },
-    }
   },
 
   l = {
@@ -162,8 +158,12 @@ local mappings = {
     t = {
       name = "Toggle options"
     },
-    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame" },
-    d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Git Diff", },
+    d = { "<cmd>DiffviewOpen<cr>", "Open Diffview" },
+    q = { "<cmd>DiffviewClose<cr>", "Close Diffview" },
+    V = { "<cmd>DiffviewRefresh<cr>", "Refresh Diffview" },
+    h = { "<cmd>DiffviewFileHistory %<cr>", "Buffer File History" },
+    H = { "<cmd>DiffviewFileHistory<cr>", "All Files History" },
+    l = { "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", "Blame Line" },
     S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer" },
     R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer" },
     j = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
@@ -172,12 +172,12 @@ local mappings = {
     r = { "<cmd>Gitsigns reset_hunk<cr>", "Reset Hunk" },
     s = { "<cmd>Gitsigns stage_hunk<cr>", "Stage Hunk" },
     u = { "<cmd>Gitsigns undo_stage_hunk<cr>", "Unstage Hunk" },
-    o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
+    o = { "<cmd>Telescope git_status<cr>", "Open Status" },
+    b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
+    c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
     C = {
       "<cmd>Telescope git_bcommits<cr>",
-      "Checkout commit(for current file)",
+      "Checkout Buffer Commit"
     },
     m = {
       name = "Mergetool",
@@ -189,14 +189,6 @@ local mappings = {
       l = { "<cmd>diffget LO<cr>", "Choose Hunk From Local" },
       L = { "<cmd>diffget LO<cr>", "Choose All From Local" }
     },
-    v = {
-      name = "Diffview",
-      r = { "<cmd>DiffviewRefresh<cr>", "Refresh" },
-      l = { "<cmd>DiffviewLog<cr>", "Logs" },
-      q = { "<cmd>DiffviewClose<cr>", "Close" },
-      h = { "<cmd>DiffviewFileHistory<cr>", "File History" },
-      d = { "<cmd>DiffviewOpen<cr>", "Open Diff" },
-    }
   },
 
   o = {
@@ -280,4 +272,4 @@ local mappings = {
 
 which_key.setup()
 which_key.register(mappings, opts)
-which_key.register(vmappings, vopts)
+which_key.register(xmappings, xopts)

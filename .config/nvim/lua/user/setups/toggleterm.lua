@@ -22,14 +22,14 @@ toggleterm.setup({
 local opts = { noremap = true, silent = true }
 
 -- setup a lazygit terminal if installed on the system
-if vim.fn.executable('lazygit') then
+if vim.fn.executable('lazygit') == 1 then
   local status_ok_terminal, toggleterm_terminal = pcall(require, "toggleterm.terminal")
   if not status_ok_terminal then return end
   local lazygit = toggleterm_terminal.Terminal:new({ cmd = "lazygit", hidden = true })
   vim.keymap.set(
     "n", "<leader>gg",
     function() lazygit:toggle() end,
-    opts
+    vim.list_extend(opts, { desc = "Open Lazygit" })
   )
 end
 
