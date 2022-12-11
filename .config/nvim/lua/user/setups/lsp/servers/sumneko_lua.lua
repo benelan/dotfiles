@@ -1,6 +1,11 @@
 return {
   settings = {
     Lua = {
+      hint = {
+        arrayIndex = "Disable",
+        enable = true,
+        setType = true,
+      },
       diagnostics = {
         globals = { "vim", "packer_plugins" },
       },
@@ -13,7 +18,7 @@ return {
       telemetry = {
         enable = false,
       },
+      format = { enable = true }
     },
   },
 }
-

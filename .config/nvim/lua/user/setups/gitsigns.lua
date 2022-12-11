@@ -33,20 +33,20 @@ u.keymap({ "o", "x" }, "ih",
 
 u.keymap("n", "<leader>gtb",
   "<cmd>Gitsigns toggle_current_line_blame<CR>",
- "Toggle current line blame")
+  "Toggle current line blame")
 
 u.keymap("n", "<leader>gts",
   "<cmd>Gitsigns toggle_signs<CR>",
- "Toggle signs")
+  "Toggle signs")
 
 u.keymap("n", "<leader>gtw",
   "<cmd>Gitsigns toggle_word_diff<CR>",
- "Toggle word diff")
+  "Toggle word diff")
 
 u.keymap("n", "<leader>gtl",
   "<cmd>Gitsigns toggle_linehl<CR>",
- "Toggle line highlight")
+  "Toggle line highlight")
 
 u.keymap("n", "<leader>gtn",
   "<cmd>Gitsigns toggle_numhl<CR>",
- "Toggle number highlight")
+  "Toggle number highlight")

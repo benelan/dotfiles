@@ -23,8 +23,8 @@ vim.opt.writebackup = false                     -- don't need backups when overw
 vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
-vim.opt.breakindentopt = "shift:2"              -- Shift two characters left when breakindent-ing
-vim.opt.background = "dark"                     -- Specify "dark" or "light" background color
+vim.opt.breakindentopt = "shift:2"              -- shift two characters left when breakindent-ing
+vim.opt.background = "dark"                     -- specify "dark" or "light" background color
 vim.opt.cursorline = true                       -- highlight the current line
 vim.opt.relativenumber = true                   -- show +/- offset number from the current line
 vim.opt.number = true                           -- show the current line number instead of 0
@@ -48,14 +48,19 @@ vim.opt.shortmess:append("c")                   -- hide all completion messages 
 vim.opt.whichwrap:append("<,>,[,]")             -- keys to move to the previous/next line when at the start/end of line
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
-vim.opt.spelloptions:append("camel")            -- When a word is CamelCased, assume "Cased" is a separate word
+vim.opt.autoread = true                         -- automatically read file after outside changes
+vim.opt.spelloptions:append("camel")            -- when a word is CamelCased, assume "Cased" is a separate word
 vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
 vim.opt.formatoptions:remove("c,r,o")           -- :help formatoptions
-if vim.fn.executable('rg') == 1 then            -- Use ripgrep instead of grep
+if vim.fn.executable('rg') == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
+-- add some common code directories to path
+vim.opt.path:append("src/**,api/**,lua/**,utils/**,static,config")
+-- use the patience diff algorithm
+vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
-vim.opt.completeopt = { "menuone", "noselect", "noselect" }
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
 vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:,foldclose:,diff: ]]
 -- change invisible characters
@@ -65,14 +70,14 @@ vim.opt.guifont = "Iosevka:h13,JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Fon
 -- set term gui colors (most terminals support this)
 if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
--- vim.opt.wildignore:append(
---   "*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,"..
---   "*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,"..
---   "*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,"..
---   "*.gif,*.gifv,*.gmo,*.gpg,*.gz,*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg,"..
---   "*.m4a,*.mid,*.mp3,*.mp4,*.o,*.odp,*.ods,*.odt,*.ogg,*.ogv,*.opus,"..
---   "*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,*.rm,"..
---   "*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,"..
---   "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,"..
---   "*/node_modules/*,*/dist/*,*/build/*,*/public/*"
--- )
+vim.opt.wildignore:append(
+  "*~,#*#,*.7z,.DS_Store,.git,.hg,.svn," ..
+  "*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bmp,*.bz2," ..
+  "*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2," ..
+  "*.gif,*.gifv,*.gmo,*.gpg,*.gz,*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg," ..
+  "*.m4a,*.mid,*.mkv,*.mp3,*.mp4,*.o,*.odp,*.ods,*.odt,*.ogg,*.ogv,*.opus," ..
+  "*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,*.rm," ..
+  "*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm," ..
+  "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip," ..
+  "*/node_modules/*,*/dist/*,*/build/*"
+)

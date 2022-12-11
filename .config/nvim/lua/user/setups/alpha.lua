@@ -11,12 +11,14 @@ dashboard.section.header.val = {
   [[ \/_/\/_/\/____/\/___/  \/__/    \/_/\/_/\/_/\/_/]],
 }
 dashboard.section.buttons.val = {
-  dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-  dashboard.button("e", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-  dashboard.button("p", " " .. " Find project", ":lua require('telescope').extensions.project.project()<CR>"),
-  dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-  dashboard.button("t", " " .. " Find text", ":Telescope live_grep <CR>"),
-  dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+  dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+  dashboard.button("e", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+  dashboard.button("p", " " .. " Find project", ":Telescope project<CR>"),
+  dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles<CR>"),
+  dashboard.button("t", " " .. " Find text", ":Telescope live_grep<CR>"),
+  dashboard.button("h", " " .. " Vim Help", ":Telescope help_tags<CR>"),
+  dashboard.button("m", " " .. " Man Pages", ":Telescope man_pages<CR>"),
+  dashboard.button("c", " " .. " Config", ":e $MYVIMRC<CR>"),
   dashboard.button("q", " " .. " Quit", ":qa<CR>"),
 }
 local function footer()

@@ -65,6 +65,13 @@ u.keymap("n", "[j", "<C-i>", "Previous Jump")
 -- change
 u.keymap("n", "]c", "g,", "Next Change")
 u.keymap("n", "[c", "g;", "Previous Change")
+-- diagnostic error
+u.keymap("n", "]e",
+  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
+  "Next Error")
+u.keymap("n", "[e",
+  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
+  "Previous Error")
 
 -- Create/hide splits
 u.keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
