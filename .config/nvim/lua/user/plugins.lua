@@ -145,6 +145,10 @@ return packer.startup(function(use)
       {
         "hrsh7th/cmp-nvim-lua", -- lua language completion
         commit = "d276254e7198ab7d00f117e88e223b4bd8c02d21"
+      },
+      {
+        "hrsh7th/cmp-cmdline", -- commandline completion
+        commit = "23c51b2a3c00f6abc4e922dbd7c3b9aca6992063"
       }
     }
   }
