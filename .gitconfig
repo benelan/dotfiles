@@ -83,7 +83,7 @@
     log = true
     keepBackup = false
     conflictstyle = diff3
-	  tool = nvimdiff1337 # nvimdiff3
+	  tool = nvimdiff1337
 
 [mergetool]
     keepBackup = false
@@ -93,7 +93,7 @@
     # layout available since git v2.37
     # if on a later version, use "nvim1337" mergetool
     # https://git-scm.com/docs/vimdiff
-    layout = "@LOCAL,REMOTE+BASE,REMOTE/@LOCAL+LOCAL,BASE,REMOTE/MERGED"
+    layout = "LOCAL,REMOTE/MERGED+LOCAL,BASE,REMOTE/MERGED"
     trustExitCode = true
 
 [mergetool "nvimdiff1337"]
