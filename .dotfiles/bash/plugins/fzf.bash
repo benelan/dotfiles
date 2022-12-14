@@ -12,9 +12,9 @@
 [ -r "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash" ] && source "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash"
 
 # No need to continue if the command is not present
-_command_exists fzf || return
+is-supported fzf || return
 
-if [ -z ${FZF_DEFAULT_COMMAND+x} ] && _command_exists fd; then
+if [ -z ${FZF_DEFAULT_COMMAND+x} ] && is-supported fd; then
     export FZF_DEFAULT_COMMAND='fd --type f'
 fi
 

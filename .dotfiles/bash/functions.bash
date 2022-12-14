@@ -3,57 +3,6 @@
 # Utilities
 #---------------------------------------------------------------------------------
 
-# checks for existence of a command
-function _command_exists() {
-    # param 1: command to check
-    # param 2: (optional) log message to include when command not found
-    # example: $ _command_exists ls && echo exists
-
-    # local msg="${2:-Command '$1' does not exist}"
-    if type -t "$1" >/dev/null; then
-        return 0
-    else
-        # echo "$msg"
-        return 1
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# checks for existence of a binary
-function _binary_exists() {
-    # param 1: binary to check
-    # param 2: (optional) log message to include when binary not found
-    # example $ _binary_exists ls && echo exists
-
-    # local msg="${2:-Binary '$1' does not exist}"
-    if type -P "$1" >/dev/null; then
-        return 0
-    else
-        # echo "$msg"
-        return 1
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# checks for existence of a completion
-function _completion_exists() {
-    # _param '1: command to check'
-    # _param '2: (optional) log message to include when completion is found'
-    # _example '$ _completion_exists gh && echo exists'
-
-    # local msg="${2:-Completion for '$1' already exists}"
-    if complete -p "$1" &>/dev/null; then
-        # echo "$msg"
-        return 0
-    else
-        return 1
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # `open` with no arguments opens the current directory,
 # otherwise opens the given location
 function o() {
@@ -185,7 +134,7 @@ function match-urls() {
 # Filesystem
 #---------------------------------------------------------------------------------
 
-if _command_exists inotifywait; then
+if is-supported inotifywait; then
     # runs a command when a target file is modified
     # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
     function onmodify() {
@@ -302,7 +251,7 @@ function backup-file() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # move files to hidden folder in tmp, that gets cleared on each reboot
-if ! _command_exists del; then
+if ! is-supported del; then
     function del() {
         # param: file or folder to be deleted
         # example: del ./file.txt
@@ -405,9 +354,9 @@ function ssh-add-all() {
 
 # display all ip addresses for this host
 function ips() {
-    if _command_exists ifconfig; then
+    if is-supported ifconfig; then
         ifconfig | awk '/inet /{ gsub(/addr:/, ""); print $2 }'
-    elif _command_exists ip; then
+    elif is-supported ip; then
         ip addr | grep -oP 'inet \K[\d.]+'
     else
         echo "You don't have ifconfig or ip command installed!"
@@ -486,7 +435,7 @@ function gcof() {
 
     git checkout "$(gbdefault)"
     git pull
-    if _command_exists fzf; then
+    if is-supported fzf; then
         # all branches (remote and local)
         git branch -a |
             # search for arg1 or defaulting to github username
@@ -696,7 +645,7 @@ color-grid() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if _command_exists jq; then
+if is-supported jq; then
     function find-emoji() {
         emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
 

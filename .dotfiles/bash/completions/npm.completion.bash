@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-if _command_exists npm; then
+if is-supported npm; then
     eval "$(npm completion)"
 fi

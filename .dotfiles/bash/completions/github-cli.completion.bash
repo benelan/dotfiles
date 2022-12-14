@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-if _binary_exists gh; then
+if is-supported gh; then
     # If gh already completed, stop
-    _completion_exists gh && return
-    eval "$(gh completion --shell=bash)"
+    if complete -p gh &>/dev/null; then
+        eval "$(gh completion --shell=bash)"
+    fi
 fi
