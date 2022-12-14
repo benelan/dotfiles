@@ -59,7 +59,7 @@ octo.setup({
       add_comment = { lhs = "<leader>opac", desc = "Add comment" },
       delete_comment = { lhs = "<leader>opDc", desc = "Delete comment" },
       next_comment = { lhs = "]c", desc = "Next comment" },
-      prev_comment = { lhs = "[c", desc = "Nrevious comment" },
+      prev_comment = { lhs = "[c", desc = "Previous comment" },
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ " },
       react_eyes = { lhs = "<leader>ore", desc = "add/remove 👀" },

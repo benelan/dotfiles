@@ -65,6 +65,9 @@ u.keymap("n", "[j", "<C-i>", "Previous Jump")
 -- change
 u.keymap("n", "]c", "g,", "Next Change")
 u.keymap("n", "[c", "g;", "Previous Change")
+-- diff conflict
+u.keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
+u.keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
 -- diagnostic error
 u.keymap("n", "]e",
   "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
@@ -158,6 +161,39 @@ vim.cmd [[
   vmap <C-L> <Esc><C-L>gv
 ]]
 
+vim.cmd [[
+" go to next/previous merge conflict hunks
+function! s:conflictGoToMarker(pos, hunk) abort
+    if filter(copy(a:hunk), 'v:val == [0, 0]') == []
+        call cursor(a:hunk[0][0], a:hunk[0][1])
+        return 1
+    else
+        echohl ErrorMsg | echo 'conflict not found' | echohl None
+        call setpos('.', a:pos)
+        return 0
+    endif
+endfunction
+
+function! s:conflictNext(cursor) abort
+    return s:conflictGoToMarker(getpos('.'), [
+                \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
+                \ searchpos('^=======', 'cW'),
+                \ searchpos('^>>>>>>>', 'cW'),
+                \ ])
+endfunction
+
+function! s:conflictPrevious(cursor) abort
+    return s:conflictGoToMarker(getpos('.'), reverse([
+                \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
+                \ searchpos('^=======', 'bcW'),
+                \ searchpos('^<<<<<<<', 'bcW'),
+                \ ]))
+endfunction
+
+
+command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
+command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
+]]
 
 ------------------------------------------------------
 --> Utils
