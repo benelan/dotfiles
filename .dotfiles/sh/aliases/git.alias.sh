@@ -11,28 +11,30 @@ alias get='git'
 
 # add
 alias ga='git add'
-alias gall='git add -A'
-alias gap='git add -p'
+alias gall='git add --all'
+alias gap='git add --patch'
 
 # branch
 alias gb='git branch'
-alias gbD='git branch -D'
-alias gba='git branch -a'
-alias gbd='git branch -d'
-alias gbm='git branch -m'
+alias gbd='git branch --delete'
+alias gbD='git branch --delete --force'
+alias gba='git branch --all'
+alias gbm='git branch --move'
+alias gbl="git branch --list"
 alias gbt='git branch --track'
 
 # for-each-ref
 alias gbc='git for-each-ref --format="%(authorname) %09 %(if)%(HEAD)%(then)*%(else)%(refname:short)%(end) %09 %(creatordate)" refs/remotes/ --sort=authorname DESC' # FROM https://stackoverflow.com/a/58623139/10362396
 
 # commit
-alias gc='git commit -v'
-alias gca='git commit -v -a'
-alias gcaa='git commit -a --amend -C HEAD' # Add uncommitted and unstaged changes to the last commit
-alias gcam='git commit -v -am'
-alias gcamd='git commit --amend'
+alias gc='git commit --verbose'
+alias gca='git commit --verbose --all'
+alias gcm='git commit --verbose -m'
+# Add uncommitted and unstaged changes to the last commit
+alias gcam='git commit --verbose -am'
+alias gcaamd='git commit --all --amend -C HEAD'
+alias gcamd='git commit --verbose --amend'
 alias gcamdne='git commit --amend --no-edit'
-alias gcm='git commit -v -m'
 alias gci='git commit --interactive'
 alias gcsam='git commit -S -am'
 
@@ -75,9 +77,12 @@ alias gup='git fetch && git rebase'
 alias gg='git log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
 alias ggf='git log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
 alias ggs='gg --stat'
-alias ggup='git log --branches --not --remotes --no-walk --decorate --oneline' # FROM https://stackoverflow.com/questions/39220870/in-git-list-names-of-branches-with-unpushed-commits
+# from https://stackoverflow.com/questions/39220870/in-git-list-names-of-branches-with-unpushed-commits
+alias ggup='git log --branches --not --remotes --no-walk --decorate --oneline'
 alias gll='git log --graph --pretty=oneline --abbrev-commit'
-alias gnew='git log HEAD@{1}..HEAD@{0}' # Show commits since last pull, see http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+alias glum='git log "$(gbdefault)" ^HEAD'
+# Show commits since last pull, from http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+alias gnew='git log HEAD@{1}..HEAD@{0}'
 alias gwc='git whatchanged'
 
 # ls-files
@@ -93,7 +98,7 @@ alias ghm='cd "$(git rev-parse --show-toplevel)"' # Git home
 
 # merge
 alias gm='git merge'
-
+alias gmt='git mergetool'
 # mv
 alias gmv='git mv'
 
@@ -133,7 +138,8 @@ alias grbc='git rebase --continue'
 alias grm='git rebase "$(gbdefault)"'
 alias grmi='git rebase "$(gbdefault)" -i'
 alias grma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
-alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"' # Rebase with latest remote
+# Rebase with latest remote
+alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"'
 
 # reset
 alias gus='git reset HEAD'
@@ -141,7 +147,8 @@ alias gpristine='git reset --hard && git clean -dfx'
 
 # status
 alias gs='git status'
-alias gss='git status -s'
+# set default to short in .gitconfig
+alias gsl='git status -l'
 
 # shortlog
 alias gcount='git shortlog -sn'
@@ -159,10 +166,8 @@ alias gst='git stash'
 alias gstb='git stash branch'
 alias gstd='git stash drop'
 alias gstl='git stash list'
-alias gstp='git stash pop'  # kept due to long-standing usage
-alias gstpo='git stash pop' # recommended for it's symmetry with gstpu (push)
-
-## 'stash push' introduced in git v2.13.2
+alias gstpo='git stash pop'
+# 'stash push' introduced in git v2.13.2
 alias gstpu='git stash push'
 alias gstpum='git stash push -m'
 
@@ -178,9 +183,10 @@ alias gswt='git switch --track'
 
 # tag
 alias gt='git tag'
-alias gta='git tag -a'
-alias gtd='git tag -d'
-alias gtl='git tag -l'
+alias gta='git tag --annotate'
+alias gtd='git tag --delete'
+alias gtD='git tag --delete --force'
+alias gtl='git tag --list'
 
 alias ghide='git update-index --assume-unchanged'
 alias gunhide='git update-index --no-assume-unchanged'
@@ -201,42 +207,26 @@ dot() {
     fi
 }
 
-# open the home dir file tree to edit dotfiles
-# creates vim env vars so git plugins work with the bare repo
-ehome() {
+# creates env vars so git plugins
+# work with the bare dotfiles repo
+edot() {
     # shellcheck disable=2016
-    nvim ~ \
-      --cmd  "cd %:h | pwd" \
-      --cmd 'let $GIT_WORK_TREE = expand("~")' \
-      --cmd 'let $GIT_DIR = expand("~/.git")'
+    "$EDITOR" "${@:-$HOME/.dotfiles}" \
+        --cmd "cd %:h | pwd" \
+        --cmd 'let $GIT_WORK_TREE = expand("~")' \
+        --cmd 'let $GIT_DIR = expand("~/.git")'
 }
 
-# edit dotfiles with working git plugins
-edots() {
-    local path=~/.dotfiles
-    # shellcheck disable=2016
-    nvim ~/.dotfiles \
-      --cmd  "cd %:h | pwd" \
-      --cmd 'let $GIT_WORK_TREE = expand("~")' \
-      --cmd 'let $GIT_DIR = expand("~/.git")'
-}
-
-# edit neovim config with working git plugins
-envim() {
-    # shellcheck disable=2016
-    nvim ~/.config/nvim/init.lua \
-      --cmd  "cd %:h | pwd" \
-      --cmd 'let $GIT_WORK_TREE = expand("~")' \
-      --cmd 'let $GIT_DIR = expand("~/.git")'
-}
-
+alias ehome="edot ~"
+alias envim="edot ~/.config/nvim/init.lua"
 
 alias d='dot'
 
 # add
 alias da='dot add'
-alias dall='dot add -u'
-alias dap='dot add -p'
+# doesn't add untracked files 
+alias dall='dot add --update'
+alias dap='dot add --patch'
 # track new files in commonly added locations
 alias danvim="dot add ~/.config/nvim/*"
 alias dadots="dot add ~/.dotfiles/*"
@@ -247,17 +237,17 @@ alias dabin="dot add ~/.bin/*"
 
 # branch
 alias db='dot branch'
-alias dbD='dot branch -D'
-alias dba='dot branch -a'
-alias dbd='dot branch -d'
-alias dbm='dot branch -m'
+alias dbD='dot branch --delete --force'
+alias dba='dot branch --all'
+alias dbd='dot branch --delete'
+alias dbm='dot branch --move'
 alias dbt='dot branch --track'
 
 # commit
-alias dc='dot commit -v'
+alias dc='dot commit --verbose'
+alias dcm='dot commit --verbose -m'
 alias dcamd='dot commit --amend'
 alias dcamdne='dot commit --amend --no-edit'
-alias dcm='dot commit -v -m'
 alias dci='dot commit --interactive'
 
 # stash
@@ -275,7 +265,8 @@ alias drh='dot reset --hard'
 
 # status
 alias ds='dot status'
-alias dss='dot status -s'
+# set default to short in .gitconfig
+alias dsl='dot status --long'
 
 # shortlog
 alias dcount='dot shortlog -sn'
@@ -302,18 +293,20 @@ alias dgf='dot log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%a
 alias dgs='dg --stat'
 alias dgup='dot log --branches --not --remotes --no-walk --decorate --oneline'
 alias dll='dot log --graph --pretty=oneline --abbrev-commit'
-alias dnew='dot log HEAD@{1}..HEAD@{0}' # Show commits since last pull
+# Show commits since last pull
+alias dnew='dot log HEAD@{1}..HEAD@{0}'
 alias dwc='dot whatchanged'
 
 # ls-files
-alias dlsum='dot diff --name-only --diff-filter=U' # Show unmerged (conflicted) files
+# Show unmerged (conflicted) files
+alias dlsum='dot diff --name-only --diff-filter=U'
 
 # gui
 alias dgui='dot gui'
 
 # merge
 alias dm='dot merge'
-
+alias dmt='dot mergetool'
 # push
 alias dp='dot push'
 alias dpd='dot push --delete'
