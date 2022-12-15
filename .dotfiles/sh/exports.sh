@@ -39,7 +39,9 @@ NODE_REPL_HISTORY=~/.node_history
 NODE_REPL_HISTORY_SIZE='32768'
 # Use sloppy mode by default, matching web browsers.
 NODE_REPL_MODE='sloppy'
-export NODE_REPL_HISTORY NODE_REPL_HISTORY_SIZE NODE_REPL_MODE
+# increase allocated memory
+NODE_OPTIONS="--max-old-space-size=8192"
+export NODE_REPL_HISTORY NODE_REPL_HISTORY_SIZE NODE_REPL_MODE NODE_OPTIONS
 
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 PYTHONIOENCODING='UTF-8'
