@@ -87,14 +87,8 @@ apt_packages+=(
     tree
     vim
     wget
-    # packages below needed to build Alacritty from source
     cargo
     cmake
-    libfontconfig1-dev
-    libfreetype6-dev
-    libxcb-xfixes0-dev
-    libxkbcommon-dev
-    pkg-config
     python3
 )
 
@@ -184,11 +178,6 @@ if [[ -z "$IS_SERVER_DOTFILE_INSTALL" ]]; then
         xclip
     )
 
-    # https://github.com/alacritty/alacritty
-    # https://launchpad.net/~aslatter/+archive/ubuntu/ppa
-    # add_ppa ppa aslatter/ppa
-    # apt_package+=(alacritty)
-
 fi
 
 # Anything that needs to run after packages are installed
@@ -196,39 +185,6 @@ fi
 
 function post_install() {
     mkdir -p ~/.local/bin
-    # Install Git Extras
-    # if [[ ! "$(type -P git-extras)" ]]; then
-    #   e_header "Installing Git Extras"
-    #   (
-    #     cd ~/.dotfiles/vendor/git-extras &&
-    #     sudo make install
-    #   )
-    # fi
-
-    # Install bins from zip file.
-    # install_from_zip ngrok 'https://github.com/inconshreveable/ngrok/archive/refs/tags/1.7.1.zip'
-
-    # Install Alacritty if all of the prereqs are installed
-    if [[ -z "$IS_SERVER_DOTFILE_INSTALL" &&
-        ! "$(type -P alacritty)" &&
-        -d ~/.dotfiles/vendor/alacritty &&
-        ("$(type -P python)" && "$(type -P cargo)" &&
-        "$(type -P cmake)" && "$(type -P pkg-config)" &&
-        "$(type -P libfreetype6-dev)" &&
-        "$(type -P libxcb-xfixes0-dev)" &&
-        "$(type -P libxkbcommon)") ]]; then
-
-        e_header "Installing Alacritty"
-        cd ~/.dotfiles/vendor/alacritty || return
-        cargo build --release
-        # Add Terminfo if necessary
-        if [[ ! "$(infocmp alacritty)" ]]; then sudo tic -xe alacritty,alacritty-direct extra/alacritty.info; fi
-        # Add Desktop Entry
-        sudo cp target/release/alacritty ~/.local/bin
-        sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
-        sudo desktop-file-install extra/linux/Alacritty.desktop
-        sudo update-desktop-database
-    fi
 
     # link batcat to bat due to package name conflict
     [[ ! "$(type -P bat)" ]] && ln -s "$(type -P batcat)" ~/.local/bin/bat
