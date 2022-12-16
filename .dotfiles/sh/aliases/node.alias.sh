@@ -1,7 +1,11 @@
 #!/bin/sh
 
+is-supported node || return
+
 alias node-dev='export NODE_ENV=development'
 alias node-prod='export NODE_ENV=production'
+
+is-supported npm || return
 
 # npm
 alias ni='npm install'
@@ -43,3 +47,10 @@ alias nxqi='npx -q --ignore-existing '
 alias nxniq='npx --no-install --ignore-existing -q '
 alias nxiqp='npx --ignore-existing -q -p '
 alias nxniqp='npx --no-install --ignore-existing -q -p '
+
+is-supported fzf && is-supported npm-fuzzy || return
+
+alias nfz="npm-fuzzy"
+alias nfzs="npm-fuzzy search"
+alias nfzl="npm-fuzzy ls-versions"
+alias nfzu="npm-fuzzy uninstall"
