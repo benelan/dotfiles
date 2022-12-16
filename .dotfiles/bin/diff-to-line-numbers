@@ -1,7 +1,7 @@
 #!/usr/bin/env -S awk -f
 
-# https://github.com/whiteinge/dotfiles/blob/master/bin/diff-to-line-numbers
 # Output the line numbers for lines added and removed in a unified diff
+# https://github.com/whiteinge/dotfiles/blob/master/bin/diff-to-line-numbers
 
 # Skip lines between diff and @@.
 /^@@/ { skip = 0 }

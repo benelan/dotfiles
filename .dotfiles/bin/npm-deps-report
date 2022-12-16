@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-# https://github.com/whiteinge/dotfiles/blob/master/bin/npm-deps-report
+
 # Output how many sub-dependencies each npm dependencies has
+# https://github.com/whiteinge/dotfiles/blob/master/bin/npm-deps-report
 #
 # Usage:
 #

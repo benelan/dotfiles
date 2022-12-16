@@ -1,10 +1,9 @@
 
 #!/bin/sh
 
+# Generates a QR code for wifi
 # https://git.sr.ht/~moviuro/moviuro.bin/tree/master/item/wifi-qr
 # https://feeding.cloud.geek.nz/posts/encoding-wifi-access-point-passwords-qr-code/
-#
-# Generates a QR code for wifi
 
 while getopts ":s:p:" _opt; do
   case "$_opt" in

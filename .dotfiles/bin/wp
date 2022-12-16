@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Get the introductory paragraph from a Wikipedia article using the inimitable
+# Get the introductory paragraph from a Wikipedia article using
 # David Leadbeater's Wikipedia-over-DNS service.
 #
 # See https://dgl.cx/wikipedia-dns

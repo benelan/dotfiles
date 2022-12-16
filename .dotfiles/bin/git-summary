@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# https://github.com/whiteinge/dotfiles/blob/master/bin/git-summary
 # Show a summary of the commits, authors, and files in a Git repo
+# https://github.com/whiteinge/dotfiles/blob/master/bin/git-summary
 #
 # Requires GNU datamash.
 # (Avoiding file stats with `-f` is _much_ faster in large repos.)

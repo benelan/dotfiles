@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+# Run one or more commands in one or more dirs
+# Copyright (c) 2012 "Cowboy" Ben Alman
+# Licensed under the MIT license.
+# http://benalman.com/about/license/
+
 function _eachdir() {
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then cat <<HELP
 eachdir
-http://benalman.com/
 Usage: eachdir [dirs --] commands
 Run one or more commands in one or more dirs.
 By default, all subdirs of the current dir will be iterated over, but if --
@@ -20,9 +24,6 @@ Perform a "git pull" inside all subdirs starting with repo-:
   eachdir repo-* -- git pull
 Perform a few git-related commands inside all subdirs starting with repo-:
   eachdir repo-* -- 'git fetch && git merge'
-Copyright (c) 2012 "Cowboy" Ben Alman
-Licensed under the MIT license.
-http://benalman.com/about/license/
 HELP
 return; fi
 

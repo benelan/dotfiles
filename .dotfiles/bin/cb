@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# a portable clipboard utility that works multiple operating systems
+# https://gist.github.com/RichardBronosky/56d8f614fab2bacdd8b048fb58d0c0c7
+
 linux_copy() {
     cat | xclip -selection clipboard
 }

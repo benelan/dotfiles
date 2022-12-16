@@ -1,3 +1,6 @@
+-- My NeoVim setup was originally forked from
+-- https://github.com/LunarVim/nvim-basic-ide
+
 require "user.globals"
 require "user.options"
 require "user.keymaps"

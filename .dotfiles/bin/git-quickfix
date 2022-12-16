@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# https://github.com/whiteinge/dotfiles/blob/master/bin/git-quickfix
 # Open Vim with Git changes as quickfix entries
+# https://github.com/whiteinge/dotfiles/blob/master/bin/git-quickfix
 #
 # Supports a range of commits, or defaults to the HEAD commit. Also supports
 # loading unstaged or staged changes as quickfix entries. Useful for stepping

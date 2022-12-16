@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# https://github.com/whiteinge/dotfiles/blob/master/bin/httpdir
 # Serve a local directory via HTTP (via socat) with or without SSL
+# https://github.com/whiteinge/dotfiles/blob/master/bin/httpdir
 #
 # Usage:
 #

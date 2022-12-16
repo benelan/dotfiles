@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=2076
 
+# Determine the operating system
+# Copyright (c) 2022 Ben Elan `GPLv3`
+
 # detects the operating system
 if [[ -f /proc/version ]] && grep -iq Microsoft /proc/version; then
     os="windows_wsl"

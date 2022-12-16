@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+# Git Jump
+# Copyright (c) 2014 "Cowboy" Ben Alman
+# Licensed under the MIT license.
+# http://benalman.com/about/license/
+
 function help() {
 cat <<HELP
 Git Jump (Forward & Back)
-http://benalman.com/
 
 Usage: $(basename "$0") [command]
 
@@ -24,9 +28,6 @@ Description:
   files are saved in a tag for later retrieval, which is restored when
   jumped back to.
 
-Copyright (c) 2014 "Cowboy" Ben Alman
-Licensed under the MIT license.
-http://benalman.com/about/license/
 HELP
 }
 
