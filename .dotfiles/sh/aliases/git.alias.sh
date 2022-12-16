@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=2139
 
 # git-branch-default
 # gets the default git branch
@@ -216,7 +217,8 @@ alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
 alias gunhide='git update-index --no-assume-unchanged'
 
-alias lg="lazygit"
+alias glz="lazygit"
+alias gfz="git fuzzy"
 
 # Dotfiles
 # -----------------------------------------------------------------------------
@@ -238,7 +240,7 @@ dot() {
 # work with the bare dotfiles repo
 edot() {
     # shellcheck disable=2016
-    "$EDITOR" "${@:-$HOME/.dotfiles}" \
+    nvim "${@:-$HOME/.dotfiles}" \
         --cmd "cd %:h | pwd" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
@@ -256,12 +258,12 @@ alias da='dot add'
 alias dall='dot add --update'
 alias dap='dot add --patch'
 # track new files in commonly added locations
-alias danvim="dot add ~/.config/nvim/*"
-alias dadots="dot add ~/.dotfiles/*"
-alias dash="dot add ~/.dotfiles/sh/*"
-alias dabash="dot add ~/.dotfiles/bash/*"
-alias dascripts="dot add ~/.dotfiles/scripts/*"
-alias dabin="dot add ~/.bin/*"
+alias danvim="dot add ${HOME}/.config/nvim/*"
+alias dadots="dot add ${HOME}/.dotfiles/*"
+alias dash="dot add ${HOME}/.dotfiles/sh/*"
+alias dabash="dot add ${HOME}/.dotfiles/bash/*"
+alias dascripts="dot add ${HOME}/.dotfiles/scripts/*"
+alias dabin="dot add ${HOME}/.dotfiles/bin/*"
 
 # branch
 #########
@@ -364,3 +366,7 @@ alias dsl='dot status --long'
 
 alias dhide='dot update-index --assume-unchanged'
 alias dunhide='dot update-index --no-assume-unchanged'
+
+alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
+alias dlz="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
+alias dfz="dot fuzzy"
