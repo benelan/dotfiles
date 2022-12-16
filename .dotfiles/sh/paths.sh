@@ -18,7 +18,7 @@ pathremove() {
             newpath=$newpath:$dir
         fi
     done
-    export $var=${newpath#:}
+    export "$var"="${newpath#:}"
     unset newpath dir var IFS
 }
 
@@ -29,10 +29,10 @@ pathprepend() {
     # if the path is already in the variable,
     # remove it so we can move it to the front
     pathremove "$1" "$2"
-    #[ -d "${1}" ] || return
+    [ -d "${1}" ] || return
     var="${2:-PATH}"
     value=$(indirect_expand "$var")
-    export ${var}="${1}${value:+:${value}}"
+    export "${var}"="${1}${value:+:${value}}"
     unset var value
 }
 
@@ -41,21 +41,22 @@ pathprepend() {
 #     pathappend ~/bin PATH
 pathappend() {
     pathremove "${1}" "${2}"
-    #[ -d "${1}" ] || return
+    [ -d "${1}" ] || return
     var=${2:-PATH}
     value=$(indirect_expand "$var")
-    export $var="${value:+${value}:}${1}"
+    export "${var}"="${value:+${value}:}${1}"
     unset var value
 }
 
-# Array aren't POSIX compliant
-pathappend "$HOME/.local/share/nvim/mason/bin"
-pathappend "$HOME/.dotfiles/vendor/fzf/bin"
-pathappend "$HOME/.local/bin"
-pathappend "$HOME/.volta/bin"
-pathappend "$HOME/.cargo/bin"
-pathappend "$HOME/go/bin"
-pathappend "$HOME/.bin"
+for dir in ~/.dotfiles/vendor/{fzf,git-fuzzy}/bin; do
+    pathappend "$dir"
+done
+
+for dir in ~/{.dotfiles,.local,.cargo,.volta,go}/bin; do
+    pathappend "$dir"
+done
+
+pathprepend "$HOME/.local/share/nvim/mason/bin"
 pathappend "/snap/bin"
 pathappend "/usr/local/games"
 pathappend "/usr/local/sbin"

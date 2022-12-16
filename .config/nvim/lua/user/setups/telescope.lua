@@ -74,7 +74,6 @@ telescope.setup {
       -- sync_with_nvim_tree = true,
       base_dirs = {
         '~/.dotfiles',
-        '~/.bin',
         '~/.config/nvim',
       }
     }

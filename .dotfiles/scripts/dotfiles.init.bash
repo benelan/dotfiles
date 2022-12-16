@@ -71,14 +71,13 @@ rm -f "$HOME/LICENSE.md" "$HOME/README.md"
 
 # Make the bins executable
 printf "\n➜ Making scripts and bins executable\n"
-[ -d ~/.bin/ ] && chmod +x ~/.bin/*
+[ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
 [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
-# Install fzf
-if [ ! "$(command -v fzf)" ]; then
-    printf "\n➜ Installing fzf from source\n\n"
-    dot submodule update --init .dotfiles/vendor/fzf
-    ~/.dotfiles/vendor/fzf/install --bin
-fi
+# Install vendors
+printf "\n➜ Installing git submodules\n\n"
+dot submodule update --init --recursive
+# fzf install script
+[ ! "$(command -v fzf)" ] && ~/.dotfiles/vendor/fzf/install --bin
 
 printf "\n✔ Initialization complete\n"

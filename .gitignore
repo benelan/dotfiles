@@ -3,7 +3,6 @@ README.md
 .config/nvim/plugin/packer_compiled.lua
 .dotfiles/cache/*
 .dotfiles/git/personal.gitconfig
-.dotfiles/vendor/*
 # home directories
 .cache
 .cargo

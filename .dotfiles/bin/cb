@@ -104,7 +104,7 @@ function debug() {
 }
 
 main() {
-    # detect the operating system (uses a script in ~/.bin)
+    # detect the operating system (uses a script in ~/.dotfiles/bin)
     os="$(os-detect)"
     # exit if the OS is not supported
     ! [[ "$os" == @(windows_cygwin|windows_wsl|linux|osx)* ]] &&
