@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
+# shellcheck disable=1090
 
 # Fuzzy search
 # https://github.com/junegunn/fzf
+is-supported fzf || return
 
 # Auto-completion
 # ---------------
-[[ $- == *i* ]] && source "$HOME/.dotfiles/vendor/fzf/shell/completion.bash" 2>/dev/null
+[[ $- == *i* ]] &&
+    source "$HOME/.dotfiles/vendor/fzf/shell/completion.bash" 2>/dev/null
 
 # Key bindings
 # ------------
-[ -r "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash" ] && source "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash"
+[ -f "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash" ] &&
+    source "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash"
 
-# No need to continue if the command is not present
-is-supported fzf || return
-
-if [ -z ${FZF_DEFAULT_COMMAND+x} ] && is-supported fd; then
-    export FZF_DEFAULT_COMMAND='fd --type f'
-fi
+# Settings
+# --------
+is-supported fd &&
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 
 # Open the selected file in the default editor
 fe() {

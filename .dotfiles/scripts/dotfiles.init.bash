@@ -77,7 +77,10 @@ printf "\n➜ Making scripts and bins executable\n"
 # Install vendors
 printf "\n➜ Installing git submodules\n\n"
 dot submodule update --init --recursive
+
 # fzf install script
-[ ! "$(command -v fzf)" ] && ~/.dotfiles/vendor/fzf/install --bin
+[ ! "$(command -v fzf)" ] &&
+    ~/.dotfiles/vendor/fzf/install \
+        --bin --key-bindings --completion --no-update-rc
 
 printf "\n✔ Initialization complete\n"
