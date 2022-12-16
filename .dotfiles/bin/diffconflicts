@@ -75,7 +75,7 @@
 #
 # NOTE: Use :cq to abort the merge and exit Vim with an error code.
 
-if [[ -z $* || $# != "5" ]] ; then
+if [[ -z $* || $# != "5" ]]; then
     echo -e "Usage: $0 \$EDITOR \$BASE \$LOCAL \$REMOTE \$MERGED"
     exit 1
 fi
@@ -92,20 +92,21 @@ RECONFLICT="${MERGED}.$$.RECONFLICT"
 trap 'rm -f "'"${LOCONFLICT}"'" "'"${RECONFLICT}"'"' SIGINT SIGTERM EXIT
 
 # Remove the conflict markers for each 'side' and put each into a temp file
-sed -E -e '/^=======\r?$/,/^>>>>>>> /d' -e '/^<<<<<<< /d' "${MERGED}" > "${LOCONFLICT}"
-sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" > "${RECONFLICT}"
+sed -E -e '/^=======\r?$/,/^>>>>>>> /d' -e '/^<<<<<<< /d' "${MERGED}" >"${LOCONFLICT}"
+sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" >"${RECONFLICT}"
 
-git config merge.conflictstyle diff
+git config --global merge.conflictStyle merge
 # Fire up vimdiff
 $cmd -f -R -d "${LOCONFLICT}" "${RECONFLICT}" \
-     -c ":set noro" \
-     -c ":nmap <leader>td :tabe $LOCAL<CR>:vert diffs $BASE<CR>:vert diffs $REMOTE<CR>:winc t<CR>:tabe $MERGED<CR>:tabfir<CR>"
+    -c ":set noro" \
+    -c ":nmap <leader>td :tabe $LOCAL<CR>:vert diffs $BASE<CR>:vert diffs $REMOTE<CR>:winc t<CR>:tabe $MERGED<CR>:tabfir<CR>"
 
 EC=$?
 
 # Overwrite $MERGED only if vimdiff exits cleanly.
-if [[ $EC == "0" ]] ; then
-    cat "${LOCONFLICT}" > "${MERGED}"
+if [[ $EC == "0" ]]; then
+    cat "${LOCONFLICT}" >"${MERGED}"
 fi
 
+git config --global merge.conflictStyle diff3
 exit $EC

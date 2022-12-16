@@ -11,7 +11,7 @@
     features = gruvbox-dark zebra-dark
     side-by-side = true
     navigate = true    # use n and N to move between diff sections
-    light = false      # set to true if you're in a terminal w/ a light background color
+    light = false
     # hyperlinks = true
 
  [include]
