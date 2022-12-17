@@ -1,216 +1,215 @@
 [include]
-    ; https://github.com/GitAlias/gitalias
-    path = ~/.dotfiles/git/gitalias.gitconfig
-    ; https://github.com/dandavison/delta
-    path = ~/.dotfiles/git/delta.gitconfig
-    ; user info
-    path= ~/.dotfiles/git/personal.gitconfig
+  ; https://github.com/GitAlias/gitalias
+  path = ~/.dotfiles/git/gitalias.gitconfig
+  ; https://github.com/dandavison/delta
+  path = ~/.dotfiles/git/delta.gitconfig
+  ; user info
+  path= ~/.dotfiles/git/personal.gitconfig
 
 [apply]
-    ; Detect whitespace errors when applying a patch.
-    whitespace = fix
+  ; Detect whitespace errors when applying a patch.
+  whitespace = fix
 
 [branch]
-    ; Show most recently changed branches first.
-    sort = -committerdate
+  ; Show most recently changed branches first.
+  sort = -committerdate
 
 [core]
-    excludesfile = ~/.config/nvim/templates/.gitignore
-    ; Disable line endings output conversion.
-    autocrlf = input
+  excludesfile = ~/.config/nvim/templates/.gitignore
+  ; Disable line endings output conversion.
+  autocrlf = input
 
-    ; Treat spaces before tabs and all kinds of trailing whitespace as an error.
-    ; [default] trailing-space: looks for spaces at the end of a line
-    ; [default] space-before-tab: looks for spaces before tabs at the beginning of a line
-    whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+  ; Treat spaces before tabs and all kinds of trailing whitespace as an error.
+  ; [default] trailing-space: looks for spaces at the end of a line
+  ; [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+  whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
-    ; Set comment character to something that allows mentioning issue numbers.
-    commentChar = ";"
+  ; Set comment character to something that allows mentioning issue numbers.
+  commentChar = ";"
 
-    ; Speed up commands involving untracked files such as `git status`.
-    ; See https://git-scm.com/docs/git-update-index#_untracked_cache
-    untrackedCache = true
+  ; Speed up commands involving untracked files such as `git status`.
+  ; See https://git-scm.com/docs/git-update-index#_untracked_cache
+  untrackedCache = true
 
 [color]
-    ; Use colors in Git commands when possible
-    ui = auto
-    interactive = auto
-    branch = true
-	  diff = true
-	  grep = true
-	  log = true
-	  status = true
+  ; Use colors in Git commands when possible
+  ui = auto
+  interactive = auto
+  branch = true
+  diff = true
+  grep = true
+  log = true
+  status = true
 
 [color "branch"]
-    current = yellow reverse
-    local = yellow
-    remote = green
+  current = yellow reverse
+  local = yellow
+  remote = green
 
 [color "status"]
-    added = green
-    changed = yellow
-    untracked = magenta
-    removed = red
+  added = green
+  changed = yellow
+  untracked = magenta
+  removed = red
 
 [color "diff"]
-    meta = yellow bold
-    frag = magenta bold ; line info
-    old = red           ; deletions
-    new = green         ; additions
+  meta = yellow bold
+  frag = magenta bold ; line info
+  old = red           ; deletions
+  new = green         ; additions
 
 [color "diff-highlight"]
-    oldNormal = red bold
-    oldHighlight = red bold 52
-    newNormal = green bold
-    newHighlight = green bold 22
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
 
 [diff]
-    algorithm = patience
-    tool = nvimdiff3
-    colorMoved = default
-    keepBackup = false
-    ; Detect copies as well as renames.
-    renames = copies
-    renameLimit = 9328
-    compactionHeuristic = true
+  algorithm = patience
+  tool = nvimdiff3
+  colorMoved = default
+  keepBackup = false
+  ; Detect copies as well as renames.
+  renames = copies
+  renameLimit = 9328
+  compactionHeuristic = true
 
 [diff "bin"]
-    ; Use `hexdump` to diff binary files.
-    textconv = hexdump -v -C
+  ; Use `hexdump` to diff binary files.
+  textconv = hexdump -v -C
 
 [merge]
-    ; Include summaries of merged commits in newly created merge commit messages.
-    log = true
-    keepBackup = false
-    conflictStyle = diff3
-	  tool = nvimdiff1337
+  ; Include summaries of merged commits in newly created merge commit messages.
+  log = true
+  keepBackup = false
+  tool = nvimdiff
 
 [mergetool]
-    keepBackup = false
-    keepTemporaries = true
+  keepBackup = false
+  keepTemporaries = true
 
 [mergetool "vimdiff"]
-    ; layout available since git v2.37
-    ; if on a later version, use "nvim1337" mergetool
-    ; https://git-scm.com/docs/vimdiff
-    layout = "LOCAL,REMOTE/MERGED+LOCAL,BASE,REMOTE/MERGED"
-    trustExitCode = true
+  ; layout available since git v2.37
+  ; if on a later version, use "nvim1337" mergetool
+  ; https://git-scm.com/docs/vimdiff
+  layout = "LOCAL,REMOTE/MERGED+LOCAL,BASE,REMOTE/MERGED"
+  trustExitCode = true
 
 [mergetool "nvimdiff1337"]
-    cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
-    trustExitCode = true
+  cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+  trustExitCode = true
 
 [fetch]
-    ; Remove any remote-tracking references that no longer exist on the remote.
-    prune = true
+  ; Remove any remote-tracking references that no longer exist on the remote.
+  prune = true
 
 [rebase]
-    ; Create a temporary stash entry before the operation begins.
-    autostash = true
+  ; Create a temporary stash entry before the operation begins.
+  autostash = true
 
 [status]
-    ; Enable submodule summary of commits.
-    submoduleSummary = true
-    short = true
+  ; Enable submodule summary of commits.
+  submoduleSummary = true
+  short = true
 
 [help]
-    ; Correct and execute mistyped commands.
-    autocorrect = 1
+  ; Correct and execute mistyped commands.
+  autocorrect = 1
 
 [advice]
-    addIgnoredFile = false
-    statusHint = false
+  addIgnoredFile = false
+  statusHint = false
 
 [log]
-    date = local
+  date = local
 
 [format]
-	  pretty = format:"%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
-    ;                           │        │            │            │             └─ author name
-    ;                           │        │            │            └─ message
-    ;                           │        │            └─ date (relative)
-    ;                           │        └─ decorations (branch, heads or tags)
-    ;                           └─ hash (abbreviated)
+  pretty = format:"%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+  ;                           │        │            │            │             └─ author name
+  ;                           │        │            │            └─ message
+  ;                           │        │            └─ date (relative)
+  ;                           │        └─ decorations (branch, heads or tags)
+  ;                           └─ hash (abbreviated)
 
 [init]
-    defaultBranch = master
+  defaultBranch = master
 
 ; URL shorthands
 [url "git@github.com:"]
-    insteadOf = "gh:"
-    pushInsteadOf = "github:"
-    pushInsteadOf = "git://github.com/"
+  insteadOf = "gh:"
+  pushInsteadOf = "github:"
+  pushInsteadOf = "git://github.com/"
 
 [url "git://github.com/"]
-    insteadOf = "github:"
+  insteadOf = "github:"
 
 [url "git@gist.github.com:"]
-    insteadOf = "gst:"
-    pushInsteadOf = "gist:"
-    pushInsteadOf = "git://gist.github.com/"
+  insteadOf = "gst:"
+  pushInsteadOf = "gist:"
+  pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
-    insteadOf = "gist:"
+  insteadOf = "gist:"
 
 [alias]
-    ; Pull in remote changes for the current repository and all its submodules.
-    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+  ; Pull in remote changes for the current repository and all its submodules.
+  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-    ; Switch to a branch, creating it if necessary.
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+  ; Switch to a branch, creating it if necessary.
+  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
-    ; commits and then resets, saving work just in case
-    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+  ; commits and then resets, saving work just in case
+  wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
 
-    ; View abbreviated SHA, description, and history graph of the latest 20 commits.
-    ll = log --pretty=oneline -n 20 --graph --abbrev-commit
-    ln = "!f() { git log --pretty=oneline -n \"$1\" --graph --abbrev-commit; }; f"
+  ; View abbreviated SHA, description, and history graph of the latest 20 commits.
+  ll = log --pretty=oneline -n 20 --graph --abbrev-commit
+  ln = "!f() { git log --pretty=oneline -n \"$1\" --graph --abbrev-commit; }; f"
 
-    ; Find branches containing commit
-    fb = "!f() { git branch -a --contains $1; }; f"
+  ; Find branches containing commit
+  fb = "!f() { git branch -a --contains $1; }; f"
 
-    ; Find tags containing commit
-    ft = "!f() { git describe --always --contains $1; }; f"
+  ; Find tags containing commit
+  ft = "!f() { git describe --always --contains $1; }; f"
 
-    ; Find commits by source code
-    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+  ; Find commits by source code
+  fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
 
-    ; Find commits by commit message
-    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+  ; Find commits by commit message
+  fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
-    ri = rebase --interactive --autosquash
+  ri = rebase --interactive --autosquash
 
-    ; add and remove file(s) to index
-    hide = update-index --assume-unchanged
-    unhide = update-index --no-assume-unchanged
+  ; add and remove file(s) to index
+  hide = update-index --assume-unchanged
+  unhide = update-index --no-assume-unchanged
 
-    ; Remove the old tag with this name and tag the latest commit with it.
-    retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+  ; Remove the old tag with this name and tag the latest commit with it.
+  retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
 
-    ; Show verbose output about tags, branches,  remotes, or aliases
-    tags = tag -l
-    branches = branch --all
-    remotes = remote --verbose
-    aliases = config --get-regexp alias
+  ; Show verbose output about tags, branches,  remotes, or aliases
+  tags = tag -l
+  branches = branch --all
+  remotes = remote --verbose
+  aliases = config --get-regexp alias
 
-    ; Amend the currently staged files to the latest commit.
-    amend = commit --amend --reuse-message=HEAD
+  ; Amend the currently staged files to the latest commit.
+  amend = commit --amend --reuse-message=HEAD
 
-    ; Credit an author on the latest commit.
-    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+  ; Credit an author on the latest commit.
+  credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
 
-    ; List contributors with number of commits.
-    contributors = shortlog --summary --numbered
+  ; List contributors with number of commits.
+  contributors = shortlog --summary --numbered
 
-    ; Show the user email for the current repository.
-    whoami = config user.email
+  ; Show the user email for the current repository.
+  whoami = config user.email
 
-    ; gets the default branch for the current repo
-    default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
-    ; cleans up merged branches
-    bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
-    ; full cleaned workflow after merge
-    bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
+  ; gets the default branch for the current repo
+  default = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+  ; cleans up merged branches
+  bclean = "!f() { DEFAULT=$(git default); git branch --merged ${1-$DEFAULT} | grep -v " ${1-$DEFAULT}$" | xargs git branch -d; }; f"
+  ; full cleaned workflow after merge
+  bdone = "!f() { DEFAULT=$(git default); git checkout ${1-$DEFAULT} && git up && git bclean ${1-$DEFAULT}; }; f"
 
-    ; list of local branches
-    blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+  ; list of local branches
+  blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate

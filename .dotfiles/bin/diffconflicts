@@ -93,7 +93,6 @@ trap 'rm -f "'"${LOCONFLICT}"'" "'"${RECONFLICT}"'"' SIGINT SIGTERM EXIT
 sed -E -e '/^=======\r?$/,/^>>>>>>> /d' -e '/^<<<<<<< /d' "${MERGED}" >"${LOCONFLICT}"
 sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" >"${RECONFLICT}"
 
-git config --global merge.conflictStyle merge
 # Fire up vimdiff
 $cmd -f -R -d "${LOCONFLICT}" "${RECONFLICT}" \
     -c ":set noro" \
@@ -106,5 +105,4 @@ if [[ $EC == "0" ]]; then
     cat "${LOCONFLICT}" >"${MERGED}"
 fi
 
-git config --global merge.conflictStyle diff3
 exit $EC
