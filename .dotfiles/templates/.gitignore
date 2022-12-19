@@ -24,8 +24,6 @@ dist
 *.o
 *.so
 *.map
-*.min.js
-*.d.ts
 
 # Packages #
 ############

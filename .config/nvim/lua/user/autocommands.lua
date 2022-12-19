@@ -56,11 +56,11 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 vim.cmd [[
   augroup templates
     autocmd!
-    autocmd BufNewFile *.html 0r ~/.config/nvim/templates/index.html
-    autocmd BufNewFile .gitignore 0r ~/.config/nvim/templates/.gitignore
-    autocmd BufNewFile .eslintrc.js 0r ~/.config/nvim/templates/.eslintrc.js
-    autocmd BufNewFile .prettierrc.js 0r ~/.config/nvim/templates/.prettierrc.js
-    autocmd BufNewFile LICENSE* 0r ~/.config/nvim/templates/license.md
+    autocmd BufNewFile *.html 0r ~/.dotfiles/templates/index.html
+    autocmd BufNewFile .gitignore 0r ~/.dotfiles/templates/.gitignore
+    autocmd BufNewFile .eslintrc.js 0r ~/.dotfiles/templates/.eslintrc.js
+    autocmd BufNewFile .prettierrc.js 0r ~/.dotfiles/templates/.prettierrc.js
+    autocmd BufNewFile LICENSE* 0r ~/.dotfiles/templates/license.md
   augroup END
 ]]
 
@@ -74,6 +74,7 @@ function ReloadConfig()
   end
   dofile(vim.env.MYVIMRC)
 end
+
 vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig,
   { desc = "Reloads NeoVim configuration" })
 

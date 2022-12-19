@@ -15,7 +15,7 @@
   sort = -committerdate
 
 [core]
-  excludesfile = ~/.config/nvim/templates/.gitignore
+  excludesfile = ~/.dotfiles/templates/.gitignore
   ; Disable line endings output conversion.
   autocrlf = input
 
