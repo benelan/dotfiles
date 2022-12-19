@@ -139,6 +139,16 @@ function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 # Filesystem
 #---------------------------------------------------------------------------------
 
+# Format JSON and sort fields
+# arg1: input file
+# arg2: output file, defaults to input file
+fmtjson() {
+    jq '.' -sSM "$1" |
+        jq 'reduce .[] as  $obj ({}; . * $obj)' -M >/tmp/fmt.json &&
+        mv /tmp/fmt.json "${2:-"$1"}"
+
+}
+
 if is-supported pandoc; then
     mdless() {
         pandoc -s -f markdown -t man "$@" | man -l -
