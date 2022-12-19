@@ -86,9 +86,26 @@ return packer.startup(function(use)
     commit = "2a787c426ef00cb3488c11b14f5dcf892bbd0bda"
   }
   use {
+    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
+    commit = "f45aecbba9c402282dfc99721e0ad4c08710907c"
+  }
+  use {
+    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
+    commit = "02cc3874738bc0f86e4b91f09b8a0ac88aef8e96",
+    run = "cd app && npm install",
+    setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
+    ft = { "markdown" },
+  }
+  use {
+    "unblevable/quick-scope", -- highlight unique letters in words
+    commit = "428e8698347f254d24b248af9f656194a80081e5"
+  }
+  use {
     "sainnhe/gruvbox-material", -- gruvbox colorscheme
     commit = "2807579bd0a9981575dbb518aa65d3206f04ea02"
   }
+
+
 
   -----------------------------------------------------------------------------
   -- Utils
@@ -108,6 +125,17 @@ return packer.startup(function(use)
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
     commit = "db7cbcb40cc00fc5d6074d7569fb37197705e7f6"
+  }
+  use {
+    "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
+    commit = "6cc6b54d3728a17e34bb5c9b9db05c7e5690813d",
+    config = function()
+      require("nvim-surround").setup({
+        highlight = {
+          duration = 1
+        }
+      })
+    end
   }
   use {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
@@ -145,6 +173,10 @@ return packer.startup(function(use)
       {
         "hrsh7th/cmp-nvim-lua", -- lua language completion
         commit = "d276254e7198ab7d00f117e88e223b4bd8c02d21"
+      },
+      {
+        "hrsh7th/cmp-nvim-lsp-signature-help", -- signature completions
+        commit = "d2768cb1b83de649d57d967085fe73c5e01f8fd7"
       },
       {
         "hrsh7th/cmp-cmdline", -- commandline completion
@@ -187,6 +219,10 @@ return packer.startup(function(use)
     "RRethy/vim-illuminate", -- highlights hovered code blocks
     commit = "a2e8476af3f3e993bb0d6477438aad3096512e42"
   }
+  use {
+    "rmagatti/goto-preview", -- open lsp previews in floating window
+    commit = "778cf600684a87eb36f9bb469346cfa8d5384a76",
+  }
 
   -----------------------------------------------------------------------------
   -- Telescope
@@ -227,8 +263,9 @@ return packer.startup(function(use)
         commit = "32d9627123321db65a4f158b72b757bcaef1a3f4",
         after = "nvim-treesitter",
       },
-      { -- Additional text objects
+      {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        commit = "e8b7807e0398754bd7dbb5cae043340374975f77",
         after = "nvim-treesitter",
       }
     }

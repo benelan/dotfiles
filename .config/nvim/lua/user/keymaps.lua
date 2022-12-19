@@ -102,6 +102,9 @@ u.keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>",
 u.keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>",
   "Increase Vertical Window Size")
 
+u.keymap({ "n", "x" }, "<C-w>f", "<CMD>GotoFirstFloat<CR>",
+  "Focus First Floating Window")
+
 -- Move windows
 u.keymap("n", "<M-Left>", "<C-w>h", "Move Window Left")
 u.keymap("n", "<M-Down>", "<C-w>j", "Move Window Down")
@@ -195,6 +198,32 @@ command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
 command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
 ]]
 
+
+vim.cmd [[
+function! ExpandList()
+    silent s/\%V.*\%V/\="\r" . submatch(0)
+            \ ->split(',')
+            \ ->map({ i, v -> v->trim() })
+            \ ->join(",\r") . "\r"/g
+    silent normal ='[
+endfunction
+
+xnoremap <leader>[] :<C-u>call ExpandList()<CR>
+]]
+
+
+vim.cmd [[
+  function! s:GotoFirstFloat() abort
+    for w in range(1, winnr('$'))
+      let c = nvim_win_get_config(win_getid(w))
+      if c.focusable && !empty(c.relative)
+        execute w . 'wincmd w'
+      endif
+    endfor
+  endfunction
+
+  command! GotoFirstFloat call <sid>GotoFirstFloat()
+]]
 ------------------------------------------------------
 --> Utils
 ------------------------------------------------------

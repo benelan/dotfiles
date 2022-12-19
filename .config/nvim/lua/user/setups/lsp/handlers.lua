@@ -15,7 +15,6 @@ M.capabilities.textDocument.foldingRange = {
 
 M.setup = function()
   local signs = {
-
     { name = "DiagnosticSignError", text = "" },
     { name = "DiagnosticSignWarn", text = "" },
     { name = "DiagnosticSignHint", text = "" },
@@ -58,12 +57,18 @@ end
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }
   local keymap = vim.api.nvim_buf_set_keymap
-  keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-  keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-  keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-  keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-  keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-  keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+  keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>",
+    vim.list_extend(opts, { desc = "Declaration" }))
+  keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>",
+    vim.list_extend(opts, { desc = "Definition" }))
+  keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>",
+    vim.list_extend(opts, { desc = "Hover" }))
+  keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>",
+    vim.list_extend(opts, { desc = "Implementation" }))
+  keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>",
+    vim.list_extend(opts, { desc = "References" }))
+  keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>",
+    vim.list_extend(opts, { desc = "Diagnostic" }))
 end
 
 M.on_attach = function(client, bufnr)

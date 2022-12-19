@@ -38,7 +38,7 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({}))
 local rule_status_ok, Rule = pcall(require, "nvim-autopairs.rule")
 if not rule_status_ok then return end
 
--- Add space between parantheses
+-- Add space between parentheses
 local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
 npairs.add_rules {
   Rule(' ', ' ')

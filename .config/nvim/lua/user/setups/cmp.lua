@@ -115,6 +115,7 @@ cmp.setup({
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
+    { name = 'nvim_lsp_signature_help' }
   },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
