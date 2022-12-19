@@ -131,17 +131,36 @@ function match-urls() {
     grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# open vim help pages from shell prompt
+function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
+
 # Filesystem
 #---------------------------------------------------------------------------------
 
+if is-supported pandoc; then
+    mdless() {
+        pandoc -s -f markdown -t man "$@" | man -l -
+        # use groff on mac: . . . . . . . | groff -T utf8 -man | less
+    }
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+md2html() {
+    pandoc "$1.md" --output="$1.html" --standalone \
+        --css="$HOME/.config/nvim/templates/pandoc.css" --from=gfm --to=html5
+}
+
 if is-supported inotifywait; then
     # runs a command when a target file is modified
-    # $ onmodify note.md pandoc note.md -t pdf -o note.pdf
+    # $ onmodify note.md md2html note 
     function onmodify() {
         TARGET=${1:-.}
         shift
         echo "$TARGET" "$*"
-        while inotifywait --exclude '.git' -qq -r -e close_write,moved_to,move_self "$TARGET"; do
+        while inotifywait --exclude '.git' -qq -r -e modify,close_write,moved_to,move_self "$TARGET"; do
             sleep 0.2
             bash -c "$*"
             echo
@@ -609,6 +628,26 @@ cshc() {
     curl "https://cheat.sh/bash/${query// /+}?cQT" | cb
 }
 
+# search commandlinefu.com
+cmdfu() {
+    local query="$*"
+    curl -sL "https://www.commandlinefu.com/commands/matching/${query// /-}/$(
+        echo -n "$query" | base64
+    )/plaintext" | tail -n +2
+}
+
+# display one random command from commandlinefu.com
+rcmdfu() {
+    curl -sL https://www.commandlinefu.com/commands/random/json |
+        jq -r '.[0] | "\n" + "# " + .summary + "\n" + .command'
+
+    # non-jq version with color
+    # echo -e "$(
+    #     curl -sL https://www.commandlinefu.com/commands/random/json |
+    #         sed -re 's/.*,"command":"(.*)","summary":"([^"]+).*/\\x1b[1;32m\2\\n\\n\\x1b[1;33m\1\\x1b[0m/g'
+    # )\n"
+}
+
 # Misc
 #---------------------------------------------------------------------------------
 
@@ -642,23 +681,6 @@ color-grid() {
       printf "\n";
     }'
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-if is-supported jq; then
-    function find-emoji() {
-        emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
-
-        if [ ! -r "$emoji_cache" ]; then
-            curl -sSL https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json -o "$emoji_cache"
-        fi
-
-        jq <"$emoji_cache" -r '.[] | [
-        .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
-    ] | @tsv
-' | fzf --prompt 'Search emojis > ' | cut -f1
-    }
-fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

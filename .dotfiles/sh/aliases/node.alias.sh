@@ -18,6 +18,7 @@ alias nitd='npm install-test --save-dev'
 alias nu='npm uninstall'
 alias nus='npm uninstall --save'
 alias nusd='npm uninstall --save-dev'
+alias nst='npm start'
 alias np='npm publish'
 alias nup='npm unpublish'
 alias nlk='npm link'
@@ -47,6 +48,7 @@ alias nxqi='npx -q --ignore-existing '
 alias nxniq='npx --no-install --ignore-existing -q '
 alias nxiqp='npx --ignore-existing -q -p '
 alias nxniqp='npx --no-install --ignore-existing -q -p '
+alias npxncu='npx npm-check-updates'
 
 is-supported fzf && is-supported npm-fuzzy || return
 
