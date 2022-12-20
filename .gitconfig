@@ -213,3 +213,5 @@
 
   ; list of local branches
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+[pull]
+	rebase = false

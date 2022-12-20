@@ -370,3 +370,6 @@ alias dunhide='dot update-index --no-assume-unchanged'
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dlz="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dfz="dot fuzzy"
+
+alias fgbD="git branch | fzf --multi | xargs git branch -D"
+alias fgbd="git branch | fzf --multi | xargs git branch -d"
