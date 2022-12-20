@@ -1,12 +1,11 @@
 #!/bin/sh
 # shellcheck disable=2139
 
-# git-branch-default
 # gets the default git branch
-alias gbdefault='git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"'
+alias gbdefault='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
+# alias gbdefault="git branch --list --remotes '*/HEAD' | awk -F/ '{print $NF}'"
 
 alias g='git'
-alias get='git'
 
 # add
 ######
@@ -44,12 +43,13 @@ alias gcsam='git commit -S -am'
 
 # checkout
 ###########
-alias gcb='git checkout -b'
 alias gco='git checkout'
+alias gcb='git checkout -b'
 alias gcob='git checkout -b'
+alias gcbu='git checkout -b ${USER}/'
 alias gcobu='git checkout -b ${USER}/'
 alias gcom='git checkout "$(gbdefault)"'
-alias gcpd='git checkout "$(gbdefault)"; git pull; git branch -D'
+alias gcpD='git checkout "$(gbdefault)"; git pull; git branch -D'
 alias gct='git checkout --track'
 
 # clone
@@ -67,9 +67,9 @@ alias gcpx='git cherry-pick -x'
 
 # diff
 #######
-alias gd='git diff'
-alias gds='git diff --staged'
-alias gdt='git difftool'
+alias gdf='git diff'
+alias gdfs='git diff --staged'
+alias gdft='git difftool'
 
 # archive
 ##########
@@ -124,8 +124,6 @@ alias gpatch='git format-patch -1'
 # push
 #######
 alias gp='git push'
-alias gpd='git push --delete'
-alias gpf='git push --force'
 alias gpo='git push origin HEAD'
 alias gpom='git push origin "$(gbdefault)"'
 alias gpu='git push --set-upstream'
@@ -186,7 +184,7 @@ alias gsh='git show'
 ########
 alias gst='git stash'
 alias gstb='git stash branch'
-alias gstd='git stash drop'
+alias gstD='git stash drop'
 alias gstl='git stash list'
 alias gstpo='git stash pop'
 # 'stash push' introduced in git v2.13.2
@@ -217,8 +215,12 @@ alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
 alias gunhide='git update-index --no-assume-unchanged'
 
+# plugins
+##########
 alias glz="lazygit"
 alias gfz="git fuzzy"
+alias fgbD="git branch | fzf --multi | xargs git branch -D"
+alias fgbd="git branch | fzf --multi | xargs git branch -d"
 
 # Dotfiles
 # -----------------------------------------------------------------------------
@@ -227,7 +229,8 @@ alias gfz="git fuzzy"
 # It behaves like git, and can be called from any directory, e.g.
 # $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
 # The whole home directory excluding the dotfiles is untracked.
-# Prevent `dot clean` so everything isn't deleted
+# Prevent `dot clean` so everything isn't deleted.
+# Most of the important stuff is gitignored anyway.
 dot() {
     if [ "$1" = "clean" ]; then
         echo "Don't delete your home directory, dumbass"
@@ -240,7 +243,7 @@ dot() {
 # work with the bare dotfiles repo
 edot() {
     # shellcheck disable=2016
-    nvim "${@:-$HOME/.dotfiles}" \
+    nvim "${@:-"$HOME/.dotfiles"}" \
         --cmd "cd %:h | pwd" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
@@ -284,9 +287,9 @@ alias dci='dot commit --interactive'
 
 # diff
 #######
-alias ddiff='dot diff'
-alias ddiffs='dot diff --staged'
-alias ddifft='dot difftool'
+alias ddf='dot diff'
+alias ddfs='dot diff --staged'
+alias ddft='dot difftool'
 
 # fetch
 ########
@@ -326,8 +329,8 @@ alias dpr='dot pull --rebase'
 # push
 #######
 alias dp='dot push'
-alias dpd='dot push --delete'
-alias dpf='dot push --force'
+alias dpD='dot push --delete'
+alias dpF='dot push --force'
 alias dpo='dot push origin HEAD'
 alias dpu='dot push --set-upstream'
 alias dpunch='dot push --force-with-lease'
@@ -336,8 +339,9 @@ alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
 
 # reset
 ########
+alias dr='dot reset'
 alias drs='dot reset HEAD --soft'
-alias drh='dot reset --hard'
+alias drH='dot reset --hard'
 
 # shortlog
 ###########
@@ -364,9 +368,13 @@ alias ds='dot status'
 # set default to short in .gitconfig
 alias dsl='dot status --long'
 
+# update-index
+##############
 alias dhide='dot update-index --assume-unchanged'
 alias dunhide='dot update-index --no-assume-unchanged'
 
+# plugins
+##########
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dlz="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dfz="dot fuzzy"

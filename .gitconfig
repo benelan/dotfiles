@@ -82,7 +82,7 @@
   ; Include summaries of merged commits in newly created merge commit messages.
   log = true
   keepBackup = false
-  tool = nvimdiff
+  tool = nvimdiff # nvimdiff1337
 
 [mergetool]
   keepBackup = false
@@ -98,10 +98,6 @@
 [mergetool "nvimdiff1337"]
   cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
   trustExitCode = true
-
-[fetch]
-  ; Remove any remote-tracking references that no longer exist on the remote.
-  prune = true
 
 [rebase]
   ; Create a temporary stash entry before the operation begins.
@@ -137,19 +133,15 @@
 ; URL shorthands
 [url "git@github.com:"]
   insteadOf = "gh:"
+  insteadOf = "github:"
   pushInsteadOf = "github:"
   pushInsteadOf = "git://github.com/"
 
-[url "git://github.com/"]
-  insteadOf = "github:"
-
 [url "git@gist.github.com:"]
   insteadOf = "gst:"
+  insteadOf = "gist:"
   pushInsteadOf = "gist:"
   pushInsteadOf = "git://gist.github.com/"
-
-[url "git://gist.github.com/"]
-  insteadOf = "gist:"
 
 [alias]
   ; Pull in remote changes for the current repository and all its submodules.
@@ -213,3 +205,5 @@
 
   ; list of local branches
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+[pull]
+	rebase = false
