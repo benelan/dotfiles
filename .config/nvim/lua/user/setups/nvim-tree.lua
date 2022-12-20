@@ -16,7 +16,9 @@ nvim_tree.setup {
     update_root = true,
   },
   renderer = {
-    root_folder_modifier = ":t",
+    root_folder_label = function(path)
+      return "../" .. vim.fn.fnamemodify(path, ":t")
+    end,
     icons = {
       glyphs = {
         default = "",
@@ -115,7 +117,7 @@ if not utils_status_ok then return end
 
 -- keymaps to open NvimTree
 u.keymap("n", "<leader><S-e>", ":NvimTreeToggle<CR>",
-   "NvimTree toggle")
+  "NvimTree toggle")
 
 u.keymap("n", "<leader>e",
   function()
