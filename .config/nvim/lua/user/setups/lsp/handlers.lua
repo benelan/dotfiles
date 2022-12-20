@@ -12,33 +12,32 @@ M.capabilities.textDocument.foldingRange = {
   lineFoldingOnly = true
 }
 
-M.setup = function()
-  local signs = {
-    { name = "DiagnosticSignError", text = "" },
-    { name = "DiagnosticSignWarn", text = "" },
-    { name = "DiagnosticSignHint", text = "" },
-    { name = "DiagnosticSignInfo", text = "" },
-  }
+local diagnostic_levels = {
+  { name = "DiagnosticSignError", text = "", severity = vim.diagnostic.severity.ERROR, },
+  { name = "DiagnosticSignWarn", text = "", severity = vim.diagnostic.severity.WARN, },
+  { name = "DiagnosticSignHint", text = "", severity = vim.diagnostic.severity.HINT, },
+  { name = "DiagnosticSignInfo", text = "", severity = vim.diagnostic.severity.Info, },
+}
 
-  for _, sign in ipairs(signs) do
+M.setup = function()
+  for _, sign in ipairs(diagnostic_levels) do
     vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
   end
 
   local config = {
     virtual_text = false, -- disable virtual text
     signs = {
-      active = signs, -- show signs
+      active = diagnostic_levels, -- show signs
     },
     update_in_insert = false,
     underline = true,
     severity_sort = true,
     float = {
+      show_header = true,
       focusable = true,
       style = "minimal",
       border = "rounded",
       source = "always",
-      header = "",
-      prefix = "",
     },
   }
 
@@ -53,20 +52,61 @@ M.setup = function()
   })
 end
 
+-- Useful to go to the next highest priority diagnostic
+-- so I don't have to look at a bunch of Infos
+local get_highest_error_severity = function()
+  for _, level in ipairs(diagnostic_levels) do
+    local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
+    if #diags > 0 then
+      return level
+    end
+  end
+end
+
 local function lsp_keymaps(bufnr)
+  local buf_keymap = vim.api.nvim_buf_set_keymap
   local opts = { noremap = true, silent = true }
-  local keymap = vim.api.nvim_buf_set_keymap
-  keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>",
+
+  vim.keymap.set(
+    "n", "]d",
+    function()
+      vim.diagnostic.goto_prev {
+        severity = get_highest_error_severity(),
+        wrap = true,
+        float = true,
+      }
+    end,
+    vim.list_extend(opts, { desc = "Next diagnostic" })
+  )
+
+  vim.keymap.set(
+    "n", "[d",
+    function()
+      vim.diagnostic.goto_next {
+        severity = get_highest_error_severity(),
+        wrap = true,
+        float = true,
+      }
+    end,
+    vim.list_extend(opts, { desc = "Previous diagnostic" })
+  )
+
+  buf_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>",
     vim.list_extend(opts, { desc = "Declaration" }))
-  keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>",
+
+  buf_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>",
     vim.list_extend(opts, { desc = "Definition" }))
-  keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>",
+
+  buf_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>",
     vim.list_extend(opts, { desc = "Hover" }))
-  keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>",
+
+  buf_keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>",
     vim.list_extend(opts, { desc = "Implementation" }))
-  keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>",
+
+  buf_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>",
     vim.list_extend(opts, { desc = "References" }))
-  keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>",
+
+  buf_keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>",
     vim.list_extend(opts, { desc = "Diagnostic" }))
 end
 
