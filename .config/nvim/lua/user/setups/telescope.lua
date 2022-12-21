@@ -2,12 +2,35 @@ local status_ok, telescope = pcall(require, "telescope")
 if not status_ok then return end
 
 local telescope_actions = require "telescope.actions"
+local telescope_action_layout = require "telescope.actions.layout"
 
 telescope.setup {
   defaults = {
     prompt_prefix = " ",
     selection_caret = " ",
-    path_display = { "auto" },
+    layout_strategy = "horizontal",
+    layout_config = {
+      width = 0.9,
+      height = 0.9,
+      prompt_position = "top",
+      horizontal = {
+        preview_width = function(_, cols, _)
+          if cols > 200 then
+            return math.floor(cols * 0.4)
+          else
+            return math.floor(cols * 0.6)
+          end
+        end,
+      },
+      vertical = {
+        anchor = 'N',
+        preview_height = 0.5
+      },
+    },
+    sorting_strategy = "ascending",
+    cycle_layout_list = {
+      "horizontal", "vertical", "bottom_pane"
+    },
     set_env = { ["COLORTERM"] = "truecolor" },
     file_ignore_patterns = {
       -- dev directories
@@ -46,7 +69,13 @@ telescope.setup {
         ["<C-k>"] = telescope_actions.move_selection_previous,
         ['<tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
         ['<s-tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_previous,
-        ["<esc>"] = telescope_actions.close
+        ["<esc>"] = telescope_actions.close,
+        ["<M-p>"] = telescope_action_layout.toggle_preview,
+        ["<M-m>"] = telescope_action_layout.toggle_mirror,
+        ["<A-l>"] = telescope_action_layout.cycle_layout_next,
+        ["<A-h>"] = telescope_action_layout.cycle_layout_prev,
+
+
       },
       n = {
         ["<C-j>"] = telescope_actions.move_selection_next,
