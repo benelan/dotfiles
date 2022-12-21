@@ -109,7 +109,7 @@ function install_go_packages() {
         # https://github.com/rhysd/actionlint
         [[ ! "$(type -P actionlint)" ]] && go install github.com/rhysd/actionlint/cmd/actionlint@latest && echo "--> Installed ActionLint"
 
-        https://github.com/mvdan/sh
+        # https://github.com/mvdan/sh
         [[ ! "$(type -P shfmt)" ]] && go install mvdan.cc/sh/v3/cmd/shfmt@latest && echo "--> Installed shfmt"
     else
         # use lazygit binary if go isn't installed

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Ben Elan's Dotfiles
+#
 # This script sets up my dotfiles in a bare git repo
 # so everything is tracked and under version control.
 # I used symlinks for a while but they are too messy.
@@ -36,9 +38,16 @@ else
     files=$(dot checkout 2>&1 | grep -e "^\s")
     printf "%s\n" "$files"
 
-    # Get the directories by removing everything after the last "/" from file paths
-    # Files in $HOME will end up being blank lines, which need to be stripped
-    dirs=$(echo "$files" | awk 'BEGIN{FS=OFS="/"} {NF--} 1' | sed '/^[[:blank:]]*$/d')
+    dirs=$(
+        echo "$files" |
+            # Remove everything after the last "/" from file paths
+            awk 'BEGIN{FS=OFS="/"} {NF--} 1' |
+            # Files in $HOME will end up being blank lines
+            sed '/^[[:blank:]]*$/d'
+    )
+    # Using dirname is easier but won't work on OSX
+    # dirs=$(echo "$files" | xargs dirname)
+
     # Create the directories in $BACKUP_DIR
     mkdir -p "$BACKUP_DIR"
     echo "$dirs" | xargs -I{} mkdir -p "$BACKUP_DIR/{}"
@@ -65,11 +74,7 @@ unset files
 unset GIT_URL
 unset BACKUP_DIR
 
-# Remove extra files
-dot update-index --assume-unchanged "$HOME/LICENSE.md" "$HOME/README.md"
-rm -f "$HOME/LICENSE.md" "$HOME/README.md"
-
-# Make the bins executable
+# Make the bins and scripts executable
 printf "\n➜ Making scripts and bins executable\n"
 [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
 [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*

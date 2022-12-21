@@ -187,8 +187,8 @@ nnoremap <leader>bd :bdelete<cr>
 nnoremap <leader>bda :bufdo bd<cr>
 "" edits a new buffer
 nnoremap <leader>bn :<C-U>enew<CR>
-"" jumps to buffers
-nnoremap <Leader>bj :<C-U>buffers<CR>:buffer<Space>
+"" picks buffer
+nnoremap <Leader>bp :<C-U>buffers<CR>:buffer<Space>
 
 "" Quickly open a buffer for javascript
 map <leader>bjs :e ~/buffer.js<cr>
@@ -216,7 +216,9 @@ nnoremap <leader>w <C-W>
 
 " Save/delete buffers
 nnoremap <C-Q> :Bdelete<cr>
-nnoremap <C-W> :write<cr>
+inoremap <C-Q> :Bdelete<cr>
+nnoremap <C-S> :write<cr>
+inoremap <C-S> :write<cr>
 
 " Move splits
 nnoremap <M-Left> <C-W>H
@@ -265,11 +267,11 @@ ounmap <Leader>sw
 sunmap <Leader>sw
 
 "" shows the current file's fully expanded path
-nnoremap <Leader>pd :<C-U>echo expand('%:p')<CR>
+nnoremap <Leader>dp :<C-U>echo expand('%:p')<CR>
 "" changes directory to the current file's location
-nnoremap <Leader>cd :<C-U>cd %:h <Bar> pwd<CR>
+nnoremap <Leader>dc :<C-U>cd %:h <Bar> pwd<CR>
 "" creates the path to the current file if it doesn't exist
-nnoremap <Leader>mkd :<C-U>call mkdir(expand('%:h'), 'p')<CR>
+nnoremap <Leader>dm :<C-U>call mkdir(expand('%:h'), 'p')<CR>
 
 "" shows command history
 nnoremap <Leader>H :<C-U>history :<CR>

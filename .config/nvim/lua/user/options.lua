@@ -50,8 +50,8 @@ vim.opt.iskeyword:append("-")                   -- treats words with `-` as sing
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.autoread = true                         -- automatically read file after outside changes
 vim.opt.spelloptions:append("camel")            -- when a word is CamelCased, assume "Cased" is a separate word
-vim.opt.formatoptions:append("l,1,j,p")         -- :help formatoptions
-vim.opt.formatoptions:remove("c,r,o")           -- :help formatoptions
+vim.opt.formatoptions:append("c,l,1,j,p")       -- :help formatoptions
+vim.opt.formatoptions:remove("t,a,r,o")         -- :help formatoptions
 if vim.fn.executable('rg') == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
@@ -71,7 +71,7 @@ vim.opt.guifont = "Iosevka:h13,JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Fon
 if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
 vim.opt.wildignore:append(
-  "*~,#*#,*.7z,.DS_Store,.git,.hg,.svn," ..
+  "*~,#*#,*.7z,.DS_Store,.git/*,.hg,.svn," ..
   "*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bmp,*.bz2," ..
   "*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2," ..
   "*.gif,*.gifv,*.gmo,*.gpg,*.gz,*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg," ..

@@ -162,6 +162,17 @@ vim.cmd [[
   nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
   inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
   vmap <C-L> <Esc><C-L>gv
+
+  " go to line above/below the cursor, from insert mode
+  inoremap <S-CR> <C-O>o
+  inoremap <C-CR> <C-O>O
+
+  nmap <A-D> "_d
+  nmap <A-C> "_c
+
+
+  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
+  nnoremap <leader><leader>n :normal!<space>
 ]]
 
 vim.cmd [[
