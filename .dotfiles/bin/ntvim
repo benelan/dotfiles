@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 # Nightly Neovim
-VIMRUNTIME="$HOME/dev/neovim/build/bin/nvim"
+VIMRUNTIME="$HOME/.dotfiles/vendor/neovim/build/bin/nvim"
 trap 'unset VIMRUNTIME' SIGINT SIGTERM EXIT
 "$VIMRUNTIME" "$*"
