@@ -62,14 +62,10 @@ local xmappings = {
 
   l = {
     name = "LSP",
-    a = { vim.lsp.buf.code_action, "Code Action" },
-    h = { vim.lsp.buf.signature_help, "Signature Help" },
     j = { vim.diagnostic.goto_next, "Next Diagnostic" },
     k = { vim.diagnostic.goto_prev, "Prev Diagnostic" },
-    l = { vim.lsp.codelens.run, "CodeLens Action" },
     f = { vim.lsp.buf.format, "Format" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
-    r = { vim.lsp.buf.rename, "Rename" },
   },
 }
 

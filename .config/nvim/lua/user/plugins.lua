@@ -187,6 +187,9 @@ return packer.startup(function(use)
   use {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
   }
+  use { -- inlay hints
+    "simrat39/inlay-hints.nvim"
+  }
   use {
     "RRethy/vim-illuminate", -- highlights hovered code blocks
   }
