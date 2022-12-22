@@ -16,12 +16,12 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Reloads neovim when saving this file
-vim.cmd [[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerSync
-  augroup end
-]]
+-- vim.cmd [[
+--   augroup packer_user_config
+--     autocmd!
+--     autocmd BufWritePost plugins.lua source <afile> | PackerSync
+--   augroup end
+-- ]]
 
 -- Use a protected call to prevent error on first use
 local status_ok, packer = pcall(require, "packer")
@@ -29,8 +29,8 @@ if not status_ok then return end
 
 -- Have packer use a popup window
 packer.init {
-  snapshot =  table.concat({ vim.fn.stdpath 'config', 'snapshots', 'nightly.json' }, '/'),
-  snapshot_path = table.concat({ vim.fn.stdpath 'config', 'snapshots' }, '/'),
+  snapshot = table.concat({ vim.fn.stdpath "config", "snapshots", "nightly.json" }, "/"),
+  snapshot_path = table.concat({ vim.fn.stdpath "config", "snapshots" }, "/"),
   display = {
     open_fn = function()
       return require("packer.util").float { border = "rounded" }
@@ -247,6 +247,11 @@ return packer.startup(function(use)
   }
   use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
+  }
+  use {
+    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line
+    requires = "nvim-lua/plenary.nvim",
+    config = function() require("gitlinker").setup() end,
   }
 
 

@@ -454,38 +454,48 @@ function gcob-cleaned() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# git checkout (find)
-# Makes sure everything is up to date with master.
-# You can checkout using any word in the branch name.
-# Uses a fuzzy finder (fzf) to pick when there are multiple matches.
-# If fzf isn't installed it falls back to grep.
+# git checkout - find
+# Checkout a branch based on search term.
+# If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
+# Otherwise, checkout the most recently committed branch that matches the query
 function gcof() {
-    # example: $ gcof slot # => to checkout "benelan/2807-fix-slot-doc"
+    # [Usage] to checkout "benelan/2807-fix-slot-doc":
+    # $ gcof slot
 
+    # Choose the first branch if fzf isn't isntalled
+    # The branches are sorted by commit date,
+    # so this is usually what I want
+    PICK_BRANCH_CMD='head -n 1'
+    SEARCH_TERM="${1:-$"USER"}"
+    SHIFT
+    if is-supported fzf; then
+        PICK_BRANCH_CMD='fzf -0 -1'
+    fi
+
+    # remote and local branches sorted by commit date
+    git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
+        # search, remove origin/ prefix from branch names, remove empty line(s)
+        awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
+        # dedup -> pick -> checkout branch
+        uniq | $PICK_BRANCH_CMD | xargs git checkout
+}
+
+# checkout master, pull, find/checkout branch, merge master/main
+function gcofmm() {
     git checkout "$(gbdefault)"
     git pull
-    if is-supported fzf; then
-        # all branches (remote and local)
-        git branch -a |
-            # search for arg1 or defaulting to github username
-            # remove the remote prefix from the branch names
-            awk '/'"${1:-benelan}"'/{gsub("remotes/origin/","");print}' |
-            # sort/dedup, use fzf to pick branch if necessary, and checkout
-            sort -u | fzf -0 -1 | xargs git checkout
-    else
-        # fall back to grep if fzf isn't installled
-        # it will need to be more exact because it won't work
-        # if there are multiple matches
-        git branch | grep "$1" | xargs git checkout
-    fi
+    gcof "$*"
     git merge "$(gbdefault)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# git checkout (new)
-# creates a new branch starting with my username
-# usage (to create branch benelan/2807-slots): gcon 2807-slots
+# git checkout merge master
+# checks out a branch starting with my github username,
+# or creates it if it doesn't exist.
+# Syncs the checked out branch with the default branch
+# [Usage] create/checkout branch benelan/2807-slots and sync with master:
+# $ gcomm 2807-slots
 function gcon() {
     git checkout "$(gbdefault)"
     git pull
