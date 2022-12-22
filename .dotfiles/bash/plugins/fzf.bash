@@ -29,7 +29,11 @@ FZF_DEFAULT_OPTS+=' --color=bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg
 
 export FZF_DEFAULT_OPTS
 
-#-----------------------------------------------------------------------------
+###############################################################################
+# Functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples #
+###############################################################################
+
+#------------------------------------------------------------------------------
 # directory
 # -----------------------------------------------------------------------------
 
@@ -169,7 +173,7 @@ usage: zd [OPTIONS]
 OPTIONS:
   -d [path]: Directory (default)
   -a [path]: Directory included hidden
-  -r [path]: Parent directory
+  -p [path]: Parent directory
   -s [query]: Directory from stack
   -f [query]: Directory of the selected file
   -z [query]: Frecency directory
@@ -196,7 +200,7 @@ EOF
         fzd "$(realpath "$1")"
     else
         # args is start from '-'
-        while getopts darfszh OPT; do
+        while getopts dapfszh OPT; do
             case "$OPT" in
                 d)
                     shift
@@ -206,7 +210,7 @@ EOF
                     shift
                     fzda "$1"
                     ;;
-                r)
+                p)
                     shift
                     fzdp "$1"
                     ;;
@@ -274,9 +278,9 @@ fif() {
 # open best matched file using `fasd` if given argument
 # filter output of `fasd` using `fzf` else
 fze() {
-    [ $# -gt 0 ] && fasd -f -e "${EDITOR}" "$*" && return
+    [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
     local file
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && "${EDITOR:-vim}" "${file}" || return 1
 }
 
 # -----------------------------------------------------------------------------
