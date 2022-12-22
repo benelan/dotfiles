@@ -99,13 +99,13 @@ cmp.setup({
       end
       vim_item.kind = kind_icons[vim_item.kind]
       vim_item.menu = ({
-        buffer = "[buf]",
+        buffer = "[BUF]",
         nvim_lsp = "[LSP]",
-        nvim_lua = "[api]",
-        path = "[path]",
-        luasnip = "[snip]",
-        gh_issues = "[issues]",
-        emoji = "",
+        nvim_lsp_signature_help = "[LSP]",
+        nvim_lua = "[API]",
+        path = "[PATH]",
+        luasnip = "[SNIP]",
+        gh_issues = "[GH]",
       })[entry.source.name]
       return vim_item
     end,

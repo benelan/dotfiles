@@ -14,7 +14,7 @@ inlay_hints.setup({
     },
   },
   eol = {
-    right_align = true
+    right_align = false
   },
   parameter = {
     separator = ", ",
@@ -31,10 +31,11 @@ inlay_hints.setup({
   },
 })
 
--- vim.api.nvim_create_autocmd("LspAttach", {
---   group = vim.api.nvim_create_augroup("my-inlay-hints", {}),
---   callback = function(args)
---     local client = vim.lsp.get_client_by_id(args.data.client_id)
---     require("inlay-hints").on_attach(client, args.buf)
---   end,
--- })
+local augroup_inlay_hints = vim.api.nvim_create_augroup("my-lsp-inlay-hints", { clear = true })
+vim.api.nvim_create_autocmd("LspAttach", {
+  vim.api.nvim_clear_autocmds { group = augroup_inlay_hints },
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    require("inlay-hints").on_attach(client, args.buf)
+  end,
+})

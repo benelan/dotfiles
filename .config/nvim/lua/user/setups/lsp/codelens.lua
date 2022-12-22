@@ -1,7 +1,5 @@
 -- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/lua/tj/lsp/codelens.lua
-
 local M = {}
-
 M.run = function()
   if vim.o.modified then
     vim.cmd [[w]]
@@ -31,5 +29,4 @@ M.run = function()
   end, bufnr)
 end
 
--- vim.lsp.codelens.display = require("user.setups.lsp.codelens").display
 return M

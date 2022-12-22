@@ -223,10 +223,14 @@ local mappings = {
       name = "Reactions"
     }
   },
-
+  p = {
+    name = "Preview"
+  },
   l = {
     name = "LSP",
     a = { vim.lsp.buf.code_action, "Code Action" },
+    T = { vim.lsp.buf.type_definition, "Type Definition" },
+    d = { vim.lsp.buf.definition, "Definition" },
     h = { vim.lsp.buf.signature_help, "Signature Help" },
     j = { vim.diagnostic.goto_next, "Next Diagnostic" },
     k = { vim.diagnostic.goto_prev, "Prev Diagnostic" },
@@ -234,10 +238,11 @@ local mappings = {
     q = { vim.diagnostic.setloclist, "Quickfix" },
     r = { vim.lsp.buf.rename, "Rename" },
     f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format" },
-    e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
-    w = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
+    Q = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-    d = {
+    R = { "<cmd>Telescope lsp_references<cr>", "References" },
+    W = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
+    B = {
       "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
       "Buffer Diagnostics"
     },
