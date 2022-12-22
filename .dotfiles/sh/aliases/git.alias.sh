@@ -1,11 +1,11 @@
 #!/bin/sh
 # shellcheck disable=2139
 
+alias g='git'
+
 # gets the default git branch
 alias gbdefault='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
-# alias gbdefault="git branch --list --remotes '*/HEAD' | awk -F/ '{print $NF}'"
-
-alias g='git'
+# same thing:  ="git branch --list --remotes '*/HEAD' | awk -F/ '{print $NF}'"
 
 # add
 ######
@@ -26,7 +26,9 @@ alias gbt='git branch --track'
 # for-each-ref
 ###############
 # https://stackoverflow.com/a/58623139/10362396
-alias gbc='git for-each-ref --format="%(authorname) %09 %(if)%(HEAD)%(then)*%(else)%(refname:short)%(end) %09 %(creatordate)" refs/remotes/ --sort=authorname DESC'
+alias gbc="git for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) \
+  %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' \
+  --sort=authordate refs/remotes"
 
 # commit
 #########
@@ -111,6 +113,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 # merge
 ########
 alias gm='git merge'
+alias gmm='git merge "$(gbdefault)"'
 alias gmt='git mergetool'
 
 # mv
@@ -253,6 +256,7 @@ alias ehome="edot ~"
 alias envim="edot ~/.config/nvim/init.lua"
 
 alias d='dot'
+alias dbdefault='basename "$(dot rev-parse --abbrev-ref origin/HEAD)"'
 
 # add
 ######
@@ -285,6 +289,14 @@ alias dcamd='dot commit --amend'
 alias dcamdne='dot commit --amend --no-edit'
 alias dci='dot commit --interactive'
 
+# checkout
+###########
+alias dco='dot checkout'
+alias dcb='dot checkout -b'
+alias dcob='dot checkout -b'
+alias dcom='dot checkout "$(dbdefault)"'
+alias dcpD='dot checkout "$(dbdefault)"; dot pull; dot branch -D'
+
 # diff
 #######
 alias ddf='dot diff'
@@ -306,7 +318,7 @@ alias dlsum='dot diff --name-only --diff-filter=U'
 
 # log
 ######
-alias dg='dot log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
+alias dgg='dot log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
 alias dgf='dot log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
 alias dgs='dg --stat'
 alias dgup='dot log --branches --not --remotes --no-walk --decorate --oneline'
@@ -318,6 +330,7 @@ alias dwc='dot whatchanged'
 # merge
 ########
 alias dm='dot merge'
+alias dmm='dot merge "$(dbdefault)"'
 alias dmt='dot mergetool'
 
 # pull
@@ -376,5 +389,5 @@ alias dunhide='dot update-index --no-assume-unchanged'
 # plugins
 ##########
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
-alias dlz="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
+alias dlz="lazydot"
 alias dfz="dot fuzzy"
