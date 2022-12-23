@@ -3,8 +3,9 @@ local snip_status_ok, ls = pcall(require, "luasnip")
 if not cmp_status_ok or not snip_status_ok then return end
 
 require("luasnip/loaders/from_vscode").lazy_load({
-  paths = { "~/.config/Code/User/snippets" }
+  -- paths = { "~/.config/Code/User/snippets" }
 })
+
 
 local check_backspace = function()
   local col = vim.fn.col(".") - 1
@@ -42,7 +43,7 @@ local kind_icons = {
 cmp.setup({
   snippet = {
     expand = function(args)
-      ls.lsp_expand(args.body)
+      require("luasnip").lsp_expand(args.body)
     end,
   },
 
