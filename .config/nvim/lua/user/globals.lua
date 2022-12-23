@@ -37,4 +37,13 @@ if vim.fn.exists("g:neovide") == 1 then
   vim.g.neovide_confirm_quit = false
   vim.g.neovide_cursor_animation_length = 0.05
   vim.g.neovide_cursor_trail_size = 0.05
+  -- the font name is different in WSL for some reason
+  if vim.fn.has("wsl") then vim.opt.guifont = "SauceCodePro_NF:h10" end
 end
+
+
+vim.g.markdown_fenced_languages = {
+  'css', 'scss', 'sass', 'html', 'xml', 'json',
+  'ts=typescript', 'tsx=typescriptreact',
+  'js=javascript', 'jsx=javascriptreact'
+}

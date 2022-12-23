@@ -136,6 +136,35 @@ function match-urls() {
 # open vim help pages from shell prompt
 function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+mycolumn() (
+    file="${1:--}"
+    if [ "$file" = - ]; then
+        file="$(mktemp)"
+        cat >"${file}"
+    fi
+    awk '
+  FNR == 1 { if (NR == FNR) next }
+  NR == FNR {
+    for (i = 1; i <= NF; i++) {
+      l = length($i)
+      if (w[i] < l)
+        w[i] = l
+    }
+    next
+  }
+  {
+    for (i = 1; i <= NF; i++)
+      printf "%*s", w[i] + (i > 1 ? 1 : 0), $i
+    print ""
+  }
+  ' "$file" "$file"
+    if [ "$file" = - ]; then
+        rm "$file"
+    fi
+)
+
 # Filesystem
 #---------------------------------------------------------------------------------
 
@@ -454,37 +483,53 @@ function gcob-cleaned() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# git checkout - find
+# git (find|fuzzy) checkout
 # Checkout a branch based on search term.
 # If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
 # Otherwise, checkout the most recently committed branch that matches the query
-function gcof() {
-    # [Usage] to checkout "benelan/2807-fix-slot-doc":
-    # $ gcof slot
+gfco() {
+    # [arg1] search term
+    # [arg2..n] options to pass fzf
+    # [usage] to checkout "benelan/2807-fix-slot-doc":
+    # $ gfco slot
+    # [usage] same thing with additional fzf options, see `man fzf`
+    # $ gfco slot --cycle --exact --reverse --header='Checkout Branch' --height=10
 
-    # Choose the first branch if fzf isn't isntalled
-    # The branches are sorted by commit date,
-    # so this is usually what I want
-    PICK_BRANCH_CMD='head -n 1'
-    SEARCH_TERM="${1:-$"USER"}"
-    SHIFT
+    SEARCH_TERM="$1"
     if is-supported fzf; then
-        PICK_BRANCH_CMD='fzf -0 -1'
+        PICK_BRANCH_CMD="fzf --cycle --exit-0 --select-1"
+        [ "$#" -gt 0 ] && shift
+    else
+        # Choose the first branch if fzf isn't isntalled
+        # The branches are sorted by commit date,
+        # so this is usually what I want
+        PICK_BRANCH_CMD="head -n 1"
+        # ignore fzf options if provided
+        shift $#
     fi
 
     # remote and local branches sorted by commit date
     git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
-        # search, remove origin/ prefix from branch names, remove empty line(s)
+        # search, remove 'origin/' prefix from branch names, remove empty line(s)
         awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
         # dedup -> pick -> checkout branch
-        uniq | $PICK_BRANCH_CMD | xargs git checkout
+        uniq | $PICK_BRANCH_CMD "$@" | xargs git checkout
+
+    unset PICK_BRANCH_CMD SEARCH_TERM
 }
 
-# checkout master, pull, find/checkout branch, merge master/main
-function gcofmm() {
+# Adds some additional default fzf options
+# and uses my username as the default search term
+function gcof() {
+    local SEARCH_TERM="${1:-"$USER"}"
+    [ "$#" -gt 0 ] && shift
+    gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
+}
+# checkout master, pull, find and checkout branch, merge master/main
+function gcofm() {
     git checkout "$(gbdefault)"
     git pull
-    gcof "$*"
+    gcof "$@"
     git merge "$(gbdefault)"
 }
 
@@ -496,10 +541,14 @@ function gcofmm() {
 # Syncs the checked out branch with the default branch
 # [Usage] create/checkout branch benelan/2807-slots and sync with master:
 # $ gcomm 2807-slots
-function gcon() {
+function gcoup() {
     git checkout "$(gbdefault)"
     git pull
-    git checkout -b "benelan/$1" 2>/dev/null || git checkout "benelan/$1"
+    local branch_name
+    branch_name="$(git config github.user)/$1"
+    if git show-ref --verify --quiet "refs/heads/$branch_name"; then
+        git checkout "$branch_name"; else git checkout -b "$branch_name"
+    fi
     git merge "$(gbdefault)"
 }
 

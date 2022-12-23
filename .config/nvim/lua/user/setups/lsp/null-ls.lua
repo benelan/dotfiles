@@ -31,7 +31,8 @@ null_ls.setup {
     diagnostics.stylelint,
     formatting.codespell,
     formatting.prettier.with({
-      disabled_filetypes = { "json", "jsonc", "json5" }
+      disabled_filetypes = { "json", "jsonc", "json5" },
+      prefer_local = "node_modules/.bin"
     }),
     formatting.jq.with({
       extra_filetypes = { "jsonc", "json5" }

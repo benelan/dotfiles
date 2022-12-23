@@ -1,3 +1,4 @@
+if vim.g.vscode == 1 then return end
 -- My NeoVim setup was originally forked from
 -- https://github.com/LunarVim/nvim-basic-ide
 

@@ -20,7 +20,7 @@
     "source.fixAll": true,
     "source.organizeImports": true
   },
-  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontFamily": "'Iosevka Nerd Font', 'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "explorer.fileNesting.enabled": true,
@@ -48,10 +48,16 @@
     "editor.defaultFormatter": "yzhang.markdown-all-in-one"
   },
   "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode",
+    "editor.defaultFormatter": "svelte.svelte-vscode"
   },
+  "Lua.diagnostics.globals": ["vim"],
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.telemetry.enable": false,
+  "Lua.completion.callSnippet": "Both",
+  "Lua.completion.keywordSnippet": "Both",
   "terminal.external.linuxExec": "kitty",
   "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
+  // "vscode-neovim.neovimExecutablePaths.linux": "~/.dotfiles/vendor/neovim/build/bin/nvim",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "liveServer.settings.donotShowInfoMsg": true,
   "search.smartCase": true,
@@ -64,6 +70,8 @@
     "*.min.js": true
   },
   "cSpell.userWords": [
+    "dotfiles",
+    "neovim",
     "arcgis",
     "benelan",
     "browserslist",
@@ -80,7 +88,7 @@
     "autofetch",
     "hjson",
     "gruvbox",
-    "esbenp",
+    "esbenp"
   ],
   "vim.easymotion": false,
   "vim.incsearch": true,

@@ -134,8 +134,18 @@ cmp.setup({
     select = false,
   },
   window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
+    -- completion = cmp.config.window.bordered({scrollbar = false}),
+    -- documentation = cmp.config.window.bordered({scrollbar = false}),
+    completion = {
+      scrollbar = false,
+      side_padding = 1,
+      col_offset = -2,
+      -- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+    },
+    documentation = {
+      scrollbar = false,
+      side_padding = 2
+    }
   },
   experimental = {
     ghost_text = true,

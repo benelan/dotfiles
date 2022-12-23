@@ -48,10 +48,10 @@ alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS
 alias lp="stat -c '%a %n' *"
 
 # Always enable colored `grep` output
-# Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
+# Note: `GREP_OPTIONS="--color=auto"` is deprecated
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+alias fgrep='grep -f --color=auto'
+alias egrep='grep -e --color=auto'
 
 # Colorizes diff output, if possible.
 if type 'colordiff' >/dev/null 2>&1; then
@@ -78,10 +78,9 @@ alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
 alias paths='echo -e ${PATH//:/\\n}'
 
 # Sets editors and defaults.
-alias edit='${EDITOR:-vi}'
+alias edit='${EDITOR:-vim}'
 alias e='edit'
 alias se='sudo e'
-alias vi='vim'
 alias vis='vim "+set si"'
 alias snano='sudo nano'
 alias svim='sudo ${VISUAL:-vim}'
@@ -108,10 +107,12 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 # Shortcuts
-alias d="cd ~/dev"
-alias dl="cd ~/Downloads"
-alias dt="cd ~/Desktop"
-alias dc="cd ~/Documents"
+alias dv="cd ~/dev"
+alias dls="cd ~/Downloads"
+alias dktp="cd ~/Desktop"
+alias dcs="cd ~/Documents"
+alias dts="cd ~/.dotfiles"
+alias nvcnf="cd ~/.config/nvim"
 
 # Time
 # -----------------------------------------------------------------------------
@@ -156,13 +157,15 @@ else
     alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 fi
 
-# Ubuntu
+# Ubuntu/GNOME
 # -----------------------------------------------------------------------------
 
 # install with apt-get
 alias apti='sudo apt install'
-alias aptup='sudo apt-get update && sudo apt-get upgrade'
+alias aptup='sudo apt update && sudo apt upgrade'
 
 # Locks the session.
 alias lock='gnome-screensaver-command --lock'
 
+alias gsschemas='gsettings list-schemas | grep -i'
+alias gskeys='gsettings list-keys'

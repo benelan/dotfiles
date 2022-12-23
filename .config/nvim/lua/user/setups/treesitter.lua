@@ -31,10 +31,12 @@ treesitter_configs.setup({
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
   highlight = {
     enable = true, -- false will disable the whole extension
-    disable = { "" }, -- list of language that will be disabled
   },
   autopairs = {
     enable = true,
+  },
+  autotag = {
+    enable = true
   },
   indent = { enable = true, disable = { "markdown_inline", } },
   context_commentstring = {
