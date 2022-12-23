@@ -1,0 +1,22 @@
+{
+  "name": "@benelan/vscode-config",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "vue",
+          "html",
+          "svelte",
+          "javascript",
+          "typescript",
+          "javascriptreact",
+          "typescriptreact"
+        ],
+        "path": "./snippets/javascript.json"
+      }
+    ]
+  }
+}

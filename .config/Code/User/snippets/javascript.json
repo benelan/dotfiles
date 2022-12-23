@@ -1,9 +1,5 @@
 {
-  /**
-   * Web development snippets
-   */
   "fetchRequest": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "fetch",
     "body": [
       "fetch(\"$1\")",
@@ -13,252 +9,209 @@
     ],
     "description": "Fetch request"
   },
-  // the following are from https://github.com/xabikos/vscode-javascript
   "import": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "imp",
     "body": "import ${2:moduleName} from '${1:module}';$0",
     "description": "Imports entire module statement in ES6 syntax"
   },
   "importNoModuleName": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "imn",
     "body": "import '${1:module}';$0",
     "description": "Imports entire module in ES6 syntax without module name"
   },
   "importDestructing": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "imd",
     "body": "import { $2 } from '${1:module}';$0",
     "description": "Imports only a portion of the module in ES6 syntax"
   },
   "importEverything": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ime",
     "body": "import * as ${2:alias} from '${1:module}';$0",
     "description": "Imports everything as alias from the module in ES6 syntax"
   },
   "importAs": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ima",
     "body": "import { ${2:originalName} as ${3:alias} } from '${1:module}';$0",
     "description": "Imports a specific portion of the module by assigning a local alias in ES6 syntax"
   },
   "require": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "rqr",
     "body": "require('${1:package}');",
     "description": "Require a package"
   },
   "requireToConst": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "req",
     "body": "const ${1:packageName} = require('${1:package}');$0",
     "description": "Require a package to const"
   },
   "moduleExports": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "mde",
     "body": "module.exports = {\n\t$0\n};\n",
     "description": "Module exports from Common JS, node syntax at ES6"
   },
   "exportNamedVariable": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "env",
     "body": "export const ${1:exportVariable} = ${2:localVariable};\n",
     "description": "Export named variable in ES6 syntax"
   },
   "exportNamedFunction": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "enf",
     "body": "export const ${1:functionName} = (${2:params}) => {\n\t$0\n};\n",
     "description": "Export named function in ES6 syntax"
   },
   "exportDefaultFunction": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "edf",
     "body": "export default function ${1:${TM_FILENAME_BASE}}(${2:params}) {\n\t$0\n};\n",
     "description": "Export default function in ES6 syntax"
   },
   "exportClass": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ecl",
     "body": "export default class ${1:className} {\n\t$0\n};\n",
     "description": "Export default class in ES6 syntax"
   },
   "exportClassExtends": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ece",
     "body": "export default class ${1:className} extends ${2:baseclassName} {\n\t$0\n};\n",
     "description": "Export default class which extends a base one in ES6 syntax"
   },
 
   "constructor": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "con",
     "body": "constructor(${1:params}) {\n\t${0}\n}",
     "description": "Add default constructor in a class in ES6 syntax"
   },
   "method": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "met",
     "body": "${1:methodName}(${2:params}) {\n\t${0}\n}",
     "description": "Creates a method inside a class in ES6 syntax"
   },
   "propertyGet": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "pge",
     "body": "get ${1:propertyName}() {\n\treturn this.${0};\n}",
     "description": "Creates a getter property inside a class in ES6 syntax"
   },
   "propertySet": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "pse",
     "body": "set ${1:propertyName}(${2:value}) {\n\t${0};\n}",
     "description": "Creates a setter property inside a class in ES6 syntax"
   },
   "forOf": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "fof",
     "body": "for (const ${1:item} of ${2:object}) {\n\t${0}\n}",
     "description": "Iterating over property names of iterable objects"
   },
   "forIn": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "fin",
     "body": "for (const ${1:item} in ${2:object}) {\n\t${0}\n}",
     "description": "Iterating over property values of iterable objects"
   },
   "namedFunction": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "nfn",
     "body": "const ${1:name} = (${2:params}) => {\n\t${3}\n}",
     "description": "Creates a named function in ES6 syntax"
   },
   "destructingObject": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "dob",
     "body": "const {${2:propertyName}} = ${1:objectToDestruct};",
     "description": "Creates and assigns a local variable using object destructing"
   },
   "destructingArray": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "dar",
     "body": "const [${2:propertyName}] = ${1:arrayToDestruct};",
     "description": "Creates and assigns a local variable using array destructing"
   },
   "promise": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "prom",
     "body": "return new Promise((resolve, reject) => {\n\t${1}\n});",
     "description": "Creates and returns a new Promise in the standard ES6 syntax"
   },
   "thenCatch": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "thenc",
     "body": ".then((${1:result}) => {\n\t${2}\n}).catch((${3:err}) => {\n\t${4}\n});",
     "description": "Add the .then and .catch methods to handle promises"
   },
 
   "consoleAssert": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cas",
     "body": "console.assert(${1:expression}, ${2:object});",
     "description": "If the specified expression is false, the message is written to the console along with a stack trace"
   },
   "consoleClear": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ccl",
     "body": "console.clear();",
     "description": "Clears the console"
   },
   "consoleCount": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cco",
     "body": "console.count(${1:label});",
     "description": "Writes the the number of times that count() has been invoked at the same line and with the same label"
   },
   "consoleDebug": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cdb",
     "body": "console.debug(${1:object});",
     "description": "Displays a message in the console. Also display a blue right arrow icon along with the logged message in Safari"
   },
   "consoleDir": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cdi",
     "body": "console.dir(${1:object});",
     "description": "Prints a JavaScript representation of the specified object"
   },
   "consoleError": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cer",
     "body": "console.error(${1:object});",
     "description": "Displays a message in the console and also includes a stack trace from where the method was called"
   },
   "consoleGroup": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cgr",
     "body": "console.group('${1:label}');",
     "description": "Groups and indents all following output by an additional level, until console.groupEnd() is called."
   },
   "consoleGroupEnd": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cge",
     "body": "console.groupEnd();",
     "description": "Closes out the corresponding console.group()."
   },
   "consoleLog": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "clg",
     "body": "console.log(${1:object});",
     "description": "Displays a message in the console"
   },
   "consoleLogObject": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "clo",
     "body": "console.log('${1:object} :>> ', ${1:object});",
     "description": "Displays an object in the console with its name"
   },
   "consoleTrace": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ctr",
     "body": "console.trace(${1:object});",
     "description": "Prints a stack trace from the point where the method was called"
   },
   "consoleWarn": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cwa",
     "body": "console.warn(${1:object});",
     "description": "Displays a message in the console but also displays a yellow warning icon along with the logged message"
   },
   "consoleInfo": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cin",
     "body": "console.info(${1:object});",
     "description": "Displays a message in the console but also displays a blue information icon along with the logged message"
   },
   "consoleTable": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "clt",
     "body": "console.table(${1:object});",
     "description": "Displays tabular data as a table."
   },
   "consoleTime": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cti",
     "body": "console.time(${1:object});",
     "description": "Sets starting point for execution time measurement"
   },
   "consoleTimeEnd": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cte",
     "body": "console.timeEnd(${1:object});",
     "description": "Sets end point for execution time measurement"
   },
-  // the following are from https://github.com/akamud/vscode-javascript-snippet-pack
   "addEventListener": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ae",
     "body": [
       "${1:document}.addEventListener('${2:load}', function (e) {",
@@ -268,115 +221,96 @@
     "description": "Code snippet for \"addEventListener\""
   },
   "appendChild": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ac",
     "body": ["${1:document}.appendChild(${2:elem});"],
     "description": "Code snippet for \"appendChild\""
   },
   "removeChild": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "rc",
     "body": ["${1:document}.removeChild(${2:elem});"],
     "description": "Code snippet for \"removeChild\""
   },
   "createElement": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cel",
     "body": ["${1:document}.createElement(${2:elem});"],
     "description": "Code snippet for \"createElement\""
   },
   "createDocumentFragment": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cdf",
     "body": ["${1:document}.createDocumentFragment();$2"],
     "description": "Code snippet for \"createDocumentFragment\""
   },
   "classList.add": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ca",
     "body": ["${1:document}.classList.add('${2:class}');"],
     "description": "Code snippet for \"classList.add\""
   },
   "classList.toggle": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ct",
     "body": ["${1:document}.classList.toggle('${2:class}');"],
     "description": "Code snippet for \"classList.toggle\""
   },
   "classList.remove": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "cr",
     "body": ["${1:document}.classList.remove('${2:class}');"],
     "description": "Code snippet for \"classList.remove\""
   },
   "getElementById": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "gi",
     "body": ["${1:document}.getElementById('${2:id}');"],
     "description": "Code snippet for \"getElementById\""
   },
   "getElementsByClassName": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "gc",
     "body": ["${1:document}.getElementsByClassName('${2:class}');"],
     "description": "Code snippet for \"getElementsByClassName\""
   },
   "getElementsByTagName": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "gt",
     "body": ["${1:document}.getElementsByTagName('${2:tag}');"],
     "description": "Code snippet for \"getElementsByTagName\""
   },
   "getAttribute": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ga",
     "body": ["${1:document}.getAttribute('${2:attr}');"],
     "description": "Code snippet for \"getAttribute\""
   },
   "setAttribute": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "sa",
     "body": ["${1:document}.setAttribute('${2:attr}', ${3:value});"],
     "description": "Code snippet for \"setAttribute\""
   },
   "removeAttribute": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ra",
     "body": ["${1:document}.removeAttribute('${2:attr}');"],
     "description": "Code snippet for \"removeAttribute\""
   },
   "innerHTML": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ih",
     "body": ["${1:document}.innerHTML = '${2:elem}';"],
     "description": "Code snippet for \"innerHTML\""
   },
   "textContent": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "tc",
     "body": ["${1:document}.textContent = '${2:content}';"],
     "description": "Code snippet for \"textContent\""
   },
   "querySelector": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "qs",
     "body": ["${1:document}.querySelector('${2:selector}');"],
     "description": "Code snippet for \"querySelector\""
   },
   "querySelectorAll": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "qsa",
     "body": ["${1:document}.querySelectorAll('${2:selector}');"],
     "description": "Code snippet for \"querySelectorAll\""
   },
   "forEach": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "fe",
     "body": ["${1:array}.forEach(function(item) {", "\t${2:// body}", "});"],
     "description": "Code snippet for \"forEach\""
   },
   "function": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "fn",
     "body": [
       "function ${1:methodName} (${2:arguments}) {",
@@ -386,13 +320,11 @@
     "description": "Code snippet for function"
   },
   "anonymousFunction": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "afn",
     "body": ["function(${1:arguments}) {", "\t${2:// body}", "}"],
     "description": "Code snippet for anonymous function"
   },
   "prototype": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "pr",
     "body": [
       "${1:object}.prototype.${2:method} = function(${3:arguments}) {",
@@ -402,7 +334,6 @@
     "description": "Code snippet for prototype"
   },
   "immediately-invoked function expression": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "iife",
     "body": [
       "(function(${1:window}, ${2:document}) {",
@@ -412,19 +343,16 @@
     "description": "Code snippet for immediately-invoked function expression"
   },
   "function call": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "call",
     "body": ["${1:method}.call(${2:context}, ${3:arguments});"],
     "description": "Code snippet for function call"
   },
   "function apply": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "apply",
     "body": ["${1:method}.apply(${2:context}, [${3:arguments}]);"],
     "description": "Code snippet for function apply"
   },
   "function as a property of an object": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "ofn",
     "body": [
       "${1:functionName}: function(${2:arguments}) {",
@@ -434,60 +362,46 @@
     "description": "Code snippet for function as a property of an object"
   },
   "JSON.parse": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "jp",
     "body": ["JSON.parse(${1:obj});"],
     "description": "Code snippet for 'JSON.parse'"
   },
   "JSON.stringify": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "js",
     "body": ["JSON.stringify(${1:obj});"],
     "description": "Code snippet for 'JSON.stringify'"
   },
   "setInterval": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "si",
     "body": ["setInterval(function() {", "\t${0:// body}", "}, ${1:1000});"],
     "description": "Code snippet for 'setInterval'"
   },
   "setTimeout": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "st",
     "body": ["setTimeout(function() {", "\t${0:// body}", "}, ${1:1000});"],
     "description": "Code snippet for 'setTimeout'"
   },
   "use strict": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "us",
     "body": ["'use strict';"],
     "description": "Code snippet for 'use strict'"
   },
   "alert": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "al",
     "body": ["alert('${1:msg}');"],
     "description": "Code snippet for 'alert'"
   },
   "confirm": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "co",
     "body": ["confirm('${1:msg}');"],
     "description": "Code snippet for 'confirm'"
   },
   "prompt": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "pm",
     "body": ["prompt('${1:msg}');"],
     "description": "Code snippet for 'prompt'"
   },
-  /**
-   * Web component specific snippets
-   */
-  // For StencilJS components (e.g. Calcite Components)
-  // https://developers.arcgis.com/calcite-design-system/web-concepts/#component-on-ready
   "Component On Ready": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "onready",
     "body": [
       "(async () => {",
@@ -501,9 +415,7 @@
     ],
     "description": "Wait for a StencilJS component to load before interacting with it."
   },
-  // The following are from https://github.com/hardikpthv/vscode-wc-snippets
   "wComponent": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc",
     "body": [
       "class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} extends HTMLElement {",
@@ -534,7 +446,6 @@
     "description": "Basic Web Component"
   },
   "wcObservedAttributes": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc-observed-attrs",
     "body": [
       "static get observedAttributes() {",
@@ -544,13 +455,11 @@
     "description": "Define `observedAttributes`"
   },
   "wcAdoptedCallback": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc-adopted-cb",
     "body": ["static get adoptedCallback() {", "\t//${1:implementation}", "}"],
     "description": "Define `adoptedCallback`"
   },
   "wcAttributeChangedCallback": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc-attribute-changed-cb",
     "body": [
       "attributeChangedCallback(name, oldVal, newVal) {",
@@ -560,19 +469,16 @@
     "description": "Define `attributeChangedCallback`"
   },
   "wcSlot": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc-slot",
     "body": ["<slot></slot>"],
     "description": "Define <slot>"
   },
   "wcSlotNamed": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "wc-slot-named",
     "body": ["<slot name=\"${1:slotName}\"></slot>"],
     "description": "Define <slot> with name"
   },
   "stencilComponent": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component",
     "body": [
       "import { Component, Prop, h } from '@stencil/core';\n",
@@ -594,7 +500,6 @@
     "description": "Stencil Component"
   },
   "stencilFunctionalComponent": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-functional-component",
     "body": [
       "import { FunctionalComponent, Prop, h } from '@stencil/core';\n",
@@ -608,25 +513,21 @@
     "description": "Stencil Functional Component"
   },
   "stencilProperty": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-prop",
     "body": ["@Prop() ${1:propName}:${2:propType};"],
     "description": "@Prop decorator from Stencil"
   },
   "stencilElement": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-element",
     "body": ["@Element() ${1:elementName}:HTMLElement;"],
     "description": "@Element decorator from `@stencil/core`"
   },
   "stencilEvent": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-event",
     "body": ["@Event() ${1:eventName}:EventEmitter<${2:eventType}>;"],
     "description": "@Event decorator from `@stencil/core`"
   },
   "stencilMethodAsync": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-method-async",
     "body": [
       "@Method()",
@@ -637,55 +538,46 @@
     "description": "@Method(async) decorator from `@stencil/core`"
   },
   "stencilMethodPromise": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-method-promise",
     "body": ["@Method()", "${1:methodName}() {", "\t$return {2:Promise}", "}"],
     "description": "@Method decorator as returning promise from `@stencil/core`"
   },
   "stencilCompWillLoad": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-will-load",
     "body": ["componentWillLoad() {", "\t${1://implementation}", "}"],
     "description": "componentWillLoad life cycle hook"
   },
   "stencilCompDidLoad": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-did-load",
     "body": ["componentDidLoad() {", "\t${1://implementation}", "}"],
     "description": "componentDidLoad life cycle hook"
   },
   "stencilCompWillRender": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-will-render",
     "body": ["componentWillRender() {", "\t${1://implementation}", "}"],
     "description": "componentWillRender life cycle hook"
   },
   "stencilCompDidRender": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-did-render",
     "body": ["componentDidRender() {", "\t${1://implementation}", "}"],
     "description": "componentDidRender life cycle hook"
   },
   "stencilCompWillUpdate": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-will-update",
     "body": ["componentWillUpdate() {", "\t${1://implementation}", "}"],
     "description": "componentWillUpdate life cycle hook"
   },
   "stencilCompDidUpdate": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-component-did-update",
     "body": ["componentDidUpdate() {", "\t${1://implementation}", "}"],
     "description": "componentDidUpdate life cycle hook"
   },
   "stencilConnectedCallback": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-cb",
     "body": ["connectedCallback() {", "\t${1://implementation}", "}"],
     "description": "connectedCallback() from Stencil"
   },
   "stencilDisconnectedCallback": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact,html,vue,svelte",
     "prefix": "stencil-dcb",
     "body": ["disconnectedCallback() {", "\t${1://implementation}", "}"],
     "description": "disconnectedCallback() from Stencil"

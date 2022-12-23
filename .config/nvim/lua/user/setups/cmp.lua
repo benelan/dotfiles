@@ -2,10 +2,11 @@ local cmp_status_ok, cmp = pcall(require, "cmp")
 local snip_status_ok, ls = pcall(require, "luasnip")
 if not cmp_status_ok or not snip_status_ok then return end
 
-require("luasnip/loaders/from_vscode").lazy_load({
-  -- paths = { "~/.config/Code/User/snippets" }
+local vscode_snips = require("luasnip/loaders/from_vscode")
+vscode_snips.lazy_load() -- load plugin snippets
+vscode_snips.lazy_load({ -- load personal snippets
+  paths = { "~/.config/Code/User" }
 })
-
 
 local check_backspace = function()
   local col = vim.fn.col(".") - 1
