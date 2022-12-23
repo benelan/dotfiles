@@ -68,19 +68,24 @@ return packer.startup(function(use)
   }
   use {
     "kyazdani42/nvim-tree.lua", -- tree-like file explorer
-    tag = "nightly"
+    tag = "nightly",
+    event = "VimEnter"
   }
   use {
     "akinsho/bufferline.nvim", -- good lookin' bufferline
+    event = "BufWinEnter"
   }
   use {
     "nvim-lualine/lualine.nvim", -- extensible statusline
+    event = "BufWinEnter"
   }
   use {
     "akinsho/toggleterm.nvim", -- opens an integrated terminal
+    event = "BufWinEnter"
   }
   use {
     "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
+    event = "BufWinEnter"
   }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
@@ -90,9 +95,11 @@ return packer.startup(function(use)
   }
   use {
     "unblevable/quick-scope", -- highlight unique letters in words
+    event = "BufWinEnter"
   }
   use {
     "sainnhe/gruvbox-material", -- gruvbox colorscheme
+    event = "VimEnter",
     lock = true
   }
 
@@ -103,19 +110,23 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+    event = "BufWinEnter",
   }
   use {
     "numToStr/Comment.nvim", -- smart comments
+    event = "BufWinEnter"
   }
   -- use {
   -- "ahmedkhalf/project.nvim",
   -- }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    event = "BufWinEnter"
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
     tag = "*",
+    event = "BufWinEnter",
     config = function()
       require("nvim-surround").setup({
         highlight = {
@@ -126,49 +137,48 @@ return packer.startup(function(use)
   }
   use {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
+    event = "BufWinEnter",
   }
   use {
     "kevinhwang91/nvim-ufo", -- better code folds
     requires = "kevinhwang91/promise-async",
+    event = "BufWinEnter",
   }
 
   -----------------------------------------------------------------------------
-  -- Completions
+  -- Completions/Snippets
   -----------------------------------------------------------------------------
   use {
     "hrsh7th/nvim-cmp", -- completion engine
     requires = {
       {
         "hrsh7th/cmp-buffer", -- buffer completions
-      },
-      {
+        after = "nvim-cmp"
+      }, {
         "hrsh7th/cmp-path", -- path completions
-      },
-      {
-        "saadparwaiz1/cmp_luasnip", -- snippet completions
-      },
-      {
+        after = "nvim-cmp"
+      }, {
         "hrsh7th/cmp-nvim-lsp", -- lsp completion
-      },
-      {
+        after = "nvim-cmp"
+      }, {
         "hrsh7th/cmp-nvim-lua", -- lua language completion
-      },
-      {
+        after = "nvim-cmp"
+      }, {
         "hrsh7th/cmp-nvim-lsp-signature-help", -- signature completions
-      },
-      {
+        after = "nvim-cmp"
+      }, {
         "hrsh7th/cmp-cmdline", -- commandline completion
+        after = "nvim-cmp"
+      }, {
+        "saadparwaiz1/cmp_luasnip", -- snippet completions
+        after = "nvim-cmp"
+      }, {
+        "L3MON4D3/LuaSnip", -- snippet engine
+      }, {
+        "rafamadriz/friendly-snippets", -- a bunch of snippets to use
       }
-    }
-  }
-  -----------------------------------------------------------------------------
-  -- Snippets
-  -----------------------------------------------------------------------------
-  use {
-    "L3MON4D3/LuaSnip", -- snippet engine
-  }
-  use {
-    "rafamadriz/friendly-snippets", -- a bunch of snippets to use
+    },
+    event = "InsertEnter",
   }
 
   -----------------------------------------------------------------------------
@@ -176,22 +186,22 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    tag = "*"
-  }
-  use {
-    "williamboman/mason.nvim", -- language server installer/manager
-  }
-  use {
-    "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
-  }
-  use {
-    "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
-  }
-  use {
-    "RRethy/vim-illuminate", -- highlights hovered code blocks
-  }
-  use {
-    "rmagatti/goto-preview", -- open lsp previews in floating window
+    tag = "*",
+    event = "BufWinEnter",
+    requires =
+    {
+      "williamboman/mason.nvim", -- language server installer/manager
+    }, {
+      "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
+    }, {
+      "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+    }, {
+      "RRethy/vim-illuminate", -- highlights hovered code blocks
+    }, {
+      "rmagatti/goto-preview", -- open lsp previews in floating window
+    }, {
+      "b0o/schemastore.nvim" -- json schemas for completion
+    }
   }
 
   -----------------------------------------------------------------------------
@@ -199,12 +209,12 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-telescope/telescope.nvim", -- fuzzy search tool
+    event = "BufWinEnter",
     requires = {
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
         run = "make",
-      },
-      {
+      }, {
         "nvim-telescope/telescope-project.nvim", -- project bookmarks
       },
       -- {
@@ -221,12 +231,12 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-treesitter/nvim-treesitter", -- no explanation needed 🏆
+    run = ":TSUpdate",
     requires = {
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
         after = "nvim-treesitter",
-      },
-      {
+      }, {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
         after = "nvim-treesitter",
       }
@@ -238,15 +248,19 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
+    event = "BufWinEnter",
   }
   use {
     "sindrets/diffview.nvim", -- diff and history viewer
+    event = "BufWinEnter",
   }
   use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
+    event = "BufWinEnter",
   }
   use {
     "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line
+    event = "BufWinEnter",
     requires = "nvim-lua/plenary.nvim",
     config = function() require("gitlinker").setup() end,
   }
@@ -257,14 +271,14 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "mfussenegger/nvim-dap",
+    event = "BufWinEnter",
     requires = {
       {
         "theHamsta/nvim-dap-virtual-text",
-      },
-      {
+      }, {
         "rcarriga/nvim-dap-ui",
       },
-    }
+    },
   }
 
   -- Automatically set up your configuration after cloning packer.nvim
