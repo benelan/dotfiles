@@ -101,6 +101,7 @@ vim.api.nvim_create_autocmd({ "ColorScheme" }, {
   callback = function()
     vim.cmd [[
         let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#A0460A', '208']})
+        call gruvbox_material#highlight('CmpItemAbbrDeprecated', s:palette.grey1, s:palette.none, "strikethrough"),
         call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
