@@ -37,3 +37,10 @@ if vim.fn.exists("g:neovide") == 1 then
   -- the font name is different in WSL for some reason
   if vim.fn.has("wsl") then vim.opt.guifont = "SauceCodePro_NF:h10" end
 end
+
+
+vim.g.markdown_fenced_languages = {
+  'css', 'scss', 'sass', 'html', 'xml', 'json',
+  'ts=typescript', 'tsx=typescriptreact',
+  'js=javascript', 'jsx=javascriptreact'
+}
