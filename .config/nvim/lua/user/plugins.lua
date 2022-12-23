@@ -166,6 +166,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "L3MON4D3/LuaSnip", -- snippet engine
+    tag = "v<CurrentMajor>.*",
   }
   use {
     "rafamadriz/friendly-snippets", -- a bunch of snippets to use
