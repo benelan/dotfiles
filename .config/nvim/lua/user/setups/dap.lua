@@ -20,14 +20,14 @@ end
 dap.adapters.node2 = {
   type = 'executable';
   command = 'node',
-  args = { vim.fn.stdpath "data" .. '/mason/packages/node-debug2-adapter/out/src/nodeDebugAdapter.js' };
+  args = { vim.fn.stdpath "data" .. '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js' };
 }
 
 -- Chrome
 dap.adapters.chrome = {
   type = 'executable',
   command = 'node',
-  args = { vim.fn.stdpath "data" .. '/mason/packages/chrome-debug-adapter/out/src/chromeDebugAdapter.js' };
+  args = { vim.fn.stdpath "data" .. '/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js' };
 }
 
 -- Language configuration
@@ -37,7 +37,7 @@ dap.configurations.javascript = {
     name = "Launch",
     type = "node2",
     request = "launch",
-    program = "${workspaceFolder}/${file}",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
     protocol = "inspector",
