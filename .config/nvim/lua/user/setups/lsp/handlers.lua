@@ -1,5 +1,4 @@
 local M = {}
-
 local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not status_ok then return M end
 
@@ -12,6 +11,8 @@ M.capabilities.textDocument.foldingRange = {
   lineFoldingOnly = true
 }
 
+M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
+
 local diagnostic_levels = {
   { name = "DiagnosticSignError", text = "", severity = vim.diagnostic.severity.ERROR, },
   { name = "DiagnosticSignWarn", text = "", severity = vim.diagnostic.severity.WARN, },
@@ -19,6 +20,7 @@ local diagnostic_levels = {
   { name = "DiagnosticSignInfo", text = "", severity = vim.diagnostic.severity.Info, },
 }
 
+local augroup_codelens = vim.api.nvim_create_augroup("my-lsp-codelens", { clear = true })
 M.setup = function()
   for _, sign in ipairs(diagnostic_levels) do
     vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
@@ -38,6 +40,8 @@ M.setup = function()
       style = "minimal",
       border = "rounded",
       source = "always",
+      header = "",
+      prefix = ""
     },
   }
 
@@ -50,10 +54,11 @@ M.setup = function()
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
     border = "rounded",
   })
+
 end
 
--- Useful to go to the next highest priority diagnostic
--- so I don't have to look at a bunch of Infos
+-- Skip past hints so I can fix my errors first
+-- Stolen from TJ Devries
 local get_highest_error_severity = function()
   for _, level in ipairs(diagnostic_levels) do
     local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
@@ -63,12 +68,11 @@ local get_highest_error_severity = function()
   end
 end
 
-local function lsp_keymaps(bufnr)
+local function lsp_keymaps(client, bufnr)
   local buf_keymap = vim.api.nvim_buf_set_keymap
   local opts = { noremap = true, silent = true }
 
-  vim.keymap.set(
-    "n", "]d",
+  vim.keymap.set("n", "]d",
     function()
       vim.diagnostic.goto_prev {
         severity = get_highest_error_severity(),
@@ -76,11 +80,9 @@ local function lsp_keymaps(bufnr)
         float = true,
       }
     end,
-    vim.list_extend(opts, { desc = "Next diagnostic" })
-  )
+    vim.list_extend({ desc = "Next diagnostic" }, opts))
 
-  vim.keymap.set(
-    "n", "[d",
+  vim.keymap.set("n", "[d",
     function()
       vim.diagnostic.goto_next {
         severity = get_highest_error_severity(),
@@ -88,45 +90,78 @@ local function lsp_keymaps(bufnr)
         float = true,
       }
     end,
-    vim.list_extend(opts, { desc = "Previous diagnostic" })
-  )
-
-  buf_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>",
-    vim.list_extend(opts, { desc = "Declaration" }))
-
-  buf_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>",
-    vim.list_extend(opts, { desc = "Definition" }))
-
-  buf_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>",
-    vim.list_extend(opts, { desc = "Hover" }))
-
-  buf_keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>",
-    vim.list_extend(opts, { desc = "Implementation" }))
-
-  buf_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>",
-    vim.list_extend(opts, { desc = "References" }))
+    vim.list_extend({ desc = "Previous diagnostic" }, opts))
 
   buf_keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>",
-    vim.list_extend(opts, { desc = "Diagnostic" }))
+    vim.list_extend({ desc = "Line diagnostic" }, opts))
+
+  if client.server_capabilities.codeLensProvider then
+    buf_keymap(bufnr, "n", "gL",
+      -- "<cmd>lua vim.lsp.buf.codelens.run()<CR>",
+      "<cmd>lua require('user.setups.lsp.codelens').run()<CR>",
+      vim.list_extend({ desc = "LSP codelens" }, opts))
+  end
+  if client.server_capabilities.renameProvider then
+    buf_keymap(bufnr, "n", "gR",
+      "<cmd>lua vim.lsp.buf.rename()<CR>",
+      vim.list_extend({ desc = "LSP rename" }, opts))
+  end
+  if client.server_capabilities.codeActionProvider then
+    buf_keymap(bufnr, "n", "ga",
+      "<cmd>lua vim.lsp.buf.code_action()<CR>",
+      vim.list_extend({ desc = "LSP code action" }, opts))
+  end
+  if client.server_capabilities.signatureHelpProvider then
+    buf_keymap(bufnr, "n", "gh",
+      "<cmd>lua vim.lsp.buf.signature_help()<CR>",
+      vim.list_extend({ desc = "LSP signature help" }, opts))
+  end
+  if client.server_capabilities.declarationProvider then
+    buf_keymap(bufnr, "n", "gD",
+      "<cmd>lua vim.lsp.buf.declaration()<CR>",
+      vim.list_extend({ desc = "LSP declaration" }, opts))
+  end
+  if client.server_capabilities.typeDefinitionProvider then
+    buf_keymap(bufnr, "n", "gT",
+      "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+      vim.list_extend({ desc = "LSP type definition" }, opts))
+  end
+  if client.server_capabilities.definitionProvider then
+    buf_keymap(bufnr, "n", "gd",
+      "<cmd>lua vim.lsp.buf.definition()<CR>",
+      vim.list_extend({ desc = "LSP definition" }, opts))
+  end
+  if client.server_capabilities.implementationProvider then
+    buf_keymap(bufnr, "n", "gI",
+      "<cmd>lua vim.lsp.buf.implementation()<CR>",
+      vim.list_extend({ desc = "LSP implementation" }, opts))
+  end
+  if client.server_capabilities.referencesProvider then
+    buf_keymap(bufnr, "n", "gr",
+      "<cmd>lua vim.lsp.buf.references()<CR>",
+      vim.list_extend({ desc = "LSP references" }, opts))
+  end
+  if client.server_capabilities.hoverProvider then
+    buf_keymap(bufnr, "n", "K",
+      "<cmd>lua vim.lsp.buf.hover()<CR>",
+      vim.list_extend({ desc = "Hover" }, opts))
+  end
 end
 
 M.on_attach = function(client, bufnr)
   if client.name == "tsserver" then
     client.server_capabilities.documentFormattingProvider = false
   end
-
   -- if client.name == "sumneko_lua" then
   --   client.server_capabilities.documentFormattingProvider = false
   -- end
 
-  if client.name == "eslint" then
-    client.server_capabilities.documentFormattingProvider = true
+  if client.server_capabilities.codeLensProvider then
+    vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
+    vim.api.nvim_create_autocmd { "BufEnter", augroup_codelens, vim.lsp.codelens.refresh, bufnr, once = true }
+    vim.api.nvim_create_autocmd { { "BufWritePost", "CursorHold" }, augroup_codelens, vim.lsp.codelens.refresh, bufnr }
   end
-
-  lsp_keymaps(bufnr)
-  local illuminate_status_ok, illuminate = pcall(require, "illuminate")
-  if not illuminate_status_ok then return end
-  illuminate.on_attach(client)
+  lsp_keymaps(client, bufnr)
 end
 
 return M

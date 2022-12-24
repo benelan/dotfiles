@@ -41,3 +41,12 @@ vim.api.nvim_set_keymap('n', '<M-n>',
 vim.api.nvim_set_keymap('n', '<M-p>',
   '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>',
   { noremap = true })
+
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("my-illumination", {}),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    require("illuminate").on_attach(client)
+  end,
+})
