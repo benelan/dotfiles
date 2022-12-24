@@ -3,6 +3,7 @@
 
 # This script installs the Ubuntu/Debian packages I use
 # The dotfiles.init.bash script needs to run first
+# Originally form: https://github.com/cowboy/dotfiles
 
 gpg_keys=()
 apt_source_files=()

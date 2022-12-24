@@ -71,19 +71,33 @@ function install_cargo_packages() {
         echo "-> Installing Cargo packages"
 
         # https://github.com/BurntSushi/ripgrep
-        [[ ! "$(type -P rg)" ]] && cargo install ripgrep && echo "--> Installed ripgrep"
+        [[ ! "$(type -P rg)" ]] &&
+            cargo install ripgrep &&
+            echo "--> Installed ripgrep"
 
         # https://github.com/sharkdp/fd
-        [[ ! "$(type -P fd)" && "$(type -P make)" ]] && cargo install fd-find && echo "--> Installed fd-find"
+        [[ ! "$(type -P fd)" && "$(type -P make)" ]] &&
+            cargo install fd-find &&
+            [[ ! "$(type -P fd)" ]] &&
+            ln -s "$(type -P fdfind)" ~/.local/bin/fd &&
+            echo "--> Installed fd-find"
 
         # https://github.com/sharkdp/bat
-        ! [[ "$(type -P bat)" || "$(type -P batcat)" ]] && cargo install --locked bat && echo "--> Installed bat"
+        ! [[ "$(type -P bat)" || "$(type -P batcat)" ]] &&
+            cargo install --locked bat &&
+            [[ ! "$(type -P bat)" ]] &&
+            ln -s "$(type -P batcat)" ~/.local/bin/bat &&
+            echo "--> Installed bat"
 
         # https://github.com/dandavison/delta
-        [[ ! "$(type -P delta)" ]] && cargo install git-delta && echo "--> Installed git-delta"
+        [[ ! "$(type -P delta)" ]] &&
+            cargo install git-delta &&
+            echo "--> Installed git-delta"
 
         # https://github.com/anordal/shellharden
-        [[ ! "$(type -P shellharden)" ]] && cargo install shellharden && echo "--> Installed shellharden"
+        [[ ! "$(type -P shellharden)" ]] &&
+            cargo install shellharden &&
+            echo "--> Installed shellharden"
 
         # Install LunarVim if necessary and able
         # https://www.lunarvim.org/docs/installation
@@ -103,19 +117,31 @@ function install_cargo_packages() {
 function install_go_packages() {
     if [[ "$(type -P go)" ]]; then
         echo "-> Installing Go packages"
+
         # https://github.com/jesseduffield/lazygit
-        [[ ! "$(type -P lazygit)" ]] && go install github.com/jesseduffield/lazygit@latest && echo "--> Installed LazyGit"
+        [[ ! "$(type -P lazygit)" ]] &&
+            go install github.com/jesseduffield/lazygit@latest &&
+            echo "--> Installed LazyGit"
 
         # https://github.com/rhysd/actionlint
-        [[ ! "$(type -P actionlint)" ]] && go install github.com/rhysd/actionlint/cmd/actionlint@latest && echo "--> Installed ActionLint"
+        [[ ! "$(type -P actionlint)" ]] &&
+            go install github.com/rhysd/actionlint/cmd/actionlint@latest &&
+            echo "--> Installed ActionLint"
 
         # https://github.com/mvdan/sh
-        [[ ! "$(type -P shfmt)" ]] && go install mvdan.cc/sh/v3/cmd/shfmt@latest && echo "--> Installed shfmt"
+        [[ ! "$(type -P shfmt)" ]] &&
+            go install mvdan.cc/sh/v3/cmd/shfmt@latest &&
+            echo "--> Installed shfmt"
     else
         # use lazygit binary if go isn't installed
         if [[ ! "$(type -P go)" && ! "$(type -P lazygit)" ]]; then
-            LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v*([^"]+)".*/\1/')
-            curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+            LAZYGIT_VERSION=$(
+                curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" |
+                    grep '"tag_name":' |
+                    sed -E 's/.*"v*([^"]+)".*/\1/'
+            )
+            curl -Lo lazygit.tar.gz \
+                "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
             sudo tar xf lazygit.tar.gz -C "$HOME/local/bin" lazygit
             unset LAZYGIT_VERSION
             echo "--> Installed LazyGit"
@@ -131,9 +157,10 @@ function install_node_packages() {
         curl https://get.volta.sh | bash -s -- --skip-setup
         export VOLTA_HOME=~/.volta
         grep --silent "$VOLTA_HOME/bin" <<<"$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
-        volta install node yarn
+        volta install node@16
         echo "--> Install Volta to manage node/npm/yarn"
-        volta install neovim prettier eslint stylelint pm2 build-sizes typescript ts-node markdownlint markdownlint-cli
+        volta install pm2 prettier eslint stylelint build-sizes \
+            neovim typescript ts-node markdownlint markdownlint-cli
         echo "--> Installed global npm packages"
     fi
 }
@@ -147,6 +174,6 @@ function install_starship_prompt() {
 }
 
 install_fonts
-# install_cargo_packages
-# install_go_packages
-# install_starship_prompt
+install_cargo_packages
+install_go_packages
+install_starship_prompt

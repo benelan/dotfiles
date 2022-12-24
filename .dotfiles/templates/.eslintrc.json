@@ -1,0 +1,24 @@
+{
+  "ignorePatterns": [
+    "build",
+    "dist",
+    "docs",
+    "node_modules",
+    ".next",
+    ".cache"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {}
+}

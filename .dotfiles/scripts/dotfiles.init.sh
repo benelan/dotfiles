@@ -22,6 +22,7 @@ dot() {
 }
 
 # Don't use SSH to clone if there is no SSH key on the machine
+# This is for when I spin up a new VM and don't want to login to GitHub
 if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
     GIT_URL=https://github.com/benelan/dotfiles
 else
