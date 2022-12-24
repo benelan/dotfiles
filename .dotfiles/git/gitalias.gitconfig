@@ -160,7 +160,7 @@
   # diff - show changes not yet staged
   dc = diff --cached
 
-  # diff - show changes about to be commited
+  # diff - show changes about to be committed
   ds = diff --staged
 
   # diff - show changes but by word, not line
@@ -468,7 +468,7 @@
 
   ### init ###
 
-  # initalize a repo and immediate add an empty commit, which makes rebase easier.
+  # initialize a repo and immediate add an empty commit, which makes rebase easier.
   init-empty = !"f() { git init && git commit --allow-empty --allow-empty-message --message ''; }; f"
 
   ### merge-* ###
