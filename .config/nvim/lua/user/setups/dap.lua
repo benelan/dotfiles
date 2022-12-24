@@ -18,16 +18,16 @@ end
 ----------
 -- Node
 dap.adapters.node2 = {
-  type = 'executable';
-  command = 'node',
-  args = { vim.fn.stdpath "data" .. '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js' };
+  type = "executable";
+  command = "node",
+  args = { vim.fn.stdpath "data" .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js" };
 }
 
 -- Chrome
 dap.adapters.chrome = {
-  type = 'executable',
-  command = 'node',
-  args = { vim.fn.stdpath "data" .. '/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js' };
+  type = "executable",
+  command = "node",
+  args = { vim.fn.stdpath "data" .. "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js" };
 }
 
 -- Language configuration
@@ -46,53 +46,53 @@ dap.configurations.javascript = {
   {
     -- For this to work you need to make sure
     -- the node process is started with the `--inspect` flag.
-    name = 'Attach to process',
-    type = 'node2',
-    request = 'attach',
-    processId = require 'dap.utils'.pick_process,
+    name = "Attach to process",
+    type = "node2",
+    request = "attach",
+    processId = require "dap.utils".pick_process,
   },
   {
     name = "Chrome",
-    type = 'chrome',
-    request = 'attach',
-    program = '${file}',
+    type = "chrome",
+    request = "attach",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
-    protocol = 'inspector',
+    protocol = "inspector",
     port = 9222,
-    webRoot = '${workspaceFolder}'
+    webRoot = "${workspaceFolder}"
   }
 }
 
 dap.configurations.typescript = {
   {
     name = "Launch",
-    type = 'node2',
-    request = 'launch',
-    program = '${file}',
+    type = "node2",
+    request = "launch",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
-    protocol = 'inspector',
-    console = 'integratedTerminal',
+    protocol = "inspector",
+    console = "integratedTerminal",
   },
   {
     -- For this to work you need to make sure
     -- the node process is started with the `--inspect` flag.
-    name = 'Attach to process',
-    type = 'node2',
-    request = 'attach',
-    processId = require 'dap.utils'.pick_process,
+    name = "Attach to process",
+    type = "node2",
+    request = "attach",
+    processId = require "dap.utils".pick_process,
   },
   {
     name = "Chrome",
-    type = 'chrome',
-    request = 'attach',
-    program = '${file}',
+    type = "chrome",
+    request = "attach",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
-    protocol = 'inspector',
+    protocol = "inspector",
     port = 9222,
-    webRoot = '${workspaceFolder}'
+    webRoot = "${workspaceFolder}"
   },
   {
     type = "node2",
@@ -109,27 +109,27 @@ dap.configurations.typescript = {
 
 dap.configurations.javascriptreact = {
   {
-    type = 'chrome',
-    request = 'attach',
-    program = '${file}',
+    type = "chrome",
+    request = "attach",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
-    protocol = 'inspector',
+    protocol = "inspector",
     port = 9222,
-    webRoot = '${workspaceFolder}'
+    webRoot = "${workspaceFolder}"
   }
 }
 
 dap.configurations.typescriptreact = {
   {
-    type = 'chrome',
-    request = 'attach',
-    program = '${file}',
+    type = "chrome",
+    request = "attach",
+    program = "${file}",
     cwd = vim.fn.getcwd(),
     sourceMaps = true,
-    protocol = 'inspector',
+    protocol = "inspector",
     port = 9222,
-    webRoot = '${workspaceFolder}'
+    webRoot = "${workspaceFolder}"
   }
 }
 
@@ -145,9 +145,9 @@ virtual_text.setup({
   commented = false, -- prefix virtual text with comment string
   only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
   all_references = false, -- show virtual text on all all references of the variable (not only definitions)
-  filter_references_pattern = '<module', -- filter references (not definitions) pattern when all_references is activated (Lua gmatch pattern, default filters out Python modules)
+  filter_references_pattern = "<module", -- filter references (not definitions) pattern when all_references is activated (Lua gmatch pattern, default filters out Python modules)
   -- experimental features:
-  virt_text_pos = 'eol', -- position of virtual text, see `:h nvim_buf_set_extmark()`
+  virt_text_pos = "eol", -- position of virtual text, see `:h nvim_buf_set_extmark()`
   all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
   virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
   virt_text_win_col = nil -- position the virtual text at a fixed window column (starting from the first text column) ,
@@ -241,7 +241,7 @@ dapui.setup({
 -----------------------------------------------------------------------------
 -- DAP UI
 -----------------------------------------------------------------------------
-dap.set_log_level('TRACE');
+dap.set_log_level("TRACE");
 
 -- Automatically open UI
 dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -257,5 +257,27 @@ end
 -- Enable virtual text
 vim.g.dap_virtual_text = true
 
-vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
-vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
+vim.fn.sign_define("DapBreakpoint", {
+  text = "",
+  texthl = "DiagnosticSignHint",
+  linehl = "",
+  numhl = ""
+})
+vim.fn.sign_define("DapBreakpointRejected", {
+  text = "",
+  texthl = "DiagnosticSignError",
+  linehl = "",
+  numhl = ""
+})
+vim.fn.sign_define("DapBreakpointCondition", {
+  text = "",
+  texthl = "DiagnosticSignHint",
+  linehl = "",
+  numhl = ""
+})
+vim.fn.sign_define("DapStopped", {
+  text = "",
+  texthl = "DiagnosticSignWarn",
+  linehl = "Visual",
+  numhl = "DiagnosticSignWarn"
+})
