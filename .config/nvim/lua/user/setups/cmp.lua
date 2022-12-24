@@ -1,8 +1,12 @@
 local cmp_status_ok, cmp = pcall(require, "cmp")
-local snip_status_ok, luasnip = pcall(require, "luasnip")
+local snip_status_ok, ls = pcall(require, "luasnip")
 if not cmp_status_ok or not snip_status_ok then return end
 
-require("luasnip/loaders/from_vscode").lazy_load()
+local vscode_snips = require("luasnip/loaders/from_vscode")
+vscode_snips.lazy_load() -- load plugin snippets
+vscode_snips.lazy_load({ -- load personal snippets
+  paths = { "~/.config/Code/User" }
+})
 
 local check_backspace = function()
   local col = vim.fn.col(".") - 1
@@ -40,7 +44,7 @@ local kind_icons = {
 cmp.setup({
   snippet = {
     expand = function(args)
-      luasnip.lsp_expand(args.body)
+      require("luasnip").lsp_expand(args.body)
     end,
   },
 
@@ -49,7 +53,7 @@ cmp.setup({
     ["<C-j>"] = cmp.mapping.select_next_item(),
     ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
     ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-    ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+    ["<C-y>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
     ["<C-e>"] = cmp.mapping({
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
@@ -60,10 +64,10 @@ cmp.setup({
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.expandable() then
-        luasnip.expand()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
+      elseif ls.expandable() then
+        ls.expand()
+      elseif ls.expand_or_jumpable() then
+        ls.expand_or_jump()
       elseif check_backspace() then
         fallback()
       else
@@ -76,8 +80,8 @@ cmp.setup({
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
+      elseif ls.jumpable(-1) then
+        ls.jump(-1)
       else
         fallback()
       end
@@ -170,3 +174,32 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' }
   })
 })
+
+local opts = { noremap = true, silent = true }
+vim.keymap.set(
+  { "i", "s" }, "<C-n>",
+  function()
+    if ls.expand_or_jumpable() then
+      ls.expand_or_jump()
+    end
+  end,
+  opts
+)
+vim.keymap.set(
+  { "i", "s" }, "<C-p>",
+  function()
+    if ls.jumpable(-1) then
+      ls.jump(1)
+    end
+  end,
+  opts
+)
+
+vim.keymap.set(
+  { "i" }, "<C-c>", function()
+    if ls.choice_active() then
+      ls.change_choice(1)
+    end
+  end,
+  opts
+)
