@@ -158,8 +158,27 @@ M.on_attach = function(client, bufnr)
 
   if client.server_capabilities.codeLensProvider then
     vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
-    vim.api.nvim_create_autocmd { "BufEnter", augroup_codelens, vim.lsp.codelens.refresh, bufnr, once = true }
-    vim.api.nvim_create_autocmd { { "BufWritePost", "CursorHold" }, augroup_codelens, vim.lsp.codelens.refresh, bufnr }
+    vim.api.nvim_create_autocmd({
+      "BufEnter",
+      {
+        group = augroup_codelens,
+        callback = function()
+          vim.lsp.codelens.refresh()
+        end,
+        buffer = bufnr,
+        once = true
+      }
+    })
+    vim.api.nvim_create_autocmd({
+      "BufWritePost", "CursorHold",
+      {
+        group = augroup_codelens,
+        callback = function()
+          vim.lsp.codelens.refresh()
+        end,
+        buffer = bufnr
+      }
+    })
   end
   lsp_keymaps(client, bufnr)
 end
