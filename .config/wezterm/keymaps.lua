@@ -4,20 +4,26 @@ local utils = require "utils"
 local act = wezterm.action
 
 M.keys = {
-  -- Pane/Tab management
+  -- Pane management
   { key = 'v', mods = 'ALT|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
   { key = 's', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
   { key = 'p', mods = 'ALT|SHIFT', action = act.PaneSelect { alphabet = "1234567890" } },
   { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
   { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
-  { key = "x", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = true } },
-  { key = "q", mods = "ALT|SHIFT", action = act.CloseCurrentTab { confirm = true } },
-  { key = 'h', mods = 'ALT|SHIFT', action = act.ActivateTabRelative(-1) },
-  { key = 'l', mods = 'ALT|SHIFT', action = act.ActivateTabRelative(1) },
-  { key = 't', mods = 'ALT|SHIFT', action = act.SpawnTab 'CurrentPaneDomain' },
+  { key = "q", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = true } },
+  { key = 'h', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Left' },
+  { key = 'l', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Right' },
+  { key = 'k', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Up' },
+  { key = 'j', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Down' },
+
+  -- Tab management
+  { key = 'h', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(-1) },
+  { key = 'l', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(1) },
+  { key = 't', mods = 'CTRL|SHIFT', action = act.SpawnTab 'CurrentPaneDomain' },
+  { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },
 
   -- General mappings
-  { key = ' ', mods = 'CTRL|SHIFT', action = act.QuickSelect },
+  { key = ':', mods = 'CTRL|SHIFT', action = act.QuickSelect },
   { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
   { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
   { key = "Insert", mods = "CTRL|SHIFT", action = act.PasteFrom "PrimarySelection" },
@@ -27,6 +33,7 @@ M.keys = {
   { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },
   { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
   { key = 'r', mods = 'CTRL|SHIFT', action = act.ReloadConfiguration },
+  { key = '~', mods = 'CTRL|SHIFT', action = act.ClearScrollback 'ScrollbackOnly' },
 
   -- Keymaps for activating key tables
   {
@@ -44,7 +51,7 @@ M.keys = {
     mods = 'LEADER',
     action = act.ActivateKeyTable {
       name = 'activate_pane',
-      ne_shot = false,
+      one_shot = false,
       timeout_milliseconds = 1500,
       replace_current = false,
     },
@@ -73,25 +80,25 @@ M.keys = {
 
 M.key_tables = {
   resize_pane = {
-    { key = "LeftArrow", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "h", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "RightArrow", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "l", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "UpArrow", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "k", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "DownArrow", action = act.AdjustPaneSize { "Down", 1 } },
-    { key = "j", action = act.AdjustPaneSize { "Down", 1 } },
     { key = "Escape", action = "PopKeyTable" },
+    { key = "LeftArrow", action = act.AdjustPaneSize { "Left", 1 } },
+    { key = "RightArrow", action = act.AdjustPaneSize { "Right", 1 } },
+    { key = "DownArrow", action = act.AdjustPaneSize { "Down", 1 } },
+    { key = "UpArrow", action = act.AdjustPaneSize { "Up", 1 } },
+    { key = "h", action = act.AdjustPaneSize { "Left", 1 } },
+    { key = "l", action = act.AdjustPaneSize { "Right", 1 } },
+    { key = "k", action = act.AdjustPaneSize { "Up", 1 } },
+    { key = "j", action = act.AdjustPaneSize { "Down", 1 } },
   },
 
   activate_pane = {
     { key = 'LeftArrow', action = act.ActivatePaneDirection 'Left' },
-    { key = 'h', action = act.ActivatePaneDirection 'Left' },
     { key = 'RightArrow', action = act.ActivatePaneDirection 'Right' },
-    { key = 'l', action = act.ActivatePaneDirection 'Right' },
     { key = 'UpArrow', action = act.ActivatePaneDirection 'Up' },
-    { key = 'k', action = act.ActivatePaneDirection 'Up' },
     { key = 'DownArrow', action = act.ActivatePaneDirection 'Down' },
+    { key = 'h', action = act.ActivatePaneDirection 'Left' },
+    { key = 'l', action = act.ActivatePaneDirection 'Right' },
+    { key = 'k', action = act.ActivatePaneDirection 'Up' },
     { key = 'j', action = act.ActivatePaneDirection 'Down' },
   },
 
