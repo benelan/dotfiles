@@ -98,7 +98,7 @@ local function lsp_keymaps(client, bufnr)
   if client.server_capabilities.codeLensProvider then
     buf_keymap(bufnr, "n", "gL",
       -- "<cmd>lua vim.lsp.buf.codelens.run()<CR>",
-      "<cmd>lua require('user.setups.lsp.codelens').run()<CR>",
+      "<cmd>lua require('user.lsp.codelens').run()<CR>",
       vim.list_extend({ desc = "LSP codelens" }, opts))
   end
   if client.server_capabilities.renameProvider then

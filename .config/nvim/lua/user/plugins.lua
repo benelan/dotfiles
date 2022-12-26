@@ -222,17 +222,17 @@ return packer.startup(function(use)
   use { -- inlay hints
     "simrat39/inlay-hints.nvim",
     event = "BufWinEnter",
-    config = function() require "user.setups.lsp.inlays" end
+    config = function() require "user.lsp.inlays" end
   }
   use {
     "RRethy/vim-illuminate", -- highlights hovered code blocks
     event = "BufWinEnter",
-    config = function() require "user.setups.illuminate" end
+    config = function() require "user.lsp.illuminate" end
   }
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
     event = "BufWinEnter",
-    config = function() require "user.setups.goto-preview" end
+    config = function() require "user.lsp.goto-preview" end
   }
 
   -----------------------------------------------------------------------------
