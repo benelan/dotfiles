@@ -106,6 +106,11 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.scrollbar" end
   }
+  use {
+    "norcalli/nvim-colorizer.lua",
+    event = "BufWinEnter",
+    config = function() require("colorizer").setup() end
+  }
 
   -----------------------------------------------------------------------------
   -- Utils

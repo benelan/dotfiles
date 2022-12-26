@@ -33,7 +33,7 @@
     "commit": "1809552"
   },
   "diffview.nvim": {
-    "commit": "aeca096"
+    "commit": "3812e29"
   },
   "friendly-snippets": {
     "commit": "1a6a023"
@@ -60,7 +60,7 @@
     "commit": "006b089"
   },
   "lualine.nvim": {
-    "commit": "bfa0d99"
+    "commit": "fffbcb8"
   },
   "markdown-preview.nvim": {
     "commit": "02cc387"
@@ -78,10 +78,13 @@
     "commit": "b5994e6"
   },
   "nvim-cmp": {
-    "commit": "8bbaeda"
+    "commit": "d09b0c3"
+  },
+  "nvim-colorizer.lua": {
+    "commit": "36c610a"
   },
   "nvim-dap": {
-    "commit": "284c754"
+    "commit": "6f2ea9e"
   },
   "nvim-dap-ui": {
     "commit": "54365d2"
@@ -111,7 +114,7 @@
     "commit": "32d9627"
   },
   "nvim-ufo": {
-    "commit": "de59945"
+    "commit": "ab1cab9"
   },
   "nvim-web-devicons": {
     "commit": "05e1072"
@@ -126,7 +129,7 @@
     "commit": "4b7e520"
   },
   "promise-async": {
-    "commit": "70b0906"
+    "commit": "25ac2dd"
   },
   "quick-scope": {
     "commit": "428e869"
@@ -138,7 +141,7 @@
     "commit": "fab3e22"
   },
   "telescope-project.nvim": {
-    "commit": "ff4d3ce"
+    "commit": "8e8ee37"
   },
   "telescope.nvim": {
     "commit": "cabf991"
