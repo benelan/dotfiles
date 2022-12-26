@@ -67,20 +67,32 @@ return packer.startup(function(use)
     "kyazdani42/nvim-web-devicons", -- icons used by many plugins
   }
   use {
+    "unblevable/quick-scope", -- highlight unique letters in words
+  }
+  use {
+    "sainnhe/gruvbox-material", -- gruvbox colorscheme
+    lock = true
+  }
+  use {
     "kyazdani42/nvim-tree.lua", -- tree-like file explorer
+    event = "BufWinEnter",
+    config = function() require "user.setups.nvim-tree" end,
     tag = "nightly"
   }
   use {
     "akinsho/bufferline.nvim", -- good lookin' bufferline
+    event = "BufWinEnter",
+    config = function() require "user.setups.bufferline" end
   }
   use {
     "nvim-lualine/lualine.nvim", -- extensible statusline
+    event = "BufWinEnter",
+    config = function() require "user.setups.lualine" end
   }
   use {
     "akinsho/toggleterm.nvim", -- opens an integrated terminal
-  }
-  use {
-    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
+    event = "BufWinEnter",
+    config = function() require "user.setups.toggleterm" end
   }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
@@ -88,33 +100,31 @@ return packer.startup(function(use)
     setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
     ft = { "markdown" },
   }
-  use {
-    "unblevable/quick-scope", -- highlight unique letters in words
-  }
-  use {
-    "sainnhe/gruvbox-material", -- gruvbox colorscheme
-    lock = true
-  }
-
-
 
   -----------------------------------------------------------------------------
   -- Utils
   -----------------------------------------------------------------------------
   use {
     "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+    event = "BufWinEnter",
+    config = function() require "user.setups.autopairs" end
   }
   use {
     "numToStr/Comment.nvim", -- smart comments
+    event = "BufWinEnter",
+    config = function() require "user.setups.comment" end
   }
   -- use {
   -- "ahmedkhalf/project.nvim",
   -- }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    event = "BufWinEnter",
+    config = function() require "user.setups.indentline" end
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
+    event = "BufWinEnter",
     tag = "*",
     config = function()
       require("nvim-surround").setup({
@@ -126,10 +136,14 @@ return packer.startup(function(use)
   }
   use {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
+    event = "BufWinEnter",
+    config = function() require "user.setups.which-key" end
   }
   use {
     "kevinhwang91/nvim-ufo", -- better code folds
     requires = "kevinhwang91/promise-async",
+    event = "BufWinEnter",
+    config = function() require "user.setups.ufo" end
   }
 
   -----------------------------------------------------------------------------
@@ -167,9 +181,9 @@ return packer.startup(function(use)
   use {
     "L3MON4D3/LuaSnip", -- snippet engine
     tag = "v<CurrentMajor>.*",
-  }
-  use {
-    "rafamadriz/friendly-snippets", -- a bunch of snippets to use
+    requires = {
+      "rafamadriz/friendly-snippets", -- a bunch of snippets to use
+    }
   }
 
   -----------------------------------------------------------------------------
@@ -177,7 +191,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    tag = "*"
+    tag = "*",
   }
   use {
     "williamboman/mason.nvim", -- language server installer/manager
@@ -189,13 +203,19 @@ return packer.startup(function(use)
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
   }
   use { -- inlay hints
-    "simrat39/inlay-hints.nvim"
+    "simrat39/inlay-hints.nvim",
+    event = "BufWinEnter",
+    config = function() require "user.setups.lsp.inlays" end
   }
   use {
     "RRethy/vim-illuminate", -- highlights hovered code blocks
+    event = "BufWinEnter",
+    config = function() require "user.setups.illuminate" end
   }
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
+    event = "BufWinEnter",
+    config = function() require "user.setups.goto-preview" end
   }
 
   -----------------------------------------------------------------------------
@@ -203,6 +223,8 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-telescope/telescope.nvim", -- fuzzy search tool
+    event = "BufWinEnter",
+    config = function() require "user.setups.telescope" end,
     requires = {
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
@@ -225,14 +247,14 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-treesitter/nvim-treesitter", -- no explanation needed 🏆
+    event = "BufWinEnter",
+    config = function() require "user.setups.treesitter" end,
     requires = {
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-        after = "nvim-treesitter",
       },
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        after = "nvim-treesitter",
       }
     }
   }
@@ -242,25 +264,37 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
+    event = "BufWinEnter",
+    config = function() require "user.setups.gitsigns" end
   }
   use {
     "sindrets/diffview.nvim", -- diff and history viewer
+    event = "BufWinEnter",
+    config = function() require "user.setups.diffview" end
   }
   use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
+    event = "BufWinEnter",
+    config = function() require "user.setups.octo" end
   }
   use {
     "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line
     requires = "nvim-lua/plenary.nvim",
     config = function() require("gitlinker").setup() end,
   }
-
+  use {
+    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
+    event = "BufWinEnter",
+    config = function() require "user.setups.scrollbar" end
+  }
 
   -----------------------------------------------------------------------------
   -- Debugger Adapter
   -----------------------------------------------------------------------------
   use {
     "mfussenegger/nvim-dap",
+    event = "BufWinEnter",
+    config = function() require "user.setups.dap" end,
     requires = {
       {
         "theHamsta/nvim-dap-virtual-text",
