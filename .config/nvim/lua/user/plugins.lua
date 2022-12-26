@@ -151,6 +151,11 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.ufo" end
   }
+  use {
+    "AndrewRadev/splitjoin.vim",
+    event = "BufWinEnter",
+    keys = { "gJ", "gS" },
+  }
 
   -----------------------------------------------------------------------------
   -- Completions

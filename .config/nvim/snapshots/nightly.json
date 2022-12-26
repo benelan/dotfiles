@@ -1,6 +1,6 @@
 {
   "Comment.nvim": {
-    "commit": "5f01c1a"
+    "commit": "45dc21a"
   },
   "LuaSnip": {
     "commit": "8b25e74"
@@ -69,7 +69,7 @@
     "commit": "5bea0e8"
   },
   "mason.nvim": {
-    "commit": "3ccd16b"
+    "commit": "b2b6e4d"
   },
   "null-ls.nvim": {
     "commit": "db1c7cb"
@@ -105,7 +105,7 @@
     "commit": "6e37050e"
   },
   "nvim-treesitter-textobjects": {
-    "commit": "e2ee8fd"
+    "commit": "83a494a"
   },
   "nvim-ts-context-commentstring": {
     "commit": "32d9627"
@@ -130,6 +130,9 @@
   },
   "quick-scope": {
     "commit": "428e869"
+  },
+  "splitjoin.vim": {
+    "commit": "956d67c"
   },
   "telescope-fzf-native.nvim": {
     "commit": "fab3e22"
