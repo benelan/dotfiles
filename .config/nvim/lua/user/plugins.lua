@@ -54,7 +54,7 @@ return packer.startup(function(use)
   }
   use {
     "lewis6991/impatient.nvim", -- improves performance
-    config = function() require("impatient") end -- load ASAP
+    config = function() require "impatient" end -- load ASAP
   }
 
   -----------------------------------------------------------------------------
@@ -62,6 +62,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "goolord/alpha-nvim", -- startup page/dashboard
+    config = function() require "user.setups.alpha" end,
   }
   use {
     "kyazdani42/nvim-web-devicons", -- icons used by many plugins
@@ -99,6 +100,11 @@ return packer.startup(function(use)
     run = "cd app && npm install",
     setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
     ft = { "markdown" },
+  }
+  use {
+    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
+    event = "BufWinEnter",
+    config = function() require "user.setups.scrollbar" end
   }
 
   -----------------------------------------------------------------------------
@@ -151,6 +157,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "hrsh7th/nvim-cmp", -- completion engine
+    config = function() require "user.setups.cmp" end,
     requires = {
       {
         "hrsh7th/cmp-buffer", -- buffer completions
@@ -281,11 +288,6 @@ return packer.startup(function(use)
     "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line
     requires = "nvim-lua/plenary.nvim",
     config = function() require("gitlinker").setup() end,
-  }
-  use {
-    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
-    event = "BufWinEnter",
-    config = function() require "user.setups.scrollbar" end
   }
 
   -----------------------------------------------------------------------------

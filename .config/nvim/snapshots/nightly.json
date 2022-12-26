@@ -38,6 +38,9 @@
   "friendly-snippets": {
     "commit": "1a6a023"
   },
+  "gitlinker.nvim": {
+    "commit": "c68d487"
+  },
   "gitsigns.nvim": {
     "commit": "2ab3bdf"
   },
@@ -52,6 +55,9 @@
   },
   "indent-blankline.nvim": {
     "commit": "c4c203c"
+  },
+  "inlay-hints.nvim": {
+    "commit": "006b089"
   },
   "lualine.nvim": {
     "commit": "bfa0d99"
