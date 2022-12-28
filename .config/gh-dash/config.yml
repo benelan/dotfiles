@@ -43,18 +43,33 @@ defaults:
 keybindings:
   prs:
     # Alternatives to spawning a new wezterm tab:
-    #   - kitty @ launch --cwd={{.RepoPath}} bash -cl '
+    #   - kitty @ launch --cwd={{.RepoPath}} bash -c '
     #   - cd {{.RepoPath}} && bash -c '
     - key: D
+      # Open the PR's diff in Neovim to review/edit
       command: >
-        wezterm cli spawn --cwd {{.RepoPath}} -- bash -cl '
+        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
         gh pr checkout {{.PrNumber}} &&
         nvim -c ":DiffviewOpen master...{{.HeadRefName}}"'
     - key: O
+      # Open the PR itself in NeoVim to review with Octo
       command: >
-        wezterm cli spawn --cwd {{.RepoPath}} -- bash -cl '
+        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
         gh pr checkout {{.PrNumber}} &&
         nvim -c ":Octo pr edit {{.PrNumber}}"'
+    - key: E
+      # Edit all of the changed files in NeoVim
+      command: >
+        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
+        gh pr checkout {{.PrNumber}} && nvim $(
+          git diff --name-only {{.HeadRefName}} "$(
+            git merge-base "$(
+              basename "$(
+                git rev-parse --abbrev-ref origin/HEAD
+              )"
+            )" {{.HeadRefName}}
+          )"
+        )'
 repoPaths:
   Esri/calcite-components: ~/dev/calcite/calcite-components
   # *: ~/dev/* # consider putting all repos in a single directory
