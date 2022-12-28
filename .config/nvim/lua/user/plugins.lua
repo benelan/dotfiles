@@ -286,12 +286,10 @@ return packer.startup(function(use)
   }
   use {
     "sindrets/diffview.nvim", -- diff and history viewer
-    event = "BufWinEnter",
     config = function() require "user.setups.diffview" end
   }
   use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
-    event = "BufWinEnter",
     config = function() require "user.setups.octo" end
   }
   use {

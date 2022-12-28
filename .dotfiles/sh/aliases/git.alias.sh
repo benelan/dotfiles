@@ -1,6 +1,9 @@
 #!/bin/sh
 # shellcheck disable=2139
 
+# Git
+# -----------------------------------------------------------------------------
+
 alias g='git'
 
 # gets the default git branch
@@ -391,3 +394,11 @@ alias dunhide='dot update-index --no-assume-unchanged'
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dlz="lazydot"
 alias dfz="dot fuzzy"
+
+
+# GitHub
+# -----------------------------------------------------------------------------
+
+# https://cli.github.com/
+# https://github.com/dlvhdr/gh-dash
+alias ghd="gh dash"
