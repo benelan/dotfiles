@@ -2,33 +2,25 @@ local status_ok, inlay_hints = pcall(require, "inlay-hints")
 if not status_ok then return end
 
 inlay_hints.setup({
-  -- only_current_line = true,
+  -- renderer options are: dynamic, eol, virtline and custom
+  renderer = "inlay-hints/render/eol",
+  only_current_line = true,
   hints = {
-    parameter = {
-      show = true,
-      highlight = "whitespace",
-    },
-    type = {
-      show = true,
-      highlight = "Whitespace",
-    },
+    parameter = { highlight = "Whitespace" },
+    type = { highlight = "Whitespace" },
   },
   eol = {
-    right_align = false
-  },
-  parameter = {
-    separator = ", ",
-    format = function(hints)
-      return string.format(" <- (%s)", hints)
-    end,
-  },
-
-  type = {
-    separator = ", ",
-    format = function(hints)
-      return string.format(" => %s", hints)
-    end,
-  },
+    parameter = {
+      format = function(hints)
+        return string.format(" <- (%s)", hints):gsub(":", "")
+      end,
+    },
+    type = {
+      format = function(hints)
+        return string.format(" => (%s)", hints):gsub(":", "")
+      end,
+    },
+  }
 })
 
 local augroup_inlay_hints = vim.api.nvim_create_augroup("my-lsp-inlay-hints", { clear = true })
