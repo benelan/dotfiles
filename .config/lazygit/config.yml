@@ -1,6 +1,20 @@
 gui:
+  scrollHeight: 2
+  scrollPastBottom: true
+  mouseEvents: true
+  expandFocusedSidePanel: false
+  skipUnstageLineWarning: false
+  skipStashWarning: false
   showBottomLine: false
   showIcons: true
+  skipNoStagedFilesWarning: false
+  showListFooter: true
+  showFileTree: true
+  showRandomTip: true
+  showCommandLog: true
+  sidePanelWidth: 0.3333
+  mainPanelSplitMode: flexible
+  splitDiff: auto
   theme:
     activeBorderColor:
       - "#98971a"
@@ -29,12 +43,29 @@ gui:
     "benelan": "#d65d0e"
   authorColors:
     "Ben Elan": "#d65d0e"
+  commitLength:
+    show: true
+
 git:
   disableForcePushing: true
   paging:
     colorArg: always
-    pager: delta -s --dark --paging=never 
+    pager: delta -s --paging=never --true-color=never --no-gitconfig --syntax-theme=zenburn
+  autoFetch: true
+  autoRefresh: true
+  log:
+    order: topo-order
+    showGraph: when-maximised
+    showWholeGraph: false
+  update:
+    method: prompt
+    days: 14
 reporting: "off"
+refresher:
+  refreshInterval: 10
+  fetchInterval: 60
 os:
   editCommand: "nvim"
   editCommandTemplate: "{{editor}} +{{line}} -- {{filename}}"
+  openCommand: open {{filename}}
+  openLinkCommand: open {{link}}
