@@ -168,6 +168,9 @@ alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)"
 
 # reset
 ########
+alias gr='git reset'
+alias grs='git reset HEAD --soft'
+alias grH='git reset --hard'
 alias gus='git reset HEAD'
 alias gpristine='git reset --hard && git clean -dfx'
 
