@@ -9,13 +9,17 @@ nvim_tree.setup {
   hijack_cursor = true,
   filters = {
     dotfiles = false,
-    custom = { "node_modules", ".cache", "build", "dist" },
+    -- custom = { "node_modules", ".cache", "build", "dist" },
   },
   update_focused_file = {
     enable = true,
-    update_root = true,
+  },
+  git = {
+    ignore = false
   },
   renderer = {
+    add_trailing = true,
+    group_empty = true,
     root_folder_label = function(path)
       return "../" .. vim.fn.fnamemodify(path, ":t")
     end,
@@ -64,69 +68,18 @@ nvim_tree.setup {
     },
   },
   view = {
-    side = "right",
-    number = true,
-    relativenumber = true,
     mappings = {
       list = {
-        { key = { "<CR>", "l" }, cb = tree_cb "edit_in_place" },
         { key = { "o" }, cb = tree_cb "edit" },
         { key = "h", cb = tree_cb "close_node" },
-        -- override the "split" to avoid treating nvim-tree
-        -- window as special. Splits will appear as if nvim-tree was a
-        -- regular window
-        {
-          key = "<C-v>",
-          action = "split_right",
-          action_cb = function(node)
-            vim.cmd("vsplit " .. vim.fn.fnameescape(node.absolute_path))
-          end
-        }, {
-          key = "<C-s>",
-          action = "split_bottom",
-          action_cb = function(node)
-            vim.cmd("split " .. vim.fn.fnameescape(node.absolute_path))
-          end
-        },
-        -- override the "open in new tab" mapping to fix the error
-        -- that occurs there
-        {
-          key = "<C-t>",
-          action = "new_tab",
-          action_cb = function(node)
-            vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
-          end
-        }
       },
     },
   },
 }
 
-local view_status_ok, nvim_tree_view = pcall(require, "nvim-tree.view")
-if not view_status_ok then
-  return
-end
-
--- disable fixed nvim-tree width and height
--- to allow creating splits naturally
-nvim_tree_view.View.winopts.winfixwidth = false
-nvim_tree_view.View.winopts.winfixheight = false
-
 local utils_status_ok, u = pcall(require, "user.utils")
 if not utils_status_ok then return end
 
 -- keymaps to open NvimTree
-u.keymap("n", "<leader><S-e>", ":NvimTreeToggle<CR>",
-  "NvimTree toggle")
-
-u.keymap("n", "<leader>e",
-  function()
-    if nvim_tree_view.is_visible() then
-      nvim_tree_view.close()
-    else
-      -- local previous_buf = vim.api.nvim_get_current_buf()
-      nvim_tree.open_replacing_current_buffer()
-      -- nvim_tree.find_file(false, previous_buf)
-    end
-  end,
-  "NvimTree in place")
+u.keymap("n", "<leader>e", ":NvimTreeToggle<CR>",
+  "File explorer")

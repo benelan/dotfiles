@@ -117,7 +117,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-    event = "BufWinEnter",
+    event = "InsertEnter",
     config = function() require "user.setups.autopairs" end
   }
   use {
@@ -135,7 +135,7 @@ return packer.startup(function(use)
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
-    event = "BufWinEnter",
+    event = "InsertEnter",
     tag = "*",
     config = function()
       require("nvim-surround").setup({
@@ -240,7 +240,6 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-telescope/telescope.nvim", -- fuzzy search tool
-    event = "BufWinEnter",
     config = function() require "user.setups.telescope" end,
     requires = {
       {
@@ -269,9 +268,11 @@ return packer.startup(function(use)
     requires = {
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+        after = "nvim-treesitter"
       },
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        after = "nvim-treesitter"
       }
     }
   }
@@ -281,6 +282,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
+    module = "gitsigns",
     event = "BufWinEnter",
     config = function() require "user.setups.gitsigns" end
   }

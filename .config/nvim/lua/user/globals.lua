@@ -44,15 +44,8 @@ end
 
 -- markdown fenced code syntax highlighting
 vim.g.markdown_fenced_languages = {
-  'css', 'scss', 'sass', 'html', 'xml', 'json',
+  'css', 'scss', 'sass',
+  'html', 'xml', 'json',
   'ts=typescript', 'tsx=typescriptreact',
   'js=javascript', 'jsx=javascriptreact'
 }
-
--- theme options
-vim.g.gruvbox_material_background = "medium"
-vim.g.gruvbox_material_foreground = "material"
-vim.g.gruvbox_material_enable_italic = true
-vim.g.gruvbox_material_ui_contrast = false
-local colorscheme = "gruvbox-material"
-vim.cmd("colorscheme " .. colorscheme)

@@ -41,9 +41,9 @@ local diagnostics = {
   "diagnostics",
   sources = { "nvim_diagnostic" },
   sections = { "error", "warn", "info" },
-  symbols = { error = " ", warn = " ", info = " " },
+  symbols = { error = " ", warn = " ", info = " " },
   colored = true,
-  always_visible = true,
+  -- always_visible = true,
 }
 
 local diff = {
@@ -71,7 +71,7 @@ local fileformat = {
 
 lualine.setup {
   options = {
-    globalstatus = true,
+    globalstatus = false,
     icons_enabled = true,
     theme = "auto",
     component_separators = { left = "", right = "" },
