@@ -96,10 +96,10 @@ behind = "[⇣$count](yellow-light)"
 staged = "[+$count](green)"
 deleted = "[X$count](red)"
 untracked = "[?$count](yellow)"
-modified = "[!$count](orange)"
+modified = "[*$count](orange)"
 stashed = "[\\$$count](purple)"
 renamed = "[»$count](purple-light)"
-conflicted = "[=$count](red-light)"
+conflicted = "[!$count](red-light)"
 
 [package]
 format = "[is](fg) [$symbol$version]($style) "

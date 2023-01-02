@@ -10,7 +10,7 @@ return {
     'JetBrains Mono Nerd Font',
     'monspace'
   },
-  font_size = 13,
+  font_size = 11,
   color_scheme = "Gruvbox dark, medium (base16)",
   colors = {
     tab_bar = {
