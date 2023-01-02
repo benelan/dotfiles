@@ -69,3 +69,7 @@ unset -v MAILCHECK
 VOLTA_HOME=~/.volta
 BAT_THEME="gruvbox-dark"
 export VOLTA_HOME BAT_THEME
+
+NNN_FCOLORS="0404040000000600010F0F02"
+NNN_PLUG='f:finder;o:fzopen;d:diffs;z:autojump'
+export NNN_PLUG NNN_FCOLORS

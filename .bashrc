@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=1090
 
 # Make sure the shell is interactive
 case $- in
@@ -14,7 +15,7 @@ esac
 #-----------------------------#
 # SHELL - ALIASES             #
 #-----------------------------#
-for file in ~/.dotfiles/sh/aliases/*; do
+for file in ~/.dotfiles/shell/aliases/*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
@@ -25,7 +26,7 @@ unset file
 #-----------------------------#
 # BASH - FUNCTIONS/PROMPT     #
 #-----------------------------#
-for file in ~/.dotfiles/bash/{functions,options,prompt}.bash; do
+for file in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
@@ -33,7 +34,7 @@ unset file
 #-----------------------------#
 # BASH - PLUGINS              #
 #-----------------------------#
-for file in ~/.dotfiles/bash/plugins/*; do
+for file in ~/.dotfiles/shell/plugins/*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 
@@ -51,6 +52,6 @@ unset cargo
 
 # completions go last because some require
 # their tools/plugins to have already loaded
-for file in ~/.dotfiles/bash/completions/*; do
+for file in ~/.dotfiles/shell/completions/*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
