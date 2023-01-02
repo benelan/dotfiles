@@ -16,6 +16,15 @@ alias ga='git add'
 alias gall='git add --all'
 alias gap='git add --patch'
 
+
+# bisect
+#########
+alias gbi="git bisect"
+alias gbis="git bisect start"
+alias gbig="git bisect good"
+alias gbib="git bisect bad"
+alias gbir="git bisect reset"
+
 # branch
 #########
 alias gb='git branch'
