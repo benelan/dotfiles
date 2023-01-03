@@ -71,7 +71,7 @@ keybindings:
           )"
         )'
 repoPaths:
-  Esri/calcite-components: ~/dev/calcite/calcite-components
+  Esri/*: ~/dev/work/*
+  ArcGIS/*: ~/dev/work/*
+  benelan/*: ~/dev/personal/*
   # *: ~/dev/* # consider putting all repos in a single directory
-pager:
-  diff: "delta"
