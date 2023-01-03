@@ -396,6 +396,10 @@ alias ds='dot status'
 # set default to short in .gitconfig
 alias dsl='dot status --long'
 
+# submodules
+#############
+alias dsu='dot submodule update --init --recursive'
+
 # update-index
 ##############
 alias dhide='dot update-index --assume-unchanged'
@@ -406,7 +410,6 @@ alias dunhide='dot update-index --no-assume-unchanged'
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dlz="lazydot"
 alias dfz="dot fuzzy"
-
 
 # GitHub
 # -----------------------------------------------------------------------------
