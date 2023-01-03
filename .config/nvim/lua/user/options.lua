@@ -66,7 +66,7 @@ vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:,foldclose:,diff: ]]
 -- change invisible characters
 vim.opt.listchars = [[tab:▸ ,extends:»,precedes:«,trail:·,nbsp:_,eol:↴]]
 -- set fonts with fallbacks for GUI
-vim.opt.guifont = "Iosevka:h13,JetBrainsMono_Nerd_Font:h11,SauceCodePro_Nerd_Font:h12,monospace:h12"
+vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,monospace:h11"
 -- set term gui colors (most terminals support this)
 if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
