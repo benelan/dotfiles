@@ -6,7 +6,7 @@
 # so everything is tracked and under version control.
 # I used symlinks for a while but they are too messy.
 # There are `dot` aliases to manage the bare repo in
-# ~/.dotfiles/sh/aliases/git.alias.sh
+# ~/.dotfiles/shell/aliases/git.alias.sh
 
 [ -d ~/.git ] &&
     echo "✖ The home directory is already under version control.

@@ -282,8 +282,7 @@ alias dap='dot add --patch'
 # track new files in commonly added locations
 alias danvim="dot add ${HOME}/.config/nvim/*"
 alias dadots="dot add ${HOME}/.dotfiles/*"
-alias dash="dot add ${HOME}/.dotfiles/sh/*"
-alias dabash="dot add ${HOME}/.dotfiles/bash/*"
+alias dash="dot add ${HOME}/.dotfiles/shell/*"
 alias dascripts="dot add ${HOME}/.dotfiles/scripts/*"
 alias dabin="dot add ${HOME}/.dotfiles/bin/*"
 

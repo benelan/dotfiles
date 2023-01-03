@@ -82,7 +82,7 @@
     # (see https://dystroy.org/broot/icons for installation and
     # troubleshooting)
     #
-    icon_theme: vscode
+    # icon_theme: vscode
 
     ###############################################################
     # Special paths

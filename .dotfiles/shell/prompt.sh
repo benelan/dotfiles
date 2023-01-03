@@ -13,7 +13,7 @@ if [[ "$(type -P starship)" ]]; then
     eval "$(starship init bash)"
 else
     # shellcheck disable=1090
-    source ~/.dotfiles/bash/lib/git-prompt.bash
+    source ~/.dotfiles/shell/lib/git-prompt.bash
 
     if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
         export TERM='gnome-256color'

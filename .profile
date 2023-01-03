@@ -3,9 +3,9 @@
 #-----------------------------#
 # SHELL - PATHS               #
 #-----------------------------#
-[ -r ~/.dotfiles/sh/paths.sh ] && [ -f ~/.dotfiles/sh/paths.sh ] && . ~/.dotfiles/sh/paths.sh
+[ -r ~/.dotfiles/shell/paths.sh ] && [ -f ~/.dotfiles/shell/paths.sh ] && . ~/.dotfiles/shell/paths.sh
 
 #-----------------------------#
 # SHELL - EXPORTS             #
 #-----------------------------#
-[ -r ~/.dotfiles/sh/exports.sh ] && [ -f ~/.dotfiles/sh/exports.sh ] && . ~/.dotfiles/sh/exports.sh
+[ -r ~/.dotfiles/shell/exports.sh ] && [ -f ~/.dotfiles/shell/exports.sh ] && . ~/.dotfiles/shell/exports.sh
