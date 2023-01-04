@@ -1,0 +1,10 @@
+build-sizes
+eslint
+markdownlint
+markdownlint-cli
+neovim
+pm2
+prettier
+stylelint
+ts-node
+typescript

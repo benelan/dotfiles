@@ -82,7 +82,7 @@ printf "\n➜ Making scripts and bins executable\n"
 
 # Install vendors
 printf "\n➜ Installing git submodules\n\n"
-dot submodule update --init --recursive
+dot submodule update --init .dotfiles/vendor/fzf .dotfiles/vendor/git-fuzzy
 
 # fzf install script
 [ ! "$(command -v fzf)" ] &&

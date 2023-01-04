@@ -49,14 +49,18 @@ pathappend() {
 }
 
 for dir in ~/.dotfiles/vendor/{fzf,git-fuzzy}/bin; do
-    pathappend "$dir"
+    [ -d "$dir" ] && pathappend "$dir"
 done
 
 for dir in ~/{.dotfiles,.local,.cargo,.volta,go}/bin; do
-    pathappend "$dir"
+    [ -d "$dir" ] && pathappend "$dir"
 done
 
-pathprepend "$HOME/.local/share/nvim/mason/bin"
+[ -d "$HOME/.local/share/nvim/mason/bin" ] &&
+    pathprepend "$HOME/.local/share/nvim/mason/bin"
+[ -d "/usr/local/go/bin" ] &&
+    pathappend "/usr/local/go/bin"
+
 pathappend "/snap/bin"
 pathappend "/usr/local/games"
 pathappend "/usr/local/sbin"
