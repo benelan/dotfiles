@@ -33,13 +33,13 @@ end, {
 
 -- neovide options
 if vim.fn.exists("g:neovide") == 1 then
-  vim.g.neovide_hide_mouse_when_typing = true
-  vim.g.neovide_scroll_animation_length = 0.1
   vim.g.neovide_confirm_quit = false
-  vim.g.neovide_cursor_animation_length = 0.05
-  vim.g.neovide_cursor_trail_size = 0.05
-  -- the font name is different in WSL for some reason
-  if vim.fn.has("wsl") then vim.opt.guifont = "SauceCodePro_NF:h10" end
+  vim.g.neovide_cursor_antialiasing = false
+  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_transparency = 0.98
+  vim.g.neovide_scroll_animation_length = 0
+  vim.g.neovide_cursor_animation_length = 0
+  vim.g.neovide_cursor_trail_size = 0
 end
 
 -- markdown fenced code syntax highlighting
