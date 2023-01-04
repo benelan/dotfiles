@@ -4,6 +4,8 @@ return {
   -- Using wezterm term requires additional setup
   -- https://wezfurlong.org/wezterm/config/lua/config/term
   term = "wezterm", -- xterm-256color
+  default_cwd = "~",
+  -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
     'Iosevka Nerd Font',
     'SauceCodePro Nerd Font',
@@ -27,16 +29,15 @@ return {
   enable_kitty_graphics = true,
   warn_about_missing_glyphs = false,
   hide_tab_bar_if_only_one_tab = true,
-  tab_and_split_indices_are_zero_based = true,
   adjust_window_size_when_changing_font_size = false,
-  window_close_confirmation = "AlwaysPrompt",
+  window_close_confirmation = "NeverPrompt", -- AlwaysPrompt
   window_decorations = "NONE",
-  -- window_background_opacity = 0.95,
+  window_background_opacity = 0.95,
   window_padding = {
-    left = 7,
-    right = 7,
-    top = 3,
-    bottom = 3,
+    left = 5,
+    right = 5,
+    top = 1,
+    bottom = 1,
   },
   inactive_pane_hsb = {
     saturation = 0.7,
