@@ -3,22 +3,21 @@ local utils = require("utils")
 local lume = require("utils.lume")
 local M = {}
 
+-- https://wezfurlong.org/wezterm/config/lua/wezterm/format
+M.cells = {}
 M.separator_char = "   "
-
 M.colors = {
   date_fg = utils.colors.brights[5],
-  date_bg = utils.colors.ansi[1],
+  date_bg = utils.colors.background,
   battery_charging_fg = utils.colors.brights[7],
   battery_discharging_fg = utils.colors.brights[4],
   battery_discharging_empty_fg = utils.colors.brights[2],
-  battery_bg = utils.colors.ansi[1],
+  battery_bg = utils.colors.background,
   key_table_fg = utils.colors.brights[6],
-  key_table_bg = utils.colors.ansi[1],
+  key_table_bg = utils.colors.background,
   separator_fg = utils.colors.brights[1],
-  separator_bg = utils.colors.ansi[1],
+  separator_bg = utils.colors.background,
 }
--- https://wezfurlong.org/wezterm/config/lua/wezterm/format
-M.cells = {}
 
 ---@param text string
 ---@param icon string

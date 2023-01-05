@@ -27,8 +27,8 @@ return {
       },
       inactive_tab_edge = utils.colors.ansi[8],
       inactive_tab_hover = {
-        bg_color = utils.colors.background,
-        fg_color = utils.colors.foreground,
+        bg_color = utils.colors.brights[1],
+        fg_color = utils.colors.background,
       },
       new_tab_hover = {
         fg_color = utils.colors.foreground,
