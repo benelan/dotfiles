@@ -5,7 +5,7 @@ My personal setup, **don't use the install script unless you're me**. I recommen
 To install the dotfiles in your `$HOME` directory, run:
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.bash)
+bash <(curl -s https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh)
 ```
 
 The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. For more info, I found the idea on a [Hacker News thread](https://news.ycombinator.com/item?id=11071754). A common alternative is managing dotfiles with symlinks, but in my experience that gets messy when making frequent improvements.
@@ -18,11 +18,11 @@ dot commit -m "chore(xyz): add config"
 dot push
 ```
 
-A set of aliases for `git` and `dot` are provided in [`.dotfiles/sh/aliases/git.alias.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/sh/aliases/git.alias.sh).
+A set of aliases for `git` and `dot` are provided in [`.dotfiles/shell/aliases/git.alias.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/shell/aliases/git.alias.sh).
 
 My setup was primarily created for use in Ubuntu/Debian based distros, but it worked in Fedora and should work in other Linux distros and OSX as well. Vanilla Windows won't work, but WSL running Ubuntu does.
 
-If you are on Ubuntu, running [`deps-apt.init.bash`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps-apt.init.bash) will install some useful dependencies that are used throughout the dotfiles. There is also a platform agnostic [`deps.init.bash`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.bash) script, which installs the Go and Cargo tools I commonly use, as well as some other stuff like fonts.
+There is also a [`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) script, which installs a lot of the development tools I commonly use, as well as some other stuff like fonts.
 
 ---
 
