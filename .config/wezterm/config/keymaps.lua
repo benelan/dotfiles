@@ -5,16 +5,20 @@ local act = wezterm.action
 
 M.keys = {
   -- Pane management
-  { key = 'v', mods = 'ALT|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
-  { key = 's', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
-  { key = 'p', mods = 'ALT|SHIFT', action = act.PaneSelect { alphabet = "1234567890" } },
-  { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
-  { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
   { key = "q", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = true } },
   { key = 'h', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Left' },
   { key = 'l', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Right' },
   { key = 'k', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Up' },
   { key = 'j', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Down' },
+  { key = 'p', mods = 'ALT|SHIFT', action = act.PaneSelect { alphabet = "1234567890" } },
+  { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
+  { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
+  -- vim style splits (split/vsplit)
+  { key = 's', mods = 'ALT|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
+  { key = 'v', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
+  -- tmux style splits
+  { key = '-', mods = 'ALT|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
+  { key = '\\', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
 
   -- Tab management
   { key = 'h', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(-1) },
@@ -178,3 +182,4 @@ M.mouse_bindings = {
 }
 
 return M
+
