@@ -1,6 +1,10 @@
--- https://github.com/yutkat/dotfiles/tree/main/.config/wezterm
+local wezterm = require("wezterm")
 local M = {}
 
+M.color_scheme = "GruvboxDark (Gogh)"
+M.colors = wezterm.get_builtin_color_schemes()[M.color_scheme]
+
+-- https://github.com/yutkat/dotfiles/tree/main/.config/wezterm
 function M.basename(s)
   return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end

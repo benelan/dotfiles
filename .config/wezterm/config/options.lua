@@ -1,10 +1,11 @@
 local wezterm = require("wezterm")
+local utils = require("utils")
 
 return {
   -- Using wezterm term requires additional setup
   -- https://wezfurlong.org/wezterm/config/lua/config/term
   term = "wezterm", -- xterm-256color
-  default_cwd = "~",
+  default_cwd = wezterm.home_dir,
   -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
     'Iosevka Nerd Font',
@@ -13,14 +14,27 @@ return {
     'monspace'
   },
   font_size = 11,
-  color_scheme = "Gruvbox dark, medium (base16)",
+  color_scheme = utils.color_scheme,
   colors = {
     tab_bar = {
       active_tab = {
-        bg_color = '#282828',
-        fg_color = '#a89984',
-      }
-    }
+        bg_color = utils.colors.background,
+        fg_color = utils.colors.foreground,
+      },
+      inactive_tab = {
+        fg_color = utils.colors.ansi[8],
+        bg_color = 'transparent',
+      },
+      inactive_tab_edge = utils.colors.ansi[8],
+      inactive_tab_hover = {
+        bg_color = utils.colors.background,
+        fg_color = utils.colors.foreground,
+      },
+      new_tab_hover = {
+        fg_color = utils.colors.foreground,
+        bg_color = utils.colors.background,
+      },
+    },
   },
   audible_bell = 'Disabled',
   animation_fps = 1,
@@ -28,7 +42,7 @@ return {
   enable_wayland = false,
   enable_kitty_graphics = true,
   warn_about_missing_glyphs = false,
-  hide_tab_bar_if_only_one_tab = true,
+  hide_tab_bar_if_only_one_tab = false,
   adjust_window_size_when_changing_font_size = false,
   window_close_confirmation = "NeverPrompt", -- AlwaysPrompt
   window_decorations = "NONE",

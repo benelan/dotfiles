@@ -1,21 +1,21 @@
 local wezterm = require("wezterm")
-local scheme = wezterm.get_builtin_color_schemes()["Gruvbox dark, medium (base16)"]
+local utils = require("utils")
 local lume = require("utils.lume")
 local M = {}
 
 M.separator_char = "   "
 
 M.colors = {
-  date_fg = scheme.brights[5],
-  date_bg = scheme.ansi[1],
-  battery_charging_fg = scheme.brights[7],
-  battery_discharging_fg = scheme.brights[4],
-  battery_discharging_empty_fg = scheme.brights[2],
-  battery_bg = scheme.ansi[1],
-  key_table_fg = scheme.brights[6],
-  key_table_bg = scheme.ansi[1],
-  separator_fg = scheme.brights[1],
-  separator_bg = scheme.ansi[1],
+  date_fg = utils.colors.brights[5],
+  date_bg = utils.colors.ansi[1],
+  battery_charging_fg = utils.colors.brights[7],
+  battery_discharging_fg = utils.colors.brights[4],
+  battery_discharging_empty_fg = utils.colors.brights[2],
+  battery_bg = utils.colors.ansi[1],
+  key_table_fg = utils.colors.brights[6],
+  key_table_bg = utils.colors.ansi[1],
+  separator_fg = utils.colors.brights[1],
+  separator_bg = utils.colors.ansi[1],
 }
 -- https://wezfurlong.org/wezterm/config/lua/wezterm/format
 M.cells = {}
