@@ -13,7 +13,7 @@ return {
     'JetBrains Mono Nerd Font',
     'monspace'
   },
-  font_size = 11,
+  font_size = 12,
   color_scheme = utils.color_scheme,
   colors = {
     cursor_bg = utils.colors.foreground,
@@ -59,8 +59,32 @@ return {
     saturation = 0.7,
     brightness = 0.8,
   },
-  skip_close_confirmation_for_processes_named = { 'bash', 'sh', 'wslhost.exe', 'wsl.exe', 'conhost.exe'},
-  launch_menu = { { args = { 'htop' } } },
+  skip_close_confirmation_for_processes_named = {
+    'bash', 'sh', 'btop', 'lazygit', 'gh',
+    'wslhost.exe', 'wsl.exe', 'conhost.exe'
+  },
+  launch_menu = {
+    { args = { 'btop' } },
+    { args = { 'gh', 'dash' } },
+    { args = { 'lazygit' } },
+    {
+      label = 'edit dotfiles',
+      cwd = wezterm.home_dir,
+      args = {
+        'nvim', '~', '-c', ':Telescope git_files',
+        '--cmd', 'let $GIT_WORK_TREE = expand("~")',
+        '--cmd', 'let $GIT_DIR = expand("~/.git")'
+      }
+    },
+    {
+      label = 'edit CC',
+      cwd = wezterm.home_dir .. '/dev/work/calcite-components',
+      args = {
+        'nvim', '.', '-c', ':Telescope git_files'
+      }
+    },
+
+  },
   leader = { key = ' ', mods = 'ALT|SHIFT', timeout_milliseconds = 1500 },
   hyperlink_rules = {
     -- Linkify things that look like URLs and the host has a TLD name.
