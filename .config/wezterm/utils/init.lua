@@ -1,10 +1,13 @@
+-- https://github.com/yutkat/dotfiles/blob/main/.config/wezterm/utils.lua
 local wezterm = require("wezterm")
 local M = {}
 
 M.color_scheme = "GruvboxDark (Gogh)"
 M.colors = wezterm.get_builtin_color_schemes()[M.color_scheme]
 
--- https://github.com/yutkat/dotfiles/tree/main/.config/wezterm
+-- Equivalent to POSIX basename(3)
+-- Given "/foo/bar" returns "bar"
+-- Given "c:\\foo\\bar" returns "bar"
 function M.basename(s)
   return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end

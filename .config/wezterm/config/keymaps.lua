@@ -31,12 +31,13 @@ M.keys = {
   { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
   { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
   { key = "Insert", mods = "CTRL|SHIFT", action = act.PasteFrom "PrimarySelection" },
-  { key = "=", mods = "CTRL|SHIFT", action = "ResetFontSize" },
+  { key = "Backspace", mods = "CTRL|SHIFT", action = "ResetFontSize" },
   { key = "+", mods = "CTRL|SHIFT", action = "IncreaseFontSize" },
   { key = "-", mods = "CTRL|SHIFT", action = "DecreaseFontSize" },
   { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },
   { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
   { key = 'r', mods = 'CTRL|SHIFT', action = act.ReloadConfiguration },
+  { key = 'd', mods = 'CTRL|SHIFT', action = act.ShowDebugOverlay },
   { key = '~', mods = 'CTRL|SHIFT', action = act.ClearScrollback 'ScrollbackOnly' },
 
   -- Keymaps for activating key tables

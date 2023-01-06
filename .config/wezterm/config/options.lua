@@ -16,9 +16,13 @@ return {
   font_size = 11,
   color_scheme = utils.color_scheme,
   colors = {
+    cursor_bg = utils.colors.foreground,
+    cursor_fg = utils.colors.background,
+    cursor_border = utils.colors.foreground,
     compose_cursor = utils.colors.brights[4],
     quick_select_label_fg = { Color = utils.colors.brights[2] },
     quick_select_match_fg = { Color = utils.colors.brights[7] },
+    split = utils.colors.brights[7],
     tab_bar = {
       active_tab = {
         bg_color = utils.colors.background,
@@ -43,7 +47,6 @@ return {
   warn_about_missing_glyphs = false,
   hide_tab_bar_if_only_one_tab = false,
   adjust_window_size_when_changing_font_size = false,
-  window_close_confirmation = "NeverPrompt", -- AlwaysPrompt
   window_decorations = "NONE",
   window_background_opacity = 0.95,
   window_padding = {
@@ -56,7 +59,7 @@ return {
     saturation = 0.7,
     brightness = 0.8,
   },
-  skip_close_confirmation_for_processes_named = { 'bash', 'sh' },
+  skip_close_confirmation_for_processes_named = { 'bash', 'sh', 'wslhost.exe', 'wsl.exe', 'conhost.exe'},
   launch_menu = { { args = { 'htop' } } },
   leader = { key = ' ', mods = 'ALT|SHIFT', timeout_milliseconds = 1500 },
   hyperlink_rules = {
