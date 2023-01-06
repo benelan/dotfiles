@@ -16,23 +16,22 @@ return {
   font_size = 11,
   color_scheme = utils.color_scheme,
   colors = {
+    compose_cursor = utils.colors.brights[4],
+    quick_select_label_fg = { Color = utils.colors.brights[2] },
+    quick_select_match_fg = { Color = utils.colors.brights[7] },
     tab_bar = {
       active_tab = {
         bg_color = utils.colors.background,
         fg_color = utils.colors.foreground,
       },
-      inactive_tab = {
-        fg_color = utils.colors.ansi[8],
-        bg_color = 'transparent',
-      },
-      inactive_tab_edge = utils.colors.ansi[8],
+      inactive_tab_edge = 'transparent',
       inactive_tab_hover = {
         bg_color = utils.colors.brights[1],
         fg_color = utils.colors.background,
       },
       new_tab_hover = {
-        fg_color = utils.colors.foreground,
-        bg_color = utils.colors.background,
+        bg_color = utils.colors.brights[1],
+        fg_color = utils.colors.background,
       },
     },
   },
