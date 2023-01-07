@@ -73,7 +73,7 @@ function install_rust() {
 function install_golang() {
     # checksum will need to be updated when using a new go version
     checksum="c9c08f783325c4cf840a94333159cc937f05f75d36a8b307951d5bd959cf2ab8"
-    outfile="go1.19.4.linux-amd64.tar.gz" 
+    outfile="go1.19.4.linux-amd64.tar.gz"
     curl -L "https://go.dev/dl/$outfile" -o "$outfile"
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
         sudo rm -rf /usr/local/go
@@ -116,9 +116,13 @@ function install_cargo_packages() {
 # Install global Node packages
 # https://www.npmjs.com
 function install_node_packages() {
-    [ "$(type -P volta)" ] && local volta="volta"
-    # shellcheck disable=2046
-    "${volta:-npm}" install $(cat "$HOME/.dotfiles/deps/node")
+    if [ "$(type -P volta)" ]; then
+        # shellcheck disable=2046
+        volta install $(cat "$HOME/.dotfiles/deps/node")
+    else
+        # shellcheck disable=2046
+        npm install -g $(cat "$HOME/.dotfiles/deps/node")
+    fi
 }
 
 # Install Go CLI tools
@@ -148,12 +152,13 @@ function install_starship() {
     fi
 }
 
-install_fonts_minimal
 # install_fonts_full
+install_fonts_minimal
 install_apt_packages
-# install_apt_gui_packages
+install_apt_gui_packages
 install_rust
-install_golang
+install_golang # x86_64 architectures for now
+install_volta # only works on x86_64 architectures for now
 install_cargo_packages
 install_go_packages
 install_node_packages

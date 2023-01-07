@@ -21,9 +21,8 @@ else
         export TERM='xterm-256color'
     fi
 
-    if tput setaf 1 &>/dev/null; then
+    if tput setaf 1 >/dev/null 2>&1; then
         reset=$(tput sgr0)
-        $reset
         bold=$(tput bold)
         underline=$(tput smul)
         # Gruvbox colors from: https://github.com/morhetz/gruvbox
@@ -52,7 +51,7 @@ else
     fi
     export bold underline black blue aqua \
         green orange purple red white yellow
-            
+
     # Highlight the user name when logged in as root.
     if [[ "${USER}" == "root" ]]; then
         userStyle="${bold}${red}"
@@ -75,7 +74,7 @@ else
     export GIT_PS1_SHOWCONFLICTSTATE="yes"
     export GIT_PS1_SHOWCOLORHINTS="yes"
 
-    pre_prompt="\n"
+    pre_prompt="\[${reset}\]\n"
     pre_prompt+="\[${bold}\]\[${userStyle}\]\u" # username
     pre_prompt+="\[${reset}\] at "
     pre_prompt+="\[${bold}\]\[${hostStyle}\]\h" # host

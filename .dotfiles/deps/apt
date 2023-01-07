@@ -1,4 +1,7 @@
 apt-transport-https
+arp-scan
+autoconf
+automake
 btop
 build-essential
 ca-certificates
@@ -10,10 +13,13 @@ cron
 curl
 datamash
 diffutils
+doxygen
 duf
 feh
 ffmpeg
 findutils
+g++
+gettext
 git
 gnupg
 grep
@@ -24,6 +30,8 @@ imagemagick
 libfontconfig1-dev
 libfreetype6-dev
 librsvg2-bin
+libtool
+libtool-bin
 libxcb-xfixes0-dev
 libxkbcommon-dev
 lsb-release
@@ -33,7 +41,11 @@ lynx
 make
 mount
 neofetch
+net-tools
+ninja-build
 nmap
+openssh-client
+openssh-server
 openssl
 pandoc
 perl
@@ -50,5 +62,6 @@ telnet
 tmux
 trash-cli
 tree
+unzip
 vim
 wget

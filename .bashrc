@@ -12,10 +12,12 @@ esac
 # until after .bashrc has evaluated
 ! shopt -q restricted_shell 2>/dev/null || return
 
+# Finally start sourcing startup scripts from ~/.dotfiles/shell
+# You can append an underscore to file names to skip them
 #---------------------------------------------------------------------------
 # SHELL - ALIASES
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/aliases/*; do
+for file in ~/.dotfiles/shell/aliases/[!_]*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
@@ -27,7 +29,7 @@ unset file
 #---------------------------------------------------------------------------
 # BASH - FUNCTIONS/PROMPT
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
+for file in ~/.dotfiles/shell/[!_]{functions,options,prompt}.sh; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
@@ -35,7 +37,7 @@ unset file
 #---------------------------------------------------------------------------
 # BASH - TOOLS
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/tools/*; do
+for file in ~/.dotfiles/shell/tools/[!_]*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 

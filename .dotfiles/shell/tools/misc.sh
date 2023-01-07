@@ -16,3 +16,8 @@
 # nnn - https://github.com/jarun/nnn
 export NNN_FCOLORS="0404040000000600010F0F02"
 export NNN_PLUG='f:finder;o:fzopen;d:diffs;z:autojump'
+
+# nvm - https://github.com/nvm-sh/nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
