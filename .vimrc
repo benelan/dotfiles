@@ -58,7 +58,7 @@ if has('multi_byte_encoding')
     set listchars+=extends:»,precedes:«
     set showbreak=…
 else
-     set showbreak=...
+    set showbreak=...
 endif
 if exists('+breakindent')
     set breakindent
@@ -66,9 +66,8 @@ endif
 
 if has('syntax')
     set spelllang=en_us
-    set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
     set cursorline
-    set colorcolumn=+1
+    set colorcolumn=+2
 endif
 
 if exists('+wildignorecase')
@@ -83,7 +82,7 @@ if has('cmdline_hist') && &history < 1000
     set history=1000
 endif
 if &tabpagemax < 50
-     set tabpagemax=50
+    set tabpagemax=50
 endif
 if !empty(&viminfo)
     set viminfo^=!
@@ -94,45 +93,95 @@ if has('virtualedit')
 endif
 
 if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-     runtime! macros/matchit.vim
+    runtime! macros/matchit.vim
 endif
 
 if v:version > 703 || v:version == 703 && has("patch541")
-     set formatoptions+=j
+    set formatoptions+=j
 endif
 if v:version > 801 || v:version == 801 && has("patch728")
     set formatoptions+=p
 endif
 
 if has('persistent_undo')
-  set undodir=$HOME/.vim/undos
-  set undofile
+    set undodir=$HOME/.vim/undos
+    set undofile
 endif
 
 try
-     set switchbuf=useopen,usetab,newtab
-     set showtabline=2
+    set switchbuf=useopen,usetab,newtab
+    set showtabline=2
 catch
+    set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
+nnoremap <leader><leader>n :normal!<space>
 endtry
 
+" ----------------------------------------------------------------------
+" | Globals                                                            |
+" ----------------------------------------------------------------------
+let g:netrw_sort_by = "exten"
+let g:netrw_preview = 1
+let g:netrw_liststyle = 3
+let g:netrw_usetab = 1
+let g:netrw_winsize = 25
+let g:netrw_banner = 0
+let g:netrw_altfile = 1
 
 " ----------------------------------------------------------------------
 " | Key Mappings                                                       |
 " ----------------------------------------------------------------------
 
-imap jk <esc>
-nmap Y y$
-nmap Q <Nop>
+inoremap jk <esc>
+nnoremap Y y$
+nnoremap Q <Nop>
 nnoremap <Backspace> <C-^>
 
+vnoremap < <gv
+vnoremap > >gv
+vnoremap p "_dP
+
+nnoremap <leader>p "_dP
+nnoremap <leader>c "_c
+
+nnoremap J mzJ`z
+
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" go to line above/below the cursor, from insert mode
+inoremap <S-CR> <C-O>o
+inoremap <C-CR> <C-O>O
+
+nnoremap <A-d> "_d
+nnoremap <A-c> "_c
+nnoremap <A-p> "_dP
+nnoremap <A-y> "+y
+vnoremap <A-d> "_d
+vnoremap <A-c> "_c
+vnoremap <A-p> "_dP
+vnoremap <A-y> "+y
+inoremap <A-d> "_d
+inoremap <A-c> "_c
+inoremap <A-p> "_dP
+inoremap <A-y> "+y
+
+"" replace word under cursor in whole buffer
+nnoremap <leader>s :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+
+nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
+
 nnoremap <expr> ,
-      \ line('w$') < line('$')
+  \ line('w$') < line('$')
         \ ? "\<PageDown>"
         \ : ":\<C-U>next\<CR>"
 
+" clear search highlights
 nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
 inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-vmap <C-L> <Esc><C-L>gv
+vnoremap <C-L> <Esc><C-L>gv
 
 noremap & :&&<CR>
 ounmap &
@@ -155,12 +204,18 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 "" Search and replace the word under the cursor
 nmap <leader>* :%s/\<<C-r><C-w>\>//<Left>
-"" search and find lind number for jumping
+"" search and find line number for jumping
 nnoremap <leader># :g//#<Left><Left>
 
 "" Visual mode pressing * or # searches for the current selection
-vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+
+"" Split array on to separate lines
+xnoremap <leader>[] :<C-u>call ExpandList()<CR>
+
+" Add Toggle file explorer
+noremap <silent> <leader>e :call ToggleNetrw()<CR>
 
 "" Argument list
 nnoremap [a :previous<CR>
@@ -168,18 +223,39 @@ nnoremap ]a :next<CR>
 "" Buffers
 nnoremap [b :bprevious<CR>
 nnoremap ]b :bnext<CR>
+nnoremap [B :bfirst<CR>
+nnoremap ]B :blast<CR>
 "" Quickfix list
-nnoremap [c :cprevious<CR>
-nnoremap ]c :cnext<CR>
+nnoremap [q :cprevious<CR>
+nnoremap ]q :cnext<CR>
+nnoremap [Q :cfirst<CR>
+nnoremap ]Q :clast<CR>
 "" Location list
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
-"" Quickfix list
-nnoremap [q :cnext<CR>
-nnoremap ]q :clast<CR>
 "" Tab list
 nnoremap [t :tabnext<CR>
 nnoremap ]t :tabprevious<CR>
+nnoremap [T :tabfirst<CR>
+nnoremap ]T :tablast<CR>
+"" Jump list
+nnoremap [j <C-i>
+nnoremap ]j <C-o>
+"" Change list
+nnoremap [c g;
+nnoremap ]c g,
+"" Diff conflict
+nnoremap [x :ConflictPreviousHunk<cr>
+nnoremap ]x :ConflictNextHunk<cr>
+
+"" Selecting hunks when using vimdiff as mergetool
+nnoremap <leader>gmU :diffupdate<cr>
+nnoremap <leader>gmr :diffget RE<cr>
+nnoremap <leader>gmR :%diffget RE<cr
+nnoremap <leader>gmb :diffget BA<cr>
+nnoremap <leader>gmB :%diffget BA<cr
+nnoremap <leader>gml :diffget LO<cr>
+nnoremap <leader>gmL :diffget LO<cr>
 
 "" close the current buffer
 nnoremap <leader>bd :bdelete<cr>
@@ -190,24 +266,23 @@ nnoremap <leader>bn :<C-U>enew<CR>
 "" picks buffer
 nnoremap <Leader>bp :<C-U>buffers<CR>:buffer<Space>
 
-"" Quickly open a buffer for javascript
-map <leader>bjs :e ~/buffer.js<cr>
-
-"" Quickly open a markdown buffer for scribble
-map <leader>bmd :e ~/buffer.md<cr>
+"" Quickly open scratch buffers
+nnoremap <leader>bb :e ~/scratch.md<cr>
+nnoremap <leader>bv <C-w>v:e %:h/scratch.%:e<CR>
+nnoremap <leader>bs <C-w>s:e %:h/scratch.%:e<CR>
 
 "" Managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
+nnoremap <leader>tn :tabnew<cr>
+nnoremap <leader>to :tabonly<cr>
+nnoremap <leader>tc :tabclose<cr>
+nnoremap <leader>tm :tabmove
 
 "" Opens a new tab with the current buffer's path
-map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
+nnoremap <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 "" toggles between this and the last accessed tab
 let g:lasttab = 1
-nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
 
@@ -219,6 +294,17 @@ nnoremap <C-Q> :Bdelete<cr>
 inoremap <C-Q> :Bdelete<cr>
 nnoremap <C-S> :write<cr>
 inoremap <C-S> :write<cr>
+
+" Create splits
+nnoremap <M-s> :hsplit<cr>
+nnoremap <M-v> :vsplit<cr>
+nnoremap <M-o> <C-w>o
+
+" Navigate splits
+nnoremap <M-h> <C-W>h
+nnoremap <M-j> <C-W>j
+nnoremap <M-k> <C-W>k
+nnoremap <M-l> <C-W>l
 
 " Move splits
 nnoremap <M-Left> <C-W>H
@@ -236,19 +322,21 @@ nnoremap <C-Left> :vertical resize -5<CR>
 "" toggles automatic indentation based on the previous line
 nnoremap <Leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
-nnoremap <Leader>sc :<C-U>set cursorline! cursorline?<CR>
+nnoremap <Leader>sx :<C-U>set cursorline! cursorline?<CR>
 "" toggles highlighting search results
 nnoremap <Leader>sh :<C-U>set hlsearch! hlsearch?<CR>
 "" toggles showing matches as I enter my pattern
 nnoremap <Leader>si :<C-U>set incsearch! incsearch?<CR>
 "" toggles spell checking
 nnoremap <Leader>ss :<C-U>set spell! spell?<CR>
-
+"" toggle colorcolumn
+nnoremap <silent> <leader>sc :execute "set colorcolumn="
+                  \ . (&colorcolumn == "" ? "80" : "")<CR>
 
 "" toggles highlighted cursor column; works in visual mode
-noremap <Leader>sC :<C-U>set cursorcolumn! cursorcolumn?<CR>
-ounmap <Leader>sC
-sunmap <Leader>sC
+noremap <Leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
+ounmap <Leader>sy
+sunmap <Leader>sy
 "" toggles showing tab, end-of-line, and trailing white space
 noremap <Leader>sl :<C-U>set list! list?<CR>
 ounmap <Leader>sl
@@ -369,7 +457,70 @@ endif
 " ----------------------------------------------------------------------
 " | Helper Functions                                                   |
 " ----------------------------------------------------------------------
+let g:NetrwIsOpen=0
 
+function! ToggleNetrw()
+    if g:NetrwIsOpen
+        let i = bufnr("$")
+        while (i >= 1)
+            if (getbufvar(i, "&filetype") == "netrw")
+                silent exe "bwipeout " . i
+            endif
+            let i-=1
+        endwhile
+        let g:NetrwIsOpen=0
+    else
+        let g:NetrwIsOpen=1
+        silent Lexplore
+    endif
+endfunction
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" go to next/previous merge conflict hunks
+function! s:conflictGoToMarker(pos, hunk) abort
+    if filter(copy(a:hunk), 'v:val == [0, 0]') == []
+        call cursor(a:hunk[0][0], a:hunk[0][1])
+        return 1
+    else
+        echohl ErrorMsg | echo 'conflict not found' | echohl None
+        call setpos('.', a:pos)
+        return 0
+    endif
+endfunction
+
+function! s:conflictNext(cursor) abort
+    return s:conflictGoToMarker(getpos('.'), [
+                \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
+                \ searchpos('^=======', 'cW'),
+                \ searchpos('^>>>>>>>', 'cW'),
+                \ ])
+endfunction
+
+function! s:conflictPrevious(cursor) abort
+    return s:conflictGoToMarker(getpos('.'), reverse([
+                \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
+                \ searchpos('^=======', 'bcW'),
+                \ searchpos('^<<<<<<<', 'bcW'),
+                \ ]))
+endfunction
+
+
+command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
+command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function! ExpandList()
+    silent s/\%V.*\%V/\="\r" . submatch(0)
+            \ ->split(',')
+            \ ->map({ i, v -> v->trim() })
+            \ ->join(",\r") . "\r"/g
+    silent normal ='[
+endfunction
+
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function! InitHighlights() abort
   " Terminal types:
