@@ -1,6 +1,10 @@
 .config/nvim/plugin/packer_compiled.lua
 .dotfiles/cache/*
 .dotfiles/git/personal.gitconfig
+.vim/undos/
+.vim/swaps/
+.vim/backups/
+.vim/.netrwhist
 # home directories
 .cache
 .cargo

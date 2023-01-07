@@ -12,7 +12,7 @@ endif
 
 set number wrap linebreak formatoptions+=l1 cpoptions+=J
 set mouse+=a mousehide clipboard^=unnamed,unnamedplus
-set langmenu=en_US encoding=utf-8 nobomb
+set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
 set showmatch mat=3 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
 set nomodeline noruler noshowcmd nostartofline notitle
@@ -22,8 +22,8 @@ set report=0 laststatus=2 display+=lastline shortmess+=I t_vb=
 set splitbelow splitright scrolloff=5 sidescrolloff=5
 set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
 set sessionoptions-=options viewoptions-=options
-set comments= commentstring= define= include= path-=/usr/include
-set foldcolumn=1 nrformats-=octal backspace=indent,eol,start
+set backspace=indent,eol,start path-=/usr/include define= include=
+set foldcolumn=1 foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,
     \*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,
@@ -33,7 +33,6 @@ set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \,*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,
     \*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,
     \*/node_modules/*,*/dist/*,*/build/*,*/public/*
-
 
 " don't backup some system files for security
 if v:version > 801 || v:version == 801 && has("patch1519")
