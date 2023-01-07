@@ -10,7 +10,7 @@ M.keys = {
   { key = 'l', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Right' },
   { key = 'k', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Up' },
   { key = 'j', mods = 'ALT|SHIFT', action = act.ActivatePaneDirection 'Down' },
-  { key = 'p', mods = 'ALT|SHIFT', action = act.PaneSelect { alphabet = "1234567890" } },
+  { key = 'p', mods = 'ALT|SHIFT', action = act.PaneSelect { alphabet = "asdfghjkl" } },
   { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
   { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
   -- vim style splits (split/vsplit)
@@ -18,7 +18,7 @@ M.keys = {
   { key = 'v', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
   -- tmux style splits
   { key = '-', mods = 'ALT|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
-  { key = '\\', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
+  { key = '|', mods = 'ALT|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
 
   -- Tab management
   { key = 'h', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(-1) },
@@ -31,12 +31,13 @@ M.keys = {
   { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
   { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
   { key = "Insert", mods = "CTRL|SHIFT", action = act.PasteFrom "PrimarySelection" },
-  { key = "=", mods = "CTRL|SHIFT", action = "ResetFontSize" },
+  { key = "Backspace", mods = "CTRL|SHIFT", action = "ResetFontSize" },
   { key = "+", mods = "CTRL|SHIFT", action = "IncreaseFontSize" },
   { key = "-", mods = "CTRL|SHIFT", action = "DecreaseFontSize" },
   { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },
   { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
   { key = 'r', mods = 'CTRL|SHIFT', action = act.ReloadConfiguration },
+  { key = 'd', mods = 'CTRL|SHIFT', action = act.ShowDebugOverlay },
   { key = '~', mods = 'CTRL|SHIFT', action = act.ClearScrollback 'ScrollbackOnly' },
 
   -- Keymaps for activating key tables
@@ -46,7 +47,8 @@ M.keys = {
     action = act.ActivateKeyTable {
       name = "resize_pane",
       one_shot = false,
-      timeout_milliseconds = 1500,
+      timeout_milliseconds = 2000,
+      until_unknown = true,
       replace_current = false,
     },
   },
@@ -57,29 +59,10 @@ M.keys = {
       name = 'activate_pane',
       one_shot = false,
       timeout_milliseconds = 1500,
+      until_unknown = true,
       replace_current = false,
     },
   },
-  {
-    key = "y",
-    mods = "LEADER",
-    action = act.ActivateKeyTable {
-      name = "copy_mode",
-      one_shot = false,
-      timeout_milliseconds = 1500,
-      replace_current = false,
-    },
-  },
-  {
-    key = "/",
-    mods = "LEADER",
-    action = act.ActivateKeyTable {
-      name = "search_mode",
-      one_shot = false,
-      timeout_milliseconds = 1500,
-      replace_current = false,
-    },
-  }
 }
 
 M.key_tables = {
@@ -182,4 +165,3 @@ M.mouse_bindings = {
 }
 
 return M
-

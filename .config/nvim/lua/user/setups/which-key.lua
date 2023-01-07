@@ -27,7 +27,7 @@ local xmappings = {
     t = {
       name = "Toggle options"
     },
-    h = { "<cmd>DiffviewFileHistory %<cr>", "Buffer File History" },
+    h = { "<cmd>'<,'>DiffviewFileHistory<cr>", "Selection History" },
     d = { "<cmd>DiffviewOpen<cr>", "Open Diffview" },
     q = { "<cmd>DiffviewClose<cr>", "Close Diffview" },
     V = { "<cmd>DiffviewRefresh<cr>", "Refresh Diffview" },

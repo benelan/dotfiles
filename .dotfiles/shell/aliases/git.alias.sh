@@ -16,7 +16,6 @@ alias ga='git add'
 alias gall='git add --all'
 alias gap='git add --patch'
 
-
 # bisect
 #########
 alias gbi="git bisect"
@@ -228,6 +227,10 @@ alias gta='git tag --annotate'
 alias gtd='git tag --delete'
 alias gtD='git tag --delete --force'
 alias gtl='git tag --list'
+# outputs the tag following the provided commit hash
+# useful for finding the first reproducible version for bugs
+# $ gtnext 84a29d4 # => v1.0.0-next.295~8 (8 commits before the tag)
+alias gtnext='git name-rev --tags --name-only'
 
 alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
