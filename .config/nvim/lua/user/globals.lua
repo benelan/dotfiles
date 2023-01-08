@@ -1,34 +1,41 @@
--- Build NeoVim from source
-vim.env.VIMRUNTIME = "~/.dotfiles/vendor/neovim/runtime"
+-- NeoVim built from source
+if vim.fn.isdirectory("~/.dotfiles/vendor/neovim/runtime") then
+  vim.env.VIMRUNTIME = "~/.dotfiles/vendor/neovim/runtime"
+end
 
 if vim.fn.executable("/usr/bin/python3") then
   vim.g.python3_host_prog = "/usr/bin/python3"
+end
+
+-- Volta manages Node versions like nvm
+if vim.fn.isdirectory("~/.volta/bin/neovim-node-host") then
+  vim.g.node_host_prog = "~/.volta/bin/neovim-node-host"
 end
 
 -- disable unused builtins
 vim.tbl_map(function(p)
   vim.g['loaded_' .. p] = vim.endswith(p, 'provider') and 0 or 1
 end, {
-  'netrw',
-  'netrwPlugin',
-  'netrwSettings',
-  'netrwFileHandlers',
-  'gzip',
-  'zip',
-  'zipPlugin',
-  'tar',
-  'tarPlugin',
+  '2html_plugin',
   'getscript',
   'getscriptPlugin',
+  'gzip',
+  'logipat',
+  'matchit',
+  'netrw',
+  'netrwFileHandlers',
+  'netrwPlugin',
+  'netrwSettings',
+  'perl_provider',
+  'rrhelper',
+  'ruby_provider',
+  'spellfile_plugin',
+  'tar',
+  'tarPlugin',
   'vimball',
   'vimballPlugin',
-  '2html_plugin',
-  'logipat',
-  'rrhelper',
-  'spellfile_plugin',
-  'matchit',
-  'perl_provider',
-  'ruby_provider'
+  'zip',
+  'zipPlugin',
 })
 
 -- neovide options
@@ -42,10 +49,14 @@ if vim.fn.exists("g:neovide") == 1 then
   vim.g.neovide_cursor_trail_size = 0
 end
 
--- markdown fenced code syntax highlighting
+
+-- Helps with syntax highlighting by specififying filetypes
+-- for common abbreviations used in markdown fenced code blocks
 vim.g.markdown_fenced_languages = {
-  'css', 'scss', 'sass',
-  'html', 'xml', 'json',
+  'html', 'xml', 'toml', 'yaml', 'json', 'sql',
+  'diff', 'vim', 'lua', 'python', 'go', 'rust',
+  'css', 'scss', 'sass', 'sh', 'bash', 'awk',
+  'yml=yaml', 'shell=sh', 'py=python',
   'ts=typescript', 'tsx=typescriptreact',
   'js=javascript', 'jsx=javascriptreact'
 }

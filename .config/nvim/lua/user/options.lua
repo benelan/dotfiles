@@ -1,4 +1,3 @@
-vim.opt.backup = false                          -- creates a backup file
 vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
 vim.opt.pastetoggle = "<Leader><C-v>"           -- toggle automatically indenting pastes
@@ -7,7 +6,6 @@ vim.opt.fileencoding = "utf-8"                  -- the encoding written to a fil
 vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true                       -- ignore case in search patterns
 vim.opt.smartcase = true                        -- smart case
-vim.opt.mouse = "a"                             -- allow the mouse to be used in neovim
 vim.opt.mousehide = true                        -- hide the mouse while typing
 vim.opt.pumheight = 10                          -- pop up menu height
 vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
@@ -19,17 +17,13 @@ vim.opt.swapfile = false                        -- creates a swapfile
 vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
-vim.opt.writebackup = false                     -- don't need backups when overwriting files
 vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.breakindentopt = "shift:2"              -- shift two characters left when breakindent-ing
-vim.opt.background = "dark"                     -- specify "dark" or "light" background color
 vim.opt.cursorline = true                       -- highlight the current line
 vim.opt.relativenumber = true                   -- show +/- offset number from the current line
 vim.opt.number = true                           -- show the current line number instead of 0
-vim.opt.laststatus = 3                          -- only the last window will always have a status line
-vim.opt.showcmd = false                         -- hide command in the last line of the screen (for performance)
 vim.opt.ruler = false                           -- hide the line and column number of the cursor position
 vim.opt.numberwidth = 4                         -- minimal number of columns to use for the line number {default 4}
 vim.opt.signcolumn = "yes"                      -- always show the sign column to prevent text shifting
@@ -50,7 +44,7 @@ vim.opt.iskeyword:append("-")                   -- treats words with `-` as sing
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.autoread = true                         -- automatically read file after outside changes
 vim.opt.spelloptions:append("camel")            -- when a word is CamelCased, assume "Cased" is a separate word
-vim.opt.formatoptions:append("c,l,1,j,p")       -- :help formatoptions
+vim.opt.formatoptions:append("l")               -- :help formatoptions
 vim.opt.formatoptions:remove("t,a,r,o")         -- :help formatoptions
 if vim.fn.executable('rg') == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"

@@ -82,15 +82,15 @@ u.keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
 u.keymap("n", "<M-d>", "<CMD>hide<CR>", "Hide Window")
 
 -- Window navigation
-u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
-u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
-u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
-u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
+u.keymap("n", "<M-h>", "<C-w>H", "Focus Window Left")
+u.keymap("n", "<M-j>", "<C-w>J", "Focus Window Below")
+u.keymap("n", "<M-k>", "<C-w>K", "Focus Window Above")
+u.keymap("n", "<M-l>", "<C-w>L", "Focus Window Right")
 
-u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-j>")
-u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-k>")
-u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-l>")
-u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-h>")
+u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-J>")
+u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-K>")
+u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-L>")
+u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-H>")
 
 -- Resize windows
 u.keymap("n", "<C-Up>", "<CMD>resize -5<CR>",
@@ -241,7 +241,7 @@ vim.cmd [[
 
 
 -- Toggle settings
-u.keymap("n", "<leader>sr",
+u.keymap("n", "<leader>sn",
   function() u.toggle_option("relativenumber") end,
   "Toggle relative line number")
 
