@@ -126,6 +126,16 @@ let g:netrw_winsize = 25
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
 
+" Helps with syntax highlighting by specififying filetypes
+" for common abbreviations used in markdown fenced code blocks
+let g:markdown_fenced_languages = [
+      \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
+      \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
+      \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
+      \ 'yml=yaml', 'shell=sh', 'py=python',
+      \ 'ts=typescript', 'tsx=typescriptreact',
+      \ 'js=javascript', 'jsx=javascriptreact' ]
+
 " ----------------------------------------------------------------------
 " | Key Mappings                                                       |
 " ----------------------------------------------------------------------
