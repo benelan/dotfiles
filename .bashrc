@@ -17,6 +17,7 @@ esac
 #---------------------------------------------------------------------------
 # SHELL - ALIASES
 #---------------------------------------------------------------------------
+# NOTE: don't skip to git alias file, it will break stuff
 for file in ~/.dotfiles/shell/aliases/[!_]*; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
@@ -29,7 +30,7 @@ unset file
 #---------------------------------------------------------------------------
 # BASH - FUNCTIONS/PROMPT
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/[!_]{functions,options,prompt}.sh; do
+for file in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
