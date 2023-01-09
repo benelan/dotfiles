@@ -1,3 +1,4 @@
+" Ben Elan's VIMRC
 " ----------------------------------------------------------------------
 " | General Settings                                                   |
 " ----------------------------------------------------------------------
@@ -15,10 +16,10 @@ set mouse+=a mousehide clipboard^=unnamed,unnamedplus
 set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
 set showmatch mat=3 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
-set nomodeline noruler noshowcmd nostartofline notitle
+set nomodeline showcmd nostartofline notitle shortmess+=aIF t_vb=
 set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
-set report=0 laststatus=2 display+=lastline shortmess+=I t_vb=
+set report=0 laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=5 sidescrolloff=5
 set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
 set sessionoptions-=options viewoptions-=options
@@ -112,7 +113,6 @@ try
     set showtabline=2
 catch
     set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
-nnoremap <leader><leader>n :normal!<space>
 endtry
 
 " ----------------------------------------------------------------------
@@ -140,6 +140,8 @@ let g:markdown_fenced_languages = [
 " | Key Mappings                                                       |
 " ----------------------------------------------------------------------
 
+let mapleader = " "
+
 inoremap jk <esc>
 nnoremap Y y$
 nnoremap Q <Nop>
@@ -147,10 +149,6 @@ nnoremap <Backspace> <C-^>
 
 vnoremap < <gv
 vnoremap > >gv
-vnoremap p "_dP
-
-nnoremap <leader>p "_dP
-nnoremap <leader>c "_c
 
 nnoremap J mzJ`z
 
@@ -164,21 +162,21 @@ nnoremap N Nzzzv
 inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
 
-nnoremap <A-d> "_d
-nnoremap <A-c> "_c
-nnoremap <A-p> "_dP
-nnoremap <A-y> "+y
-vnoremap <A-d> "_d
-vnoremap <A-c> "_c
-vnoremap <A-p> "_dP
-vnoremap <A-y> "+y
-inoremap <A-d> "_d
-inoremap <A-c> "_c
-inoremap <A-p> "_dP
-inoremap <A-y> "+y
+nnoremap <leader>d "_d
+nnoremap <leader>c "_c
+nnoremap <leader>p "_dP
+nnoremap <leader>y "+y
+vnoremap <leader>d "_d
+vnoremap <leader>c "_c
+vnoremap <leader>p "_dP
+vnoremap <leader>y "+y
+inoremap <C-d>  <C-o>"_d
+inoremap <C-c> <C-o>"_c
+inoremap <C-p> <C-o>"_dP
+inoremap <C-y> <C-o>"+y
 
 "" replace word under cursor in whole buffer
-nnoremap <leader>s :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
 nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
 
@@ -203,17 +201,16 @@ if empty(mapcheck('<C-W>', 'i'))
   inoremap <C-W> <C-G>u<C-W>
 endif
 
-let mapleader = " "
 
 "" Fast saving/quiting
-nmap <leader>Q :q<cr>
+nnoremap <leader>q :q<cr>
 
 "" :W sudo saves the file
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 "" Search and replace the word under the cursor
-nmap <leader>* :%s/\<<C-r><C-w>\>//<Left>
-"" search and find line number for jumping
+nnoremap <leader>* :%s/\<<C-r><C-w>\>//<Left>
+"" search and find line number for
 nnoremap <leader># :g//#<Left><Left>
 
 "" Visual mode pressing * or # searches for the current selection
@@ -226,34 +223,30 @@ xnoremap <leader>[] :<C-u>call ExpandList()<CR>
 " Add Toggle file explorer
 noremap <silent> <leader>e :call ToggleNetrw()<CR>
 
+nnoremap <leader><leader>n :normal!<space>
+
 "" Argument list
 nnoremap [a :previous<CR>
 nnoremap ]a :next<CR>
-"" Buffers
+"" Buffer list
 nnoremap [b :bprevious<CR>
 nnoremap ]b :bnext<CR>
-nnoremap [B :bfirst<CR>
-nnoremap ]B :blast<CR>
 "" Quickfix list
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
-nnoremap [Q :cfirst<CR>
-nnoremap ]Q :clast<CR>
 "" Location list
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 "" Tab list
-nnoremap [t :tabnext<CR>
-nnoremap ]t :tabprevious<CR>
-nnoremap [T :tabfirst<CR>
-nnoremap ]T :tablast<CR>
+nnoremap [t :tabprevious<CR>
+nnoremap ]t :tabnext<CR>
 "" Jump list
 nnoremap [j <C-i>
 nnoremap ]j <C-o>
 "" Change list
 nnoremap [c g;
 nnoremap ]c g,
-"" Diff conflict
+"" Diff conflicts
 nnoremap [x :ConflictPreviousHunk<cr>
 nnoremap ]x :ConflictNextHunk<cr>
 
@@ -267,13 +260,13 @@ nnoremap <leader>gml :diffget LO<cr>
 nnoremap <leader>gmL :diffget LO<cr>
 
 "" close the current buffer
-nnoremap <leader>bd :bdelete<cr>
+nnoremap <leader>bd :Bclose<cr>
 "" close all the buffers
 nnoremap <leader>bda :bufdo bd<cr>
 "" edits a new buffer
 nnoremap <leader>bn :<C-U>enew<CR>
 "" picks buffer
-nnoremap <Leader>bp :<C-U>buffers<CR>:buffer<Space>
+nnoremap <leader>bp :<C-U>buffers<CR>:buffer<Space>
 
 "" Quickly open scratch buffers
 nnoremap <leader>bb :e ~/scratch.md<cr>
@@ -291,35 +284,33 @@ nnoremap <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 "" toggles between this and the last accessed tab
 let g:lasttab = 1
-nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
+nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
-
 
 "" shortcut for window mappings
 nnoremap <leader>w <C-W>
 
 " Save/delete buffers
-nnoremap <C-Q> :Bdelete<cr>
-inoremap <C-Q> :Bdelete<cr>
-nnoremap <C-S> :write<cr>
+inoremap <C-Q> :Bclose<cr>
+inoremap <C-W> :write<cr>
 inoremap <C-S> :write<cr>
 
 " Create splits
-nnoremap <M-s> :hsplit<cr>
-nnoremap <M-v> :vsplit<cr>
-nnoremap <M-o> <C-w>o
+nnoremap <leader>- :split<cr>
+nnoremap <leader>\ :vsplit<cr>
+nnoremap <leader>o <C-w>o
 
 " Navigate splits
-nnoremap <M-h> <C-W>h
-nnoremap <M-j> <C-W>j
-nnoremap <M-k> <C-W>k
-nnoremap <M-l> <C-W>l
+nnoremap <leader>h <C-W>h
+nnoremap <leader>j <C-W>j
+nnoremap <leader>k <C-W>k
+nnoremap <leader>l <C-W>l
 
 " Move splits
-nnoremap <M-Left> <C-W>H
-nnoremap <M-Down> <C-W>J
-nnoremap <M-Up> <C-W>K
-nnoremap <M-Right> <C-W>L
+nnoremap <leader>Left <C-W>H
+nnoremap <leader>Down <C-W>J
+nnoremap <leader>Up <C-W>K
+nnoremap <leader>Right <C-W>L
 
 " Resize splits
 nnoremap <C-Up> :resize +5<CR>
@@ -329,68 +320,70 @@ nnoremap <C-Left> :vertical resize -5<CR>
 
 
 "" toggles automatic indentation based on the previous line
-nnoremap <Leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
+nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
-nnoremap <Leader>sx :<C-U>set cursorline! cursorline?<CR>
+nnoremap <leader>sx :<C-U>set cursorline! cursorline?<CR>
 "" toggles highlighting search results
-nnoremap <Leader>sh :<C-U>set hlsearch! hlsearch?<CR>
+nnoremap <leader>sh :<C-U>set hlsearch! hlsearch?<CR>
 "" toggles showing matches as I enter my pattern
-nnoremap <Leader>si :<C-U>set incsearch! incsearch?<CR>
+nnoremap <leader>si :<C-U>set incsearch! incsearch?<CR>
 "" toggles spell checking
-nnoremap <Leader>ss :<C-U>set spell! spell?<CR>
+nnoremap <leader>ss :<C-U>set spell! spell?<CR>
+"" toggles paste
+nnoremap <leader>sp :<C-U>set paste! paste?<CR>
 "" toggle colorcolumn
 nnoremap <silent> <leader>sc :execute "set colorcolumn="
                   \ . (&colorcolumn == "" ? "80" : "")<CR>
 
 "" toggles highlighted cursor column; works in visual mode
-noremap <Leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
-ounmap <Leader>sy
-sunmap <Leader>sy
+noremap <leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
+ounmap <leader>sy
+sunmap <leader>sy
 "" toggles showing tab, end-of-line, and trailing white space
-noremap <Leader>sl :<C-U>set list! list?<CR>
-ounmap <Leader>sl
-sunmap <Leader>sl
+noremap <leader>sl :<C-U>set list! list?<CR>
+ounmap <leader>sl
+sunmap <leader>sl
 "" toggles line number display
-noremap <Leader>sn :call ToggleRelativeLineNumbers()<CR>
-ounmap <Leader>sn
-sunmap <Leader>sn
+noremap <leader>sn :call ToggleRelativeLineNumbers()<CR>
+ounmap <leader>sn
+sunmap <leader>sn
 "" toggles position display in bottom right
-noremap <Leader>sr :<C-U>set ruler! ruler?<CR>
-ounmap <Leader>sr
-sunmap <Leader>sr
+noremap <leader>sr :<C-U>set ruler! ruler?<CR>
+ounmap <leader>sr
+sunmap <leader>sr
 "" toggles soft wrapping
-noremap <Leader>sw :<C-U>set wrap! wrap?<CR>
-ounmap <Leader>sw
-sunmap <Leader>sw
+noremap <leader>sw :<C-U>set wrap! wrap?<CR>
+ounmap <leader>sw
+sunmap <leader>sw
 
 "" shows the current file's fully expanded path
-nnoremap <Leader>dp :<C-U>echo expand('%:p')<CR>
+nnoremap <leader>dp :<C-U>echo expand('%:p')<CR>
 "" changes directory to the current file's location
-nnoremap <Leader>dc :<C-U>cd %:h <Bar> pwd<CR>
+nnoremap <leader>dc :<C-U>cd %:h <Bar> pwd<CR>
 "" creates the path to the current file if it doesn't exist
-nnoremap <Leader>dm :<C-U>call mkdir(expand('%:h'), 'p')<CR>
+nnoremap <leader>dm :<C-U>call mkdir(expand('%:h'), 'p')<CR>
 
 "" shows command history
-nnoremap <Leader>H :<C-U>history :<CR>
+nnoremap <leader>H :<C-U>history :<CR>
 "" shows my marks
-nnoremap <Leader>` :<C-U>marks<CR>
+nnoremap <leader>` :<C-U>marks<CR>
 "" shows all registers
-nnoremap <Leader>R :<C-U>registers<CR>
+nnoremap <leader>R :<C-U>registers<CR>
 
 "" uses last changed or yanked text as an object
-onoremap <Leader>_ :<C-U>execute 'normal! `[v`]'<CR>
+onoremap <leader>_ :<C-U>execute 'normal! `[v`]'<CR>
 "" uses entire buffer as an object
-onoremap <Leader>% :<C-U>execute 'normal! 1GVG'<CR>
-omap <Leader>5 <Leader>%
+onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
+omap <leader>5 <leader>%
 
 "" types :vimgrep for me ready to enter a search pattern
-nnoremap <Leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" types :lhelpgrep for me ready to enter a search pattern
-nnoremap <Leader>? :<C-U>lhelpgrep \c<S-Left>
+nnoremap <leader>? :<C-U>lhelpgrep \c<S-Left>
 
 
 " ----------------------------------------------------------------------
-" | Automatic Commands                                                 |
+" | Autocommands                                                 |
 " ----------------------------------------------------------------------
 
 if has("autocmd")
@@ -408,11 +401,7 @@ if has("autocmd")
         " Return to last edit position when opening files
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
                     \ | exe "normal! g'\"" | endif
-
-        " Automatically reapply highlights when changing colorscheme
-        autocmd ColorScheme * call InitHighlights()
     augroup END
-
     command! Src :source $MYVIMRC
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -531,29 +520,6 @@ endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-function! InitHighlights() abort
-  " Terminal types:
-  "
-  "   1) term  (normal terminals, e.g.: vt100, xterm)
-  "   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
-  "   3) gui   (GUIs)
-
-  " legible error and spelling highlighting
-  hi clear Search SpellBad SpellCap SpellLocal SpellRare
-  hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
-  hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
-  hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
-  hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
-  hi Search cterm=bold,underline ctermfg=Magenta ctermbg=NONE
-  hi IncSearch ctermfg=Magenta ctermbg=NONE
-  hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-  hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-  hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-  hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 function! StripTrailingWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -609,8 +575,8 @@ endfunction
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Don't close window, when deleting a buffer
-command! Bclose call <SID>BufcloseCloseIt()
-function! <SID>BufcloseCloseIt()
+command! Bclose call <SID>Bclose()
+function! <SID>Bclose()
     let l:currentBufNum = bufnr("%")
     let l:alternateBufNum = bufnr("#")
 
@@ -630,43 +596,161 @@ function! <SID>BufcloseCloseIt()
 endfunction
 
 " ----------------------------------------------------------------------
-" | Colors and Status Line                                             |
+" | Colors                                                             |
 " ----------------------------------------------------------------------
 
-
-let g:gruvbox_bold = 1
-let g:gruvbox_italic = 1
-let g:gruvbox_contrast_dark = 'medium'
+" see :h xterm-true-color
+let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+set termguicolors
 set background=dark
-colorscheme gruvbox
 
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+" https://github.com/sainnhe/gruvbox-material
+let g:gruvbox_material_background = "medium"
+let g:gruvbox_material_foreground = "material"
+let g:gruvbox_material_ui_contrast = "high"
+let g:gruvbox_material_enable_italic = 1
+colorscheme gruvbox-material
+
+" https://github.com/morhetz/gruvbox
+" let g:gruvbox_bold = 1
+" let g:gruvbox_italic = 1
+" let g:gruvbox_contrast_dark = 'medium'
+" colorscheme gruvbox
+
+
+  " Terminal types:
+  "
+  "   1) term  (normal terminals, e.g.: vt100, xterm)
+  "   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
+  "   3) gui   (GUIs)
+
+" legible error and spelling highlighting
+hi clear Search SpellBad SpellCap SpellLocal SpellRare
+hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
+hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
+hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
+hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
+hi Search cterm=bold,underline ctermfg=Magenta ctermbg=NONE
+hi IncSearch ctermfg=Magenta ctermbg=NONE
+hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+
+" Statusline colors
+hi User1 guifg=#282828  guibg=#a89984 gui=bold cterm=bold
+hi User2 guifg=#c0ad8e  guibg=#504945 gui=bold cterm=bold
+hi User3 guifg=#ddc7a1  guibg=#32302f gui=bold cterm=bold
+
+" Highlight current line number differently
+highlight! link CursorLineNr Purple
+
+" ----------------------------------------------------------------------
+" | Statusline                                                         |
+" ----------------------------------------------------------------------
 
 set statusline=
-set statusline+=%1*            " User1 highlight
-set statusline+=\ [%n]         " Buffer number
-set statusline+=\ [%f]         " File path
-set statusline+=%m             " Modified flag
-set statusline+=%r             " Readonly flag
-set statusline+=%h             " Help file flag
-set statusline+=%w             " Preview window flag
-set statusline+=%y             " File type
-set statusline+=[
-set statusline+=%{&ff}         " File format
-set statusline+=:
-set statusline+=%{strlen(&fenc)?&fenc:'none'}  " File encoding
-set statusline+=]
-set statusline+=%=             " Left/Right separator
-set statusline+=%c             " File encoding
-set statusline+=,
-set statusline+=%l             " Current line number
-set statusline+=/
-set statusline+=%L             " Total number of lines
-set statusline+=\ (%P)\        " Percent through file
+set statusline+=%1*                             " User1 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ [%n]                          " Buffer number
+set statusline+=%m                              " Modified flag
+set statusline+=%r                              " Readonly flag
+set statusline+=%h                              " Help file flag
+set statusline+=%w                              " Preview window flag
+set statusline+=\                               " Whitespace
+set statusline+=\ %2*                           " User2 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ %y                            " File type
+set statusline+=\                               " Whitespace
+set statusline+=\ %3*                           " User3 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ %f                            " File path
+set statusline+=%=                              " Left/Right separator
+set statusline+=\ %2*                           " User2 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ %{&ff}                        " File format
+set statusline+=\                               " Whitespace
+set statusline+=\ %{strlen(&fenc)?&fenc:'none'} " File encoding
+set statusline+=\                               " Whitespace
+set statusline+=\ %1*                           " User1 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ %l                            " Current line number
+set statusline+=:                               " Current location separator
+set statusline+=%c                              " Current column number
+set statusline+=\                               " Whitespace
+set statusline+=\ %P                            " Percent through file
+set statusline+=\                               " Whitespace
+set statusline+=\                               " Whitespace
 
-" Example result:
-"
-"  [1] [main] [vim/vimrc][vim][unix:utf-8]            17,238/381 (59%)
+" ----------------------------------------------------------------------
+" | Tabline                                                             |
+" ----------------------------------------------------------------------
+" https://stackoverflow.com/a/33765365
+set tabline=%!MyTabLine()
+function! MyTabLine()
+  let s = ''
+  " loop through each tab page
+  for i in range(tabpagenr('$'))
+    if i + 1 == tabpagenr()
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+    if i + 1 == tabpagenr()
+      let s .= '%#TabLineSel#' " WildMenu
+    else
+      let s .= '%#Title#'
+    endif
+    " set the tab page number (for mouse clicks)
+    let s .= '%' . (i + 1) . 'T '
+    " set page number string
+    let s .= i + 1 . ''
+    " get buffer names and statuses
+    let n = ''  " temp str for buf names
+    let m = 0   " &modified counter
+    let buflist = tabpagebuflist(i + 1)
+    " loop through each buffer in a tab
+    for b in buflist
+      if getbufvar(b, "&buftype") == 'help'
+        " let n .= '[H]' . fnamemodify(bufname(b), ':t:s/.txt$//')
+      elseif getbufvar(b, "&buftype") == 'quickfix'
+        " let n .= '[Q]'
+      elseif getbufvar(b, "&modifiable")
+        let n .= fnamemodify(bufname(b), ':t') . ', ' " pathshorten(bufname(b))
+      endif
+      if getbufvar(b, "&modified")
+        let m += 1
+      endif
+    endfor
+    " let n .= fnamemodify(bufname(buflist[tabpagewinnr(i + 1) - 1]), ':t')
+    let n = substitute(n, ', $', '', '')
+    " add modified label
+    if m > 0
+      let s .= '+'
+      " let s .= '[' . m . '+]'
+    endif
+    if i + 1 == tabpagenr()
+      let s .= ' %#TabLineSel#'
+    else
+      let s .= ' %#TabLine#'
+    endif
+    " add buffer names
+    if n == ''
+      let s.= '[New]'
+    else
+      let s .= n
+    endif
+    " switch to no underlining and add final space
+    let s .= ' '
+  endfor
+  let s .= '%#TabLineFill#%T'
+  " right-aligned close button
+  " if tabpagenr('$') > 1
+  "   let s .= '%=%#TabLineFill#%999Xclose'
+  " endif
+  return s
+endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
