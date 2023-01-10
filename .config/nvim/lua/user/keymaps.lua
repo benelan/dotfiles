@@ -82,15 +82,15 @@ u.keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
 u.keymap("n", "<M-d>", "<CMD>hide<CR>", "Hide Window")
 
 -- Window navigation
-u.keymap("n", "<M-h>", "<C-w>H", "Focus Window Left")
-u.keymap("n", "<M-j>", "<C-w>J", "Focus Window Below")
-u.keymap("n", "<M-k>", "<C-w>K", "Focus Window Above")
-u.keymap("n", "<M-l>", "<C-w>L", "Focus Window Right")
+u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
+u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
+u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
+u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
 
-u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-J>")
-u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-K>")
-u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-L>")
-u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-H>")
+u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-j>")
+u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-k>")
+u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-l>")
+u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-h>")
 
 -- Resize windows
 u.keymap("n", "<C-Up>", "<CMD>resize -5<CR>",
@@ -106,10 +106,10 @@ u.keymap({ "n", "x" }, "<C-w>f", "<CMD>GotoFirstFloat<CR>",
   "Focus First Floating Window")
 
 -- Move windows
-u.keymap("n", "<M-Left>", "<C-w>h", "Move Window Left")
-u.keymap("n", "<M-Down>", "<C-w>j", "Move Window Down")
-u.keymap("n", "<M-Up>", "<C-w>k", "Move Window Up")
-u.keymap("n", "<M-Right>", "<C-w>l", "Move Window Right")
+u.keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
+u.keymap("n", "<M-Down>", "<C-w>J", "Move Window Down")
+u.keymap("n", "<M-Up>", "<C-w>K", "Move Window Up")
+u.keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
 
 -- Manage tabs
 u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New")
