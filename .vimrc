@@ -163,17 +163,12 @@ inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
 
 nnoremap <leader>d "_d
-nnoremap <leader>c "_c
-nnoremap <leader>p "_dP
-nnoremap <leader>y "+y
 vnoremap <leader>d "_d
+nnoremap <leader>c "_c
 vnoremap <leader>c "_c
-vnoremap <leader>p "_dP
+nnoremap <leader>y "+y
 vnoremap <leader>y "+y
-inoremap <C-d>  <C-o>"_d
-inoremap <C-c> <C-o>"_c
-inoremap <C-p> <C-o>"_dP
-inoremap <C-y> <C-o>"+y
+vnoremap p "_dP
 
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
@@ -202,7 +197,7 @@ if empty(mapcheck('<C-W>', 'i'))
 endif
 
 
-"" Fast saving/quiting
+"" Fast saving/quitting
 nnoremap <leader>q :q<cr>
 
 "" :W sudo saves the file
@@ -222,8 +217,6 @@ xnoremap <leader>[] :<C-u>call ExpandList()<CR>
 
 " Add Toggle file explorer
 noremap <silent> <leader>e :call ToggleNetrw()<CR>
-
-nnoremap <leader><leader>n :normal!<space>
 
 "" Argument list
 nnoremap [a :previous<CR>
@@ -266,7 +259,7 @@ nnoremap <leader>bda :bufdo bd<cr>
 "" edits a new buffer
 nnoremap <leader>bn :<C-U>enew<CR>
 "" picks buffer
-nnoremap <leader>bp :<C-U>buffers<CR>:buffer<Space>
+nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
 "" Quickly open scratch buffers
 nnoremap <leader>bb :e ~/scratch.md<cr>
@@ -371,15 +364,17 @@ nnoremap <leader>` :<C-U>marks<CR>
 nnoremap <leader>R :<C-U>registers<CR>
 
 "" uses last changed or yanked text as an object
-onoremap <leader>_ :<C-U>execute 'normal! `[v`]'<CR>
+onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
 "" uses entire buffer as an object
 onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
 omap <leader>5 <leader>%
 
-"" types :vimgrep for me ready to enter a search pattern
-nnoremap <leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
-"" types :lhelpgrep for me ready to enter a search pattern
-nnoremap <leader>? :<C-U>lhelpgrep \c<S-Left>
+" start ex command for vimgrep
+nnoremap <leader><leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+"" start ex command for lhelpgrep
+nnoremap <leader></leader>? :<C-U>lhelpgrep \c<S-Left>
+" start ex command for normal
+nnoremap <leader><leader>n :normal!<space>
 
 
 " ----------------------------------------------------------------------
@@ -563,9 +558,9 @@ function! VisualSelection(direction, extra_filter) range
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
     if a:direction == 'gv'
-        call CmdLine("Ack '" . l:pattern . "' " )
+        call feedkeys(":Ack '" . l:pattern . "' ")
     elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
+        call feedkeys(":%s/" . l:pattern . "/")
     endif
 
     let @/ = l:pattern
@@ -756,4 +751,3 @@ endfunction
 
 " a lot was learned and barrowed from:
 " https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/vim/vimrc
-
