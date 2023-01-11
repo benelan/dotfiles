@@ -5,7 +5,7 @@ local function FTerm()
   local ui = vim.api.nvim_list_uis()[1]
   local winopts = {
     relative = 'editor',
-    width = math.floor(ui.width / 4),
+    width = math.floor(ui.width / 3),
     height = math.floor(ui.height / 4),
     col = ui.width - 1,
     row = ui.height - 3,
@@ -23,14 +23,13 @@ local function FTerm()
     vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, winopts)
     vim.fn.execute('term')
     vim.cmd('set winfixheight nobuflisted')
-
     vim.fn.execute('startinsert')
   end
 end
 
 vim.api.nvim_create_user_command("FTerm", FTerm, {
-  desc = "Open floating terminal",
+  desc = "Toggle floating terminal",
 })
 
-vim.keymap.set("n", "<A-T>", vim.cmd.FTerm, { noremap = true, silent = true })
-vim.keymap.set("t", "<A-T>", "<C-\\><C-n><cmd>FTerm<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-t>", vim.cmd.FTerm, { noremap = true, silent = true })
+vim.keymap.set("t", "<A-t>", "<C-\\><C-n><cmd>FTerm<cr>", { noremap = true, silent = true })

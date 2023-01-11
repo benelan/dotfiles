@@ -58,7 +58,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- UI
+  ----> UI
   -----------------------------------------------------------------------------
   use {
     "goolord/alpha-nvim", -- startup page/dashboard
@@ -90,11 +90,11 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.lualine" end
   }
-  use {
-    "akinsho/toggleterm.nvim", -- opens an integrated terminal
-    event = "BufWinEnter",
-    config = function() require "user.setups.toggleterm" end
-  }
+  -- use {
+  --   "akinsho/toggleterm.nvim", -- opens an integrated terminal
+  --   event = "BufWinEnter",
+  --   config = function() require "user.setups.toggleterm" end
+  -- }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
@@ -113,7 +113,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- Utils
+  ----> Utils
   -----------------------------------------------------------------------------
   use {
     "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
@@ -163,7 +163,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- Completions
+  ----> Completions
   -----------------------------------------------------------------------------
   use {
     "hrsh7th/nvim-cmp", -- completion engine
@@ -193,7 +193,7 @@ return packer.startup(function(use)
     }
   }
   -----------------------------------------------------------------------------
-  -- Snippets
+  ----> Snippets
   -----------------------------------------------------------------------------
   use {
     "L3MON4D3/LuaSnip", -- snippet engine
@@ -204,7 +204,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- LSP
+  ----> LSP
   -----------------------------------------------------------------------------
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
@@ -236,7 +236,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- Telescope
+  ----> Telescope
   -----------------------------------------------------------------------------
   use {
     "nvim-telescope/telescope.nvim", -- fuzzy search tool
@@ -259,7 +259,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- Treesitter
+  ----> Treesitter
   -----------------------------------------------------------------------------
   use {
     "nvim-treesitter/nvim-treesitter", -- no explanation needed 🏆
@@ -278,7 +278,7 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  -- Git
+  ----> Git
   -----------------------------------------------------------------------------
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
@@ -295,13 +295,13 @@ return packer.startup(function(use)
     config = function() require "user.setups.octo" end
   }
   use {
-    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line
+    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line/selection
     requires = "nvim-lua/plenary.nvim",
     config = function() require("gitlinker").setup() end,
   }
 
   -----------------------------------------------------------------------------
-  -- Debugger Adapter
+  ----> Debug Adapter
   -----------------------------------------------------------------------------
   use {
     "mfussenegger/nvim-dap",

@@ -63,18 +63,18 @@ u.keymap("n", "<leader>dm",
 ------------------------------------------------------
 
 -- :normal
-u.keymap("n", "<leader><leader>n",
-  "<cmd>normal!<space>",
+u.keymap("n", "<M-n>",
+  ":normal!<space>",
   "Execute normal command")
 
 -- :vimgrep
-u.keymap("n", "<leader><leader>/",
-  "<cmd><C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
+u.keymap("n", "<C-/>",
+  ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
   "Execute vimgrep")
 
 -- :lhelpgrep
-u.keymap("n", "<leader><leader>?",
-  "<cmd><C-U>lhelpgrep \\c<S-Left>",
+u.keymap("n", "<C-?>",
+  ":<C-U>lhelpgrep \\c<S-Left>",
   "Execute lhelpgrep")
 
 ------------------------------------------------------
@@ -134,6 +134,19 @@ u.keymap("n", "[<space>",
   function() u.paste_blank_line(vim.fn.line(".") - 1) end,
   "Add Space Above")
 
+
+------------------------------------------------------
+----> Git Mergetool
+------------------------------------------------------
+
+u.keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update Merge Diff")
+u.keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose Hunk From Remote")
+u.keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose All From Remote")
+u.keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose Hunk From Base")
+u.keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose All From Base")
+u.keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose Hunk From Local")
+u.keymap({ "n", "v" }, "<leader>gmL", "<cmd>diffget LO<cr>", "Choose All From Local")
+
 ------------------------------------------------------
 ----> Windows
 ------------------------------------------------------
@@ -149,8 +162,8 @@ u.keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
 u.keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
 
 -- create tmux style splits
-u.keymap("n", "<M-->", "<C-w>v", "Vertical Split")
-u.keymap("n", "<M-\\>", "<C-w>s", "Horizontal Split")
+u.keymap("n", "<M-\\>", "<C-w>v", "Vertical Split")
+u.keymap("n", "<M-->", "<C-w>s", "Horizontal Split")
 
 ---- navigate
 u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
@@ -166,9 +179,9 @@ u.keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>",
   "Focus First Floating Window")
 
 -- resize
-u.keymap("n", "<C-Up>", "<CMD>resize -5<CR>",
+u.keymap("n", "<C-Up>", "<CMD>resize +5<CR>",
   "Decrease Horizontal Window Size")
-u.keymap("n", "<C-Down>", "<CMD>resize +5<CR>",
+u.keymap("n", "<C-Down>", "<CMD>resize -5<CR>",
   "Increase Horizontal Window Size")
 u.keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>",
   "Decrease Vertical Window Size")
