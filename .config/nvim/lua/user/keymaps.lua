@@ -39,6 +39,8 @@ u.keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
 u.keymap("n", "n", "nzzzv", "Next search result")
 u.keymap("n", "N", "Nzzzv", "Previous search result")
 
+vim.keymap.set("t", "<esc>", "<C-\\><C-N>")
+
 ------------------------------------------------------
 ----> Directories
 ------------------------------------------------------
@@ -76,7 +78,7 @@ u.keymap("n", "<leader><leader>?",
   "Execute lhelpgrep")
 
 ------------------------------------------------------
-----> Lists (next/previous)   
+----> Lists (next/previous)
 ------------------------------------------------------
 
 -- tab
@@ -155,10 +157,11 @@ u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
 u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
 u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
 u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
-u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-j>", "Focus Window Left")
-u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-k>", "Focus Window Below")
-u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-l>", "Focus Window Above")
-u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-h>", "Focus Window Right")
+u.keymap({ "i", "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
+u.keymap({ "i", "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
+u.keymap({ "i", "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
+u.keymap({ "i", "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
+
 u.keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>",
   "Focus First Floating Window")
 
@@ -349,4 +352,3 @@ vim.cmd [[
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
-
