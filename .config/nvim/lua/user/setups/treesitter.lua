@@ -6,6 +6,10 @@ treesitter_configs.setup({
   ensure_installed = {
     "bash",
     "css",
+    "dockerfile",
+    "git_rebase",
+    "gitcommit",
+    -- "gitignore",
     "go",
     "graphql",
     "help",
@@ -18,6 +22,7 @@ treesitter_configs.setup({
     "markdown_inline",
     "python",
     "regex",
+    "rust",
     "scss",
     "svelte",
     "toml",
@@ -25,12 +30,10 @@ treesitter_configs.setup({
     "typescript",
     "vim",
     "vue",
-    "yaml"
+    "yaml",
   },
-  ignore_install = { "beancount" }, -- List of parsers to ignore installing
-  sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
   highlight = {
-    enable = true, -- false will disable the whole extension
+    enable = true,
   },
   autopairs = {
     enable = true,
@@ -38,27 +41,19 @@ treesitter_configs.setup({
   autotag = {
     enable = true
   },
-  indent = { enable = true, disable = { "markdown_inline", } },
+  playground = {
+    enable = true,
+  },
   context_commentstring = {
     enable = true,
     enable_autocmd = false,
   },
-  -- incremental_selection = {
-  --   enable = true,
-  --   keymaps = {
-  --     init_selection = '<c-space>',
-  --     node_incremental = '<c-space>',
-  --     scope_incremental = '<c-s>',
-  --     node_decremental = '<c-backspace>',
-  --   },
-  -- },
   textobjects = {
     select = {
       enable = true,
-      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
       keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ['aa'] = '@parameter.outer',
+        ['aa'] = '@parameter.outer', -- argument
         ['ia'] = '@parameter.inner',
         ['af'] = '@function.outer',
         ['if'] = '@function.inner',
@@ -66,13 +61,13 @@ treesitter_configs.setup({
         ['ic'] = '@class.inner',
         ['al'] = '@loop.outer',
         ['il'] = '@loop.inner',
-        ['ai'] = '@conditional.outer',
+        ['ai'] = '@conditional.outer', -- if
         ['ii'] = '@conditional.inner',
       },
     },
     move = {
       enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
+      set_jumps = true,
       goto_next_start = {
         [']m'] = { query = '@function.outer', desc = "Start of next function" },
         [']i'] = { query = '@conditional.outer', desc = "Start of next conditional" },

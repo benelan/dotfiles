@@ -107,8 +107,14 @@
   "nvim-treesitter": {
     "commit": "7c9ddb72"
   },
+  "nvim-treesitter-context": {
+    "commit": "cacee48"
+  },
   "nvim-treesitter-textobjects": {
     "commit": "83a494a"
+  },
+  "nvim-ts-autotag": {
+    "commit": "fdefe46"
   },
   "nvim-ts-context-commentstring": {
     "commit": "32d9627"
@@ -124,6 +130,9 @@
   },
   "packer.nvim": {
     "commit": "dac4088"
+  },
+  "playground": {
+    "commit": "8a887bc"
   },
   "plenary.nvim": {
     "commit": "4b7e520"
@@ -145,9 +154,6 @@
   },
   "telescope.nvim": {
     "commit": "e960efa"
-  },
-  "toggleterm.nvim": {
-    "commit": "b02a167"
   },
   "vim-illuminate": {
     "commit": "a6d0b28"

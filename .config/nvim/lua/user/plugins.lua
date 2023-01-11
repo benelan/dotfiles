@@ -116,11 +116,6 @@ return packer.startup(function(use)
   ----> Utils
   -----------------------------------------------------------------------------
   use {
-    "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-    event = "InsertEnter",
-    config = function() require "user.setups.autopairs" end
-  }
-  use {
     "numToStr/Comment.nvim", -- smart comments
     event = "BufWinEnter",
     config = function() require "user.setups.comment" end
@@ -267,12 +262,31 @@ return packer.startup(function(use)
     config = function() require "user.setups.treesitter" end,
     requires = {
       {
+        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        after = "nvim-treesitter"
+      },
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        after = "nvim-treesitter"
+      },
+      {
+        "nvim-treesitter/playground", -- for finding queries
+        after = "nvim-treesitter"
+      },
+      {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
         after = "nvim-treesitter"
       },
       {
-        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        "windwp/nvim-ts-autotag", -- auto pair tags
+        event = "InsertEnter",
         after = "nvim-treesitter"
+      },
+      {
+        "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+        event = "InsertEnter",
+        after = "nvim-treesitter",
+        config = function() require "user.setups.autopairs" end
       }
     }
   }
@@ -280,6 +294,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   ----> Git
   -----------------------------------------------------------------------------
+
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
     module = "gitsigns",
