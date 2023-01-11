@@ -1,21 +1,29 @@
 local status_ok, u = pcall(require, "user.utils")
 if not status_ok then return end
 
---Remap space as leader key
-u.keymap("", "<Space>", "<Nop>")
-vim.g.mapleader = " "
-
--- Modes
+----> Modes
 --   normal_mode = "n",
 --   insert_mode = "i",
 --   visual_mode = "v",
 --   visual_block_mode = "x",
 --   term_mode = "t",
 --   command_mode = "c",
---
-------------------------------------------------------
---> Normal
-------------------------------------------------------
+
+--Remap space as leader key
+u.keymap("", "<Space>", "<Nop>")
+vim.g.mapleader = " "
+
+-- Press jk to escape
+u.keymap("i", "jk", "<ESC>")
+
+-- Stay in indent mode
+u.keymap("v", "<", "<gv")
+u.keymap("v", ">", ">gv")
+
+-- paste/delete/change w/o modifying default register
+u.keymap("v", "p", '"_dP')
+u.keymap({ "v", "n" }, "<C-D>", '"_d')
+u.keymap({ "v", "n" }, "<C-C>", '"_c')
 
 -- open uri/path under the cursor or line
 u.keymap("n", "gx", "<Plug>SystemOpen",
@@ -25,18 +33,51 @@ u.keymap("n", "gx", "<Plug>SystemOpen",
 u.keymap("n", "g.", "<Plug>SystemOpenCWD",
   "Open directory with system")
 
--- change/print/make directory
+-- remaps to center movement in the screen
+u.keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
+u.keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
+u.keymap("n", "n", "nzzzv", "Next search result")
+u.keymap("n", "N", "Nzzzv", "Previous search result")
+
+------------------------------------------------------
+----> Directories
+------------------------------------------------------
+
+-- change to current buffer
 u.keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>",
   "Change to buffer location")
 
+-- print current buffer
 u.keymap("n", "<leader>dp", "<CMD>echo expand('%:h')<CR>",
   "Print buffer location")
 
+-- make to current buffer
 u.keymap("n", "<leader>dm",
   "<CMD>call mkdir(expand('%:h'), 'p')<CR>",
   "Make to buffer location")
 
--- List navigation (next/previous)
+------------------------------------------------------
+----> Prepare Ex commands
+------------------------------------------------------
+
+-- :normal
+u.keymap("n", "<leader><leader>n",
+  "<cmd>normal!<space>",
+  "Execute normal command")
+
+-- :vimgrep
+u.keymap("n", "<leader><leader>/",
+  "<cmd><C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
+  "Execute vimgrep")
+
+-- :lhelpgrep
+u.keymap("n", "<leader><leader>?",
+  "<cmd><C-U>lhelpgrep \\c<S-Left>",
+  "Execute lhelpgrep")
+
+------------------------------------------------------
+----> Lists (next/previous)   
+------------------------------------------------------
 
 -- tab
 u.keymap("n", "]t", "<CMD>tabnext<CR>", "Next Tab")
@@ -53,21 +94,27 @@ u.keymap("n", "[B", "<CMD>bfirst<CR>", "First Buffer")
 -- argument
 u.keymap("n", "]a", "<CMD>next<CR>", "Next Argument")
 u.keymap("n", "[a", "<CMD>previous<CR>", "Previous Argument")
+
 -- quickfix
 u.keymap("n", "]q", "<CMD>cnext<CR>", "Next Quickfix")
 u.keymap("n", "[q", "<CMD>cprevious<CR>", "Previous Quickfix")
+
 -- location
 u.keymap("n", "]l", "<CMD>lnext<CR>", "Next Location")
 u.keymap("n", "[l", "<CMD>lprevious<CR>", "Previous Location")
+
 -- jump
 u.keymap("n", "]j", "<C-o>", "Next Jump")
 u.keymap("n", "[j", "<C-i>", "Previous Jump")
+
 -- change
 u.keymap("n", "]c", "g,", "Next Change")
 u.keymap("n", "[c", "g;", "Previous Change")
+
 -- diff conflict
 u.keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
 u.keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
+
 -- diagnostic error
 u.keymap("n", "]e",
   "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
@@ -76,23 +123,46 @@ u.keymap("n", "[e",
   "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
   "Previous Error")
 
--- Create/hide splits
+-- Add blank lines (not a list but same keymap set)
+u.keymap("n", "]<space>",
+  function() u.paste_blank_line(vim.fn.line(".")) end,
+  "Add Space Below")
+
+u.keymap("n", "[<space>",
+  function() u.paste_blank_line(vim.fn.line(".") - 1) end,
+  "Add Space Above")
+
+------------------------------------------------------
+----> Windows
+------------------------------------------------------
+
+u.keymap("n", "<leader>w", "<C-w>", "Windows")
+
+-- hide splits
+u.keymap("n", "<M-q>", "<CMD>hide<CR>", "Hide Window")
+u.keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
+
+-- create vim style splits
 u.keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
 u.keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
-u.keymap("n", "<M-d>", "<CMD>hide<CR>", "Hide Window")
 
--- Window navigation
+-- create tmux style splits
+u.keymap("n", "<M-->", "<C-w>v", "Vertical Split")
+u.keymap("n", "<M-\\>", "<C-w>s", "Horizontal Split")
+
+---- navigate
 u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
 u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
 u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
 u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
+u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-j>", "Focus Window Left")
+u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-k>", "Focus Window Below")
+u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-l>", "Focus Window Above")
+u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-h>", "Focus Window Right")
+u.keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>",
+  "Focus First Floating Window")
 
-u.keymap({ "i", "v" }, "<M-j>", "<Esc><C-w><C-j>")
-u.keymap({ "i", "v" }, "<M-k>", "<Esc><C-w><C-k>")
-u.keymap({ "i", "v" }, "<M-l>", "<Esc><C-w><C-l>")
-u.keymap({ "i", "v" }, "<M-h>", "<Esc><C-w><C-h>")
-
--- Resize windows
+-- resize
 u.keymap("n", "<C-Up>", "<CMD>resize -5<CR>",
   "Decrease Horizontal Window Size")
 u.keymap("n", "<C-Down>", "<CMD>resize +5<CR>",
@@ -102,16 +172,16 @@ u.keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>",
 u.keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>",
   "Increase Vertical Window Size")
 
-u.keymap({ "n", "x" }, "<C-w>f", "<CMD>GotoFirstFloat<CR>",
-  "Focus First Floating Window")
-
--- Move windows
+--  move
 u.keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
 u.keymap("n", "<M-Down>", "<C-w>J", "Move Window Down")
 u.keymap("n", "<M-Up>", "<C-w>K", "Move Window Up")
 u.keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
 
--- Manage tabs
+------------------------------------------------------
+----> Tabs
+------------------------------------------------------
+
 u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New")
 u.keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Only")
 u.keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close")
@@ -119,128 +189,35 @@ u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move")
 u.keymap("n", "<leader>te",
   "<CMD>tabedit <C-r>=expand('%:p:h')<cr>/<CR>", "Edit")
 
--- Navigate buffers
+------------------------------------------------------
+----> Buffers
+------------------------------------------------------
+
+-- navigate
 u.keymap("n", "<S-l>", "<CMD>bnext<CR>", "Next Buffer")
 u.keymap("n", "<S-h>", "<CMD>bprevious<CR>", "Previous Buffer")
 
--- Close buffers
+-- close
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close")
 u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
 u.keymap("n", "<C-s>", "<CMD>write<CR>", "Write")
 u.keymap("n", "<C-q>", "<CMD>Bdelete<CR>", "Close")
 
--- Open new file with the same extension
+-- sudo save the file
+vim.api.nvim_create_user_command("W",
+  "execute 'w !sudo tee % > /dev/null' <Bar> edit!", {})
+u.keymap("n", "<leader>W", "<cmd>W<cr>", "Sudo write")
+
+-- Open new buffer with the current file's same extension
 u.keymap("n", "<leader>bv", "<C-w>v:e %:h/buf.%:e<CR>",
   "New Vertical")
 u.keymap("n", "<leader>bs", "<C-w>s:e %:h/buf.%:e<CR>",
   "New Horizontal")
 
 ------------------------------------------------------
---> Insert
+----> Toggle options
 ------------------------------------------------------
 
--- Press jk fast to enter
-u.keymap("i", "jk", "<ESC>")
-
-------------------------------------------------------
---> Visual
-------------------------------------------------------
-
--- Stay in indent mode
-u.keymap("v", "<", "<gv")
-u.keymap("v", ">", ">gv")
-
--- Better paste
-u.keymap("v", "p", '"_dP')
-
-------------------------------------------------------
---> Vimscript
-------------------------------------------------------
-
-vim.cmd [[
-  " clear search highlights
-  nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
-  inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-  vmap <C-L> <Esc><C-L>gv
-
-  " go to line above/below the cursor, from insert mode
-  inoremap <S-CR> <C-O>o
-  inoremap <C-CR> <C-O>O
-
-  nmap <A-D> "_d
-  nmap <A-C> "_c
-
-
-  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
-  nnoremap <leader><leader>n :normal!<space>
-]]
-
-vim.cmd [[
-" go to next/previous merge conflict hunks
-function! s:conflictGoToMarker(pos, hunk) abort
-    if filter(copy(a:hunk), 'v:val == [0, 0]') == []
-        call cursor(a:hunk[0][0], a:hunk[0][1])
-        return 1
-    else
-        echohl ErrorMsg | echo 'conflict not found' | echohl None
-        call setpos('.', a:pos)
-        return 0
-    endif
-endfunction
-
-function! s:conflictNext(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), [
-                \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
-                \ searchpos('^=======', 'cW'),
-                \ searchpos('^>>>>>>>', 'cW'),
-                \ ])
-endfunction
-
-function! s:conflictPrevious(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), reverse([
-                \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
-                \ searchpos('^=======', 'bcW'),
-                \ searchpos('^<<<<<<<', 'bcW'),
-                \ ]))
-endfunction
-
-
-command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
-command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
-]]
-
-
-vim.cmd [[
-function! ExpandList()
-    silent s/\%V.*\%V/\="\r" . submatch(0)
-            \ ->split(',')
-            \ ->map({ i, v -> v->trim() })
-            \ ->join(",\r") . "\r"/g
-    silent normal ='[
-endfunction
-
-xnoremap <leader>[] :<C-u>call ExpandList()<CR>
-]]
-
-
-vim.cmd [[
-  function! s:GotoFirstFloat() abort
-    for w in range(1, winnr('$'))
-      let c = nvim_win_get_config(win_getid(w))
-      if c.focusable && !empty(c.relative)
-        execute w . 'wincmd w'
-      endif
-    endfor
-  endfunction
-
-  command! GotoFirstFloat call <sid>GotoFirstFloat()
-]]
-------------------------------------------------------
---> Utils
-------------------------------------------------------
-
-
--- Toggle settings
 u.keymap("n", "<leader>sn",
   function() u.toggle_option("relativenumber") end,
   "Toggle relative line number")
@@ -281,11 +258,94 @@ u.keymap("n", "<leader>sy",
   function() u.toggle_option("cursorcolumn") end,
   "Toggle cursorcolumn")
 
--- Add blank lines
-u.keymap("n", "]<space>",
-  function() u.paste_blank_line(vim.fn.line(".")) end,
-  "Add Space Below")
+------------------------------------------------------
+----> Vimscript
+------------------------------------------------------
 
-u.keymap("n", "[<space>",
-  function() u.paste_blank_line(vim.fn.line(".") - 1) end,
-  "Add Space Above")
+-- Random stuff I haven't converted to Lua yet
+vim.cmd [[
+  " clear search highlights
+  nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
+  inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
+  vnoremap <C-L> <Esc><C-L>gv
+
+  " go to line above/below the cursor, from insert mode
+  inoremap <S-CR> <C-O>o
+  inoremap <C-CR> <C-O>O
+
+  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
+]]
+
+
+-- Pressing * or # in Visual mode
+-- searches for the current selection
+vim.cmd [[
+  function! VisualSelection(direction, extra_filter) range
+      let l:saved_reg = @"
+      execute "normal! vgvy"
+
+      let l:pattern = escape(@", "\\/.*'$^~[]")
+      let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+      if a:direction == 'gv'
+          call feedkeys(":Ack '" . l:pattern . "' ")
+      elseif a:direction == 'replace'
+          call feedkeys(":%s/" . l:pattern . "/")
+      endif
+
+      let @/ = l:pattern
+      let @" = l:saved_reg
+  endfunction
+
+  xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+  xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+]]
+
+-- Find and goto merge conflict markers
+vim.cmd [[
+  " go to next/previous merge conflict hunks
+  function! s:conflictGoToMarker(pos, hunk) abort
+      if filter(copy(a:hunk), 'v:val == [0, 0]') == []
+          call cursor(a:hunk[0][0], a:hunk[0][1])
+          return 1
+      else
+          echohl ErrorMsg | echo 'conflict not found' | echohl None
+          call setpos('.', a:pos)
+          return 0
+      endif
+  endfunction
+
+  function! s:conflictNext(cursor) abort
+      return s:conflictGoToMarker(getpos('.'), [
+                  \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
+                  \ searchpos('^=======', 'cW'),
+                  \ searchpos('^>>>>>>>', 'cW'),
+                  \ ])
+  endfunction
+
+  function! s:conflictPrevious(cursor) abort
+      return s:conflictGoToMarker(getpos('.'), reverse([
+                  \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
+                  \ searchpos('^=======', 'bcW'),
+                  \ searchpos('^<<<<<<<', 'bcW'),
+                  \ ]))
+  endfunction
+
+
+  command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
+  command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
+  ]]
+
+-- Go to the first floating window
+vim.cmd [[
+  function! s:GotoFirstFloat() abort
+    for w in range(1, winnr('$'))
+      let c = nvim_win_get_config(win_getid(w))
+      if c.focusable && !empty(c.relative)
+        execute w . 'wincmd w'
+      endif
+    endfor
+  endfunction
+
+  command! GotoFirstFloat call <sid>GotoFirstFloat()
+]]
