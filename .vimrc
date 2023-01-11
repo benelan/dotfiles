@@ -115,6 +115,10 @@ catch
     set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
 endtry
 
+if isdirectory(expand('$HOME/.dotfiles/vendor/fzf'))
+  set runtimepath+=$HOME/.dotfiles/vendor/fzf
+endif
+
 " ----------------------------------------------------------------------
 " | Globals                                                            |
 " ----------------------------------------------------------------------

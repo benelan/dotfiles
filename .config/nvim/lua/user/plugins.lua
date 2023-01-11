@@ -43,7 +43,6 @@ packer.init {
 
 
 -- All the plugins are loaded below
--- The commits are hardcoded for stability
 return packer.startup(function(use)
   -- Load these first
   use {
@@ -257,7 +256,7 @@ return packer.startup(function(use)
   ----> Treesitter
   -----------------------------------------------------------------------------
   use {
-    "nvim-treesitter/nvim-treesitter", -- no explanation needed 🏆
+    "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     event = "BufWinEnter",
     config = function() require "user.setups.treesitter" end,
     requires = {
@@ -266,11 +265,11 @@ return packer.startup(function(use)
         after = "nvim-treesitter"
       },
       {
-        "nvim-treesitter/nvim-treesitter-context",
+        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         after = "nvim-treesitter"
       },
       {
-        "nvim-treesitter/playground", -- for finding queries
+        "nvim-treesitter/playground", -- for creating syntax queries
         after = "nvim-treesitter"
       },
       {
@@ -278,7 +277,7 @@ return packer.startup(function(use)
         after = "nvim-treesitter"
       },
       {
-        "windwp/nvim-ts-autotag", -- auto pair tags
+        "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
         event = "InsertEnter",
         after = "nvim-treesitter"
       },
@@ -331,6 +330,16 @@ return packer.startup(function(use)
       },
     }
   }
+
+  -----------------------------------------------------------------------------
+  ----> Local
+  -----------------------------------------------------------------------------
+
+  if fn.isdirectory("~/.dotfiles/vendor/fzf") then
+    use "~/.dotfiles/vendor/fzf" -- use the local fzf plugin if it's installed
+  end
+
+  -----------------------------------------------------------------------------
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
