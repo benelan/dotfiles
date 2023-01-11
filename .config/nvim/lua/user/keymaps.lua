@@ -349,3 +349,4 @@ vim.cmd [[
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
+

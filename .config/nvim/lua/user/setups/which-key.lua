@@ -71,7 +71,6 @@ local xmappings = {
 
 local mappings = {
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
-  ["w"] = { "<cmd>w!<CR>", "Save" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
 
   b = {

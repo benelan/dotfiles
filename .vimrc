@@ -337,7 +337,7 @@ noremap <leader>sl :<C-U>set list! list?<CR>
 ounmap <leader>sl
 sunmap <leader>sl
 "" toggles line number display
-noremap <leader>sn :call ToggleRelativeLineNumbers()<CR>
+noremap <leader>sn :<C-U>set relativenumber! relativenumber?<CR>
 ounmap <leader>sn
 sunmap <leader>sn
 "" toggles position display in bottom right
@@ -427,9 +427,9 @@ if has("autocmd")
     augroup relative_line_numbers
         autocmd!
         autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
-                    \ if &nu && mode() != "i" | set rnu   | endif
+                    \ if &number && mode() != "i" | set relativenumber   | endif
         autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
-                    \ if &nu | set nornu | endif
+                    \ if &number | set norelativenumber | endif
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,23 +533,6 @@ endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-function! ToggleRelativeLineNumbers()
-    if ( &relativenumber == 1 )
-        set norelativenumber
-    else
-        set relativenumber
-    endif
-endfunction
-
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function! CmdLine(str)
-    call feedkeys(":" . a:str)
-endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 function! VisualSelection(direction, extra_filter) range
     let l:saved_reg = @"
     execute "normal! vgvy"
@@ -597,7 +580,6 @@ endfunction
 " see :h xterm-true-color
 let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
 let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
-set termguicolors
 set background=dark
 
 " https://github.com/sainnhe/gruvbox-material
@@ -634,9 +616,9 @@ hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
 hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
 
 " Statusline colors
-hi User1 guifg=#282828  guibg=#a89984 gui=bold cterm=bold
-hi User2 guifg=#c0ad8e  guibg=#504945 gui=bold cterm=bold
-hi User3 guifg=#ddc7a1  guibg=#32302f gui=bold cterm=bold
+hi User1 guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
+hi User2 guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240
+hi User3 guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
 
 " Highlight current line number differently
 highlight! link CursorLineNr Purple
