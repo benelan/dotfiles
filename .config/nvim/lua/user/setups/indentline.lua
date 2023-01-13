@@ -1,5 +1,6 @@
 local status_ok, indent_blankline = pcall(require, "indent_blankline")
-if not status_ok then return end
+local res_status_ok, res = pcall(require, "user.resources")
+if not status_ok or not res_status_ok then return end
 
 indent_blankline.setup {
   char = "┊",
@@ -7,11 +8,6 @@ indent_blankline.setup {
   show_first_indent_level = true,
   use_treesitter = true,
   show_current_context = true,
-  buftype_exclude = { "terminal", "nofile" },
-  filetype_exclude = {
-    "help",
-    "packer",
-    "NvimTree",
-  },
+  buftype_exclude = res.exclude_buftypes,
+  filetype_exclude = res.exclude_filetypes,
 }
-
