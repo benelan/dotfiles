@@ -3,7 +3,7 @@
 " Shamelessly stolen from:
 " https://vimways.org/2018/transactions-pending/
 
-if exists('g:loaded_custom_text_objects') || &cp | finish | endif
+if exists('g:loaded_ben_text_objects') || &cp | finish | endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Number
@@ -233,4 +233,4 @@ xnoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
 onoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
 
 
-let g:loaded_custom_text_objects = 1
+let g:loaded_ben_text_objects = 1

@@ -1,7 +1,7 @@
 " Delete Buffer, Keep Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-if exists('g:loaded_bdelete_keep_window') || &cp | finish | endif
+if exists('g:loaded_ben_buffer_delete') || &cp | finish | endif
 
 " Don't close window when deleting a buffer
 function s:BdeleteKeepWindow(action, bang)
@@ -26,4 +26,4 @@ command! -bang -complete=buffer -nargs=? Bdelete
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BdeleteKeepWindow("bwipeout", <q-bang>)
 
-let g:loaded_bdelete_keep_window = 1
+let g:loaded_ben_buffer_delete = 1

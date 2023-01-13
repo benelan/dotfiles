@@ -1,4 +1,6 @@
 " https://gist.github.com/PeterRincker/582ea9be24a69e6dd8e237eb877b8978
+if exists('g:loaded_ben_sort_group') || &cp | finish | endif
+
 " :[range]SortGroup[!] [n|f|o|b|x] /{pattern}/
 " e.g. :SortGroup /^header/
 " e.g. :SortGroup n /^header/
@@ -52,3 +54,6 @@ function! s:sort_by_header(bang, pat) range
   call setpos("']", start+len(lines)-1)
 endfunction
 command! -range=% -bang -nargs=+ SortGroup <line1>,<line2>call <SID>sort_by_header(<bang>0, <q-args>)
+
+
+let g:loaded_ben_sort_group = 1
