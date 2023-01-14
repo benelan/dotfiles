@@ -29,7 +29,7 @@ vim.opt.numberwidth = 4                         -- minimal number of columns to 
 vim.opt.signcolumn = "yes"                      -- always show the sign column to prevent text shifting
 vim.opt.wrap = true                             -- display lines as one long line
 vim.opt.linebreak = true                        -- don't wrap in the middle of words
-vim.opt.showbreak = "…"                         -- character disabled before wrapped lines
+vim.opt.showbreak = "…  "                       -- character disabled before wrapped lines
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.sidescrolloff = 8                       -- left/right column padding, only applies when wrap=false
 vim.opt.foldenable = true                       -- enable folding
@@ -56,13 +56,13 @@ vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:,foldclose:,diff: ]]
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:,foldclose:,diff:]]
 -- change invisible characters
-vim.opt.listchars = [[tab:▸ ,extends:»,precedes:«,trail:·,nbsp:_,eol:↴]]
+vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:]]
 -- set fonts with fallbacks for GUI
 vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,monospace:h11"
 -- set term gui colors (most terminals support this)
-if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
+if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end  
 -- add patterns to ignore
 vim.opt.wildignore:append(
   "*~,#*#,*.7z,.DS_Store,.git/*,.hg,.svn," ..
