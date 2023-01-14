@@ -143,7 +143,7 @@ local mappings = {
 
   f = {
     name = "Find",
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
+    b = { "<cmd>Telescope file_browser<cr>", "File Browser" },
     c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     f = { "<cmd>Telescope find_files hidden=true<cr>", "Find File" },
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
@@ -271,8 +271,9 @@ local mappings = {
   T = {
     name = "Treesitter",
     i = { "<cmd>TSConfigInfo<cr>", "Info" },
-    h = { "<cmd>TSBufToggle highlight<cr>", "Toggle highlight" },
+    h = { "<cmd>TSBufToggle highlight<cr>", "Toggle Highlights" },
     u = { "<cmd>TSUpdate<cr>", "Update" },
+    p = { "<cmd>TSPlaygroundToggle<cr>", "Toggle Playground" },
   }
 }
 

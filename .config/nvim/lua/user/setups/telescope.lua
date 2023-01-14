@@ -23,7 +23,7 @@ telescope.setup {
         end,
       },
       vertical = {
-        anchor = 'N',
+        anchor = "N",
         preview_height = 0.5
       },
     },
@@ -67,8 +67,8 @@ telescope.setup {
         ["<Up>"] = telescope_actions.cycle_history_prev,
         ["<C-j>"] = telescope_actions.move_selection_next,
         ["<C-k>"] = telescope_actions.move_selection_previous,
-        ['<tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
-        ['<s-tab>'] = telescope_actions.toggle_selection + telescope_actions.move_selection_previous,
+        ["<tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
+        ["<s-tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_previous,
         ["<esc>"] = telescope_actions.close,
         ["<M-p>"] = telescope_action_layout.toggle_preview,
         ["<M-m>"] = telescope_action_layout.toggle_mirror,
@@ -103,12 +103,17 @@ telescope.setup {
       hidden_files = true,
       -- sync_with_nvim_tree = true,
       base_dirs = {
-        '~/.dotfiles',
-        '~/.config/nvim',
+        "~/.dotfiles",
+        "~/.config/nvim",
       }
-    }
-  }
+    },
+    file_browser = {
+      theme = "ivy",
+      hijack_netrw = true,
+    },
+  },
 }
 
-telescope.load_extension('fzf')
-telescope.load_extension('project')
+telescope.load_extension("fzf")
+telescope.load_extension("project")
+telescope.load_extension("file_browser")

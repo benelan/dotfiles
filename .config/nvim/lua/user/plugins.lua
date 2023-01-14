@@ -243,6 +243,9 @@ return packer.startup(function(use)
       {
         "nvim-telescope/telescope-project.nvim", -- project bookmarks
       },
+      {
+        "nvim-telescope/telescope-file-browser.nvim", -- file browser
+      }
       -- {
       --   "nvim-telescope/telescope-frecency.nvim",
       --   requires = {
