@@ -1,11 +1,12 @@
 -- Setup nvim-cmp.
 local status_ok, npairs = pcall(require, "nvim-autopairs")
-if not status_ok then return end
+local res_status_ok, res = pcall(require, "user.resources")
+if not status_ok or not res_status_ok then return end
 
 npairs.setup({
   ignore_next_char = "[%w%.]",
   check_ts = true, -- treesitter integration
-  disable_filetype = { "TelescopePrompt" },
+  disable_filetype = res.exclude_filetypes,
   disable_in_macro = true,
   ts_config = {
     lua = { "string", "source" },

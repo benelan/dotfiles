@@ -25,26 +25,10 @@ nvim_tree.setup {
     end,
     icons = {
       glyphs = {
-        default = "",
-        symlink = "",
-        folder = {
-          arrow_open = "",
-          arrow_closed = "",
-          default = "",
-          open = "",
-          empty = "",
-          empty_open = "",
-          symlink = "",
-          symlink_open = "",
-        },
         git = {
           unstaged = "",
           staged = "S",
-          unmerged = "",
-          renamed = "➜",
           untracked = "U",
-          deleted = "",
-          ignored = "◌",
         },
       },
     },
@@ -54,7 +38,10 @@ nvim_tree.setup {
       enable = false
     },
     open_file = {
-      quit_on_open = true
+      quit_on_open = true,
+      window_picker = {
+        enable = false,
+      },
     },
   },
   diagnostics = {
