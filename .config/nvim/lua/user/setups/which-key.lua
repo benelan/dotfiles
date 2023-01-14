@@ -73,26 +73,46 @@ local mappings = {
     b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
     n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
     W = { "<cmd>Bwipeout<cr>", "Wipeout" },
+    P = { "<cmd>BufferLineTogglePin", "Pin" },
     e = {
       "<cmd>BufferLinePickClose<cr>",
       "Pick which buffer to close",
     },
-    h = {
+    H = {
       "<cmd>BufferLineCloseLeft<cr>",
       "Close all to the left"
     },
-    l = {
+    L = {
       "<cmd>BufferLineCloseRight<cr>",
       "Close all to the right",
     },
-    D = {
-      "<cmd>BufferLineSortByDirectory<cr>",
-      "Sort by directory",
+    l = {
+      "<cmd>BufferLineMoveNext<cr>",
+      "Move right"
     },
-    L = {
-      "<cmd>BufferLineSortByExtension<cr>",
-      "Sort by language",
+    h = {
+      "<cmd>BufferLineMovePrev<cr>",
+      "Move left",
     },
+    s = {
+      name = "Sort",
+      d = {
+        "<cmd>BufferLineSortByDirectory<cr>",
+        "Directory",
+      },
+      t = {
+        "<cmd>BufferLineSortByTabs<cr>",
+        "Directory",
+      },
+      r = {
+        "<cmd>BufferLineSortByRelativeDirectory<cr>",
+        "Relative directory",
+      },
+      l = {
+        "<cmd>BufferLineSortByExtension<cr>",
+        "Language",
+      },
+    }
   },
 
   D = {

@@ -210,11 +210,12 @@ u.keymap("n", "<leader>te",
 ------------------------------------------------------
 
 -- navigate
-u.keymap("n", "<S-l>", "<CMD>bnext<CR>", "Next Buffer")
-u.keymap("n", "<S-h>", "<CMD>bprevious<CR>", "Previous Buffer")
+u.keymap("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", "Next Buffer")
+u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
 
 -- close
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close")
+u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close")
 u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
 u.keymap("n", "<C-s>", "<CMD>write<CR>", "Write")
 u.keymap("n", "<C-q>", "<CMD>Bdelete<CR>", "Close")
