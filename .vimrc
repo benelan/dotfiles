@@ -200,6 +200,11 @@ if empty(mapcheck('<C-W>', 'i'))
   inoremap <C-W> <C-G>u<C-W>
 endif
 
+"" https://vi.stackexchange.com/a/213
+nnoremap <silent> gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+nnoremap <silent> gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
+vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),'<Bar>')<CR>
 
 "" Fast saving/quitting
 nnoremap <leader>q :q<cr>
@@ -366,7 +371,13 @@ nnoremap <leader><leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 nnoremap <leader></leader>? :<C-U>lhelpgrep \c<S-Left>
 " start ex command for normal
 nnoremap <leader><leader>n :normal!<space>
+" start ex command with previous command
+nnoremap <leader><leader>c :<up>
 
+tnoremap <leader><Esc> <C-\><C-n>
+tnoremap <Esc><Esc> <C-\><C-n>
+tnoremap <S-Space> <Space>
+tnoremap <C-Space> <Space>
 
 " ----------------------------------------------------------------------
 " | Autocommands                                                 |
