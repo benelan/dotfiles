@@ -9,7 +9,7 @@
     "commit": "21a0f25"
   },
   "bufferline.nvim": {
-    "commit": "4ecfa81"
+    "commit": "c7492a7"
   },
   "cmp-buffer": {
     "commit": "3022dbc"
@@ -66,16 +66,16 @@
     "commit": "02cc387"
   },
   "mason-lspconfig.nvim": {
-    "commit": "5bea0e8"
+    "commit": "31d8ed0"
   },
   "mason.nvim": {
-    "commit": "b2b6e4d"
+    "commit": "21a2475"
   },
   "null-ls.nvim": {
-    "commit": "db1c7cb"
+    "commit": "b26851b"
   },
   "nvim-autopairs": {
-    "commit": "b5994e6"
+    "commit": "03580d7"
   },
   "nvim-cmp": {
     "commit": "d09b0c3"
@@ -102,13 +102,19 @@
     "commit": "a06dea1"
   },
   "nvim-tree.lua": {
-    "commit": "e14c289"
+    "commit": "87409bb"
   },
   "nvim-treesitter": {
-    "commit": "6e37050e"
+    "commit": "7c9ddb72"
+  },
+  "nvim-treesitter-context": {
+    "commit": "cacee48"
   },
   "nvim-treesitter-textobjects": {
     "commit": "83a494a"
+  },
+  "nvim-ts-autotag": {
+    "commit": "fdefe46"
   },
   "nvim-ts-context-commentstring": {
     "commit": "32d9627"
@@ -124,6 +130,9 @@
   },
   "packer.nvim": {
     "commit": "dac4088"
+  },
+  "playground": {
+    "commit": "8a887bc"
   },
   "plenary.nvim": {
     "commit": "4b7e520"
@@ -144,15 +153,12 @@
     "commit": "8e8ee37"
   },
   "telescope.nvim": {
-    "commit": "cabf991"
-  },
-  "toggleterm.nvim": {
-    "commit": "b02a167"
+    "commit": "e960efa"
   },
   "vim-illuminate": {
     "commit": "a6d0b28"
   },
   "which-key.nvim": {
-    "commit": "61553ae"
+    "commit": "8682d30"
   }
 }
