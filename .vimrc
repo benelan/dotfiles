@@ -14,7 +14,7 @@ endif
 set number wrap linebreak formatoptions+=l1 cpoptions+=J
 set mouse+=a mousehide clipboard^=unnamed,unnamedplus
 set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
-set showmatch mat=3 ttyfast lazyredraw autoread confirm hidden
+set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
 set nomodeline showcmd nostartofline notitle shortmess+=aIF t_vb=
 set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
@@ -162,7 +162,7 @@ nnoremap <C-u> <C-u>zz
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" go to line above/below the cursor, from insert mode
+"" go to line above/below the cursor, from insert mode
 inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
 
@@ -184,7 +184,7 @@ nnoremap <expr> ,
         \ ? "\<PageDown>"
         \ : ":\<C-U>next\<CR>"
 
-" clear search highlights
+"" clear search highlights
 nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
 inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
 vnoremap <C-L> <Esc><C-L>gv
@@ -212,16 +212,6 @@ nnoremap <leader>* :%s/\<<C-r><C-w>\>//<Left>
 "" search and find line number for
 nnoremap <leader># :g//#<Left><Left>
 
-"" Visual mode pressing * or # searches for the current selection
-xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
-
-"" Split array on to separate lines
-xnoremap <leader>[] :<C-u>call ExpandList()<CR>
-
-" Add Toggle file explorer
-noremap <silent> <leader>e :call ToggleNetrw()<CR>
-
 "" Argument list
 nnoremap [a :previous<CR>
 nnoremap ]a :next<CR>
@@ -243,9 +233,6 @@ nnoremap ]j <C-o>
 "" Change list
 nnoremap [c g;
 nnoremap ]c g,
-"" Diff conflicts
-nnoremap [x :ConflictPreviousHunk<cr>
-nnoremap ]x :ConflictNextHunk<cr>
 
 "" Selecting hunks when using vimdiff as mergetool
 nnoremap <leader>gmU :diffupdate<cr>
@@ -280,9 +267,9 @@ nnoremap <leader>tm :tabmove
 nnoremap <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 "" toggles between this and the last accessed tab
-let g:lasttab = 1
+let s:last_tab = 1
 nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
+au TabLeave * let s:last_tab = tabpagenr()
 
 "" shortcut for window mappings
 nnoremap <leader>w <C-W>
@@ -431,7 +418,7 @@ if has("autocmd")
     augroup relative_line_numbers
         autocmd!
         autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
-                    \ if &number && mode() != "i" | set relativenumber   | endif
+                    \ if &number && mode() != "i" | set relativenumber | endif
         autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
                     \ if &number | set norelativenumber | endif
     augroup END
@@ -454,23 +441,57 @@ endif
 " ----------------------------------------------------------------------
 " | Helper Functions                                                   |
 " ----------------------------------------------------------------------
-let g:NetrwIsOpen=0
 
-function! ToggleNetrw()
-    if g:NetrwIsOpen
-        let i = bufnr("$")
+let s:term_buf_nr = -1
+function! s:ToggleTerminal() abort
+    if s:term_buf_nr == -1
+        execute "botright terminal"
+        let s:term_buf_nr = bufnr("$")
+    else
+        try
+            execute "bdelete! " . s:term_buf_nr
+        catch
+            let s:term_buf_nr = -1
+            call <SID>ToggleTerminal()
+            return
+        endtry
+        let s:term_buf_nr = -1
+    endif
+endfunction
+
+nnoremap <silent> <C-t> :call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-t> <C-w>N:call <SID>ToggleTerminal()<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+let s:netrw_open=0
+function! s:ToggleNetrwLeft()
+    if s:netrw_open
+        let i=bufnr("$")
         while (i >= 1)
             if (getbufvar(i, "&filetype") == "netrw")
                 silent exe "bwipeout " . i
             endif
             let i-=1
         endwhile
-        let g:NetrwIsOpen=0
+        let s:netrw_open=0
     else
-        let g:NetrwIsOpen=1
+        let s:netrw_open=1
         silent Lexplore
     endif
 endfunction
+
+noremap <silent> <leader>E :call <SID>ToggleNetrwLeft()<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+let s:explored=0
+function! s:ToggleNetrw()
+    if s:explored | Rexplore
+    else | let s:explored=1 | Explore | endif
+endfunction
+
+noremap <silent> <leader>e :call <SID>ToggleNetrw()<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -502,12 +523,16 @@ function! s:conflictPrevious(cursor) abort
                 \ ]))
 endfunction
 
-
 command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
 command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
 
+"" Diff conflicts
+nnoremap [x :ConflictPreviousHunk<cr>
+nnoremap ]x :ConflictNextHunk<cr>
+
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+"" Split array on to separate lines
 function! ExpandList()
     silent s/\%V.*\%V/\="\r" . submatch(0)
             \ ->split(',')
@@ -516,6 +541,7 @@ function! ExpandList()
     silent normal ='[
 endfunction
 
+xnoremap <leader>[] :<C-u>call ExpandList()<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -537,6 +563,7 @@ endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+"" Visual mode pressing * or # searches for the current selection
 function! VisualSelection(direction, extra_filter) range
     let l:saved_reg = @"
     execute "normal! vgvy"
@@ -553,6 +580,9 @@ function! VisualSelection(direction, extra_filter) range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
+
+xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
