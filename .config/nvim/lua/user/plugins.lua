@@ -75,7 +75,7 @@ return packer.startup(function(use)
   }
   use {
     "kyazdani42/nvim-tree.lua", -- tree-like file explorer
-    event = "BufWinEnter",
+    event = "VimEnter",
     config = function() require "user.setups.nvim-tree" end,
     tag = "nightly"
   }
