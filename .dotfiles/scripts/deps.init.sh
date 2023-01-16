@@ -152,15 +152,22 @@ function install_starship() {
     fi
 }
 
+# Install helpful bash scripts for git workflows
+# https://github.com/tj/git-extras
+function install_git_extras() {
+    curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh | sudo bash /dev/stdin
+}
+
 # install_fonts_full
 install_fonts_minimal
 install_apt_packages
 install_apt_gui_packages
 install_rust
-install_golang # x86_64 architectures for now
-install_volta # only works on x86_64 architectures for now
+install_golang # only works on x86_64 architectures for now
+install_volta  # only works on x86_64 architectures for now
 install_cargo_packages
 install_go_packages
 install_node_packages
 install_pip_packages
 install_starship
+install_git_extras
