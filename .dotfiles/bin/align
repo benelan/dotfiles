@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+CHAR=${1:?'Missing character to align on.'}
+shift
+exec column -t -s "$CHAR" -o "$CHAR" "$@"
