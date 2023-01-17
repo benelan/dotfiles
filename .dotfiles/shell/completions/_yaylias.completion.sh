@@ -110,30 +110,3 @@ function _init-alias_completion() {
 }
 
 _init-alias_completion
-
-
-# Git Alias Completion
-# -----------------------------------------------------------------------------
-
-# enable git completion for "g" and "dot" aliases
-__git_complete g git
-__git_complete dot git
-
-# add
-__git_complete da git_add
-__git_complete ga git_add
-
-# branch
-__git_complete gb git_branch
-__git_complete gbD git_branch
-__git_complete gba git_branch
-__git_complete gbd git_branch
-__git_complete gbm git_branch
-__git_complete gbt git_branch
-
-# tag
-__git_complete gt git_tag
-__git_complete gta git_tag
-__git_complete gtd git_tag
-__git_complete gtD git_tag
-__git_complete gtl git_tag
