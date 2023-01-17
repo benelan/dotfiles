@@ -67,9 +67,11 @@ unset -v MAILCHECK
 
 # Tool settings
 VOLTA_HOME=~/.volta
+BUN_INSTALL="$HOME/.bun"
 BAT_THEME="gruvbox-dark"
-export VOLTA_HOME BAT_THEME
+export VOLTA_HOME BAT_THEME BUN_INSTALL
 
 NNN_FCOLORS="0404040000000600010F0F02"
 NNN_PLUG='f:finder;o:fzopen;d:diffs;z:autojump'
 export NNN_PLUG NNN_FCOLORS
+

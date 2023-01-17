@@ -52,7 +52,7 @@ for dir in ~/.dotfiles/vendor/{fzf,git-fuzzy}/bin; do
     [ -d "$dir" ] && pathappend "$dir"
 done
 
-for dir in ~/{.dotfiles,.local,.cargo,.volta,go}/bin; do
+for dir in ~/{.dotfiles,.local,.cargo,.volta,.bun/go}/bin; do
     [ -d "$dir" ] && pathappend "$dir"
 done
 
