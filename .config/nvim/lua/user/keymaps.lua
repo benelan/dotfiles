@@ -13,6 +13,8 @@ if not status_ok then return end
 u.keymap("", "<Space>", "<Nop>")
 vim.g.mapleader = " "
 
+u.keymap("n", "<Backspace>", "<C-u>")
+
 -- Press jk to escape
 u.keymap("i", "jk", "<ESC>")
 
@@ -290,10 +292,22 @@ vim.cmd [[
   inoremap <S-CR> <C-O>o
   inoremap <C-CR> <C-O>O
 
-  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
+" clear search highlights or page down or next buffer
+nnoremap <silent> <expr> <CR> 
+      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
+      \ line('w$') < line('$')
+        \ ? "\<PageDown>"
+        \ : ":\<C-U>next\<CR>" }()
 
-  nnoremap <silent> gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-  nnoremap <silent> gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+  " move down jumping over blank lines and indents
+  nnoremap <silent> gj :let _=&lazyredraw<CR>
+  \:set lazyredraw<CR>/\%<C-R>=virtcol(".")
+  \<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
+  " move up jumping over blank lines and indents
+  nnoremap <silent> gk :let _=&lazyredraw<CR>
+  \:set lazyredraw<CR>?\%<C-R>=virtcol(".")
+  \<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 ]]
 
 
