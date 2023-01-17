@@ -177,12 +177,11 @@ vnoremap p "_dP
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
-nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
-
-nnoremap <expr> ,
-  \ line('w$') < line('$')
+nnoremap <silent> <expr> <CR> 
+      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
+      \ line('w$') < line('$')
         \ ? "\<PageDown>"
-        \ : ":\<C-U>next\<CR>"
+        \ : ":\<C-U>next\<CR>" }()
 
 "" clear search highlights
 nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
@@ -499,7 +498,8 @@ noremap <silent> <leader>E :call <SID>ToggleNetrwLeft()<CR>
 let s:explored=0
 function! s:ToggleNetrw()
     if s:explored | Rexplore
-    else | let s:explored=1 | Explore | endif
+    else | let s:explored=1 | Explore
+    endif
 endfunction
 
 noremap <silent> <leader>e :call <SID>ToggleNetrw()<CR>

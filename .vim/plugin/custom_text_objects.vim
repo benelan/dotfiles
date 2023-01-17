@@ -4,6 +4,7 @@
 " https://vimways.org/2018/transactions-pending/
 
 if exists('g:loaded_custom_text_objects') || &cp | finish | endif
+let g:loaded_custom_text_objects = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Number
@@ -231,6 +232,3 @@ onoremap <silent> i<Tab> :<c-u>call <sid>inIndentationTextObject()<cr>
 " around indentation (indentation level and any surrounding empty lines)
 xnoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
 onoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
-
-
-let g:loaded_custom_text_objects = 1
