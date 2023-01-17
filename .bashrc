@@ -18,10 +18,10 @@ esac
 # SHELL - ALIASES
 #---------------------------------------------------------------------------
 # NOTE: don't skip to git alias file, it will break stuff
-for file in ~/.dotfiles/shell/aliases/[!_]*; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
+  [ -r "$aliases" ] && [ -f "$aliases" ] && source "$aliases"
 done
-unset file
+unset aliases
 
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
@@ -30,23 +30,25 @@ unset file
 #---------------------------------------------------------------------------
 # BASH - FUNCTIONS/PROMPT
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
+  [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
-unset file
+unset stuffs
 
 #---------------------------------------------------------------------------
 # BASH - TOOLS
 #---------------------------------------------------------------------------
-for file in ~/.dotfiles/shell/tools/[!_]*; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+for things in ~/.dotfiles/shell/tools/[!_]*; do
+  [ -r "$things" ] && [ -f "$things" ] && source "$things"
 done
+unset things
 
 #---------------------------------------------------------------------------
 # BASH - COMPLETIONS
 #---------------------------------------------------------------------------
 # completions go last because some require
 # their tools/plugins to have already loaded
-for file in ~/.dotfiles/shell/completions/[!_]*; do
-  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+for completions in ~/.dotfiles/shell/completions/[!_]*; do
+  [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
+unset completions
