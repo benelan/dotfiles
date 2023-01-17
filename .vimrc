@@ -706,7 +706,7 @@ set statusline+=\                               " Whitespace
 set statusline+=\                               " Whitespace
 
 " ----------------------------------------------------------------------
-" | Tabline                                                             |
+" | Tabline                                                            |
 " ----------------------------------------------------------------------
 " https://stackoverflow.com/a/33765365
 set tabline=%!MyTabLine()
