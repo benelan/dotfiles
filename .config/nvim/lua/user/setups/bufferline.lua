@@ -95,10 +95,16 @@ bufferline.setup {
       bg = { attribute = 'bg', highlight = 'TabLine' }
     },
     modified = {
-      bg = { attribute = 'bg', highlight = 'TabLine' }
+      bg = { attribute = 'bg', highlight = 'TabLine' },
+      fg = { attribute = 'fg', highlight = 'GitSignsChange' },
     },
     modified_visible = {
-      bg = { attribute = 'bg', highlight = 'TabLine' }
+      bg = { attribute = 'bg', highlight = 'TabLine' },
+      fg = { attribute = 'fg', highlight = 'GitSignsChange' },
+    },
+    modified_selected = {
+      bg = { attribute = 'bg', highlight = 'Normal' },
+      fg = { attribute = 'fg', highlight = 'GitSignsChange' },
     },
     duplicate_visible = {
       bg = { attribute = 'bg', highlight = 'TabLine' },
