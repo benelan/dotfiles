@@ -149,9 +149,9 @@
 
   ; Switch to a branch, creating it if necessary.
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-
-  ; commits and then resets, saving work just in case
-  wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+  
+  ; use fzf to fixup commits to autosquash
+  fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
 
   ; View abbreviated SHA, description, and history graph of the latest 20 commits.
   ll = log --pretty=oneline -n 20 --graph --abbrev-commit
