@@ -3,16 +3,19 @@
   path = ~/.dotfiles/git/gitalias.gitconfig
   ; https://github.com/dandavison/delta
   path = ~/.dotfiles/git/delta.gitconfig
-  ; user info
-  path= ~/.dotfiles/git/personal.gitconfig
+  ; semi-personal info (mostly to prevent bot emails)
+  path = ~/.dotfiles/git/personal.gitconfig
 
-[apply]
-  ; Detect whitespace errors when applying a patch.
-  whitespace = fix
+[github]
+    user = benelan
 
-[branch]
-  ; Show most recently changed branches first.
-  sort = -committerdate
+[user]
+    name = Ben Elan
+    ; email = $(gpg -K | awk '/<.*@.*>/ {gsub("<|>",""); print $7}')
+    ; signingKey = $(gpg -K --keyid-format SHORT | awk 'FNR == 3 {gsub("*\/", ""); print $2}')
+
+; [commit]
+;   gpgSign = true
 
 [core]
   excludesfile = ~/.dotfiles/templates/.gitignore
@@ -30,6 +33,15 @@
   ; Speed up commands involving untracked files such as `git status`.
   ; See https://git-scm.com/docs/git-update-index#_untracked_cache
   untrackedCache = true
+
+[apply]
+  ; Detect whitespace errors when applying a patch.
+  whitespace = fix
+
+[branch]
+  ; Show most recently changed branches first.
+  sort = -committerdate
+
 
 [color]
   ; Use colors in Git commands when possible

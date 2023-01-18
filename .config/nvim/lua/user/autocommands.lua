@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
     vim.highlight.on_yank({
       higroup = "Visual",
-      timeout = 200
+      timeout = 400
     })
   end
 })
@@ -58,20 +58,23 @@ vim.cmd [[
     autocmd!
     autocmd BufNewFile *.html 0r ~/.dotfiles/templates/index.html
     autocmd BufNewFile .gitignore 0r ~/.dotfiles/templates/.gitignore
-    autocmd BufNewFile .eslintrc.js 0r ~/.dotfiles/templates/.eslintrc.js
-    autocmd BufNewFile .prettierrc.js 0r ~/.dotfiles/templates/.prettierrc.js
+    autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/templates/.eslintrc.json
+    autocmd BufNewFile .prettierrc.json 0r ~/.dotfiles/templates/.prettierrc.json
     autocmd BufNewFile LICENSE* 0r ~/.dotfiles/templates/license.md
   augroup END
 ]]
 
 
--- Reload the NeoVim configuration after changes
+-- Reload the NeoVim configuration and current file's module
+local cfg = vim.fn.stdpath('config')
 function ReloadConfig()
-  for name, _ in pairs(package.loaded) do
-    if vim.startswith(name, "user") then
-      package.loaded[name] = nil
+    local s = vim.api.nvim_buf_get_name(0)
+    if string.match(s, '^' .. cfg .. '*') == nil then
+        return
     end
-  end
+    s = string.sub(s, 6 + string.len(cfg), -5)
+    local val = string.gsub(s, '%/', '.')
+    package.loaded[val] = nil
   dofile(vim.env.MYVIMRC)
 end
 
