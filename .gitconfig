@@ -6,14 +6,6 @@
   ; user info
   path= ~/.dotfiles/git/personal.gitconfig
 
-[apply]
-  ; Detect whitespace errors when applying a patch.
-  whitespace = fix
-
-[branch]
-  ; Show most recently changed branches first.
-  sort = -committerdate
-
 [core]
   excludesfile = ~/.dotfiles/templates/.gitignore
   ; Disable line endings output conversion.
@@ -30,6 +22,18 @@
   ; Speed up commands involving untracked files such as `git status`.
   ; See https://git-scm.com/docs/git-update-index#_untracked_cache
   untrackedCache = true
+
+[commit]
+  gpgSign = true
+
+[apply]
+  ; Detect whitespace errors when applying a patch.
+  whitespace = fix
+
+[branch]
+  ; Show most recently changed branches first.
+  sort = -committerdate
+
 
 [color]
   ; Use colors in Git commands when possible
