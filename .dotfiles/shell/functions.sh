@@ -404,7 +404,7 @@ function gcopy() {
 # commit changes that will cleaned up later during rebase
 gwip() {
     git add -A
-    git commit -qm "!fixup WIP POINT > $(date -Iseconds)"
+    git commit -qm "chore: WIP $(date -Iseconds)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,8 +412,8 @@ gwip() {
 # commit all changes for safety and reset
 greset() {
     git add -A
-    git commit -qm "!fixup RESET POINT > $(date -Iseconds)"
-    git reset HEAD --hard
+    git commit -qm "chore: RESET $(date -Iseconds)"
+    git reset HEAD~1 --hard
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
