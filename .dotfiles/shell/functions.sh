@@ -418,6 +418,21 @@ greset() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# git clone bare worktree
+# clones a bare repo for use with git-worktree
+# https://git-scm.com/docs/git-worktree
+gclbwt() {
+    dir="${2:-"$(basename "$1" .git)"}"
+    mkdir "$dir"
+    cd "$dir" || return
+    git clone --bare "$1" .git
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git fetch origin
+    unset dir
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # git checkout branch (cleaned)
 # Creates a new, up to date branch with all of the changes
 # from the current branch, but without the messy commit history.
