@@ -19,8 +19,9 @@ if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
     PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
-# Enable `vi` editing mode.
+# Use vi editing mode instead of emacs
 set -o vi
+set +o emacs
 
 # Correct small errors in directory names given to the `cd` builtin
 shopt -s cdspell
@@ -65,7 +66,8 @@ shopt -s no_empty_cmd_completion
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
+# Disable <CTRL-D> which is used to exit the shell
+set -o ignoreeof
 # Tab completion setup
 bind '"\t":menu-complete'
 bind "set show-all-if-ambiguous on"
