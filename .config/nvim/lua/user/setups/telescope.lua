@@ -105,10 +105,13 @@ telescope.setup {
       base_dirs = {
         "~/.dotfiles",
         "~/.config/nvim",
+        "~/dev/work/calcite-components",
+        "~/dev/work/calcite-components-examples",
+        "~/dev/work/arcgis-esm-samples",
       }
     },
     file_browser = {
-      theme = "ivy",
+      -- theme = "ivy",
       hijack_netrw = false,
     },
   },
