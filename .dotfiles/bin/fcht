@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+languages=(
+  astro bash css golang html javascript lua nodejs perl python
+  react rust svelte tmux typescript vimscript vue zig
+)
+
+commands=(
+  apt awk basename cargo cat chmod chown cp cp docker docker-compose
+  find fzf git git-commit git-rebase git-status git-worktree grep
+  head jq kill less ls lsof make man mv npm ps rename rg rm sed
+  sort ssh stow tail tar tr xargs
+)
+
+selected="$(printf '%s\n%s\n' "${languages[@]}" "${commands[@]}" | fzf)"
+[[ -z "$selected" ]] && exit 0
+
+read -rp "Enter Query: " query
+query="${query// /+}"
+
+separator="/"
+echo "${commands[@]}" | grep -qw "$selected" && separator="~"
+
+tmux neww bash -c "curl -s cht.sh/$selected$separator$query | less"
+
+unset languages commands selected query separator
