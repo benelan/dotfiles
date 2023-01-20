@@ -1,0 +1,10 @@
+[Unit]
+Description=Remap keys in X11
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 10
+ExecStart=/bin/sh -c "command -v setxkbmap >/dev/null 2>/dev/null && setxkbmap -option -option caps:ctrl_modifier -option terminate:ctrl_alt_bksp -option shift:both_capslock_cancel"
+
+[Install]
+WantedBy=org.gnome.SettingsDaemon.XSettings.target
