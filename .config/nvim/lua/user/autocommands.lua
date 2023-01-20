@@ -16,6 +16,19 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end
 })
 
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.fn.execute("startinsert")
+  end
+})
+vim.api.nvim_create_autocmd({ "BufLeave" }, {
+  pattern = { "term://*" },
+  callback = function()
+    vim.fn.execute("stopinsert")
+  end
+})
+
 vim.api.nvim_create_autocmd({ "VimResized" }, {
   callback = function()
     vim.cmd("tabdo wincmd =")
