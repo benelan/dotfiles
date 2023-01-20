@@ -12,11 +12,14 @@ indent_size = 2
 spaces_around_operators = true
 spaces_around_brackets = false
 
-# JavaScript-specific settings
-[.js]
+# JavaScript/TypeScript-specific settings
+[*.{js,jsx,ts,tsx}]
 quote_type = single
 curly_bracket_next_line = false
 
 # HTML-specific settings
-[.html]
+[*.html]
 quote_type = double
+
+[*.vim]
+indent_size = 4

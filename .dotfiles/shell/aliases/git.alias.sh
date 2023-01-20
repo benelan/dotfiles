@@ -83,6 +83,7 @@ alias gcpx='git cherry-pick -x'
 alias gdf='git diff'
 alias gdfs='git diff --staged'
 alias gdft='git difftool'
+alias gdfe='$EDITOR $(git diff --name-only)'
 
 # archive
 ##########
@@ -319,6 +320,7 @@ alias dcpD='dot checkout "$(dbdefault)"; dot pull; dot branch -D'
 alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
+alias ddfe='$EDITOR $(dot diff --name-only)'
 
 # fetch
 ########

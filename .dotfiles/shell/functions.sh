@@ -32,22 +32,21 @@ function paste() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# toggle sudo at the beginning of the current or the previous command by hitting the ESC key twice
-function sudo-command-line() {
-    [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
-    if [[ $READLINE_LINE == sudo\ * ]]; then
-        READLINE_LINE="${READLINE_LINE#sudo }"
-    else
-        READLINE_LINE="sudo $READLINE_LINE"
-    fi
-    READLINE_POINT=${#READLINE_LINE}
-}
-
-# Define shortcut keys: [Esc] [Esc]
-
 # Readline library requires bash version 4 or later
 # shellcheck disable=2128
 if [ "$BASH_VERSINFO" -ge 4 ]; then
+    # toggle sudo at the beginning of the current or the
+    # previous command by hitting the ESC key twice
+    function sudo-command-line() {
+        [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
+        if [[ $READLINE_LINE == sudo\ * ]]; then
+            READLINE_LINE="${READLINE_LINE#sudo }"
+        else
+            READLINE_LINE="sudo $READLINE_LINE"
+        fi
+        READLINE_POINT=${#READLINE_LINE}
+    }
+    # Define shortcut keys: [Esc] [Esc]
     bind -x '"\e\e": sudo-command-line'
 fi
 
@@ -454,7 +453,7 @@ function gcob-cleaned() {
 # Checkout a branch based on search term.
 # If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
 # Otherwise, checkout the most recently committed branch that matches the query
-gfco() {
+fgco() {
     # [arg1] search term
     # [arg2..n] options to pass fzf
     # [usage] to checkout "benelan/2807-fix-slot-doc":
@@ -493,7 +492,7 @@ function gcof() {
     gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
 }
 # checkout master, pull, find and checkout branch, merge master/main
-function gcofm() {
+function gcofup() {
     git checkout "$(gbdefault)"
     git pull
     gcof "$@"
@@ -513,7 +512,9 @@ function gcoup() {
     local branch_name
     branch_name="$(git config github.user)/$1"
     if git show-ref --verify --quiet "refs/heads/$branch_name"; then
-        git checkout "$branch_name"; else git checkout -b "$branch_name"
+        git checkout "$branch_name"
+    else
+        git checkout -b "$branch_name"
     fi
     git merge "$(gbdefault)"
 }

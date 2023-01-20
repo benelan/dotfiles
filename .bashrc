@@ -28,7 +28,7 @@ unset aliases
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
 #---------------------------------------------------------------------------
-# BASH - FUNCTIONS/PROMPT
+# BASH - FUNCTIONS/OPTIONS/PROMPT
 #---------------------------------------------------------------------------
 for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
   [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"

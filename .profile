@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=1090
 
 #-----------------------------#
 # SHELL - PATHS               #

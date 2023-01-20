@@ -46,6 +46,22 @@ fgsget() {
         done
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+command -v setxkbmap >/dev/null 2>/dev/null &&
+    # Remaps CapsLock with an option selected via fzf
+    # Note this only works in X11
+    function remap-capslock() {
+        [[ -f /usr/share/X11/xkb/rules/base.lst ]] &&
+            selected="$(
+                grep -Eo "caps:\w*" /usr/share/X11/xkb/rules/base.lst |
+                    fzf --exit-0 --select-1 --reverse --cycle \
+                        --header='Remap CapsLock' --height=15
+            )"
+        setxkbmap -option -option "${selected:-caps:ctrl_modifier}"
+        unset selected
+    }
+
 ###############################################################################
 # Functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples #
 ###############################################################################
