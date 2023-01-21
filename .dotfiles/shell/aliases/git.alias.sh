@@ -282,8 +282,7 @@ alias dci='dot commit --interactive'
 alias dco='dot checkout'
 alias dcb='dot checkout -b'
 alias dcob='dot checkout -b'
-lias dcom='dot checkout master'
-alias dcpD='dot checkout master; dot pull; dot branch -D'
+alias dcom='dot checkout master'
 
 # diff
 #######

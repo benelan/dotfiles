@@ -63,7 +63,7 @@ alias fastping='ping -c 30 -i.2'
 alias flushdns='sudo /etc/init.d/dns-clean restart && echo DNS cache flushed'
 
 # Output all matched Git SHA ranges (e.g., 123456..654321)
-alias match-git-range ="grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'"
+alias match-git-range="grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'"
 
 # Output all matched IP addresses
 alias match-ip="grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'"
