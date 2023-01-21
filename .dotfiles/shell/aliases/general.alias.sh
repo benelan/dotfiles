@@ -9,19 +9,12 @@ alias plz='sudo $(fc -ln -1)'
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
 
-# Searches history.
-alias h='history_search'          # see file `functions`
-alias hs='history_session_search' # see file `functions`
-
 alias md='mkdir -p'
 alias rd='rmdir'
 alias rr='rm -rf'
 # Creates parent directories on demand.
 alias mkdir='mkdir -pv'
 
-# copy/paste from clipboard
-alias cc="echo @{0} | tr -d '\n' | xclip -selection c"
-alias pc="echo @{0} | xclip -selection c -o"
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
@@ -81,9 +74,6 @@ alias paths='echo -e ${PATH//:/\\n}'
 alias edit='${EDITOR:-vim}'
 alias e='edit'
 alias se='sudo e'
-alias vis='vim "+set si"'
-alias snano='sudo nano'
-alias svim='sudo ${VISUAL:-vim}'
 alias vimh='vim -c ":h | only"'
 
 # Reloas the shell.
@@ -98,7 +88,6 @@ alias map="xargs -n1"
 # -----------------------------------------------------------------------------
 
 alias cd..='cd ..' # Common misspelling for going up one directory
-alias ~="cd ~"     # `cd` is probably faster to type though
 alias -- -='cd -'  # Go back
 
 alias ..="cd .."
@@ -106,37 +95,12 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-# Shortcuts
-alias dv="cd ~/dev"
-alias dls="cd ~/Downloads"
-alias dktp="cd ~/Desktop"
-alias dcs="cd ~/Documents"
-alias dts="cd ~/.dotfiles"
-alias nvcnf="cd ~/.config/nvim"
-
 # Time
 # -----------------------------------------------------------------------------
 
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
 alias now='date +"%Y-%m-%dT%H:%M:%S"'
 alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
-
-# Gets date in `YYYY-MM-DD` format`
-alias nowdate='date +"%Y-%m-%d"'
-alias unowdate='date -u +"%Y-%m-%d"'
-
-# Gets time in `hh:mm:ss` format`
-alias nowtime='date +"%T"'
-alias unowtime='date -u +"%T"'
-
-# Gets Unix time stamp`
-alias timestamp='date -u +%s'
-
-# Gets week number in ISO-8601 format `YYYY-Www`.
-alias week='date +"%Y-W%V"'
-
-# Gets weekday number.
-alias weekday='date +"%u"'
 
 # Weather
 # -----------------------------------------------------------------------------

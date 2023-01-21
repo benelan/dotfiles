@@ -27,12 +27,7 @@ alias gbir="git bisect reset"
 # branch
 #########
 alias gb='git branch'
-alias gbd='git branch --delete'
 alias gbD='git branch --delete --force'
-alias gba='git branch --all'
-alias gbm='git branch --move'
-alias gbl="git branch --list"
-alias gbt='git branch --track'
 
 # for-each-ref
 ###############
@@ -60,21 +55,14 @@ alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gcobu='git checkout -b ${USER}/'
 alias gcom='git checkout "$(gbdefault)"'
-alias gcopD='git checkout "$(gbdefault)"; git pull; git branch -D'
-alias gcot='git checkout --track'
 
 # clone
 ########
 alias gcl='git clone'
 
-# clean
-########
-alias gclean='git clean -fd'
-
 # cherry-pick
 ##############
 alias gcp='git cherry-pick'
-alias gcpx='git cherry-pick -x'
 
 # diff
 #######
@@ -83,16 +71,10 @@ alias gdfs='git diff --staged'
 alias gdft='git difftool'
 alias gdfe='$EDITOR $(git diff --name-only)'
 
-# archive
-##########
-alias gexport='git archive --format zip --output'
-
 # fetch
 ########
 alias gf='git fetch --all --prune'
 alias gft='git fetch --all --prune --tags'
-alias gftv='git fetch --all --prune --tags --verbose'
-alias gfv='git fetch --all --prune --verbose'
 alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 alias gup='git fetch && git rebase'
 
@@ -125,10 +107,6 @@ alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
 alias gmt='git mergetool'
 
-# mv
-#####
-alias gmv='git mv'
-
 # patch
 ########
 alias gpatch='git format-patch -1'
@@ -147,17 +125,10 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 alias gplum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
 alias gplp='git pull && git push'
-alias gplr='git pull --rebase'
 
 # remote
 #########
 alias gr='git remote'
-alias gra='git remote add'
-alias grv='git remote -v'
-
-# rm
-#####
-alias grm='git rm'
 
 # rebase
 #########
@@ -181,8 +152,6 @@ alias gpristine='git reset --hard && git clean -dfx'
 # status
 #########
 alias gs='git status'
-# set default to short in .gitconfig
-alias gsl='git status -l'
 
 # shortlog
 ###########
@@ -287,10 +256,6 @@ alias dabin="dot add ${HOME}/.dotfiles/bin/*"
 #########
 alias db='dot branch'
 alias dbD='dot branch --delete --force'
-alias dba='dot branch --all'
-alias dbd='dot branch --delete'
-alias dbm='dot branch --move'
-alias dbt='dot branch --track'
 
 # commit
 #########
@@ -311,11 +276,6 @@ alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
 alias ddfe='$EDITOR $(dot diff --name-only)'
-
-# fetch
-########
-alias df='dot fetch --all --prune'
-alias dft='dot fetch --all --prune --tags'
 
 # files
 ########

@@ -5,9 +5,6 @@ alias hosts='sudo $EDITOR /etc/hosts'
 # searchable process list
 alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
-# Display drives and space in human readable format
-alias drives='df -h'
-
 # pass options to free
 alias meminfo='free -m -l -t'
 
@@ -18,9 +15,6 @@ alias psmem10='ps auxf | sort -nrk 4 | head -10 | perl -e "print reverse <>"'
 # get top process eating cpu
 alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 alias pscpu10='ps auxf | sort -nrk 3 | head -10 | perl -e "print reverse <>"'
-
-# Get server cpu info
-alias cpuinfo='lscpu'
 
 # get GPU ram on desktop / laptop
 alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log'
@@ -34,15 +28,6 @@ alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
 alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
 alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
 alias firewall=iptlist
-
-# get web server headers
-alias header='curl -I'
-
-# find out if remote server supports gzip / mod_deflate or not
-alias headerc='curl -I --compress'
-
-# Prints each $PATH entry on a separate line
-alias path='echo -e ${PATH//:/\\n}'
 
 # systemd shortcuts (Linux)
 alias sc='systemctl'
@@ -115,4 +100,3 @@ alias dockstats='docker stats $(docker ps -q)'
 alias dockimg='docker images'
 # prune everything
 alias dockprune='docker system prune -a'
-
