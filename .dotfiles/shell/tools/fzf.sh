@@ -484,7 +484,7 @@ fgstash() {
 
 if is-supported jq; then
     # run npm script
-    fnst() {
+    fnr() {
         npm run "$(jq -r '.scripts | keys[] ' <package.json | sort | fzf)"
     }
 
