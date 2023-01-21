@@ -284,8 +284,11 @@ gwip() {
 # git reset
 # commit all changes for safety and reset
 greset() {
-    git add -A && git commit -qm "chore: RESET $(date -Iseconds)"
-    git reset HEAD~1 --hard
+    timestamp="$(date -Iseconds)"
+    git add -A && git commit -qm "chore: RESET $timestamp"
+    git reset HEAD~1
+    git stash push -m "RESET $timestamp"
+
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -494,3 +497,4 @@ colors() {
 function mcd() {
     mkdir -p -- "$@" && cd -- "${!#}" || return
 }
+

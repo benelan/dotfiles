@@ -14,13 +14,13 @@ alias nui='npm uninstall'
 alias nst='npm start'
 alias nlk='npm link'
 alias nod='npm outdated'
-alias nr='npm run'
 alias nt='npm test'
-alias nbd='npm run build'
+alias nr='npm run'
+alias nrb='npm run build'
 
 # npx
-alias npxplz='npx $(fc -ln -1)'
 alias npxncu='npx npm-check-updates'
+alias npxplz='npx $(fc -ln -1)'
 
 is-supported fzf && is-supported npm-fuzzy || return
 
@@ -28,3 +28,4 @@ alias nfz="npm-fuzzy"
 alias nfzs="npm-fuzzy search"
 alias nfzl="npm-fuzzy ls-versions"
 alias nfzu="npm-fuzzy uninstall"
+

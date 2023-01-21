@@ -133,3 +133,4 @@ alias lock='gnome-screensaver-command --lock'
 
 alias gsschemas='gsettings list-schemas | grep -i'
 alias gskeys='gsettings list-keys'
+

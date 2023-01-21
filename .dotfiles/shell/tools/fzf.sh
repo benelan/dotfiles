@@ -451,3 +451,4 @@ if is-supported jq; then
 ' | fzf --prompt 'Search emojis > ' | cut -f1
     }
 fi
+
