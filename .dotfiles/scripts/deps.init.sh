@@ -100,6 +100,15 @@ function install_volta() {
 function install_cargo_packages() {
     # shellcheck disable=2046
     cargo install --locked $(cat "$HOME/.dotfiles/deps/cargo")
+
+    mkdir -p ~/.local/bin
+
+    # link batcat to bat due to package name conflict
+    [[ ! "$(type -P bat)" ]] && [[ "$(type -P batcat)" ]] &&
+        ln -s "$(type -P batcat)" ~/.local/bin/bat
+    # link fdfind to fd
+    [[ ! "$(type -P fd)" ]] && [[ "$(type -P fdfind)" ]] &&
+        ln -s "$(type -P fdfind)" ~/.local/bin/fd
 }
 
 # Install global Node packages
