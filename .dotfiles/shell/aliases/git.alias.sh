@@ -246,7 +246,6 @@ alias ehome="edot ~"
 alias envim="edot ~/.config/nvim/init.lua"
 
 alias d='dot'
-alias dbdefault='basename "$(dot rev-parse --abbrev-ref origin/HEAD)"'
 
 # add
 ######
@@ -283,7 +282,8 @@ alias dci='dot commit --interactive'
 alias dco='dot checkout'
 alias dcb='dot checkout -b'
 alias dcob='dot checkout -b'
-alias dcom='dot checkout "$(dbdefault)"'
+lias dcom='dot checkout master'
+alias dcpD='dot checkout master; dot pull; dot branch -D'
 
 # diff
 #######
