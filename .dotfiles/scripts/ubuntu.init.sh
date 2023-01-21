@@ -13,6 +13,8 @@ function install_apt_gui_packages() {
     sudo apt install $(cat "$HOME/.dotfiles/deps/apt-gui")
 }
 
+# Install VS Code
+# https://code.visualstudio.com/docs/setup/linux
 function install_vscode() {
     curl -ssLo ~/.dotfiles/cache/vscode.deb \
         "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
@@ -29,12 +31,16 @@ function install_protonvpn_cli() {
     sudo apt install protonvpn-cli
 }
 
+# Install Discord
+# https://discord.com/download
 function install_discord() {
     curl -sSLo ~/.dotfiles/cache/discord.deb https://discord.com/api/download?platform=linux\&format=deb
     sudo apt install ~/.dotfiles/cache/discord.deb
     sudo apt-get update
 }
 
+# Install Docker
+# https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
     sudo mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpgecho \
@@ -45,6 +51,8 @@ function install_docker() {
     sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 }
 
+# Install GitHub CLI
+# https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 function install_gh_cli() {
     type -p curl >/dev/null || sudo apt install curl -y
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
