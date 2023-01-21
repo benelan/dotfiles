@@ -9,7 +9,7 @@ is-supported npm || return
 
 # npm
 alias ni='npm install'
-alias nri="rm -rf node_modules && npm install"
+alias nrmi="rm -rf node_modules && npm install"
 alias nui='npm uninstall'
 alias nst='npm start'
 alias nlk='npm link'
@@ -28,4 +28,3 @@ alias nfz="npm-fuzzy"
 alias nfzs="npm-fuzzy search"
 alias nfzl="npm-fuzzy ls-versions"
 alias nfzu="npm-fuzzy uninstall"
-
