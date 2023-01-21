@@ -9,13 +9,13 @@ is-supported npm || return
 
 # npm
 alias ni='npm install'
-alias nri="rm -rf node_modules && npm install"
+alias nrmi="rm -rf node_modules && npm install"
 alias nis='npm install --save'
 alias nid='npm install --save-dev'
 alias nit='npm install-test'
 alias nits='npm install-test --save'
 alias nitd='npm install-test --save-dev'
-alias nu='npm uninstall'
+alias nui='npm uninstall'
 alias nus='npm uninstall --save'
 alias nusd='npm uninstall --save-dev'
 alias nst='npm start'
@@ -29,7 +29,7 @@ alias nr='npm run'
 alias nls='npm list --depth=0 2>/dev/null'
 alias nlsg='npm list -g --depth=0 2>/dev/null'
 alias nt='npm test'
-alias ncd="npm-check -su"
+alias nrb='npm run build'
 
 # npx
 alias nx='npx'
@@ -49,6 +49,7 @@ alias nxniq='npx --no-install --ignore-existing -q '
 alias nxiqp='npx --ignore-existing -q -p '
 alias nxniqp='npx --no-install --ignore-existing -q -p '
 alias npxncu='npx npm-check-updates'
+alias npxplz='npx $(fc -ln -1)'
 
 is-supported fzf && is-supported npm-fuzzy || return
 
@@ -56,3 +57,4 @@ alias nfz="npm-fuzzy"
 alias nfzs="npm-fuzzy search"
 alias nfzl="npm-fuzzy ls-versions"
 alias nfzu="npm-fuzzy uninstall"
+

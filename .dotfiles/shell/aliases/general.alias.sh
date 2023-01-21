@@ -23,7 +23,7 @@ alias mkdir='mkdir -pv'
 alias cc="echo @{0} | tr -d '\n' | xclip -selection c"
 alias pc="echo @{0} | xclip -selection c -o"
 # copy to clipboard from file
-alias ccf="xclip -se c <"
+alias cbf="xclip -se c <"
 
 # Directory listing/traversal
 
@@ -169,3 +169,4 @@ alias lock='gnome-screensaver-command --lock'
 
 alias gsschemas='gsettings list-schemas | grep -i'
 alias gskeys='gsettings list-keys'
+

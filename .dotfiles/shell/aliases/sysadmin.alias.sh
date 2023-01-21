@@ -48,13 +48,13 @@ alias path='echo -e ${PATH//:/\\n}'
 alias sc='systemctl'
 alias scu='systemctl --user'
 alias scdr='systemctl daemon-reload'
-alias scdru='systemctl --user daemon-reload'
+alias scudr='systemctl --user daemon-reload'
 alias scr='systemctl restart'
-alias scru='systemctl --user restart'
-alias sce='systemctl stop'
-alias sceu='systemctl --user stop'
+alias scur='systemctl --user restart'
+alias scq='systemctl stop'
+alias scuq='systemctl --user stop'
 alias scs='systemctl start'
-alias scsu='systemctl --user start'
+alias scus='systemctl --user start'
 
 # Networking
 # -----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ unset method
 # display names of running containers
 alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
 # delete every containers / images
-alias dockRr='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
 alias dockstats='docker stats $(docker ps -q)'
 # stats on images
 # list images installed
