@@ -101,28 +101,6 @@ function s() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Output all matched Git SHA ranges (e.g., 123456..654321)
-function match-git-ranges() {
-    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched IP addresses
-function match-ips() {
-    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched URLs
-function match-urls() {
-    # shellcheck disable=2016
-    grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # open vim help pages from shell prompt
 function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
@@ -368,7 +346,7 @@ function ips() {
     elif is-supported ip; then
         ip addr | grep -oP 'inet \K[\d.]+'
     else
-        echo "You don't have ifconfig or ip command installed!"
+        echo "Install ifconfig or ip"
     fi
 }
 
@@ -389,30 +367,18 @@ function myip() {
 # Git
 #---------------------------------------------------------------------------------
 
-# https://git.wiki.kernel.org/index.php/ExampleScripts#Copying_all_changed_files_from_the_last_N_commits
-# $ gcopy "/destination/path" number_of_revisions
-function gcopy() {
-    for file in $(dot diff-tree master~"$2" master --name-only -r); do
-        cp --parents "$file" "$1"
-    done
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # git wip (work in progress)
 # commit changes that will cleaned up later during rebase
 gwip() {
-    git add -A
-    git commit -qm "chore: WIP $(date -Iseconds)"
+    git add -A && git commit -qm "chore: WIP $(date -Iseconds)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # git reset
 # commit all changes for safety and reset
 greset() {
-    git add -A
-    git commit -qm "chore: RESET $(date -Iseconds)"
-    git reset HEAD~1 --hard
+    git add -A && git commit -qm "chore: RESET $(date -Iseconds)"
+    git reset HEAD~1
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -565,16 +531,16 @@ function gxbigblobs() {
 # Examples:
 #   $ declare -a fruits=(apple orange pear mandarin)
 #
-#   $ _array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
+#   $ array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
 #   contains apple
 #
-#   $ if _array-contains-element pear "${fruits[@]}"; then
+#   $ if array-contains-element pear "${fruits[@]}"; then
 #       echo "contains pear!"
 #     fi
 #   contains pear!
 #
 #
-function _array-contains-element() {
+function array-contains-element() {
     local e element="${1?}"
     shift
     for e in "$@"; do
@@ -584,7 +550,7 @@ function _array-contains-element() {
 }
 
 # Dedupe an array (without embedded newlines).
-function _array-dedup() {
+function array-dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
@@ -724,3 +690,4 @@ color-grid() {
 function mcd() {
     mkdir -p -- "$@" && cd -- "${!#}" || return
 }
+

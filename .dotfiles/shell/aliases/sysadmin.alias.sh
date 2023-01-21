@@ -77,11 +77,14 @@ alias fastping='ping -c 30 -i.2'
 # Flushes the DNS cache
 alias flushdns='sudo /etc/init.d/dns-clean restart && echo DNS cache flushed'
 
-# Gets all IP addresses
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+# Output all matched Git SHA ranges (e.g., 123456..654321)
+alias match-git-range="grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'"
 
-# Gets local IP address
-alias localip="ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'"
+# Output all matched IP addresses
+alias match-ip="grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'"
+
+# Output all matched URIs
+alias match-uri="grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'"
 
 # Gets external IP address
 if command -v dig >/dev/null 2>&1; then
@@ -112,6 +115,4 @@ alias dockstats='docker stats $(docker ps -q)'
 alias dockimg='docker images'
 # prune everything
 alias dockprune='docker system prune -a'
-# run as the host user
-alias dockceu='docker-compose run --rm -u $(id -u):$(id -g)'
-alias dockce='docker-compose run --rm'
+
