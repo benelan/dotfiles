@@ -95,17 +95,6 @@ function install_volta() {
     fi
 }
 
-# Install packages for Ubuntu/Debian
-# https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
-function install_apt_packages() {
-    # shellcheck disable=2046
-    sudo apt install $(cat "$HOME/.dotfiles/deps/apt")
-}
-function install_apt_gui_packages() {
-    # shellcheck disable=2046
-    sudo apt install $(cat "$HOME/.dotfiles/deps/apt-gui")
-}
-
 # Install Rust CLI tools
 # https://crates.io
 function install_cargo_packages() {
@@ -160,8 +149,6 @@ function install_git_extras() {
 
 # install_fonts_full
 install_fonts_minimal
-install_apt_packages
-install_apt_gui_packages
 install_rust
 install_golang # only works on x86_64 architectures for now
 install_volta  # only works on x86_64 architectures for now
