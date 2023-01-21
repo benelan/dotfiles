@@ -73,5 +73,3 @@ keybindings:
 repoPaths:
   Esri/*: ~/dev/work/*
   ArcGIS/*: ~/dev/work/*
-  benelan/*: ~/dev/personal/*
-  # *: ~/dev/* # consider putting all repos in a single directory
