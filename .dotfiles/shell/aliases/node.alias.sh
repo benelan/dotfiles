@@ -10,17 +10,16 @@ is-supported npm || return
 # npm
 alias ni='npm install'
 alias nri="rm -rf node_modules && npm install"
-alias nu='npm uninstall'
+alias nui='npm uninstall'
 alias nst='npm start'
 alias nlk='npm link'
 alias nod='npm outdated'
 alias nr='npm run'
 alias nt='npm test'
+alias nbd='npm run build'
 
 # npx
 alias npxplz='npx $(fc -ln -1)'
-alias nxn='npx --no-install '
-alias nxni='npx --no-install --ignore-existing '
 alias npxncu='npx npm-check-updates'
 
 is-supported fzf && is-supported npm-fuzzy || return
