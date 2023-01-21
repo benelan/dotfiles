@@ -5,9 +5,6 @@ alias hosts='sudo $EDITOR /etc/hosts'
 # searchable process list
 alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
-# Display drives and space in human readable format
-alias drives='df -h'
-
 # pass options to free
 alias meminfo='free -m -l -t'
 
@@ -18,9 +15,6 @@ alias psmem10='ps auxf | sort -nrk 4 | head -10 | perl -e "print reverse <>"'
 # get top process eating cpu
 alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 alias pscpu10='ps auxf | sort -nrk 3 | head -10 | perl -e "print reverse <>"'
-
-# Get server cpu info
-alias cpuinfo='lscpu'
 
 # get GPU ram on desktop / laptop
 alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log'
@@ -35,26 +29,17 @@ alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
 alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
 alias firewall=iptlist
 
-# get web server headers
-alias header='curl -I'
-
-# find out if remote server supports gzip / mod_deflate or not
-alias headerc='curl -I --compress'
-
-# Prints each $PATH entry on a separate line
-alias path='echo -e ${PATH//:/\\n}'
-
 # systemd shortcuts (Linux)
 alias sc='systemctl'
 alias scu='systemctl --user'
 alias scdr='systemctl daemon-reload'
-alias scdru='systemctl --user daemon-reload'
+alias scudr='systemctl --user daemon-reload'
 alias scr='systemctl restart'
-alias scru='systemctl --user restart'
-alias sce='systemctl stop'
-alias sceu='systemctl --user stop'
+alias scur='systemctl --user restart'
+alias scq='systemctl stop'
+alias scuq='systemctl --user stop'
 alias scs='systemctl start'
-alias scsu='systemctl --user start'
+alias scus='systemctl --user start'
 
 # Networking
 # -----------------------------------------------------------------------------
@@ -77,11 +62,14 @@ alias fastping='ping -c 30 -i.2'
 # Flushes the DNS cache
 alias flushdns='sudo /etc/init.d/dns-clean restart && echo DNS cache flushed'
 
-# Gets all IP addresses
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+# Output all matched Git SHA ranges (e.g., 123456..654321)
+alias match-git-range ="grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'"
 
-# Gets local IP address
-alias localip="ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'"
+# Output all matched IP addresses
+alias match-ip="grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'"
+
+# Output all matched URIs
+alias match-uri="grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'"
 
 # Gets external IP address
 if command -v dig >/dev/null 2>&1; then
@@ -105,13 +93,10 @@ unset method
 # display names of running containers
 alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
 # delete every containers / images
-alias dockRr='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
 alias dockstats='docker stats $(docker ps -q)'
 # stats on images
 # list images installed
 alias dockimg='docker images'
 # prune everything
 alias dockprune='docker system prune -a'
-# run as the host user
-alias dockceu='docker-compose run --rm -u $(id -u):$(id -g)'
-alias dockce='docker-compose run --rm'

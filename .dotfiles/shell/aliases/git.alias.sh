@@ -57,26 +57,18 @@ alias gcsam='git commit -S -am'
 # checkout
 ###########
 alias gco='git checkout'
-alias gcb='git checkout -b'
 alias gcob='git checkout -b'
-alias gcbu='git checkout -b ${USER}/'
 alias gcobu='git checkout -b ${USER}/'
 alias gcom='git checkout "$(gbdefault)"'
 alias gcpD='git checkout "$(gbdefault)"; git pull; git branch -D'
-alias gct='git checkout --track'
 
 # clone
 ########
 alias gcl='git clone'
 
-# clean
-########
-alias gclean='git clean -fd'
-
 # cherry-pick
 ##############
 alias gcp='git cherry-pick'
-alias gcpx='git cherry-pick -x'
 
 # diff
 #######
@@ -85,16 +77,10 @@ alias gdfs='git diff --staged'
 alias gdft='git difftool'
 alias gdfe='$EDITOR $(git diff --name-only)'
 
-# archive
-##########
-alias gexport='git archive --format zip --output'
-
 # fetch
 ########
 alias gf='git fetch --all --prune'
 alias gft='git fetch --all --prune --tags'
-alias gftv='git fetch --all --prune --tags --verbose'
-alias gfv='git fetch --all --prune --verbose'
 alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 alias gup='git fetch && git rebase'
 
@@ -117,8 +103,7 @@ alias gwc='git whatchanged'
 # files
 ########
 # Show untracked files
-alias gu='git ls-files . --exclude-standard --others'
-alias glsut='gu'
+alias glsut='git ls-files . --exclude-standard --others'
 # Show unmerged (conflicted) files
 alias glsum='git diff --name-only --diff-filter=U'
 
@@ -127,10 +112,6 @@ alias glsum='git diff --name-only --diff-filter=U'
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
 alias gmt='git mergetool'
-
-# mv
-#####
-alias gmv='git mv'
 
 # patch
 ########
@@ -142,7 +123,6 @@ alias gp='git push'
 alias gpo='git push origin HEAD'
 alias gpom='git push origin "$(gbdefault)"'
 alias gpu='git push --set-upstream'
-alias gpunch='git push --force-with-lease'
 alias gpuo='git push --set-upstream origin'
 alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
@@ -156,12 +136,6 @@ alias gpr='git pull --rebase'
 # remote
 #########
 alias gr='git remote'
-alias gra='git remote add'
-alias grv='git remote -v'
-
-# rm
-#####
-alias grm='git rm'
 
 # rebase
 #########
@@ -186,12 +160,9 @@ alias gpristine='git reset --hard && git clean -dfx'
 # status
 #########
 alias gs='git status'
-# set default to short in .gitconfig
-alias gsl='git status -l'
 
 # shortlog
 ###########
-alias gcount='git shortlog -sn'
 alias gsl='git shortlog -sn'
 
 # show
@@ -313,7 +284,6 @@ alias dco='dot checkout'
 alias dcb='dot checkout -b'
 alias dcob='dot checkout -b'
 alias dcom='dot checkout "$(dbdefault)"'
-alias dcpD='dot checkout "$(dbdefault)"; dot pull; dot branch -D'
 
 # diff
 #######
@@ -321,14 +291,6 @@ alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
 alias ddfe='$EDITOR $(dot diff --name-only)'
-
-# fetch
-########
-alias df='dot fetch --all --prune'
-alias dft='dot fetch --all --prune --tags'
-alias dftv='dot fetch --all --prune --tags --verbose'
-alias dfv='dot fetch --all --prune --verbose'
-alias dup='dot fetch && dot rebase'
 
 # files
 ########
@@ -361,12 +323,8 @@ alias dpr='dot pull --rebase'
 # push
 #######
 alias dp='dot push'
-alias dpD='dot push --delete'
-alias dpF='dot push --force'
 alias dpo='dot push origin HEAD'
 alias dpu='dot push --set-upstream'
-alias dpunch='dot push --force-with-lease'
-alias dpuo='dot push --set-upstream origin'
 alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
 
 # reset
@@ -377,7 +335,6 @@ alias drH='dot reset --hard'
 
 # shortlog
 ###########
-alias dcount='dot shortlog -sn'
 alias dsl='dot shortlog -sn'
 
 # show
@@ -397,8 +354,6 @@ alias dstpum='dot stash push -m'
 # status
 #########
 alias ds='dot status'
-# set default to short in .gitconfig
-alias dsl='dot status --long'
 
 # submodules
 #############

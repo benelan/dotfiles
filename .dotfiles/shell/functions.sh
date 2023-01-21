@@ -101,59 +101,10 @@ function s() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Output all matched Git SHA ranges (e.g., 123456..654321)
-function match-git-ranges() {
-    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched IP addresses
-function match-ips() {
-    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Output all matched URLs
-function match-urls() {
-    # shellcheck disable=2016
-    grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' "$@"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # open vim help pages from shell prompt
 function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-mycolumn() (
-    file="${1:--}"
-    if [ "$file" = - ]; then
-        file="$(mktemp)"
-        cat >"${file}"
-    fi
-    awk '
-  FNR == 1 { if (NR == FNR) next }
-  NR == FNR {
-    for (i = 1; i <= NF; i++) {
-      l = length($i)
-      if (w[i] < l)
-        w[i] = l
-    }
-    next
-  }
-  {
-    for (i = 1; i <= NF; i++)
-      printf "%*s", w[i] + (i > 1 ? 1 : 0), $i
-    print ""
-  }
-  ' "$file" "$file"
-    if [ "$file" = - ]; then
-        rm "$file"
-    fi
-)
 
 # Filesystem
 #---------------------------------------------------------------------------------
@@ -199,30 +150,6 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# prevent duplicate directories in your PATH variable
-# "pathmunge /path/to/dir" is equivalent to PATH=/path/to/dir:$PATH
-# "pathmunge /path/to/dir after" is equivalent to PATH=$PATH:/path/to/dir
-function pathmunge() {
-    if [[ -d "${1:-}" && ! $PATH =~ (^|:)"${1}"($|:) ]]; then
-        if [[ "${2:-before}" == "after" ]]; then
-            export PATH="$PATH:${1}"
-        else
-            export PATH="${1}:$PATH"
-        fi
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# get the human readable size of the directory
-dudir() {
-    du --max-depth="${1:-0}" -c |
-        sort -r -n |
-        awk '{split("K M G",v); s=1; while($1>1024){$1/=1024; s++} print int($1)v[s]"\t"$2}'
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # Get gzipped file size
 gz() {
     local ORIGSIZE GZIPSIZE RATIO SAVED
@@ -245,34 +172,6 @@ function usage() {
             du -h --max-depth=1 "$@"
             ;;
     esac
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# back up file with timestamp
-function backup-file() {
-    # param filename
-    local filename="${1?}" filetime
-    filetime=$(date +%Y%m%d_%H%M%S)
-    cp -a "${filename}" "${filename}_${filetime}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# move files to hidden folder in tmp, that gets cleared on each reboot
-if ! is-supported del; then
-    function del() {
-        # param: file or folder to be deleted
-        # example: del ./file.txt
-        mkdir -p /tmp/.trash && mv "$@" /tmp/.trash
-    }
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Lists drive mounts.
-function mnt() {
-    mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -368,50 +267,24 @@ function ips() {
     elif is-supported ip; then
         ip addr | grep -oP 'inet \K[\d.]+'
     else
-        echo "You don't have ifconfig or ip command installed!"
+        echo "Install ifconfig or ip"
     fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# displays your ip address, as seen by the Internet
-function myip() {
-    list=("http://myip.dnsomatic.com/" "http://checkip.dyndns.com/" "http://checkip.dyndns.org/")
-    for url in "${list[@]}"; do
-        if res="$(curl -fs "${url}")"; then
-            break
-        fi
-    done
-    res="$(echo "$res" | grep -Eo '[0-9\.]+')"
-    echo -e "Your public IP is: ${echo_bold_green-} $res ${echo_normal-}"
 }
 
 # Git
 #---------------------------------------------------------------------------------
 
-# https://git.wiki.kernel.org/index.php/ExampleScripts#Copying_all_changed_files_from_the_last_N_commits
-# $ gcopy "/destination/path" number_of_revisions
-function gcopy() {
-    for file in $(dot diff-tree master~"$2" master --name-only -r); do
-        cp --parents "$file" "$1"
-    done
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # git wip (work in progress)
 # commit changes that will cleaned up later during rebase
 gwip() {
-    git add -A
-    git commit -qm "chore: WIP $(date -Iseconds)"
+    git add -A && git commit -qm "chore: WIP $(date -Iseconds)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # git reset
 # commit all changes for safety and reset
 greset() {
-    git add -A
-    git commit -qm "chore: RESET $(date -Iseconds)"
+    git add -A && git commit -qm "chore: RESET $(date -Iseconds)"
     git reset HEAD~1 --hard
 }
 
@@ -428,23 +301,6 @@ gclbwt() {
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
     unset dir
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# git checkout branch (cleaned)
-# Creates a new, up to date branch with all of the changes
-# from the current branch, but without the messy commit history.
-# Helpful when used with gwip and greset (above).
-function gcob-cleaned() {
-    current_branch="$(git rev-parse --abbrev-ref HEAD)"
-    git stash
-    git checkout "$(gbdefault)"
-    git pull
-    git checkout -b "$current_branch-cleaned"
-    git merge --squash "$current_branch"
-    git reset
-    git stash pop
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,20 +394,6 @@ gbprune() {
         done
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# git-extras-big-blobs
-# human readably list the blobs by size, excluding HEAD
-function gxbigblobs() {
-    git rev-list --objects --all |
-        git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
-        sed -n "s/^blob //p" |
-        sort --numeric-sort --key=2 |
-        cut -c 1-12,41- |
-        $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
-        grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")
-}
-
 # Arrays
 #---------------------------------------------------------------------------------
 
@@ -565,16 +407,16 @@ function gxbigblobs() {
 # Examples:
 #   $ declare -a fruits=(apple orange pear mandarin)
 #
-#   $ _array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
+#   $ array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
 #   contains apple
 #
-#   $ if _array-contains-element pear "${fruits[@]}"; then
+#   $ if array-contains-element pear "${fruits[@]}"; then
 #       echo "contains pear!"
 #     fi
 #   contains pear!
 #
 #
-function _array-contains-element() {
+function array-contains-element() {
     local e element="${1?}"
     shift
     for e in "$@"; do
@@ -584,7 +426,7 @@ function _array-contains-element() {
 }
 
 # Dedupe an array (without embedded newlines).
-function _array-dedup() {
+function array-dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
@@ -598,70 +440,16 @@ cht() {
     curl "https://cheat.sh/$1"
 }
 
-# cheatsheet -> editor
-chte() {
-    local query="${*:2}"
-    curl "https://cheat.sh/$1" | $EDITOR
-}
-
-# cheatsheet -> clipboard
-chtc() {
-    local query="${*:2}"
-    curl "https://cheat.sh/$1/${query// /+}?QT" | cb
-}
-
 # cheatsheet: javascript
-cjs() {
+chtjs() {
     local query="$*"
     curl "https://cheat.sh/javascript/${query// /+}"
 }
 
-# cheatsheet: javascript -> editor
-cjse() {
-    local query="$*"
-    curl "https://cheat.sh/javascript/${query// /+}?T" | $EDITOR buf.js
-}
-
-# cheatsheet: javascript -> clipboard
-cjsc() {
-    local query="$*"
-    curl "https://cheat.sh/javascript/${query// /+}?cQT" | cb
-}
-
 # cheatsheet: typescript
-cts() {
+chtts() {
     local query="$*"
     curl "https://cheat.sh/typescript/${query// /+}"
-}
-
-# cheatsheet: typescript -> editor
-ctse() {
-    local query="$*"
-    curl "https://cheat.sh/typescript/${query// /+}?T" | $EDITOR buf.ts
-}
-
-# cheatsheet: typescript -> clipboard
-ctsc() {
-    local query="$*"
-    curl "https://cheat.sh/typescript/${query// /+}?QT" | cb
-}
-
-# cheatsheet: shell
-csh() {
-    local query="$*"
-    curl "https://cheat.sh/bash/${query// /+}"
-}
-
-# cheatsheet: shell -> editor
-cshe() {
-    local query="$*"
-    curl "https://cheat.sh/bash/${query// /+}?T" | $EDITOR buf.bash
-}
-
-# cheatsheet: shell -> clipboard
-cshc() {
-    local query="$*"
-    curl "https://cheat.sh/bash/${query// /+}?cQT" | cb
 }
 
 # search commandlinefu.com
@@ -698,24 +486,6 @@ colors() {
             tput setab "$i"
         )""${Y// /=}""$(tput op)"
     done
-}
-
-color-grid() {
-    awk -v term_cols="${width:-$(tput cols || echo 80)}" -v term_lines="${1:-1}" 'BEGIN{
-      s="/\\";
-      total_cols=term_cols*term_lines;
-      for (colnum = 0; colnum<total_cols; colnum++) {
-          r = 255-(colnum*255/total_cols);
-          g = (colnum*510/total_cols);
-          b = (colnum*255/total_cols);
-          if (g>255) g = 510-g;
-          printf "\033[48;2;%d;%d;%dm", r,g,b;
-          printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-          printf "%s\033[0m", substr(s,colnum%2+1,1);
-          if (colnum%term_cols==term_cols) printf "\n";
-      }
-      printf "\n";
-    }'
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
