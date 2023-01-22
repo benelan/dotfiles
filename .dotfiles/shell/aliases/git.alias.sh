@@ -33,6 +33,7 @@ alias gba='git branch --all'
 alias gbm='git branch --move'
 alias gbl="git branch --list"
 alias gbt='git branch --track'
+alias gbuoc='git branch -u origin/$(git symbolic-ref --short HEAD)'
 
 # for-each-ref
 ###############
@@ -239,6 +240,9 @@ alias gtnext='git name-rev --tags --name-only'
 ##########
 alias gwt='git worktree'
 alias gwta='git worktree add'
+alias gwtr='git worktree remove'
+alias gwtl='git worktree list'
+alias gwtp='git worktree'
 
 alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
