@@ -28,6 +28,7 @@ alias gbir="git bisect reset"
 #########
 alias gb='git branch'
 alias gbD='git branch --delete --force'
+alias gbuoc='git branch -u origin/$(git symbolic-ref --short HEAD)'
 
 # for-each-ref
 ###############
@@ -105,6 +106,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 ########
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
+alias gmom='git fetch && git merge origin/"$(gbdefault)"'
 alias gmt='git mergetool'
 
 # patch
@@ -122,8 +124,8 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 #######
-alias gplum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
+alias gplum='git pull upstream "$(gbdefault)"'
 alias gplp='git pull && git push'
 
 # remote
@@ -191,10 +193,19 @@ alias gta='git tag --annotate'
 alias gtd='git tag --delete'
 alias gtD='git tag --delete --force'
 alias gtl='git tag --list'
-# outputs the tag following the provided commit hash
-# useful for finding the first reproducible version for bugs
+# outputs the tag following the provided commit sha
+# useful for finding the first reproducible version
+# for bugs after using git bisect to get the sha
 # $ gtnext 84a29d4 # => v1.0.0-next.295~8 (8 commits before the tag)
 alias gtnext='git name-rev --tags --name-only'
+
+# worktree
+##########
+alias gwt='git worktree'
+alias gwta='git worktree add'
+alias gwtr='git worktree remove'
+alias gwtl='git worktree list'
+alias gwtp='git worktree'
 
 alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
