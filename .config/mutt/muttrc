@@ -2,14 +2,26 @@
 # --> General settings
 # -----------------------------------------------------
 
-set abort_nosubject = yes
-set copy            = no
-set mail_check      = 60
-set realname        = "Ben Elan"
-set signature       = "~/.config/mutt/signature"
-set sort            = "reverse-date-received"
-set ssl_force_tls   = yes
-set timeout         = 300
+set abort_nosubject    = yes
+set abort_noattach     = ask-yes
+set attach_save_dir    = "~/Downloads"
+set copy               = no
+set count_alternatives = yes
+set fast_reply         = yes
+set mail_check         = 60
+set realname           = "Ben Elan"
+set signature          = "~/.config/mutt/signature"
+set sort               = "reverse-date-received"
+set ssl_force_tls      = yes
+set timeout            = 300
+set text_flowed        = yes
+
+
+# Try to render everything in plaintext
+auto_view text/html
+alternative_order text/plain text/rich text/markdown text/html
+
+
 
 # -----------------------------------------------------
 # --> Gmail account settings
