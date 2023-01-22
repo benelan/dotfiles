@@ -106,7 +106,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 ########
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
-alias gmom='git merge origin/"$(gbdefault)"'
+alias gmom='git fetch && git merge origin/"$(gbdefault)"'
 alias gmt='git mergetool'
 
 # patch
@@ -124,8 +124,8 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 #######
-alias gplum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
+alias gplum='git pull upstream "$(gbdefault)"'
 alias gplp='git pull && git push'
 
 # remote
