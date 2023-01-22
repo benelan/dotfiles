@@ -126,6 +126,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 ########
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
+alias gmom='git merge origin/"$(gbdefault)"'
 alias gmt='git mergetool'
 
 # mv
@@ -228,10 +229,16 @@ alias gta='git tag --annotate'
 alias gtd='git tag --delete'
 alias gtD='git tag --delete --force'
 alias gtl='git tag --list'
-# outputs the tag following the provided commit hash
-# useful for finding the first reproducible version for bugs
+# outputs the tag following the provided commit sha
+# useful for finding the first reproducible version
+# for bugs after using git bisect to get the sha
 # $ gtnext 84a29d4 # => v1.0.0-next.295~8 (8 commits before the tag)
 alias gtnext='git name-rev --tags --name-only'
+
+# worktree
+##########
+alias gwt='git worktree'
+alias gwta='git worktree add'
 
 alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
