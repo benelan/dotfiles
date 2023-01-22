@@ -27,12 +27,7 @@ alias gbir="git bisect reset"
 # branch
 #########
 alias gb='git branch'
-alias gbd='git branch --delete'
 alias gbD='git branch --delete --force'
-alias gba='git branch --all'
-alias gbm='git branch --move'
-alias gbl="git branch --list"
-alias gbt='git branch --track'
 alias gbuoc='git branch -u origin/$(git symbolic-ref --short HEAD)'
 
 # for-each-ref
@@ -58,26 +53,17 @@ alias gcsam='git commit -S -am'
 # checkout
 ###########
 alias gco='git checkout'
-alias gcb='git checkout -b'
 alias gcob='git checkout -b'
-alias gcbu='git checkout -b ${USER}/'
 alias gcobu='git checkout -b ${USER}/'
 alias gcom='git checkout "$(gbdefault)"'
-alias gcpD='git checkout "$(gbdefault)"; git pull; git branch -D'
-alias gct='git checkout --track'
 
 # clone
 ########
 alias gcl='git clone'
 
-# clean
-########
-alias gclean='git clean -fd'
-
 # cherry-pick
 ##############
 alias gcp='git cherry-pick'
-alias gcpx='git cherry-pick -x'
 
 # diff
 #######
@@ -86,16 +72,10 @@ alias gdfs='git diff --staged'
 alias gdft='git difftool'
 alias gdfe='$EDITOR $(git diff --name-only)'
 
-# archive
-##########
-alias gexport='git archive --format zip --output'
-
 # fetch
 ########
 alias gf='git fetch --all --prune'
 alias gft='git fetch --all --prune --tags'
-alias gftv='git fetch --all --prune --tags --verbose'
-alias gfv='git fetch --all --prune --verbose'
 alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 alias gup='git fetch && git rebase'
 
@@ -118,8 +98,7 @@ alias gwc='git whatchanged'
 # files
 ########
 # Show untracked files
-alias gu='git ls-files . --exclude-standard --others'
-alias glsut='gu'
+alias glsut='git ls-files . --exclude-standard --others'
 # Show unmerged (conflicted) files
 alias glsum='git diff --name-only --diff-filter=U'
 
@@ -129,10 +108,6 @@ alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
 alias gmom='git merge origin/"$(gbdefault)"'
 alias gmt='git mergetool'
-
-# mv
-#####
-alias gmv='git mv'
 
 # patch
 ########
@@ -144,26 +119,18 @@ alias gp='git push'
 alias gpo='git push origin HEAD'
 alias gpom='git push origin "$(gbdefault)"'
 alias gpu='git push --set-upstream'
-alias gpunch='git push --force-with-lease'
 alias gpuo='git push --set-upstream origin'
 alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 #######
-alias glum='git pull upstream "$(gbdefault)"'
+alias gplum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
-alias gpp='git pull && git push'
-alias gpr='git pull --rebase'
+alias gplp='git pull && git push'
 
 # remote
 #########
 alias gr='git remote'
-alias gra='git remote add'
-alias grv='git remote -v'
-
-# rm
-#####
-alias grm='git rm'
 
 # rebase
 #########
@@ -171,16 +138,15 @@ alias grb='git rebase'
 alias grbi='git rebase -i'
 alias grba='git rebase -i --auto'
 alias grbc='git rebase --continue'
-alias grm='git rebase "$(gbdefault)"'
-alias grmi='git rebase "$(gbdefault)" -i'
-alias grma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
+alias grbm='git rebase "$(gbdefault)"'
+alias grbma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
 # Rebase with latest remote
 alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"'
 
 # reset
 ########
 alias gr='git reset'
-alias grs='git reset HEAD --soft'
+alias grs='git reset --soft'
 alias grH='git reset --hard'
 alias gus='git reset HEAD'
 alias gpristine='git reset --hard && git clean -dfx'
@@ -188,12 +154,9 @@ alias gpristine='git reset --hard && git clean -dfx'
 # status
 #########
 alias gs='git status'
-# set default to short in .gitconfig
-alias gsl='git status -l'
 
 # shortlog
 ###########
-alias gcount='git shortlog -sn'
 alias gsl='git shortlog -sn'
 
 # show
@@ -213,7 +176,7 @@ alias gstpum='git stash push -m'
 
 # submodules
 #############
-alias gsu='git submodule update --init --recursive'
+alias gsmu='git submodule update --init --recursive'
 
 # switch
 #########
@@ -304,10 +267,6 @@ alias dabin="dot add ${HOME}/.dotfiles/bin/*"
 #########
 alias db='dot branch'
 alias dbD='dot branch --delete --force'
-alias dba='dot branch --all'
-alias dbd='dot branch --delete'
-alias dbm='dot branch --move'
-alias dbt='dot branch --track'
 
 # commit
 #########
@@ -315,15 +274,12 @@ alias dc='dot commit --verbose'
 alias dcm='dot commit --verbose -m'
 alias dcamd='dot commit --amend'
 alias dcamdne='dot commit --amend --no-edit'
-alias dci='dot commit --interactive'
 
 # checkout
 ###########
 alias dco='dot checkout'
-alias dcb='dot checkout -b'
 alias dcob='dot checkout -b'
 alias dcom='dot checkout master'
-alias dcpD='dot checkout master; dot pull; dot branch -D'
 
 # diff
 #######
@@ -331,14 +287,6 @@ alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
 alias ddfe='$EDITOR $(dot diff --name-only)'
-
-# fetch
-########
-alias df='dot fetch --all --prune'
-alias dft='dot fetch --all --prune --tags'
-alias dftv='dot fetch --all --prune --tags --verbose'
-alias dfv='dot fetch --all --prune --verbose'
-alias dup='dot fetch && dot rebase'
 
 # files
 ########
@@ -365,30 +313,20 @@ alias dmt='dot mergetool'
 # pull
 #######
 alias dpl='dot pull'
-alias dpp='dot pull && dot push'
-alias dpr='dot pull --rebase'
+alias dplp='dot pull && dot push'
 
 # push
 #######
 alias dp='dot push'
-alias dpD='dot push --delete'
-alias dpF='dot push --force'
 alias dpo='dot push origin HEAD'
 alias dpu='dot push --set-upstream'
-alias dpunch='dot push --force-with-lease'
-alias dpuo='dot push --set-upstream origin'
 alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
 
 # reset
 ########
 alias dr='dot reset'
-alias drs='dot reset HEAD --soft'
+alias drs='dot reset --soft'
 alias drH='dot reset --hard'
-
-# shortlog
-###########
-alias dcount='dot shortlog -sn'
-alias dsl='dot shortlog -sn'
 
 # show
 #######
@@ -407,12 +345,10 @@ alias dstpum='dot stash push -m'
 # status
 #########
 alias ds='dot status'
-# set default to short in .gitconfig
-alias dsl='dot status --long'
 
 # submodules
 #############
-alias dsu='dot submodule update --init --recursive'
+alias dsmu='dot submodule update --init --recursive'
 
 # update-index
 ##############
@@ -431,3 +367,4 @@ alias dfz="dot fuzzy"
 # https://cli.github.com/
 # https://github.com/dlvhdr/gh-dash
 alias ghd="gh dash"
+

@@ -317,36 +317,6 @@ fze() {
 }
 
 # -----------------------------------------------------------------------------
-# history
-# -----------------------------------------------------------------------------
-
-# runcmd - utility function used to run the command in the shell
-runcmd() {
-    perl -e 'ioctl STDOUT, 0x5412, $_ for split //, <>'
-}
-
-# fh - repeat history
-fh() {
-    ([[ -n "$ZSH_NAME" ]] && fc -l 1 || history) |
-        fzf +s --tac |
-        sed -re 's/^\s*[0-9]+\s*//' |
-        runcmd
-}
-
-# writecmd - utility function used to write the command in the shell
-writecmd() {
-    perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do { chomp($_ = <>); $_ }'
-}
-
-# fhe - repeat history edit
-fhe() {
-    ([[ -n "$ZSH_NAME" ]] && fc -l 1 || history) |
-        fzf +s --tac |
-        sed -re 's/^\s*[0-9]+\s*//' |
-        writecmd
-}
-
-# -----------------------------------------------------------------------------
 # pid
 # -----------------------------------------------------------------------------
 
@@ -374,28 +344,6 @@ fgcor() {
         branch=$(echo "$branches" |
             fzf-tmux -d $((2 + $(wc -l <<<"$branches"))) +m) &&
         git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
-}
-
-# fco - checkout git branch/tag
-fgco() {
-    local tags branches target
-    branches=$(
-        git --no-pager branch --all \
-            --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" |
-            sed '/^$/d'
-    ) || return
-    tags=$(
-        git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}'
-    ) || return
-    target=$(
-        (
-            echo "$branches"
-            echo "$tags"
-        ) |
-            fzf --no-hscroll --no-multi -n 2 \
-                --ansi
-    ) || return
-    git checkout "$(awk '{print $2}' <<<"$target")"
 }
 
 # fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
@@ -484,7 +432,7 @@ fgstash() {
 
 if is-supported jq; then
     # run npm script
-    fnst() {
+    fnr() {
         npm run "$(jq -r '.scripts | keys[] ' <package.json | sort | fzf)"
     }
 
@@ -503,3 +451,4 @@ if is-supported jq; then
 ' | fzf --prompt 'Search emojis > ' | cut -f1
     }
 fi
+
