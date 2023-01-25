@@ -8,10 +8,10 @@ return {
   default_cwd = wezterm.home_dir,
   -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
-    'Iosevka Nerd Font',
-    'SauceCodePro Nerd Font',
-    'JetBrains Mono Nerd Font',
-    'monspace'
+    "Iosevka Nerd Font",
+    "SauceCodePro Nerd Font",
+    "JetBrains Mono Nerd Font",
+    "monspace"
   },
   font_size = 12,
   color_scheme = utils.color_scheme,
@@ -28,7 +28,7 @@ return {
         bg_color = utils.colors.background,
         fg_color = utils.colors.foreground,
       },
-      inactive_tab_edge = 'transparent',
+      inactive_tab_edge = "transparent",
       inactive_tab_hover = {
         bg_color = utils.colors.brights[1],
         fg_color = utils.colors.background,
@@ -39,7 +39,7 @@ return {
       },
     },
   },
-  audible_bell = 'Disabled',
+  audible_bell = "Disabled",
   animation_fps = 1,
   check_for_updates = false,
   enable_wayland = false,
@@ -60,52 +60,52 @@ return {
     brightness = 0.8,
   },
   skip_close_confirmation_for_processes_named = {
-    'bash', 'sh', 'btop', 'lazygit', 'gh',
-    'wslhost.exe', 'wsl.exe', 'conhost.exe'
+    "bash", "sh", "btop", "lazygit", "gh",
+    "wslhost.exe", "wsl.exe", "conhost.exe"
   },
   launch_menu = {
-    { args = { 'btop' } },
-    { args = { 'gh', 'dash' } },
-    { args = { 'lazygit' } },
+    { args = { "btop" } },
+    { args = { "gh", "dash" } },
+    { args = { "lazygit" } },
     {
-      label = 'edit dotfiles',
+      label = "edit dotfiles",
       cwd = wezterm.home_dir,
       args = {
-        'nvim', '~', '-c', ':Telescope git_files',
-        '--cmd', 'let $GIT_WORK_TREE = expand("~")',
-        '--cmd', 'let $GIT_DIR = expand("~/.git")'
+        "nvim", "~", "-c", ":Telescope git_files",
+        "--cmd", "let $GIT_WORK_TREE = expand('~')",
+        "--cmd", "let $GIT_DIR = expand('~/.git')"
       }
     },
     {
-      label = 'edit CC',
-      cwd = wezterm.home_dir .. '/dev/work/calcite-components',
+      label = "edit CC",
+      cwd = wezterm.home_dir .. "/dev/work/calcite-components",
       args = {
-        'nvim', '.', '-c', ':Telescope git_files'
+        "nvim", ".", "-c", ":Telescope git_files"
       }
     },
 
   },
-  leader = { key = ' ', mods = 'ALT|SHIFT', timeout_milliseconds = 1500 },
+  leader = { key = " ", mods = "ALT|SHIFT", timeout_milliseconds = 1500 },
   hyperlink_rules = {
     -- Linkify things that look like URLs and the host has a TLD name.
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
     {
-      regex = '\\b\\w+://[\\w.-]+\\.[a-z]{2,15}\\S*\\b',
-      format = '$0',
+      regex = "\\b\\w+://[\\w.-]+\\.[a-z]{2,15}\\S*\\b",
+      format = "$0",
     },
 
     -- linkify email addresses
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
     {
       regex = [[\b\w+@[\w-]+(\.[\w-]+)+\b]],
-      format = 'mailto:$0',
+      format = "mailto:$0",
     },
 
     -- file:// URI
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
     {
       regex = [[\bfile://\S*\b]],
-      format = '$0',
+      format = "$0",
     },
 
     -- Linkify things that look like URLs with numeric addresses as hosts.
@@ -113,7 +113,7 @@ return {
     -- or http://192.168.1.1 for the web interface of many routers.
     {
       regex = [[\b\w+://(?:[\d]{1,3}\.){3}[\d]{1,3}\S*\b]],
-      format = '$0',
+      format = "$0",
     },
     -- Make username/project paths clickable. This implies paths like the following are for GitHub.
     -- ( "nvim-treesitter/nvim-treesitter" | wbthomason/packer.nvim | wez/wezterm | "wez/wezterm.git" )
@@ -121,7 +121,7 @@ return {
     -- GitHub or GitLab / BitBucket (i.e. https://gitlab.com/user/project.git is still a whole clickable URL)
     {
       regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
-      format = 'https://www.github.com/$1/$3',
+      format = "https://www.github.com/$1/$3",
     },
   },
 }
