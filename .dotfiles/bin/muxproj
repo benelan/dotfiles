@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 1 ]]; then
+    selected_path=$1
+else
+    selected_path=$(find ~/dev/work ~/dev/personal -maxdepth 1 -mindepth 1 -type d | fzf --cycle -0 -1)
+fi
+
+[[ -z "$selected_path" ]] && exit 0
+
+selected_name="$(basename "$selected_path" | tr . _)"
+tmux new-session -A -s "$selected_name" -c "$selected_path"
