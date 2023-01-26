@@ -33,6 +33,62 @@ export FZF_DEFAULT_OPTS
 # My creations
 ###############################################################################
 
+function muxifyme() {
+    [[ -z $(pgrep tmux) ]] && muxproj
+
+    session_name="$(tmux display-message -p "#S")"
+    if [[ -d ~/dev/work/$session_name ]]; then
+        session_dir=~/dev/work/$session_name
+    elif [[ -d ~/dev/personal/$session_name ]]; then
+        session_dir=~/dev/personal/$session_name
+    else
+        session_dir="$(pwd)"
+    fi
+
+    cd "$session_dir" || return
+
+    if [[ -d "$session_dir/.git" ]]; then
+        if [[ $# -eq 1 ]]; then
+            branch="-b $1"
+        else
+            branch="$(
+                # remote and local branches sorted by commit date
+                git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
+                    # search, remove 'origin/' prefix from branch names, remove empty line(s)
+                    awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
+                    # dedup -> pick -> checkout branch
+                    uniq | fzf -1 -0 --cycle
+            )"
+        fi
+
+        cleaned_branch="$(basename "$branch" | tr "./" "__")"
+        task_name="${cleaned_branch:-stuff}"
+        target="$session_name:$task_name"
+        ! tmux has-session -t "$target" >/dev/null 2>&1 &&
+            tmux new-window -dn "${task_name}"
+        if
+            [[ $(git config --get core.bare) = "true" ]] &&
+                [[ $(git rev-parse --is-inside-work-tree) = "false" ]]
+        then
+            if [[ ! -d "$session_dir/$task_name" ]]; then
+                git worktree add "$task_name" "$branch"
+                if [[ -f "$session_dir/$task_name/package.json" ]]; then
+                    tmux send-keys -t "$target" "npm --prefix=$session_dir/$task_name install
+                  "
+                fi
+            fi
+            cd "$session_dir/$task_name" || return
+        else
+            git checkout "$branch"
+        fi
+        [[ -z $TMUX ]] && tmux attach -t "$target"
+    fi
+
+    unset session_dir session_name task_name target branch new_worktree
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Gets a gsetting value using fzf
 fgsget() {
     gsettings list-schemas | fzf |
@@ -451,4 +507,3 @@ if is-supported jq; then
 ' | fzf --prompt 'Search emojis > ' | cut -f1
     }
 fi
-

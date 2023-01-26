@@ -293,10 +293,10 @@ greset() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# git clone bare worktree
+# git clone worktree
 # clones a bare repo for use with git-worktree
 # https://git-scm.com/docs/git-worktree
-gclbwt() {
+gclwt() {
     dir="${2:-"$(basename "$1" .git)"}"
     mkdir "$dir"
     cd "$dir" || return
