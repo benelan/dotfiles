@@ -8,7 +8,8 @@ alias g='git'
 
 # gets the default git branch
 alias gbdefault='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
-# same thing:  ="git branch --list --remotes '*/HEAD' | awk -F/ '{print $NF}'"
+# Same as above but works in bare repos and is more accurate, but slower
+alias gbdefaultplz='git remote show $(git remote | grep -Eo "(upstream|origin)" | tail -1) | grep "HEAD branch" | cut -d" " -f5'
 
 # add
 ######
@@ -106,7 +107,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 ########
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
-alias gmom='git fetch && git merge origin/"$(gbdefault)"'
+alias gmom='git fetch && git merge origin/$(if [ $(git config --get core.bare) = "true" ]; then gbdefaultplz; else gbdefault; fi)'
 alias gmt='git mergetool'
 
 # patch
