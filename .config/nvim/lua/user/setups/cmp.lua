@@ -50,24 +50,61 @@ local kind_icons = {
   Variable = "",
 }
 
-
 cmp.setup({
   snippet = {
     expand = function(args)
       require("luasnip").lsp_expand(args.body)
     end,
   },
-
-  mapping = cmp.mapping.preset.insert({
-    ["<C-k>"] = cmp.mapping.select_prev_item(),
-    ["<C-j>"] = cmp.mapping.select_next_item(),
-    ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-    ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-    ["<C-y>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-    ["<C-e>"] = cmp.mapping({
-      i = cmp.mapping.abort(),
-      c = cmp.mapping.close(),
-    }),
+  mapping = {
+    ["<C-j>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert },
+    ["<C-k>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert },
+    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-e>"] = cmp.mapping.abort(),
+    ["<C-h>"] = cmp.mapping.abort(),
+    ["<C-y>"] = cmp.mapping(
+      cmp.mapping.confirm {
+        behavior = cmp.ConfirmBehavior.Insert,
+        select = true,
+      },
+      { "i", "c" }
+    ),
+    ["<M-y>"] = cmp.mapping(
+      cmp.mapping.confirm {
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = false,
+      },
+      { "i", "c" }
+    ),
+    ["<C-l>"] = cmp.mapping(
+      cmp.mapping.confirm {
+        behavior = cmp.ConfirmBehavior.Insert,
+        select = true,
+      },
+      { "i", "c" }
+    ),
+    ["<M-l>"] = cmp.mapping(
+      cmp.mapping.confirm {
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = false,
+      },
+      { "i", "c" }
+    ),
+    ["<C-i>"] = cmp.mapping {
+      i = cmp.mapping.complete(),
+      c = function(
+        _ --[[fallback]]
+      )
+        if cmp.visible() then
+          if not cmp.confirm { select = true } then
+            return
+          end
+        else
+          cmp.complete()
+        end
+      end,
+    },
     -- Accept currently selected item. If none selected, `select` first item.
     -- Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm({ select = false }),
@@ -99,7 +136,7 @@ cmp.setup({
       "i",
       "s",
     }),
-  }),
+  },
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
