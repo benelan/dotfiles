@@ -9,10 +9,15 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "markdown", "gitcommit", "text", "csv" },
+  pattern = { "markdown", "gitcommit", "text" },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
+    local opts = { buffer= true, noremap = true, silent = true }
+    vim.keymap.set("n", "j", "gj", opts)
+    vim.keymap.set("n", "k", "gk", opts)
+    vim.keymap.set("n", "$", "g$", opts)
+    vim.keymap.set("n", "^", "g^", opts)
   end
 })
 
