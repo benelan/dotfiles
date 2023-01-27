@@ -5,6 +5,7 @@ M.exclude_buftypes = {
 }
 
 M.exclude_filetypes = {
+  "dap-repl",
   "DiffviewFiles",
   "DressingSelect",
   "NvimTree",
