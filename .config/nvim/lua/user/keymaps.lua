@@ -425,36 +425,12 @@ vim.cmd [[
 
 -- Toggle Netrw file explorer
 vim.cmd [[
-let s:netrw_open=0
-function! s:NetrwToggleSidebar()
-    if s:netrw_open
-        let i=bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let s:netrw_open=0
-    else
-        let s:netrw_open=1
-        silent Lexplore
-    endif
-endfunction
-
-command! NetrwToggleSidebar call <sid>NetrwToggleSidebar()
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-let s:explored=0
-function! s:NetrwToggle()
-    if s:explored | Rexplore
-    else | let s:explored=1 | Explore
-    endif
-endfunction
-
+  let s:explored=0
+  function! s:NetrwToggle()
+      if s:explored | Rexplore
+      else | let s:explored=1 | Explore
+      endif
+  endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
-
 u.keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "File Explorer")
-u.keymap("n", "<leader>E", "<cmd>NetrwToggleSidebar<cr>", "Sidebar File Explorer")
