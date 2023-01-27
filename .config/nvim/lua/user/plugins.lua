@@ -312,9 +312,10 @@ return packer.startup(function(use)
     config = function() require "user.setups.octo" end
   }
   use {
-    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line/selection
-    requires = "nvim-lua/plenary.nvim",
-    config = function() require("gitlinker").setup() end,
+    "tpope/vim-fugitive", -- Git integration
+    requires = {
+      "tpope/vim-rhubarb" -- Open file/selection in GitHub repo
+    }
   }
 
   -----------------------------------------------------------------------------
