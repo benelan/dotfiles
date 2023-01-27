@@ -22,10 +22,10 @@ end, {
   'gzip',
   'logipat',
   'matchit',
-  'netrw',
-  'netrwFileHandlers',
-  'netrwPlugin',
-  'netrwSettings',
+  -- 'netrw',
+  -- 'netrwFileHandlers',
+  -- 'netrwPlugin',
+  -- 'netrwSettings',
   'perl_provider',
   'rrhelper',
   'ruby_provider',
@@ -38,6 +38,15 @@ end, {
   'zipPlugin',
 })
 
+-- netrw options
+vim.g.netrw_sort_by = "exten"
+vim.g.netrw_preview = 1
+vim.g.netrw_liststyle = 3
+vim.g.netrw_usetab = 1
+vim.g.netrw_winsize = 25
+vim.g.netrw_banner = 0
+vim.g.netrw_altfile = 1
+
 -- neovide options
 if vim.fn.exists("g:neovide") == 1 then
   vim.g.neovide_confirm_quit = false
@@ -48,7 +57,6 @@ if vim.fn.exists("g:neovide") == 1 then
   vim.g.neovide_cursor_animation_length = 0
   vim.g.neovide_cursor_trail_size = 0
 end
-
 
 -- Helps with syntax highlighting by specififying filetypes
 -- for common abbreviations used in markdown fenced code blocks
