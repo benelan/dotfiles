@@ -86,6 +86,7 @@ return packer.startup(function(use)
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
+    event = "BufWinEnter",
     setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
     ft = { "markdown" },
   }
@@ -108,9 +109,6 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.comment" end
   }
-  -- use {
-  -- "ahmedkhalf/project.nvim",
-  -- }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
     event = "BufWinEnter",
@@ -174,7 +172,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "L3MON4D3/LuaSnip", -- snippet engine
-    tag = "v<CurrentMajor>.*",
+    tag = "v1.*",
     requires = {
       "rafamadriz/friendly-snippets", -- a bunch of snippets to use
     }
@@ -248,18 +246,22 @@ return packer.startup(function(use)
     requires = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "nvim-treesitter/playground", -- for creating syntax queries
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
@@ -306,15 +308,18 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "mfussenegger/nvim-dap",
-    event = "BufWinEnter",
+    module = "dap",
+    cmd = {
+      "DapContinue",
+      "DapLoadLaunchFromJSON",
+      "DapToggleBreakpoint",
+      "DapToggleRepl",
+      "DapShowLog",
+    },
     config = function() require "user.setups.dap" end,
     requires = {
-      {
-        "theHamsta/nvim-dap-virtual-text",
-      },
-      {
-        "rcarriga/nvim-dap-ui",
-      },
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
     }
   }
 
