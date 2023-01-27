@@ -34,7 +34,8 @@ export FZF_DEFAULT_OPTS
 ###############################################################################
 
 function muxifyme() {
-    [[ -z $(pgrep tmux) ]] && muxproj
+    # If the tmux server isn't running, pick a session first
+    [[ -z $(pgrep tmux) ]] && muxsesh && return
 
     session_name="$(tmux display-message -p "#S")"
     if [[ -d ~/dev/work/$session_name ]]; then
@@ -47,44 +48,40 @@ function muxifyme() {
 
     cd "$session_dir" || return
 
-    if [[ -d "$session_dir/.git" ]]; then
+    if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$session_dir" ]]; then
         if [[ $# -eq 1 ]]; then
-            branch="-b $1"
+            github_user=$(git config --global github.user)
+            branch="-b ${github_user:$(id -un)}/$1"
         else
             branch="$(
                 # remote and local branches sorted by commit date
                 git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
-                    # search, remove 'origin/' prefix from branch names, remove empty line(s)
-                    awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
-                    # dedup -> pick -> checkout branch
-                    uniq | fzf -1 -0 --cycle
+                    # search, remove 'origin/' prefix from branch names, remove empty line(s), dedupe, select
+                    awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF | uniq | fzf -1 -0 --cycle
             )"
         fi
+        [[ -z "$branch" ]] && return
 
-        cleaned_branch="$(basename "$branch" | tr "./" "__")"
-        task_name="${cleaned_branch:-stuff}"
+        task_name="$(basename "$branch" | tr "./" "__")"
         target="$session_name:$task_name"
         ! tmux has-session -t "$target" >/dev/null 2>&1 &&
             tmux new-window -dn "${task_name}"
-        if
-            [[ $(git config --get core.bare) = "true" ]] &&
-                [[ $(git rev-parse --is-inside-work-tree) = "false" ]]
-        then
+        # assumes a bare repo will be using worktrees
+        if [[ $(git config --get core.bare) = "true" ]]; then
             if [[ ! -d "$session_dir/$task_name" ]]; then
                 git worktree add "$task_name" "$branch"
                 if [[ -f "$session_dir/$task_name/package.json" ]]; then
-                    tmux send-keys -t "$target" "npm --prefix=$session_dir/$task_name install
-                  "
+                    tmux send-keys -t "$target" "cd $session_dir/$task_name && npm install" Enter
                 fi
+            else
+                tmux send-keys -t "$target" "cd $session_dir/$task_name" Enter
             fi
-            cd "$session_dir/$task_name" || return
         else
             git checkout "$branch"
         fi
         [[ -z $TMUX ]] && tmux attach -t "$target"
     fi
-
-    unset session_dir session_name task_name target branch new_worktree
+    unset session_dir session_name task_name target branch new_worktree github_user
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
