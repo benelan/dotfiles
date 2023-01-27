@@ -19,10 +19,22 @@ if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
     PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
+# Correctly set exit code when something in a pipe fails
+set -o pipefail
 # Use vi editing mode instead of emacs
 set -o vi
 set +o emacs
+# Disable <CTRL-D> which is used to exit the shell
+set -o ignoreeof
 
+# Tab completion setup
+bind '"\t":menu-complete'
+bind "set show-all-if-ambiguous on"
+bind "set completion-ignore-case on"
+bind "set menu-complete-display-prefix on"
+
+# Automatically prepend `cd` to directory names
+shopt -s autocd
 # Correct small errors in directory names given to the `cd` builtin
 shopt -s cdspell
 # Check that hashed commands still exist before running them
@@ -49,30 +61,16 @@ shopt -s lithist
 shopt -u mailwarn
 # Don't complete a Tab press on an empty line with every possible command
 shopt -s no_empty_cmd_completion
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+# Pass an empty value if no matches are found when expanding a glob
+shopt -s nullglob
 # Use programmable completion, if available
 shopt -s progcomp
 # Warn me if I try to shift nonexistent values off an array
 shopt -s shift_verbose
 # Don't search $PATH to find files for the `source` builtin
 shopt -u sourcepath
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-# Automatically prepend `cd` to directory names.
-shopt -s autocd
-# Do not autocomplete when accidentally pressing Tab on an empty line.
-shopt -s no_empty_cmd_completion
-# Check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-# Disable <CTRL-D> which is used to exit the shell
-set -o ignoreeof
-# Tab completion setup
-bind '"\t":menu-complete'
-bind "set show-all-if-ambiguous on"
-bind "set completion-ignore-case on"
-bind "set menu-complete-display-prefix on"
 
 # These options only exist since Bash 4.0-alpha
 if ((BASH_VERSINFO[0] >= 4)); then
