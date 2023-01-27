@@ -83,11 +83,6 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.lualine" end
   }
-  -- use {
-  --   "akinsho/toggleterm.nvim", -- opens an integrated terminal
-  --   event = "BufWinEnter",
-  --   config = function() require "user.setups.toggleterm" end
-  -- }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
