@@ -38,6 +38,8 @@ M.keys = {
   { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
   { key = "r", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
   { key = "d", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
+  { key = "K", mods = "CTRL|SHIFT", action = act.Nop },
+  { key = "k", mods = "CTRL|SHIFT", action = act.Nop },
   { key = "~", mods = "CTRL|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
 
   -- Keymaps for activating key tables

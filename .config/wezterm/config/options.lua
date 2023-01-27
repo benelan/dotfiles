@@ -14,6 +14,7 @@ return {
     "monspace"
   },
   font_size = 12,
+  scrollback_lines = 10000,
   color_scheme = utils.color_scheme,
   colors = {
     cursor_bg = utils.colors.foreground,
@@ -85,7 +86,7 @@ return {
     },
 
   },
-  leader = { key = " ", mods = "ALT|SHIFT", timeout_milliseconds = 1500 },
+  leader = { key = " ", mods = "ALT|CTRL", timeout_milliseconds = 1500 },
   hyperlink_rules = {
     -- Linkify things that look like URLs and the host has a TLD name.
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
