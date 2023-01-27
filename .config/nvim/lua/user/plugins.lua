@@ -100,6 +100,16 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require("colorizer").setup() end
   }
+  use {
+    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    event = "BufWinEnter",
+    config = function() require "user.setups.indentline" end
+  }
+  use {
+    "folke/which-key.nvim", -- keymap helper for the memory deficient
+    event = "BufWinEnter",
+    config = function() require "user.setups.which-key" end
+  }
 
   -----------------------------------------------------------------------------
   ----> Utils
@@ -108,11 +118,6 @@ return packer.startup(function(use)
     "numToStr/Comment.nvim", -- smart comments
     event = "BufWinEnter",
     config = function() require "user.setups.comment" end
-  }
-  use {
-    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
-    event = "BufWinEnter",
-    config = function() require "user.setups.indentline" end
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
@@ -125,11 +130,6 @@ return packer.startup(function(use)
         }
       })
     end
-  }
-  use {
-    "folke/which-key.nvim", -- keymap helper for the memory deficient
-    event = "BufWinEnter",
-    config = function() require "user.setups.which-key" end
   }
   use {
     "AndrewRadev/splitjoin.vim",
@@ -194,8 +194,8 @@ return packer.startup(function(use)
   use {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
   }
-  use { -- inlay hints
-    "simrat39/inlay-hints.nvim",
+  use {
+    "simrat39/inlay-hints.nvim", -- inlay hints
     event = "BufWinEnter",
     config = function() require "user.lsp.inlays" end
   }
