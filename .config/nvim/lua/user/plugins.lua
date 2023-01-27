@@ -226,7 +226,12 @@ return packer.startup(function(use)
       },
       {
         "nvim-telescope/telescope-file-browser.nvim", -- file browser
+      },
+      use {
+        "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+        -- config = function() require("git-worktree").setup() end,
       }
+
       -- {
       --   "nvim-telescope/telescope-frecency.nvim",
       --   requires = {
