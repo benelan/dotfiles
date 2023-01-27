@@ -145,12 +145,6 @@ return packer.startup(function(use)
     config = function() require "user.setups.which-key" end
   }
   use {
-    "kevinhwang91/nvim-ufo", -- better code folds
-    requires = "kevinhwang91/promise-async",
-    event = "BufWinEnter",
-    config = function() require "user.setups.ufo" end
-  }
-  use {
     "AndrewRadev/splitjoin.vim",
     event = "BufWinEnter",
     keys = { "gJ", "gS" },

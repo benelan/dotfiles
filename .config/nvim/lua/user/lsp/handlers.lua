@@ -5,11 +5,10 @@ if not status_ok then return M end
 M.capabilities = cmp_nvim_lsp.default_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 
--- required for ufo plugin
-M.capabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true
-}
+-- M.capabilities.textDocument.foldingRange = {
+--   dynamicRegistration = false,
+--   lineFoldingOnly = true
+-- }
 
 M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
 

@@ -37,7 +37,7 @@ vim.opt.foldmethod = "expr"                     -- use foldexpr to set fold (bel
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine fold
 vim.opt.foldlevelstart = 99                     -- start with all folds closed
 vim.opt.foldlevel = 99                          -- set the fold level to closed
-vim.opt.foldcolumn = "auto:1"                        -- how many fold columns to display
+vim.opt.foldcolumn = "auto:1"                   -- how many fold columns to display
 vim.opt.shortmess:append("c")                   -- hide all completion messages ("match 1 of 2", "Pattern not found")
 vim.opt.whichwrap:append("<,>,[,]")             -- keys to move to the previous/next line when at the start/end of line
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
