@@ -19,8 +19,6 @@ if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
     PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
-# Correctly set exit code when something in a pipe fails
-set -o pipefail
 # Use vi editing mode instead of emacs
 set -o vi
 set +o emacs
