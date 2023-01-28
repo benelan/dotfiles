@@ -177,11 +177,6 @@ return packer.startup(function(use)
     config = function() require "user.lsp.inlays" end
   }
   use {
-    "RRethy/vim-illuminate", -- highlights hovered code blocks
-    event = "BufWinEnter",
-    config = function() require "user.lsp.illuminate" end
-  }
-  use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
     event = "BufWinEnter",
     config = function() require "user.lsp.goto-preview" end

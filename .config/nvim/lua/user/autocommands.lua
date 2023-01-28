@@ -99,24 +99,7 @@ end
 vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig,
   { desc = "Reloads NeoVim configuration" })
 
--- Plugin autocommands
-
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  callback = function()
-    vim.cmd("hi link illuminatedWord LspReferenceText")
-  end
-})
-
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-  callback = function()
-    local line_count = vim.api.nvim_buf_line_count(0)
-    if line_count >= 5000 then
-      vim.cmd("IlluminatePauseBuf")
-    end
-  end
-})
-
-
+-- Vimscript
 vim.cmd[[
 augroup filetype_marks
   autocmd!
