@@ -146,6 +146,9 @@ let g:markdown_fenced_languages = [
 
 let mapleader = " "
 
+nnoremap <leader>ff :FZF<CR>
+vnoremap <leader>ff :FZF<CR>
+
 inoremap jk <esc>
 nnoremap Y y$
 nnoremap Q <Nop>
@@ -177,7 +180,7 @@ vnoremap p "_dP
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
-nnoremap <silent> <expr> <CR> 
+nnoremap <silent> <expr> <CR>
       \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
       \ line('w$') < line('$')
         \ ? "\<PageDown>"
@@ -306,7 +309,6 @@ nnoremap <C-Down> :resize -5<CR>
 nnoremap <C-Right> :vertical resize +5<CR>
 nnoremap <C-Left> :vertical resize -5<CR>
 
-
 "" toggles automatic indentation based on the previous line
 nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
@@ -357,7 +359,6 @@ nnoremap <leader>H :<C-U>history :<CR>
 nnoremap <leader>` :<C-U>marks<CR>
 "" shows all registers
 nnoremap <leader>R :<C-U>registers<CR>
-
 "" uses last changed or yanked text as an object
 onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
 "" uses entire buffer as an object
@@ -445,6 +446,15 @@ if has("autocmd")
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    augroup get_git_info
+        autocmd!
+        autocmd BufWinEnter,FocusGained,BufWritePost *
+                    \ let g:git_status = s:GitInfoStatus() |
+                    \ let g:git_branch = s:GitInfoBranch()
+    augroup END
+
+    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif
 
 
@@ -471,6 +481,16 @@ endfunction
 
 nnoremap <silent> <C-t> :call <SID>ToggleTerminal()<CR>
 tnoremap <silent> <C-t> <C-w>N:call <SID>ToggleTerminal()<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function s:GitInfoBranch()
+    return trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
+endfunction
+
+function s:GitInfoStatus()
+    return trim(system("git -C " . expand("%:h") . " --no-pager diff --shortstat 2>/dev/null"))
+endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -681,13 +701,15 @@ set statusline+=%r                              " Readonly flag
 set statusline+=%h                              " Help file flag
 set statusline+=%w                              " Preview window flag
 set statusline+=\                               " Whitespace
+set statusline+=\ [%{g:git_branch}]             " Git info
+set statusline+=\                               " Whitespace
 set statusline+=\ %2*                           " User2 highlight
 set statusline+=\                               " Whitespace
 set statusline+=\ %y                            " File type
 set statusline+=\                               " Whitespace
 set statusline+=\ %3*                           " User3 highlight
 set statusline+=\                               " Whitespace
-set statusline+=\ %f                            " File path
+set statusline+=\ %{g:git_status}               " Git info
 set statusline+=%=                              " Left/Right separator
 set statusline+=\ %2*                           " User2 highlight
 set statusline+=\                               " Whitespace
