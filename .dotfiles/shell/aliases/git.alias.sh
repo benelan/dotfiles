@@ -240,7 +240,7 @@ dot() {
 # work with the bare dotfiles repo
 edot() {
     # shellcheck disable=2016
-    nvim "${@:-"$HOME/.dotfiles"}" \
+    "$EDITOR" "${@:-"$HOME/.dotfiles"}" \
         --cmd "cd %:h | pwd" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
