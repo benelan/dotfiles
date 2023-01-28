@@ -6,8 +6,7 @@ local telescope_action_layout = require "telescope.actions.layout"
 
 telescope.setup {
   defaults = {
-    prompt_prefix = " ",
-    selection_caret = " ",
+    color_devicons = false,
     layout_strategy = "horizontal",
     layout_config = {
       width = 0.9,

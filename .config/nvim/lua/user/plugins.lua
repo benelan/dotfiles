@@ -64,9 +64,6 @@ return packer.startup(function(use)
     config = function() require "user.setups.alpha" end,
   }
   use {
-    "kyazdani42/nvim-web-devicons", -- icons used by many plugins
-  }
-  use {
     "unblevable/quick-scope", -- highlight unique letters in words
   }
   use {
@@ -74,31 +71,11 @@ return packer.startup(function(use)
     lock = true
   }
   use {
-    "akinsho/bufferline.nvim", -- good lookin' bufferline
-    event = "BufWinEnter",
-    config = function() require "user.setups.bufferline" end
-  }
-  use {
-    "nvim-lualine/lualine.nvim", -- extensible statusline
-    event = "BufWinEnter",
-    config = function() require "user.setups.lualine" end
-  }
-  use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
     event = "BufWinEnter",
     setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
     ft = { "markdown" },
-  }
-  use {
-    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
-    event = "BufWinEnter",
-    config = function() require "user.setups.scrollbar" end
-  }
-  use {
-    "norcalli/nvim-colorizer.lua",
-    event = "BufWinEnter",
-    config = function() require("colorizer").setup() end
   }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines

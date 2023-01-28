@@ -13,43 +13,6 @@ local check_backspace = function()
   return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
 end
 
-local kind_icons = {
-  Array = "",
-  Boolean = "",
-  Class = "",
-  Color = "",
-  Constant = "",
-  Constructor = "",
-  Enum = "",
-  EnumMember = "",
-  Event = "",
-  Field = "",
-  File = "",
-  Folder = "",
-  Function = "",
-  Interface = "",
-  Key = "",
-  Keyword = "",
-  Method = "",
-  Module = "",
-  Namespace = "",
-  Null = "ﳠ",
-  Number = "",
-  Object = "",
-  Operator = "",
-  Package = "",
-  Property = "",
-  Reference = "",
-  Snippet = "",
-  String = "",
-  Struct = "",
-  Text = "",
-  TypeParameter = "",
-  Unit = "",
-  Value = "",
-  Variable = "",
-}
-
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -143,15 +106,6 @@ cmp.setup({
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      if vim.tbl_contains({ 'path' }, entry.source.name) then
-        local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
-        if icon then
-          vim_item.kind = icon
-          vim_item.kind_hl_group = hl_group
-          return vim_item
-        end
-      end
-      vim_item.kind = kind_icons[vim_item.kind]
       vim_item.menu = ({
         buffer = "[BUF]",
         nvim_lsp = "[LSP]",

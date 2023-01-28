@@ -235,16 +235,14 @@ u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New")
 u.keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Only")
 u.keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close")
 u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move")
-u.keymap("n", "<leader>te",
-  "<CMD>tabedit <C-r>=expand('%:p:h')<cr>/<CR>", "Edit")
 
 -------------------------------------------------------------------------------
 ----> Buffers
 -------------------------------------------------------------------------------
 
 -- navigate
-u.keymap("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", "Next Buffer")
-u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
+u.keymap("n", "<S-l>", "<cmd>bnext<cr>", "Next Buffer")
+u.keymap("n", "<S-h>", "<cmd>bprevious<cr>", "Previous Buffer")
 
 -- close
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close")

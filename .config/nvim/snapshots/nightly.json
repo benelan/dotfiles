@@ -8,9 +8,6 @@
   "alpha-nvim": {
     "commit": "21a0f25"
   },
-  "bufferline.nvim": {
-    "commit": "c7492a7"
-  },
   "cmp-buffer": {
     "commit": "3022dbc"
   },
@@ -38,6 +35,9 @@
   "friendly-snippets": {
     "commit": "a6f7a16"
   },
+  "git-worktree.nvim": {
+    "commit": "d7f4e25"
+  },
   "gitsigns.nvim": {
     "commit": "c52162b"
   },
@@ -55,9 +55,6 @@
   },
   "inlay-hints.nvim": {
     "commit": "006b089"
-  },
-  "lualine.nvim": {
-    "commit": "0050b30"
   },
   "markdown-preview.nvim": {
     "commit": "02cc387"
@@ -77,9 +74,6 @@
   "nvim-cmp": {
     "commit": "e7e2ef7"
   },
-  "nvim-colorizer.lua": {
-    "commit": "36c610a"
-  },
   "nvim-dap": {
     "commit": "6236a9e"
   },
@@ -91,9 +85,6 @@
   },
   "nvim-lspconfig": {
     "commit": "2df0fbd"
-  },
-  "nvim-scrollbar": {
-    "commit": "6a2065f"
   },
   "nvim-surround": {
     "commit": "a06dea1"
@@ -112,9 +103,6 @@
   },
   "nvim-ts-context-commentstring": {
     "commit": "a0f8956"
-  },
-  "nvim-web-devicons": {
-    "commit": "3548363"
   },
   "octo.nvim": {
     "commit": "24a1718"
