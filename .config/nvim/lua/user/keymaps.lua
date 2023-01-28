@@ -425,11 +425,12 @@ vim.cmd [[
 
 -- Toggle Netrw file explorer
 vim.cmd [[
-  let s:explored=0
   function! s:NetrwToggle()
-      if s:explored | Rexplore
-      else | let s:explored=1 | Explore
-      endif
+    try
+        Rexplore
+    catch
+        Explore
+    endtry
   endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]

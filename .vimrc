@@ -110,7 +110,6 @@ endif
 
 try
     set switchbuf=useopen,usetab,newtab
-    set showtabline=2
 catch
     set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
 endtry
@@ -421,8 +420,24 @@ if has("autocmd")
 
     command! Lint silent make % | silent redraw!
 
-
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    " Create marks for specific filetypes when leaving buffer
+    augroup filetype_marks
+      autocmd!
+      autocmd BufLeave *.css,*.scss,*.sass  normal! mC
+      autocmd BufLeave *.html               normal! mH
+      autocmd BufLeave *.js,*.jsx,*.json    normal! mJ
+      autocmd BufLeave *.ts,*.tsx           normal! mT
+      autocmd BufLeave *.sh                 normal! mS
+      autocmd BufLeave *.lua                normal! mL
+      autocmd BufLeave *.vim                normal! mV
+      autocmd BufLeave *.py                 normal! mP
+      autocmd BufLeave *.go                 normal! mG
+      autocmd BufLeave *.rs                 normal! mR
+    augroup END
+
+        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Automatically switch back and forth between absolute and relative line numbers
     " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
@@ -515,14 +530,16 @@ noremap <silent> <leader>E :call <SID>ToggleNetrwLeft()<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-let s:explored=0
-function! s:ToggleNetrw()
-    if s:explored | Rexplore
-    else | let s:explored=1 | Explore
-    endif
+function! s:NetrwToggle()
+  try
+      Rexplore
+  catch
+      Explore
+  endtry
 endfunction
 
-noremap <silent> <leader>e :call <SID>ToggleNetrw()<CR>
+command! NetrwToggle call <sid>NetrwToggle()
+noremap <silent> <leader>e :NetrwToggle<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

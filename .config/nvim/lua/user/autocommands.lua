@@ -115,3 +115,20 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
     end
   end
 })
+
+
+vim.cmd[[
+augroup filetype_marks
+  autocmd!
+  autocmd BufLeave *.css,*.scss,*.sass  normal! mC
+  autocmd BufLeave *.html               normal! mH
+  autocmd BufLeave *.js,*.jsx,*.json    normal! mJ
+  autocmd BufLeave *.ts,*.tsx           normal! mT
+  autocmd BufLeave *.sh                 normal! mS
+  autocmd BufLeave *.lua                normal! mL
+  autocmd BufLeave *.vim                normal! mV
+  autocmd BufLeave *.py                 normal! mP
+  autocmd BufLeave *.go                 normal! mG
+  autocmd BufLeave *.rs                 normal! mR
+augroup END
+]]
