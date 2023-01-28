@@ -5,6 +5,8 @@ M.exclude_buftypes = {
 }
 
 M.exclude_filetypes = {
+  "dap-repl",
+  "DiffviewFiles",
   "DressingSelect",
   "NvimTree",
   "Outline",
@@ -15,6 +17,7 @@ M.exclude_filetypes = {
   "fugitive",
   "lir",
   "neogitstatus",
+  "oct",
   "packer",
   "spectre_panel",
   "toggleterm",

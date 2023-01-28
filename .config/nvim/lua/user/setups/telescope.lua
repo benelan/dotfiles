@@ -65,6 +65,8 @@ telescope.setup {
       i = {
         ["<Down>"] = telescope_actions.cycle_history_next,
         ["<Up>"] = telescope_actions.cycle_history_prev,
+        ["<M-j"] = telescope_actions.cycle_history_next,
+        ["<M-k>"] = telescope_actions.cycle_history_prev,
         ["<C-j>"] = telescope_actions.move_selection_next,
         ["<C-k>"] = telescope_actions.move_selection_previous,
         ["<tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
@@ -101,7 +103,6 @@ telescope.setup {
   extensions = {
     project = {
       hidden_files = true,
-      -- sync_with_nvim_tree = true,
       base_dirs = {
         "~/.dotfiles",
         "~/.config/nvim",
@@ -120,3 +121,11 @@ telescope.setup {
 telescope.load_extension("fzf")
 telescope.load_extension("project")
 telescope.load_extension("file_browser")
+telescope.load_extension("git_worktree")
+
+vim.keymap.set("n", "<leader>gws",
+  "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
+  { noremap = true, silent = true, desc = "Switch worktree" })
+vim.keymap.set("n", "<leader>gwa",
+  "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
+  { noremap = true, silent = true, desc = "Create worktree" })

@@ -74,12 +74,6 @@ return packer.startup(function(use)
     lock = true
   }
   use {
-    "kyazdani42/nvim-tree.lua", -- tree-like file explorer
-    event = "VimEnter",
-    config = function() require "user.setups.nvim-tree" end,
-    tag = "nightly"
-  }
-  use {
     "akinsho/bufferline.nvim", -- good lookin' bufferline
     event = "BufWinEnter",
     config = function() require "user.setups.bufferline" end
@@ -89,14 +83,10 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require "user.setups.lualine" end
   }
-  -- use {
-  --   "akinsho/toggleterm.nvim", -- opens an integrated terminal
-  --   event = "BufWinEnter",
-  --   config = function() require "user.setups.toggleterm" end
-  -- }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
+    event = "BufWinEnter",
     setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
     ft = { "markdown" },
   }
@@ -110,6 +100,16 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     config = function() require("colorizer").setup() end
   }
+  use {
+    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    event = "BufWinEnter",
+    config = function() require "user.setups.indentline" end
+  }
+  use {
+    "folke/which-key.nvim", -- keymap helper for the memory deficient
+    event = "BufWinEnter",
+    config = function() require "user.setups.which-key" end
+  }
 
   -----------------------------------------------------------------------------
   ----> Utils
@@ -118,14 +118,6 @@ return packer.startup(function(use)
     "numToStr/Comment.nvim", -- smart comments
     event = "BufWinEnter",
     config = function() require "user.setups.comment" end
-  }
-  -- use {
-  -- "ahmedkhalf/project.nvim",
-  -- }
-  use {
-    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
-    event = "BufWinEnter",
-    config = function() require "user.setups.indentline" end
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
@@ -138,17 +130,6 @@ return packer.startup(function(use)
         }
       })
     end
-  }
-  use {
-    "folke/which-key.nvim", -- keymap helper for the memory deficient
-    event = "BufWinEnter",
-    config = function() require "user.setups.which-key" end
-  }
-  use {
-    "kevinhwang91/nvim-ufo", -- better code folds
-    requires = "kevinhwang91/promise-async",
-    event = "BufWinEnter",
-    config = function() require "user.setups.ufo" end
   }
   use {
     "AndrewRadev/splitjoin.vim",
@@ -191,7 +172,7 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "L3MON4D3/LuaSnip", -- snippet engine
-    tag = "v<CurrentMajor>.*",
+    tag = "v1.*",
     requires = {
       "rafamadriz/friendly-snippets", -- a bunch of snippets to use
     }
@@ -213,8 +194,8 @@ return packer.startup(function(use)
   use {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
   }
-  use { -- inlay hints
-    "simrat39/inlay-hints.nvim",
+  use {
+    "simrat39/inlay-hints.nvim", -- inlay hints
     event = "BufWinEnter",
     config = function() require "user.lsp.inlays" end
   }
@@ -245,7 +226,12 @@ return packer.startup(function(use)
       },
       {
         "nvim-telescope/telescope-file-browser.nvim", -- file browser
+      },
+      use {
+        "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+        -- config = function() require("git-worktree").setup() end,
       }
+
       -- {
       --   "nvim-telescope/telescope-frecency.nvim",
       --   requires = {
@@ -265,18 +251,22 @@ return packer.startup(function(use)
     requires = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "nvim-treesitter/playground", -- for creating syntax queries
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+        event = "BufWinEnter",
         after = "nvim-treesitter"
       },
       {
@@ -312,9 +302,10 @@ return packer.startup(function(use)
     config = function() require "user.setups.octo" end
   }
   use {
-    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line/selection
-    requires = "nvim-lua/plenary.nvim",
-    config = function() require("gitlinker").setup() end,
+    "tpope/vim-fugitive", -- Git integration
+    requires = {
+      "tpope/vim-rhubarb" -- Open file/selection in GitHub repo
+    }
   }
 
   -----------------------------------------------------------------------------
@@ -322,15 +313,18 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "mfussenegger/nvim-dap",
-    event = "BufWinEnter",
+    module = "dap",
+    cmd = {
+      "DapContinue",
+      "DapLoadLaunchFromJSON",
+      "DapToggleBreakpoint",
+      "DapToggleRepl",
+      "DapShowLog",
+    },
     config = function() require "user.setups.dap" end,
     requires = {
-      {
-        "theHamsta/nvim-dap-virtual-text",
-      },
-      {
-        "rcarriga/nvim-dap-ui",
-      },
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
     }
   }
 

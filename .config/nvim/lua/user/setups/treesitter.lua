@@ -2,6 +2,21 @@ local status_ok, _ = pcall(require, "nvim-treesitter")
 local configs_status_ok, treesitter_configs = pcall(require, "nvim-treesitter.configs")
 if not status_ok or not configs_status_ok then return end
 
+local swap_next, swap_prev = (function()
+  local swap_objects = {
+    a = "@parameter.inner",
+    f = "@function.outer",
+    e = "@element",
+    -- v = "@variable",
+  }
+  local n, p = {}, {}
+  for key, obj in pairs(swap_objects) do
+    n[string.format("]<M-%s>", key)] = obj
+    p[string.format("[<M-%s>", key)] = obj
+  end
+  return n, p
+end)()
+
 treesitter_configs.setup({
   ensure_installed = {
     "bash",
@@ -91,12 +106,8 @@ treesitter_configs.setup({
     },
     swap = {
       enable = true,
-      swap_next = {
-        ['<leader>Tl'] = { query = '@parameter.inner', desc = "Swap next parameter" },
-      },
-      swap_previous = {
-        ['<leader>Th'] = { query = '@parameter.inner', desc = "Swap previous parameter" },
-      },
+      swap_next = swap_next,
+      swap_previous = swap_prev,
     },
   }
 })

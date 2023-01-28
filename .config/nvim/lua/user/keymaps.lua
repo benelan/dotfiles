@@ -295,7 +295,7 @@ u.keymap("n", "<leader>sc",
 u.keymap("n", "<leader>sh",
   function() u.toggle_option("hlsearch") end,
   "Toggle hlsearch")
-  
+
 u.keymap("n", "<leader>si",
   function() u.toggle_option("incsearch") end,
   "Toggle incsearch")
@@ -422,3 +422,15 @@ vim.cmd [[
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
+
+-- Toggle Netrw file explorer
+vim.cmd [[
+  let s:explored=0
+  function! s:NetrwToggle()
+      if s:explored | Rexplore
+      else | let s:explored=1 | Explore
+      endif
+  endfunction
+  command! NetrwToggle call <sid>NetrwToggle()
+]]
+u.keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "File Explorer")

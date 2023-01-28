@@ -187,6 +187,9 @@ local mappings = {
       "<cmd>Telescope git_bcommits<cr>",
       "Checkout Buffer Commit"
     },
+    w = {
+      name = "Worktree"
+    },
     m = {
       name = "Mergetool",
     },

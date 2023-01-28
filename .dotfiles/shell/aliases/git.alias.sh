@@ -7,9 +7,10 @@
 alias g='git'
 
 # gets the default git branch
-alias gbdefault='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
-# same thing:  ="git branch --list --remotes '*/HEAD' | awk -F/ '{print $NF}'"
-
+alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
+# Same as above but works in bare repos and is more accurate, but slower
+alias gbdefault-bare='git remote show $(git remote | grep -Eo "(upstream|origin)" | tail -1) | grep "HEAD branch" | cut -d" " -f5'
+alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
 # add
 ######
 alias ga='git add'
@@ -28,6 +29,10 @@ alias gbir="git bisect reset"
 #########
 alias gb='git branch'
 alias gbD='git branch --delete --force'
+<<<<<<< HEAD
+=======
+alias gbuoc='git branch -u origin/$(git symbolic-ref --short HEAD)'
+>>>>>>> master
 
 # for-each-ref
 ###############
@@ -69,14 +74,20 @@ alias gcp='git cherry-pick'
 alias gdf='git diff'
 alias gdfs='git diff --staged'
 alias gdft='git difftool'
+<<<<<<< HEAD
 alias gdfe='$EDITOR $(git diff --name-only)'
+=======
+# edit the files changed locally
+alias ge='$EDITOR $(git diff --name-only HEAD)'
+# sync origin's default branch and edit the changed files
+alias geom='default_branch=$(gbdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
+>>>>>>> master
 
 # fetch
 ########
 alias gf='git fetch --all --prune'
 alias gft='git fetch --all --prune --tags'
-alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
-alias gup='git fetch && git rebase'
+alias gfuom='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 
 # log
 ######
@@ -105,6 +116,7 @@ alias glsum='git diff --name-only --diff-filter=U'
 ########
 alias gm='git merge'
 alias gmm='git merge "$(gbdefault)"'
+alias gmom='git fetch && git merge origin/$(gbdefault)'
 alias gmt='git mergetool'
 
 # patch
@@ -122,8 +134,8 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 #######
-alias gplum='git pull upstream "$(gbdefault)"'
 alias gpl='git pull'
+alias gplum='git pull upstream "$(gbdefault)"'
 alias gplp='git pull && git push'
 
 # remote
@@ -139,7 +151,7 @@ alias grbc='git rebase --continue'
 alias grbm='git rebase "$(gbdefault)"'
 alias grbma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
 # Rebase with latest remote
-alias gprom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"'
+alias gfrom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"'
 
 # reset
 ########
@@ -188,13 +200,21 @@ alias gswt='git switch --track'
 ######
 alias gt='git tag'
 alias gta='git tag --annotate'
-alias gtd='git tag --delete'
-alias gtD='git tag --delete --force'
+alias gtD='git tag --delete'
 alias gtl='git tag --list'
-# outputs the tag following the provided commit hash
-# useful for finding the first reproducible version for bugs
+# outputs the tag following the provided commit sha
+# useful for finding the first reproducible version
+# for bugs after using git bisect to get the sha
 # $ gtnext 84a29d4 # => v1.0.0-next.295~8 (8 commits before the tag)
 alias gtnext='git name-rev --tags --name-only'
+
+# worktree
+##########
+alias gw='git worktree'
+alias gwa='git worktree add'
+alias gwR='git worktree remove'
+alias gwl='git worktree list'
+alias gwp='git worktree prune'
 
 alias ghm='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
@@ -204,7 +224,6 @@ alias gunhide='git update-index --no-assume-unchanged'
 ##########
 alias glz="lazygit"
 alias gfz="git fuzzy"
-alias fgbD="git branch | fzf --multi | xargs git branch -D"
 alias fgbd="git branch | fzf --multi | xargs git branch -d"
 
 # Dotfiles
@@ -228,7 +247,7 @@ dot() {
 # work with the bare dotfiles repo
 edot() {
     # shellcheck disable=2016
-    nvim "${@:-"$HOME/.dotfiles"}" \
+    "$EDITOR" "${@:-"$HOME/.dotfiles"}" \
         --cmd "cd %:h | pwd" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
@@ -355,5 +374,4 @@ alias dfz="dot fuzzy"
 
 # https://cli.github.com/
 # https://github.com/dlvhdr/gh-dash
-alias ghd="gh dash"
-
+lias ghd="gh dash"

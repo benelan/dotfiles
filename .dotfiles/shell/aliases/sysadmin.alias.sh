@@ -40,6 +40,8 @@ alias scq='systemctl stop'
 alias scuq='systemctl --user stop'
 alias scs='systemctl start'
 alias scus='systemctl --user start'
+alias sclt='systemctl list-units --type target --all'
+alias scult='systemctl list-units --type target --all --user'
 
 # Networking
 # -----------------------------------------------------------------------------

@@ -42,7 +42,6 @@
   ; Show most recently changed branches first.
   sort = -committerdate
 
-
 [color]
   ; Use colors in Git commands when possible
   ui = auto
@@ -119,6 +118,9 @@
   ; Enable submodule summary of commits.
   submoduleSummary = true
   short = true
+
+[pull]
+	rebase = false
 
 [help]
   ; Correct and execute mistyped commands.
@@ -217,5 +219,3 @@
 
   ; list of local branches
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
-[pull]
-	rebase = false
