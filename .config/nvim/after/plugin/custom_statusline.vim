@@ -1,8 +1,8 @@
 augroup get_git_info
     autocmd!
     autocmd BufWinEnter,FocusGained,BufWritePost *
-                \ let g:git_status = s:GitInfoStatus() |
                 \ let g:git_branch = s:GitInfoBranch()
+                " \ let g:git_status = s:GitInfoStatus()
 augroup END
 
 function s:GitInfoBranch()
@@ -35,22 +35,23 @@ set statusline+=%r                              " Readonly flag
 set statusline+=%h                              " Help file flag
 set statusline+=%w                              " Preview window flag
 set statusline+=\                               " Whitespace
-set statusline+=\ [%{g:git_branch}]             " Git info
-set statusline+=\                               " Whitespace
-set statusline+=\ %2*                           " User2 highlight
-set statusline+=\                               " Whitespace
-set statusline+=\ %y                            " File type
-set statusline+=\                               " Whitespace
-set statusline+=\ %3*                           " User3 highlight
-set statusline+=\                               " Whitespace
-" set statusline+=\ %{g:git_status}               " Git info
-set statusline+=%=                              " Left/Right separator
 set statusline+=\ %2*                           " User2 highlight
 set statusline+=\                               " Whitespace
 set statusline+=\ %{&ff}                        " File format
 set statusline+=\                               " Whitespace
 set statusline+=\ %{strlen(&fenc)?&fenc:'none'} " File encoding
 set statusline+=\                               " Whitespace
+set statusline+=\ %y                            " File type
+set statusline+=\                               " Whitespace
+set statusline+=\ %3*                           " User3 highlight
+set statusline+=\                               " Whitespace
+set statusline+=\ %{g:git_branch}               " Git info
+set statusline+=\                               " Whitespace
+" set statusline+=\ %{g:git_status}               " Git info
+set statusline+=%=                              " Left/Right separator
+set statusline+=\ %2*                           " User2 highlight
+set statusline+=\                               " Whitespace
+set statusline+=%f                              " File name
 set statusline+=\ %1*                           " User1 highlight
 set statusline+=\                               " Whitespace
 set statusline+=\ %l                            " Current line number
