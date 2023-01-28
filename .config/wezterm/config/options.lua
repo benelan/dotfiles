@@ -8,9 +8,11 @@ return {
   default_cwd = wezterm.home_dir,
   -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
-    "Iosevka Nerd Font",
-    "SauceCodePro Nerd Font",
-    "JetBrains Mono Nerd Font",
+    -- "Iosevka Nerd Font",
+    -- "SauceCodePro Nerd Font",
+    -- "JetBrains Mono Nerd Font",
+    "Sans",
+    "Ubuntu Mono",
     "monspace"
   },
   font_size = 12,

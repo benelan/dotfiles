@@ -144,7 +144,24 @@ virtual_text.setup({
 -----------------------------------------------------------------------------
 -- DAP UI
 -----------------------------------------------------------------------------
-dapui.setup()
+dapui.setup({
+  controls = {
+    element = "repl",
+    enabled = true,
+     icons = {
+        pause = "⏸",
+        play = "▶",
+        run_last = "🗘",
+        step_back = "🠔",
+        step_into = "↳",
+        step_out = "",
+        step_over = "↷",
+        terminate = "✘"
+      }
+  }
+}
+)
+
 dap.set_log_level("TRACE");
 
 -- Automatically open UI
