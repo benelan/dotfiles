@@ -29,10 +29,7 @@ alias gbir="git bisect reset"
 #########
 alias gb='git branch'
 alias gbD='git branch --delete --force'
-<<<<<<< HEAD
-=======
 alias gbuoc='git branch -u origin/$(git symbolic-ref --short HEAD)'
->>>>>>> master
 
 # for-each-ref
 ###############
@@ -74,14 +71,11 @@ alias gcp='git cherry-pick'
 alias gdf='git diff'
 alias gdfs='git diff --staged'
 alias gdft='git difftool'
-<<<<<<< HEAD
-alias gdfe='$EDITOR $(git diff --name-only)'
-=======
 # edit the files changed locally
 alias ge='$EDITOR $(git diff --name-only HEAD)'
 # sync origin's default branch and edit the changed files
+# shellcheck disable=2154
 alias geom='default_branch=$(gbdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
->>>>>>> master
 
 # fetch
 ########
