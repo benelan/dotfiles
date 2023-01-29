@@ -38,7 +38,7 @@ vim.opt.foldmethod = "expr"                     -- use foldexpr to set fold (bel
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine fold
 vim.opt.foldlevelstart = 99                     -- start with all folds closed
 vim.opt.foldlevel = 99                          -- set the fold level to closed
-vim.opt.foldcolumn = "auto:1"                   -- how many fold columns to display
+vim.opt.foldcolumn = "0"                        -- how many fold columns to display
 vim.opt.shortmess:append("c")                   -- hide all completion messages ("match 1 of 2", "Pattern not found")
 vim.opt.whichwrap:append("<,>,[,]")             -- keys to move to the previous/next line when at the start/end of line
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
@@ -47,7 +47,7 @@ vim.opt.autoread = true                         -- automatically read file after
 vim.opt.spelloptions:append("camel")            -- when a word is CamelCased, assume "Cased" is a separate word
 vim.opt.formatoptions:append("l")               -- :help formatoptions
 vim.opt.formatoptions:remove("t,a,r,o")         -- :help formatoptions
-if vim.fn.executable('rg') == 1 then            -- use ripgrep instead of grep
+if vim.fn.executable('g') == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
 vim.opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
@@ -58,7 +58,7 @@ vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:🞃,foldclose:🞂,diff: ]]
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⮟,foldclose:⮞,diff: ]] -- ⮟ ⮞  ⯆ ⯈
 -- change invisible characters
 vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
 -- set fonts with fallbacks for GUI
