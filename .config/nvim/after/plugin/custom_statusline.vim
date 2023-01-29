@@ -6,7 +6,12 @@ augroup get_git_info
 augroup END
 
 function s:GitInfoBranch()
-    return trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
+    let l:branch_name = trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
+    if l:branch_name != ""
+      return  "⎇  ". l:branch_name
+    else
+    return ""
+  endif
 endfunction
 
 function s:GitInfoStatus()

@@ -15,7 +15,7 @@ M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
 local diagnostic_levels = {
   { name = "DiagnosticSignError", text = "", severity = vim.diagnostic.severity.ERROR, },
   { name = "DiagnosticSignWarn", text = "", severity = vim.diagnostic.severity.WARN, },
-  { name = "DiagnosticSignHint", text = "", severity = vim.diagnostic.severity.HINT, },
+  { name = "DiagnosticSignHint", text = "🗭", severity = vim.diagnostic.severity.HINT, },
   { name = "DiagnosticSignInfo", text = "", severity = vim.diagnostic.severity.Info, },
 }
 
