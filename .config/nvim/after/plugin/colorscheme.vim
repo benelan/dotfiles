@@ -15,6 +15,15 @@ augroup GruvboxMaterialCustom
   autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
 augroup END
 
+set background=dark
+if exists('+termguicolors') && ($TERM == "gnome-256color" || $TERM == "tmux-256color" || $TERM == "wezterm" || $TERM == "kitty")
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+else
+    set t_Co=256
+endif
+
 let g:gruvbox_material_background = "medium"
 let g:gruvbox_material_foreground = "material"
 let g:gruvbox_material_ui_contrast = "high"
