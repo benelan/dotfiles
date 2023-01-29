@@ -58,6 +58,7 @@ if vim.fn.exists("g:neovide") == 1 then
   vim.g.neovide_cursor_trail_size = 0
 end
 
+vim.g.markdown_recommended_style = 0
 -- Helps with syntax highlighting by specififying filetypes
 -- for common abbreviations used in markdown fenced code blocks
 vim.g.markdown_fenced_languages = {

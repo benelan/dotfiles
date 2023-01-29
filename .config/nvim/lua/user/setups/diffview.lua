@@ -8,14 +8,10 @@ diffview.setup({
   git_cmd = { "git" },      -- The git executable followed by default args.
   use_icons = true,         -- Requires nvim-web-devicons
   watch_index = true,       -- Update views and index buffers when the git index changes.
-  icons = {                 -- Only applies when use_icons is true.
-    folder_closed = "",
-    folder_open = "",
-  },
   signs = {
-    fold_closed = "",
-    fold_open = "",
-    done = "✓",
+    fold_closed = "🞂 ",
+    fold_open = "🞃 ",
+    done = "✓ ",
   },
   view = {
     -- Configure the layout and behavior of different types of views.
