@@ -16,6 +16,7 @@ vim.opt.splitright = true                       -- force all vertical splits to 
 vim.opt.swapfile = false                        -- creates a swapfile
 vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
+vim.opt.undolevels=10000                        -- How man undos to store
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
 vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
@@ -49,6 +50,7 @@ vim.opt.formatoptions:remove("t,a,r,o")         -- :help formatoptions
 if vim.fn.executable('rg') == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
+vim.opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 -- add some common code directories to path
 vim.opt.path:append("src/**,api/**,lua/**,utils/**,static,config")
 -- use the patience diff algorithm
@@ -56,11 +58,11 @@ vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⮟,foldclose:⮞,diff: ]]
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:🞃,foldclose:🞂,diff: ]]
 -- change invisible characters
-vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:⤶]]
+vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
 -- set fonts with fallbacks for GUI
-vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,monospace:h11"
+vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,Ubuntu_Mono,monospace:h11"
 -- set term gui colors (most terminals support this)
 if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
