@@ -1,6 +1,7 @@
 add_newline = true
-format = "$all$time$cmd_duration$line_break$jobs$battery$status$container$shell$character"
+format = "$all$time$cmd_duration$line_break$battery$status$container$shell$character"
 palette = "gruvbox"
+continuation_prompt = "…  "
 
 # from https://github.com/morhetz/gruvbox
 [palettes.gruvbox]
@@ -57,8 +58,8 @@ threshold = 35
 style = "bold orange"
 
 [character]
-success_symbol = "[➜](bold green-light) " # ☛ ☞
-error_symbol = "[✗](bold red-light) "
+success_symbol = "[↳](bold green-light) "
+error_symbol = "[✘](bold red-light) "
 vimcmd_symbol = "[V](bold green-light) "
 vimcmd_replace_one_symbol = "[V](bold yellow-light) "
 vimcmd_replace_symbol = "[V](bold yellow-light) "
@@ -78,7 +79,7 @@ truncation_length = 0
 symbol = ""
 
 [hg_branch]
-symbol = "⎇ "
+symbol = "⎇  "
 
 [git_branch]
 format = "[on](fg) [$symbol$branch(:$remote_branch)]($style) "
@@ -90,25 +91,25 @@ disabled = true
 
 [git_status]
 style = "bold blue"
-ahead = "[⇡$count](aqua-light)"
-diverged = "[⇡$ahead_count](aqua-light)[⇣$behind_count](yellow-light)"
-behind = "[⇣$count](yellow-light)"
+ahead = "[<$count](aqua-light)"
+diverged = "[<$ahead_count](aqua-light)[>$behind_count](yellow-light)"
+behind = "[>$count](yellow-light)"
 staged = "[+$count](green)"
-deleted = "[X$count](red)"
+deleted = "[-$count](red)"
 untracked = "[?$count](yellow)"
 modified = "[*$count](orange)"
 stashed = "[\\$$count](purple)"
-renamed = "[»$count](purple-light)"
+renamed = "[=$count](purple-light)"
 conflicted = "[!$count](red-light)"
 
 [package]
 format = "[is](fg) [$symbol$version]($style) "
 style = "bold orange"
-symbol = "⧠ "
+symbol = " " # 🙭
 
 [nodejs]
 format = "[via](fg) [$symbol($version )]($style)"
-symbol = "⌬ "
+symbol = ""
 
 [sudo]
 format = "[[as](fg) $symbol]($style)"
@@ -123,4 +124,7 @@ time_format = "%T"
 format = "[$user]($style) [in](fg) "
 
 [pulumi]
-symbol = "⧠ "
+disabled = true
+
+[jobs]
+disabled = true
