@@ -15,12 +15,12 @@ npairs.setup({
   },
 
   fast_wrap = {
-    map = "<M-e>",
+    map = "<M-a>",
     chars = { "{", "[", "(", '"', "'" },
     pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
     offset = 0, -- Offset from pattern match
-    end_key = "$",
-    keys = "qwertyuiopzxcvbnmasdfghjkl",
+    end_key = "e",
+    keys = "asdfghjklqwrtyuiopzxcvbnm",
     check_comma = true,
     highlight = "PmenuSel",
     highlight_grey = "LineNr",
@@ -80,7 +80,6 @@ npairs.add_rules {
       :use_regex(true)
       :set_end_pair_length(2)
 }
-
 
 -- https://github.com/rstacruz/vim-closer/blob/master/autoload/closer.vim
 -- Expand multiple pairs on Enter key

@@ -60,7 +60,7 @@ vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⮟,foldclose:⮞,diff: ]] -- ⮟ ⮞  ⯆ ⯈
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⯆,foldclose:⯈,diff:]] -- ⮟ ⮞  ⯆ ⯈
 -- change invisible characters
 vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
 -- set fonts with fallbacks for GUI
