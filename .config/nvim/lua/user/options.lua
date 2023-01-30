@@ -65,8 +65,6 @@ vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⮟,foldclose:⮞,diff: ]]
 vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
 -- set fonts with fallbacks for GUI
 vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,Ubuntu_Mono,monospace:h11"
--- set term gui colors (most terminals support this)
--- if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
 vim.opt.wildignore:append(
   "*~,#*#,*.7z,.DS_Store,.git/*,.hg,.svn," ..
