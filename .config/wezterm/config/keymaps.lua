@@ -10,7 +10,7 @@ M.keys = {
   { key = "l", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Right" },
   { key = "k", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Up" },
   { key = "j", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Down" },
-  { key = "p", mods = "ALT|SHIFT", action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" } },
+  { key = "w", mods = "ALT|SHIFT", action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" } },
   { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
   { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
   -- vim style splits (split/vsplit)
@@ -21,8 +21,8 @@ M.keys = {
   { key = "|", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" }, },
 
   -- Tab management
-  { key = "h", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
-  { key = "l", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
+  { key = "p", mods = "ALT|SHIFT", action = act.ActivateTabRelative(-1) },
+  { key = "n", mods = "ALT|SHIFT", action = act.ActivateTabRelative(1) },
   { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
   { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },
 
