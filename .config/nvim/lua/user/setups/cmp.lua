@@ -8,10 +8,42 @@ vscode_snips.lazy_load({ -- load personal snippets
   paths = { "~/.config/Code/User" }
 })
 
-local check_backspace = function()
-  local col = vim.fn.col(".") - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
-end
+local kinds = {
+  Array = "",
+  Boolean = "",
+  Class = "⧊",
+  Color = "",
+  Constant = "ℂ",
+  Constructor = "",
+  Enum = "",
+  EnumMember = "",
+  Event = "",
+  Field = "𝔽",
+  File = "",
+  Folder = "",
+  Function = "",
+  Interface = "",
+  Key = "𝕂",
+  Keyword = "🗝",
+  Method = "",
+  Module = "",
+  Namespace = "",
+  Null = "∅",
+  Number = "#",
+  Object = "",
+  Operator = "",
+  Package = "",
+  Property = "ℙ",
+  Reference = "ℝ",
+  Snippet = "✄",
+  String = "",
+  Struct = "",
+  Text = "",
+  TypeParameter = "",
+  Unit = "",
+  Value = "",
+  Variable = "𝕍",
+}
 
 cmp.setup({
   snippet = {
@@ -81,8 +113,6 @@ cmp.setup({
         ls.expand()
       elseif ls.expand_or_jumpable() then
         ls.expand_or_jump()
-      elseif check_backspace() then
-        fallback()
       else
         fallback()
       end
@@ -106,6 +136,7 @@ cmp.setup({
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
+      vim_item.kind = kinds[vim_item.kind]
       vim_item.menu = ({
         buffer = "[BUF]",
         nvim_lsp = "[LSP]",
