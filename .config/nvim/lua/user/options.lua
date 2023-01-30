@@ -9,7 +9,7 @@ vim.opt.smartcase = true                        -- smart case
 vim.opt.mousehide = true                        -- hide the mouse while typing
 vim.opt.pumheight = 10                          -- pop up menu height
 vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
-vim.opt.showtabline = 0                         -- always show tabs
+vim.opt.showtabline = 2                         -- always show tabs
 vim.opt.smartindent = true                      -- make indenting smarter again
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
@@ -60,13 +60,11 @@ vim.opt.diffopt:append("algorithm:patience,indent-heuristic")
 -- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⮟,foldclose:⮞,diff: ]] -- ⮟ ⮞  ⯆ ⯈
+vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⯆,foldclose:⯈,diff:]] -- ⮟ ⮞  ⯆ ⯈
 -- change invisible characters
 vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
 -- set fonts with fallbacks for GUI
 vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,Ubuntu_Mono,monospace:h11"
--- set term gui colors (most terminals support this)
-if vim.fn.has("termguicolors") then vim.opt.termguicolors = true end
 -- add patterns to ignore
 vim.opt.wildignore:append(
   "*~,#*#,*.7z,.DS_Store,.git/*,.hg,.svn," ..
