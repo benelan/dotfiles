@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# `open` with no arguments opens the current directory,
+# otherwise opens the given location
+case "$(os-detect)" in
+    windows_wsl) open_cmd="wslview" ;;
+    windows_cygwin) open_cmd="cygstart" ;;
+    windows_m*) open_cmd="start" ;;
+    osx) open_cmd="open" ;;
+    linux*) open_cmd="xdg-open" ;;
+    *) return ;;
+esac
+if [ $# -eq 0 ]; then
+    "$open_cmd" .
+else
+    "$open_cmd" "$@"
+fi
