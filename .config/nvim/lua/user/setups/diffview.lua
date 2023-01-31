@@ -6,8 +6,8 @@ diffview.setup({
   enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
   use_icons = true,
   icons = { -- Only applies when use_icons is true.
-    folder_closed = "📁",
-    folder_open = "📂",
+    folder_closed = "📁 ",
+    folder_open = "📂 ",
   },
   signs = {
     fold_closed = "🞂 ",
