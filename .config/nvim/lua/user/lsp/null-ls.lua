@@ -28,14 +28,13 @@ null_ls.setup {
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
-    formatting.lua_format,
-    formatting.prettier.with({
+    -- formatting.lua_format,
+    formatting.stylua,
+    formatting.prettier.with {
       disabled_filetypes = { "json", "jsonc", "json5" },
-      prefer_local = "node_modules/.bin"
-    }),
-    formatting.jq.with({
-      extra_filetypes = { "jsonc", "json5" }
-    }),
+      prefer_local = "node_modules/.bin",
+    },
+    formatting.jq.with { extra_filetypes = { "jsonc", "json5" } },
     formatting.markdown_toc,
     formatting.markdownlint,
     -- be careful with shellharden if you (ab)use expansion
