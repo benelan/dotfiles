@@ -321,6 +321,11 @@ return packer.startup(function(use)
           require "user.setups.autopairs"
         end,
       },
+      -- { -- trying out nvim-navic instead
+      --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      --   event = "BufWinEnter",
+      --   after = "nvim-treesitter",
+      -- },
     },
   }
 

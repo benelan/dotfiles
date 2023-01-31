@@ -1,17 +1,17 @@
 local M = {}
 local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 local navic_status_ok, navic = pcall(require, "nvim-navic")
-if not cmp_status_ok then
+if not cmp_status_ok or not navic_status_ok then
   return M
 end
 
 M.capabilities = cmp_nvim_lsp.default_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 
--- M.capabilities.textDocument.foldingRange = {
---   dynamicRegistration = false,
---   lineFoldingOnly = true
--- }
+M.capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
 
 M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
 
