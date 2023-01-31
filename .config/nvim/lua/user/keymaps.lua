@@ -160,25 +160,25 @@ u.keymap("n", "[<space>",
 -------------------------------------------------------------------------------
 
 u.keymap({ "n", "v" }, "<leader>gmU",
-"<cmd>diffupdate<cr>", "Update Merge Diff")
+  "<cmd>diffupdate<cr>", "Update Merge Diff")
 
 u.keymap({ "n", "v" }, "<leader>gmr",
-"<cmd>diffget RE<cr>", "Choose Hunk From Remote")
+  "<cmd>diffget RE<cr>", "Choose Hunk From Remote")
 
 u.keymap({ "n", "v" }, "<leader>gmR",
-"<cmd>%diffget RE<cr>", "Choose All From Remote")
+  "<cmd>%diffget RE<cr>", "Choose All From Remote")
 
 u.keymap({ "n", "v" }, "<leader>gmb",
-"<cmd>diffget BA<cr>", "Choose Hunk From Base")
+  "<cmd>diffget BA<cr>", "Choose Hunk From Base")
 
 u.keymap({ "n", "v" }, "<leader>gmB",
-"<cmd>%diffget BA<cr>", "Choose All From Base")
+  "<cmd>%diffget BA<cr>", "Choose All From Base")
 
 u.keymap({ "n", "v" }, "<leader>gml",
-"<cmd>diffget LO<cr>", "Choose Hunk From Local")
+  "<cmd>diffget LO<cr>", "Choose Hunk From Local")
 
 u.keymap({ "n", "v" }, "<leader>gmL",
-"<cmd>diffget LO<cr>", "Choose All From Local")
+  "<cmd>diffget LO<cr>", "Choose All From Local")
 
 -------------------------------------------------------------------------------
 ----> Windows
@@ -231,10 +231,10 @@ u.keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
 ----> Tabs
 -------------------------------------------------------------------------------
 
-u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New")
-u.keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Only")
-u.keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close")
-u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move")
+u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New Tab")
+u.keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close Other Tabs")
+u.keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
+u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move Tab")
 
 -------------------------------------------------------------------------------
 ----> Buffers
@@ -244,23 +244,28 @@ u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move")
 u.keymap("n", "<S-l>", "<cmd>bnext<cr>", "Next Buffer")
 u.keymap("n", "<S-h>", "<cmd>bprevious<cr>", "Previous Buffer")
 
--- close
-u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close")
-u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close")
+-- close/write
+u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
+u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close Buffer")
 u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
+u.keymap("n", "<C-q>", "<CMD>Bdelete<CR>", "Quit")
 u.keymap("n", "<C-s>", "<CMD>write<CR>", "Write")
-u.keymap("n", "<C-q>", "<CMD>Bdelete<CR>", "Close")
+u.keymap("n", "<C-w>", "<CMD>write<CR>", "Write")
 
 -- sudo save the file
 vim.api.nvim_create_user_command("W",
   "execute 'w !sudo tee % > /dev/null' <Bar> edit!", {})
-u.keymap("n", "<leader>W", "<cmd>W<cr>", "Sudo write")
+u.keymap("n", "<leader>W", "<cmd>W<cr>", "Sudo Write")
 
 -- Open new buffer with the current file's same extension
-u.keymap("n", "<leader>bv", "<C-w>v:e %:h/buf.%:e<CR>",
-  "New Vertical")
-u.keymap("n", "<leader>bs", "<C-w>s:e %:h/buf.%:e<CR>",
-  "New Horizontal")
+u.keymap("n", "<leader>bv", "<C-w>v:e %:h/scratch.%:e<CR>",
+  "New Vertical Scratch Split")
+u.keymap("n", "<leader>bs", "<C-w>s:e %:h/scratch.%:e<CR>",
+  "New Horizontal Scratch Split")
+
+-- list, pick, and jump to a buffer
+u.keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>",
+  "Jump to Buffer")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
@@ -320,17 +325,17 @@ u.keymap("n", "<leader><Tab>",
 
 -- Random stuff I haven't converted to Lua yet
 vim.cmd [[
-  " clear search highlights
-  nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
-  inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-  vnoremap <C-L> <Esc><C-L>gv
+    " clear search highlights
+    nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
+    inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
+    vnoremap <C-L> <Esc><C-L>gv
 
-  " go to line above/below the cursor, from insert mode
-  inoremap <S-CR> <C-O>o
-  inoremap <C-CR> <C-O>O
+    " go to line above/below the cursor, from insert mode
+    inoremap <S-CR> <C-O>o
+    inoremap <C-CR> <C-O>O
 
-" clear search highlights if there any
-  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
+  " clear search highlights if there any
+    nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
 
   " move down jumping over blank lines and indents
   nnoremap <silent> gj :let _=&lazyredraw<CR>
