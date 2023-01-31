@@ -1,6 +1,7 @@
 local cmp_status_ok, cmp = pcall(require, "cmp")
+local res_status_okay, res = pcall(require, "user.resources")
 local snip_status_ok, ls = pcall(require, "luasnip")
-if not cmp_status_ok or not snip_status_ok then
+if not cmp_status_ok or not snip_status_ok or not res_status_okay then
   return
 end
 
@@ -8,43 +9,6 @@ local vscode_snips = require "luasnip/loaders/from_vscode"
 vscode_snips.lazy_load() -- load plugin snippets
 vscode_snips.lazy_load { -- load personal snippets
   paths = { "~/.config/Code/User" },
-}
-
-local kinds = {
-  Array = "",
-  Boolean = "",
-  Class = "⧊",
-  Color = "",
-  Constant = "ℂ",
-  Constructor = "",
-  Enum = "",
-  EnumMember = "",
-  Event = "",
-  Field = "𝔽",
-  File = "",
-  Folder = "",
-  Function = "",
-  Interface = "",
-  Key = "𝕂",
-  Keyword = "🗝",
-  Method = "",
-  Module = "",
-  Namespace = "",
-  Null = "∅",
-  Number = "#",
-  Object = "",
-  Operator = "",
-  Package = "",
-  Property = "ℙ",
-  Reference = "ℝ",
-  Snippet = "✄",
-  String = "",
-  Struct = "",
-  Text = "",
-  TypeParameter = "",
-  Unit = "",
-  Value = "",
-  Variable = "𝕍",
 }
 
 cmp.setup {
@@ -81,13 +45,6 @@ cmp.setup {
       cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Insert,
         select = true,
-      },
-      { "i", "c" }
-    ),
-    ["<M-l>"] = cmp.mapping(
-      cmp.mapping.confirm {
-        behavior = cmp.ConfirmBehavior.Replace,
-        select = false,
       },
       { "i", "c" }
     ),
@@ -132,14 +89,14 @@ cmp.setup {
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      vim_item.kind = kinds[vim_item.kind]
+      vim_item.kind = res.icons.kind[vim_item.kind]
       vim_item.menu = ({
-        buffer = "[BUF]",
-        nvim_lsp = "[LSP]",
-        nvim_lsp_signature_help = "[LSP]",
-        nvim_lua = "[API]",
-        path = "[PATH]",
-        luasnip = "[SNIP]",
+        buffer = " [BUF] ",
+        nvim_lsp = " [LSP] ",
+        nvim_lsp_signature_help = "[ LSP] ",
+        nvim_lua = " [API] ",
+        path = " [PATH] ",
+        luasnip = "[SNIP] ",
       })[entry.source.name]
       return vim_item
     end,
@@ -202,7 +159,7 @@ vim.keymap.set({ "i", "s" }, "<C-p>", function()
   end
 end, opts)
 
-vim.keymap.set({ "i" }, "<C-c>", function()
+vim.keymap.set({ "i" }, "<C-l>", function()
   if ls.choice_active() then
     ls.change_choice(1)
   end

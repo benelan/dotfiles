@@ -126,6 +126,9 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
+  use {
+    "mbbill/undotree",
+  }
 
   -----------------------------------------------------------------------------
   ----> Completions
@@ -200,6 +203,14 @@ return packer.startup(function(use)
       require "user.lsp.goto-preview"
     end,
   }
+  use {
+    "SmiteshP/nvim-navic",
+    requires = "neovim/nvim-lspconfig",
+    config = function()
+      require "user.lsp.navic"
+    end
+  }
+  use "folke/neodev.nvim" -- NeoVIm Lua API info
 
   -----------------------------------------------------------------------------
   ----> Telescope
@@ -246,11 +257,6 @@ return packer.startup(function(use)
     requires = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         event = "BufWinEnter",
         after = "nvim-treesitter",
       },
