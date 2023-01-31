@@ -97,7 +97,6 @@ alias gll='git log --graph --pretty=oneline --abbrev-commit'
 # Show commits since last pull
 # http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 alias gnew='git log HEAD@{1}..HEAD@{0}'
-alias gwc='git whatchanged'
 
 # files
 ########

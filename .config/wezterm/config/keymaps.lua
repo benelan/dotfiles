@@ -21,6 +21,8 @@ M.keys = {
   { key = "|", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
 
   -- Tab management
+  { key = "h", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
+  { key = "l", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
   { key = "p", mods = "ALT|SHIFT", action = act.ActivateTabRelative(-1) },
   { key = "n", mods = "ALT|SHIFT", action = act.ActivateTabRelative(1) },
   { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
