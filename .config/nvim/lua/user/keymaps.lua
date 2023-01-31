@@ -329,12 +329,8 @@ vim.cmd [[
   inoremap <S-CR> <C-O>o
   inoremap <C-CR> <C-O>O
 
-" clear search highlights or page down or next buffer
-nnoremap <silent> <expr> <CR> 
-      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
-      \ line('w$') < line('$')
-        \ ? "\<PageDown>"
-        \ : ":\<C-U>next\<CR>" }()
+" clear search highlights if there any
+  nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
 
   " move down jumping over blank lines and indents
   nnoremap <silent> gj :let _=&lazyredraw<CR>
