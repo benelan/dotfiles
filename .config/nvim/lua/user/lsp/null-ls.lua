@@ -25,7 +25,6 @@ null_ls.setup {
     diagnostics.markdownlint.with { extra_args = { "--disable", "MD013" } },
     diagnostics.proselint,
     diagnostics.stylelint,
-    formatting.codespell,
     -- formatting.lua_format,
     formatting.stylua,
     formatting.prettier.with {
