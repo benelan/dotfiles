@@ -1,5 +1,7 @@
 local status_ok, alpha = pcall(require, "alpha")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
 local dashboard = require "alpha.themes.dashboard"
 
@@ -12,7 +14,6 @@ dashboard.section.header.val = {
   [[ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$ |$$ |  $$ |      $$ |  $$\ $$ |  $$ |$$ |  $$ |$$   ____| ]],
   [[ \$$$$$$  |\$$$$$$$ |$$ | $$ | $$ |$$ |$$ |  $$ |      \$$$$$$  |\$$$$$$  |\$$$$$$$ |\$$$$$$$\  ]],
   [[ \______/  \_______|\__| \__| \__|\__|\__|  \__|       \______/  \______/  \_______| \_______|  ]],
-
 }
 
 dashboard.section.buttons.val = {
@@ -24,7 +25,7 @@ dashboard.section.buttons.val = {
   dashboard.button("h", " " .. " Vim Help", ":Telescope help_tags<CR>"),
   dashboard.button("m", " " .. " Man Pages", ":Telescope man_pages<CR>"),
   dashboard.button("c", "⚙ " .. " Config", ":e $MYVIMRC<CR>"),
-  dashboard.button("q", "⏼ ".. " Quit", ":qa<CR>"),
+  dashboard.button("q", "⏼ " .. " Quit", ":qa<CR>"),
 }
 
 dashboard.section.footer.val = "ben@jamin"

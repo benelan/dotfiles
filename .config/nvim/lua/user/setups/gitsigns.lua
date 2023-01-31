@@ -1,5 +1,7 @@
 local status_ok, gitsigns = pcall(require, "gitsigns")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
 gitsigns.setup {
   current_line_blame_opts = {
@@ -8,32 +10,22 @@ gitsigns.setup {
     delay = 1000,
     ignore_whitespace = true,
   },
-  current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+  current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
 }
 
 local utils_status_ok, u = pcall(require, "user.utils")
-if not utils_status_ok then return end
+if not utils_status_ok then
+  return
+end
 
-u.keymap({ "o", "x" }, "ih",
-  ":<C-U>Gitsigns select_hunk<CR>",
-  "inner git hunk")
+u.keymap({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "inner git hunk")
 
-u.keymap("n", "<leader>gtb",
-  "<cmd>Gitsigns toggle_current_line_blame<CR>",
-  "Toggle current line blame")
+u.keymap("n", "<leader>gtb", "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle current line blame")
 
-u.keymap("n", "<leader>gts",
-  "<cmd>Gitsigns toggle_signs<CR>",
-  "Toggle signs")
+u.keymap("n", "<leader>gts", "<cmd>Gitsigns toggle_signs<CR>", "Toggle signs")
 
-u.keymap("n", "<leader>gtw",
-  "<cmd>Gitsigns toggle_word_diff<CR>",
-  "Toggle word diff")
+u.keymap("n", "<leader>gtw", "<cmd>Gitsigns toggle_word_diff<CR>", "Toggle word diff")
 
-u.keymap("n", "<leader>gtl",
-  "<cmd>Gitsigns toggle_linehl<CR>",
-  "Toggle line highlight")
+u.keymap("n", "<leader>gtl", "<cmd>Gitsigns toggle_linehl<CR>", "Toggle line highlight")
 
-u.keymap("n", "<leader>gtn",
-  "<cmd>Gitsigns toggle_numhl<CR>",
-  "Toggle number highlight")
+u.keymap("n", "<leader>gtn", "<cmd>Gitsigns toggle_numhl<CR>", "Toggle number highlight")

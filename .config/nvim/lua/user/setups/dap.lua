@@ -13,21 +13,24 @@ end
 -- Debug Adapter protocol:
 --   https://microsoft.github.io/debug-adapter-protocol/
 
-
 -- Adapers
 ----------
 -- Node
 dap.adapters.node2 = {
-  type = "executable";
+  type = "executable",
   command = "node",
-  args = { vim.fn.stdpath "data" .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js" };
+  args = {
+    vim.fn.stdpath "data" .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js",
+  },
 }
 
 -- Chrome
 dap.adapters.chrome = {
   type = "executable",
   command = "node",
-  args = { vim.fn.stdpath "data" .. "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js" };
+  args = {
+    vim.fn.stdpath "data" .. "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js",
+  },
 }
 
 -- Language configuration
@@ -49,7 +52,7 @@ dap.configurations.javascript = {
     name = "Attach to process",
     type = "node2",
     request = "attach",
-    processId = require "dap.utils".pick_process,
+    processId = require("dap.utils").pick_process,
   },
   {
     name = "Chrome",
@@ -60,8 +63,8 @@ dap.configurations.javascript = {
     sourceMaps = true,
     protocol = "inspector",
     port = 9222,
-    webRoot = "${workspaceFolder}"
-  }
+    webRoot = "${workspaceFolder}",
+  },
 }
 
 dap.configurations.typescript = {
@@ -81,7 +84,7 @@ dap.configurations.typescript = {
     name = "Attach to process",
     type = "node2",
     request = "attach",
-    processId = require "dap.utils".pick_process,
+    processId = require("dap.utils").pick_process,
   },
   {
     name = "Chrome",
@@ -92,7 +95,7 @@ dap.configurations.typescript = {
     sourceMaps = true,
     protocol = "inspector",
     port = 9222,
-    webRoot = "${workspaceFolder}"
+    webRoot = "${workspaceFolder}",
   },
   {
     type = "node2",
@@ -102,9 +105,8 @@ dap.configurations.typescript = {
     program = "${workspaceFolder}/node_modules/.bin/stencil",
     args = { "test", "--spec", "--e2e", "--devtools" },
     console = "integratedTerminal",
-    internalConsoleOptions = "neverOpen"
-
-  }
+    internalConsoleOptions = "neverOpen",
+  },
 }
 
 dap.configurations.javascriptreact = {
@@ -116,8 +118,8 @@ dap.configurations.javascriptreact = {
     sourceMaps = true,
     protocol = "inspector",
     port = 9222,
-    webRoot = "${workspaceFolder}"
-  }
+    webRoot = "${workspaceFolder}",
+  },
 }
 
 dap.configurations.typescriptreact = {
@@ -129,40 +131,36 @@ dap.configurations.typescriptreact = {
     sourceMaps = true,
     protocol = "inspector",
     port = 9222,
-    webRoot = "${workspaceFolder}"
-  }
+    webRoot = "${workspaceFolder}",
+  },
 }
 
 -----------------------------------------------------------------------------
 -- DAP Virtual Text
 -----------------------------------------------------------------------------
-virtual_text.setup({
-  highlight_new_as_changed = true,
-  commented = true
-})
+virtual_text.setup { highlight_new_as_changed = true, commented = true }
 
 -----------------------------------------------------------------------------
 -- DAP UI
 -----------------------------------------------------------------------------
-dapui.setup({
+dapui.setup {
   controls = {
     element = "repl",
     enabled = true,
-     icons = {
-        pause = "⏸",
-        play = "▶",
-        run_last = "🗘",
-        step_back = "🠔",
-        step_into = "↳",
-        step_out = "",
-        step_over = "↷",
-        terminate = "✘"
-      }
-  }
+    icons = {
+      pause = "⏸",
+      play = "▶",
+      run_last = "🗘",
+      step_back = "🠔",
+      step_into = "↳",
+      step_out = "",
+      step_over = "↷",
+      terminate = "✘",
+    },
+  },
 }
-)
 
-dap.set_log_level("TRACE");
+dap.set_log_level "TRACE"
 
 -- Automatically open UI
 dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -182,23 +180,23 @@ vim.fn.sign_define("DapBreakpoint", {
   text = ">",
   texthl = "DiagnosticSignHint",
   linehl = "",
-  numhl = ""
+  numhl = "",
 })
 vim.fn.sign_define("DapBreakpointRejected", {
   text = "X",
   texthl = "DiagnosticSignError",
   linehl = "",
-  numhl = ""
+  numhl = "",
 })
 vim.fn.sign_define("DapBreakpointCondition", {
   text = "?",
   texthl = "DiagnosticSignHint",
   linehl = "",
-  numhl = ""
+  numhl = "",
 })
 vim.fn.sign_define("DapStopped", {
   text = "@",
   texthl = "DiagnosticSignWarn",
   linehl = "Visual",
-  numhl = "DiagnosticSignWarn"
+  numhl = "DiagnosticSignWarn",
 })

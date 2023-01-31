@@ -1,5 +1,7 @@
 local status_ok, null_ls = pcall(require, "null-ls")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
 local formatting = null_ls.builtins.formatting
@@ -14,17 +16,13 @@ null_ls.setup {
     code_actions.gitsigns,
     code_actions.proselint,
     code_actions.shellcheck,
-    diagnostics.actionlint.with({
+    diagnostics.actionlint.with {
       runtime_condition = function()
-        return vim.api.nvim_buf_get_name(
-          vim.api.nvim_get_current_buf()
-        ):match "github/workflows" ~= nil
-      end
-    }),
+        return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()):match "github/workflows" ~= nil
+      end,
+    },
     diagnostics.codespell,
-    diagnostics.markdownlint.with({
-      extra_args = { "--disable", "MD013" }
-    }),
+    diagnostics.markdownlint.with { extra_args = { "--disable", "MD013" } },
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
@@ -40,10 +38,8 @@ null_ls.setup {
     -- be careful with shellharden if you (ab)use expansion
     -- it can break your code w/o warning when you format
     -- formatting.shellharden,
-    formatting.shfmt.with({
-      extra_args = { "-i", "4", "-ci" }
-    }),
+    formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
     formatting.stylelint,
-    formatting.trim_whitespace
+    formatting.trim_whitespace,
   },
 }

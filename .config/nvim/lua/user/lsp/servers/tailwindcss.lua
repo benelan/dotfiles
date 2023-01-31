@@ -7,8 +7,8 @@ return {
           "**/node_modules/**",
           "**/.hg/**",
           "**/.svn/**",
-          "**/dist/**"
-        }
+          "**/dist/**",
+        },
       },
       lint = {
         cssConflict = "warning",
@@ -17,8 +17,8 @@ return {
         invalidScreen = "error",
         invalidTailwindDirective = "error",
         invalidVariant = "error",
-        recommendedVariantOrder = "warning"
+        recommendedVariantOrder = "warning",
       },
-    }
-  }
+    },
+  },
 }

@@ -1,5 +1,7 @@
 local status_ok, which_key = pcall(require, "which-key")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
 local opts = {
   mode = "n", -- NORMAL mode
@@ -24,9 +26,7 @@ local xmappings = {
   ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment toggle" },
   g = {
     name = "Git",
-    t = {
-      name = "Toggle options"
-    },
+    t = { name = "Toggle options" },
     h = { "<cmd>'<,'>DiffviewFileHistory<cr>", "Selection History" },
     d = { "<cmd>DiffviewOpen<cr>", "Open Diffview" },
     q = { "<cmd>DiffviewClose<cr>", "Close Diffview" },
@@ -44,13 +44,8 @@ local xmappings = {
     o = { "<cmd>Telescope git_status<cr>", "Open Status" },
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
-    C = {
-      "<cmd>Telescope git_bcommits<cr>",
-      "Checkout Buffer Commit",
-    },
-    m = {
-      name = "Mergetool",
-    },
+    C = { "<cmd>Telescope git_bcommits<cr>", "Checkout Buffer Commit" },
+    m = { name = "Mergetool" },
   },
 
   l = {
@@ -74,45 +69,18 @@ local mappings = {
     n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
     W = { "<cmd>Bwipeout<cr>", "Wipeout" },
     P = { "<cmd>BufferLineTogglePin", "Pin" },
-    e = {
-      "<cmd>BufferLinePickClose<cr>",
-      "Pick which buffer to close",
-    },
-    H = {
-      "<cmd>BufferLineCloseLeft<cr>",
-      "Close all to the left"
-    },
-    L = {
-      "<cmd>BufferLineCloseRight<cr>",
-      "Close all to the right",
-    },
-    l = {
-      "<cmd>BufferLineMoveNext<cr>",
-      "Move right"
-    },
-    h = {
-      "<cmd>BufferLineMovePrev<cr>",
-      "Move left",
-    },
+    e = { "<cmd>BufferLinePickClose<cr>", "Pick which buffer to close" },
+    H = { "<cmd>BufferLineCloseLeft<cr>", "Close all to the left" },
+    L = { "<cmd>BufferLineCloseRight<cr>", "Close all to the right" },
+    l = { "<cmd>BufferLineMoveNext<cr>", "Move right" },
+    h = { "<cmd>BufferLineMovePrev<cr>", "Move left" },
     s = {
       name = "Sort",
-      d = {
-        "<cmd>BufferLineSortByDirectory<cr>",
-        "Directory",
-      },
-      t = {
-        "<cmd>BufferLineSortByTabs<cr>",
-        "Directory",
-      },
-      r = {
-        "<cmd>BufferLineSortByRelativeDirectory<cr>",
-        "Relative directory",
-      },
-      l = {
-        "<cmd>BufferLineSortByExtension<cr>",
-        "Language",
-      },
-    }
+      d = { "<cmd>BufferLineSortByDirectory<cr>", "Directory" },
+      t = { "<cmd>BufferLineSortByTabs<cr>", "Directory" },
+      r = { "<cmd>BufferLineSortByRelativeDirectory<cr>", "Relative directory" },
+      l = { "<cmd>BufferLineSortByExtension<cr>", "Language" },
+    },
   },
 
   D = {
@@ -133,13 +101,9 @@ local mappings = {
     U = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
   },
 
-  d = {
-    name = "Directory"
-  },
+  d = { name = "Directory" },
 
-  s = {
-    name = "Settings"
-  },
+  s = { name = "Settings" },
 
   f = {
     name = "Find",
@@ -157,15 +121,11 @@ local mappings = {
     C = { "<cmd>Telescope commands<cr>", "Commands" },
   },
 
-  t = {
-    name = "Tabs"
-  },
+  t = { name = "Tabs" },
 
   g = {
     name = "Git",
-    t = {
-      name = "Toggle options"
-    },
+    t = { name = "Toggle options" },
     d = { "<cmd>DiffviewOpen<cr>", "Open Diffview" },
     q = { "<cmd>DiffviewClose<cr>", "Close Diffview" },
     V = { "<cmd>DiffviewRefresh<cr>", "Refresh Diffview" },
@@ -183,57 +143,24 @@ local mappings = {
     o = { "<cmd>Telescope git_status<cr>", "Open Status" },
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
-    C = {
-      "<cmd>Telescope git_bcommits<cr>",
-      "Checkout Buffer Commit"
-    },
-    w = {
-      name = "Worktree"
-    },
-    m = {
-      name = "Mergetool",
-    },
+    C = { "<cmd>Telescope git_bcommits<cr>", "Checkout Buffer Commit" },
+    w = { name = "Worktree" },
+    m = { name = "Mergetool" },
   },
 
   o = {
     name = "Octo (GitHub)",
-    i = {
-      name = "Issues",
-      D = {
-        name = "Remove"
-      },
-      a = {
-        name = "Add"
-      }
-    },
+    i = { name = "Issues", D = { name = "Remove" }, a = { name = "Add" } },
     p = {
       name = "Pull requests",
-      D = {
-        name = "Remove"
-      },
-      a = {
-        name = "Add"
-      },
-      r = {
-        name = "Reviews"
-      }
+      D = { name = "Remove" },
+      a = { name = "Add" },
+      r = { name = "Reviews" },
     },
-    m = {
-      name = "My stuff",
-      i = {
-        name = "Issues"
-      },
-      p = {
-        name = "Pull requests"
-      }
-    },
-    r = {
-      name = "Reactions"
-    }
+    m = { name = "My stuff", i = { name = "Issues" }, p = { name = "Pull requests" } },
+    r = { name = "Reactions" },
   },
-  p = {
-    name = "Preview"
-  },
+  p = { name = "Preview" },
   l = {
     name = "LSP",
     a = { vim.lsp.buf.code_action, "Code Action" },
@@ -252,7 +179,7 @@ local mappings = {
     W = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
     B = {
       "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
-      "Buffer Diagnostics"
+      "Buffer Diagnostics",
     },
     S = {
       "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
@@ -277,7 +204,7 @@ local mappings = {
     h = { "<cmd>TSBufToggle highlight<cr>", "Toggle Highlights" },
     u = { "<cmd>TSUpdate<cr>", "Update" },
     p = { "<cmd>TSPlaygroundToggle<cr>", "Toggle Playground" },
-  }
+  },
 }
 
 which_key.setup()

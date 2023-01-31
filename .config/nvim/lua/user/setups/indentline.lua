@@ -1,6 +1,8 @@
 local status_ok, indent_blankline = pcall(require, "indent_blankline")
 local res_status_ok, res = pcall(require, "user.resources")
-if not status_ok or not res_status_ok then return end
+if not status_ok or not res_status_ok then
+  return
+end
 
 indent_blankline.setup {
   char = "┊",

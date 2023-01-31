@@ -3,15 +3,15 @@ return {
     codeAction = {
       disableRuleComment = {
         enable = true,
-        location = "separateLine"
+        location = "separateLine",
       },
       showDocumentation = {
-        enable = true
-      }
+        enable = true,
+      },
     },
     codeActionOnSave = {
       enable = false,
-      mode = "all"
+      mode = "all",
     },
     format = true,
     nodePath = "",
@@ -23,7 +23,7 @@ return {
     useESLintClass = false,
     validate = "on",
     workingDirectory = {
-      mode = "location"
-    }
+      mode = "location",
+    },
   },
 }
