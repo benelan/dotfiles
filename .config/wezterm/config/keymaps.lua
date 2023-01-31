@@ -11,14 +11,14 @@ M.keys = {
   { key = "k", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Up" },
   { key = "j", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Down" },
   { key = "w", mods = "ALT|SHIFT", action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" } },
-  { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise", },
+  { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise" },
   { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
   -- vim style splits (split/vsplit)
   { key = "s", mods = "ALT|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },
-  { key = "v", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" }, },
+  { key = "v", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
   -- tmux style splits
   { key = "-", mods = "ALT|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },
-  { key = "|", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" }, },
+  { key = "|", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
 
   -- Tab management
   { key = "p", mods = "ALT|SHIFT", action = act.ActivateTabRelative(-1) },
@@ -95,64 +95,58 @@ M.key_tables = {
     { key = "j", action = act.ActivatePaneDirection "Down" },
   },
 
-  copy_mode = utils.merge_lists(
-    wezterm.gui.default_key_tables().copy_mode,
+  copy_mode = utils.merge_lists(wezterm.gui.default_key_tables().copy_mode, {
+    { key = "u", mods = "CTRL", action = act.CopyMode "MoveToViewportTop" },
+    { key = "d", mods = "CTRL", action = act.CopyMode "MoveToViewportBottom" },
+    { key = "/", mods = "NONE", action = act.Search "CurrentSelectionOrEmptyString" },
     {
-      { key = "u", mods = "CTRL", action = act.CopyMode "MoveToViewportTop" },
-      { key = "d", mods = "CTRL", action = act.CopyMode "MoveToViewportBottom" },
-      { key = "/", mods = "NONE", action = act.Search "CurrentSelectionOrEmptyString" },
-      {
-        key = "n",
-        mods = "NONE",
-        action = act.Multiple {
-          act.CopyMode "NextMatch",
-          act.CopyMode "ClearSelectionMode",
-        },
+      key = "n",
+      mods = "NONE",
+      action = act.Multiple {
+        act.CopyMode "NextMatch",
+        act.CopyMode "ClearSelectionMode",
       },
-      {
-        key = "N",
-        mods = "SHIFT",
-        action = act.Multiple {
-          act.CopyMode "PriorMatch",
-          act.CopyMode "ClearSelectionMode",
-        },
+    },
+    {
+      key = "N",
+      mods = "SHIFT",
+      action = act.Multiple {
+        act.CopyMode "PriorMatch",
+        act.CopyMode "ClearSelectionMode",
       },
-      {
-        key = "Y",
-        mods = "SHIFT",
-        action = act.Multiple {
-          act.CopyMode { SetSelectionMode = "Line" },
-          act.CopyTo "ClipboardAndPrimarySelection",
-          act.CopyMode "Close",
-        },
+    },
+    {
+      key = "Y",
+      mods = "SHIFT",
+      action = act.Multiple {
+        act.CopyMode { SetSelectionMode = "Line" },
+        act.CopyTo "ClipboardAndPrimarySelection",
+        act.CopyMode "Close",
       },
-      {
-        key = "Escape",
-        mods = "NONE",
-        action = act.Multiple {
-          act.ClearSelection,
-          act.CopyMode "ClearPattern",
-          act.CopyMode "Close",
-        },
+    },
+    {
+      key = "Escape",
+      mods = "NONE",
+      action = act.Multiple {
+        act.ClearSelection,
+        act.CopyMode "ClearPattern",
+        act.CopyMode "Close",
       },
-    }
-  ),
+    },
+  }),
 
-  search_mode = utils.merge_lists(
-    wezterm.gui.default_key_tables().search_mode,
+  search_mode = utils.merge_lists(wezterm.gui.default_key_tables().search_mode, {
     {
-      {
-        key = "Enter",
-        mods = "NONE",
-        action = act.Multiple {
-          act.CopyMode "ClearSelectionMode",
-          act.ActivateCopyMode,
-        },
+      key = "Enter",
+      mods = "NONE",
+      action = act.Multiple {
+        act.CopyMode "ClearSelectionMode",
+        act.ActivateCopyMode,
       },
-      { key = "n", mods = "NONE", action = act.CopyMode "NextMatch" },
-      { key = "N", mods = "SHIFT", action = act.CopyMode "PriorMatch" },
-    }
-  )
+    },
+    { key = "n", mods = "NONE", action = act.CopyMode "NextMatch" },
+    { key = "N", mods = "SHIFT", action = act.CopyMode "PriorMatch" },
+  }),
 }
 
 M.mouse_bindings = {

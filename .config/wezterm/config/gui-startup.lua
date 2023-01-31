@@ -14,14 +14,12 @@ M.startup_work = function(startup_cmd)
 
   if startup_cmd then
     dash_window:spawn_tab {
-      args = startup_cmd.args
+      args = startup_cmd.args,
     }
     -- hacky workaround since wezterm.running_under_wsl() is incorrectly `false`
-  elseif process_name == "wslhost.exe" or process_name == "wsl.exe" or
-      wezterm.running_under_wsl() then
-
+  elseif process_name == "wslhost.exe" or process_name == "wsl.exe" or wezterm.running_under_wsl() then
     local _, build_pane = dash_window:spawn_tab {
-      workspace = "work"
+      workspace = "work",
     }
     local editor_pane = build_pane:split {
       direction = "Left",
@@ -40,11 +38,10 @@ end
 
 M.setup = function()
   wezterm.on("gui-startup", function(cmd)
-    if wezterm.running_under_wsl() or
-        wezterm.target_triple == "x86_64-pc-windows-msvc"
-    then M.startup_work(cmd) end
+    if wezterm.running_under_wsl() or wezterm.target_triple == "x86_64-pc-windows-msvc" then
+      M.startup_work(cmd)
+    end
   end)
 end
 
 return M
-
