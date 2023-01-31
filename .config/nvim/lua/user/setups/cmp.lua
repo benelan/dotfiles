@@ -1,6 +1,7 @@
 local cmp_status_ok, cmp = pcall(require, "cmp")
+local res_status_okay, res = pcall(require, "user.resources")
 local snip_status_ok, ls = pcall(require, "luasnip")
-if not cmp_status_ok or not snip_status_ok then
+if not cmp_status_ok or not snip_status_ok or not res_status_okay then
   return
 end
 
@@ -8,48 +9,6 @@ local vscode_snips = require "luasnip/loaders/from_vscode"
 vscode_snips.lazy_load() -- load plugin snippets
 vscode_snips.lazy_load { -- load personal snippets
   paths = { "~/.config/Code/User" },
-}
-
-local check_backspace = function()
-  local col = vim.fn.col(".") - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
-end
-
-local kind_icons = {
-  Array = "",
-  Boolean = "",
-  Class = "",
-  Color = "",
-  Constant = "",
-  Constructor = "",
-  Enum = "",
-  EnumMember = "",
-  Event = "",
-  Field = "",
-  File = "",
-  Folder = "",
-  Function = "",
-  Interface = "",
-  Key = "",
-  Keyword = "",
-  Method = "",
-  Module = "",
-  Namespace = "",
-  Null = "ﳠ",
-  Number = "",
-  Object = "",
-  Operator = "",
-  Package = "",
-  Property = "",
-  Reference = "",
-  Snippet = "",
-  String = "",
-  Struct = "",
-  Text = "",
-  TypeParameter = "",
-  Unit = "",
-  Value = "",
-  Variable = "",
 }
 
 cmp.setup {
@@ -89,13 +48,6 @@ cmp.setup {
       },
       { "i", "c" }
     ),
-    ["<M-l>"] = cmp.mapping(
-      cmp.mapping.confirm {
-        behavior = cmp.ConfirmBehavior.Replace,
-        select = false,
-      },
-      { "i", "c" }
-    ),
     ["<C-i>"] = cmp.mapping {
       i = cmp.mapping.complete(),
       c = function(
@@ -113,48 +65,26 @@ cmp.setup {
     -- Accept currently selected item. If none selected, `select` first item.
     -- Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm { select = false },
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif ls.expandable() then
-        ls.expand()
-      elseif ls.expand_or_jumpable() then
-        ls.expand_or_jump()
-      elseif check_backspace() then
-        fallback()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif ls.jumpable(-1) then
-        ls.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
   },
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      if vim.tbl_contains({ 'path' }, entry.source.name) then
-        local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
+      if vim.tbl_contains({ "path" }, entry.source.name) then
+        local icon, hl_group = require("nvim-web-devicons").get_icon(entry:get_completion_item().label)
         if icon then
           vim_item.kind = icon
           vim_item.kind_hl_group = hl_group
           return vim_item
         end
       end
-      vim_item.kind = kind_icons[vim_item.kind]
+      vim_item.kind = res.icons.kind[vim_item.kind]
       vim_item.menu = ({
-        buffer = "[BUF]",
-        nvim_lsp = "[LSP]",
-        nvim_lsp_signature_help = "[LSP]",
-        nvim_lua = "[API]",
-        path = "[PATH]",
-        luasnip = "[SNIP]",
+        buffer = " [BUF] ",
+        nvim_lsp = " [LSP] ",
+        nvim_lsp_signature_help = "[ LSP] ",
+        nvim_lua = " [API] ",
+        path = " [PATH] ",
+        luasnip = "[SNIP] ",
       })[entry.source.name]
       return vim_item
     end,
@@ -217,7 +147,7 @@ vim.keymap.set({ "i", "s" }, "<C-p>", function()
   end
 end, opts)
 
-vim.keymap.set({ "i" }, "<C-c>", function()
+vim.keymap.set({ "i" }, "<C-l>", function()
   if ls.choice_active() then
     ls.change_choice(1)
   end

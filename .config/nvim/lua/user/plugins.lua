@@ -83,12 +83,16 @@ return packer.startup(function(use)
   use {
     "akinsho/bufferline.nvim", -- good lookin' bufferline
     event = "BufWinEnter",
-    config = function() require "user.setups.bufferline" end
+    config = function()
+      require "user.setups.bufferline"
+    end,
   }
   use {
     "nvim-lualine/lualine.nvim", -- extensible statusline
     event = "BufWinEnter",
-    config = function() require "user.setups.lualine" end
+    config = function()
+      require "user.setups.lualine"
+    end,
   }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
@@ -102,12 +106,16 @@ return packer.startup(function(use)
   use {
     "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
     event = "BufWinEnter",
-    config = function() require "user.setups.scrollbar" end
+    config = function()
+      require "user.setups.scrollbar"
+    end,
   }
   use {
     "norcalli/nvim-colorizer.lua",
     event = "BufWinEnter",
-    config = function() require("colorizer").setup() end
+    config = function()
+      require("colorizer").setup()
+    end,
   }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
@@ -219,7 +227,9 @@ return packer.startup(function(use)
   use {
     "RRethy/vim-illuminate", -- highlights hovered code blocks
     event = "BufWinEnter",
-    config = function() require "user.lsp.illuminate" end
+    config = function()
+      require "user.lsp.illuminate"
+    end,
   }
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
@@ -228,6 +238,14 @@ return packer.startup(function(use)
       require "user.lsp.goto-preview"
     end,
   }
+  use {
+    "SmiteshP/nvim-navic",
+    requires = "neovim/nvim-lspconfig",
+    config = function()
+      require "user.lsp.navic"
+    end
+  }
+  use "folke/neodev.nvim" -- NeoVIm Lua API info
 
   -----------------------------------------------------------------------------
   ----> Telescope
@@ -274,11 +292,6 @@ return packer.startup(function(use)
     requires = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         event = "BufWinEnter",
         after = "nvim-treesitter",
       },

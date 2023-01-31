@@ -1,6 +1,7 @@
 local M = {}
-local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not status_ok then
+local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+local navic_status_ok, navic = pcall(require, "nvim-navic")
+if not cmp_status_ok then
   return M
 end
 
@@ -15,10 +16,10 @@ M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
 
 local diagnostic_levels = {
-  { name = "DiagnosticSignError", text = "", severity = vim.diagnostic.severity.ERROR, },
-  { name = "DiagnosticSignWarn", text = "", severity = vim.diagnostic.severity.WARN, },
-  { name = "DiagnosticSignHint", text = "", severity = vim.diagnostic.severity.HINT, },
-  { name = "DiagnosticSignInfo", text = "", severity = vim.diagnostic.severity.Info, },
+  { name = "DiagnosticSignError", text = "", severity = vim.diagnostic.severity.ERROR },
+  { name = "DiagnosticSignWarn", text = "", severity = vim.diagnostic.severity.WARN },
+  { name = "DiagnosticSignHint", text = "", severity = vim.diagnostic.severity.HINT },
+  { name = "DiagnosticSignInfo", text = "", severity = vim.diagnostic.severity.Info },
 }
 
 local augroup_codelens = vim.api.nvim_create_augroup("my-lsp-codelens", { clear = true })
@@ -207,7 +208,9 @@ M.on_attach = function(client, bufnr)
   if client.name == "sumneko_lua" then
     client.server_capabilities.documentFormattingProvider = false
   end
-
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
   if client.server_capabilities.codeLensProvider then
     vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
     vim.api.nvim_create_autocmd("BufEnter", {
