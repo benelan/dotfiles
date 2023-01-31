@@ -1,0 +1,20 @@
+#!/bin/bash
+
+capture-all-panes() {
+    for pane in $(tmux list-pane -a -F "#S:#I"); do
+        tmux capture-pane -t "$pane" -p
+        echo '========================================'
+    done
+}
+
+url=$(
+    capture-all-panes |
+        grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+' |
+        sort -u | fzf -0 -1 --cycle --header tmux-urls
+)
+
+if [ -z "$url" ]; then
+    echo "no url was selected"
+else
+    o "${url}"
+fi

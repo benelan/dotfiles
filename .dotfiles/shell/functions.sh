@@ -3,25 +3,6 @@
 # Utilities
 #---------------------------------------------------------------------------------
 
-# `open` with no arguments opens the current directory,
-# otherwise opens the given location
-function o() {
-    os="$(os-detect)"
-    case "$os" in
-        windows_wsl) open_cmd="wslview" ;;
-        osx) open_cmd="open" ;;
-        linux*) open_cmd="xdg-open" ;;
-        *) return ;;
-    esac
-    if [ $# -eq 0 ]; then
-        "$open_cmd" .
-    else
-        "$open_cmd" "$@"
-    fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 function clip() {
     xclip -selection clipboard "$@"
 }
