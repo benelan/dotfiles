@@ -72,6 +72,17 @@ u.keymap("n", "<leader>dp", "<CMD>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>"
 -- make to current buffer
 u.keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", "Make to buffer location")
 
+-- open file explore and focus current buffer
+-- NOTE: <leader>e is remapped locally in `after/ftplugin/netrw.vim` to close the file explorer
+u.keymap(
+  "n",
+  "<leader>e",
+  ":Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>",
+  "File Explorer (Current Buffer)"
+)
+
+u.keymap("n", "<leader>E", "<cmd>NetrwToggle<cr>", "File Explorer")
+
 -------------------------------------------------------------------------------
 ----> Prepare Ex commands
 -------------------------------------------------------------------------------
@@ -400,4 +411,3 @@ vim.cmd [[
   endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
-u.keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "File Explorer")
