@@ -69,7 +69,7 @@ u.keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>",
   "Change to buffer location")
 
 -- print current buffer
-u.keymap("n", "<leader>dp", "<CMD>echo expand('%:h')<CR>",
+u.keymap("n", "<leader>dp", "<CMD>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>",
   "Print buffer location")
 
 -- make to current buffer
@@ -82,7 +82,7 @@ u.keymap("n", "<leader>dm",
 -------------------------------------------------------------------------------
 
 -- :normal
-u.keymap("n", "<M-n>",
+u.keymap("n", "<leader><C-N>",
   ":normal!<space>",
   "Execute normal command")
 
@@ -434,3 +434,4 @@ vim.cmd [[
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
 u.keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "File Explorer")
+
