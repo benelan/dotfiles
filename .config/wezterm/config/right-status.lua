@@ -1,6 +1,6 @@
-local wezterm = require("wezterm")
-local utils = require("utils")
-local lume = require("utils.lume")
+local wezterm = require "wezterm"
+local utils = require "utils"
+local lume = require "utils.lume"
 local M = {}
 
 -- https://wezfurlong.org/wezterm/config/lua/wezterm/format
@@ -40,7 +40,7 @@ M.push = function(text, icon, fg, bg, separate)
 end
 
 M.set_date = function()
-  local date = wezterm.strftime(" %a %H:%M")
+  local date = wezterm.strftime " %a %H:%M"
   M.push(date, "    ", M.colors.date_fg, M.colors.date_bg, true)
 end
 
@@ -50,8 +50,7 @@ end
 
 M.set_battery = function()
   -- https://wezfurlong.org/wezterm/config/lua/wezterm/battery_info
-  local discharging_icons =
-  { " ", " ", " ", " ", " ", " ", " ", " ", " ", " " }
+  local discharging_icons = { " ", " ", " ", " ", " ", " ", " ", " ", " ", " " }
   local charging_icons = { " ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", " " }
 
   local charge = ""

@@ -29,16 +29,16 @@ function M.get_os_name()
   else
     if package.config:sub(1, 1) == "\\" then
       -- Windows
-      local env_OS = os.getenv("OS")
-      local env_ARCH = os.getenv("PROCESSOR_ARCHITECTURE")
+      local env_OS = os.getenv "OS"
+      local env_ARCH = os.getenv "PROCESSOR_ARCHITECTURE"
       -- print( ("Debug: %q %q"):format( env_OS, env_ARCH ) )
       if env_OS and env_ARCH then
         raw_os_name, raw_arch_name = env_OS, env_ARCH
       end
     else
       -- other platform, assume uname support and popen support
-      raw_os_name = io.popen("uname -s", "r"):read("*l")
-      raw_arch_name = io.popen("uname -m", "r"):read("*l")
+      raw_os_name = io.popen("uname -s", "r"):read "*l"
+      raw_arch_name = io.popen("uname -m", "r"):read "*l"
     end
   end
 

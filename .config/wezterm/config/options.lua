@@ -1,5 +1,5 @@
-local wezterm = require("wezterm")
-local utils = require("utils")
+local wezterm = require "wezterm"
+local utils = require "utils"
 
 return {
   -- Using wezterm term requires additional setup
@@ -61,8 +61,14 @@ return {
     brightness = 0.8,
   },
   skip_close_confirmation_for_processes_named = {
-    "bash", "sh", "btop", "lazygit", "gh",
-    "wslhost.exe", "wsl.exe", "conhost.exe"
+    "bash",
+    "sh",
+    "btop",
+    "lazygit",
+    "gh",
+    "wslhost.exe",
+    "wsl.exe",
+    "conhost.exe",
   },
   launch_menu = {
     { args = { "btop" } },
@@ -72,19 +78,26 @@ return {
       label = "edit dotfiles",
       cwd = wezterm.home_dir,
       args = {
-        "nvim", "~", "-c", ":Telescope git_files",
-        "--cmd", "let $GIT_WORK_TREE = expand('~')",
-        "--cmd", "let $GIT_DIR = expand('~/.git')"
-      }
+        "nvim",
+        "~",
+        "-c",
+        ":Telescope git_files",
+        "--cmd",
+        "let $GIT_WORK_TREE = expand('~')",
+        "--cmd",
+        "let $GIT_DIR = expand('~/.git')",
+      },
     },
     {
       label = "edit CC",
       cwd = wezterm.home_dir .. "/dev/work/calcite-components",
       args = {
-        "nvim", ".", "-c", ":Telescope git_files"
-      }
+        "nvim",
+        ".",
+        "-c",
+        ":Telescope git_files",
+      },
     },
-
   },
   leader = { key = " ", mods = "ALT|SHIFT", timeout_milliseconds = 1500 },
   hyperlink_rules = {

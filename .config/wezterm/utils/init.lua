@@ -1,5 +1,5 @@
 -- https://github.com/yutkat/dotfiles/blob/main/.config/wezterm/utils.lua
-local wezterm = require("wezterm")
+local wezterm = require "wezterm"
 local M = {}
 
 M.color_scheme = "GruvboxDark (Gogh)"
@@ -47,7 +47,7 @@ end
 
 function M.convert_home_dir(path)
   local cwd = path
-  local home = os.getenv("HOME")
+  local home = os.getenv "HOME"
   cwd = cwd:gsub("^" .. home .. "/", "~/")
   if cwd == "" then
     return path
@@ -69,11 +69,11 @@ function M.split_from_url(dir)
   local cwd = ""
   local hostname = ""
   local cwd_uri = dir:sub(8)
-  local slash = cwd_uri:find("/")
+  local slash = cwd_uri:find "/"
   if slash then
     hostname = cwd_uri:sub(1, slash - 1)
     -- Remove the domain name portion of the hostname
-    local dot = hostname:find("[.]")
+    local dot = hostname:find "[.]"
     if dot then
       hostname = hostname:sub(1, dot - 1)
     end
