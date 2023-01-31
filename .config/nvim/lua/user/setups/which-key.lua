@@ -60,7 +60,7 @@ local xmappings = {
 local mappings = {
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
-
+  ["gp"] = { name = "Preview" },
   b = {
     name = "Buffers",
     j = { "<cmd>BufferLinePick<cr>", "Jump" },
@@ -160,7 +160,6 @@ local mappings = {
     m = { name = "My stuff", i = { name = "Issues" }, p = { name = "Pull requests" } },
     r = { name = "Reactions" },
   },
-  p = { name = "Preview" },
   l = {
     name = "LSP",
     a = { vim.lsp.buf.code_action, "Code Action" },

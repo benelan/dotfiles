@@ -168,7 +168,7 @@ vim.keymap.set(
 
 vim.keymap.set(
   "n",
-  "<leader>is",
+  "<leader>ois",
   "<cmd>Octo issue search<CR>",
   vim.list_extend({
     desc = "Search issues",
