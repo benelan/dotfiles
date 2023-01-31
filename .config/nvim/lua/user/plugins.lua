@@ -157,6 +157,9 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
+  use {
+    "mbbill/undotree",
+  }
 
   -----------------------------------------------------------------------------
   ----> Completions
