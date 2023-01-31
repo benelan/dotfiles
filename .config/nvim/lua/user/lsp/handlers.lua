@@ -151,9 +151,9 @@ M.on_attach = function(client, bufnr)
   if client.name == "tsserver" then
     client.server_capabilities.documentFormattingProvider = false
   end
-  -- if client.name == "sumneko_lua" then
-  --   client.server_capabilities.documentFormattingProvider = false
-  -- end
+  if client.name == "sumneko_lua" then
+    client.server_capabilities.documentFormattingProvider = false
+  end
 
   if client.server_capabilities.codeLensProvider then
     vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }

@@ -28,6 +28,7 @@ null_ls.setup {
     diagnostics.proselint,
     diagnostics.stylelint,
     formatting.codespell,
+    formatting.lua_format,
     formatting.prettier.with({
       disabled_filetypes = { "json", "jsonc", "json5" },
       prefer_local = "node_modules/.bin"

@@ -48,18 +48,25 @@ pathappend() {
     unset var value
 }
 
-for dir in ~/.dotfiles/vendor/{fzf,git-fuzzy}/bin; do
-    [ -d "$dir" ] && pathappend "$dir"
-done
 
-for dir in ~/{.dotfiles,.local,.cargo,.volta,.bun/go}/bin; do
-    [ -d "$dir" ] && pathappend "$dir"
-done
+[ -d "$HOME/go/bin" ] && pathappend "$HOME/go/bin"
+[ -d "$HOME/.bun/bin" ] && pathappend "$HOME/.bun/bin"
+[ -d "$HOME/.cargo/bin" ] && pathappend "$HOME/.cargo/bin"
+[ -d "$HOME/.volta/bin" ] && pathappend "$HOME/.volta/bin"
+[ -d "$HOME/.local/bin" ] && pathappend "$HOME/.local/bin"
+[ -d "$HOME/.luarocks/bin" ] && pathappend "$HOME/.luarocks/bin"
+[ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
+
+[ -d "$HOME/$HOME/.dotfiles/vendor/fzf/bin" ] &&
+    pathappend "$HOME/.dotfiles/vendor/fzf/bin"
+
+[ -d "$HOME/.dotfiles/vendor/git-fuzzy/bin" ] &&
+    pathappend "$HOME/.dotfiles/vendor/git-fuzzy/bin"
 
 [ -d "$HOME/.local/share/nvim/mason/bin" ] &&
     pathprepend "$HOME/.local/share/nvim/mason/bin"
-[ -d "/usr/local/go/bin" ] &&
-    pathappend "/usr/local/go/bin"
+
+[ -d "/usr/local/go/bin" ] && pathappend "/usr/local/go/bin"
 
 pathappend "/snap/bin"
 pathappend "/usr/local/games"
