@@ -1,7 +1,9 @@
 local status_ok, inlay_hints = pcall(require, "inlay-hints")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
-inlay_hints.setup({
+inlay_hints.setup {
   -- renderer options are: dynamic, eol, virtline and custom
   renderer = "inlay-hints/render/eol",
   only_current_line = true,
@@ -20,8 +22,8 @@ inlay_hints.setup({
         return string.format(" => (%s)", hints):gsub(":", "")
       end,
     },
-  }
-})
+  },
+}
 
 local augroup_inlay_hints = vim.api.nvim_create_augroup("my-lsp-inlay-hints", { clear = true })
 vim.api.nvim_create_autocmd("LspAttach", {

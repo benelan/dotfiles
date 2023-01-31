@@ -1,8 +1,6 @@
 local M = {}
 
-M.exclude_buftypes = {
-  "terminal", "nofile", "help", "prompt"
-}
+M.exclude_buftypes = { "terminal", "nofile", "help", "prompt" }
 
 M.exclude_filetypes = {
   "dap-repl",

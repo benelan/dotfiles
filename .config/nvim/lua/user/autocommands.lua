@@ -1,11 +1,11 @@
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
-    vim.cmd([[
+    vim.cmd [[
       nnoremap <silent> <buffer> q :close<CR>
       set nobuflisted
-    ]])
-  end
+    ]]
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -13,52 +13,52 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
-    local opts = { buffer= true, noremap = true, silent = true }
+    local opts = { buffer = true, noremap = true, silent = true }
     vim.keymap.set("n", "j", "gj", opts)
     vim.keymap.set("n", "k", "gk", opts)
     vim.keymap.set("n", "$", "g$", opts)
     vim.keymap.set("n", "^", "g^", opts)
-  end
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "term://*" },
   callback = function()
-    vim.fn.execute("startinsert")
-  end
+    vim.fn.execute "startinsert"
+  end,
 })
 vim.api.nvim_create_autocmd({ "BufLeave" }, {
   pattern = { "term://*" },
   callback = function()
-    vim.fn.execute("stopinsert")
-  end
+    vim.fn.execute "stopinsert"
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "VimResized" }, {
   callback = function()
-    vim.cmd("tabdo wincmd =")
-  end
+    vim.cmd "tabdo wincmd ="
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
-    vim.highlight.on_yank({
+    vim.highlight.on_yank {
       higroup = "Visual",
-      timeout = 400
-    })
-  end
+      timeout = 400,
+    }
+  end,
 })
 -- enable relative line numbers
 vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
   callback = function()
     vim.cmd [[ if &nu && mode() != "i" | set rnu | endif ]]
-  end
+  end,
 })
 -- disable relative line numbers
 vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
   callback = function()
     vim.cmd [[ if &nu | set nornu | endif ]]
-  end
+  end,
 })
 
 -- return to the last edit position when opening files
@@ -67,7 +67,7 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     vim.cmd [[
       if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     ]]
-  end
+  end,
 })
 
 -- Use templates when creating specific file
@@ -82,22 +82,20 @@ vim.cmd [[
   augroup END
 ]]
 
-
 -- Reload the NeoVim configuration and current file's module
-local cfg = vim.fn.stdpath('config')
+local cfg = vim.fn.stdpath "config"
 function ReloadConfig()
-    local s = vim.api.nvim_buf_get_name(0)
-    if string.match(s, '^' .. cfg .. '*') == nil then
-        return
-    end
-    s = string.sub(s, 6 + string.len(cfg), -5)
-    local val = string.gsub(s, '%/', '.')
-    package.loaded[val] = nil
+  local s = vim.api.nvim_buf_get_name(0)
+  if string.match(s, "^" .. cfg .. "*") == nil then
+    return
+  end
+  s = string.sub(s, 6 + string.len(cfg), -5)
+  local val = string.gsub(s, "%/", ".")
+  package.loaded[val] = nil
   dofile(vim.env.MYVIMRC)
 end
 
-vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig,
-  { desc = "Reloads NeoVim configuration" })
+vim.api.nvim_create_user_command("ReloadConfig", ReloadConfig, { desc = "Reloads NeoVim configuration" })
 
 -- Plugin autocommands
 

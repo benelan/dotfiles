@@ -1,13 +1,10 @@
 local status_ok, octo = pcall(require, "octo")
-if not status_ok then return end
+if not status_ok then
+  return
+end
 
-octo.setup({
-  pull_requests = {
-    order_by = {
-      field = "UPDATED_AT",
-      direction = "DESC"
-    },
-  },
+octo.setup {
+  pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
   mappings = {
     issue = {
       copy_url = { lhs = "<leader>oU", desc = "Copy url" },
@@ -28,7 +25,7 @@ octo.setup({
       prev_comment = { lhs = "[c", desc = "Previous comment" },
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ " },
-      react_eyes = { lhs = "<leader>ore", desc = "add/remove 👀" },
+      react_eyes = { lhs = "<leader>or", desc = "add/remove 👀" },
       react_thumbs_up = { lhs = "<leader>or+", desc = "add/remove 👍" },
       react_thumbs_down = { lhs = "<leader>or-", desc = "add/remove 👎" },
       react_rocket = { lhs = "<leader>orr", desc = "add/remove 🚀" },
@@ -50,7 +47,10 @@ octo.setup({
       list_changed_files = { lhs = "<leader>opf", desc = "List changed files" },
       show_pr_diff = { lhs = "<leader>opd", desc = "Show diff" },
       add_reviewer = { lhs = "<leader>opar", desc = "Add reviewer" },
-      remove_reviewer = { lhs = "<leader>opDr", desc = "Remove reviewer request" },
+      remove_reviewer = {
+        lhs = "<leader>opDr",
+        desc = "Remove reviewer request",
+      },
       add_assignee = { lhs = "<leader>opaa", desc = "Add assignee" },
       remove_assignee = { lhs = "<leader>opDa", desc = "Remove assignee" },
       create_label = { lhs = nil, desc = "Create label" },
@@ -62,7 +62,7 @@ octo.setup({
       prev_comment = { lhs = "[c", desc = "Previous comment" },
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ " },
-      react_eyes = { lhs = "<leader>ore", desc = "add/remove 👀" },
+      react_eyes = { lhs = "<leader>or", desc = "add/remove 👀" },
       react_thumbs_up = { lhs = "<leader>or+", desc = "add/remove 👍" },
       react_thumbs_down = { lhs = "<leader>or-", desc = "add/remove 👎" },
       react_rocket = { lhs = "<leader>orr", desc = "add/remove 🚀" },
@@ -81,12 +81,21 @@ octo.setup({
       close_review_tab = { lhs = "<leader>oC", desc = "Close review tab" },
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉 reaction" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ reaction" },
-      react_eyes = { lhs = "<leader>ore", desc = "add/remove 👀 reaction" },
-      react_thumbs_up = { lhs = "<leader>or+", desc = "add/remove 👍 reaction" },
-      react_thumbs_down = { lhs = "<leader>or-", desc = "add/remove 👎 reaction" },
+      react_eyes = { lhs = "<leader>or", desc = "add/remove 👀 reaction" },
+      react_thumbs_up = {
+        lhs = "<leader>or+",
+        desc = "add/remove 👍 reaction",
+      },
+      react_thumbs_down = {
+        lhs = "<leader>or-",
+        desc = "add/remove 👎 reaction",
+      },
       react_rocket = { lhs = "<leader>orr", desc = "add/remove 🚀 reaction" },
       react_laugh = { lhs = "<leader>orl", desc = "add/remove 😄 reaction" },
-      react_confused = { lhs = "<leader>orc", desc = "add/remove 😕 reaction" },
+      react_confused = {
+        lhs = "<leader>orc",
+        desc = "add/remove 😕 reaction",
+      },
     },
     submit_win = {
       approve_review = { lhs = "<leader>orA", desc = "Approve review" },
@@ -96,7 +105,10 @@ octo.setup({
     },
     review_diff = {
       add_review_comment = { lhs = "<leader>opac", desc = "Add review comment" },
-      add_review_suggestion = { lhs = "<leader>opas", desc = "Add review suggestion" },
+      add_review_suggestion = {
+        lhs = "<leader>opas",
+        desc = "Add review suggestion",
+      },
       focus_files = { lhs = "<leader>of", desc = "Focus changed files panel" },
       toggle_files = { lhs = "<leader>ot", desc = "Toggle changed files panel" },
       next_thread = { lhs = "]c", desc = "Next thread" },
@@ -110,75 +122,158 @@ octo.setup({
       next_entry = { lhs = "j", desc = "Next changed file" },
       prev_entry = { lhs = "k", desc = "Previous changed file" },
       select_entry = { lhs = "<cr>", desc = "Show selected changed file diffs" },
-      refresh_files = { lhs = "<leader>or", desc = "Refresh changed files panel" },
-      focus_files = { lhs = "<leader>of", desc = "Focus to changed files panel" },
+      refresh_files = {
+        lhs = "<leader>or",
+        desc = "Refresh changed files panel",
+      },
+      focus_files = {
+        lhs = "<leader>of",
+        desc = "Focus to changed files panel",
+      },
       toggle_files = { lhs = "<leader>ot", desc = "Toggle changed files panel" },
       select_next_entry = { lhs = "]q", desc = "Previous changed file" },
       select_prev_entry = { lhs = "[q", desc = "Next changed file" },
       close_review_tab = { lhs = "<leader>oC", desc = "Close review tab" },
       toggle_viewed = { lhs = "<leader>ov", desc = "Toggle viewed changes" },
-    }
-  }
-})
+    },
+  },
+}
 
 local opts = { silent = true, noremap = true }
 
+-- Find possible actions
+vim.keymap.set("n", "<leader>oa", "<cmd>Octo actions<CR>", vim.list_extend({ desc = "Actions" }, opts))
 
 -- Find possible actions
-vim.keymap.set("n", "<leader>oa", "<cmd>Octo actions<CR>",
-  vim.list_extend({ desc = "Actions" }, opts))
-
--- Find possible actions
-vim.keymap.set("n", "<leader>os", "<cmd>Octo search<CR>",
-  vim.list_extend({ desc = "Search" }, opts))
+vim.keymap.set("n", "<leader>os", "<cmd>Octo search<CR>", vim.list_extend({ desc = "Search" }, opts))
 
 -- Issues
-vim.keymap.set("n", "<leader>oil", "<cmd>Octo issue list<CR>",
-  vim.list_extend({ desc = "List issues" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>oil",
+  "<cmd>Octo issue list<CR>",
+  vim.list_extend({
+    desc = "List issues",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>oic", "<cmd>Octo issue create<CR>",
-  vim.list_extend({ desc = "Create issue" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>oic",
+  "<cmd>Octo issue create<CR>",
+  vim.list_extend({
+    desc = "Create issue",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>ois", "<cmd>Octo issue search<CR>",
-  vim.list_extend({ desc = "Search issues" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>is",
+  "<cmd>Octo issue search<CR>",
+  vim.list_extend({
+    desc = "Search issues",
+  }, opts)
+)
 
 -- Pull requests
-vim.keymap.set("n", "<leader>opl", "<cmd>Octo pr list<CR>",
-  vim.list_extend({ desc = "List pull requests" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>opl",
+  "<cmd>Octo pr list<CR>",
+  vim.list_extend({
+    desc = "List pull requests",
+  }, opts)
+)
 
+vim.keymap.set(
+  "n",
+  "<leader>opc",
+  "<cmd>Octo pr create<CR>",
+  vim.list_extend({
+    desc = "Create pull request",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>opc", "<cmd>Octo pr create<CR>",
-  vim.list_extend({ desc = "Create pull request" }, opts))
-
-vim.keymap.set("n", "<leader>ops", "<cmd>Octo pr search<CR>",
-  vim.list_extend({ desc = "Search pull request" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>ops",
+  "<cmd>Octo pr search<CR>",
+  vim.list_extend({
+    desc = "Search pull request",
+  }, opts)
+)
 
 -- Reviews
-vim.keymap.set("n", "<leader>oprr", "<cmd>Octo review resume<CR>",
-  vim.list_extend({ desc = "Resume review" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>oprr",
+  "<cmd>Octo review resume<CR>",
+  vim.list_extend({
+    desc = "Resume review",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>oprs", "<cmd>Octo review start<CR>",
-  vim.list_extend({ desc = "Start review" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>oprs",
+  "<cmd>Octo review start<CR>",
+  vim.list_extend({
+    desc = "Start review",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>oprf", "<cmd>Octo review submit<CR>",
-  vim.list_extend({ desc = "Finish review" }, opts))
-
+vim.keymap.set(
+  "n",
+  "<leader>oprf",
+  "<cmd>Octo review submit<CR>",
+  vim.list_extend({
+    desc = "Finish review",
+  }, opts)
+)
 
 -- My stuff
-vim.keymap.set("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
-  vim.list_extend({ desc = "List my assigned issues" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>omia",
+  "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
+  vim.list_extend({ desc = "List my assigned issues" }, opts)
+)
 
-vim.keymap.set("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
-  vim.list_extend({ desc = "List my created issues" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>omic",
+  "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
+  vim.list_extend({ desc = "List my created issues" }, opts)
+)
 
-vim.keymap.set("n", "<leader>ompc", "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
-  vim.list_extend({ desc = "List my created pull requests" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>ompc",
+  "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
+  vim.list_extend({ desc = "List my created pull requests" }, opts)
+)
 
-vim.keymap.set("n", "<leader>ompa", "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
-  vim.list_extend({ desc = "List my assigned pull requests" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>ompa",
+  "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
+  vim.list_extend({ desc = "List my assigned pull requests" }, opts)
+)
 
-vim.keymap.set("n", "<leader>omr", "<cmd>Octo repo list<CR>",
-  vim.list_extend({ desc = "List my repos" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>omr",
+  "<cmd>Octo repo list<CR>",
+  vim.list_extend({
+    desc = "List my repos",
+  }, opts)
+)
 
-vim.keymap.set("n", "<leader>omg", "<cmd>Octo gist list<CR>",
-  vim.list_extend({ desc = "List my gists" }, opts))
+vim.keymap.set(
+  "n",
+  "<leader>omg",
+  "<cmd>Octo gist list<CR>",
+  vim.list_extend({
+    desc = "List my gists",
+  }, opts)
+)

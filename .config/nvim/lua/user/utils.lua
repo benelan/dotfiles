@@ -13,7 +13,6 @@ M.paste_blank_line = function(line)
   vim.api.nvim_buf_set_lines(0, line, line, true, lines)
 end
 
-
 M.toggle_option = function(option, x, y)
   local on = x or true
   local off = y or false
@@ -25,12 +24,7 @@ M.toggle_option = function(option, x, y)
 end
 
 M.keymap = function(mode, lhs, rhs, desc)
-  vim.keymap.set(mode, lhs, rhs,
-    {
-      silent = true,
-      noremap = true,
-      desc = desc or nil
-    })
+  vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
 end
 
 return M
