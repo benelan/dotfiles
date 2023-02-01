@@ -122,12 +122,36 @@ return packer.startup(function(use)
     end,
   }
   use {
-    "AndrewRadev/splitjoin.vim",
+    "AndrewRadev/splitjoin.vim", -- split/join lines on arrays/objects/etc
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
   use {
-    "mbbill/undotree",
+    "mbbill/undotree", -- Easily go back in undo history
+    config = function()
+      vim.keymap.set("n", "<leader>u", "CMD>UndoToggle<CR>", {
+        silent = true,
+        noremap = true,
+        desc = "UndoTree",
+      })
+    end,
+  }
+
+  use {
+    "rmagatti/session-lens",
+    requires = {
+      {
+        "rmagatti/auto-session",
+        config = function()
+          require("auto-session").setup {
+            -- auto_session_use_git_branch = true,
+            bypass_session_save_file_types = require("user.resources").exclude_filetypes,
+            auto_session_create_enabled = false,
+          }
+        end,
+      },
+      "nvim-telescope/telescope.nvim",
+    },
   }
 
   -----------------------------------------------------------------------------
@@ -208,7 +232,7 @@ return packer.startup(function(use)
     requires = "neovim/nvim-lspconfig",
     config = function()
       require "user.lsp.navic"
-    end
+    end,
   }
   use "folke/neodev.nvim" -- NeoVIm Lua API info
 
@@ -235,13 +259,6 @@ return packer.startup(function(use)
         "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
         -- config = function() require("git-worktree").setup() end,
       },
-
-      -- {
-      --   "nvim-telescope/telescope-frecency.nvim",
-      --   requires = {
-      --     "kkharji/sqlite.lua",
-      --   }
-      -- }
     },
   }
 
@@ -275,14 +292,14 @@ return packer.startup(function(use)
         event = "InsertEnter",
         after = "nvim-treesitter",
       },
-      {
-        "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-        event = "InsertEnter",
-        after = "nvim-treesitter",
-        config = function()
-          require "user.setups.autopairs"
-        end,
-      },
+      -- {
+      --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+      --   event = "InsertEnter",
+      --   after = "nvim-treesitter",
+      --   config = function()
+      --     require "user.setups.autopairs"
+      --   end,
+      -- },
       -- { -- trying out nvim-navic instead
       --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
       --   event = "BufWinEnter",

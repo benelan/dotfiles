@@ -52,7 +52,7 @@ vim.opt.formatoptions:remove "t,a,r,o"          -- :help formatoptions
 if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
-vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.sessionoptions = "blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 -- add some common code directories to path
 vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
 -- use the patience diff algorithm

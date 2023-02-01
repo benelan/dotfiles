@@ -139,16 +139,25 @@ telescope.load_extension "fzf"
 telescope.load_extension "project"
 telescope.load_extension "file_browser"
 telescope.load_extension "git_worktree"
+telescope.load_extension "session-lens"
 
-vim.keymap.set(
+local u_status_ok, u = pcall(require, "user.utils")
+if not u_status_ok then
+  return
+end
+
+u.keymap(
   "n",
   "<leader>gws",
   "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
-  { noremap = true, silent = true, desc = "Switch worktree" }
+  "Switch worktree"
 )
-vim.keymap.set(
+u.keymap(
   "n",
   "<leader>gwa",
   "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
-  { noremap = true, silent = true, desc = "Create worktree" }
+  "Create worktree"
 )
+
+u.keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
+u.keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")
