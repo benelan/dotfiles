@@ -59,6 +59,16 @@ vim.keymap.set("o", "<leader>.", "<cmd><C-U>execute 'normal! `[v`]'<CR>")
 vim.keymap.set("o", "<leader>%", "<cmd><C-U>execute 'normal! 1GVG'<CR>")
 vim.keymap.set("o", "<leader>5", "<leader>%")
 
+-- simple navigation in Insert mode
+u.keymap("i", "<M-l>", '<C-O>:execute "normal l"<CR>')
+u.keymap("i", "<M-h>", '<C-O>:execute "normal h"<CR>')
+u.keymap("i", "<M-j>", '<C-O>:execute "normal j"<CR>')
+u.keymap("i", "<M-k>", '<C-O>:execute "normal k"<CR>')
+u.keymap("i", "<M-w>", '<C-O>:execute "normal w"<CR>')
+u.keymap("i", "<M-b>", '<C-O>:execute "normal b"<CR>')
+u.keymap("i", "<M-4>", '<C-O>:execute "normal $"<CR>')
+u.keymap("i", "<M-6>", '<C-O>:execute "normal ^"<CR>')
+
 -------------------------------------------------------------------------------
 ----> Directories
 -------------------------------------------------------------------------------
@@ -172,8 +182,6 @@ u.keymap({ "n", "v" }, "<leader>gmL", "<cmd>diffget LO<cr>", "Choose All From Lo
 ----> Windows
 -------------------------------------------------------------------------------
 
-u.keymap("n", "<leader>w", "<C-w>", "Windows")
-
 -- hide splits
 u.keymap("n", "<M-q>", "<CMD>hide<CR>", "Hide Window")
 u.keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
@@ -191,10 +199,10 @@ u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
 u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
 u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
 u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
-u.keymap({ "i", "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
-u.keymap({ "i", "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
-u.keymap({ "i", "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
-u.keymap({ "i", "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
+u.keymap({ "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
+u.keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
+u.keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
+u.keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
 
 u.keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>", "Focus First Floating Window")
 
@@ -231,13 +239,16 @@ u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
 u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close Buffer")
 u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
-u.keymap("n", "<C-q>", "<CMD>Bdelete<CR>", "Quit")
-u.keymap("n", "<C-s>", "<CMD>write<CR>", "Write")
-u.keymap("n", "<C-w>", "<CMD>write<CR>", "Write")
+u.keymap("n", "<leader>Q", "<CMD>q!<CR>", "Quit")
+u.keymap("n", "<leader><C-q>", "<CMD>qa!<CR>", "Force Quit All")
+u.keymap("n", "<leader>w", "<CMD>w<CR>", "Write")
+u.keymap("n", "<leader>W", "<CMD>wa<CR>", "Write All")
+u.keymap({ "n", "i" }, "<C-s>", "<CMD>write<CR>", "Write")
+u.keymap({ "n", "i" }, "<C-q>", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
 
 -- sudo save the file
 vim.api.nvim_create_user_command("W", "execute 'w !sudo tee % > /dev/null' <Bar> edit!", {})
-u.keymap("n", "<leader>W", "<cmd>W<cr>", "Sudo Write")
+u.keymap("n", "<leader><C-w>", "<cmd>W<cr>", "Sudo Write")
 
 -- Open new buffer with the current file's same extension
 u.keymap("n", "<leader>bv", "<C-w>v:e %:h/scratch.%:e<CR>", "New Vertical Scratch Split")
@@ -305,9 +316,9 @@ end, "Toggle autoindent")
 -- Random stuff I haven't converted to Lua yet
 vim.cmd [[
     " clear search highlights
-    nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
-    inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-    vnoremap <C-L> <Esc><C-L>gv
+    nnoremap <C-l> :<C-U>nohlsearch<CR><C-l>
+    inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
+    vnoremap <C-l> <Esc><C-l>gv
 
     " go to line above/below the cursor, from insert mode
     inoremap <S-CR> <C-O>o

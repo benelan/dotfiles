@@ -1,1 +1,1 @@
-nnoremap <silent> <buffer> <leader>de :Bdelete<cr>
+nnoremap <silent> <buffer> <leader>e :Bdelete<cr>
