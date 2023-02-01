@@ -39,13 +39,17 @@ end, {
 })
 
 -- netrw options
+vim.g.netrw_altfile = true
+vim.g.netrw_alto = true
+vim.g.netrw_altv = true
+vim.g.netrw_banner = false
+-- vim.g.netrw_keepdir = false
+-- vim.g.netrw_liststyle = 3
+vim.g.netrw_localmkdiropt	= " -p"
+vim.g.netrw_preview = true
 vim.g.netrw_sort_by = "extent"
-vim.g.netrw_preview = 1
-vim.g.netrw_liststyle = 3
-vim.g.netrw_usetab = 1
+vim.g.netrw_usetab = true
 vim.g.netrw_winsize = 25
-vim.g.netrw_banner = 0
-vim.g.netrw_altfile = 1
 
 -- neovide options
 if vim.fn.exists "g:neovide" == 1 then
