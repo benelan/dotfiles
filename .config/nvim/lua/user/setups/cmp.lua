@@ -140,20 +140,29 @@ cmp.setup {
 -- Use buffer source for `/` and `?`
 cmp.setup.cmdline({ "/", "?" }, {
   mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = "buffer", opts = { keyword_pattern = [=[[^[:blank:]].*]=] } },
-  },
+  sources = { { name = "buffer" } },
 })
 
 -- Use cmdline & path source for ':'
 cmp.setup.cmdline(":", {
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = "path" },
-  }, { { name = "cmdline" } }),
+  sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
 })
 
 local opts = { noremap = true, silent = true }
-vim.keymap.set({ "i", "s" }, "<C-n>", function()
+vim.keymap.set({ "i", "s" }, "<C-l>", function()
   if ls.expand_or_jumpable() then
     ls.expand_or_jump()
+  end
+end, opts)
+vim.keymap.set({ "i", "s" }, "<C-h>", function()
+  if ls.jumpable(-1) then
+    ls.jump(1)
+  end
+end, opts)
+
+vim.keymap.set({ "i" }, "<C-c>", function()
+  if ls.choice_active() then
+    ls.change_choice(1)
+  end
+end, opts)
