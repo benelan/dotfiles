@@ -52,13 +52,6 @@ u.keymap("n", "N", "Nzzzv", "Previous search result")
 -- escape terminal mode
 vim.keymap.set("t", "<esc>", "<C-\\><C-N>")
 
--- uses last changed or yanked text as a text object
-vim.keymap.set("o", "<leader>.", "<cmd><C-U>execute 'normal! `[v`]'<CR>")
-
--- uses entire buffer as a text object
-vim.keymap.set("o", "<leader>%", "<cmd><C-U>execute 'normal! 1GVG'<CR>")
-vim.keymap.set("o", "<leader>5", "<leader>%")
-
 -- simple navigation in Insert mode
 u.keymap("i", "<M-l>", '<C-O>:execute "normal l"<CR>')
 u.keymap("i", "<M-h>", '<C-O>:execute "normal h"<CR>')
@@ -336,6 +329,12 @@ vim.cmd [[
   nnoremap <silent> gk :let _=&lazyredraw<CR>
   \:set lazyredraw<CR>?\%<C-R>=virtcol(".")
   \<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
+  "" uses last changed or yanked text as an object
+  onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
+  "" uses entire buffer as an object
+  onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
+  omap <leader>5 <leader>%
 ]]
 
 -- Pressing * or # in Visual mode
