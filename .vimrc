@@ -122,17 +122,17 @@ endif
 " | Globals                                                            |
 " ----------------------------------------------------------------------
 
-vim.g.netrw_altfile = true
-vim.g.netrw_alto = true
-vim.g.netrw_altv = true
-vim.g.netrw_banner = false
--- vim.g.netrw_keepdir = false
--- vim.g.netrw_liststyle = 3
-vim.g.netrw_localmkdiropt	= " -p"
-vim.g.netrw_preview = true
-vim.g.netrw_sort_by = "extent"
-vim.g.netrw_usetab = true
-vim.g.netrw_winsize = 25
+let g:netrw_altfile = 1
+let g:netrw_alto = 1
+let g:netrw_altv = 1
+let g:netrw_banner = 0
+" let g:netrw_keepdir = 0
+" let g:netrw_liststyle = 3
+let g:netrw_localmkdiropt	= " -p"
+let g:netrw_preview = 1
+let g:netrw_sort_by = "extent"
+let g:netrw_usetab = 1
+let g:netrw_winsize = 25
 
 
 " Helps with syntax highlighting by specififying filetypes
@@ -256,7 +256,7 @@ nnoremap <leader>gml :diffget LO<cr>
 nnoremap <leader>gmL :diffget LO<cr>
 
 "" close the current buffer
-nnoremap <leader>bd :Bclose<cr>
+nnoremap <leader>bd :Bdelete<cr>
 "" close all the buffers
 nnoremap <leader>bda :bufdo bd<cr>
 "" picks buffer
@@ -282,7 +282,7 @@ nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let s:last_tab = tabpagenr()
 
 " Save/delete buffers
-inoremap <C-Q> :Bclose<cr>
+inoremap <C-Q> :Bdelete<cr>
 inoremap <C-W> :write<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>W :wa<cr>
@@ -644,8 +644,8 @@ xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Don't close window, when deleting a buffer
-command! Bclose call <SID>Bclose()
-function! <SID>Bclose()
+command! Bdelete call <SID>Bdelete()
+function! <SID>Bdelete()
     let l:currentBufNum = bufnr("%")
     let l:alternateBufNum = bufnr("#")
 
