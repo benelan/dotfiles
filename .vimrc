@@ -121,13 +121,19 @@ endif
 " ----------------------------------------------------------------------
 " | Globals                                                            |
 " ----------------------------------------------------------------------
-let g:netrw_sort_by = "exten"
+
+let g:netrw_altfile = 1
+let g:netrw_alto = 1
+let g:netrw_altv = 1
+let g:netrw_banner = 0
+" let g:netrw_keepdir = 0
+" let g:netrw_liststyle = 3
+let g:netrw_localmkdiropt	= " -p"
 let g:netrw_preview = 1
-let g:netrw_liststyle = 3
+let g:netrw_sort_by = "extent"
 let g:netrw_usetab = 1
 let g:netrw_winsize = 25
-let g:netrw_banner = 0
-let g:netrw_altfile = 1
+
 
 " Helps with syntax highlighting by specififying filetypes
 " for common abbreviations used in markdown fenced code blocks
@@ -250,11 +256,9 @@ nnoremap <leader>gml :diffget LO<cr>
 nnoremap <leader>gmL :diffget LO<cr>
 
 "" close the current buffer
-nnoremap <leader>bd :Bclose<cr>
+nnoremap <leader>bd :Bdelete<cr>
 "" close all the buffers
 nnoremap <leader>bda :bufdo bd<cr>
-"" edits a new buffer
-nnoremap <leader>bn :<C-U>enew<CR>
 "" picks buffer
 nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
@@ -277,12 +281,14 @@ let s:last_tab = 1
 nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let s:last_tab = tabpagenr()
 
-"" shortcut for window mappings
-nnoremap <leader>w <C-W>
-
 " Save/delete buffers
-inoremap <C-Q> :Bclose<cr>
+inoremap <C-Q> :Bdelete<cr>
 inoremap <C-W> :write<cr>
+nnoremap <leader>w :w<cr>
+nnoremap <leader>W :wa<cr>
+nnoremap <leader>q :q<cr>
+nnoremap <leader>Q :wqa<cr>
+nnoremap <leader><C-q> :qa!<cr>
 inoremap <C-S> :write<cr>
 
 " Create splits
@@ -346,11 +352,14 @@ ounmap <leader>sw
 sunmap <leader>sw
 
 "" shows the current file's fully expanded path
-nnoremap <leader>dp :<C-U>echo expand('%:p')<CR>
+nnoremap <leader>dp :<C-U>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>
 "" changes directory to the current file's location
 nnoremap <leader>dc :<C-U>cd %:h <Bar> pwd<CR>
 "" creates the path to the current file if it doesn't exist
 nnoremap <leader>dm :<C-U>call mkdir(expand('%:h'), 'p')<CR>
+
+
+nnoremap <leader>e :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
 
 "" shows command history
 nnoremap <leader>H :<C-U>history :<CR>
@@ -365,11 +374,11 @@ onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
 omap <leader>5 <leader>%
 
 " start ex command for vimgrep
-nnoremap <leader><leader>/ :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+nnoremap <leader><C-/> :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
-nnoremap <leader></leader>? :<C-U>lhelpgrep \c<S-Left>
+nnoremap <leader><C-?> :<C-U>lhelpgrep \c<S-Left>
 " start ex command for normal
-nnoremap <leader><leader>n :normal!<space>
+nnoremap <leader><C-N> :normal!<space>
 " start ex command with previous command
 nnoremap <leader><leader>c :<up>
 
@@ -526,7 +535,7 @@ function! s:ToggleNetrwLeft()
     endif
 endfunction
 
-noremap <silent> <leader>E :call <SID>ToggleNetrwLeft()<CR>
+command! NetrwToggleLeft call <sid>NetrwToggleLeft()
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -539,7 +548,7 @@ function! s:NetrwToggle()
 endfunction
 
 command! NetrwToggle call <sid>NetrwToggle()
-noremap <silent> <leader>e :NetrwToggle<CR>
+noremap <silent> <leader>E :NetrwToggle<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -635,8 +644,8 @@ xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Don't close window, when deleting a buffer
-command! Bclose call <SID>Bclose()
-function! <SID>Bclose()
+command! Bdelete call <SID>Bdelete()
+function! <SID>Bdelete()
     let l:currentBufNum = bufnr("%")
     let l:alternateBufNum = bufnr("#")
 
@@ -822,3 +831,4 @@ endfunction
 
 " a lot was learned and barrowed from:
 " https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/vim/vimrc
+
