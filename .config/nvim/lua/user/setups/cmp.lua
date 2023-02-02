@@ -1,7 +1,7 @@
-
-local res_status_okay, res = pcall(require, "user.resources")
+local cmp_status_ok, cmp = pcall(require, "cmp")
+local res_status_ok, res = pcall(require, "user.resources")
 local snip_status_ok, ls = pcall(require, "luasnip")
-if not cmp_status_ok or not snip_status_ok or not res_status_okay then
+if not cmp_status_ok or not snip_status_ok or not res_status_ok then
   return
 end
 
@@ -155,6 +155,7 @@ vim.keymap.set({ "i", "s" }, "<C-l>", function()
     ls.expand_or_jump()
   end
 end, opts)
+
 vim.keymap.set({ "i", "s" }, "<C-h>", function()
   if ls.jumpable(-1) then
     ls.jump(1)
