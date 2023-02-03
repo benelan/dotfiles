@@ -131,14 +131,15 @@
   statusHint = false
 
 [log]
-  date = local
+  date = short-local
 
 [format]
-  pretty = format:"%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+  ; pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
+  pretty = format:"%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)"
   ;                           │        │            │            │             └─ author name
   ;                           │        │            │            └─ message
-  ;                           │        │            └─ date (relative)
-  ;                           │        └─ decorations (branch, heads or tags)
+  ;                           │        │            └─ decorations (branch, heads or tags)
+  ;                           │        └─ date
   ;                           └─ hash (abbreviated)
 
 [init]
@@ -163,7 +164,7 @@
 
   ; Switch to a branch, creating it if necessary.
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-  
+
   ; use fzf to fixup commits to autosquash
   fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
 

@@ -84,17 +84,15 @@ alias gfuom='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(g
 
 # log
 ######
-alias gg='git log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
-alias ggf='git log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
-alias ggs='gg --stat'
+alias ggr='git log --graph --abbrev-commit --date=relative --pretty=format:'\''%C(bold)%C(blue)%h%Creset%C(auto)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'''
+alias gll='git log --stat --pretty=format:'\''%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s%+b%n%Creset'\'''
+alias gg=' git log --graph'
 # show branches with unpushed commits
 # https://stackoverflow.com/questions/39220870/in-git-list-names-of-branches-with-unpushed-commits
-alias ggup='git log --branches --not --remotes --no-walk --decorate --oneline'
+alias glup='git log --branches --not --remotes --no-walk --decorate --oneline'
 # show commits in current branch that aren't merged to the default branch
 alias glum='git log "$(gbdefault)" ^HEAD'
-alias gll='git log --graph --pretty=oneline --abbrev-commit'
-# Show commits since last pull
-# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+# show new commits created by the last command, e.g. pull
 alias gnew='git log HEAD@{1}..HEAD@{0}'
 
 # files
