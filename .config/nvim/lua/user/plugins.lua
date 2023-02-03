@@ -78,7 +78,6 @@ return packer.startup(function(use)
   }
   use {
     "sainnhe/gruvbox-material", -- gruvbox colorscheme
-    lock = true,
   }
   use {
     "akinsho/bufferline.nvim", -- good lookin' bufferline
