@@ -31,7 +31,7 @@ M.setup = function()
   local config = {
     virtual_text = {
       source = "if_many",
-      spacing = 10,
+      spacing = 15,
       right_align = true,
     },
     update_in_insert = false,

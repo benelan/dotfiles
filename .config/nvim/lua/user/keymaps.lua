@@ -23,7 +23,7 @@ end
 u.keymap("", "<Space>", "<Nop>")
 vim.g.mapleader = " "
 
-u.keymap("n", "<Backspace>", "<C-u>")
+u.keymap("n", "<Backspace>", "<C-^>")
 
 -- Press jk to escape
 u.keymap("i", "jk", "<ESC>")
