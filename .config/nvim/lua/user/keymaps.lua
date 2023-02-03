@@ -23,7 +23,7 @@ end
 u.keymap("", "<Space>", "<Nop>")
 vim.g.mapleader = " "
 
-u.keymap("n", "<Backspace>", "<C-u>")
+u.keymap("n", "<Backspace>", "<C-^>")
 
 -- Press jk to escape
 u.keymap("i", "jk", "<ESC>")
@@ -72,7 +72,7 @@ u.keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>", "Change to buffer locat
 -- print current buffer
 u.keymap("n", "<leader>dp", "<CMD>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>", "Print buffer location")
 
--- make to current buffer
+-- make to current bufferkey
 u.keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", "Make to buffer location")
 
 -- open file explore and focus current buffer
@@ -232,7 +232,7 @@ u.keymap("n", "<S-h>", "<cmd>bprevious<cr>", "Previous Buffer")
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
 u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close Buffer")
 u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
-u.keymap("n", "<leader>Q", "<CMD>q!<CR>", "Quit")
+u.keymap("n", "<leader>Q", "<CMD>wqa<CR>", "Write Quit All")
 u.keymap("n", "<leader><C-q>", "<CMD>qa!<CR>", "Force Quit All")
 u.keymap("n", "<leader>w", "<CMD>w<CR>", "Write")
 u.keymap("n", "<leader>W", "<CMD>wa<CR>", "Write All")
