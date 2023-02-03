@@ -32,6 +32,7 @@ pathprepend() {
     [ -d "${1}" ] || return
     var="${2:-PATH}"
     value=$(indirect_expand "$var")
+    # shellcheck disable=2140
     export "${var}"="${1}${value:+:${value}}"
     unset var value
 }
@@ -44,6 +45,7 @@ pathappend() {
     [ -d "${1}" ] || return
     var=${2:-PATH}
     value=$(indirect_expand "$var")
+    # shellcheck disable=2140
     export "${var}"="${value:+${value}:}${1}"
     unset var value
 }
@@ -57,7 +59,7 @@ pathappend() {
 [ -d "$HOME/.luarocks/bin" ] && pathappend "$HOME/.luarocks/bin"
 [ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
 
-[ -d "$HOME/$HOME/.dotfiles/vendor/fzf/bin" ] &&
+[ -d "$HOME/.dotfiles/vendor/fzf/bin" ] &&
     pathappend "$HOME/.dotfiles/vendor/fzf/bin"
 
 [ -d "$HOME/.dotfiles/vendor/git-fuzzy/bin" ] &&
