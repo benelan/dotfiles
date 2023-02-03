@@ -24,7 +24,17 @@ if exists('+termguicolors')
 endif
 
 let g:gruvbox_material_background = "medium"
-let g:gruvbox_material_foreground = "material"
+let g:gruvbox_material_foreground = "mix"
 let g:gruvbox_material_ui_contrast = "high"
+let g:gruvbox_material_diagnostic_virtual_text = "colored"
+" let g:gruvbox_material_sign_column_background = "grey"
+" let g:gruvbox_material_enable_bold = 1
 let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_disable_terminal_colors = 1
+let g:gruvbox_material_transparent_background = 1
+let g:gruvbox_material_current_word = "bold"
+let g:gruvbox_material_diagnostic_text_highlight = 1
+let g:gruvbox_material_diagnostic_line_highlight  = 1
+
 colorscheme gruvbox-material
