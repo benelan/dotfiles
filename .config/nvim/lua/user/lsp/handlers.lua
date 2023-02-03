@@ -10,7 +10,7 @@ M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 M.capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
-  lineFoldingOnly = true
+  lineFoldingOnly = true,
 }
 
 M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
@@ -29,19 +29,20 @@ M.setup = function()
   end
 
   local config = {
-    virtual_text = false, -- disable virtual text
-    signs = {
-      active = diagnostic_levels, -- show signs
+    virtual_text = {
+      source = "if_many",
+      spacing = 10,
+      right_align = true,
     },
     update_in_insert = false,
     underline = true,
     severity_sort = true,
     float = {
-      show_header = true,
+      show_header = false,
       focusable = true,
       style = "minimal",
-      border = "rounded",
-      source = "always",
+      border = "solid",
+      source = "if_many",
       header = "",
       prefix = "",
     },
@@ -49,9 +50,9 @@ M.setup = function()
 
   vim.diagnostic.config(config)
 
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "solid" })
 
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "solid" })
 end
 
 -- Skip past hints so I can fix my errors first
