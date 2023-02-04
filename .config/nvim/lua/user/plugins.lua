@@ -54,12 +54,6 @@ return packer.startup(function(use)
   use {
     "nvim-lua/plenary.nvim", -- useful lua functions required by many plugins
   }
-  use {
-    "lewis6991/impatient.nvim", -- improves performance
-    config = function()
-      require "impatient"
-    end, -- load ASAP
-  }
 
   -----------------------------------------------------------------------------
   ----> UI
