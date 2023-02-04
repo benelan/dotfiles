@@ -85,8 +85,6 @@ function s() {
 # open vim help pages from shell prompt
 function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # Filesystem
 #---------------------------------------------------------------------------------
 
@@ -331,6 +329,7 @@ function gcof() {
     [ "$#" -gt 0 ] && shift
     gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
 }
+
 # checkout master, pull, find and checkout branch, merge master/main
 function gcofup() {
     git checkout "$(gbdefault)"
@@ -377,6 +376,18 @@ gbprune() {
             )")" == "-"* ]] && git branch -D "$branch"
         done
 }
+
+# Toggles a label we use in a work repo for running visual snapshots on a PR
+if type -P gh >/dev/null 2>&1; then
+    cc-snapshots() {
+        if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
+            local current_branch
+            current_branch="$(git symbolic-ref --short HEAD)"
+            gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
+            gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
+        fi
+    }
+fi
 
 # Arrays
 #---------------------------------------------------------------------------------
