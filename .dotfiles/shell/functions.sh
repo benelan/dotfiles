@@ -87,6 +87,33 @@ function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+mycolumn() (
+    file="${1:--}"
+    if [ "$file" = - ]; then
+        file="$(mktemp)"
+        cat >"${file}"
+    fi
+    awk '
+  FNR == 1 { if (NR == FNR) next }
+  NR == FNR {
+    for (i = 1; i <= NF; i++) {
+      l = length($i)
+      if (w[i] < l)
+        w[i] = l
+    }
+    next
+  }
+  {
+    for (i = 1; i <= NF; i++)
+      printf "%*s", w[i] + (i > 1 ? 1 : 0), $i
+    print ""
+  }
+  ' "$file" "$file"
+    if [ "$file" = - ]; then
+        rm "$file"
+    fi
+)
+
 # Filesystem
 #---------------------------------------------------------------------------------
 
@@ -331,6 +358,7 @@ function gcof() {
     [ "$#" -gt 0 ] && shift
     gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
 }
+
 # checkout master, pull, find and checkout branch, merge master/main
 function gcofup() {
     git checkout "$(gbdefault)"
@@ -378,6 +406,8 @@ gbprune() {
         done
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Toggles a label we use in a work repo for running visual snapshots on a PR
 if type -P gh >/dev/null 2>&1; then
     cc-snapshots() {
@@ -389,6 +419,20 @@ if type -P gh >/dev/null 2>&1; then
         fi
     }
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# git-extras-big-blobs
+# human readably list the blobs by size, excluding HEAD
+function gxbigblobs() {
+    git rev-list --objects --all |
+        git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
+        sed -n "s/^blob //p" |
+        sort --numeric-sort --key=2 |
+        cut -c 1-12,41- |
+        $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
+        grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")
+}
 
 # Arrays
 #---------------------------------------------------------------------------------
@@ -482,6 +526,24 @@ colors() {
             tput setab "$i"
         )""${Y// /=}""$(tput op)"
     done
+}
+
+color-grid() {
+    awk -v term_cols="${width:-$(tput cols || echo 80)}" -v term_lines="${1:-1}" 'BEGIN{
+      s="/\\";
+      total_cols=term_cols*term_lines;
+      for (colnum = 0; colnum<total_cols; colnum++) {
+          r = 255-(colnum*255/total_cols);
+          g = (colnum*510/total_cols);
+          b = (colnum*255/total_cols);
+          if (g>255) g = 510-g;
+          printf "\033[48;2;%d;%d;%dm", r,g,b;
+          printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+          printf "%s\033[0m", substr(s,colnum%2+1,1);
+          if (colnum%term_cols==term_cols) printf "\n";
+      }
+      printf "\n";
+    }'
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
