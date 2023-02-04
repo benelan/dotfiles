@@ -41,7 +41,7 @@ vim.opt.smartindent = true                      -- make indenting smarter again
 vim.opt.spelloptions:append "camel"             -- when a word is CamelCased, assume "Cased" is a separate word
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
-vim.opt.swapfile = true                         -- creates a swapfile
+vim.opt.swapfile = false                        -- creates a swapfile
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
