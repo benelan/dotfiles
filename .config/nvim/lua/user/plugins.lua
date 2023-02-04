@@ -128,7 +128,7 @@ return packer.startup(function(use)
   use {
     "mbbill/undotree", -- Easily go back in undo history
     config = function()
-      vim.keymap.set("n", "<leader>u", "CMD>UndoToggle<CR>", {
+      vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", {
         silent = true,
         noremap = true,
         desc = "UndoTree",

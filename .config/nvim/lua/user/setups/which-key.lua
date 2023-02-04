@@ -61,28 +61,6 @@ local mappings = {
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
   ["gp"] = { name = "Preview" },
-  b = {
-    name = "Buffers",
-    j = { "<cmd>BufferLinePick<cr>", "Jump" },
-    f = { "<cmd>Telescope buffers<cr>", "Find" },
-    b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
-    n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
-    W = { "<cmd>Bwipeout<cr>", "Wipeout" },
-    P = { "<cmd>BufferLineTogglePin", "Pin" },
-    e = { "<cmd>BufferLinePickClose<cr>", "Pick which buffer to close" },
-    H = { "<cmd>BufferLineCloseLeft<cr>", "Close all to the left" },
-    L = { "<cmd>BufferLineCloseRight<cr>", "Close all to the right" },
-    l = { "<cmd>BufferLineMoveNext<cr>", "Move right" },
-    h = { "<cmd>BufferLineMovePrev<cr>", "Move left" },
-    s = {
-      name = "Sort",
-      d = { "<cmd>BufferLineSortByDirectory<cr>", "Directory" },
-      t = { "<cmd>BufferLineSortByTabs<cr>", "Directory" },
-      r = { "<cmd>BufferLineSortByRelativeDirectory<cr>", "Relative directory" },
-      l = { "<cmd>BufferLineSortByExtension<cr>", "Language" },
-    },
-  },
-
   D = {
     name = "Debug",
     t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
@@ -102,8 +80,10 @@ local mappings = {
   },
 
   d = { name = "Directory" },
-
   s = { name = "Settings" },
+  S = { name = "Session", },
+  t = { name = "Tabs" },
+
 
   f = {
     name = "Find",
@@ -120,9 +100,6 @@ local mappings = {
     k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
     C = { "<cmd>Telescope commands<cr>", "Commands" },
   },
-
-  t = { name = "Tabs" },
-
   g = {
     name = "Git",
     t = { name = "Toggle options" },
