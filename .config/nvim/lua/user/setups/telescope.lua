@@ -9,7 +9,7 @@ local telescope_action_layout = require "telescope.actions.layout"
 telescope.setup {
   defaults = {
     prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
-    selection_caret = "🡲  ", -- ➜  ⮞  ⮩  🡺  🡲
+    selection_caret = "  ", -- ➜  ⮞     🡺  🡲
     multi_icon = "✘  ", -- ✘  ✔
     entry_prefix = "   ",
     layout_strategy = "horizontal",

@@ -45,6 +45,7 @@ local xmappings = {
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
     C = { "<cmd>Telescope git_bcommits<cr>", "Checkout Buffer Commit" },
+    y= { "<cmd>GitBrowse<cr>", "Open In Browser" },
     m = { name = "Mergetool" },
   },
 
