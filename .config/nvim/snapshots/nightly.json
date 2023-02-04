@@ -66,7 +66,7 @@
     "commit": "53f3a8b"
   },
   "mason.nvim": {
-    "commit": "24846a0"
+    "commit": "222bf11"
   },
   "neodev.nvim": {
     "commit": "8fd2103"
@@ -75,7 +75,7 @@
     "commit": "8f5d730"
   },
   "nvim-cmp": {
-    "commit": "e7e2ef7"
+    "commit": "cfafe0a"
   },
   "nvim-dap": {
     "commit": "0e376f0"
