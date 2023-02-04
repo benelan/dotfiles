@@ -44,6 +44,9 @@
   "git-worktree.nvim": {
     "commit": "d7f4e25"
   },
+  "gitlinker.nvim": {
+    "commit": "cc59f73"
+  },
   "gitsigns.nvim": {
     "commit": "0d4fe37"
   },
@@ -72,7 +75,7 @@
     "commit": "53f3a8b"
   },
   "mason.nvim": {
-    "commit": "24846a0"
+    "commit": "222bf11"
   },
   "neodev.nvim": {
     "commit": "8fd2103"
@@ -81,7 +84,7 @@
     "commit": "c3e6781"
   },
   "nvim-cmp": {
-    "commit": "e7e2ef7"
+    "commit": "cfafe0a"
   },
   "nvim-colorizer.lua": {
     "commit": "36c610a"
@@ -120,7 +123,7 @@
     "commit": "a0f8956"
   },
   "nvim-web-devicons": {
-    "commit": "a421d18"
+    "commit": "2b96193"
   },
   "octo.nvim": {
     "commit": "7900dc0"

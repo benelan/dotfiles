@@ -12,7 +12,7 @@ inlay_hints.setup {
     type = { highlight = "Whitespace" },
   },
   eol = {
-    right_align = true,
+    right_align = false,
     parameter = {
       format = function(hints)
         return string.format(" <- (%s)", hints):gsub(":", "")

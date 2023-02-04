@@ -93,6 +93,12 @@ return packer.startup(function(use)
       require "user.setups.lualine"
     end,
   }
+  -- use {
+  --   "kyazdani42/nvim-tree.lua", -- tree-like file explorer
+  --   event = "VimEnter",
+  --   config = function() require "user.setups.nvim-tree" end,
+  --   tag = "nightly"
+  -- }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
@@ -116,6 +122,11 @@ return packer.startup(function(use)
       require("colorizer").setup()
     end,
   }
+  -- use {
+  --   "akinsho/toggleterm.nvim", -- opens an integrated terminal
+  --   event = "BufWinEnter",
+  --   config = function() require "user.setups.toggleterm" end
+  -- }
   use {
     "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
     event = "BufWinEnter",
@@ -156,6 +167,14 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
+  -- use {
+  --   "kevinhwang91/nvim-ufo", -- better code folds
+  --   requires = "kevinhwang91/promise-async",
+  --   event = "BufWinEnter",
+  --   config = function()
+  --     require "user.setups.ufo"
+  --   end,
+  -- }
   use {
     "mbbill/undotree", -- Easily go back in undo history
     config = function()
@@ -367,6 +386,13 @@ return packer.startup(function(use)
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
     config = function()
       require "user.setups.octo"
+    end,
+  }
+  use {
+    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line/selection
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("gitlinker").setup()
     end,
   }
   use {
