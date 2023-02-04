@@ -8,7 +8,10 @@ local telescope_action_layout = require "telescope.actions.layout"
 
 telescope.setup {
   defaults = {
-    color_devicons = false,
+    prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
+    selection_caret = "🡲  ", -- ➜  ⮞  ⮩  🡺  🡲
+    multi_icon = "✘  ", -- ✘  ✔
+    entry_prefix = "   ",
     layout_strategy = "horizontal",
     layout_config = {
       width = 0.9,
