@@ -227,6 +227,8 @@ u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move Tab")
 -- navigate
 u.keymap("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", "Next Buffer")
 u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
+u.keymap("n", "M-n", "<cmd>bnext<cr>", "Next Buffer")
+u.keymap("n", "M-p", "<cmd>bprevious<cr>", "Previous Buffer")
 
 -- close/write
 u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
@@ -298,7 +300,7 @@ u.keymap("n", "<leader>sy", function()
   u.toggle_option "cursorcolumn"
 end, "Toggle cursorcolumn")
 
-u.keymap("n", "<leader><Tab>", function()
+u.keymap("n", "<leader>s<Tab>", function()
   u.toggle_option "autoindent"
 end, "Toggle autoindent")
 
