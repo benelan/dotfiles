@@ -6,7 +6,7 @@ end
 comment.setup {
   pre_hook = function(ctx)
     -- Only calculate commentstring for tsx filetypes
-    if vim.bo.filetype == "typescriptreact" then
+    if vim.bo.filetype == "typescriptreact" or vim.bo.filetype == "javascriptreact" then
       local U = require "Comment.utils"
 
       -- Determine whether to use linewise or blockwise commentstring
@@ -25,17 +25,15 @@ comment.setup {
   end,
 }
 
--- Keymaps
-local opts = { silent = true, noremap = true }
-vim.keymap.set(
-  "n",
-  "<leader>/",
-  "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>",
-  vim.list_extend({ desc = "Toggle comment" }, opts)
-)
-vim.keymap.set(
+local u_status_ok, u = pcall(require, "user.utils")
+if not u_status_ok then
+  return
+end
+
+u.keymap("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", "Toggle comment")
+u.keymap(
   "x",
   "<leader>/",
   '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>',
-  vim.list_extend({ desc = "Toggle comment" }, opts)
+  "Toggle comment"
 )

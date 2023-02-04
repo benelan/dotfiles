@@ -71,7 +71,7 @@ local function lsp_keymaps(client, bufnr)
   local opts = { noremap = true, silent = true }
 
   vim.keymap.set("n", "]d", function()
-    vim.diagnostic.goto_prev {
+    vim.diagnostic.goto_next {
       severity = get_highest_error_severity(),
       wrap = true,
       float = true,
@@ -79,7 +79,7 @@ local function lsp_keymaps(client, bufnr)
   end, vim.list_extend({ desc = "Next diagnostic" }, opts))
 
   vim.keymap.set("n", "[d", function()
-    vim.diagnostic.goto_next {
+    vim.diagnostic.goto_prev {
       severity = get_highest_error_severity(),
       wrap = true,
       float = true,

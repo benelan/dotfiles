@@ -139,141 +139,46 @@ octo.setup {
   },
 }
 
-local opts = { silent = true, noremap = true }
+local u_status_ok, u = pcall(require, "user.utils")
+if not u_status_ok then
+  return
+end
 
 -- Find possible actions
-vim.keymap.set("n", "<leader>oa", "<cmd>Octo actions<CR>", vim.list_extend({ desc = "Actions" }, opts))
+u.keymap("n", "<leader>oa", "<cmd>Octo actions<CR>", "Actions")
 
 -- Find possible actions
-vim.keymap.set("n", "<leader>os", "<cmd>Octo search<CR>", vim.list_extend({ desc = "Search" }, opts))
+u.keymap("n", "<leader>os", "<cmd>Octo search<CR>", "Search")
 
 -- Issues
-vim.keymap.set(
-  "n",
-  "<leader>oil",
-  "<cmd>Octo issue list<CR>",
-  vim.list_extend({
-    desc = "List issues",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>oic",
-  "<cmd>Octo issue create<CR>",
-  vim.list_extend({
-    desc = "Create issue",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>ois",
-  "<cmd>Octo issue search<CR>",
-  vim.list_extend({
-    desc = "Search issues",
-  }, opts)
-)
+u.keymap("n", "<leader>oil", "<cmd>Octo issue list<CR>", "List issues")
+u.keymap("n", "<leader>oic", "<cmd>Octo issue create<CR>", "Create issue")
+u.keymap("n", "<leader>ois", "<cmd>Octo issue search<CR>", "Search issues")
 
 -- Pull requests
-vim.keymap.set(
-  "n",
-  "<leader>opl",
-  "<cmd>Octo pr list<CR>",
-  vim.list_extend({
-    desc = "List pull requests",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>opc",
-  "<cmd>Octo pr create<CR>",
-  vim.list_extend({
-    desc = "Create pull request",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>ops",
-  "<cmd>Octo pr search<CR>",
-  vim.list_extend({
-    desc = "Search pull request",
-  }, opts)
-)
+u.keymap("n", "<leader>opl", "<cmd>Octo pr list<CR>", "List pull requests")
+u.keymap("n", "<leader>opc", "<cmd>Octo pr create<CR>", "Create pull request")
+u.keymap("n", "<leader>ops", "<cmd>Octo pr search<CR>", "Search pull request")
 
 -- Reviews
-vim.keymap.set(
-  "n",
-  "<leader>oprr",
-  "<cmd>Octo review resume<CR>",
-  vim.list_extend({
-    desc = "Resume review",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>oprs",
-  "<cmd>Octo review start<CR>",
-  vim.list_extend({
-    desc = "Start review",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>oprf",
-  "<cmd>Octo review submit<CR>",
-  vim.list_extend({
-    desc = "Finish review",
-  }, opts)
-)
+u.keymap("n", "<leader>oprr", "<cmd>Octo review resume<CR>", "Resume review")
+u.keymap("n", "<leader>oprs", "<cmd>Octo review start<CR>", "Start review")
+u.keymap("n", "<leader>oprf", "<cmd>Octo review submit<CR>", "Finish review")
 
 -- My stuff
-vim.keymap.set(
-  "n",
-  "<leader>omia",
-  "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
-  vim.list_extend({ desc = "List my assigned issues" }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>omic",
-  "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
-  vim.list_extend({ desc = "List my created issues" }, opts)
-)
-
-vim.keymap.set(
+u.keymap("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>", "List my assigned issues")
+u.keymap("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>", "List my created issues")
+u.keymap("n", "<leader>omr", "<cmd>Octo repo list<CR>", "List my repos")
+u.keymap("n", "<leader>omg", "<cmd>Octo gist list<CR>", "List my gists")
+u.keymap(
   "n",
   "<leader>ompc",
   "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
-  vim.list_extend({ desc = "List my created pull requests" }, opts)
+  "List my created pull requests"
 )
-
-vim.keymap.set(
+u.keymap(
   "n",
   "<leader>ompa",
   "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
-  vim.list_extend({ desc = "List my assigned pull requests" }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>omr",
-  "<cmd>Octo repo list<CR>",
-  vim.list_extend({
-    desc = "List my repos",
-  }, opts)
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>omg",
-  "<cmd>Octo gist list<CR>",
-  vim.list_extend({
-    desc = "List my gists",
-  }, opts)
+  "List my assigned pull requests"
 )
