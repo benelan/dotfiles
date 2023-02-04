@@ -50,9 +50,6 @@
   "gruvbox-material": {
     "commit": "13b7eb4"
   },
-  "impatient.nvim": {
-    "commit": "c90e273"
-  },
   "indent-blankline.nvim": {
     "commit": "8299fe7"
   },
@@ -66,7 +63,7 @@
     "commit": "53f3a8b"
   },
   "mason.nvim": {
-    "commit": "222bf11"
+    "commit": "9ec92c1"
   },
   "neodev.nvim": {
     "commit": "8fd2103"
@@ -96,7 +93,7 @@
     "commit": "a06dea1"
   },
   "nvim-treesitter": {
-    "commit": "588cdb6c"
+    "commit": "bd7b4b6e"
   },
   "nvim-treesitter-textobjects": {
     "commit": "249d90a"
