@@ -11,6 +11,7 @@ if has('syntax') && !exists('syntax_on')
     syntax enable
 endif
 
+set omnifunc=syntaxcomplete#Complete
 set number wrap linebreak formatoptions+=l1 cpoptions+=J
 set mouse+=a mousehide clipboard^=unnamed,unnamedplus
 set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
