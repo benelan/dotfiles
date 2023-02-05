@@ -225,8 +225,8 @@ u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move Tab")
 -------------------------------------------------------------------------------
 
 -- navigate
-u.keymap("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", "Next Buffer")
-u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
+u.keymap("n", "<S-l>", "<cmd>bnext<cr>", "Next Buffer")
+u.keymap("n", "<S-h>", "<cmd>bprevious<cr>", "Previous Buffer")
 u.keymap("n", "M-n", "<cmd>bnext<cr>", "Next Buffer")
 u.keymap("n", "M-p", "<cmd>bprevious<cr>", "Previous Buffer")
 
