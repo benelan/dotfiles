@@ -273,15 +273,18 @@ greset() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # git clone worktree
-# clones a bare repo for use with git-worktree
+# Clones a bare repo for use with git-worktree and creates an
+# initial worktree called asdf that tracks the default branch.
 # https://git-scm.com/docs/git-worktree
-gclwt() {
+gclw() {
     dir="${2:-"$(basename "$1" .git)"}"
     mkdir "$dir"
     cd "$dir" || return
     git clone --bare "$1" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
+    git worktree add asdf "$(gbdefault)"
+    cd asdf || return
     unset dir
 }
 

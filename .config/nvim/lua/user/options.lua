@@ -1,6 +1,6 @@
 vim.opt.autoread = true                         -- automatically read file after outside changes
 vim.opt.breakindentopt = "shift:2"              -- shift two characters left when breakindent-ing
-vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
+vim.opt.clipboard = "unnamed,unnamedplus"       -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
 vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
@@ -29,7 +29,7 @@ vim.opt.relativenumber = true                   -- show +/- offset number from t
 vim.opt.ruler = false                           -- hide the line and column number of the cursor position
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
-vim.opt.shortmess:append "c"                    -- hide all completion messages ("match 1 of 2", "Pattern not found")
+vim.opt.shortmess:append "Iac"                  -- changes what types of messages are shown
 vim.opt.showbreak = "…  "                       -- character disabled before wrapped lines
 vim.opt.showcmd = false                         -- I already know what I'm typing
 vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
@@ -43,7 +43,7 @@ vim.opt.splitbelow = true                       -- force all horizontal splits t
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
 vim.opt.swapfile = false                        -- creates a swapfile
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
-vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
+vim.opt.timeoutlen = 300                        -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
 vim.opt.undolevels =10000                       -- How man undos to store
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
@@ -52,7 +52,7 @@ vim.opt.wrap = true                             -- display lines as one long lin
 if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
-vim.opt.sessionoptions = "blank,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.sessionoptions:remove "buffers,folds"
 -- add some common code directories to path
 vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
 -- use the patience diff algorithm
