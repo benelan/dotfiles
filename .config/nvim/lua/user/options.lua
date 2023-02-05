@@ -5,6 +5,7 @@ vim.opt.cmdheight = 1                           -- more space in the neovim comm
 vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
 vim.opt.cursorline = true                       -- highlight the current line
+vim.opt.emoji = false                           -- fixes rendering issues
 vim.opt.expandtab = true                        -- convert tabs to spaces
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
 vim.opt.foldcolumn = "0"                        -- how many fold columns to display
@@ -18,19 +19,21 @@ vim.opt.formatoptions:remove "t,a,r,o"          -- :help formatoptions
 vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true                       -- ignore case in search patterns
 vim.opt.iskeyword:append "-"                    -- treats words with `-` as single words
+vim.opt.jumpoptions = "stack"                   -- behave like web browser history
 vim.opt.laststatus = 3                          -- Only show one status line
 vim.opt.linebreak = true                        -- don't wrap in the middle of words
 vim.opt.mousehide = true                        -- hide the mouse while typing
 vim.opt.number = true                           -- show the current line number instead of 0
 vim.opt.numberwidth = 2                         -- number of columns to use for the line number
 vim.opt.pastetoggle = "<Leader><C-v>"           -- toggle automatically indenting pastes
+vim.opt.pumblend = 3                            -- completion popup blending
 vim.opt.pumheight = 10                          -- pop up menu height
 vim.opt.relativenumber = true                   -- show +/- offset number from the current line
 vim.opt.ruler = false                           -- hide the line and column number of the cursor position
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
 vim.opt.shortmess:append "Iac"                  -- changes what types of messages are shown
-vim.opt.showbreak = "…  "                       -- character disabled before wrapped lines
+vim.opt.showbreak = "↪  "                       -- character disabled before wrapped lines ↪  …
 vim.opt.showcmd = false                         -- I already know what I'm typing
 vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
 vim.opt.showtabline = 2                         -- always show tabs
@@ -42,17 +45,20 @@ vim.opt.spelloptions:append "camel"             -- when a word is CamelCased, as
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
 vim.opt.swapfile = false                        -- creates a swapfile
+vim.opt.switchbuf = "useopen,uselast"          -- determines where to go when switching buffers
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.timeoutlen = 300                        -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
-vim.opt.undolevels =10000                       -- How man undos to store
+vim.opt.undolevels = 10000                      -- How man undos to store
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
 vim.opt.whichwrap:append "<,>,[,]"              -- keys to move to the previous/next line when at the start/end of line
+vim.opt.wildignorecase = true                   -- ignore filename/directory case for completion
+vim.opt.wildoptions:append "fuzzy"              -- fuzzy completion
 vim.opt.wrap = true                             -- display lines as one long line
 if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
 end
-vim.opt.sessionoptions:remove "buffers,folds"
+vim.opt.sessionoptions:remove "help,folds"
 -- add some common code directories to path
 vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
 -- use the patience diff algorithm
