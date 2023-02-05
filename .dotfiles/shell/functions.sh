@@ -364,23 +364,23 @@ function gcoup() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # git-branch-prune
-# removes all local branches which have been
-# (squash) merged into the default branch
+# locally removes branches already [squash) merged into the default branch
 gbprune() {
-    TARGET_BRANCH="$(gbdefault)"
-    git fetch --prune --all
-    git checkout -q "$TARGET_BRANCH"
-    git for-each-ref refs/heads/ "--format=%(refname:short)" |
-        grep -v -e main -e master -e develop -e dev | # don't remove these branches
-        while read -r branch; do
-            mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch")
-            [[ "$(git cherry "$TARGET_BRANCH" "$(
-                git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$mergeBase" -m _
-            )")" == "-"* ]] && git branch -D "$branch"
-        done
+    # shellcheck disable=1001,1083
+    TARGET_BRANCH="$(gbdefault)" &&
+        git fetch --prune --all &&
+        git checkout -q "$TARGET_BRANCH" &&
+        git for-each-ref refs/heads/ "--format=%(refname:short)" |
+        grep -v -e main -e master -e develop -e dev |
+            while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
+                [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] &&
+                git branch -D "$branch"; done
+    unset TARGET_BRANCH mergeBase branch
 }
 
-# Toggles a label we use in a work repo for running visual snapshots on a PR
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Toggles a label we use for running visual snapshots on a pull request
 if type -P gh >/dev/null 2>&1; then
     cc-snapshots() {
         if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
