@@ -1,0 +1,17 @@
+#!/bin/bash
+# shellcheck disable=2016
+
+capture-all-panes() {
+    for pane in $(tmux list-pane -a -F "#S:#I"); do
+        tmux capture-pane -t "$pane" -p
+        echo '========================================'
+    done
+}
+
+capture-all-panes |
+    grep -P -o '((?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+)|(\b[0-9a-f]{5,40}\b)' |
+    sort -u |
+    fzf-tmux --cycle --no-multi --header='(copy:ctrl-y) (open:ctrl-o)' \
+        --bind "ctrl-o:execute(o {})+accept" \
+        --bind "ctrl-y:execute(echo {} | cb)+accept" |
+    cb
