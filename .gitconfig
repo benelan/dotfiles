@@ -12,7 +12,7 @@
 [user]
     name = Ben Elan
     ; email = $(gpg -K | awk '/<.*@.*>/ {gsub("<|>",""); print $7}')
-    ; signingKey = $(gpg -K --keyid-format SHORT | awk 'FNR == 3 {gsub("*\/", ""); print $2}')
+    ; signingKey = $(gpg -K --keyid-format SHORT | awk 'FNR == 3 {gsub("/*\//", ""); print $2}')
 
 ; [commit]
 ;   gpgSign = true
