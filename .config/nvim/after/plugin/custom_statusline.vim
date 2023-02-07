@@ -1,3 +1,4 @@
+let g:git_branch = ""
 augroup get_git_info
     autocmd!
     autocmd BufWinEnter,FocusGained,BufWritePost *
