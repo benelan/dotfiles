@@ -260,45 +260,47 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
-    event = "BufWinEnter",
+    run = ":TSUpdate",
+    module_pattern = "treesitter.*",
     config = function()
       require "user.setups.treesitter"
     end,
-    requires = {
-      {
-        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "nvim-treesitter/playground", -- for creating syntax queries
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
-        event = "InsertEnter",
-        after = "nvim-treesitter",
-      },
-      -- {
-      --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-      --   event = "InsertEnter",
-      --   after = "nvim-treesitter",
-      --   config = function()
-      --     require "user.setups.autopairs"
-      --   end,
-      -- },
-      -- { -- trying out nvim-navic instead
-      --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-      --   event = "BufWinEnter",
-      --   after = "nvim-treesitter",
-      -- },
+  }
+
+  use {
+    {
+      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
     },
+    {
+      "nvim-treesitter/playground", -- for creating syntax queries
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    {
+      "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    {
+      "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+      event = "InsertEnter",
+      after = "nvim-treesitter",
+    },
+    -- {
+    --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+    --   event = "InsertEnter",
+    --   after = "nvim-treesitter",
+    --   config = function()
+    --     require "user.setups.autopairs"
+    --   end,
+    -- },
+    -- { -- trying out nvim-navic instead
+    --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+    --   event = "BufWinEnter",
+    --   after = "nvim-treesitter",
+    -- },
   }
 
   -----------------------------------------------------------------------------

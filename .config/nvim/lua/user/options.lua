@@ -53,7 +53,6 @@ vim.opt.undolevels = 10000                      -- How man undos to store
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
 vim.opt.whichwrap:append "<,>,[,]"              -- keys to move to the previous/next line when at the start/end of line
 vim.opt.wildignorecase = true                   -- ignore filename/directory case for completion
-vim.opt.wildoptions:append "fuzzy"              -- fuzzy completion
 vim.opt.wrap = true                             -- display lines as one long line
 if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
   vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
