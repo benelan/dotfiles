@@ -42,7 +42,7 @@ alias gbc="git for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y 
 #########
 alias gc='git commit --verbose'
 alias gca='git commit --verbose --all'
-alias gcm='git commit --verbose -m'
+alias gcm='git commit --verbose -Sm'
 # Add uncommitted and unstaged changes to the last commit
 alias gcam='git commit --verbose -am'
 alias gcaamd='git commit --all --amend -C HEAD'
@@ -270,7 +270,7 @@ alias dbD='dot branch --delete --force'
 # commit
 #########
 alias dc='dot commit --verbose'
-alias dcm='dot commit --verbose -m'
+alias dcm='dot commit --verbose -Sm'
 alias dcamd='dot commit --amend'
 alias dcamdne='dot commit --amend --no-edit'
 
