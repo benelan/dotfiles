@@ -205,6 +205,7 @@ return packer.startup(function(use)
   }
   use {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+    after = "nvim-lspconfig",
   }
   use {
     "simrat39/inlay-hints.nvim", -- inlay hints
