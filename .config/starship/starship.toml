@@ -91,9 +91,9 @@ disabled = true
 
 [git_status]
 style = "bold blue"
-ahead = "[>$count](aqua-light)"
-diverged = "[>$ahead_count](aqua-light)[<$behind_count](yellow-light)"
-behind = "[<$count](yellow-light)"
+ahead = "[🠕$count](aqua-light)"
+diverged = "[🠕$ahead_count](aqua-light)[🠗$behind_count](yellow-light)"
+behind = "[🠗$count](yellow-light)"
 staged = "[+$count](green)"
 deleted = "[-$count](red)"
 untracked = "[?$count](yellow)"
