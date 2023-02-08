@@ -86,12 +86,6 @@ return packer.startup(function(use)
       require "user.setups.indentline"
     end,
   }
-  use {
-    "folke/which-key.nvim", -- keymap helper for the memory deficient
-    config = function()
-      require "user.setups.which-key"
-    end,
-  }
 
   -----------------------------------------------------------------------------
   ----> Utils
@@ -177,8 +171,12 @@ return packer.startup(function(use)
       {
         "hrsh7th/cmp-cmdline", -- commandline completion
       },
+      {
+        "folke/neodev.nvim", -- NeoVim Lua API info
+      },
     },
   }
+
   -----------------------------------------------------------------------------
   ----> Snippets
   -----------------------------------------------------------------------------
@@ -230,7 +228,6 @@ return packer.startup(function(use)
       require "user.lsp.navic"
     end,
   }
-  use "folke/neodev.nvim" -- NeoVIm Lua API info
 
   -----------------------------------------------------------------------------
   ----> Telescope
@@ -241,6 +238,7 @@ return packer.startup(function(use)
       require "user.setups.telescope"
     end,
     requires = {
+      "nvim-lua/plenary.nvim",
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
         run = "make",
@@ -251,7 +249,7 @@ return packer.startup(function(use)
       {
         "nvim-telescope/telescope-file-browser.nvim", -- file browser
       },
-      use {
+      {
         "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
         -- config = function() require("git-worktree").setup() end,
       },
@@ -268,16 +266,9 @@ return packer.startup(function(use)
     config = function()
       require "user.setups.treesitter"
     end,
-  }
-
-  use {
+    requires = {
     {
       "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-      event = "BufWinEnter",
-      after = "nvim-treesitter",
-    },
-    {
-      "nvim-treesitter/playground", -- for creating syntax queries
       event = "BufWinEnter",
       after = "nvim-treesitter",
     },
@@ -304,7 +295,16 @@ return packer.startup(function(use)
     --   event = "BufWinEnter",
     --   after = "nvim-treesitter",
     -- },
+    -- {
+    --   "nvim-treesitter/playground", -- for creating syntax queries
+    --   event = "BufWinEnter",
+    --   after = "nvim-treesitter",
+    -- },
+    }
   }
+
+  -- use {
+  -- }
 
   -----------------------------------------------------------------------------
   ----> Git
@@ -361,6 +361,15 @@ return packer.startup(function(use)
   if fn.isdirectory "~/.dotfiles/vendor/fzf" then
     use "~/.dotfiles/vendor/fzf" -- use the local fzf plugin if it's installed
   end
+
+  -----------------------------------------------------------------------------
+
+  use {
+    "folke/which-key.nvim", -- keymap helper for the memory deficient
+    config = function()
+      require "user.setups.which-key"
+    end,
+  }
 
   -----------------------------------------------------------------------------
 

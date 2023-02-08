@@ -80,9 +80,10 @@ local mappings = {
     U = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
   },
 
+  b = { name = "Buffers" },
   d = { name = "Directory" },
   s = { name = "Settings" },
-  S = { name = "Session", },
+  S = { name = "Sessions", },
   t = { name = "Tabs" },
 
 
