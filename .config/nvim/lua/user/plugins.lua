@@ -80,7 +80,7 @@ return packer.startup(function(use)
     ft = { "markdown" },
   }
   use {
-    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    "lukas-reineke/indent-blankline.nvim", -- visualize indents
     event = "BufWinEnter",
     config = function()
       require "user.setups.indentline"
@@ -88,7 +88,6 @@ return packer.startup(function(use)
   }
   use {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
-    event = "BufWinEnter",
     config = function()
       require "user.setups.which-key"
     end,
@@ -106,7 +105,7 @@ return packer.startup(function(use)
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
-    event = "InsertEnter",
+    event = "BufWinEnter",
     tag = "*",
     config = function()
       require("nvim-surround").setup {
@@ -121,6 +120,7 @@ return packer.startup(function(use)
   }
   use {
     "mbbill/undotree", -- Easily go back in undo history
+    event = "BufWinEnter",
     config = function()
       vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", {
         silent = true,
@@ -196,27 +196,29 @@ return packer.startup(function(use)
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     tag = "*",
-  }
-  use {
-    "williamboman/mason.nvim", -- language server installer/manager
-  }
-  use {
-    "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
-  }
-  use {
-    "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
-    after = "nvim-lspconfig",
+    config = function()
+      require "user.lsp"
+    end,
+    requires = {
+      {
+        "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+      },
+      {
+        "williamboman/mason.nvim", -- language server installer/manager
+      },
+      {
+        "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
+      },
+    },
   }
   use {
     "simrat39/inlay-hints.nvim", -- inlay hints
-    event = "BufWinEnter",
     config = function()
       require "user.lsp.inlays"
     end,
   }
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
-    event = "BufWinEnter",
     config = function()
       require "user.lsp.goto-preview"
     end,
@@ -310,8 +312,6 @@ return packer.startup(function(use)
 
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
-    module = "gitsigns",
-    event = "BufWinEnter",
     config = function()
       require "user.setups.gitsigns"
     end,
