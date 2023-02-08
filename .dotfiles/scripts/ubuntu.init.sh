@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Install scripts specific to Ubuntu/Debian operating systems
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # This script installs the tools I use.
 # Comment out functions at the bottom to skip sections.
