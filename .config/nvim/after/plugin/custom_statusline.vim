@@ -21,9 +21,9 @@ endfunction
 
 
 " Statusline colors
-hi User1 guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
-hi User2 guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240
-hi User3 guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
+highlight! link User1 TabLineSel  " guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
+highlight! link User2 TabLine     " guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240 ctermfg=230
+highlight! link User3 TabLineFill " guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
 
 " Highlight current line number differently
 highlight! link CursorLineNr Purple
