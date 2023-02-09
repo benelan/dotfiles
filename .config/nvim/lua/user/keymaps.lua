@@ -34,8 +34,6 @@ u.keymap("v", ">", ">gv")
 
 -- paste/delete/change w/o modifying default register
 u.keymap("v", "p", '"_dP')
-u.keymap({ "v", "n" }, "<C-D>", '"_d')
-u.keymap({ "v", "n" }, "<C-C>", '"_c')
 
 -- open uri/path under the cursor or line
 u.keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
