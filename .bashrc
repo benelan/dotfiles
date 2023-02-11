@@ -52,3 +52,9 @@ for completions in ~/.dotfiles/shell/completions/[!_]*; do
   [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
 unset completions
+
+#---------------------------------------------------------------------------
+# TMUX - ATTACH
+#---------------------------------------------------------------------------
+# ensure tmux is running, `tat` is in .dotfiles/bin
+[ -z "$TMUX" ] && tat
