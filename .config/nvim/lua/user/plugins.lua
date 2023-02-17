@@ -180,9 +180,14 @@ return packer.startup(function(use)
   use {
     "Exafunction/codeium.vim",
     config = function()
+      vim.g.codeium_disable_bindings = 1
+
       vim.keymap.set("i", "<M-y>", function()
         return vim.fn["codeium#Accept"]()
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
+      vim.keymap.set("i", "<M-c>", function()
+        return vim.fn["codeium#Complete"]()
+      end, { expr = true, noremap = true, silent = true, desc = "Codeium Complete" })
       vim.keymap.set("i", "<M-n>", function()
         return vim.fn["codeium#CycleCompletions"](1)
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
