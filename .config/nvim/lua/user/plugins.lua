@@ -177,6 +177,24 @@ return packer.startup(function(use)
     },
   }
 
+  use {
+    "Exafunction/codeium.vim",
+    config = function()
+      vim.keymap.set("i", "<M-y>", function()
+        return vim.fn["codeium#Accept"]()
+      end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
+      vim.keymap.set("i", "<M-n>", function()
+        return vim.fn["codeium#CycleCompletions"](1)
+      end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
+      vim.keymap.set("i", "<M-p>", function()
+        return vim.fn["codeium#CycleCompletions"](-1)
+      end, { expr = true, noremap = true, silent = true, desc = "Codeium Previous" })
+      vim.keymap.set("i", "<M-e>", function()
+        return vim.fn["codeium#Clear"]()
+      end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
+    end,
+  }
+
   -----------------------------------------------------------------------------
   ----> Snippets
   -----------------------------------------------------------------------------
@@ -267,40 +285,40 @@ return packer.startup(function(use)
       require "user.setups.treesitter"
     end,
     requires = {
-    {
-      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-      event = "BufWinEnter",
-      after = "nvim-treesitter",
+      {
+        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+        event = "BufWinEnter",
+        after = "nvim-treesitter",
+      },
+      {
+        "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+        event = "BufWinEnter",
+        after = "nvim-treesitter",
+      },
+      {
+        "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+        event = "InsertEnter",
+        after = "nvim-treesitter",
+      },
+      -- {
+      --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
+      --   event = "InsertEnter",
+      --   after = "nvim-treesitter",
+      --   config = function()
+      --     require "user.setups.autopairs"
+      --   end,
+      -- },
+      -- { -- trying out nvim-navic instead
+      --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      --   event = "BufWinEnter",
+      --   after = "nvim-treesitter",
+      -- },
+      -- {
+      --   "nvim-treesitter/playground", -- for creating syntax queries
+      --   event = "BufWinEnter",
+      --   after = "nvim-treesitter",
+      -- },
     },
-    {
-      "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-      event = "BufWinEnter",
-      after = "nvim-treesitter",
-    },
-    {
-      "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
-      event = "InsertEnter",
-      after = "nvim-treesitter",
-    },
-    -- {
-    --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-    --   event = "InsertEnter",
-    --   after = "nvim-treesitter",
-    --   config = function()
-    --     require "user.setups.autopairs"
-    --   end,
-    -- },
-    -- { -- trying out nvim-navic instead
-    --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-    --   event = "BufWinEnter",
-    --   after = "nvim-treesitter",
-    -- },
-    -- {
-    --   "nvim-treesitter/playground", -- for creating syntax queries
-    --   event = "BufWinEnter",
-    --   after = "nvim-treesitter",
-    -- },
-    }
   }
 
   -- use {
