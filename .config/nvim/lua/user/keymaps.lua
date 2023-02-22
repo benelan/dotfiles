@@ -421,4 +421,3 @@ vim.cmd [[
   endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
-

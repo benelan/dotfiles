@@ -45,7 +45,7 @@ local xmappings = {
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     c = { "<cmd>Telescope git_commits<cr>", "Checkout Commit" },
     C = { "<cmd>Telescope git_bcommits<cr>", "Checkout Buffer Commit" },
-    y= { "<cmd>GitBrowse<cr>", "Open In Browser" },
+    y = { "<cmd>GitBrowse<cr>", "Open In Browser" },
     m = { name = "Mergetool" },
   },
 
@@ -83,9 +83,8 @@ local mappings = {
   b = { name = "Buffers" },
   d = { name = "Directory" },
   s = { name = "Settings" },
-  S = { name = "Sessions", },
+  S = { name = "Sessions" },
   t = { name = "Tabs" },
-
 
   f = {
     name = "Find",

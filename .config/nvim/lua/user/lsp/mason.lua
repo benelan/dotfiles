@@ -13,7 +13,7 @@ local servers = {
   "gopls",
   "html",
   "jsonls",
-  -- "lua_ls",
+  "lua_ls",
   "marksman",
   "svelte",
   "tailwindcss",

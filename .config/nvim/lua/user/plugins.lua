@@ -180,8 +180,6 @@ return packer.startup(function(use)
   use {
     "Exafunction/codeium.vim",
     config = function()
-      vim.g.codeium_disable_bindings = 1
-
       vim.keymap.set("i", "<M-y>", function()
         return vim.fn["codeium#Accept"]()
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
@@ -216,7 +214,6 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    tag = "*",
     config = function()
       require "user.lsp"
     end,

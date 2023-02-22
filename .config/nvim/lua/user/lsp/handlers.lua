@@ -38,7 +38,7 @@ local diagnostic_levels = {
   },
 }
 
-local augroup_codelens = vim.api.nvim_create_augroup("my-lsp-codelens", { clear = true })
+-- local augroup_codelens = vim.api.nvim_create_augroup("my-lsp-codelens", { clear = true })
 M.setup = function()
   for _, sign in ipairs(diagnostic_levels) do
     vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
@@ -58,7 +58,7 @@ M.setup = function()
       focusable = true,
       style = "minimal",
       border = "solid",
-      source = "if_many",
+      source = true,
       header = "",
       prefix = "",
     },
@@ -112,17 +112,6 @@ local function lsp_keymaps(client, bufnr)
     }, opts)
   )
 
-  if client.server_capabilities.codeLensProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gL", -- "<cmd>lua vim.lsp.buf.codelens.run()<CR>",
-      "<cmd>lua require('user.lsp.codelens').run()<CR>",
-      vim.list_extend({
-        desc = "LSP codelens",
-      }, opts)
-    )
-  end
   if client.server_capabilities.renameProvider then
     buf_keymap(
       bufnr,
@@ -216,6 +205,18 @@ local function lsp_keymaps(client, bufnr)
       }, opts)
     )
   end
+
+  -- if client.server_capabilities.codeLensProvider then
+  --   buf_keymap(
+  --     bufnr,
+  --     "n",
+  --     "gL", -- "<cmd>lua vim.lsp.buf.codelens.run()<CR>",
+  --     "<cmd>lua require('user.lsp.codelens').run()<CR>",
+  --     vim.list_extend({
+  --       desc = "LSP codelens",
+  --     }, opts)
+  --   )
+  -- end
 end
 
 M.on_attach = function(client, bufnr)
@@ -228,24 +229,24 @@ M.on_attach = function(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then
     navic.attach(client, bufnr)
   end
-  if client.server_capabilities.codeLensProvider then
-    vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = augroup_codelens,
-      callback = function()
-        vim.lsp.codelens.refresh()
-      end,
-      buffer = bufnr,
-      once = true,
-    })
-    vim.api.nvim_create_autocmd({ "BufWritePost", "CursorHold" }, {
-      group = augroup_codelens,
-      callback = function()
-        vim.lsp.codelens.refresh()
-      end,
-      buffer = bufnr,
-    })
-  end
+  -- if client.server_capabilities.codeLensProvider then
+  --   vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
+  --   vim.api.nvim_create_autocmd("BufEnter", {
+  --     group = augroup_codelens,
+  --     callback = function()
+  --       vim.lsp.codelens.refresh()
+  --     end,
+  --     buffer = bufnr,
+  --     once = true,
+  --   })
+  --   vim.api.nvim_create_autocmd({ "BufWritePost", "CursorHold" }, {
+  --     group = augroup_codelens,
+  --     callback = function()
+  --       vim.lsp.codelens.refresh()
+  --     end,
+  --     buffer = bufnr,
+  --   })
+  -- end
   lsp_keymaps(client, bufnr)
 end
 
