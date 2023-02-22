@@ -41,6 +41,8 @@ vim.opt.sidescrolloff = 8                       -- left/right column padding, on
 vim.opt.signcolumn = "yes"                      -- always show the sign column to prevent text shifting
 vim.opt.smartcase = true                        -- smart case
 vim.opt.smartindent = true                      -- make indenting smarter again
+vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
+vim.opt.spelllang = "en"
 vim.opt.spelloptions:append "camel"             -- when a word is CamelCased, assume "Cased" is a separate word
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
@@ -49,7 +51,7 @@ vim.opt.switchbuf = "useopen,uselast"          -- determines where to go when sw
 vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
 vim.opt.timeoutlen = 300                        -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true                         -- enable persistent undo
-vim.opt.undolevels = 10000                      -- How man undos to store
+vim.opt.undolevels = 10000                      -- How man undoes to store
 vim.opt.updatetime = 300                        -- faster completion (4000ms default)
 vim.opt.whichwrap:append "<,>,[,]"              -- keys to move to the previous/next line when at the start/end of line
 vim.opt.wildignorecase = true                   -- ignore filename/directory case for completion

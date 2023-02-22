@@ -45,7 +45,7 @@ vim.g.netrw_altv = true
 vim.g.netrw_banner = false
 -- vim.g.netrw_keepdir = false
 -- vim.g.netrw_liststyle = 3
-vim.g.netrw_localmkdiropt	= " -p"
+vim.g.netrw_localmkdiropt = " -p"
 vim.g.netrw_preview = true
 vim.g.netrw_sort_by = "extent"
 vim.g.netrw_usetab = true
@@ -63,7 +63,7 @@ if vim.fn.exists "g:neovide" == 1 then
 end
 
 vim.g.markdown_recommended_style = 0
--- Helps with syntax highlighting by specififying filetypes
+-- Helps with syntax highlighting by specifying filetypes
 -- for common abbreviations used in markdown fenced code blocks
 vim.g.markdown_fenced_languages = {
   "awk",

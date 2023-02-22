@@ -13,7 +13,7 @@ end
 -- Debug Adapter protocol:
 --   https://microsoft.github.io/debug-adapter-protocol/
 
--- Adapers
+-- Adapters
 ----------
 -- Node
 dap.adapters.node2 = {

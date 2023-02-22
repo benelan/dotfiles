@@ -1,4 +1,5 @@
 build-sizes
+cspell
 eslint
 markdownlint
 markdownlint-cli

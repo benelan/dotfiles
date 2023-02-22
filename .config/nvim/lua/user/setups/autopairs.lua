@@ -1,3 +1,4 @@
+-- spell-checker:ignore npairs autopairs punct asdfghjklqwrtyuiopzxcvbnm
 -- Setup nvim-cmp.
 local status_ok, npairs = pcall(require, "nvim-autopairs")
 local res_status_ok, res = pcall(require, "user.resources")
