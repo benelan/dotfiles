@@ -35,9 +35,7 @@ packer.init {
   snapshot_path = table.concat({ vim.fn.stdpath "config", "snapshots" }, "/"),
   display = {
     open_fn = function()
-      return require("packer.util").float {
-        border = "solid",
-      }
+      return require("packer.util").float { border = "solid" }
     end,
   },
   git = {
@@ -185,13 +183,23 @@ return packer.startup(function(use)
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
       vim.keymap.set("i", "<M-c>", function()
         return vim.fn["codeium#Complete"]()
-      end, { expr = true, noremap = true, silent = true, desc = "Codeium Complete" })
+      end, {
+        expr = true,
+        noremap = true,
+        silent = true,
+        desc = "Codeium Complete",
+      })
       vim.keymap.set("i", "<M-n>", function()
         return vim.fn["codeium#CycleCompletions"](1)
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
       vim.keymap.set("i", "<M-p>", function()
         return vim.fn["codeium#CycleCompletions"](-1)
-      end, { expr = true, noremap = true, silent = true, desc = "Codeium Previous" })
+      end, {
+        expr = true,
+        noremap = true,
+        silent = true,
+        desc = "Codeium Previous",
+      })
       vim.keymap.set("i", "<M-e>", function()
         return vim.fn["codeium#Clear"]()
       end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
@@ -375,21 +383,52 @@ return packer.startup(function(use)
   }
 
   -----------------------------------------------------------------------------
-  ----> Local
+  ----> Note Taking
   -----------------------------------------------------------------------------
 
-  if fn.isdirectory "~/.dotfiles/vendor/fzf" then
-    use "~/.dotfiles/vendor/fzf" -- use the local fzf plugin if it's installed
-  end
+  use {
+    "renerocksai/telekasten.nvim",
+    requires = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
+    config = function()
+      require("telekasten").setup {
+        home = os.getenv "NOTES" or os.getenv "HOME" .. "/personal/notes",
+      }
+    end,
+  }
+
+  -- Alternative Zettelkasten plugin/tooling:
+  use {
+    "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
+    config = function() --
+      require("zk").setup()
+    end,
+  }
+
+  -- NOTE-able mentions for other methods I explored before landing on Zettelkasten
+  ---- VimWiki and its Taskwarrior integration
+  ------ https://github.com/vimwiki/vimwiki
+  ------ https://github.com/tools-life/taskwiki
+  ---- Emac's Org Mode clones/iterations for NeoVim
+  ------ https://github.com/nvim-neorg/neorg
+  ------ https://github.com/nvim-orgmode/orgmode
 
   -----------------------------------------------------------------------------
-
+  ----> Keymaps
+  -----------------------------------------------------------------------------
   use {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
     config = function()
       require "user.setups.which-key"
     end,
   }
+
+  -----------------------------------------------------------------------------
+  ----> Local
+  -----------------------------------------------------------------------------
+
+  if fn.isdirectory "~/.dotfiles/vendor/fzf" then
+    use "~/.dotfiles/vendor/fzf" -- use the local fzf plugin if it's installed
+  end
 
   -----------------------------------------------------------------------------
 
