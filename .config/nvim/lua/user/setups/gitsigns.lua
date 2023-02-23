@@ -29,3 +29,7 @@ u.keymap("n", "<leader>gtw", "<cmd>Gitsigns toggle_word_diff<CR>", "Toggle word 
 u.keymap("n", "<leader>gtl", "<cmd>Gitsigns toggle_linehl<CR>", "Toggle line highlight")
 
 u.keymap("n", "<leader>gtn", "<cmd>Gitsigns toggle_numhl<CR>", "Toggle number highlight")
+
+
+u.keymap("n", "]h", "<cmd>Gitsigns next_hunk<CR>", "Next hunk")
+u.keymap("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", "Previous hunk")
