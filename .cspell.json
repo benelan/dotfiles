@@ -16,7 +16,7 @@
     {
       "name": "global",
       "addWords": true,
-      "path": "~/.config/cspell/global.txt"
+      "path": "~/.dotfiles/spelling/global.txt"
     },
     {
       "name": "vim",

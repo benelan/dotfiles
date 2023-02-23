@@ -11,6 +11,16 @@ local hover = null_ls.builtins.hover
 
 local quiet_diagnostics = { virtual_text = false, signs = false }
 
+-- find the first .cspell.json file in the directory tree
+local find_cspell_config = function(cwd)
+  local cspell_json_file = nil
+  local path = vim.fn.findfile(".cspell.json", (cwd or vim.loop.cwd()) .. ";")
+  if path ~= "" then
+    cspell_json_file = path
+  end
+  return cspell_json_file
+end
+
 -- Install with Mason if you don't have all of these linters/formatters
 -- :MasonInstall actionlint cspell jq shellcheck...
 null_ls.setup {
@@ -28,6 +38,7 @@ null_ls.setup {
       end,
     },
     diagnostics.codespell.with {
+      method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
       extra_args = {
         "--builtin",
         "clear,rare,informal,usage,code,names,en-GB_to_en-US",
@@ -37,13 +48,16 @@ null_ls.setup {
       diagnostic_config = quiet_diagnostics,
     },
     diagnostics.cspell.with {
+      method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
       args = function(params)
         return {
           "lint",
           "--show-suggestions",
+          "--config",
+          find_cspell_config(params.root),
           "--language-id",
           params.ft,
-          params.bufname,
+          "stdin",
         }
       end,
       diagnostic_config = quiet_diagnostics,
