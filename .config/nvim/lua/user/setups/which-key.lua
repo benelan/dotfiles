@@ -128,41 +128,41 @@ local mappings = {
   o = {
     name = "Octo (GitHub)",
     i = { name = "Issues", D = { name = "Remove" }, a = { name = "Add" } },
+    m = { name = "My stuff", i = { name = "Issues" }, p = { name = "Pull requests" } },
     p = {
       name = "Pull requests",
       D = { name = "Remove" },
       a = { name = "Add" },
       r = { name = "Reviews" },
     },
-    m = { name = "My stuff", i = { name = "Issues" }, p = { name = "Pull requests" } },
     r = { name = "Reactions" },
   },
   l = {
     name = "LSP",
+    B = {
+      "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
+      "Buffer Diagnostics",
+    },
+    I = { "<cmd>Mason<cr>", "Mason Info" },
     Q = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
     R = { "<cmd>Telescope lsp_references<cr>", "References" },
+    S = {
+      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+      "Workspace Symbols",
+    },
     T = { vim.lsp.buf.type_definition, "Type Definition" },
     W = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
     a = { vim.lsp.buf.code_action, "Code Action" },
     d = { vim.lsp.buf.definition, "Definition" },
     f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format" },
     h = { vim.lsp.buf.signature_help, "Signature Help" },
+    i = { "<cmd>LspInfo<cr>", "Info" },
     j = { vim.diagnostic.goto_next, "Next Diagnostic" },
     k = { vim.diagnostic.goto_prev, "Prev Diagnostic" },
     l = { vim.lsp.codelens.run, "CodeLens Action" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
     r = { vim.lsp.buf.rename, "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-    B = {
-      "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
-      "Buffer Diagnostics",
-    },
-    S = {
-      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-      "Workspace Symbols",
-    },
-    i = { "<cmd>LspInfo<cr>", "Info" },
-    I = { "<cmd>Mason<cr>", "Mason Info" },
   },
 
   P = {

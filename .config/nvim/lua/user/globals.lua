@@ -99,3 +99,9 @@ vim.g.codeium_manual = true
 vim.g.codeium_filetypes = {
   bash = false,
 }
+
+vim.g.mapleader = " "
+
+_G.keymap = function(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
+end

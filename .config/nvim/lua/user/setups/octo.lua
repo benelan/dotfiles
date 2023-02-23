@@ -47,10 +47,7 @@ octo.setup {
       list_changed_files = { lhs = "<leader>opf", desc = "List changed files" },
       show_pr_diff = { lhs = "<leader>opd", desc = "Show diff" },
       add_reviewer = { lhs = "<leader>opar", desc = "Add reviewer" },
-      remove_reviewer = {
-        lhs = "<leader>opDr",
-        desc = "Remove reviewer request",
-      },
+      remove_reviewer = { lhs = "<leader>opDr", desc = "Remove reviewer request" },
       add_assignee = { lhs = "<leader>opaa", desc = "Add assignee" },
       remove_assignee = { lhs = "<leader>opDa", desc = "Remove assignee" },
       create_label = { lhs = nil, desc = "Create label" },
@@ -82,20 +79,14 @@ octo.setup {
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉 reaction" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ reaction" },
       react_eyes = { lhs = "<leader>or", desc = "add/remove 👀 reaction" },
-      react_thumbs_up = {
-        lhs = "<leader>or+",
-        desc = "add/remove 👍 reaction",
-      },
+      react_thumbs_up = { lhs = "<leader>or+", desc = "add/remove 👍 reaction" },
       react_thumbs_down = {
         lhs = "<leader>or-",
         desc = "add/remove 👎 reaction",
       },
       react_rocket = { lhs = "<leader>orr", desc = "add/remove 🚀 reaction" },
       react_laugh = { lhs = "<leader>orl", desc = "add/remove 😄 reaction" },
-      react_confused = {
-        lhs = "<leader>orc",
-        desc = "add/remove 😕 reaction",
-      },
+      react_confused = { lhs = "<leader>orc", desc = "add/remove 😕 reaction" },
     },
     submit_win = {
       approve_review = { lhs = "<leader>orA", desc = "Approve review" },
@@ -122,14 +113,8 @@ octo.setup {
       next_entry = { lhs = "j", desc = "Next changed file" },
       prev_entry = { lhs = "k", desc = "Previous changed file" },
       select_entry = { lhs = "<cr>", desc = "Show selected changed file diffs" },
-      refresh_files = {
-        lhs = "<leader>or",
-        desc = "Refresh changed files panel",
-      },
-      focus_files = {
-        lhs = "<leader>of",
-        desc = "Focus to changed files panel",
-      },
+      refresh_files = { lhs = "<leader>or", desc = "Refresh changed files panel" },
+      focus_files = { lhs = "<leader>of", desc = "Focus to changed files panel" },
       toggle_files = { lhs = "<leader>ot", desc = "Toggle changed files panel" },
       select_next_entry = { lhs = "]q", desc = "Previous changed file" },
       select_prev_entry = { lhs = "[q", desc = "Next changed file" },
@@ -139,44 +124,39 @@ octo.setup {
   },
 }
 
-local u_status_ok, u = pcall(require, "user.utils")
-if not u_status_ok then
-  return
-end
+-- Find possible actions
+keymap("n", "<leader>oa", "<cmd>Octo actions<CR>", "Actions")
 
 -- Find possible actions
-u.keymap("n", "<leader>oa", "<cmd>Octo actions<CR>", "Actions")
-
--- Find possible actions
-u.keymap("n", "<leader>os", "<cmd>Octo search<CR>", "Search")
+keymap("n", "<leader>os", "<cmd>Octo search<CR>", "Search")
 
 -- Issues
-u.keymap("n", "<leader>oil", "<cmd>Octo issue list<CR>", "List issues")
-u.keymap("n", "<leader>oic", "<cmd>Octo issue create<CR>", "Create issue")
-u.keymap("n", "<leader>ois", "<cmd>Octo issue search<CR>", "Search issues")
+keymap("n", "<leader>oil", "<cmd>Octo issue list<CR>", "List issues")
+keymap("n", "<leader>oic", "<cmd>Octo issue create<CR>", "Create issue")
+keymap("n", "<leader>ois", "<cmd>Octo issue search<CR>", "Search issues")
 
 -- Pull requests
-u.keymap("n", "<leader>opl", "<cmd>Octo pr list<CR>", "List pull requests")
-u.keymap("n", "<leader>opc", "<cmd>Octo pr create<CR>", "Create pull request")
-u.keymap("n", "<leader>ops", "<cmd>Octo pr search<CR>", "Search pull request")
+keymap("n", "<leader>opl", "<cmd>Octo pr list<CR>", "List pull requests")
+keymap("n", "<leader>opc", "<cmd>Octo pr create<CR>", "Create pull request")
+keymap("n", "<leader>ops", "<cmd>Octo pr search<CR>", "Search pull request")
 
 -- Reviews
-u.keymap("n", "<leader>oprr", "<cmd>Octo review resume<CR>", "Resume review")
-u.keymap("n", "<leader>oprs", "<cmd>Octo review start<CR>", "Start review")
-u.keymap("n", "<leader>oprf", "<cmd>Octo review submit<CR>", "Finish review")
+keymap("n", "<leader>oprr", "<cmd>Octo review resume<CR>", "Resume review")
+keymap("n", "<leader>oprs", "<cmd>Octo review start<CR>", "Start review")
+keymap("n", "<leader>oprf", "<cmd>Octo review submit<CR>", "Finish review")
 
 -- My stuff
-u.keymap("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>", "List my assigned issues")
-u.keymap("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>", "List my created issues")
-u.keymap("n", "<leader>omr", "<cmd>Octo repo list<CR>", "List my repos")
-u.keymap("n", "<leader>omg", "<cmd>Octo gist list<CR>", "List my gists")
-u.keymap(
+keymap("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>", "List my assigned issues")
+keymap("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>", "List my created issues")
+keymap("n", "<leader>omr", "<cmd>Octo repo list<CR>", "List my repos")
+keymap("n", "<leader>omg", "<cmd>Octo gist list<CR>", "List my gists")
+keymap(
   "n",
   "<leader>ompc",
   "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
   "List my created pull requests"
 )
-u.keymap(
+keymap(
   "n",
   "<leader>ompa",
   "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",

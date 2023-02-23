@@ -18,19 +18,14 @@ preview.setup {
   bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
 }
 
-local u_status_ok, u = pcall(require, "user.utils")
-if not u_status_ok then
-  return
-end
+keymap("n", "gpI", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", "Preview implementation")
 
-u.keymap("n", "gpI", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", "Preview implementation")
+keymap("n", "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", "Preview definition")
 
-u.keymap("n", "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", "Preview definition")
+keymap("n", "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", "Preview type definition")
 
-u.keymap("n", "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", "Preview type definition")
+keymap("n", "gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", "Preview references")
 
-u.keymap("n", "gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", "Preview references")
+keymap("n", "gpq", "<cmd>lua require('goto-preview').close_all_win()<CR>", "Close previews")
 
-u.keymap("n", "gpq", "<cmd>lua require('goto-preview').close_all_win()<CR>", "Close previews")
-
-u.keymap("n", "gpf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
+keymap("n", "gpf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
