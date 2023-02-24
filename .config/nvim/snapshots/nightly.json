@@ -6,10 +6,13 @@
     "commit": "500981f"
   },
   "alpha-nvim": {
-    "commit": "b3eef69"
+    "commit": "b6c7b5d"
   },
   "auto-session": {
     "commit": "04ccdac"
+  },
+  "calendar-vim": {
+    "commit": "a7e73e0"
   },
   "cmp-buffer": {
     "commit": "3022dbc"
@@ -36,7 +39,7 @@
     "commit": "be2fa21"
   },
   "diffview.nvim": {
-    "commit": "11827d4"
+    "commit": "503837d"
   },
   "friendly-snippets": {
     "commit": "6fa50a9"
@@ -96,7 +99,7 @@
     "commit": "a06dea1"
   },
   "nvim-treesitter": {
-    "commit": "c9d7f9c9"
+    "commit": "ba35d094"
   },
   "nvim-treesitter-textobjects": {
     "commit": "2f35830"
@@ -124,6 +127,9 @@
   },
   "splitjoin.vim": {
     "commit": "cdc1eb0"
+  },
+  "telekasten.nvim": {
+    "commit": "c0fe9c8"
   },
   "telescope-file-browser.nvim": {
     "commit": "6eb6bb4"

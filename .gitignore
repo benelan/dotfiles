@@ -28,3 +28,5 @@ Pictures
 Steam
 Videos
 go
+# ignore overrides
+!~/.local/share/applications

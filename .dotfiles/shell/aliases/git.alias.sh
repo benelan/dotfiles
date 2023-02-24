@@ -285,7 +285,7 @@ alias dcom='dot checkout master'
 alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
-alias ddfe='$EDITOR $(dot diff --name-only)'
+alias de='$EDITOR $(dot diff --name-only)'
 
 # files
 ########

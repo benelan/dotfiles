@@ -57,7 +57,7 @@ vim.opt.whichwrap:append "<,>,[,]"              -- keys to move to the previous/
 vim.opt.wildignorecase = true                   -- ignore filename/directory case for completion
 vim.opt.wrap = true                             -- display lines as one long line
 if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
-  vim.opt.grepprg = "rg --vimgrep --hidden --glob ‘!.git’"
+  vim.opt.grepprg = "rg --vimgrep --hidden --glob '!.git'"
 end
 vim.opt.sessionoptions:remove "help,folds"
 -- add some common code directories to path

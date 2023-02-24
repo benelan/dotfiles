@@ -9,7 +9,7 @@ local diagnostics = null_ls.builtins.diagnostics
 local code_actions = null_ls.builtins.code_actions
 local hover = null_ls.builtins.hover
 
-local quiet_diagnostics = { virtual_text = false, signs = false }
+local quiet_diagnostics = { virtual_text = false, signs = false, underline = false }
 
 -- find the first .cspell.json file in the directory tree
 local find_cspell_config = function(cwd)
@@ -48,13 +48,13 @@ null_ls.setup {
       diagnostic_config = quiet_diagnostics,
     },
     diagnostics.cspell.with {
-      method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+      -- method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
       args = function(params)
         return {
           "lint",
           "--show-suggestions",
-          "--config",
-          find_cspell_config(params.root),
+          -- "--config",
+          -- find_cspell_config(params.root),
           "--language-id",
           params.ft,
           "stdin",
