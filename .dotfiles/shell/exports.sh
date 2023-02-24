@@ -22,7 +22,8 @@ HISTSIZE=16384
 VISUAL=$EDITOR
 PAGER='less'
 MANPAGER=$PAGER
-export PAGER MANPAGER VISUAL
+BROWSER='w3m'
+export PAGER MANPAGER VISUAL BROWSER
 
 # Highlight section titles in manual pages.
 LESS_TERMCAP_md=$'\e[01;32m'
@@ -65,7 +66,10 @@ fi
 # Don't warn me about new mail
 unset -v MAILCHECK
 
-# Tool settings
+DOTFILES="$HOME/.dotfiles"
+ZK_NOTEBOOK_DIR="$HOME/notes"
+export DOTFILES ZK_NOTEBOOK_DIR
+
 VOLTA_HOME=~/.volta
 BUN_INSTALL="$HOME/.bun"
 BAT_THEME="gruvbox-dark"

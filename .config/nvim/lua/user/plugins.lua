@@ -387,20 +387,13 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
 
   use {
-    "renerocksai/telekasten.nvim",
-    requires = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
-    config = function()
-      require("telekasten").setup {
-        home = os.getenv "NOTES" or os.getenv "HOME" .. "/personal/notes",
-      }
-    end,
-  }
-
-  -- Alternative Zettelkasten plugin/tooling:
-  use {
     "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
+    requires = {
+      "renerocksai/telekasten.nvim",
+      requires = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
+    },
     config = function() --
-      require("zk").setup()
+      require "user.setups.notes"
     end,
   }
 

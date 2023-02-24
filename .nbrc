@@ -1,0 +1,8 @@
+export NB_AUTO_SYNC=0
+export NB_DIRECTORY_TOOL="vifm"
+export NB_GUI_BROWSER="firefox"
+export NB_SYNTAX_THEME="${NB_SYNTAX_THEME:-gruvbox-dark}" # Set by `nb` • Mon Jan 16 12:27:01 AM PST 2023
+export NB_COLOR_PRIMARY="${NB_COLOR_PRIMARY:-14}" # Set by `nb` • Thu Feb 23 10:06:29 PM PST 2023
+export NB_COLOR_SECONDARY="${NB_COLOR_SECONDARY:-12}" # Set by `nb` • Thu Feb 23 10:07:50 PM PST 2023
+export NB_COLOR_THEME="${NB_COLOR_THEME:-desert}" # Set by `nb` • Thu Feb 23 10:09:31 PM PST 2023
+export NB_DIR="${NB_DIR:-/home/ben/notes}" # Set by `nb` • Fri Feb 24 12:55:25 AM PST 2023
