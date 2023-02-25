@@ -21,7 +21,7 @@ local servers = {
   -- "rust_analyzer",
   -- "sqlls",
   "svelte",
-  "tablo",
+  "taplo",
   "tailwindcss",
   "tsserver",
   "vimls",
