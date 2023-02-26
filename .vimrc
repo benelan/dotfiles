@@ -13,7 +13,7 @@ endif
 
 set omnifunc=syntaxcomplete#Complete
 set number wrap linebreak formatoptions+=l1 cpoptions+=J
-set mouse+=a mousehide clipboard^=unnamed,unnamedplus
+set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
 set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
@@ -666,23 +666,81 @@ function! <SID>Bdelete()
 endfunction
 
 " ----------------------------------------------------------------------
-" | Colors                                                             |
+" | Colors and Styling                                                 |
 " ----------------------------------------------------------------------
 
 set background=dark
-" see :h xterm-true-color
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set t_Co=256
 if exists('+termguicolors')
     set termguicolors
 endif
 
+" Fix modern terminal features
+" https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
+" Styled and colored underline support
+let &t_AU = "\e[58:5:%dm"
+let &t_8u = "\e[58:2:%lu:%lu:%lum"
+let &t_Us = "\e[4:2m"
+let &t_Cs = "\e[4:3m"
+let &t_ds = "\e[4:4m"
+let &t_Ds = "\e[4:5m"
+let &t_Ce = "\e[4:0m"
+" Strikethrough
+let &t_Ts = "\e[9m"
+let &t_Te = "\e[29m"
+" Truecolor support
+let &t_8f = "\e[38:2:%lu:%lu:%lum"
+let &t_8b = "\e[48:2:%lu:%lu:%lum"
+let &t_RF = "\e]10;?\e\\"
+let &t_RB = "\e]11;?\e\\"
+" Bracketed paste
+let &t_BE = "\e[?2004h"
+let &t_BD = "\e[?2004l"
+let &t_PS = "\e[200~"
+let &t_PE = "\e[201~"
+" Cursor control
+let &t_RC = "\e[?12$p"
+let &t_SH = "\e[%d q"
+let &t_RS = "\eP$q q\e\\"
+let &t_SI = "\e[5 q"
+let &t_SR = "\e[3 q"
+let &t_EI = "\e[1 q"
+let &t_VS = "\e[?12l"
+" Focus tracking
+let &t_fe = "\e[?1004h"
+let &t_fd = "\e[?1004l"
+execute "set <FocusGained>=\<Esc>[I"
+execute "set <FocusLost>=\<Esc>[O"
+" Window title
+let &t_ST = "\e[22;2t"
+let &t_RT = "\e[23;2t"
+
+" vim hardcodes background color erase even if the terminfo file does
+" not contain bce. This causes incorrect background rendering when
+" using a color theme with a background color in terminals such as
+" kitty that do not support background color erase.
+let &t_ut=''
+
 " https://github.com/sainnhe/gruvbox-material
-let g:gruvbox_material_background = "medium"
-let g:gruvbox_material_foreground = "material"
+let g:gruvbox_material_background = "soft"
+let g:gruvbox_material_foreground = "original"
 let g:gruvbox_material_ui_contrast = "high"
+let g:gruvbox_material_statusline_style = "material"
+let g:gruvbox_material_diagnostic_virtual_text = "colored"
+" let g:gruvbox_material_spell_foreground = "colored"
+" let g:gruvbox_material_sign_column_background = "grey"
+" let g:gruvbox_material_menu_selection_background = "orange"
+" let g:gruvbox_material_current_word = "bold"
+" let g:gruvbox_material_visual = "reverse"
+
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_diagnostic_text_highlight = 1
 let g:gruvbox_material_enable_italic = 1
+" let g:gruvbox_material_enable_bold = 1
+" let g:gruvbox_material_disable_italic_comment = 1
+" let g:gruvbox_material_transparent_background = 1
+" let g:gruvbox_material_disable_terminal_colors = 1
+" let g:gruvbox_material_dim_inactive_windows = 1
 colorscheme gruvbox-material
 
 " https://github.com/morhetz/gruvbox
@@ -699,22 +757,24 @@ colorscheme gruvbox-material
   "   3) gui   (GUIs)
 
 " legible error and spelling highlighting
-hi clear Search SpellBad SpellCap SpellLocal SpellRare
-hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
-hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
-hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
-hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
+" hi clearSpellBad SpellCap SpellLocal SpellRare
+" hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
+" hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
+" hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
+" hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
+
+hi clear Search IncSearch
 hi Search cterm=bold,underline ctermfg=Magenta ctermbg=NONE
 hi IncSearch ctermfg=Magenta ctermbg=NONE
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+
+hi clear Error ErrorMsg
+" hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
+" hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
 
 " Statusline colors
-hi User1 guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
-hi User2 guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240
-hi User3 guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
+highlight! link User1 TabLineSel  " guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
+highlight! link User2 TabLine     " guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240 ctermfg=230
+highlight! link User3 TabLineFill " guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
 
 " Highlight current line number differently
 highlight! link CursorLineNr Purple
@@ -762,70 +822,66 @@ set statusline+=\                               " Whitespace
 " ----------------------------------------------------------------------
 " | Tabline                                                            |
 " ----------------------------------------------------------------------
-" https://stackoverflow.com/a/33765365
 set tabline=%!MyTabLine()
+function! BufferInfo() abort
+    let current = bufnr('%')
+    let buffers = filter(range(1, bufnr('$')), {i, v ->
+                \  buflisted(v) && getbufvar(v, '&filetype') isnot# 'qf'
+                \ })
+    let index_current = index(buffers, current) + 1
+    let modified = getbufvar(current, '&modified') ? '+' : ''
+    let count_buffers = len(buffers)
+    return index_current isnot# 0 && count_buffers ># 1
+                \ ? printf('%s/%s', index_current, count_buffers)
+                \ : ''
+endfunction
+
+function! TabCWD() abort
+    let cwd = fnamemodify(getcwd(), ':~')
+    if cwd isnot# '~/'
+        let cwd = len(cwd) <=# 15 ? pathshorten(cwd) : cwd
+        return cwd
+    else
+        return ''
+    endif
+endfunction
+
+function! TabCount() abort
+    let count_tabs = tabpagenr('$')
+    return count_tabs isnot# 1
+                \ ? printf('T%d/%d', tabpagenr(), count_tabs)
+                \ : ''
+endfunction
+
+function! TabLineRightInfo() abort
+  let right_info = '%=' . '%( %{BufferInfo()} %)'
+  let right_info .= '%#TabLine#' . '%( %{TabCWD()} %)'
+  let right_info .= '%#TabLineFill#' . '%( %{TabCount()} %)'
+  return right_info
+endfunction
+
 function! MyTabLine()
   let s = ''
-  " loop through each tab page
   for i in range(tabpagenr('$'))
-    if i + 1 == tabpagenr()
-      let s .= '%#TabLineSel#'
-    else
-      let s .= '%#TabLine#'
+    let tab = i + 1
+    let winnr = tabpagewinnr(tab)
+    let buflist = tabpagebuflist(tab)
+    let bufnr = buflist[winnr - 1]
+    let bufname = bufname(bufnr)
+    let bufmodified = getbufvar(bufnr, "&mod")
+
+    let s .= '%' . tab . 'T'
+    let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+    let s .= ' ' . tab .':'
+    let s .= (bufname != '' ? '['. fnamemodify(bufname, ':t') . '] ' : '[No Name] ')
+
+    if bufmodified
+      let s .= '[+] '
     endif
-    if i + 1 == tabpagenr()
-      let s .= '%#TabLineSel#' " WildMenu
-    else
-      let s .= '%#Title#'
-    endif
-    " set the tab page number (for mouse clicks)
-    let s .= '%' . (i + 1) . 'T '
-    " set page number string
-    let s .= i + 1 . ''
-    " get buffer names and statuses
-    let n = ''  " temp str for buf names
-    let m = 0   " &modified counter
-    let buflist = tabpagebuflist(i + 1)
-    " loop through each buffer in a tab
-    for b in buflist
-      if getbufvar(b, "&buftype") == 'help'
-        " let n .= '[H]' . fnamemodify(bufname(b), ':t:s/.txt$//')
-      elseif getbufvar(b, "&buftype") == 'quickfix'
-        " let n .= '[Q]'
-      elseif getbufvar(b, "&modifiable")
-        let n .= fnamemodify(bufname(b), ':t') . ', ' " pathshorten(bufname(b))
-      endif
-      if getbufvar(b, "&modified")
-        let m += 1
-      endif
-    endfor
-    " let n .= fnamemodify(bufname(buflist[tabpagewinnr(i + 1) - 1]), ':t')
-    let n = substitute(n, ', $', '', '')
-    " add modified label
-    if m > 0
-      let s .= '+'
-      " let s .= '[' . m . '+]'
-    endif
-    if i + 1 == tabpagenr()
-      let s .= ' %#TabLineSel#'
-    else
-      let s .= ' %#TabLine#'
-    endif
-    " add buffer names
-    if n == ''
-      let s.= '[New]'
-    else
-      let s .= n
-    endif
-    " switch to no underlining and add final space
-    let s .= ' '
   endfor
-  let s .= '%#TabLineFill#%T'
-  " right-aligned close button
-  " if tabpagenr('$') > 1
-  "   let s .= '%=%#TabLineFill#%999Xclose'
-  " endif
-  return s
+
+  let s .= '%#TabLineFill#'
+  return s . TabLineRightInfo()
 endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
