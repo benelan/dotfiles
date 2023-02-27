@@ -6,11 +6,7 @@ end
 
 diffview.setup {
   enhanced_diff_hl = true,
-  use_icons = false,
-  icons = { -- Only applies when use_icons is true.
-    folder_closed = "📁 ",
-    folder_open = "📂 ",
-  },
+  -- use_icons = os.getenv "OG_TERM" == "wezterm" or os.getenv "OG_TERM" == "kitty",
   signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
   keymaps = {
     view = {
@@ -40,12 +36,7 @@ diffview.setup {
         actions.focus_files,
         { desc = "Bring focus to the file panel" },
       },
-      {
-        "n",
-        "<leader>e",
-        actions.toggle_files,
-        { desc = "Toggle the file panel" },
-      },
+      { "n", "<leader>e", actions.toggle_files, { desc = "Toggle the file panel" } },
     },
     file_history_panel = {
       {
@@ -54,12 +45,7 @@ diffview.setup {
         actions.focus_files,
         { desc = "Bring focus to the file panel" },
       },
-      {
-        "n",
-        "<leader>e",
-        actions.toggle_files,
-        { desc = "Toggle the file panel" },
-      },
+      { "n", "<leader>e", actions.toggle_files, { desc = "Toggle the file panel" } },
     },
   },
 }

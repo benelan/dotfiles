@@ -13,21 +13,33 @@ no_tmux_server() {
 }
 
 session_exists() {
-    tmux has-session -t "=$session_name"
+    tmux has-session -t "=$session_name" >/dev/null 2>&1
 }
 
 create_detached_session() {
-    (TMUX='' tmux new-session -Ad -s "$session_name" -c "$path")
+    (TMUX='' tmux new-session -Ad -s "$session_name" -c "$path" >/dev/null 2>&1)
+}
+
+export_term_env_var() {
+    if ! no_tmux_server; then
+        # shellcheck disable=2016
+        tmux send-keys -t "$session_name" \
+            "export OG_TERM=$OG_TERM; tput reset; " \
+            'history -d $(history 1)' Enter >/dev/null 2>&1
+        sleep 0.1
+    fi
 }
 
 create_if_needed_and_attach() {
     if not_in_tmux; then
-        tmux new-session -As "$session_name" -c "$path"
+        # export_term_env_var
+        tmux new-session -As "$session_name" -c "$path" -e "OG_TERM=$OG_TERM"
     else
         if ! session_exists; then
             create_detached_session
         fi
-        tmux switch-client -t "$session_name"
+        # export_term_env_var
+        tmux switch-client -t "$session_name" -e "OG_TERM=$OG_TERM"
     fi
 }
 

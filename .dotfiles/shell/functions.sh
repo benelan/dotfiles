@@ -488,7 +488,11 @@ colors() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+vcd() {
+    cd "$(command vifm --choose-dir - "$@")" || return 1
+}
+
 # make one or more directories and cd into the last one
 function mcd() {
-    mkdir -p -- "$@" && cd -- "${!#}" || return
+    mkdir -p -- "$@" && cd -- "${!#}" || return 1
 }

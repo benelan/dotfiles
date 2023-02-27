@@ -4,6 +4,7 @@ local snip_status_ok, ls = pcall(require, "luasnip")
 if not cmp_status_ok or not snip_status_ok or not res_status_ok then
   return
 end
+local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
 
 local has_words_before = function()
   unpack = unpack or table.unpack
@@ -28,17 +29,11 @@ cmp.setup {
     ["<C-j>"] = cmp.mapping.select_next_item(),
     ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
     ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-    ["<C-e>"] = cmp.mapping {
-      i = cmp.mapping.abort(),
-      c = cmp.mapping.close(),
-    },
-    ["<C-y>"] = cmp.mapping(
-      cmp.mapping.confirm {
-        behavior = cmp.ConfirmBehavior.Insert,
-        select = true,
-      },
-      { "i", "c" }
-    ),
+    ["<C-e>"] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
+    ["<C-y>"] = cmp.mapping(cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true }, {
+      "i",
+      "c",
+    }),
     ["<C-x>"] = cmp.mapping(
       cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Replace,
@@ -72,8 +67,8 @@ cmp.setup {
         ls.expand()
       elseif ls.expand_or_jumpable() then
         ls.expand_or_jump()
-      -- elseif has_words_before() then
-      --   cmp.complete()
+        -- elseif has_words_before() then
+        --   cmp.complete()
       else
         fallback()
       end
@@ -91,7 +86,17 @@ cmp.setup {
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      vim_item.kind = res.icons.kind[vim_item.kind]
+      if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
+        local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
+        if icon then
+          vim_item.kind = " " .. icon .. "  "
+          vim_item.kind_hl_group = hl_group
+        else
+          vim_item.kind = res.icons.kind[vim_item.kind]
+        end
+      else
+        vim_item.kind = res.icons.kind[vim_item.kind]
+      end
       vim_item.menu = ({
         buffer = " [BUF] ",
         nvim_lsp = " [LSP] ",

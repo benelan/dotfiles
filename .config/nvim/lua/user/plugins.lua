@@ -56,6 +56,10 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   ----> UI
   -----------------------------------------------------------------------------
+  -- if os.getenv "OG_TERM" == "wezterm" or os.getenv("OG_TERM"):find "kitty" then
+    use "nvim-tree/nvim-web-devicons"
+  -- end
+
   use {
     "goolord/alpha-nvim", -- startup page/dashboard
     config = function()
@@ -175,37 +179,37 @@ return packer.startup(function(use)
     },
   }
 
-  use {
-    "Exafunction/codeium.vim",
-    config = function()
-      vim.keymap.set("i", "<M-y>", function()
-        return vim.fn["codeium#Accept"]()
-      end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
-      vim.keymap.set("i", "<M-c>", function()
-        return vim.fn["codeium#Complete"]()
-      end, {
-        expr = true,
-        noremap = true,
-        silent = true,
-        desc = "Codeium Complete",
-      })
-      vim.keymap.set("i", "<M-n>", function()
-        return vim.fn["codeium#CycleCompletions"](1)
-      end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
-      vim.keymap.set("i", "<M-p>", function()
-        return vim.fn["codeium#CycleCompletions"](-1)
-      end, {
-        expr = true,
-        noremap = true,
-        silent = true,
-        desc = "Codeium Previous",
-      })
-      vim.keymap.set("i", "<M-e>", function()
-        return vim.fn["codeium#Clear"]()
-      end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
-    end,
-  }
-
+  -- use {
+  --   "Exafunction/codeium.vim",
+  --   config = function()
+  --     vim.keymap.set("i", "<M-y>", function()
+  --       return vim.fn["codeium#Accept"]()
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
+  --     vim.keymap.set("i", "<M-c>", function()
+  --       return vim.fn["codeium#Complete"]()
+  --     end, {
+  --       expr = true,
+  --       noremap = true,
+  --       silent = true,
+  --       desc = "Codeium Complete",
+  --     })
+  --     vim.keymap.set("i", "<M-n>", function()
+  --       return vim.fn["codeium#CycleCompletions"](1)
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
+  --     vim.keymap.set("i", "<M-p>", function()
+  --       return vim.fn["codeium#CycleCompletions"](-1)
+  --     end, {
+  --       expr = true,
+  --       noremap = true,
+  --       silent = true,
+  --       desc = "Codeium Previous",
+  --     })
+  --     vim.keymap.set("i", "<M-e>", function()
+  --       return vim.fn["codeium#Clear"]()
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
+  --   end,
+  -- }
+  --
   -----------------------------------------------------------------------------
   ----> Snippets
   -----------------------------------------------------------------------------
