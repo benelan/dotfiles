@@ -314,14 +314,6 @@ return packer.startup(function(use)
         event = "InsertEnter",
         after = "nvim-treesitter",
       },
-      -- {
-      --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-      --   event = "InsertEnter",
-      --   after = "nvim-treesitter",
-      --   config = function()
-      --     require "user.setups.autopairs"
-      --   end,
-      -- },
       -- { -- trying out nvim-navic instead
       --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
       --   event = "BufWinEnter",
