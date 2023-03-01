@@ -90,7 +90,6 @@ local mappings = {
     H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
     M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
     R = { "<cmd>Telescope registers<cr>", "Registers" },
-    b = { "<cmd>Telescope file_browser<cr>", "File Browser" },
     c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     f = { "<cmd>Telescope find_files hidden=true<cr>", "Find File" },
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },

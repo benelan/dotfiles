@@ -131,16 +131,11 @@ telescope.setup {
         "~/dev/work/arcgis-esm-samples",
       },
     },
-    file_browser = {
-      -- theme = "ivy",
-      hijack_netrw = false,
-    },
   },
 }
 
 telescope.load_extension "fzf"
 telescope.load_extension "project"
-telescope.load_extension "file_browser"
 telescope.load_extension "git_worktree"
 telescope.load_extension "session-lens"
 

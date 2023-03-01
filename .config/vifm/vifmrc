@@ -7,11 +7,6 @@
 
 " ------------------------------------------------------------------------------
 
-" Devicons require patched font (or Wezterm)
-" if expand($OG_TERM) == "wezterm"
-  source ~/.config/vifm/scripts/icons.vifm
-" endif
-
 " Command used to edit files in various contexts.  The default is vim.
 " If you would like to use another vi clone such as Elvis or Vile
 " you will need to change this setting.
@@ -33,6 +28,7 @@ set syscalls
 " This probably shouldn't be an option.
 
 set trash
+set trashdir=~/.local/share/Trash/files
 
 " This is how many directories to store in the directory history.
 
@@ -40,7 +36,7 @@ set history=100
 
 " Automatically resolve symbolic links on l or Enter.
 
-set nofollowlinks
+set followlinks
 
 " Natural sort of (version) numbers within text.
 
@@ -53,7 +49,7 @@ set undolevels=100
 " Use Vim's format of help file (has highlighting and "hyperlinks").
 " If you would rather use a plain text help file set novimhelp.
 
-set novimhelp
+set vimhelp
 
 " If you would like to run an executable file when you
 " press Enter, l or Right Arrow, set this.
@@ -62,7 +58,7 @@ set norunexec
 
 " List of color schemes to try (picks the first one supported by the terminal)
 
-colorscheme  zenburn_1 Default-256 Default
+colorscheme gruvbox zenburn_1 Default-256 Default
 
 " Format for displaying time in file list. For example:
 " TIME_STAMP_FORMAT=%m/%d-%H:%M
@@ -106,9 +102,11 @@ if !has('win')
     set slowfs=curlftpfs
 endif
 
-" Set custom status line look
+" show hidden files on startup
+set dotfiles
 
-set statusline="  Hint: %z%= %A %10s (%a) "
+" Set custom status line look
+set statusline="  Hint: %z%= %f %20d %15A %10E (%a) "
 
 " ------------------------------------------------------------------------------
 
@@ -528,4 +526,18 @@ nnoremap <c-g> :FZFlocate<cr>
 nnoremap <c-f> :FZFfind<cr>
 nnoremap <c-a> ggvG<cr>
 
-windo normal zo
+" create new tab
+nnoremap <c-t> :tabnew<cr>:view!<cr>
+
+" switch to tab to the left
+nnoremap H :tabprevious<cr>:view!<cr>
+
+" switch to tab to the left
+nnoremap L :tabnext<cr>:view!<cr>
+
+nnoremap - :qa<cr>
+
+" Devicons require patched font (or Wezterm)
+" if expand($OG_TERM) == "wezterm"
+  source ~/.config/vifm/scripts/icons.vifm
+" endif

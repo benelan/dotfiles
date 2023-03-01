@@ -68,12 +68,12 @@ keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", "Make to bu
 
 -- open file explore and focus current buffer
 -- NOTE: <leader>e is remapped locally in `after/ftplugin/netrw.vim` to close the file explorer
-keymap(
-  "n",
-  "<leader>e",
-  ":Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>",
-  "File Explorer (Current Buffer)"
-)
+-- keymap(
+--   "n",
+--   "<leader>e",
+--   ":Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>",
+--   "File Explorer (Current Buffer)"
+-- )
 
 keymap("n", "<leader>E", "<cmd>NetrwToggle<cr>", "File Explorer")
 
@@ -464,3 +464,12 @@ vim.cmd [[
   endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
+
+-------------------------------------------------------------------------------
+----> Plugins
+-------------------------------------------------------------------------------
+keymap("n", "<leader>e", "<cmd>Vifm<cr>", "File explorer")
+keymap("n", "-", "<cmd>Vifm<cr>", "File explorer")
+keymap("n", "<leader>ev", "<cmd>VsplitVifm<cr>", "File explorer (vertical)")
+keymap("n", "<leader>eh", "<cmd>SplitVifm<cr>", "File explorer (horizontal)")
+keymap("n", "<leader>et", "<cmd>TabVifm<cr>", "File explorer (tab)")

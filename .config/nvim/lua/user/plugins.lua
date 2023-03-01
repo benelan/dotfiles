@@ -57,7 +57,7 @@ return packer.startup(function(use)
   ----> UI
   -----------------------------------------------------------------------------
   -- if os.getenv "OG_TERM" == "wezterm" or os.getenv("OG_TERM"):find "kitty" then
-    use "nvim-tree/nvim-web-devicons"
+  use "nvim-tree/nvim-web-devicons"
   -- end
 
   use {
@@ -88,6 +88,8 @@ return packer.startup(function(use)
       require "user.setups.indentline"
     end,
   }
+
+  use { "vifm/vifm.vim", event = "BufWinEnter" }
 
   -----------------------------------------------------------------------------
   ----> Utils
@@ -124,23 +126,6 @@ return packer.startup(function(use)
         desc = "UndoTree",
       })
     end,
-  }
-
-  use {
-    "rmagatti/session-lens",
-    requires = {
-      {
-        "rmagatti/auto-session",
-        config = function()
-          require("auto-session").setup {
-            -- auto_session_use_git_branch = true,
-            bypass_session_save_file_types = require("user.resources").exclude_filetypes,
-            auto_session_create_enabled = false,
-          }
-        end,
-      },
-      "nvim-telescope/telescope.nvim",
-    },
   }
 
   -----------------------------------------------------------------------------
@@ -272,11 +257,22 @@ return packer.startup(function(use)
         "nvim-telescope/telescope-project.nvim", -- project bookmarks
       },
       {
-        "nvim-telescope/telescope-file-browser.nvim", -- file browser
+        "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
       },
       {
-        "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-        -- config = function() require("git-worktree").setup() end,
+        "rmagatti/session-lens",
+        requires = {
+          {
+            "rmagatti/auto-session",
+            config = function()
+              require("auto-session").setup {
+                -- auto_session_use_git_branch = true,
+                bypass_session_save_file_types = require("user.resources").exclude_filetypes,
+                auto_session_create_enabled = false,
+              }
+            end,
+          },
+        },
       },
     },
   }
@@ -319,9 +315,6 @@ return packer.startup(function(use)
       -- },
     },
   }
-
-  -- use {
-  -- }
 
   -----------------------------------------------------------------------------
   ----> Git
