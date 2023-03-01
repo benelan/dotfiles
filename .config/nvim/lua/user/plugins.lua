@@ -253,13 +253,6 @@ return packer.startup(function(use)
       require "user.lsp.goto-preview"
     end,
   }
-  use {
-    "SmiteshP/nvim-navic",
-    requires = "neovim/nvim-lspconfig",
-    config = function()
-      require "user.lsp.navic"
-    end,
-  }
 
   -----------------------------------------------------------------------------
   ----> Telescope
@@ -314,11 +307,11 @@ return packer.startup(function(use)
         event = "InsertEnter",
         after = "nvim-treesitter",
       },
-      -- { -- trying out nvim-navic instead
-      --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-      --   event = "BufWinEnter",
-      --   after = "nvim-treesitter",
-      -- },
+      {
+        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        event = "BufWinEnter",
+        after = "nvim-treesitter",
+      },
       -- {
       --   "nvim-treesitter/playground", -- for creating syntax queries
       --   event = "BufWinEnter",

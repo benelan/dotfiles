@@ -8,6 +8,7 @@ function! s:gruvbox_material_custom() abort
     call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
     call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
     highlight! link CursorLineNr Purple
+    highlight! link TreesitterContext Normal
 endfunction
 
 augroup GruvboxMaterialCustom

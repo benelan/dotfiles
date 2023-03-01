@@ -1,7 +1,6 @@
 local M = {}
 local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-local navic_status_ok, navic = pcall(require, "nvim-navic")
-if not cmp_status_ok or not navic_status_ok then
+if not cmp_status_ok then
   return M
 end
 
@@ -45,11 +44,7 @@ M.setup = function()
   end
 
   local config = {
-    virtual_text = {
-      source = "if_many",
-      spacing = 15,
-      right_align = true,
-    },
+    virtual_text = { source = "if_many", spacing = 15, right_align = true },
     update_in_insert = false,
     underline = true,
     severity_sort = true,
@@ -226,9 +221,7 @@ M.on_attach = function(client, bufnr)
   if client.name == "lua_ls" then
     client.server_capabilities.documentFormattingProvider = false
   end
-  if client.server_capabilities.documentSymbolProvider then
-    navic.attach(client, bufnr)
-  end
+
   -- if client.server_capabilities.codeLensProvider then
   --   vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
   --   vim.api.nvim_create_autocmd("BufEnter", {
