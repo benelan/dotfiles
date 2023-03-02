@@ -17,7 +17,7 @@ session_exists() {
 }
 
 create_detached_session() {
-    (TMUX='' tmux new-session -Ad -s "$session_name" -c "$path" >/dev/null 2>&1)
+    (TMUX='' tmux new-session -Ad -s "$session_name" -e "OG_TERM=$OG_TERM" -c "$path" >/dev/null 2>&1)
 }
 
 export_term_env_var() {
@@ -39,7 +39,7 @@ create_if_needed_and_attach() {
             create_detached_session
         fi
         # export_term_env_var
-        tmux switch-client -t "$session_name" -e "OG_TERM=$OG_TERM"
+        tmux switch-client -t "$session_name"
     fi
 }
 
