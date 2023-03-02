@@ -45,13 +45,14 @@ packer.init {
 
 -- All the plugins are loaded below
 return packer.startup(function(use)
-  -- Load these first
-  use {
-    "wbthomason/packer.nvim", -- packer manages itself
-  }
-  use {
-    "nvim-lua/plenary.nvim", -- useful lua functions required by many plugins
-  }
+  use "wbthomason/packer.nvim" -- packer manages itself
+
+  -----------------------------------------------------------------------------
+  ----> Local
+  -----------------------------------------------------------------------------
+
+  use { "~/.dotfiles/vim" } -- use the local, shared vimscript files
+  use { "~/.dotfiles/vendor/fzf", cmd = "FZF" } -- use the local fzf plugin if it's installed
 
   -----------------------------------------------------------------------------
   ----> UI
@@ -60,27 +61,15 @@ return packer.startup(function(use)
   use "nvim-tree/nvim-web-devicons"
   -- end
 
-  use {
-    "goolord/alpha-nvim", -- startup page/dashboard
-    config = function()
-      require "user.setups.alpha"
-    end,
-  }
-  use {
-    "unblevable/quick-scope", -- highlight unique letters in words
-  }
-  use {
-    "sainnhe/gruvbox-material", -- gruvbox colorscheme
-  }
-  use {
-    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
-    run = "cd app && npm install",
-    event = "BufWinEnter",
-    setup = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-    end,
-    ft = { "markdown" },
-  }
+  -- use { "sainnhe/gruvbox-material" } -- gruvbox colorscheme
+  use { "unblevable/quick-scope", event = "BufWinEnter" } -- highlight unique letters in words
+  use { "vifm/vifm.vim", event = "BufWinEnter" } -- integrates vifm (file explorer)
+  -- use {
+  --   "goolord/alpha-nvim", -- startup page/dashboard
+  --   config = function()
+  --     require "user.setups.alpha"
+  --   end,
+  -- }
   use {
     "lukas-reineke/indent-blankline.nvim", -- visualize indents
     event = "BufWinEnter",
@@ -88,44 +77,45 @@ return packer.startup(function(use)
       require "user.setups.indentline"
     end,
   }
-
-  use { "vifm/vifm.vim", event = "BufWinEnter" }
+  use {
+    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
+    run = "cd app && npm install",
+    setup = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    cmd = { "MarkdownPreviewToggle" },
+    ft = { "markdown" },
+  }
 
   -----------------------------------------------------------------------------
   ----> Utils
   -----------------------------------------------------------------------------
-  use {
-    "numToStr/Comment.nvim", -- smart comments
-    event = "BufWinEnter",
-    config = function()
-      require "user.setups.comment"
-    end,
-  }
-  use {
-    "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
-    event = "BufWinEnter",
-    tag = "*",
-    config = function()
-      require("nvim-surround").setup {
-        highlight = { duration = 1 },
-      }
-    end,
-  }
+  -- use {
+  --   "numToStr/Comment.nvim", -- smart comments
+  --   event = "BufWinEnter",
+  --   config = function()
+  --     require "user.setups.comment"
+  --   end,
+  -- }
+  -- use {
+  --   "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
+  --   event = "BufWinEnter",
+  --   tag = "*",
+  --   config = function()
+  --     require("nvim-surround").setup {
+  --       highlight = { duration = 1 },
+  --     }
+  --   end,
+  -- }
   use {
     "AndrewRadev/splitjoin.vim", -- split/join lines on arrays/objects/etc
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
+  use { "rstacruz/vim-closer", event = "InsertEnter" }
   use {
     "mbbill/undotree", -- Easily go back in undo history
     event = "BufWinEnter",
-    config = function()
-      vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", {
-        silent = true,
-        noremap = true,
-        desc = "UndoTree",
-      })
-    end,
   }
 
   -----------------------------------------------------------------------------
@@ -158,43 +148,14 @@ return packer.startup(function(use)
       {
         "hrsh7th/cmp-cmdline", -- commandline completion
       },
-      {
-        "folke/neodev.nvim", -- NeoVim Lua API info
-      },
+      -- {
+      --   "folke/neodev.nvim", -- NeoVim Lua API info
+      -- },
     },
   }
 
-  -- use {
-  --   "Exafunction/codeium.vim",
-  --   config = function()
-  --     vim.keymap.set("i", "<M-y>", function()
-  --       return vim.fn["codeium#Accept"]()
-  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
-  --     vim.keymap.set("i", "<M-c>", function()
-  --       return vim.fn["codeium#Complete"]()
-  --     end, {
-  --       expr = true,
-  --       noremap = true,
-  --       silent = true,
-  --       desc = "Codeium Complete",
-  --     })
-  --     vim.keymap.set("i", "<M-n>", function()
-  --       return vim.fn["codeium#CycleCompletions"](1)
-  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
-  --     vim.keymap.set("i", "<M-p>", function()
-  --       return vim.fn["codeium#CycleCompletions"](-1)
-  --     end, {
-  --       expr = true,
-  --       noremap = true,
-  --       silent = true,
-  --       desc = "Codeium Previous",
-  --     })
-  --     vim.keymap.set("i", "<M-e>", function()
-  --       return vim.fn["codeium#Clear"]()
-  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
-  --   end,
-  -- }
-  --
+  -- use "Exafunction/codeium.vim"
+
   -----------------------------------------------------------------------------
   ----> Snippets
   -----------------------------------------------------------------------------
@@ -217,6 +178,7 @@ return packer.startup(function(use)
     requires = {
       {
         "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+        requires = { "nvim-lua/plenary.nvim" },
       },
       {
         "williamboman/mason.nvim", -- language server installer/manager
@@ -226,12 +188,12 @@ return packer.startup(function(use)
       },
     },
   }
-  use {
-    "simrat39/inlay-hints.nvim", -- inlay hints
-    config = function()
-      require "user.lsp.inlays"
-    end,
-  }
+  -- use {
+  --   "simrat39/inlay-hints.nvim", -- inlay hints
+  --   config = function()
+  --     require "user.lsp.inlays"
+  --   end,
+  -- }
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
     config = function()
@@ -253,27 +215,27 @@ return packer.startup(function(use)
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
         run = "make",
       },
-      {
-        "nvim-telescope/telescope-project.nvim", -- project bookmarks
-      },
-      {
-        "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-      },
-      {
-        "rmagatti/session-lens",
-        requires = {
-          {
-            "rmagatti/auto-session",
-            config = function()
-              require("auto-session").setup {
-                -- auto_session_use_git_branch = true,
-                bypass_session_save_file_types = require("user.resources").exclude_filetypes,
-                auto_session_create_enabled = false,
-              }
-            end,
-          },
-        },
-      },
+      -- {
+      --   "nvim-telescope/telescope-project.nvim", -- project bookmarks
+      -- },
+      -- {
+      --   "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+      -- },
+      -- {
+      --   "rmagatti/session-lens",
+      --   requires = {
+      --     {
+      --       "rmagatti/auto-session",
+      --       config = function()
+      --         require("auto-session").setup {
+      --           -- auto_session_use_git_branch = true,
+      --           bypass_session_save_file_types = require("user.resources").exclude_filetypes,
+      --           auto_session_create_enabled = false,
+      --         }
+      --       end,
+      --     },
+      --   },
+      -- },
     },
   }
 
@@ -303,11 +265,11 @@ return packer.startup(function(use)
         event = "InsertEnter",
         after = "nvim-treesitter",
       },
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
+      -- {
+      -- "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      -- event = "BufWinEnter",
+      -- after = "nvim-treesitter",
+      -- },
       -- {
       --   "nvim-treesitter/playground", -- for creating syntax queries
       --   event = "BufWinEnter",
@@ -328,12 +290,14 @@ return packer.startup(function(use)
   }
   use {
     "sindrets/diffview.nvim", -- diff and history viewer
+    requires = { "nvim-lua/plenary.nvim" },
     config = function()
       require "user.setups.diffview"
     end,
   }
   use {
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
+    requires = { "nvim-lua/plenary.nvim" },
     config = function()
       require "user.setups.octo"
     end,
@@ -348,21 +312,21 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   ----> Debug Adapter
   -----------------------------------------------------------------------------
-  use {
-    "mfussenegger/nvim-dap",
-    module = "dap",
-    cmd = {
-      "DapContinue",
-      "DapLoadLaunchFromJSON",
-      "DapToggleBreakpoint",
-      "DapToggleRepl",
-      "DapShowLog",
-    },
-    config = function()
-      require "user.setups.dap"
-    end,
-    requires = { "theHamsta/nvim-dap-virtual-text", "rcarriga/nvim-dap-ui" },
-  }
+  -- use {
+  --   "mfussenegger/nvim-dap",
+  --   module = "dap",
+  --   cmd = {
+  --     "DapContinue",
+  --     "DapLoadLaunchFromJSON",
+  --     "DapToggleBreakpoint",
+  --     "DapToggleRepl",
+  --     "DapShowLog",
+  --   },
+  --   config = function()
+  --     require "user.setups.dap"
+  --   end,
+  --   requires = { "theHamsta/nvim-dap-virtual-text", "rcarriga/nvim-dap-ui" },
+  -- }
 
   -----------------------------------------------------------------------------
   ----> Note Taking
@@ -396,14 +360,6 @@ return packer.startup(function(use)
       require "user.setups.which-key"
     end,
   }
-
-  -----------------------------------------------------------------------------
-  ----> Local
-  -----------------------------------------------------------------------------
-
-  if fn.isdirectory "~/.dotfiles/vendor/fzf" then
-    use "~/.dotfiles/vendor/fzf" -- use the local fzf plugin if it's installed
-  end
 
   -----------------------------------------------------------------------------
 

@@ -120,37 +120,49 @@ telescope.setup {
       },
     },
   },
-  extensions = {
-    project = {
-      hidden_files = true,
-      base_dirs = {
-        "~/.dotfiles",
-        "~/.config/nvim",
-        "~/dev/work/calcite-components",
-        "~/dev/work/calcite-components-examples",
-        "~/dev/work/arcgis-esm-samples",
-      },
-    },
-  },
+  -- extensions = {
+  --   project = {
+  --     hidden_files = true,
+  --     base_dirs = {
+  --       "~/.dotfiles",
+  --       "~/.config/nvim",
+  --       "~/dev/work/calcite-components",
+  --       "~/dev/work/calcite-components-examples",
+  --       "~/dev/work/arcgis-esm-samples",
+  --     },
+  --   },
+  -- },
 }
+keymap("n", "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find")
+keymap("n", "<leader>ff", "<cmd>Telescope find_files hidden=true<cr>", "Find File")
+keymap("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
+keymap("n", "<leader>ft", "<cmd>Telescope live_grep<cr>", "Find Text")
+keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", "Find Text")
+
+keymap("n", "<leader>lB", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics")
+keymap("n", "<leader>lQ", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix")
+keymap("n", "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols")
+keymap("n", "<leader>lW", "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics")
+keymap("n", "<leader>lW", "<cmd>Telescope lsp_references<cr>", "References")
+keymap("n", "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols")
 
 telescope.load_extension "fzf"
-telescope.load_extension "project"
-telescope.load_extension "git_worktree"
-telescope.load_extension "session-lens"
+-- telescope.load_extension "project"
+-- telescope.load_extension "git_worktree"
+-- telescope.load_extension "session-lens"
 
-keymap(
-  "n",
-  "<leader>gws",
-  "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
-  "Switch worktree"
-)
-keymap(
-  "n",
-  "<leader>gwa",
-  "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
-  "Create worktree"
-)
+-- keymap(
+--   "n",
+--   "<leader>gws",
+--   "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
+--   "Switch worktree"
+-- )
+-- keymap(
+--   "n",
+--   "<leader>gwa",
+--   "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
+--   "Create worktree"
+-- )
 
-keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
-keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")
+-- keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
+-- keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")

@@ -28,10 +28,3 @@ comment.setup {
   end,
 }
 
-keymap("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", "Toggle comment")
-keymap(
-  "x",
-  "<leader>/",
-  '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>',
-  "Toggle comment"
-)

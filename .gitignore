@@ -1,5 +1,6 @@
 # personal
 .dotfiles/git/personal.gitconfig
+.dotfiles/vim/after/syntax/*/gruvbox_material.vim
 .config/mutt/gmail.gpg
 notes/*
 !notes/.zk

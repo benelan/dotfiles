@@ -157,7 +157,10 @@ vnoremap <leader>ff :FZF<CR>
 
 inoremap jk <esc>
 nnoremap Y y$
-nnoremap Q <Nop>
+
+nnoremap Q q
+nnoremap q <Nop>
+
 nnoremap <Backspace> <C-^>
 
 vnoremap < <gv

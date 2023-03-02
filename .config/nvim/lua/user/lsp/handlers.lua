@@ -77,141 +77,40 @@ local get_highest_error_severity = function()
   end
 end
 
-local function lsp_keymaps(client, bufnr)
-  local buf_keymap = vim.api.nvim_buf_set_keymap
-  local opts = { noremap = true, silent = true }
+local function lsp_keymaps(bufnr)
+  local buf_keymap = function(mode, lhs, rhs, desc)
+    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
+  end
 
-  vim.keymap.set("n", "]d", function()
+  keymap("n", "]d", function()
     vim.diagnostic.goto_next {
       severity = get_highest_error_severity(),
       wrap = true,
       float = true,
     }
-  end, vim.list_extend({ desc = "Next diagnostic" }, opts))
+  end, "Next diagnostic")
 
-  vim.keymap.set("n", "[d", function()
+  keymap("n", "[d", function()
     vim.diagnostic.goto_prev {
       severity = get_highest_error_severity(),
       wrap = true,
       float = true,
     }
-  end, vim.list_extend({ desc = "Previous diagnostic" }, opts))
+  end, "Previous diagnostic")
 
-  buf_keymap(
-    bufnr,
-    "n",
-    "gl",
-    "<cmd>lua vim.diagnostic.open_float()<CR>",
-    vim.list_extend({
-      desc = "Line diagnostic",
-    }, opts)
-  )
-
-  if client.server_capabilities.renameProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gR",
-      "<cmd>lua vim.lsp.buf.rename()<CR>",
-      vim.list_extend({
-        desc = "LSP rename",
-      }, opts)
-    )
-  end
-  if client.server_capabilities.codeActionProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "ga",
-      "<cmd>lua vim.lsp.buf.code_action()<CR>",
-      vim.list_extend({
-        desc = "LSP code action",
-      }, opts)
-    )
-  end
-  if client.server_capabilities.signatureHelpProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gh",
-      "<cmd>lua vim.lsp.buf.signature_help()<CR>",
-      vim.list_extend({ desc = "LSP signature help" }, opts)
-    )
-  end
-  if client.server_capabilities.declarationProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gD",
-      "<cmd>lua vim.lsp.buf.declaration()<CR>",
-      vim.list_extend({
-        desc = "LSP declaration",
-      }, opts)
-    )
-  end
-  if client.server_capabilities.typeDefinitionProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gT",
-      "<cmd>lua vim.lsp.buf.type_definition()<CR>",
-      vim.list_extend({ desc = "LSP type definition" }, opts)
-    )
-  end
-  if client.server_capabilities.definitionProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gd",
-      "<cmd>lua vim.lsp.buf.definition()<CR>",
-      vim.list_extend({
-        desc = "LSP definition",
-      }, opts)
-    )
-  end
-  if client.server_capabilities.implementationProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gI",
-      "<cmd>lua vim.lsp.buf.implementation()<CR>",
-      vim.list_extend({ desc = "LSP implementation" }, opts)
-    )
-  end
-  if client.server_capabilities.referencesProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "gr",
-      "<cmd>lua vim.lsp.buf.references()<CR>",
-      vim.list_extend({
-        desc = "LSP references",
-      }, opts)
-    )
-  end
-  if client.server_capabilities.hoverProvider then
-    buf_keymap(
-      bufnr,
-      "n",
-      "K",
-      "<cmd>lua vim.lsp.buf.hover()<CR>",
-      vim.list_extend({
-        desc = "Hover",
-      }, opts)
-    )
-  end
-
-  -- if client.server_capabilities.codeLensProvider then
-  --   buf_keymap(
-  --     bufnr,
-  --     "n",
-  --     "gL", -- "<cmd>lua vim.lsp.buf.codelens.run()<CR>",
-  --     "<cmd>lua require('user.lsp.codelens').run()<CR>",
-  --     vim.list_extend({
-  --       desc = "LSP codelens",
-  --     }, opts)
-  --   )
-  -- end
+  buf_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", "LSP declaration")
+  buf_keymap("n", "gF", "<cmd>lua vim.lsp.buf.format{ async = true }<CR>", "Format")
+  buf_keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", "LSP implementation")
+  buf_keymap("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", "LSP rename")
+  buf_keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<CR>", "LSP type definition")
+  buf_keymap("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", "LSP code action")
+  buf_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", "LSP definition")
+  buf_keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", "LSP signature help")
+  buf_keymap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", "Line diagnostic")
+  buf_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", "LSP references")
+  buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
+  -- buf_keymap("n", "gL", "<cmd>lua require('user.lsp.codelens').run()<CR>", "LSP codelens")
+  -- or "<cmd>lua vim.lsp.buf.codelens.run()<CR>"
 end
 
 M.on_attach = function(client, bufnr)
@@ -240,7 +139,7 @@ M.on_attach = function(client, bufnr)
   --     buffer = bufnr,
   --   })
   -- end
-  lsp_keymaps(client, bufnr)
+  lsp_keymaps(bufnr)
 end
 
 return M

@@ -53,3 +53,4 @@ set statusline+=:                               " cursor column/line number sepa
 set statusline+=[%l/%L]                         " Current/total line numbers
 set statusline+=\                               " Whitespace
 set statusline+=\                               " Whitespace
+
