@@ -23,7 +23,7 @@ set complete-=i wildmenu wildmode=list:longest,full
 set report=0 laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=5 sidescrolloff=5
 set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
-set sessionoptions-=options viewoptions-=options
+set sessionoptions-=options viewoptions-=options noswapfile
 set backspace=indent,eol,start path-=/usr/include define= include=
 set foldcolumn=1 foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
@@ -118,6 +118,9 @@ endtry
 if isdirectory(expand('$HOME/.dotfiles/vendor/fzf'))
   set runtimepath+=$HOME/.dotfiles/vendor/fzf
 endif
+if isdirectory(expand('$HOME/.dotfiles/vim'))
+  set runtimepath+=$HOME/.dotfiles/vim
+endif
 
 " ----------------------------------------------------------------------
 " | Globals                                                            |
@@ -152,8 +155,8 @@ let g:markdown_fenced_languages = [
 
 let mapleader = " "
 
-nnoremap <leader>ff :FZF<CR>
-vnoremap <leader>ff :FZF<CR>
+nnoremap <leader>fz :FZF<CR>
+vnoremap <leader>fz :FZF<CR>
 
 inoremap jk <esc>
 nnoremap Y y$
@@ -167,9 +170,6 @@ vnoremap < <gv
 vnoremap > >gv
 
 nnoremap J mzJ`z
-
-nnoremap <C-d> <C-d>zz
-nnoremap <C-u> <C-u>zz
 
 nnoremap n nzzzv
 nnoremap N Nzzzv
@@ -185,6 +185,7 @@ vnoremap <leader>c "_c
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 vnoremap p "_dP
+nnoremap x "_x
 
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
@@ -275,7 +276,6 @@ nnoremap <leader>bs <C-w>s:e %:h/scratch.%:e<CR>
 nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
-nnoremap <leader>tm :tabmove
 
 "" Opens a new tab with the current buffer's path
 nnoremap <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
@@ -287,24 +287,20 @@ au TabLeave * let s:last_tab = tabpagenr()
 
 " Save/delete buffers
 inoremap <C-Q> :Bdelete<cr>
-inoremap <C-W> :write<cr>
 nnoremap <leader>w :w<cr>
-nnoremap <leader>W :wa<cr>
 nnoremap <leader>q :q<cr>
-nnoremap <leader>Q :wqa<cr>
-nnoremap <leader><C-q> :qa!<cr>
 inoremap <C-S> :write<cr>
 
 " Create splits
 nnoremap <leader>- :split<cr>
 nnoremap <leader>\ :vsplit<cr>
-nnoremap <leader>o <C-w>o
 
 " Navigate splits
 nnoremap <leader>h <C-W>h
 nnoremap <leader>j <C-W>j
 nnoremap <leader>k <C-W>k
 nnoremap <leader>l <C-W>l
+nnoremap <leader>o <C-w>o
 
 " Move splits
 nnoremap <leader>Left <C-W>H
@@ -355,13 +351,7 @@ noremap <leader>sw :<C-U>set wrap! wrap?<CR>
 ounmap <leader>sw
 sunmap <leader>sw
 
-"" shows the current file's fully expanded path
-nnoremap <leader>dp :<C-U>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>
-"" changes directory to the current file's location
-nnoremap <leader>dc :<C-U>cd %:h <Bar> pwd<CR>
-"" creates the path to the current file if it doesn't exist
-nnoremap <leader>dm :<C-U>call mkdir(expand('%:h'), 'p')<CR>
-
+nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
 nnoremap <leader>e :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
 
@@ -391,6 +381,14 @@ tnoremap <Esc><Esc> <C-\><C-n>
 tnoremap <S-Space> <Space>
 tnoremap <C-Space> <Space>
 
+xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+"" File explorer
+noremap <silent> <leader>E :NetrwToggle<CR>
+"" Diff conflicts
+nnoremap [x :ConflictPreviousHunk<cr>
+nnoremap ]x :ConflictNextHunk<cr>
+
 " ----------------------------------------------------------------------
 " | Autocommands                                                 |
 " ----------------------------------------------------------------------
@@ -407,9 +405,6 @@ if has("autocmd")
           autocmd  SourceCmd $MYVIMRC Src
         endif
 
-        " Return to last edit position when opening files
-        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
-                    \ | exe "normal! g'\"" | endif
     augroup END
     command! Src :source $MYVIMRC
 
@@ -435,54 +430,15 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Create marks for specific filetypes when leaving buffer
-    augroup filetype_marks
-      autocmd!
-      autocmd BufLeave *.css,*.scss,*.sass  normal! mC
-      autocmd BufLeave *.html               normal! mH
-      autocmd BufLeave *.js,*.jsx,*.json    normal! mJ
-      autocmd BufLeave *.ts,*.tsx           normal! mT
-      autocmd BufLeave *.sh                 normal! mS
-      autocmd BufLeave *.lua                normal! mL
-      autocmd BufLeave *.vim                normal! mV
-      autocmd BufLeave *.py                 normal! mP
-      autocmd BufLeave *.go                 normal! mG
-      autocmd BufLeave *.rs                 normal! mR
-    augroup END
-
-        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    " Automatically switch back and forth between absolute and relative line numbers
-    " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-    augroup relative_line_numbers
-        autocmd!
-        autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
-                    \ if &number && mode() != "i" | set relativenumber | endif
-        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
-                    \ if &number | set norelativenumber | endif
-    augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
     " Automatically strip whitespaces when files are saved.
     augroup strip_whitespaces
         let excludedFileTypes = []
         autocmd!
         autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 |
-            \ :call StripBOM() |
             \ :call StripTrailingWhitespace()
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    augroup get_git_info
-        autocmd!
-        autocmd BufWinEnter,FocusGained,BufWritePost *
-                    \ let g:git_status = s:GitInfoStatus() |
-                    \ let g:git_branch = s:GitInfoBranch()
-    augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif
 
 
@@ -512,100 +468,6 @@ tnoremap <silent> <C-t> <C-w>N:call <SID>ToggleTerminal()<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-function s:GitInfoBranch()
-    return trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
-endfunction
-
-function s:GitInfoStatus()
-    return trim(system("git -C " . expand("%:h") . " --no-pager diff --shortstat 2>/dev/null"))
-endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-let s:netrw_open=0
-function! s:ToggleNetrwLeft()
-    if s:netrw_open
-        let i=bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let s:netrw_open=0
-    else
-        let s:netrw_open=1
-        silent Lexplore
-    endif
-endfunction
-
-command! NetrwToggleLeft call <sid>NetrwToggleLeft()
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function! s:NetrwToggle()
-  try
-      Rexplore
-  catch
-      Explore
-  endtry
-endfunction
-
-command! NetrwToggle call <sid>NetrwToggle()
-noremap <silent> <leader>E :NetrwToggle<CR>
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-" go to next/previous merge conflict hunks
-function! s:conflictGoToMarker(pos, hunk) abort
-    if filter(copy(a:hunk), 'v:val == [0, 0]') == []
-        call cursor(a:hunk[0][0], a:hunk[0][1])
-        return 1
-    else
-        echohl ErrorMsg | echo 'conflict not found' | echohl None
-        call setpos('.', a:pos)
-        return 0
-    endif
-endfunction
-
-function! s:conflictNext(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), [
-                \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
-                \ searchpos('^=======', 'cW'),
-                \ searchpos('^>>>>>>>', 'cW'),
-                \ ])
-endfunction
-
-function! s:conflictPrevious(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), reverse([
-                \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
-                \ searchpos('^=======', 'bcW'),
-                \ searchpos('^<<<<<<<', 'bcW'),
-                \ ]))
-endfunction
-
-command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
-command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
-
-"" Diff conflicts
-nnoremap [x :ConflictPreviousHunk<cr>
-nnoremap ]x :ConflictNextHunk<cr>
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-"" Split array on to separate lines
-function! ExpandList()
-    silent s/\%V.*\%V/\="\r" . submatch(0)
-            \ ->split(',')
-            \ ->map({ i, v -> v->trim() })
-            \ ->join(",\r") . "\r"/g
-    silent normal ='[
-endfunction
-
-xnoremap <leader>[] :<C-u>call ExpandList()<CR>
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 function! StripTrailingWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -613,282 +475,3 @@ function! StripTrailingWhitespace()
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function! StripBOM()
-    if has('multi_byte')
-        set nobomb
-    endif
-endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-"" Visual mode pressing * or # searches for the current selection
-function! VisualSelection(direction, extra_filter) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", "\\/.*'$^~[]")
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'gv'
-        call feedkeys(":Ack '" . l:pattern . "' ")
-    elseif a:direction == 'replace'
-        call feedkeys(":%s/" . l:pattern . "/")
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
-
-xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-" Don't close window, when deleting a buffer
-command! Bdelete call <SID>Bdelete()
-function! <SID>Bdelete()
-    let l:currentBufNum = bufnr("%")
-    let l:alternateBufNum = bufnr("#")
-
-    if buflisted(l:alternateBufNum)
-        buffer #
-    else
-        bnext
-    endif
-
-    if bufnr("%") == l:currentBufNum
-        new
-    endif
-
-    if buflisted(l:currentBufNum)
-        execute("bdelete! ".l:currentBufNum)
-    endif
-endfunction
-
-" ----------------------------------------------------------------------
-" | Colors and Styling                                                 |
-" ----------------------------------------------------------------------
-
-set background=dark
-set t_Co=256
-if exists('+termguicolors')
-    set termguicolors
-endif
-
-" Fix modern terminal features
-" https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-" Styled and colored underline support
-let &t_AU = "\e[58:5:%dm"
-let &t_8u = "\e[58:2:%lu:%lu:%lum"
-let &t_Us = "\e[4:2m"
-let &t_Cs = "\e[4:3m"
-let &t_ds = "\e[4:4m"
-let &t_Ds = "\e[4:5m"
-let &t_Ce = "\e[4:0m"
-" Strikethrough
-let &t_Ts = "\e[9m"
-let &t_Te = "\e[29m"
-" Truecolor support
-let &t_8f = "\e[38:2:%lu:%lu:%lum"
-let &t_8b = "\e[48:2:%lu:%lu:%lum"
-let &t_RF = "\e]10;?\e\\"
-let &t_RB = "\e]11;?\e\\"
-" Bracketed paste
-let &t_BE = "\e[?2004h"
-let &t_BD = "\e[?2004l"
-let &t_PS = "\e[200~"
-let &t_PE = "\e[201~"
-" Cursor control
-let &t_RC = "\e[?12$p"
-let &t_SH = "\e[%d q"
-let &t_RS = "\eP$q q\e\\"
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-let &t_EI = "\e[1 q"
-let &t_VS = "\e[?12l"
-" Focus tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-execute "set <FocusGained>=\<Esc>[I"
-execute "set <FocusLost>=\<Esc>[O"
-" Window title
-let &t_ST = "\e[22;2t"
-let &t_RT = "\e[23;2t"
-
-" vim hardcodes background color erase even if the terminfo file does
-" not contain bce. This causes incorrect background rendering when
-" using a color theme with a background color in terminals such as
-" kitty that do not support background color erase.
-let &t_ut=''
-
-" https://github.com/sainnhe/gruvbox-material
-let g:gruvbox_material_background = "soft"
-let g:gruvbox_material_foreground = "original"
-let g:gruvbox_material_ui_contrast = "high"
-let g:gruvbox_material_statusline_style = "material"
-let g:gruvbox_material_diagnostic_virtual_text = "colored"
-" let g:gruvbox_material_spell_foreground = "colored"
-" let g:gruvbox_material_sign_column_background = "grey"
-" let g:gruvbox_material_menu_selection_background = "orange"
-" let g:gruvbox_material_current_word = "bold"
-" let g:gruvbox_material_visual = "reverse"
-
-let g:gruvbox_material_better_performance = 1
-let g:gruvbox_material_diagnostic_text_highlight = 1
-let g:gruvbox_material_enable_italic = 1
-" let g:gruvbox_material_enable_bold = 1
-" let g:gruvbox_material_disable_italic_comment = 1
-" let g:gruvbox_material_transparent_background = 1
-" let g:gruvbox_material_disable_terminal_colors = 1
-" let g:gruvbox_material_dim_inactive_windows = 1
-colorscheme gruvbox-material
-
-" https://github.com/morhetz/gruvbox
-" let g:gruvbox_bold = 1
-" let g:gruvbox_italic = 1
-" let g:gruvbox_contrast_dark = 'medium'
-" colorscheme gruvbox
-
-
-  " Terminal types:
-  "
-  "   1) term  (normal terminals, e.g.: vt100, xterm)
-  "   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
-  "   3) gui   (GUIs)
-
-" legible error and spelling highlighting
-" hi clearSpellBad SpellCap SpellLocal SpellRare
-" hi SpellBad cterm=underline ctermfg=Red ctermbg=NONE
-" hi SpellCap cterm=underline ctermfg=Yellow ctermbg=NONE
-" hi SpellLocal cterm=underline ctermfg=Blue ctermbg=NONE
-" hi SpellRare cterm=underline ctermfg=Green ctermbg=NONE
-
-hi clear Search IncSearch
-hi Search cterm=bold,underline ctermfg=Magenta ctermbg=NONE
-hi IncSearch ctermfg=Magenta ctermbg=NONE
-
-hi clear Error ErrorMsg
-" hi Error term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-" hi ErrorMsg term=reverse cterm=bold ctermfg=Red ctermbg=None guifg=Red guibg=NONE
-
-" Statusline colors
-highlight! link User1 TabLineSel  " guifg=#282828 guibg=#a89984 gui=bold cterm=bold ctermbg=247 ctermfg=234
-highlight! link User2 TabLine     " guifg=#c0ad8e guibg=#504945 gui=bold cterm=bold ctermbg=240 ctermfg=230
-highlight! link User3 TabLineFill " guifg=#ddc7a1 guibg=#32302f gui=bold cterm=bold ctermbg=236 ctermfg=230
-
-" Highlight current line number differently
-highlight! link CursorLineNr Purple
-
-" ----------------------------------------------------------------------
-" | Statusline                                                         |
-" ----------------------------------------------------------------------
-
-set statusline=
-set statusline+=%1*                             " User1 highlight
-set statusline+=\                               " Whitespace
-set statusline+=\ [%n]                          " Buffer number
-set statusline+=%m                              " Modified flag
-set statusline+=%r                              " Readonly flag
-set statusline+=%h                              " Help file flag
-set statusline+=%w                              " Preview window flag
-set statusline+=\                               " Whitespace
-set statusline+=\ %2*                           " User2 highlight
-set statusline+=\                               " Whitespace
-set statusline+=\ %{&ff}                        " File format
-set statusline+=\                               " Whitespace
-set statusline+=\ %{strlen(&fenc)?&fenc:'none'} " File encoding
-set statusline+=\                               " Whitespace
-set statusline+=\ %y                            " File type
-set statusline+=\                               " Whitespace
-set statusline+=\ %3*                           " User3 highlight
-set statusline+=\                               " Whitespace
-set statusline+=\ %{g:git_branch}               " Git info
-set statusline+=\                               " Whitespace
-" set statusline+=\ %{g:git_status}               " Git info
-set statusline+=%=                              " Left/Right separator
-set statusline+=\ %2*                           " User2 highlight
-set statusline+=\                               " Whitespace
-set statusline+=%f                              " File name
-set statusline+=\ %1*                           " User1 highlight
-set statusline+=\                               " Whitespace
-set statusline+=\ %l                            " Current line number
-set statusline+=:                               " Current location separator
-set statusline+=%c                              " Current column number
-set statusline+=\                               " Whitespace
-set statusline+=\ %P                            " Percent through file
-set statusline+=\                               " Whitespace
-set statusline+=\                               " Whitespace
-
-" ----------------------------------------------------------------------
-" | Tabline                                                            |
-" ----------------------------------------------------------------------
-set tabline=%!MyTabLine()
-function! BufferInfo() abort
-    let current = bufnr('%')
-    let buffers = filter(range(1, bufnr('$')), {i, v ->
-                \  buflisted(v) && getbufvar(v, '&filetype') isnot# 'qf'
-                \ })
-    let index_current = index(buffers, current) + 1
-    let modified = getbufvar(current, '&modified') ? '+' : ''
-    let count_buffers = len(buffers)
-    return index_current isnot# 0 && count_buffers ># 1
-                \ ? printf('%s/%s', index_current, count_buffers)
-                \ : ''
-endfunction
-
-function! TabCWD() abort
-    let cwd = fnamemodify(getcwd(), ':~')
-    if cwd isnot# '~/'
-        let cwd = len(cwd) <=# 15 ? pathshorten(cwd) : cwd
-        return cwd
-    else
-        return ''
-    endif
-endfunction
-
-function! TabCount() abort
-    let count_tabs = tabpagenr('$')
-    return count_tabs isnot# 1
-                \ ? printf('T%d/%d', tabpagenr(), count_tabs)
-                \ : ''
-endfunction
-
-function! TabLineRightInfo() abort
-  let right_info = '%=' . '%( %{BufferInfo()} %)'
-  let right_info .= '%#TabLine#' . '%( %{TabCWD()} %)'
-  let right_info .= '%#TabLineFill#' . '%( %{TabCount()} %)'
-  return right_info
-endfunction
-
-function! MyTabLine()
-  let s = ''
-  for i in range(tabpagenr('$'))
-    let tab = i + 1
-    let winnr = tabpagewinnr(tab)
-    let buflist = tabpagebuflist(tab)
-    let bufnr = buflist[winnr - 1]
-    let bufname = bufname(bufnr)
-    let bufmodified = getbufvar(bufnr, "&mod")
-
-    let s .= '%' . tab . 'T'
-    let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let s .= ' ' . tab .':'
-    let s .= (bufname != '' ? '['. fnamemodify(bufname, ':t') . '] ' : '[No Name] ')
-
-    if bufmodified
-      let s .= '[+] '
-    endif
-  endfor
-
-  let s .= '%#TabLineFill#'
-  return s . TabLineRightInfo()
-endfunction
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-" a lot was learned and barrowed from:
-" https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/vim/vimrc
-

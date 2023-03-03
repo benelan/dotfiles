@@ -344,65 +344,6 @@ vim.cmd [[
   omap <leader>5 <leader>%
 ]]
 
--- Pressing * or # in Visual mode
--- searches for the current selection
-vim.cmd [[
-  function! VisualSelection(direction, extra_filter) range
-      let l:saved_reg = @"
-      execute "normal! vgvy"
-
-      let l:pattern = escape(@", "\\/.*'$^~[]")
-      let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-      if a:direction == 'gv'
-          call feedkeys(":Ack '" . l:pattern . "' ")
-      elseif a:direction == 'replace'
-          call feedkeys(":%s/" . l:pattern . "/")
-      endif
-
-      let @/ = l:pattern
-      let @" = l:saved_reg
-  endfunction
-
-  xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-  xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
-]]
-
--- Find and goto merge conflict markers
-vim.cmd [[
-  " go to next/previous merge conflict hunks
-  function! s:conflictGoToMarker(pos, hunk) abort
-      if filter(copy(a:hunk), 'v:val == [0, 0]') == []
-          call cursor(a:hunk[0][0], a:hunk[0][1])
-          return 1
-      else
-          echohl ErrorMsg | echo 'conflict not found' | echohl None
-          call setpos('.', a:pos)
-          return 0
-      endif
-  endfunction
-
-  function! s:conflictNext(cursor) abort
-      return s:conflictGoToMarker(getpos('.'), [
-                  \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
-                  \ searchpos('^=======', 'cW'),
-                  \ searchpos('^>>>>>>>', 'cW'),
-                  \ ])
-  endfunction
-
-  function! s:conflictPrevious(cursor) abort
-      return s:conflictGoToMarker(getpos('.'), reverse([
-                  \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
-                  \ searchpos('^=======', 'bcW'),
-                  \ searchpos('^<<<<<<<', 'bcW'),
-                  \ ]))
-  endfunction
-
-
-  command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
-  command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
-  ]]
-
 -- Go to the first floating window
 vim.cmd [[
   function! s:GotoFirstFloat() abort
@@ -415,18 +356,6 @@ vim.cmd [[
   endfunction
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
-]]
-
--- Toggle Netrw file explorer
-vim.cmd [[
-  function! s:NetrwToggle()
-    try
-        Rexplore
-    catch
-        Explore
-    endtry
-  endfunction
-  command! NetrwToggle call <sid>NetrwToggle()
 ]]
 
 -------------------------------------------------------------------------------

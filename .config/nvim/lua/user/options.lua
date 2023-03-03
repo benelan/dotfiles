@@ -1,78 +1,23 @@
-vim.opt.autoread = true                         -- automatically read file after outside changes
-vim.opt.breakindentopt = "shift:2"              -- shift two characters left when breakindent-ing
-vim.opt.clipboard = "unnamed,unnamedplus"       -- allows neovim to access the system clipboard
-vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
-vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
-vim.opt.confirm = true                          -- raise a dialog instead of failing operations like quit or write
-vim.opt.cursorline = true                       -- highlight the current line
-vim.opt.emoji = false                           -- fixes rendering issues
-vim.opt.expandtab = true                        -- convert tabs to spaces
-vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
-vim.opt.foldcolumn = "0"                        -- how many fold columns to display
-vim.opt.foldenable = true                       -- enable folding
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter to determine fold
-vim.opt.foldlevel = 99                          -- set the fold level to closed
-vim.opt.foldlevelstart = 99                     -- start with all folds closed
-vim.opt.foldmethod = "expr"                     -- use foldexpr to set fold (below)
-vim.opt.formatoptions:append "l"                -- :help formatoptions
-vim.opt.formatoptions:remove "t,a,r,o"          -- :help formatoptions
-vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
-vim.opt.ignorecase = true                       -- ignore case in search patterns
-vim.opt.iskeyword:append "-"                    -- treats words with `-` as single words
-vim.opt.jumpoptions = "stack"                   -- behave like web browser history
-vim.opt.laststatus = 3                          -- Only show one status line
-vim.opt.linebreak = true                        -- don't wrap in the middle of words
-vim.opt.mousehide = true                        -- hide the mouse while typing
-vim.opt.number = true                           -- show the current line number instead of 0
-vim.opt.numberwidth = 2                         -- number of columns to use for the line number
-vim.opt.pastetoggle = "<Leader><C-v>"           -- toggle automatically indenting pastes
-vim.opt.pumblend = 3                            -- completion popup blending
-vim.opt.pumheight = 10                          -- pop up menu height
-vim.opt.relativenumber = true                   -- show +/- offset number from the current line
-vim.opt.ruler = false                           -- hide the line and column number of the cursor position
-vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
-vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
-vim.opt.shortmess:append "Iac"                  -- changes what types of messages are shown
-vim.opt.showbreak = "↪  "                       -- character disabled before wrapped lines ↪  …
-vim.opt.showcmd = false                         -- I already know what I'm typing
-vim.opt.showmode = false                        -- we don"t need to see things like -- INSERT -- anymore
-vim.opt.showtabline = 2                         -- always show tabs
-vim.opt.sidescrolloff = 8                       -- left/right column padding, only applies when wrap=false
-vim.opt.signcolumn = "yes"                      -- always show the sign column to prevent text shifting
-vim.opt.smartcase = true                        -- smart case
-vim.opt.smartindent = true                      -- make indenting smarter again
-vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
-vim.opt.spelllang = "en"
-vim.opt.spelloptions:append "camel"             -- when a word is CamelCased, assume "Cased" is a separate word
-vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
-vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
-vim.opt.swapfile = false                        -- creates a swapfile
-vim.opt.switchbuf = "useopen,uselast"          -- determines where to go when switching buffers
-vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
-vim.opt.timeoutlen = 300                        -- time to wait for a mapped sequence to complete (in milliseconds)
-vim.opt.undofile = true                         -- enable persistent undo
-vim.opt.undolevels = 10000                      -- How man undoes to store
-vim.opt.updatetime = 300                        -- faster completion (4000ms default)
-vim.opt.whichwrap:append "<,>,[,]"              -- keys to move to the previous/next line when at the start/end of line
-vim.opt.wildignorecase = true                   -- ignore filename/directory case for completion
-vim.opt.wrap = true                             -- display lines as one long line
-if vim.fn.executable 'rg'  == 1 then            -- use ripgrep instead of grep
+vim.opt.clipboard = "unnamed,unnamedplus"
+vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
+vim.opt.updatetime = 100
+vim.opt.confirm = true
+vim.opt.pastetoggle = "<Leader><C-v>"
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+
+if vim.fn.executable "rg" == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --glob '!.git'"
 end
-vim.opt.sessionoptions:remove "help,folds"
--- add some common code directories to path
-vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
--- use the patience diff algorithm
-vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
--- options for cmp
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
--- change fold characters
-vim.opt.fillchars = [[eob: ,fold: ,foldsep: ,foldopen:⯆,foldclose:⯈,diff:╱]] -- ⮟ ⮞  ⯆ ⯈
--- change invisible characters
-vim.opt.listchars = [[tab:|->,extends:»,precedes:«,trail:·,multispace:· ,nbsp:_,eol:↵]]
--- set fonts with fallbacks for GUI
-vim.opt.guifont = "Iosevka,JetBrainsMono_Nerd_Font,SauceCodePro_Nerd_Font,Ubuntu_Mono,monospace:h11"
--- add patterns to ignore
+vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
+vim.opt.hlsearch = false
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.wildignorecase = true
 vim.opt.wildignore:append(
   "*~,#*#,*.7z,.DS_Store,.git/*,.hg,.svn,"
     .. "*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bmp,*.bz2,"
@@ -84,3 +29,33 @@ vim.opt.wildignore:append(
     .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,"
     .. "*/node_modules/*,*/dist/*,*/build/*"
 )
+
+vim.opt.signcolumn = "yes"
+vim.opt.cursorline = true
+vim.opt.laststatus = 3
+vim.opt.showtabline = 2
+vim.opt.relativenumber = true
+vim.opt.number = true
+vim.opt.numberwidth = 2
+
+vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
+vim.opt.fillchars = "diff:╱"
+vim.opt.listchars = [[extends:»,precedes:«,trail:·,multispace:· ,nbsp:_]]
+vim.opt.scrolloff = 8
+vim.opt.sidescrolloff = 8
+
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.softtabstop = -1
+
+vim.opt.spelloptions:append "camel"
+vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
+
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+
+vim.opt.swapfile = false
+vim.opt.undofile = true
+vim.opt.undolevels = 4269
