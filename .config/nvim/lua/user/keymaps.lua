@@ -14,6 +14,7 @@
 -- >          t	    Terminal-Job                                              |
 -------------------------->  :h map-listing  <---------------------------------
 keymap("", "<Space>", "<Nop>")
+vim.g.mapleader = " "
 
 keymap("n", "<Backspace>", "<C-^>")
 
@@ -54,7 +55,12 @@ keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 keymap("n", "<leader><C-N>", ":normal!<space>", "Execute normal")
 
 -- :vimgrep
-keymap("n", "<C-/>", ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>", "Execute vimgrep")
+keymap(
+  "n",
+  "<C-/>",
+  ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
+  "Execute vimgrep"
+)
 
 -- :lhelpgrep
 keymap("n", "<C-?>", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
@@ -106,9 +112,19 @@ keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
 keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
 
 -- diagnostic error
-keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>", "Next Error")
+keymap(
+  "n",
+  "]e",
+  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
+  "Next Error"
+)
 
-keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>", "Previous Error")
+keymap(
+  "n",
+  "[e",
+  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
+  "Previous Error"
+)
 
 -- Add blank lines (not a list but same keymap set)
 local function create_array(count, item)
@@ -136,17 +152,47 @@ end, "Add Space Above")
 
 keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update Merge Diff")
 
-keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose Hunk From Remote")
+keymap(
+  { "n", "v" },
+  "<leader>gmr",
+  "<cmd>diffget RE<cr>",
+  "Choose Hunk From Remote"
+)
 
-keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose All From Remote")
+keymap(
+  { "n", "v" },
+  "<leader>gmR",
+  "<cmd>%diffget RE<cr>",
+  "Choose All From Remote"
+)
 
-keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose Hunk From Base")
+keymap(
+  { "n", "v" },
+  "<leader>gmb",
+  "<cmd>diffget BA<cr>",
+  "Choose Hunk From Base"
+)
 
-keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose All From Base")
+keymap(
+  { "n", "v" },
+  "<leader>gmB",
+  "<cmd>%diffget BA<cr>",
+  "Choose All From Base"
+)
 
-keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose Hunk From Local")
+keymap(
+  { "n", "v" },
+  "<leader>gml",
+  "<cmd>diffget LO<cr>",
+  "Choose Hunk From Local"
+)
 
-keymap({ "n", "v" }, "<leader>gmL", "<cmd>diffget LO<cr>", "Choose All From Local")
+keymap(
+  { "n", "v" },
+  "<leader>gmL",
+  "<cmd>diffget LO<cr>",
+  "Choose All From Local"
+)
 
 -------------------------------------------------------------------------------
 ----> Windows
@@ -173,13 +219,28 @@ keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
 keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
 keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
 
-keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>", "Focus First Floating Window")
+keymap(
+  { "n", "x" },
+  "<M-f>",
+  "<CMD>GotoFirstFloat<CR>",
+  "Focus First Floating Window"
+)
 
 -- resize
 keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease Horizontal Window Size")
 keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase Horizontal Window Size")
-keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease Vertical Window Size")
-keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase Vertical Window Size")
+keymap(
+  "n",
+  "<C-Left>",
+  "<CMD>vertical resize -5<CR>",
+  "Decrease Vertical Window Size"
+)
+keymap(
+  "n",
+  "<C-Right>",
+  "<CMD>vertical resize +5<CR>",
+  "Increase Vertical Window Size"
+)
 
 --  move
 keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
@@ -209,7 +270,11 @@ keymap({ "n", "i" }, "<M-q>", "<CMD>wqa<CR>", "Write Quit All")
 keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write All")
 
 -- sudo save the file
-vim.api.nvim_create_user_command("W", "execute 'w !sudo tee % > /dev/null' <Bar> edit!", {})
+vim.api.nvim_create_user_command(
+  "W",
+  "execute 'w !sudo tee % > /dev/null' <Bar> edit!",
+  {}
+)
 
 -------------------------------------------------------------------------------
 ----> Toggle options
@@ -363,6 +428,7 @@ vim.cmd [[
 -------------------------------------------------------------------------------
 
 -- Vifm
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "-", "<cmd>Vifm<cr>", "File explorer")
 keymap("n", "<leader>E", "<cmd>Vifm<cr>", "File explorer")
 keymap("n", "<leader>Ev", "<cmd>VsplitVifm<cr>", "File explorer (vertical)")
@@ -370,9 +436,11 @@ keymap("n", "<leader>Eh", "<cmd>SplitVifm<cr>", "File explorer (horizontal)")
 keymap("n", "<leader>Et", "<cmd>TabVifm<cr>", "File explorer (tab)")
 
 -- Undotree
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")
 
 -- Codeium
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("i", "<M-y>", function()
   return vim.fn["codeium#Accept"]()
 end, "Codeium Accept")
@@ -388,3 +456,65 @@ end, "Codeium Previous")
 keymap("i", "<M-e>", function()
   return vim.fn["codeium#Clear"]()
 end, "Codeium Clear")
+
+-- Goto Preview
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+keymap(
+  "n",
+  "gpI",
+  "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",
+  "Preview implementation"
+)
+keymap(
+  "n",
+  "gpd",
+  "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",
+  "Preview definition"
+)
+keymap(
+  "n",
+  "gpt",
+  "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>",
+  "Preview type definition"
+)
+keymap(
+  "n",
+  "gpr",
+  "<cmd>lua require('goto-preview').goto_preview_references()<CR>",
+  "Preview references"
+)
+keymap(
+  "n",
+  "gpq",
+  "<cmd>lua require('goto-preview').close_all_win()<CR>",
+  "Close previews"
+)
+keymap("n", "gpf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
+
+-- Zk
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+-- Create a new note after asking for its title.
+keymap(
+  "n",
+  "<leader>zn",
+  "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
+  "New note"
+)
+-- Open notes.
+keymap(
+  "n",
+  "<leader>zo",
+  "<Cmd>ZkNotes { sort = { 'modified' } }<CR>",
+  "Open notes"
+)
+-- Open notes associated with the selected tags.
+keymap("n", "<leader>zt", "<Cmd>ZkTags<CR>", "Tags")
+-- Search for the notes matching a given query.
+keymap(
+  "n",
+  "<leader>zf",
+  "<Cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>",
+  "Find notes"
+)
+-- Search for the notes matching the current visual selection.
+keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", "Find notes")

@@ -123,33 +123,6 @@ if isdirectory(expand('$HOME/.dotfiles/vim'))
 endif
 
 " ----------------------------------------------------------------------
-" | Globals                                                            |
-" ----------------------------------------------------------------------
-
-let g:netrw_altfile = 1
-let g:netrw_alto = 1
-let g:netrw_altv = 1
-let g:netrw_banner = 0
-" let g:netrw_keepdir = 0
-" let g:netrw_liststyle = 3
-let g:netrw_localmkdiropt	= " -p"
-let g:netrw_preview = 1
-let g:netrw_sort_by = "extent"
-let g:netrw_usetab = 1
-let g:netrw_winsize = 25
-
-
-" Helps with syntax highlighting by specififying filetypes
-" for common abbreviations used in markdown fenced code blocks
-let g:markdown_fenced_languages = [
-      \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
-      \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
-      \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
-      \ 'yml=yaml', 'shell=sh', 'py=python',
-      \ 'ts=typescript', 'tsx=typescriptreact',
-      \ 'js=javascript', 'jsx=javascriptreact' ]
-
-" ----------------------------------------------------------------------
 " | Key Mappings                                                       |
 " ----------------------------------------------------------------------
 

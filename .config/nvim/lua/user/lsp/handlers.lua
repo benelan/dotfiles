@@ -109,8 +109,6 @@ local function lsp_keymaps(bufnr)
   buf_keymap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", "Line diagnostic")
   buf_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", "LSP references")
   buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
-  -- buf_keymap("n", "gL", "<cmd>lua require('user.lsp.codelens').run()<CR>", "LSP codelens")
-  -- or "<cmd>lua vim.lsp.buf.codelens.run()<CR>"
 end
 
 M.on_attach = function(client, bufnr)
@@ -120,25 +118,6 @@ M.on_attach = function(client, bufnr)
   if client.name == "lua_ls" then
     client.server_capabilities.documentFormattingProvider = false
   end
-
-  -- if client.server_capabilities.codeLensProvider then
-  --   vim.api.nvim_clear_autocmds { group = augroup_codelens, buffer = bufnr }
-  --   vim.api.nvim_create_autocmd("BufEnter", {
-  --     group = augroup_codelens,
-  --     callback = function()
-  --       vim.lsp.codelens.refresh()
-  --     end,
-  --     buffer = bufnr,
-  --     once = true,
-  --   })
-  --   vim.api.nvim_create_autocmd({ "BufWritePost", "CursorHold" }, {
-  --     group = augroup_codelens,
-  --     callback = function()
-  --       vim.lsp.codelens.refresh()
-  --     end,
-  --     buffer = bufnr,
-  --   })
-  -- end
   lsp_keymaps(bufnr)
 end
 

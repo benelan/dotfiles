@@ -1,10 +1,46 @@
 local cmp_status_ok, cmp = pcall(require, "cmp")
-local res_status_ok, res = pcall(require, "user.resources")
 local snip_status_ok, ls = pcall(require, "luasnip")
-if not cmp_status_ok or not snip_status_ok or not res_status_ok then
+if not cmp_status_ok or not snip_status_ok then
   return
 end
 local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
+
+local kinds = {
+  Array = "   ",
+  Boolean = " ◩  ",
+  Class = " 🝆  ",
+  Color = "   ",
+  Constant = " ℂ ", --
+  Constructor = "   ",
+  Enum = "   ",
+  EnumMember = "   ", -- 
+  Event = "   ",
+  Field = " 𝔽  ",
+  File = "   ",
+  Folder = "   ",
+  Function = "   ",
+  Interface = "   ", -- 
+  Key = " 𝕂  ",
+  Keyword = " 󰌋  ",
+  Method = "   ",
+  Module = "   ",
+  Namespace = "   ",
+  Null = " ∅  ",
+  Number = "   ",
+  Object = "   ",
+  Operator = " ∓  ", -- 
+  Package = "   ", -- ⧠
+  Property = " ℙ  ", -- 
+  Reference = " ℝ  ",
+  Snippet = "   ",
+  String = "   ",
+  Struct = "   ",
+  Text = "   ",
+  TypeParameter = "   ",
+  Unit = "   ",
+  Value = "   ",
+  Variable = " 𝕍  ",
+}
 
 local has_words_before = function()
   unpack = unpack or table.unpack
@@ -92,10 +128,10 @@ cmp.setup {
           vim_item.kind = " " .. icon .. "  "
           vim_item.kind_hl_group = hl_group
         else
-          vim_item.kind = res.icons.kind[vim_item.kind]
+          vim_item.kind = kinds[vim_item.kind]
         end
       else
-        vim_item.kind = res.icons.kind[vim_item.kind]
+        vim_item.kind = kinds[vim_item.kind]
       end
       vim_item.menu = ({
         buffer = " [BUF] ",

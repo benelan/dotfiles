@@ -1,27 +1,34 @@
+
 " ---------------------------------------------------------------------------
-" | User commands
+" | Settings                                                                |
 " ---------------------------------------------------------------------------
 
-let s:netrw_open=0
-function! s:ToggleNetrwLeft()
-    if s:netrw_open
-        let i=bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let s:netrw_open=0
-    else
-        let s:netrw_open=1
-        silent Lexplore
-    endif
-endfunction
+let g:netrw_altfile = 1
+let g:netrw_alto = 1
+let g:netrw_altv = 1
+let g:netrw_banner = 0
+" let g:netrw_keepdir = 0
+" let g:netrw_liststyle = 3
+let g:netrw_localmkdiropt	= " -p"
+let g:netrw_preview = 1
+let g:netrw_sort_by = "extent"
+let g:netrw_usetab = 1
+let g:netrw_winsize = 25
 
-command! NetrwToggleLeft call <sid>NetrwToggleLeft()
+let g:markdown_recommended_style = 0
+" Helps with syntax highlighting by specififying filetypes
+" for common abbreviations used in markdown fenced code blocks
+let g:markdown_fenced_languages = [
+      \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
+      \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
+      \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
+      \ 'yml=yaml', 'shell=sh', 'py=python',
+      \ 'ts=typescript', 'tsx=typescriptreact',
+      \ 'js=javascript', 'jsx=javascriptreact' ]
 
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+" ---------------------------------------------------------------------------
+" | User commands                                                           |
+" ---------------------------------------------------------------------------
 
 function! s:NetrwToggle()
   try
