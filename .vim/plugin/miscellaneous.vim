@@ -138,24 +138,20 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Easier navigation in filetypes with wrapped lines
-    augroup long_line_keymaps
+    augroup filetype_options
         autocmd!
+        autocmd FileType * setlocal formatoptions-=o
+
+        autocmd FileType qf,help,man
+                    \ set nobuflisted |
+                    \ nnoremap <silent> <buffer> q :close<CR>
+
         autocmd FileType markdown,gitcommit,text
                     \ setlocal wrap spell nornu nonu |
                     \ nnoremap <buffer> <silent> j gj |
                     \ nnoremap <buffer> <silent> k gk |
                     \ nnoremap <buffer> <silent> ^ g^ |
                     \ nnoremap <buffer> <silent> $ g$
-    augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    augroup fast_quit
-        autocmd!
-        autocmd FileType qf,help,man
-                    \ set nobuflisted |
-                    \ nnoremap <silent> <buffer> q :close<CR>
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

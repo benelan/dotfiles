@@ -9,7 +9,7 @@ augroup END
 function s:GitInfoBranch()
     let l:branch_name = trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
     if l:branch_name != ""
-      return  "⎇  ". l:branch_name
+      return  "  ⎇  ". l:branch_name
     else
     return ""
   endif
@@ -36,12 +36,12 @@ set statusline+=\                               " Whitespace
 set statusline+=\ %#TabLine#                    " TabLine highlight
 set statusline+=\                               " Whitespace
 set statusline+=\ %y                            " File type
-set statusline+=\                               " Whitespace
-set statusline+=\ %{g:git_branch}               " Git branch info
+set statusline+=%{g:git_branch}                 " Git branch info
 set statusline+=\                               " Whitespace
 set statusline+=\ %#TabLineFill#                " TabLineFill highlight
 " set statusline+=\ %{g:git_status}             " Git status info
 set statusline+=%=                              " Left/Right separator
+set statusline+=\                               " Whitespace
 set statusline+=\ %#TabLine#                    " TabLine highlight
 set statusline+=\                               " Whitespace
 set statusline+=\ %f                            " File name

@@ -426,11 +426,11 @@ vim.cmd [[
 
 -- Vifm
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-keymap("n", "-", "<cmd>Vifm<cr>", "File explorer")
-keymap("n", "<leader>E", "<cmd>Vifm<cr>", "File explorer")
-keymap("n", "<leader>Ev", "<cmd>VsplitVifm<cr>", "File explorer (vertical)")
-keymap("n", "<leader>Eh", "<cmd>SplitVifm<cr>", "File explorer (horizontal)")
-keymap("n", "<leader>Et", "<cmd>TabVifm<cr>", "File explorer (tab)")
+keymap("n", "-", "<cmd>Vifm<cr>", "Vifm")
+keymap("n", "<leader>E", "<cmd>Vifm<cr>", "Vifm")
+keymap("n", "<leader>Ev", "<cmd>VsplitVifm<cr>", "Vifm (vertical)")
+keymap("n", "<leader>Eh", "<cmd>SplitVifm<cr>", "Vifm (horizontal)")
+keymap("n", "<leader>Et", "<cmd>TabVifm<cr>", "Vifm (tab)")
 
 -- Undotree
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
