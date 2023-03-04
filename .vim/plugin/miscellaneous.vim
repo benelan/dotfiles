@@ -142,10 +142,10 @@ if has("autocmd")
     augroup long_line_keymaps
         autocmd!
         autocmd FileType markdown,gitcommit,text
-                    \ setlocal wrap setlocal spell |
-                    \ nnoremap <buffer> <silent> j gj
-                    \ nnoremap <buffer> <silent> k gk
-                    \ nnoremap <buffer> <silent> ^ g^
+                    \ setlocal wrap spell nornu nonu |
+                    \ nnoremap <buffer> <silent> j gj |
+                    \ nnoremap <buffer> <silent> k gk |
+                    \ nnoremap <buffer> <silent> ^ g^ |
                     \ nnoremap <buffer> <silent> $ g$
     augroup END
 
@@ -153,7 +153,7 @@ if has("autocmd")
 
     augroup fast_quit
         autocmd!
-        autocmd FileType gf,help,man
+        autocmd FileType qf,help,man
                     \ set nobuflisted |
                     \ nnoremap <silent> <buffer> q :close<CR>
     augroup END
@@ -178,13 +178,4 @@ if has("autocmd")
         autocmd BufNewFile .prettierrc.json 0r ~/.dotfiles/templates/.prettierrc.json
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/templates/license.md
     augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    augroup resize_windows
-        autocmd!
-        autocmd VimResized * tabdo wncmd =
-    augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif

@@ -7,44 +7,39 @@ end
 M.capabilities = cmp_nvim_lsp.default_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-M.capabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true,
-}
-
-M.capabilities.textDocument.codeLens = { dynamicRegistration = false }
-
 local diagnostic_levels = {
   {
     name = "DiagnosticSignError",
-    text = "",
+    text = " ",
     severity = vim.diagnostic.severity.ERROR,
   },
   {
     name = "DiagnosticSignWarn",
-    text = "",
+    text = " ",
     severity = vim.diagnostic.severity.WARN,
   },
   {
     name = "DiagnosticSignHint",
-    text = "🗭",
+    text = "🗩 ", -- "",
     severity = vim.diagnostic.severity.HINT,
   },
   {
     name = "DiagnosticSignInfo",
-    text = "",
+    text = " ",
     severity = vim.diagnostic.severity.Info,
   },
 }
 
--- local augroup_codelens = vim.api.nvim_create_augroup("my-lsp-codelens", { clear = true })
 M.setup = function()
   for _, sign in ipairs(diagnostic_levels) do
-    vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
+    vim.fn.sign_define(
+      sign.name,
+      { texthl = sign.name, text = sign.text, numhl = "" }
+    )
   end
 
   local config = {
-    virtual_text = { source = "if_many", spacing = 15, right_align = true },
+    virtual_text = true,
     update_in_insert = false,
     underline = true,
     severity_sort = true,
@@ -61,9 +56,11 @@ M.setup = function()
 
   vim.diagnostic.config(config)
 
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "solid" })
+  vim.lsp.handlers["textDocument/hover"] =
+    vim.lsp.with(vim.lsp.handlers.hover, { border = "solid" })
 
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "solid" })
+  vim.lsp.handlers["textDocument/signatureHelp"] =
+    vim.lsp.with(vim.lsp.handlers.signature_help, { border = "solid" })
 end
 
 -- Skip past hints so I can fix my errors first
@@ -79,7 +76,13 @@ end
 
 local function lsp_keymaps(bufnr)
   local buf_keymap = function(mode, lhs, rhs, desc)
-    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
+    vim.api.nvim_buf_set_keymap(
+      bufnr,
+      mode,
+      lhs,
+      rhs,
+      { silent = true, noremap = true, desc = desc or nil }
+    )
   end
 
   keymap("n", "]d", function()
@@ -98,16 +101,61 @@ local function lsp_keymaps(bufnr)
     }
   end, "Previous diagnostic")
 
-  buf_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", "LSP declaration")
-  buf_keymap("n", "gF", "<cmd>lua vim.lsp.buf.format{ async = true }<CR>", "Format")
-  buf_keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", "LSP implementation")
+  buf_keymap(
+    "n",
+    "gD",
+    "<cmd>lua vim.lsp.buf.declaration()<CR>",
+    "LSP declaration"
+  )
+  buf_keymap(
+    "n",
+    "gF",
+    "<cmd>lua vim.lsp.buf.format()<CR>",
+    "Format"
+  )
+  buf_keymap(
+    "n",
+    "gI",
+    "<cmd>lua vim.lsp.buf.implementation()<CR>",
+    "LSP implementation"
+  )
   buf_keymap("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", "LSP rename")
-  buf_keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<CR>", "LSP type definition")
-  buf_keymap("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", "LSP code action")
-  buf_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", "LSP definition")
-  buf_keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", "LSP signature help")
-  buf_keymap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", "Line diagnostic")
-  buf_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", "LSP references")
+  buf_keymap(
+    "n",
+    "gT",
+    "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+    "LSP type definition"
+  )
+  buf_keymap(
+    "n",
+    "ga",
+    "<cmd>lua vim.lsp.buf.code_action()<CR>",
+    "LSP code action"
+  )
+  buf_keymap(
+    "n",
+    "gd",
+    "<cmd>lua vim.lsp.buf.definition()<CR>",
+    "LSP definition"
+  )
+  buf_keymap(
+    "n",
+    "gh",
+    "<cmd>lua vim.lsp.buf.signature_help()<CR>",
+    "LSP signature help"
+  )
+  buf_keymap(
+    "n",
+    "gl",
+    "<cmd>lua vim.diagnostic.open_float()<CR>",
+    "Line diagnostic"
+  )
+  buf_keymap(
+    "n",
+    "gr",
+    "<cmd>lua vim.lsp.buf.references()<CR>",
+    "LSP references"
+  )
   buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
 end
 
