@@ -1,6 +1,5 @@
 # personal
 .dotfiles/git/personal.gitconfig
-.dotfiles/vim/after/syntax/*/gruvbox_material.vim
 .config/mutt/gmail.gpg
 notes/*
 !notes/.zk
@@ -14,6 +13,8 @@ notes/.zk/notebook.db
 .vim/swaps/
 .vim/backups/
 .vim/.netrwhist
+.vim/after/syntax/*/gruvbox_material.vim
+.dotfiles/vim/after/syntax/*/gruvbox_material.vim
 # unrelated home directories
 .cache
 .cargo

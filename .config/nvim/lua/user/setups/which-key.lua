@@ -9,20 +9,17 @@ which_key.setup()
 which_key.register({
   ["gp"] = { name = "Preview" },
   ["<leader>"] = {
-    -- S = { name = "Sessions" },
-    -- b = { name = "Buffers" },
     -- d = { name = "Debug" },
     f = { name = "Find" },
     l = { name = "LSP" },
     s = { name = "Settings" },
     t = { name = "Tabs" },
     z = { name = "Ztk" },
-    Z = { name = "Telekasten" },
     g = {
       name = "Git",
       m = { name = "Mergetool" },
       t = { name = "Toggle options" },
-      w = { name = "Worktree" },
+      -- w = { name = "Worktree" },
     },
     o = {
       name = "Octo (GitHub)",
@@ -48,6 +45,5 @@ which_key.register({
   ["<leader>"] = {
     g = { name = "Git", m = { name = "Mergetool" } },
     z = { name = "Ztk" },
-    Z = { name = "Telekasten" },
   },
 }, { mode = "x" })

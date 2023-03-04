@@ -51,9 +51,6 @@ keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 ----> Prepare Ex commands
 -------------------------------------------------------------------------------
 
--- :normal
-keymap("n", "<leader><C-N>", ":normal!<space>", "Execute normal")
-
 -- :vimgrep
 keymap(
   "n",

@@ -12,20 +12,19 @@ if has('syntax') && !exists('syntax_on')
 endif
 
 set omnifunc=syntaxcomplete#Complete
-set number wrap linebreak formatoptions+=l1 cpoptions+=J
+set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
-set langmenu=en_US encoding=utf-8 nobomb nrformats-=octal
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent
-set nomodeline showcmd nostartofline notitle shortmess+=aIF t_vb=
-set tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab
+set nomodeline nostartofline t_vb= nrformats-=octal
+set tabstop=4 softtabstop=-1 shiftwidth=4 smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
-set report=0 laststatus=2 showtabline=2 display+=lastline
-set splitbelow splitright scrolloff=5 sidescrolloff=5
+set laststatus=2 showtabline=2 display+=lastline
+set splitbelow splitright scrolloff=8 sidescrolloff=8
 set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
 set sessionoptions-=options viewoptions-=options noswapfile
-set backspace=indent,eol,start path-=/usr/include define= include=
-set foldcolumn=1 foldmethod=indent foldlevel=99 foldclose=all
+set path-=/usr/include define= include=
+set foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,
     \*.class,*.db,*.dbm,*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,
@@ -42,7 +41,7 @@ if v:version > 801 || v:version == 801 && has("patch1519")
 endif
 set backupskip+=/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*
 
-if !has('nvim') && &ttimeoutlen == -1
+if &ttimeoutlen == -1
     set ttimeout ttimeoutlen=100
 endif
 
@@ -50,23 +49,17 @@ if has('extra_search')
     set hlsearch incsearch
 endif
 
-if has('linebreak')
-    set numberwidth=5
-endif
-
 if has('multi_byte_encoding')
-    set listchars=trail:·,nbsp:_,eol:↴,tab:▸\
     set listchars+=extends:»,precedes:«
-    set showbreak=…
+    let &showbreak= "…  "
 else
-    set showbreak=...
+    let &showbreak= "... "
 endif
 if exists('+breakindent')
     set breakindent
 endif
 
 if has('syntax')
-    set spelllang=en_us
     set cursorline
     set colorcolumn=+2
 endif
@@ -100,26 +93,15 @@ endif
 if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
-if v:version > 801 || v:version == 801 && has("patch728")
-    set formatoptions+=p
-endif
 
 if has('persistent_undo')
     set undodir=$HOME/.vim/undos
     set undofile
 endif
 
-try
-    set switchbuf=useopen,usetab,newtab
-catch
-    set spellcapcheck=[.?!]\\%(\ \ \\\|[\\n\\r\\t]\\)
-endtry
-
-if isdirectory(expand('$HOME/.dotfiles/vendor/fzf'))
-  set runtimepath+=$HOME/.dotfiles/vendor/fzf
-endif
-if isdirectory(expand('$HOME/.dotfiles/vim'))
-  set runtimepath+=$HOME/.dotfiles/vim
+let s:fzf_path=expand('$HOME/.dotfiles/vendor/fzf')
+if isdirectory(s:fzf_path)
+  set runtimepath+=s:fzf_path
 endif
 
 " ----------------------------------------------------------------------
@@ -190,9 +172,6 @@ nnoremap <silent> gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol("
 nnoremap <silent> gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),'<Bar>')<CR>
-
-"" Fast saving/quitting
-nnoremap <leader>q :q<cr>
 
 "" :W sudo saves the file
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!

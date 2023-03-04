@@ -1,9 +1,8 @@
-local fn = vim.fn
-
 -- Automatically install packer
-local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
-if fn.empty(fn.glob(install_path)) > 0 then
-  PACKER_BOOTSTRAP = fn.system {
+local install_path = vim.fn.stdpath "data"
+  .. "/site/pack/packer/start/packer.nvim"
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  PACKER_BOOTSTRAP = vim.fn.system {
     "git",
     "clone",
     "--depth",
@@ -21,8 +20,8 @@ if not status_ok then
   return
 end
 
--- Have packer use a popup window
 packer.init {
+  -- use snapshot as a semi-lockfile
   snapshot = table.concat(
     { vim.fn.stdpath "config", "snapshots", "nightly.json" },
     "/"
@@ -33,9 +32,7 @@ packer.init {
       return require("packer.util").float { border = "solid" }
     end,
   },
-  git = {
-    clone_timeout = 300, -- Timeout, in seconds, for git clones
-  },
+  git = { clone_timeout = 300 }, -- timeout is in seconds
 }
 
 -- All the plugins are loaded below
@@ -46,12 +43,10 @@ return packer.startup(function(use)
   use "nvim-tree/nvim-web-devicons"
   -- end
 
-  -----------------------------------------------------------------------------
-  ----> Local
-  -----------------------------------------------------------------------------
-
-  use { "~/.dotfiles/vim" } -- use the local, shared vimscript files
-  use { "~/.dotfiles/vendor/fzf", cmd = "FZF" } -- use the local fzf plugin if it's installed
+  -- use the local fzf plugin if it's installed
+  if vim.fn.isdirectory(os.getenv "HOME" .. "/.dotfiles/vendor/fzf/") then
+    use { "~/.dotfiles/vendor/fzf", cmd = "FZF" }
+  end
 
   -----------------------------------------------------------------------------
   ----> Completions
@@ -123,8 +118,10 @@ return packer.startup(function(use)
       },
     },
   }
+
   use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
+    module = "goto-preview",
     config = function()
       require("goto-preview").setup {}
     end,
@@ -240,7 +237,7 @@ return packer.startup(function(use)
   -- }
 
   -----------------------------------------------------------------------------
-  ----> Note Taking
+  ----> Notes/Writing
   -----------------------------------------------------------------------------
   use {
     "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
@@ -266,7 +263,7 @@ return packer.startup(function(use)
   use { "rstacruz/vim-closer", event = "InsertEnter" } -- closes brackets after <CR>
   use { "mbbill/undotree", event = "BufWinEnter" } -- Easily go back in undo history
   use {
-    "unblevable/quick-scope", -- highlight quickest letter in words for horiz movement
+    "unblevable/quick-scope", -- highlight letter in words for fastest horiz movement
     event = "BufWinEnter",
   }
   use {
