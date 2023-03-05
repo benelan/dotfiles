@@ -236,16 +236,16 @@ dot() {
 
 # creates env vars so git plugins
 # work with the bare dotfiles repo
-edot() {
+edit_dotfiles() {
     # shellcheck disable=2016
-    "$EDITOR" "${@:-"$HOME/.dotfiles"}" \
+    "$EDITOR" "${@:-}" \
         --cmd "cd %:h | pwd" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
 }
 
-alias ehome="edot ~"
-alias envim="edot ~/.config/nvim/init.lua"
+alias edot="edit_dotfiles -c 'Telescope git_files'"
+alias envim="edit_dotfiles ~/.config/nvim/init.lua"
 
 alias d='dot'
 
