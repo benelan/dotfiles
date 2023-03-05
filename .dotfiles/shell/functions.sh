@@ -253,25 +253,6 @@ function ips() {
 # Git
 #---------------------------------------------------------------------------------
 
-# git wip (work in progress)
-# commit changes that will cleaned up later during rebase
-gwip() {
-    git add -A && git commit -qm "chore: WIP $(date -Iseconds)"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# git reset
-# commit all changes for safety and reset
-greset() {
-    timestamp="$(date -Iseconds)"
-    git add -A && git commit -qm "chore: RESET $timestamp"
-    git reset HEAD~1
-    git stash push -m "RESET $timestamp"
-
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # git clone worktree
 # Clones a bare repo for use with git-worktree and creates an
 # initial worktree called asdf that tracks the default branch.
@@ -347,7 +328,7 @@ function gcofup() {
 # or creates it if it doesn't exist.
 # Syncs the checked out branch with the default branch
 # [Usage] create/checkout branch benelan/2807-slots and sync with master:
-# $ gcomm 2807-slots
+# $ gcoup 2807-slots
 function gcoup() {
     git checkout "$(gbdefault)"
     git pull

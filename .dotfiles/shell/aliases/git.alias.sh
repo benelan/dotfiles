@@ -11,6 +11,12 @@ alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
 # Same as above but works in bare repos and is more accurate, but slower
 alias gbdefault-bare='git remote show $(git remote | grep -Eo "(upstream|origin)" | tail -1) | grep "HEAD branch" | cut -d" " -f5'
 alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
+
+# git wip (work in progress)
+# commit changes that will cleaned up later during rebase
+alias gwip='git add -A && git commit -qm "chore: [WIP] $(date -Iseconds)"'
+
+
 # add
 ######
 alias ga='git add'

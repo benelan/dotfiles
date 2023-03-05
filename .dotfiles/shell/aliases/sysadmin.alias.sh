@@ -8,21 +8,17 @@ alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 # pass options to free
 alias meminfo='free -m -l -t'
 
-# get top process eating memory
+# get top processes eating memory
 alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
 alias psmem10='ps auxf | sort -nrk 4 | head -10 | perl -e "print reverse <>"'
 
-# get top process eating cpu
+# get top processes eating cpu
 alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 alias pscpu10='ps auxf | sort -nrk 3 | head -10 | perl -e "print reverse <>"'
 
-# get GPU ram on desktop / laptop
-alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log'
-
-# shortcut  for iptables and pass it via sudo
 alias ipt='sudo /sbin/iptables'
 
-# display all rules
+# display iptables rules
 alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
 alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
 alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
@@ -49,9 +45,6 @@ alias scult='systemctl list-units --type target --all --user'
 alias speedtest="wget -O /dev/null http://speed.transip.nl/100mb.bin"
 
 alias vpn="protonvpn-cli"
-
-# URL-encode strings
-alias urlencode='python3 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
 # Stop after sending count ECHO_REQUEST packets
 alias ping='ping -c 5'
@@ -99,8 +92,8 @@ unset method
 alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
 # delete every containers / images
 alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
-alias dockstats='docker stats $(docker ps -q)'
 # stats on images
+alias dockstats='docker stats $(docker ps -q)'
 # list images installed
 alias dockimg='docker images'
 # prune everything
