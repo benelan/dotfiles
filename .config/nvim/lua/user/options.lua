@@ -69,38 +69,47 @@ local function table_length(T)
   return count
 end
 
-function StatusLine()
-  local lsp = string.format(
-    "LSP:[%dE %dW %dH]",
+local function git_branch()
+  if vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
+    local branch = vim.fn["fugitive#Head"]()
+    if branch and branch ~= "" then
+      return "⎇  " .. branch
+    end
+  end
+  return ""
+end
+
+local function buffer_diagnostics()
+  return string.format(
+    "%s%s%d  %s%s%d  %s%s%d",
+    "%#ErrorFloat#",
+    "  ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.ERROR,
     })),
+    "%#WarningFloat#",
+    "  ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.WARN,
     })),
+    "%#HintFloat#",
+    "󱠂  ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.HINT,
     }))
   )
-
-  local git = ""
-  if vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
-    local git_branch = vim.fn["fugitive#Head"]()
-    if git_branch and git_branch ~= "" then
-      git = "⎇  " .. git_branch
-    end
-  end
-
-  return "%#TabLineSel#  "
-    .. "[%n]%m%r%h%w%q%y  "
-    .. "%#TabLine#  "
-    .. "%f  "
-    .. "%#TabLineFill#  "
-    .. git
-    .. "  %=  "
-    .. "%#TabLine#  "
-    .. lsp
-    .. "  %#TabLineSel#  "
-    .. "%c:[%l/%L]  "
 end
 
+function StatusLine()
+  return "%#TabLineSel#  "
+    .. "[%n]%m%r%h%w%q%y  "
+    .. "%#NormalFloat#  "
+    .. buffer_diagnostics()
+    .. "  %#TabLineFill#  "
+    .. git_branch()
+    .. "  %=  "
+    .. "%#NormalFloat#  "
+    .. "%f  "
+    .. "%#TabLineSel#  "
+    .. "%c:[%l/%L]  "
+end

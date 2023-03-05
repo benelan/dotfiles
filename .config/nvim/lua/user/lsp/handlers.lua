@@ -20,7 +20,7 @@ local diagnostic_levels = {
   },
   {
     name = "DiagnosticSignHint",
-    text = "🗩 ", -- "",
+    text = "󱠂 ",
     severity = vim.diagnostic.severity.HINT,
   },
   {
