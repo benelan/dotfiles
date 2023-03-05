@@ -40,7 +40,7 @@ return packer.startup(function(use)
   use "wbthomason/packer.nvim" -- packer manages itself
 
   -- if os.getenv "OG_TERM" == "wezterm" then
-  use "nvim-tree/nvim-web-devicons"
+  -- use "nvim-tree/nvim-web-devicons"
   -- end
 
   -- use the local fzf plugin if it's installed

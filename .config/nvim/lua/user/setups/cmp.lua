@@ -10,42 +10,47 @@ local kinds = {
   Boolean = " ◩  ",
   Class = " 🝆  ",
   Color = "   ",
-  Constant = " ℂ ", --
+  Constant = " 󰭷  ",
   Constructor = "   ",
   Enum = "   ",
-  EnumMember = "   ", -- 
+  EnumMember = "   ",
   Event = "   ",
-  Field = " 𝔽  ",
+  Field = "   ",
   File = "   ",
   Folder = "   ",
-  Function = "   ",
+  Function = "   ", -- 󰡱
   Interface = "   ", -- 
-  Key = " 𝕂  ",
+  Key = " 󰌋  ",
   Keyword = " 󰌋  ",
   Method = "   ",
-  Module = "   ",
+  Module = " 󰶮  ",
   Namespace = "   ",
   Null = " ∅  ",
   Number = "   ",
   Object = "   ",
-  Operator = " ∓  ", -- 
-  Package = "   ", -- ⧠
-  Property = " ℙ  ", -- 
-  Reference = " ℝ  ",
+  Operator = "   ",
+  Package = "   ",
+  Property = "   ",
+  Reference = "   ",
   Snippet = "   ",
   String = "   ",
   Struct = "   ",
   Text = "   ",
   TypeParameter = "   ",
   Unit = "   ",
-  Value = "   ",
-  Variable = " 𝕍  ",
+  Value = "   ",
+  Variable = "   ",
 }
 
 local has_words_before = function()
   unpack = unpack or table.unpack
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+  return col ~= 0
+    and vim.api
+        .nvim_buf_get_lines(0, line - 1, line, true)[1]
+        :sub(col, col)
+        :match "%s"
+      == nil
 end
 
 local vscode_snips = require "luasnip/loaders/from_vscode"
@@ -66,10 +71,13 @@ cmp.setup {
     ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
     ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
     ["<C-e>"] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
-    ["<C-y>"] = cmp.mapping(cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true }, {
-      "i",
-      "c",
-    }),
+    ["<C-y>"] = cmp.mapping(
+      cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true },
+      {
+        "i",
+        "c",
+      }
+    ),
     ["<C-x>"] = cmp.mapping(
       cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Replace,
@@ -120,25 +128,28 @@ cmp.setup {
     end, { "i", "s", "c" }),
   },
   formatting = {
-    fields = { "kind", "abbr", "menu" },
+    fields = { "abbr", "menu", "kind" },
     format = function(entry, vim_item)
-      if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
-        local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
+      if
+        vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay
+      then
+        local icon, hl_group =
+          devicons.get_icon(entry:get_completion_item().label)
         if icon then
-          vim_item.kind = " " .. icon .. "  "
+          vim_item.kind = " " .. icon .. "  " .. vim_item.kind .. "  "
           vim_item.kind_hl_group = hl_group
         else
-          vim_item.kind = kinds[vim_item.kind]
+          vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
         end
       else
-        vim_item.kind = kinds[vim_item.kind]
+        vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
       end
       vim_item.menu = ({
         buffer = " [BUF] ",
         nvim_lsp = " [LSP] ",
         nvim_lsp_signature_help = " [LSP] ",
         nvim_lua = " [API] ",
-        path = " [PATH] ",
+        path = "[PATH] ",
         luasnip = "[SNIP] ",
       })[entry.source.name]
       return vim_item
@@ -163,18 +174,7 @@ cmp.setup {
       cmp.config.compare.order,
     },
   },
-  -- confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = false },
-  window = {
-    -- completion = cmp.config.window.bordered({scrollbar = false}),
-    -- documentation = cmp.config.window.bordered({scrollbar = false}),
-    completion = {
-      scrollbar = false,
-      side_padding = 1,
-      col_offset = -2,
-      -- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-    },
-    documentation = { scrollbar = false, side_padding = 2 },
-  },
+  window = { completion = { winhighlight = "Normal:Pmenu" } },
   experimental = { ghost_text = true },
 }
 
