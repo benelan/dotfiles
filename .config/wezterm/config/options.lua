@@ -9,10 +9,12 @@ return {
   -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
     "Iosevka",
-    "Iosevka Nerd Font",
     "Ubuntu Mono",
+    "Fira Mono",
+    "Liberation Mono",
+    "Monospace",
   },
-  font_size = 13,
+  font_size = 14,
   scrollback_lines = 10000,
   color_scheme = utils.color_scheme,
   colors = {
