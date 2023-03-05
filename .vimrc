@@ -99,6 +99,7 @@ if has('persistent_undo')
     set undofile
 endif
 
+
 let s:fzf_path=expand('$HOME/.dotfiles/vendor/fzf')
 if isdirectory(s:fzf_path)
   set runtimepath+=s:fzf_path
@@ -342,7 +343,7 @@ nnoremap [x :ConflictPreviousHunk<cr>
 nnoremap ]x :ConflictNextHunk<cr>
 
 " ----------------------------------------------------------------------
-" | Autocommands                                                 |
+" | Autocommands                                                       |
 " ----------------------------------------------------------------------
 
 if has("autocmd")
@@ -427,3 +428,47 @@ function! StripTrailingWhitespace()
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfunction
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function g:GitBranch()
+    let l:branch_name = trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
+    if l:branch_name != ""
+        return  "⎇  ". l:branch_name
+    else
+        return ""
+    endif
+endfunction
+
+
+" ----------------------------------------------------------------------
+" | Statusline                                                         |
+" ----------------------------------------------------------------------
+
+set statusline=%#TabLineSel#                   " TabLineSel highlight
+set statusline+=\ \                             " Whitespace
+set statusline+=[%n]                            " Buffer number
+set statusline+=%m                              " Modified flag
+set statusline+=%r                              " Readonly flag
+set statusline+=%h                              " Help file flag
+set statusline+=%w                              " Preview window flag
+set statusline+=%q                              " Quickfix/location list flag
+set statusline+=\ \                             " Whitespace
+set statusline+=%#TabLine#                      " TabLine highlight
+set statusline+=\ \                             " Whitespace
+set statusline+=%y                              " File type
+set statusline+=\ \                             " Whitespace
+set statusline+=%#TabLineFill#                  " TabLineFill highlight
+set statusline+=\ \                             " Whitespace
+set statusline+=%{g:GitBranch()}                " Git status info
+set statusline+=%=                              " Left/Right separator
+set statusline+=\ \                             " Whitespace
+set statusline+=%#TabLine#                      " TabLine highlight
+set statusline+=\ \                             " Whitespace
+set statusline+=%f                              " File name
+set statusline+=\ \                             " Whitespace
+set statusline+=%#TabLineSel#                   " TabLineSel highlight
+set statusline+=\ \                             " Whitespace
+set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
+set statusline+=\ \                             " Whitespace
+

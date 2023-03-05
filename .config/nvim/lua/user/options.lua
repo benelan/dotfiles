@@ -58,3 +58,49 @@ vim.opt.splitright = true
 vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.opt.undolevels = 4269
+
+vim.opt.statusline = "%!v:lua.StatusLine()"
+
+local function table_length(T)
+  local count = 0
+  for _ in pairs(T) do
+    count = count + 1
+  end
+  return count
+end
+
+function StatusLine()
+  local lsp = string.format(
+    "LSP:[%dE %dW %dH]",
+    table_length(vim.diagnostic.get(0, {
+      severity = vim.diagnostic.severity.ERROR,
+    })),
+    table_length(vim.diagnostic.get(0, {
+      severity = vim.diagnostic.severity.WARN,
+    })),
+    table_length(vim.diagnostic.get(0, {
+      severity = vim.diagnostic.severity.HINT,
+    }))
+  )
+
+  local git = ""
+  if vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
+    local git_branch = vim.fn["fugitive#Head"]()
+    if git_branch and git_branch ~= "" then
+      git = "⎇  " .. git_branch
+    end
+  end
+
+  return "%#TabLineSel#  "
+    .. "[%n]%m%r%h%w%q%y  "
+    .. "%#TabLine#  "
+    .. "%f  "
+    .. "%#TabLineFill#  "
+    .. git
+    .. "  %=  "
+    .. "%#TabLine#  "
+    .. lsp
+    .. "  %#TabLineSel#  "
+    .. "%c:[%l/%L]  "
+end
+
