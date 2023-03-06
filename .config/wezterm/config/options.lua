@@ -8,13 +8,14 @@ return {
   default_cwd = wezterm.home_dir,
   -- default_domain = "WSL:Ubuntu",
   font = wezterm.font_with_fallback {
+    "Iosevka Nerd Font",
     "Iosevka",
     "Ubuntu Mono",
     "Fira Mono",
     "Liberation Mono",
     "Monospace",
   },
-  font_size = 14,
+  font_size = 12,
   scrollback_lines = 10000,
   color_scheme = utils.color_scheme,
   colors = {
