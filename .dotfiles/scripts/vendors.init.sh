@@ -8,7 +8,7 @@ NEOVIM_PATH="$VENDOR_PATH/neovim"
 /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive
 
 if [ -d "$FZF_PATH" ]; then
-    cd "$FZF_PATH" || return
+    cd "$FZF_PATH" || exit 1
     git fetch --tags --all
     git checkout master
     git pull
@@ -19,13 +19,13 @@ if [ -d "$FZF_PATH" ]; then
 fi
 
 if [ -d "$NEOVIM_PATH" ]; then
-    cd "$NEOVIM_PATH" || return
+    cd "$NEOVIM_PATH" || exit 1
+    git fetch --all
+    git pull origin master
     git checkout nightly
-    git pull
     sudo make CMAKE_BUILD_TYPE=Release
     sudo make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.dotfiles/cache"
     sudo make install
-    chmod +x "$NEOVIM_PATH/build/bin/nvim"
 fi
 
 unset VENDOR_PATH FZF_PATH NEOVIM_PATH
