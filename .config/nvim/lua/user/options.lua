@@ -109,9 +109,9 @@ function StatusLine()
     .. buffer_diagnostics()
     .. "  %#TabLineFill#  "
     .. git_branch()
-    .. "  %=  "
+    .. "  %="
     .. "%#NormalFloat#  " -- .. "%#Normal#  "
     .. "%f  "
     .. "%#TabLineSel#  "
-    .. "%c:[%l/%L]  "
+    .. "%c:[%l/%L]%<  "
 end
