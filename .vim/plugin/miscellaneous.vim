@@ -1,4 +1,3 @@
-
 " ---------------------------------------------------------------------------
 " | Settings                                                                |
 " ---------------------------------------------------------------------------
@@ -26,15 +25,27 @@ let g:markdown_fenced_languages = [
       \ 'ts=typescript', 'tsx=typescriptreact',
       \ 'js=javascript', 'jsx=javascriptreact' ]
 
+"" Leader,r acts as a replacement operator
+map <Leader>r <Plug>(ReplaceOperator)
+ounmap <Leader>r
+sunmap <Leader>r
+
+nmap g: <Plug>(ColonOperator)
+
+" Repeat the last command and add a bang
+nnoremap <Leader>! :<Up><Home><S-Right>!<CR>
+nmap <Leader>1 <Leader>!
+
+noremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
+nnoremap <Leader><Delete> :bdelete<CR>
+
 " ---------------------------------------------------------------------------
 " | User commands                                                           |
 " ---------------------------------------------------------------------------
 
 function! s:NetrwToggle()
-  try
-      Rexplore
-  catch
-      Explore
+  try | Rexplore
+  catch | Explore
   endtry
 endfunction
 
@@ -93,6 +104,31 @@ function! VisualSelection(direction, extra_filter) range
     let @" = l:saved_reg
 endfunction
 
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" Don't close window when deleting a buffer
+function s:BdeleteKeepWindow(action, bang)
+  let l:currentBufNum = bufnr("%")
+  let l:alternateBufNum = bufnr("#")
+  if buflisted(l:alternateBufNum)
+      buffer #
+  else
+      bnext
+  endif
+  if bufnr("%") == l:currentBufNum
+      new
+  endif
+  if buflisted(l:currentBufNum)
+      execute(a:action.a:bang.' '.l:currentBufNum)
+  endif
+endfunction
+
+command! -bang -complete=buffer -nargs=? Bdelete
+	\ :call s:BdeleteKeepWindow("bdelete", <q-bang>)
+
+command! -bang -complete=buffer -nargs=? Bwipeout
+	\ :call s:BdeleteKeepWindow("bwipeout", <q-bang>)
+
 " ---------------------------------------------------------------------------
 " | Autocommands                                                            |
 " ---------------------------------------------------------------------------
@@ -112,16 +148,18 @@ if has("autocmd")
     " Create marks for specific filetypes when leaving buffer
     augroup filetype_marks
       autocmd!
-      autocmd BufLeave *.css,*.scss,*.sass  normal! mC
-      autocmd BufLeave *.html               normal! mH
-      autocmd BufLeave *.js,*.jsx,*.json    normal! mJ
-      autocmd BufLeave *.ts,*.tsx           normal! mT
-      autocmd BufLeave *.sh                 normal! mS
-      autocmd BufLeave *.lua                normal! mL
-      autocmd BufLeave *.vim                normal! mV
-      autocmd BufLeave *.py                 normal! mP
-      autocmd BufLeave *.go                 normal! mG
-      autocmd BufLeave *.rs                 normal! mR
+      autocmd BufLeave *.css,*.scss,*.sass      normal! mC
+      autocmd BufLeave *.csv,*.json*            normal! mD
+      autocmd BufLeave *.go                     normal! mG
+      autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
+      autocmd BufLeave *.js,*.jsx               normal! mJ
+      autocmd BufLeave *.lua                    normal! mL
+      autocmd BufLeave *.py                     normal! mP
+      autocmd BufLeave *.rs                     normal! mR
+      autocmd BufLeave *.sh,*.bash              normal! mS
+      autocmd BufLeave *.ts,*.tsx               normal! mT
+      autocmd BufLeave *.vim                    normal! mV
+      autocmd BufLeave *.yml,*.yaml             normal! mY
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,8 +194,8 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Enter insert mode when opening terminal
-    augroup terminal_enter_insert_mode
+    " Start insert mode when entering terminal and normal when leaving
+    augroup terminal_insert_mode
         autocmd!
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
@@ -175,3 +213,99 @@ if has("autocmd")
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/templates/license.md
     augroup END
 endif
+
+
+" ---------------------------------------------------------------------------
+" | Fold Text                                                               |
+" ---------------------------------------------------------------------------
+" http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
+
+set foldtext=MyFoldText()
+
+function! MyFoldText()
+  " get first non-blank line
+  let fs = v:foldstart
+
+  while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+  endwhile
+
+  if fs > v:foldend
+      let line = getline(v:foldstart)
+  else
+      let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+  endif
+
+  let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+  let foldSize = 1 + v:foldend - v:foldstart
+  let foldSizeStr = " " . foldSize . " lines "
+  let foldLevelStr = repeat("+--", v:foldlevel)
+  let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
+  return line . expansionString . foldSizeStr . foldLevelStr
+endfunction
+
+" ---------------------------------------------------------------------------
+" | TabLine                                                                 |
+" ---------------------------------------------------------------------------
+
+set tabline=%!MyTabLine()
+
+function! BufferInfo() abort
+    let current = bufnr('%')
+    let buffers = filter(range(1, bufnr('$')), {i, v ->
+                \  buflisted(v) && getbufvar(v, '&filetype') isnot# 'qf'
+                \ })
+    let index_current = index(buffers, current) + 1
+    let modified = getbufvar(current, '&modified') ? '+' : ''
+    let count_buffers = len(buffers)
+    return index_current isnot# 0 && count_buffers ># 1
+                \ ? printf('%s/%s', index_current, count_buffers)
+                \ : ''
+endfunction
+
+function! TabCWD() abort
+    let cwd = fnamemodify(getcwd(), ':~')
+    if cwd isnot# '~/'
+        let cwd = len(cwd) <=# 15 ? pathshorten(cwd) : cwd
+        return cwd
+    else
+        return ''
+    endif
+endfunction
+
+function! TabCount() abort
+    let count_tabs = tabpagenr('$')
+    return count_tabs isnot# 1
+                \ ? printf('T%d/%d', tabpagenr(), count_tabs)
+                \ : ''
+endfunction
+
+function! TabLineRightInfo() abort
+  let right_info = '%=' . '%( %{BufferInfo()} %)'
+  let right_info .= '%#TabLine#' . '%( %{TabCWD()} %)'
+  let right_info .= '%#TabLineFill#' . '%( %{TabCount()} %)'
+  return right_info
+endfunction
+
+function! MyTabLine()
+  let s = ''
+  for i in range(tabpagenr('$'))
+    let tab = i + 1
+    let winnr = tabpagewinnr(tab)
+    let buflist = tabpagebuflist(tab)
+    let bufnr = buflist[winnr - 1]
+    let bufname = bufname(bufnr)
+    let bufmodified = getbufvar(bufnr, "&mod")
+
+    let s .= '%' . tab . 'T'
+    let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+    let s .= ' ' . tab .':'
+    let s .= (bufname != '' ? '['. fnamemodify(bufname, ':t') . '] ' : '[No Name] ')
+
+    if bufmodified
+      let s .= '[+] '
+    endif
+  endfor
+
+  let s .= '%#TabLineFill#'
+  return s . TabLineRightInfo()
+endfunction

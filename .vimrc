@@ -15,7 +15,7 @@ set omnifunc=syntaxcomplete#Complete
 set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
-set ignorecase smartcase autoindent smartindent
+set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
 set tabstop=4 softtabstop=-1 shiftwidth=4 smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
@@ -54,7 +54,9 @@ if has('multi_byte_encoding')
     let &showbreak= "…  "
 else
     let &showbreak= "... "
+    set listchars+=extends:>,precedes:<
 endif
+
 if exists('+breakindent')
     set breakindent
 endif
