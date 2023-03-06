@@ -70,7 +70,10 @@ local function table_length(T)
 end
 
 local function git_branch()
-  if vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
+  if
+    vim.fn.exists "g:loaded_fugitive" == 1
+    and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
+  then
     local branch = vim.fn["fugitive#Head"]()
     if branch and branch ~= "" then
       return "⎇  " .. branch
@@ -81,19 +84,19 @@ end
 
 local function buffer_diagnostics()
   return string.format(
-    "%s%s%d  %s%s%d  %s%s%d",
-    "%#ErrorFloat#",
-    "  ",
+    "%s%s%d%s%s%d%s%s%d",
+    "%#ErrorFloat#", -- "%#DiagnosticVirtualTextError#",
+    "    ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.ERROR,
     })),
-    "%#WarningFloat#",
-    "  ",
+    "%#WarningFloat#", -- "%#DiagnosticVirtualTextWarn#",
+    "    ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.WARN,
     })),
-    "%#HintFloat#",
-    "󱠂  ",
+    "%#HintFloat#", -- "%#DiagnosticVirtualTextHint#",
+    "  󱠂  ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.HINT,
     }))
@@ -103,12 +106,11 @@ end
 function StatusLine()
   return "%#TabLineSel#  "
     .. "[%n]%m%r%h%w%q%y  "
-    .. "%#NormalFloat#  "
     .. buffer_diagnostics()
     .. "  %#TabLineFill#  "
     .. git_branch()
     .. "  %=  "
-    .. "%#NormalFloat#  "
+    .. "%#NormalFloat#  " -- .. "%#Normal#  "
     .. "%f  "
     .. "%#TabLineSel#  "
     .. "%c:[%l/%L]  "
