@@ -12,12 +12,14 @@ issuesSections:
     filters: is:open assignee:@me
   - title: Involved
     filters: is:open involves:@me -author:@me
+  - title: Calcite Components
+    filters: is:open repo:Esri/calcite-components
 defaults:
   preview:
     open: true
     width: 60
-  prsLimit: 20
-  issuesLimit: 20
+  prsLimit: 42
+  issuesLimit: 42
   view: issues
   layout:
     prs:
@@ -41,26 +43,29 @@ defaults:
         width: 20
   refetchIntervalMinutes: 300
 keybindings:
+# Alternatives to opening in a new tmux window:
+#   - wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
+#   - kitty @ launch --cwd={{.RepoPath}} bash -c '
+#   - cd {{.RepoPath}} && bash -c '
   prs:
-    # Alternatives to spawning a new wezterm tab:
-    #   - kitty @ launch --cwd={{.RepoPath}} bash -c '
-    #   - cd {{.RepoPath}} && bash -c '
     - key: D
       # Open the PR's diff in Neovim to review/edit
       command: >
-        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
+        tmux new-window -c {{.RepoPath}} '
         gh pr checkout {{.PrNumber}} &&
-        nvim -c ":DiffviewOpen master...{{.HeadRefName}}"'
+        nvim -c ":DiffviewOpen master...{{.HeadRefName}}"
+        '
     - key: O
       # Open the PR itself in NeoVim to review with Octo
       command: >
-        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
+        tmux new-window -c {{.RepoPath}} '
         gh pr checkout {{.PrNumber}} &&
-        nvim -c ":Octo pr edit {{.PrNumber}}"'
+        nvim -c ":Octo pr edit {{.PrNumber}}"
+        '
     - key: E
       # Edit all of the changed files in NeoVim
       command: >
-        wezterm cli spawn --cwd {{.RepoPath}} -- bash -c '
+        tmux new-window -c {{.RepoPath}} '
         gh pr checkout {{.PrNumber}} && nvim $(
           git diff --name-only {{.HeadRefName}} "$(
             git merge-base "$(
@@ -69,7 +74,21 @@ keybindings:
               )"
             )" {{.HeadRefName}}
           )"
-        )'
+        )
+        '
+  issues:
+    - key: P
+      command: gh issue pin {{.IssueNumber}} --repo {.RepoName}
+    - key: O
+      # Open the issue in NeoVim with Octo
+      command: >
+        tmux new-window -c {{.RepoPath}} '
+        nvim -c ":Octo issue edit {{.IssueNumber}}"
+        '
 repoPaths:
   Esri/*: ~/dev/work/*
   ArcGIS/*: ~/dev/work/*
+  benelan/arcgis-esm-samples: ~/dev/work/arcgis-esm-samples/
+  benelan/build-sizes: ~/dev/work/build-sizes
+  benelan/calcite-samples: ~/dev/work/calcite-samples
+  benelan/milestone-action: ~/dev/work/milestone-action

@@ -12,14 +12,13 @@ alias sudo='sudo '
 alias md='mkdir -p'
 alias rd='rmdir'
 alias rr='rm -rf'
-# Creates parent directories on demand.
-alias mkdir='mkdir -pv'
 
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-# Directory listing/traversal
+alias f="vifm"
 
+# Directory listing/traversal
 LS_COLORS=$(is-supported "ls --color" --color -G)
 LS_TIMESTYLEISO=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
 LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-directories-first)
@@ -28,17 +27,10 @@ LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-director
 alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST'
 # list all files/dirs, long format, sort by time
 alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
-# list all files/dirs, long format, sort by name
-alias lsa='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
-# list all files/dirs, long format, sort by size
-alias lss='ls -Argho $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
 # List directories, long format, sort by time
 alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO'
 # Lists hidden files, long format, sort by time
 alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
-# all files/dirs recursively, excluding common auto-generated content
-alias lsRA='ls -AR --ignore={.git,node_modules,build,dist,www,assets,vendor} $LS_COLORS'
-alias lp="stat -c '%a %n' *"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated
@@ -56,15 +48,6 @@ alias fdd='find . -type d -name'
 # Finds files.
 alias fdf='find . -type f -name'
 
-# Global aliases
-# shellcheck disable=2091
-if $(is-supported "alias -g"); then
-    alias -g G="| grep -i"
-    alias -g H="| head"
-    alias -g T="| tail"
-    alias -g L="| less"
-fi
-
 # List declared aliases, functions, paths
 alias aliases="alias | sed 's/=.*//'"
 alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
@@ -76,9 +59,6 @@ alias e='edit'
 alias se='sudo e'
 alias vimh='vim -c ":h | only"'
 
-# Reloas the shell.
-alias reload='exec $SHELL -l'
-
 # Intuitive map function
 # For example, to list all directories that contain a certain file:
 # find . -name .gitattributes | map dirname
@@ -87,9 +67,8 @@ alias map="xargs -n1"
 # Navigation
 # -----------------------------------------------------------------------------
 
-alias cd..='cd ..' # Common misspelling for going up one directory
-alias -- -='cd -'  # Go back
-
+alias cd..="cd .." # Common misspelling
+alias -- -="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -124,7 +103,7 @@ fi
 # Ubuntu/GNOME
 # -----------------------------------------------------------------------------
 
-# install with apt-get
+# install with apt
 alias apti='sudo apt install'
 alias aptup='sudo apt update && sudo apt upgrade'
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=2046
 set -e
 
 # This script installs the tools I use.
@@ -11,6 +12,7 @@ FONTS_DIR="$HOME/.local/share/fonts"
 function install_fonts_minimal() {
     mkdir -p "$FONTS_DIR"
     cd "$FONTS_DIR" || return
+
     # Iosevka
     curl -sSLo "Iosevka Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/complete/Iosevka%20Bold%20Nerd%20Font%20Complete.ttf
@@ -20,6 +22,7 @@ function install_fonts_minimal() {
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/complete/Iosevka%20Nerd%20Font%20Complete.ttf
     curl -sSLo "Iosevka Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/complete/Iosevka%20Italic%20Nerd%20Font%20Complete.ttf
+
     # Jet Brains Mono
     curl -sSLo "JetBrainsMono Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Bold/complete/JetBrains%20Mono%20Bold%20Nerd%20Font%20Complete.ttf
@@ -29,6 +32,7 @@ function install_fonts_minimal() {
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/complete/JetBrains%20Mono%20Regular%20Nerd%20Font%20Complete.ttf
     curl -sSLo "JetBrainsMono Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Italic/complete/JetBrains%20Mono%20Italic%20Nerd%20Font%20Complete.ttf
+
     # Sauce Code Pro
     curl -sSLo "SauceCodePro Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
@@ -37,6 +41,7 @@ function install_fonts_minimal() {
     curl -sSLo "SauceCodePro Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
     curl -sSLo "SauceCodePro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
+
     # reload the font cache
     fc-cache -rf
 }
@@ -54,9 +59,9 @@ function install_fonts_full() {
     )
     mkdir -p "$FONTS_DIR"
     for f in "${fonts[@]}"; do
-        curl -sS "$f" >"$FONTS_DIR/nerd.zip"
-        unzip "$FONTS_DIR/nerd.zip"
-        rm "$FONTS_DIR/nerd.zip"
+        curl -sS "$f" >"$FONTS_DIR/font.zip"
+        unzip "$FONTS_DIR/font.zip"
+        rm "$FONTS_DIR/font.zip"
     done
     unset f
     # reload the font cache
@@ -67,6 +72,7 @@ function install_fonts_full() {
 # https://www.rust-lang.org/tools/install
 function install_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    pathappend "$HOME/.cargo/bin"
 }
 
 # Install the Go language
@@ -79,7 +85,8 @@ function install_golang() {
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
         sudo rm -rf /usr/local/go
         sudo tar -C /usr/local -xzf "$outfile"
-        export PATH=$PATH:/usr/local/go/bin
+        rm "$outfile"
+        pathappend /usr/local/go/bin
     else
         printf "\nchecksum does not match, please install golang manually:\nhttps://go.dev/doc/install"
     fi
@@ -91,7 +98,7 @@ function install_volta() {
     if [[ ! "$(type -P volta)" ]]; then
         curl https://get.volta.sh | bash -s -- --skip-setup
         export VOLTA_HOME=~/.volta
-        grep --silent "$VOLTA_HOME/bin" <<<"$PATH" || export PATH="$VOLTA_HOME/bin:$PATH"
+        pathappend "$VOLTA_HOME/bin"
         volta install node@16
     fi
 }
@@ -99,8 +106,7 @@ function install_volta() {
 # Install Rust CLI tools
 # https://crates.io
 function install_cargo_packages() {
-    # shellcheck disable=2046
-    cargo install --locked $(cat "$HOME/.dotfiles/deps/cargo")
+    cargo install $(cat "$HOME/.dotfiles/deps/cargo")
 
     mkdir -p ~/.local/bin
 
@@ -116,10 +122,8 @@ function install_cargo_packages() {
 # https://www.npmjs.com
 function install_node_packages() {
     if [ "$(type -P volta)" ]; then
-        # shellcheck disable=2046
         volta install $(cat "$HOME/.dotfiles/deps/node")
     else
-        # shellcheck disable=2046
         npm install -g $(cat "$HOME/.dotfiles/deps/node")
     fi
 }
@@ -162,9 +166,9 @@ install_fonts_minimal
 install_rust
 install_golang # only works on x86_64 architectures for now
 install_volta  # only works on x86_64 architectures for now
-install_cargo_packages
 install_go_packages
 install_node_packages
 install_pip_packages
+install_cargo_packages
 install_starship
-install_git_extras
+# install_git_extras

@@ -13,7 +13,7 @@ set -e
     echo "✖ The home directory is already under version control.
   ➜ Use 'dot pull' to update the dotfiles.
   ➜ Remove $HOME/.git and run the script again to continue." &&
-    return
+    exit 1
 
 # any current, conflicting dotfiles will be moved here
 BACKUP_DIR="$HOME/.dotfiles-backup"
@@ -61,7 +61,7 @@ else
     # $ mv ~/.dotfiles-backup/* ~/
     if ! dot checkout; then
         printf "\n✖ Unable to initialize the dotfiles\n"
-        return
+        exit 1
     else
         printf "\n✔ Checked out dotfiles\n"
     fi
@@ -83,7 +83,8 @@ printf "\n➜ Making scripts and bins executable\n"
 
 # Install vendors
 printf "\n➜ Installing git submodules\n\n"
-dot submodule update --init .dotfiles/vendor/fzf .dotfiles/vendor/git-fuzzy
+
+cd && dot submodule update --init --recursive
 
 # fzf install script
 [ ! "$(command -v fzf)" ] &&

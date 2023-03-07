@@ -30,8 +30,8 @@ M.startup_work = function(startup_cmd)
     -- hacky workaround since `cwd` doesn"t currently work in WSL
     -- https://github.com/wez/wezterm/issues/2826
     local cd_cmd = "cd ~/dev/calcite/calcite-components\n"
-    build_pane:send_text(cd_cmd .. "git pull\nnpm i\nnpm run build\n")
-    editor_pane:send_text(cd_cmd .. "nvim . -c ':Telescope oldfiles'\n")
+    build_pane:send_text(cd_cmd .. "git pull\n")
+    editor_pane:send_text(cd_cmd .. "nvim . -c ':Telescope git_files'\n")
   end
   mux.set_active_workspace "work"
 end

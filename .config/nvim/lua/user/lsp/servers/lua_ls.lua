@@ -13,6 +13,7 @@ return {
         library = {
           [vim.fn.expand "$VIMRUNTIME/lua"] = true,
           [vim.fn.stdpath "config" .. "/lua"] = true,
+          [os.getenv "HOME" .. "/.config/wezterm"] = true,
         },
       },
       telemetry = {

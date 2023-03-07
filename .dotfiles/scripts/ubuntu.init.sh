@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# Install scripts specific to Ubuntu/Debian operating systems
+# Install scripts specific to Ubuntu/Debian based operating systems
 
 # Install packages for Ubuntu/Debian
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
@@ -106,7 +106,7 @@ function install_wezterm() {
 install_apt_packages
 install_gh_cli
 install_protonvpn_cli
-# install_docker_engine
+install_docker_engine
 
 # GUI install scripts
 install_apt_gui_packages

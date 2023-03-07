@@ -9,17 +9,7 @@ local diagnostics = null_ls.builtins.diagnostics
 local code_actions = null_ls.builtins.code_actions
 local hover = null_ls.builtins.hover
 
-local quiet_diagnostics = { virtual_text = false, signs = false, underline = false }
-
--- find the first .cspell.json file in the directory tree
-local find_cspell_config = function(cwd)
-  local cspell_json_file = nil
-  local path = vim.fn.findfile(".cspell.json", (cwd or vim.loop.cwd()) .. ";")
-  if path ~= "" then
-    cspell_json_file = path
-  end
-  return cspell_json_file
-end
+local quiet_diagnostics = { virtual_text = false, signs = false }
 
 -- Install with Mason if you don't have all of these linters/formatters
 -- :MasonInstall actionlint cspell jq shellcheck...
@@ -27,7 +17,6 @@ null_ls.setup {
   debug = false,
   fallback_severity = vim.diagnostic.severity.WARN,
   sources = {
-    code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
     code_actions.gitrebase,
     code_actions.gitsigns,
     code_actions.proselint,
@@ -36,31 +25,6 @@ null_ls.setup {
       runtime_condition = function()
         return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()):match "github/workflows" ~= nil
       end,
-    },
-    diagnostics.codespell.with {
-      method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-      extra_args = {
-        "--builtin",
-        "clear,rare,informal,usage,code,names,en-GB_to_en-US",
-        "--ignore-words",
-        os.getenv "HOME" .. ".dotfiles/spelling/codespell_ignore.txt",
-      },
-      diagnostic_config = quiet_diagnostics,
-    },
-    diagnostics.cspell.with {
-      -- method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-      args = function(params)
-        return {
-          "lint",
-          "--show-suggestions",
-          -- "--config",
-          -- find_cspell_config(params.root),
-          "--language-id",
-          params.ft,
-          "stdin",
-        }
-      end,
-      diagnostic_config = quiet_diagnostics,
     },
     diagnostics.markdownlint.with {
       extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },

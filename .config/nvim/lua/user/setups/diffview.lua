@@ -6,7 +6,7 @@ end
 
 diffview.setup {
   enhanced_diff_hl = true,
-  -- use_icons = os.getenv "OG_TERM" == "wezterm" or os.getenv "OG_TERM" == "kitty",
+  use_icons = false, -- os.getenv "OG_TERM" == "wezterm",
   signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
   keymaps = {
     view = {

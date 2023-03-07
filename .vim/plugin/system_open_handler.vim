@@ -2,7 +2,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The regex can be vastly improved, but it works for the most part.
 
-if exists('g:loaded_system_open_handler') || &cp | finish | endif
+if exists('g:loaded_ben_system_open_handler') || &cp | finish | endif
+let g:loaded_ben_system_open_handler = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Determines the system's `open` command
@@ -97,6 +98,7 @@ function! s:OpenGitHubIssue(text)
   endif
 endfunction
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plug function
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -117,19 +119,19 @@ function! s:HandleSystemOpen()
   " don't allow the # or ? to expand() when matching
   " the pattern for a path, since it can prevent
   " GitHub numbers and URL params/hashes from opening
-  if !s:StartsWith('#', l:file) &&
-   \ !s:StartsWith('?', l:file) &&
-    \ s:OpenPath(expand(l:file))
-     return | endif
-  if s:OpenURI(l:word)    | return | endif
-  if s:OpenGitHubIssue(l:word)     | return | endif
-  if s:OpenURI(l:line)    | return | endif
-  if s:OpenDepNPM(l:line) | return | endif
-  if s:OpenGitHubIssue(l:line)     | return | endif
+  if !s:StartsWith('#', l:file)
+              \ && !s:StartsWith('?', l:file)
+              \ && s:OpenPath(expand(l:file))
+     return
+  endif
+
+  if s:OpenURI(l:word)              | return | endif
+  if s:OpenGitHubIssue(l:word)      | return | endif
+  if s:OpenURI(l:line)              | return | endif
+  if s:OpenDepNPM(l:line)           | return | endif
+  if s:OpenGitHubIssue(l:line)      | return | endif
   echom "No openable text found"
 endfunction
 
 nnoremap <Plug>SystemOpen <CMD>call <SID>HandleSystemOpen()<CR>
 nnoremap <Plug>SystemOpenCWD <CMD>execute jobstart(g:opencmd..' '..shellescape(expand('%:h')), {'detatch': v:true})<CR>
-
-let g:loaded_system_open_handler = 1

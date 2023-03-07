@@ -200,3 +200,18 @@ vim.fn.sign_define("DapStopped", {
   linehl = "Visual",
   numhl = "DiagnosticSignWarn",
 })
+
+-- Keymaps
+keymap("n", "<leader>dC", "<cmd>lua require'dap'.run_to_cursor()<cr>", "Run To Cursor")
+keymap("n", "<leader>dU", "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI")
+keymap("n", "<leader>db", "<cmd>lua require'dap'.step_back()<cr>", "Step Back")
+keymap("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", "Continue")
+keymap("n", "<leader>dd", "<cmd>lua require'dap'.disconnect()<cr>", "Disconnect")
+keymap("n", "<leader>dd", "<cmd>lua require'dap'.session()<cr>", "Get Session")
+keymap("n", "<leader>di", "<cmd>lua require'dap'.step_into()<cr>", "Step Into")
+keymap("n", "<leader>do", "<cmd>lua require'dap'.step_over()<cr>", "Step Over")
+keymap("n", "<leader>dp", "<cmd>lua require'dap'.pause()<cr>", "Pause")
+keymap("n", "<leader>dq", "<cmd>lua require'dap'.close()<cr>", "Quit")
+keymap("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", "Toggle Repl")
+keymap("n", "<leader>dt", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint")
+keymap("n", "<leader>du", "<cmd>lua require'dap'.step_out()<cr>", "Step Out")

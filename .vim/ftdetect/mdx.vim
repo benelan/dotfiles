@@ -1,1 +1,1 @@
-autocmd BufNewFile,BufRead *.mdx set filetype=markdown
+  autocmd BufNewFile,BufRead *.mdx set filetype=markdown
