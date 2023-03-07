@@ -13,7 +13,7 @@ end
 -- Debug Adapter protocol:
 --   https://microsoft.github.io/debug-adapter-protocol/
 
--- Adapers
+-- Adapters
 ----------
 -- Node
 dap.adapters.node2 = {
@@ -177,25 +177,25 @@ end
 vim.g.dap_virtual_text = true
 
 vim.fn.sign_define("DapBreakpoint", {
-  text = "",
+  text = ">",
   texthl = "DiagnosticSignHint",
   linehl = "",
   numhl = "",
 })
 vim.fn.sign_define("DapBreakpointRejected", {
-  text = "",
+  text = "X",
   texthl = "DiagnosticSignError",
   linehl = "",
   numhl = "",
 })
 vim.fn.sign_define("DapBreakpointCondition", {
-  text = "",
+  text = "?",
   texthl = "DiagnosticSignHint",
   linehl = "",
   numhl = "",
 })
 vim.fn.sign_define("DapStopped", {
-  text = "",
+  text = "@",
   texthl = "DiagnosticSignWarn",
   linehl = "Visual",
   numhl = "DiagnosticSignWarn",

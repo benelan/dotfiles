@@ -30,30 +30,6 @@ local function add_missing_imports()
   }
 end
 
-local function rename_file(name)
-  vim.lsp.buf.execute_command {
-    command = "_typescript.applyRenameFile",
-    arguments = { vim.api.nvim_buf_get_name(0), name },
-    title = "",
-  }
-end
-
-local function apply_refactor()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.applyRefactoring",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
-
-local function code_action()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.applyCodeAction",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
-
 return {
   commands = {
     TypescriptOrganizeImports = {
@@ -71,18 +47,6 @@ return {
     TypescriptRemoveUnused = {
       remove_unused,
       description = "Remove declared but unused variables",
-    },
-    TypescriptRenameFile = {
-      rename_file,
-      description = "Rename file",
-    },
-    TypescriptRefactor = {
-      apply_refactor,
-      description = "Refactor code",
-    },
-    TypescriptCodeAction = {
-      code_action,
-      description = "Apply code action",
     },
   },
   settings = {

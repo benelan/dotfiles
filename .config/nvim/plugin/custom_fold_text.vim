@@ -1,3 +1,6 @@
+if exists('g:loaded_ben_fold_text') || &cp | finish | endif
+let g:loaded_ben_fold_text = 1
+
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
 function! CustomFoldText()
   " get first non-blank line

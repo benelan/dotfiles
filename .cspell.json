@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "language": "en",
+  "version": "0.2",
+  "dictionaries": [
+    "global"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "assets/**",
+    "translations/**"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "global",
+      "addWords": true,
+      "path": "~/.dotfiles/spelling/global.txt"
+    },
+    {
+      "name": "vim",
+      "addWords": true,
+      "path": "~/.config/nvim/spell/en.utf-8.add"
+    }
+  ]
+}

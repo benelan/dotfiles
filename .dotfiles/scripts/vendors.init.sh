@@ -1,24 +1,31 @@
 #!/bin/sh
+set -e
 
 VENDOR_PATH="$HOME/.dotfiles/vendor"
+FZF_PATH="$VENDOR_PATH/fzf"
+NEOVIM_PATH="$VENDOR_PATH/neovim"
 
 /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive
 /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" pull --recurse-submodules
 
-if [ -d "$VENDOR_PATH/fzf" ]; then
-    cd "$VENDOR_PATH/fzf" || return
+if [ -d "$FZF_PATH" ]; then
+    cd "$FZF_PATH" || return
     git fetch --tags --all
-    latestTag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
-    git checkout "$latestTag"
-    sudo make install
+    # latestTag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+    git checkout master
+    make
+    make install
+    # chmod +x "$FZF_PATH/bin/*"
 fi
 
-if [ -d "$VENDOR_PATH/neovim" ]; then
-    cd "$VENDOR_PATH/neovim" || return
+if [ -d "$NEOVIM_PATH" ]; then
+    cd "$NEOVIM_PATH" || return
     git checkout master
     git pull
-    make CMAKE_BUILD_TYPE=Release
-    # make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.dotfiles/cache/neovim"
+    sudo make CMAKE_BUILD_TYPE=Release
+    # sudo make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.dotfiles/cache"
     sudo make install
-    chmod +x "$VENDOR_PATH/neovim/build/bin/nvim"
+    # chmod +x "$NEOVIM_PATH/build/bin/nvim"
 fi
+
+unset VENDOR_PATH FZF_PATH NEOVIM_PATH

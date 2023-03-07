@@ -25,7 +25,8 @@ treesitter_configs.setup {
     "css",
     "dockerfile",
     "git_rebase",
-    "gitcommit", -- "gitignore",
+    "gitcommit",
+    -- "gitignore",
     "go",
     "graphql",
     "help",
@@ -48,7 +49,10 @@ treesitter_configs.setup {
     "vue",
     "yaml",
   },
-  highlight = { enable = true },
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = { "markdown", "mdx" },
+  },
   autopairs = { enable = true },
   autotag = { enable = true },
   playground = { enable = true },
@@ -101,10 +105,7 @@ treesitter_configs.setup {
         ["[l"] = { query = "@loop.outer", desc = "Start of previous loop" },
       },
       goto_previous_end = {
-        ["[M"] = {
-          query = "@function.outer",
-          desc = "End of previous function",
-        },
+        ["[M"] = { query = "@function.outer", desc = "End of previous function" },
         ["[I"] = {
           query = "@conditional.outer",
           desc = "End of previous conditional",

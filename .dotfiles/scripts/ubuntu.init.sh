@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Install scripts specific to Ubuntu/Debian operating systems
 
@@ -39,9 +40,22 @@ function install_discord() {
     sudo apt-get update
 }
 
-# Install Docker
+# Install Docker Desktop
+# https://docs.docker.com/desktop/install/ubuntu/
+function install_docker_desktop() {
+    filename="docker-desktop-4.16.2-amd64.deb"
+    # rm -r ~/.docker/desktop
+    # sudo rm /usr/local/bin/com.docker.cli
+    # sudo apt remove docker-desktop
+    # sudo apt purge docker-desktop
+    curl -sSLo ~/.dotfiles/cache/$filename https://desktop.docker.com/linux/main/amd64/$filename
+    sudo apt install ~/.dotfiles/cache/$filename
+    sudo apt-get update
+}
+
+# Install Docker Engine
 # https://docs.docker.com/engine/install/ubuntu/
-function install_docker() {
+function install_docker_engine() {
     sudo mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpgecho \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
@@ -75,14 +89,29 @@ function install_brave_browser() {
     sudo apt install brave-browser
 }
 
+# Install WezTerm
+# https://wezfurlong.org/wezterm/install/linux.html
+function install_wezterm() {
+    curl -sSLo ~/.dotfiles/cache/wezterm-nightly.deb https://github.com/wez/wezterm/releases/download/nightly/wezterm-nightly.Ubuntu22.04.deb
+    sudo apt install -y ~/.dotfiles/cache/wezterm-nightly.deb
+    # https://wezfurlong.org/wezterm/config/lua/config/term.html
+    tempfile=$(mktemp) &&
+        curl -o "$tempfile" https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
+        tic -x -o ~/.terminfo "$tempfile" &&
+        rm "$tempfile"
+
+}
+
 # CLI install scripts (suitable for servers)
 install_apt_packages
-install_docker
 install_gh_cli
 install_protonvpn_cli
+# install_docker_engine
 
 # GUI install scripts
 install_apt_gui_packages
 install_discord
 install_vscode
 install_brave_browser
+install_wezterm
+# install_docker_desktop

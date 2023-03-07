@@ -33,6 +33,7 @@ use constant NORMAL_LINK_HIGHLIGHT => "\033[94;1;4m";
 my $url_pattern = qr{(
     (?:https?://|ftp://|news://|git://|mailto:|file://|www\.)
     [\w\-\@;\/?:&=%\$_.+!*\x27(),~#\x1b\[\]]+[\w\-\@;\/?&=%\$_+!*\x27(~]
+    #|(\b[0-9a-f]{5,40}\b)
 )}x;
 
 ### config end

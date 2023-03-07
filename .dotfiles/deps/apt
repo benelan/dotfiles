@@ -8,14 +8,12 @@ ca-certificates
 clamav
 cmake
 cmus
-codespell
 coreutils
 cron
 curl
 datamash
 diffutils
 doxygen
-duf
 feh
 ffmpeg
 findutils
@@ -36,8 +34,6 @@ libtool-bin
 libxcb-xfixes0-dev
 libxkbcommon-dev
 lsb-release
-lua5.4
-luajit
 lynx
 make
 mount
@@ -52,6 +48,8 @@ pandoc
 perl
 pkg-config
 python3
+python3-pip
+python3-venv
 qrencode
 rsync
 ruby

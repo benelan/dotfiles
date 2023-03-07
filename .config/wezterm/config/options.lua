@@ -11,7 +11,7 @@ return {
     "Iosevka Nerd Font",
     "SauceCodePro Nerd Font",
     "JetBrains Mono Nerd Font",
-    "monspace"
+    "Ubuntu Mono",
   },
   font_size = 12,
   scrollback_lines = 10000,

@@ -1,0 +1,88 @@
+" Ranger devicons for ViFM
+" https://github.com/cirala/vifm_devicons
+"
+" Filetypes/directories
+set classify='  :dir:/,  :exe:,  :reg:,  :link:,? :?:,🡹 ::../::'
+
+" Dirs
+set classify+='  ::.git/::/,
+             \   ::.npm/::/,
+             \   ::Dropbox/::/,
+             \   ::GDrive/::/'
+
+" Files
+set classify+='  ::.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bashprofile,,.bash_profile,,.bash_logout,,.bash_history,,.bashrc,,.dmrc,,.DS_Store,,.fasd,,.gitconfig,,.gitattributes,,.gitignore,,.inputrc,,.jack-settings,,.mime.types,,.nvidia-settings-rc,,.pam_environment,,.profile,,.recently-used,,.selected_editor,,.tmux.conf,,.xinitrc,,.xinputrc,,config,,bspwmrc,,sxhkdrc,,Makefile,,Makefile.in,,Makefile.ac,,mimeapps.list,,.zshenv,,.zprofile,,.zshrc,,.zlogin,,.zlogout,,vifmrc,,yabairc,,skhdrc,,ini,,user-dirs.dirs::,
+             \   ::.fehbg::,
+             \   ::Dockerfile,,docker-compose.yml::,
+             \   ::dropbox::,
+             \   ::favicon.ico::,
+             \   ::a.out,,configure::,
+             \   ::config.mk,,config.m4,,config.ac::,
+             \   ::Rakefile::,
+             \   ::gruntfile.coffee,,gruntfile.js,,gruntfile.ls::,
+             \   ::gulpfile.coffee,,gulpfile.js,,gulpfile.ls::,
+             \   ::ledger::,
+             \   ::package.json,,package-lock.json,,webpack.config.js::,
+             \   ::.ncmpcpp,,playlists::,
+             \   ::known_hosts,,authorized_keys,,license,,LICENSE.md,,LICENSE,,LICENSE.txt::,
+             \   ::procfile::,
+             \   ::react.jsx::,
+             \   ::README.rst,,README.md,,README.markdown,,README,,README.txt::'
+
+" Extentions
+set classify+='  ::*.7z,,*.apk,,*.bz2,,*.cpio,,*.deb,,*.gz,,*.gzip,,*.gem,,*.lha,,*.log,,*.lzh,,*.lzma,,*.rar,,*.rpm,,*.tar,,*.tgz,,*.xbps,,*.xz,,*.zip::,
+             \   ::*.a,,*.cmake,,*.jl,,*.o,,*.so::,
+             \   ::*.ai::,
+             \   ::*.asm,,*.css,,*.less,,*.s,,*.sh,,*.zsh::,
+             \   ::*.asp,,*.rom,,*.efi,,*.elf,,*.fish::,
+             \   ::*.aup,,*.cue,,*.flac,,*.m4a,,*.mp3,,*.ogg,,*.wav::,
+             \   ::*.avi,,*.flv,,*.m4v,,*.mkv,,*.mov,,*.mp4,,*.mpeg,,*.mpg,,*.webm::,
+             \   ::*.bat,,*.conf,,*.cvs,,*.htaccess,,*.htpasswd,,*.ini,,*.rc,,*.yaml,,*.yml::,
+             \   ::*.bmp,,*.gif,,*.ico,,*.jpeg,,*.jpg,,*.png,,*.ppt,,*.pptx::,
+             \   ::*.c,,*.h::,
+             \   ::*.cbr,,*.cbz::,
+             \   ::*.class,,*.jar,,*.java::,
+             \   ::*.clj,,*.cljc::,
+             \   ::*.cljs,,*.edn::,
+             \   ::*.coffee::,
+             \   ::*.cs::,
+             \   ::*.cxx,,*.c++,,*.cc,,*.cp,,*.cpp::,
+             \   ::*.d::,
+             \   ::*.dart::,
+             \   ::*.db,,*.dump,,*.img,,*.iso,,*.sql::,
+             \   ::*.diff::,
+             \   ::*.dll,,*.exe,,*.msi::,
+             \   ::*.doc,,*.docx,,*.epub,,*.pdf,,*.rtf,,*.xls,,*.xlsx::,
+             \   ::*.ejs,,*.htm,,*.html,,*.slim,,*.xhtml,,*.xml::,
+             \   ::*.elm::,
+             \   ::*.erl,,*.hrl::,
+             \   ::*.ex,,*.exs,,*.eex::,
+             \   ::*.f#,,*.fs,,*.fsi,,*.fsscript,,*.fsx::,
+             \ |  ::*.fifo::,
+             \   ::*.go::,
+             \   ::*.hbs,,*.mustache::,
+             \   ::*.hs,,*.lhs::,
+             \   ::*.js::,
+             \   ::*.json::,
+             \   ::*.jsx::,
+             \   ::*.key,,*.pub::,
+             \   ::*.lua::,
+             \   ::*.markdown,,*.md,,*.mdx::,
+             \ λ  ::*.ml,,*.mli::,
+             \   ::*.php::,
+             \   ::*.pl,,*.pm,,*.t::,
+             \   ::*.psb,,*.psd::,
+             \   ::*.py,,*.pyc,,*.pyd,,*.pyo::,
+             \   ::*.rb::,
+             \   ::*.rlib,,*.rs::,
+             \   ::*.rss::,
+             \   ::*.scala::,
+             \   ::*.scss::,
+             \   ::*.sln,,*.suo::,
+             \   ::*.styl::,
+             \   ::*.ts,,*.tsx::,
+             \   ::*.twig::,
+             \   ::*.vim,,*.vimrc,,*.viminfo::,
+             \   ::*.xul::'
+
+

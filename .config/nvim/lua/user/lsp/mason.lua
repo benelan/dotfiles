@@ -8,19 +8,26 @@ end
 local servers = {
   "bashls",
   "cssls",
+  "docker_compose_language_service",
   "dockerls",
   "eslint",
-  "gopls",
+  -- "gopls",
+  -- "graphql",
   "html",
   "jsonls",
+  "lua_ls",
   "marksman",
-  "sumneko_lua",
+  -- "pyright",
+  -- "rust_analyzer",
+  -- "sqlls",
   "svelte",
+  "taplo",
   "tailwindcss",
   "tsserver",
   "vimls",
   "volar",
   "yamlls",
+  "zk",
 }
 
 local settings = {

@@ -35,9 +35,7 @@ packer.init {
   snapshot_path = table.concat({ vim.fn.stdpath "config", "snapshots" }, "/"),
   display = {
     open_fn = function()
-      return require("packer.util").float {
-        border = "solid",
-      }
+      return require("packer.util").float { border = "solid" }
     end,
   },
   git = {
@@ -54,16 +52,14 @@ return packer.startup(function(use)
   use {
     "nvim-lua/plenary.nvim", -- useful lua functions required by many plugins
   }
-  use {
-    "lewis6991/impatient.nvim", -- improves performance
-    config = function()
-      require "impatient"
-    end, -- load ASAP
-  }
 
   -----------------------------------------------------------------------------
   ----> UI
   -----------------------------------------------------------------------------
+  -- if os.getenv "OG_TERM" == "wezterm" or os.getenv("OG_TERM"):find "kitty" then
+  use "nvim-tree/nvim-web-devicons"
+  -- end
+
   use {
     "goolord/alpha-nvim", -- startup page/dashboard
     config = function()
@@ -71,34 +67,11 @@ return packer.startup(function(use)
     end,
   }
   use {
-    "kyazdani42/nvim-web-devicons", -- icons used by many plugins
-  }
-  use {
     "unblevable/quick-scope", -- highlight unique letters in words
   }
   use {
     "sainnhe/gruvbox-material", -- gruvbox colorscheme
   }
-  use {
-    "akinsho/bufferline.nvim", -- good lookin' bufferline
-    event = "BufWinEnter",
-    config = function()
-      require "user.setups.bufferline"
-    end,
-  }
-  use {
-    "nvim-lualine/lualine.nvim", -- extensible statusline
-    event = "BufWinEnter",
-    config = function()
-      require "user.setups.lualine"
-    end,
-  }
-  -- use {
-  --   "kyazdani42/nvim-tree.lua", -- tree-like file explorer
-  --   event = "VimEnter",
-  --   config = function() require "user.setups.nvim-tree" end,
-  --   tag = "nightly"
-  -- }
   use {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     run = "cd app && npm install",
@@ -109,38 +82,14 @@ return packer.startup(function(use)
     ft = { "markdown" },
   }
   use {
-    "petertriho/nvim-scrollbar", -- adds scrollbar with lsp/git info
-    event = "BufWinEnter",
-    config = function()
-      require "user.setups.scrollbar"
-    end,
-  }
-  use {
-    "norcalli/nvim-colorizer.lua",
-    event = "BufWinEnter",
-    config = function()
-      require("colorizer").setup()
-    end,
-  }
-  -- use {
-  --   "akinsho/toggleterm.nvim", -- opens an integrated terminal
-  --   event = "BufWinEnter",
-  --   config = function() require "user.setups.toggleterm" end
-  -- }
-  use {
-    "lukas-reineke/indent-blankline.nvim", -- correctly indents blank lines
+    "lukas-reineke/indent-blankline.nvim", -- visualize indents
     event = "BufWinEnter",
     config = function()
       require "user.setups.indentline"
     end,
   }
-  use {
-    "folke/which-key.nvim", -- keymap helper for the memory deficient
-    event = "BufWinEnter",
-    config = function()
-      require "user.setups.which-key"
-    end,
-  }
+
+  use { "vifm/vifm.vim", event = "BufWinEnter" }
 
   -----------------------------------------------------------------------------
   ----> Utils
@@ -154,7 +103,7 @@ return packer.startup(function(use)
   }
   use {
     "kylechui/nvim-surround", -- manipulate quotes/brackets/etc
-    event = "InsertEnter",
+    event = "BufWinEnter",
     tag = "*",
     config = function()
       require("nvim-surround").setup {
@@ -167,16 +116,9 @@ return packer.startup(function(use)
     event = "BufWinEnter",
     keys = { "gJ", "gS" },
   }
-  -- use {
-  --   "kevinhwang91/nvim-ufo", -- better code folds
-  --   requires = "kevinhwang91/promise-async",
-  --   event = "BufWinEnter",
-  --   config = function()
-  --     require "user.setups.ufo"
-  --   end,
-  -- }
   use {
     "mbbill/undotree", -- Easily go back in undo history
+    event = "BufWinEnter",
     config = function()
       vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", {
         silent = true,
@@ -184,23 +126,6 @@ return packer.startup(function(use)
         desc = "UndoTree",
       })
     end,
-  }
-
-  use {
-    "rmagatti/session-lens",
-    requires = {
-      {
-        "rmagatti/auto-session",
-        config = function()
-          require("auto-session").setup {
-            -- auto_session_use_git_branch = true,
-            bypass_session_save_file_types = require("user.resources").exclude_filetypes,
-            auto_session_create_enabled = false,
-          }
-        end,
-      },
-      "nvim-telescope/telescope.nvim",
-    },
   }
 
   -----------------------------------------------------------------------------
@@ -233,8 +158,43 @@ return packer.startup(function(use)
       {
         "hrsh7th/cmp-cmdline", -- commandline completion
       },
+      {
+        "folke/neodev.nvim", -- NeoVim Lua API info
+      },
     },
   }
+
+  -- use {
+  --   "Exafunction/codeium.vim",
+  --   config = function()
+  --     vim.keymap.set("i", "<M-y>", function()
+  --       return vim.fn["codeium#Accept"]()
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Accept" })
+  --     vim.keymap.set("i", "<M-c>", function()
+  --       return vim.fn["codeium#Complete"]()
+  --     end, {
+  --       expr = true,
+  --       noremap = true,
+  --       silent = true,
+  --       desc = "Codeium Complete",
+  --     })
+  --     vim.keymap.set("i", "<M-n>", function()
+  --       return vim.fn["codeium#CycleCompletions"](1)
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Next" })
+  --     vim.keymap.set("i", "<M-p>", function()
+  --       return vim.fn["codeium#CycleCompletions"](-1)
+  --     end, {
+  --       expr = true,
+  --       noremap = true,
+  --       silent = true,
+  --       desc = "Codeium Previous",
+  --     })
+  --     vim.keymap.set("i", "<M-e>", function()
+  --       return vim.fn["codeium#Clear"]()
+  --     end, { expr = true, noremap = true, silent = true, desc = "Codeium Clear" })
+  --   end,
+  -- }
+  --
   -----------------------------------------------------------------------------
   ----> Snippets
   -----------------------------------------------------------------------------
@@ -251,46 +211,33 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    tag = "*",
-  }
-  use {
-    "williamboman/mason.nvim", -- language server installer/manager
-  }
-  use {
-    "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
-  }
-  use {
-    "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+    config = function()
+      require "user.lsp"
+    end,
+    requires = {
+      {
+        "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+      },
+      {
+        "williamboman/mason.nvim", -- language server installer/manager
+      },
+      {
+        "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
+      },
+    },
   }
   use {
     "simrat39/inlay-hints.nvim", -- inlay hints
-    event = "BufWinEnter",
     config = function()
       require "user.lsp.inlays"
     end,
   }
   use {
-    "RRethy/vim-illuminate", -- highlights hovered code blocks
-    event = "BufWinEnter",
-    config = function()
-      require "user.lsp.illuminate"
-    end,
-  }
-  use {
     "rmagatti/goto-preview", -- open lsp previews in floating window
-    event = "BufWinEnter",
     config = function()
       require "user.lsp.goto-preview"
     end,
   }
-  use {
-    "SmiteshP/nvim-navic",
-    requires = "neovim/nvim-lspconfig",
-    config = function()
-      require "user.lsp.navic"
-    end,
-  }
-  use "folke/neodev.nvim" -- NeoVIm Lua API info
 
   -----------------------------------------------------------------------------
   ----> Telescope
@@ -301,6 +248,7 @@ return packer.startup(function(use)
       require "user.setups.telescope"
     end,
     requires = {
+      "nvim-lua/plenary.nvim",
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
         run = "make",
@@ -309,11 +257,22 @@ return packer.startup(function(use)
         "nvim-telescope/telescope-project.nvim", -- project bookmarks
       },
       {
-        "nvim-telescope/telescope-file-browser.nvim", -- file browser
-      },
-      use {
         "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-        -- config = function() require("git-worktree").setup() end,
+      },
+      {
+        "rmagatti/session-lens",
+        requires = {
+          {
+            "rmagatti/auto-session",
+            config = function()
+              require("auto-session").setup {
+                -- auto_session_use_git_branch = true,
+                bypass_session_save_file_types = require("user.resources").exclude_filetypes,
+                auto_session_create_enabled = false,
+              }
+            end,
+          },
+        },
       },
     },
   }
@@ -323,18 +282,14 @@ return packer.startup(function(use)
   -----------------------------------------------------------------------------
   use {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
-    event = "BufWinEnter",
+    run = ":TSUpdate",
+    module_pattern = "treesitter.*",
     config = function()
       require "user.setups.treesitter"
     end,
     requires = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "nvim-treesitter/playground", -- for creating syntax queries
         event = "BufWinEnter",
         after = "nvim-treesitter",
       },
@@ -348,16 +303,13 @@ return packer.startup(function(use)
         event = "InsertEnter",
         after = "nvim-treesitter",
       },
+      {
+        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        event = "BufWinEnter",
+        after = "nvim-treesitter",
+      },
       -- {
-      --   "windwp/nvim-autopairs", -- creates pairs for quotes, brackets, etc.
-      --   event = "InsertEnter",
-      --   after = "nvim-treesitter",
-      --   config = function()
-      --     require "user.setups.autopairs"
-      --   end,
-      -- },
-      -- { -- trying out nvim-navic instead
-      --   "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      --   "nvim-treesitter/playground", -- for creating syntax queries
       --   event = "BufWinEnter",
       --   after = "nvim-treesitter",
       -- },
@@ -370,8 +322,6 @@ return packer.startup(function(use)
 
   use {
     "lewis6991/gitsigns.nvim", -- git change indicators and blame
-    module = "gitsigns",
-    event = "BufWinEnter",
     config = function()
       require "user.setups.gitsigns"
     end,
@@ -386,13 +336,6 @@ return packer.startup(function(use)
     "pwntester/octo.nvim", -- GitHub integration - requires https://cli.github.com
     config = function()
       require "user.setups.octo"
-    end,
-  }
-  use {
-    "ruifm/gitlinker.nvim", -- Get GitHub/Gitlab/etc link for current line/selection
-    requires = "nvim-lua/plenary.nvim",
-    config = function()
-      require("gitlinker").setup()
     end,
   }
   use {
@@ -419,6 +362,39 @@ return packer.startup(function(use)
       require "user.setups.dap"
     end,
     requires = { "theHamsta/nvim-dap-virtual-text", "rcarriga/nvim-dap-ui" },
+  }
+
+  -----------------------------------------------------------------------------
+  ----> Note Taking
+  -----------------------------------------------------------------------------
+
+  use {
+    "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
+    requires = {
+      "renerocksai/telekasten.nvim",
+      requires = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
+    },
+    config = function() --
+      require "user.setups.notes"
+    end,
+  }
+
+  -- NOTE-able mentions for other methods I explored before landing on Zettelkasten
+  ---- VimWiki and its Taskwarrior integration
+  ------ https://github.com/vimwiki/vimwiki
+  ------ https://github.com/tools-life/taskwiki
+  ---- Emac's Org Mode clones/iterations for NeoVim
+  ------ https://github.com/nvim-neorg/neorg
+  ------ https://github.com/nvim-orgmode/orgmode
+
+  -----------------------------------------------------------------------------
+  ----> Keymaps
+  -----------------------------------------------------------------------------
+  use {
+    "folke/which-key.nvim", -- keymap helper for the memory deficient
+    config = function()
+      require "user.setups.which-key"
+    end,
   }
 
   -----------------------------------------------------------------------------

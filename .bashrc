@@ -3,8 +3,8 @@
 
 # Make sure the shell is interactive
 case $- in
-*i*) ;;
-*) return ;;
+    *i*) ;;
+    *) return ;;
 esac
 
 # Don't do anything if restricted. Testing
@@ -19,7 +19,7 @@ esac
 #---------------------------------------------------------------------------
 # NOTE: don't skip to git alias file, it will break stuff
 for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
-  [ -r "$aliases" ] && [ -f "$aliases" ] && source "$aliases"
+    [ -r "$aliases" ] && [ -f "$aliases" ] && source "$aliases"
 done
 unset aliases
 
@@ -31,7 +31,7 @@ unset aliases
 # BASH - FUNCTIONS/OPTIONS/PROMPT
 #---------------------------------------------------------------------------
 for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
-  [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
+    [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
 unset stuffs
 
@@ -39,7 +39,7 @@ unset stuffs
 # BASH - TOOLS
 #---------------------------------------------------------------------------
 for things in ~/.dotfiles/shell/tools/[!_]*; do
-  [ -r "$things" ] && [ -f "$things" ] && source "$things"
+    [ -r "$things" ] && [ -f "$things" ] && source "$things"
 done
 unset things
 
@@ -49,6 +49,12 @@ unset things
 # completions go last because some require
 # their tools/plugins to have already loaded
 for completions in ~/.dotfiles/shell/completions/[!_]*; do
-  [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
+    [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
 unset completions
+
+#---------------------------------------------------------------------------
+# TMUX - ATTACH
+#---------------------------------------------------------------------------
+# ensure tmux is running, `tat` is in .dotfiles/bin
+[ -z "$TMUX" ] && export OG_TERM="$TERM" && tat

@@ -20,18 +20,16 @@ comment.setup {
         location = require("ts_context_commentstring.utils").get_visual_start_location()
       end
 
-      return require("ts_context_commentstring.internal").calculate_commentstring { key = type, location = location }
+      return require("ts_context_commentstring.internal").calculate_commentstring {
+        key = type,
+        location = location,
+      }
     end
   end,
 }
 
-local u_status_ok, u = pcall(require, "user.utils")
-if not u_status_ok then
-  return
-end
-
-u.keymap("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", "Toggle comment")
-u.keymap(
+keymap("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise.current()<CR>", "Toggle comment")
+keymap(
   "x",
   "<leader>/",
   '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>',

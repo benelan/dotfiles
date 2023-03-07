@@ -74,6 +74,7 @@ alias gdft='git difftool'
 # edit the files changed locally
 alias ge='$EDITOR $(git diff --name-only HEAD)'
 # sync origin's default branch and edit the changed files
+# shellcheck disable=2154
 alias geom='default_branch=$(gbdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
 
 # fetch
@@ -284,7 +285,7 @@ alias dcom='dot checkout master'
 alias ddf='dot diff'
 alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
-alias ddfe='$EDITOR $(dot diff --name-only)'
+alias de='$EDITOR $(dot diff --name-only)'
 
 # files
 ########

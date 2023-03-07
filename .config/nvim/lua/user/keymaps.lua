@@ -1,307 +1,348 @@
-local status_ok, u = pcall(require, "user.utils")
-if not status_ok then
-  return
-end
-
 -------------------------------------------------------------------------------
 ---------------->            Mapping  Modes                   <----------------
 -------------------------------------------------------------------------------
--->    <Space>	    Normal, Visual, Select and Operator-pending               |
--->          n	    Normal                                                    |
--->          v	    Visual and Select                                         |
--->          s	    Select                                                    |
--->          x	    Visual                                                    |
--->          o	    Operator-pending                                          |
--->          !	    Insert and Command-line                                   |
--->          i	    Insert                                                    |
--->          l	    Insert, Command-line and LanArg                           |
--->          c	    Command-line                                              |
--->          t	    Terminal-Job                                              |
+-- >    <Space>	    Normal, Visual, Select and Operator-pending               |
+-- >          n	    Normal                                                    |
+-- >          v	    Visual and Select                                         |
+-- >          s	    Select                                                    |
+-- >          x	    Visual                                                    |
+-- >          o	    Operator-pending                                          |
+-- >          !	    Insert and Command-line                                   |
+-- >          i	    Insert                                                    |
+-- >          l	    Insert, Command-line and LanArg                           |
+-- >          c	    Command-line                                              |
+-- >          t	    Terminal-Job                                              |
 -------------------------->  :h map-listing  <---------------------------------
-
 -- Remap space as leader key
-u.keymap("", "<Space>", "<Nop>")
-vim.g.mapleader = " "
+keymap("", "<Space>", "<Nop>")
 
-u.keymap("n", "<Backspace>", "<C-^>")
+keymap("n", "<Backspace>", "<C-^>")
 
 -- Press jk to escape
-u.keymap("i", "jk", "<ESC>")
+keymap("i", "jk", "<ESC>")
 
 -- Stay in indent mode
-u.keymap("v", "<", "<gv")
-u.keymap("v", ">", ">gv")
+keymap("v", "<", "<gv")
+keymap("v", ">", ">gv")
 
 -- paste/delete/change w/o modifying default register
-u.keymap("v", "p", '"_dP')
-u.keymap({ "v", "n" }, "<C-D>", '"_d')
-u.keymap({ "v", "n" }, "<C-C>", '"_c')
+keymap("v", "p", '"_dP')
 
 -- open uri/path under the cursor or line
-u.keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
+keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 
 -- open current directory with file explorer
-u.keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
+keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
 -- remaps to center movement in the screen
-u.keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
-u.keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
-u.keymap("n", "n", "nzzzv", "Next search result")
-u.keymap("n", "N", "Nzzzv", "Previous search result")
+keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
+keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
+keymap("n", "n", "nzzzv", "Next search result")
+keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- escape terminal mode
 vim.keymap.set("t", "<esc>", "<C-\\><C-N>")
 
 -- simple navigation in Insert mode
-u.keymap("i", "<M-l>", '<C-O>:execute "normal l"<CR>')
-u.keymap("i", "<M-h>", '<C-O>:execute "normal h"<CR>')
-u.keymap("i", "<M-j>", '<C-O>:execute "normal j"<CR>')
-u.keymap("i", "<M-k>", '<C-O>:execute "normal k"<CR>')
-u.keymap("i", "<M-w>", '<C-O>:execute "normal w"<CR>')
-u.keymap("i", "<M-b>", '<C-O>:execute "normal b"<CR>')
-u.keymap("i", "<M-4>", '<C-O>:execute "normal $"<CR>')
-u.keymap("i", "<M-6>", '<C-O>:execute "normal ^"<CR>')
+keymap("i", "<M-l>", '<C-O>:execute "normal l"<CR>')
+keymap("i", "<M-h>", '<C-O>:execute "normal h"<CR>')
+keymap("i", "<M-j>", '<C-O>:execute "normal j"<CR>')
+keymap("i", "<M-k>", '<C-O>:execute "normal k"<CR>')
+keymap("i", "<M-w>", '<C-O>:execute "normal w"<CR>')
+keymap("i", "<M-b>", '<C-O>:execute "normal b"<CR>')
+keymap("i", "<M-4>", '<C-O>:execute "normal $"<CR>')
+keymap("i", "<M-6>", '<C-O>:execute "normal ^"<CR>')
 
 -------------------------------------------------------------------------------
 ----> Directories
 -------------------------------------------------------------------------------
 
 -- change to current buffer
-u.keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>", "Change to buffer location")
+keymap("n", "<leader>dc", "<CMD>cd %:h <Bar> pwd<CR>", "Change to buffer location")
 
 -- print current buffer
-u.keymap("n", "<leader>dp", "<CMD>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>", "Print buffer location")
+keymap("n", "<leader>dp", "<CMD>echo getcwd() .. '/ .. ' .. expand('%:h')<CR>", "Print buffer location")
 
 -- make to current bufferkey
-u.keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", "Make to buffer location")
+keymap("n", "<leader>dm", "<CMD>call mkdir(expand('%:h'), 'p')<CR>", "Make to buffer location")
 
 -- open file explore and focus current buffer
 -- NOTE: <leader>e is remapped locally in `after/ftplugin/netrw.vim` to close the file explorer
-u.keymap(
-  "n",
-  "<leader>e",
-  ":Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>",
-  "File Explorer (Current Buffer)"
-)
+-- keymap(
+--   "n",
+--   "<leader>e",
+--   ":Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>",
+--   "File Explorer (Current Buffer)"
+-- )
 
-u.keymap("n", "<leader>E", "<cmd>NetrwToggle<cr>", "File Explorer")
+keymap("n", "<leader>E", "<cmd>NetrwToggle<cr>", "File Explorer")
 
 -------------------------------------------------------------------------------
 ----> Prepare Ex commands
 -------------------------------------------------------------------------------
 
 -- :normal
-u.keymap("n", "<leader><C-N>", ":normal!<space>", "Execute normal command")
+keymap("n", "<leader><C-N>", ":normal!<space>", "Execute normal command")
 
 -- :vimgrep
-u.keymap("n", "<C-/>", ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>", "Execute vimgrep")
+keymap("n", "<C-/>", ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>", "Execute vimgrep")
 
 -- :lhelpgrep
-u.keymap("n", "<C-?>", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
+keymap("n", "<C-?>", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 
 -------------------------------------------------------------------------------
 ----> Lists (next/previous)
 -------------------------------------------------------------------------------
 
 -- tab
-u.keymap("n", "]t", "<CMD>tabnext<CR>", "Next Tab")
-u.keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous Tab")
-u.keymap("n", "]T", "<CMD>tablast<CR>", "Last Tab")
-u.keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous Tab")
+keymap("n", "]t", "<CMD>tabnext<CR>", "Next Tab")
+keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous Tab")
+keymap("n", "]T", "<CMD>tablast<CR>", "Last Tab")
+keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous Tab")
 
 -- buffer
-u.keymap("n", "]b", "<CMD>bnext<CR>", "Next Buffer")
-u.keymap("n", "[b", "<CMD>bprevious<CR>", "Previous Buffer")
-u.keymap("n", "]B", "<CMD>blast<CR>", "Last Buffer")
-u.keymap("n", "[B", "<CMD>bfirst<CR>", "First Buffer")
+keymap("n", "]b", "<CMD>bnext<CR>", "Next Buffer")
+keymap("n", "[b", "<CMD>bprevious<CR>", "Previous Buffer")
+keymap("n", "]B", "<CMD>blast<CR>", "Last Buffer")
+keymap("n", "[B", "<CMD>bfirst<CR>", "First Buffer")
 
 -- argument
-u.keymap("n", "]a", "<CMD>next<CR>", "Next Argument")
-u.keymap("n", "[a", "<CMD>previous<CR>", "Previous Argument")
+keymap("n", "]a", "<CMD>next<CR>", "Next Argument")
+keymap("n", "[a", "<CMD>previous<CR>", "Previous Argument")
 
 -- quickfix
-u.keymap("n", "]q", "<CMD>cnext<CR>", "Next Quickfix")
-u.keymap("n", "[q", "<CMD>cprevious<CR>", "Previous Quickfix")
+keymap("n", "]q", "<CMD>cnext<CR>", "Next Quickfix")
+keymap("n", "[q", "<CMD>cprevious<CR>", "Previous Quickfix")
 
 -- location
-u.keymap("n", "]l", "<CMD>lnext<CR>", "Next Location")
-u.keymap("n", "[l", "<CMD>lprevious<CR>", "Previous Location")
+keymap("n", "]l", "<CMD>lnext<CR>", "Next Location")
+keymap("n", "[l", "<CMD>lprevious<CR>", "Previous Location")
 
 -- jump
-u.keymap("n", "]j", "<C-o>", "Next Jump")
-u.keymap("n", "[j", "<C-i>", "Previous Jump")
+keymap("n", "]j", "<C-o>", "Next Jump")
+keymap("n", "[j", "<C-i>", "Previous Jump")
 
 -- change
-u.keymap("n", "]c", "g,", "Next Change")
-u.keymap("n", "[c", "g;", "Previous Change")
+keymap("n", "]c", "g,", "Next Change")
+keymap("n", "[c", "g;", "Previous Change")
 
 -- diff conflict
-u.keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
-u.keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
+keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
+keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
 
 -- diagnostic error
-u.keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>", "Next Error")
+keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>", "Next Error")
 
-u.keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>", "Previous Error")
+keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>", "Previous Error")
 
 -- Add blank lines (not a list but same keymap set)
-u.keymap("n", "]<space>", function()
-  u.paste_blank_line(vim.fn.line ".")
+local function create_array(count, item)
+  local array = {}
+  for _ = 1, count do
+    table.insert(array, item)
+  end
+  return array
+end
+local paste_blank_line = function(line)
+  local lines = create_array(vim.v.count1, "")
+  vim.api.nvim_buf_set_lines(0, line, line, true, lines)
+end
+keymap("n", "]<space>", function()
+  paste_blank_line(vim.fn.line ".")
 end, "Add Space Below")
 
-u.keymap("n", "[<space>", function()
-  u.paste_blank_line(vim.fn.line "." - 1)
+keymap("n", "[<space>", function()
+  paste_blank_line(vim.fn.line "." - 1)
 end, "Add Space Above")
 
 -------------------------------------------------------------------------------
 ----> Git Mergetool
 -------------------------------------------------------------------------------
 
-u.keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update Merge Diff")
+keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update Merge Diff")
 
-u.keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose Hunk From Remote")
+keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose Hunk From Remote")
 
-u.keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose All From Remote")
+keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose All From Remote")
 
-u.keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose Hunk From Base")
+keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose Hunk From Base")
 
-u.keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose All From Base")
+keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose All From Base")
 
-u.keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose Hunk From Local")
+keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose Hunk From Local")
 
-u.keymap({ "n", "v" }, "<leader>gmL", "<cmd>diffget LO<cr>", "Choose All From Local")
+keymap({ "n", "v" }, "<leader>gmL", "<cmd>diffget LO<cr>", "Choose All From Local")
 
 -------------------------------------------------------------------------------
 ----> Windows
 -------------------------------------------------------------------------------
 
 -- hide splits
-u.keymap("n", "<M-q>", "<CMD>hide<CR>", "Hide Window")
-u.keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
+keymap("n", "<M-q>", "<CMD>hide<CR>", "Hide Window")
+keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
 
 -- create vim style splits
-u.keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
-u.keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
+keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
+keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
 
 -- create tmux style splits
-u.keymap("n", "<M-\\>", "<C-w>v", "Vertical Split")
-u.keymap("n", "<M-->", "<C-w>s", "Horizontal Split")
+keymap("n", "<M-\\>", "<C-w>v", "Vertical Split")
+keymap("n", "<M-->", "<C-w>s", "Horizontal Split")
 
 ---- navigate
-u.keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
-u.keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
-u.keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
-u.keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
-u.keymap({ "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
-u.keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
-u.keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
-u.keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
+keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
+keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
+keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
+keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
+keymap({ "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
+keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
+keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
+keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
 
-u.keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>", "Focus First Floating Window")
+keymap({ "n", "x" }, "<M-f>", "<CMD>GotoFirstFloat<CR>", "Focus First Floating Window")
 
 -- resize
-u.keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease Horizontal Window Size")
-u.keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase Horizontal Window Size")
-u.keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease Vertical Window Size")
-u.keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase Vertical Window Size")
+keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease Horizontal Window Size")
+keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase Horizontal Window Size")
+keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease Vertical Window Size")
+keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase Vertical Window Size")
 
 --  move
-u.keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
-u.keymap("n", "<M-Down>", "<C-w>J", "Move Window Down")
-u.keymap("n", "<M-Up>", "<C-w>K", "Move Window Up")
-u.keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
+keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
+keymap("n", "<M-Down>", "<C-w>J", "Move Window Down")
+keymap("n", "<M-Up>", "<C-w>K", "Move Window Up")
+keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
 
 -------------------------------------------------------------------------------
 ----> Tabs
 -------------------------------------------------------------------------------
 
-u.keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New Tab")
-u.keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close Other Tabs")
-u.keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
-u.keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move Tab")
+keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New Tab")
+keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close Other Tabs")
+keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
+keymap("n", "<leader>tm", "<CMD>tabmove<CR>", "Move Tab")
 
 -------------------------------------------------------------------------------
 ----> Buffers
 -------------------------------------------------------------------------------
 
 -- navigate
-u.keymap("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", "Next Buffer")
-u.keymap("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer")
-u.keymap("n", "M-n", "<cmd>bnext<cr>", "Next Buffer")
-u.keymap("n", "M-p", "<cmd>bprevious<cr>", "Previous Buffer")
+keymap("n", "<S-l>", "<cmd>bnext<cr>", "Next Buffer")
+keymap("n", "<S-h>", "<cmd>bprevious<cr>", "Previous Buffer")
+keymap("n", "M-n", "<cmd>bnext<cr>", "Next Buffer")
+keymap("n", "M-p", "<cmd>bprevious<cr>", "Previous Buffer")
 
 -- close/write
-u.keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
-u.keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close Buffer")
-u.keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
-u.keymap("n", "<leader>Q", "<CMD>wqa<CR>", "Write Quit All")
-u.keymap("n", "<leader><C-q>", "<CMD>qa!<CR>", "Force Quit All")
-u.keymap("n", "<leader>w", "<CMD>w<CR>", "Write")
-u.keymap("n", "<leader>W", "<CMD>wa<CR>", "Write All")
-u.keymap({ "n", "i" }, "<C-s>", "<CMD>write<CR>", "Write")
-u.keymap({ "n", "i" }, "<C-q>", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
+keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
+keymap("n", "<leader>bD", "<CMD>bdelete<CR>", "Close Buffer")
+keymap("n", "<leader>q", "<CMD>q<CR>", "Quit")
+keymap("n", "<leader>Q", "<CMD>wqa<CR>", "Write Quit All")
+keymap("n", "<leader><C-q>", "<CMD>qa!<CR>", "Force Quit All")
+keymap("n", "<leader>w", "<CMD>w<CR>", "Write")
+keymap("n", "<leader>W", "<CMD>wa<CR>", "Write All")
+keymap({ "n", "i" }, "<C-s>", "<CMD>write<CR>", "Write")
+keymap({ "n", "i" }, "<C-q>", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
 
 -- sudo save the file
 vim.api.nvim_create_user_command("W", "execute 'w !sudo tee % > /dev/null' <Bar> edit!", {})
-u.keymap("n", "<leader><C-w>", "<cmd>W<cr>", "Sudo Write")
+keymap("n", "<leader><C-w>", "<cmd>W<cr>", "Sudo Write")
 
 -- Open new buffer with the current file's same extension
-u.keymap("n", "<leader>bv", "<C-w>v:e %:h/scratch.%:e<CR>", "New Vertical Scratch Split")
-u.keymap("n", "<leader>bs", "<C-w>s:e %:h/scratch.%:e<CR>", "New Horizontal Scratch Split")
+keymap("n", "<leader>bv", "<C-w>v:e %:h/scratch.%:e<CR>", "New Vertical Scratch Split")
+keymap("n", "<leader>bs", "<C-w>s:e %:h/scratch.%:e<CR>", "New Horizontal Scratch Split")
 
 -- list, pick, and jump to a buffer
-u.keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
+keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
 -------------------------------------------------------------------------------
 
-u.keymap("n", "<leader>sn", function()
-  u.toggle_option "relativenumber"
+local toggle_option = function(option, x, y)
+  local on = x or true
+  local off = y or false
+  local opt_value = vim.api.nvim_win_get_option(0, option)
+  local toggled = opt_value == off and on or off
+
+  vim.api.nvim_win_set_option(0, option, toggled)
+  vim.cmd.set(option .. "?")
+end
+
+local diagnostic_toggle = function(global)
+  local vars, bufnr, cmd
+  if global then
+    vars = vim.g
+    bufnr = nil
+  else
+    vars = vim.b
+    bufnr = 0
+  end
+  vars.diagnostics_disabled = not vars.diagnostics_disabled
+  if vars.diagnostics_disabled then
+    cmd = "disable"
+    vim.api.nvim_echo({ { "Disabling diagnostics…" } }, false, {})
+  else
+    cmd = "enable"
+    vim.api.nvim_echo({ { "Enabling diagnostics…" } }, false, {})
+  end
+  vim.schedule(function()
+    vim.diagnostic[cmd](bufnr)
+  end)
+end
+
+keymap("n", "<leader>sd", function()
+  diagnostic_toggle()
+end, "Toggle buffer diagnostics")
+keymap("n", "<leader>sD", function()
+  diagnostic_toggle(true)
+end, "Toggle global diagnostics")
+
+keymap("n", "<leader>sn", function()
+  toggle_option "relativenumber"
 end, "Toggle relative line number")
 
-u.keymap("n", "<leader>sw", function()
-  u.toggle_option "wrap"
+keymap("n", "<leader>sw", function()
+  toggle_option "wrap"
 end, "Toggle wrap")
 
-u.keymap("n", "<leader>ss", function()
-  u.toggle_option "spell"
+keymap("n", "<leader>ss", function()
+  toggle_option "spell"
 end, "Toggle spell")
 
-u.keymap("n", "<leader>sp", function()
-  u.toggle_option "paste"
+keymap("n", "<leader>sp", function()
+  toggle_option "paste"
 end, "Toggle paste")
 
-u.keymap("n", "<leader>sf", function()
-  u.toggle_option("foldcolumn", "0", "1")
+keymap("n", "<leader>sf", function()
+  toggle_option("foldcolumn", "0", "1")
 end, "Toggle foldcolumn")
 
-u.keymap("n", "<leader>sc", function()
-  u.toggle_option("colorcolumn", "0", "80")
+keymap("n", "<leader>sc", function()
+  toggle_option("colorcolumn", "0", "80")
 end, "Toggle colorcolumn")
 
-u.keymap("n", "<leader>sh", function()
-  u.toggle_option "hlsearch"
+keymap("n", "<leader>sh", function()
+  toggle_option "hlsearch"
 end, "Toggle hlsearch")
 
-u.keymap("n", "<leader>si", function()
-  u.toggle_option "incsearch"
+keymap("n", "<leader>si", function()
+  toggle_option "incsearch"
 end, "Toggle incsearch")
 
-u.keymap("n", "<leader>sl", function()
-  u.toggle_option "list"
+keymap("n", "<leader>sl", function()
+  toggle_option "list"
 end, "Toggle list")
 
-u.keymap("n", "<leader>sx", function()
-  u.toggle_option "cursorline"
+keymap("n", "<leader>sx", function()
+  toggle_option "cursorline"
 end, "Toggle cursorline")
 
-u.keymap("n", "<leader>sy", function()
-  u.toggle_option "cursorcolumn"
+keymap("n", "<leader>sy", function()
+  toggle_option "cursorcolumn"
 end, "Toggle cursorcolumn")
 
-u.keymap("n", "<leader>s<Tab>", function()
-  u.toggle_option "autoindent"
+keymap("n", "<leader>s<Tab>", function()
+  toggle_option "autoindent"
 end, "Toggle autoindent")
 
 -------------------------------------------------------------------------------
@@ -423,3 +464,12 @@ vim.cmd [[
   endfunction
   command! NetrwToggle call <sid>NetrwToggle()
 ]]
+
+-------------------------------------------------------------------------------
+----> Plugins
+-------------------------------------------------------------------------------
+keymap("n", "<leader>e", "<cmd>Vifm<cr>", "File explorer")
+keymap("n", "-", "<cmd>Vifm<cr>", "File explorer")
+keymap("n", "<leader>ev", "<cmd>VsplitVifm<cr>", "File explorer (vertical)")
+keymap("n", "<leader>eh", "<cmd>SplitVifm<cr>", "File explorer (horizontal)")
+keymap("n", "<leader>et", "<cmd>TabVifm<cr>", "File explorer (tab)")

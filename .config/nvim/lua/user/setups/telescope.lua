@@ -8,8 +8,10 @@ local telescope_action_layout = require "telescope.actions.layout"
 
 telescope.setup {
   defaults = {
-    prompt_prefix = " ",
-    selection_caret = " ",
+    prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
+    selection_caret = "  ", -- ➜  ⮞     🡺  🡲
+    multi_icon = "✘  ", -- ✘  ✔
+    entry_prefix = "   ",
     layout_strategy = "horizontal",
     layout_config = {
       width = 0.9,
@@ -129,36 +131,26 @@ telescope.setup {
         "~/dev/work/arcgis-esm-samples",
       },
     },
-    file_browser = {
-      -- theme = "ivy",
-      hijack_netrw = false,
-    },
   },
 }
 
 telescope.load_extension "fzf"
 telescope.load_extension "project"
-telescope.load_extension "file_browser"
 telescope.load_extension "git_worktree"
 telescope.load_extension "session-lens"
 
-local u_status_ok, u = pcall(require, "user.utils")
-if not u_status_ok then
-  return
-end
-
-u.keymap(
+keymap(
   "n",
   "<leader>gws",
   "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
   "Switch worktree"
 )
-u.keymap(
+keymap(
   "n",
   "<leader>gwa",
   "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
   "Create worktree"
 )
 
-u.keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
-u.keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")
+keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
+keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")

@@ -85,35 +85,6 @@ function s() {
 # open vim help pages from shell prompt
 function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-mycolumn() (
-    file="${1:--}"
-    if [ "$file" = - ]; then
-        file="$(mktemp)"
-        cat >"${file}"
-    fi
-    awk '
-  FNR == 1 { if (NR == FNR) next }
-  NR == FNR {
-    for (i = 1; i <= NF; i++) {
-      l = length($i)
-      if (w[i] < l)
-        w[i] = l
-    }
-    next
-  }
-  {
-    for (i = 1; i <= NF; i++)
-      printf "%*s", w[i] + (i > 1 ? 1 : 0), $i
-    print ""
-  }
-  ' "$file" "$file"
-    if [ "$file" = - ]; then
-        rm "$file"
-    fi
-)
-
 # Filesystem
 #---------------------------------------------------------------------------------
 
@@ -302,15 +273,18 @@ greset() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # git clone worktree
-# clones a bare repo for use with git-worktree
+# Clones a bare repo for use with git-worktree and creates an
+# initial worktree called asdf that tracks the default branch.
 # https://git-scm.com/docs/git-worktree
-gclwt() {
+gclw() {
     dir="${2:-"$(basename "$1" .git)"}"
     mkdir "$dir"
     cd "$dir" || return
     git clone --bare "$1" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
+    git worktree add asdf "$(gbdefault)"
+    cd asdf || return
     unset dir
 }
 
@@ -418,20 +392,6 @@ if type -P gh >/dev/null 2>&1; then
     }
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# git-extras-big-blobs
-# human readably list the blobs by size, excluding HEAD
-function gxbigblobs() {
-    git rev-list --objects --all |
-        git cat-file --batch-check="%(objecttype) %(objectname) %(objectsize) %(rest)" |
-        sed -n "s/^blob //p" |
-        sort --numeric-sort --key=2 |
-        cut -c 1-12,41- |
-        $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest |
-        grep -vF --file=<(git ls-tree -r HEAD | awk "{print $3}")
-}
-
 # Arrays
 #---------------------------------------------------------------------------------
 
@@ -526,27 +486,13 @@ colors() {
     done
 }
 
-color-grid() {
-    awk -v term_cols="${width:-$(tput cols || echo 80)}" -v term_lines="${1:-1}" 'BEGIN{
-      s="/\\";
-      total_cols=term_cols*term_lines;
-      for (colnum = 0; colnum<total_cols; colnum++) {
-          r = 255-(colnum*255/total_cols);
-          g = (colnum*510/total_cols);
-          b = (colnum*255/total_cols);
-          if (g>255) g = 510-g;
-          printf "\033[48;2;%d;%d;%dm", r,g,b;
-          printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
-          printf "%s\033[0m", substr(s,colnum%2+1,1);
-          if (colnum%term_cols==term_cols) printf "\n";
-      }
-      printf "\n";
-    }'
-}
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+vcd() {
+    cd "$(command vifm --choose-dir - "$@")" || return 1
+}
 
 # make one or more directories and cd into the last one
 function mcd() {
-    mkdir -p -- "$@" && cd -- "${!#}" || return
+    mkdir -p -- "$@" && cd -- "${!#}" || return 1
 }

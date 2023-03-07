@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # This script installs the tools I use.
 # Comment out functions at the bottom to skip sections.
@@ -137,7 +138,7 @@ function install_go_packages() {
 function install_pip_packages() {
     [ "$(type -P pipx)" ] && local pipx="pipx"
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        "${pipx:-"pip"}" install "$pkg"
+        "${pipx:-"pip"}" install --user "$pkg"
     done <"$HOME/.dotfiles/deps/pip"
     unset pkg
 }
