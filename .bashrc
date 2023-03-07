@@ -30,6 +30,7 @@ unset aliases
 #---------------------------------------------------------------------------
 # BASH - FUNCTIONS/OPTIONS/PROMPT
 #---------------------------------------------------------------------------
+# local if for environment specific stuffs, it is gitignored
 for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
     [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done

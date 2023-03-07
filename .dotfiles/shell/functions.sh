@@ -359,20 +359,6 @@ gbprune() {
     unset TARGET_BRANCH mergeBase branch
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Toggles a label we use for running visual snapshots on a pull request
-if type -P gh >/dev/null 2>&1; then
-    cc-snapshots() {
-        if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
-            local current_branch
-            current_branch="$(git symbolic-ref --short HEAD)"
-            gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
-            gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
-        fi
-    }
-fi
-
 # Arrays
 #---------------------------------------------------------------------------------
 
