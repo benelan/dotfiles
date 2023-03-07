@@ -21,7 +21,6 @@ esac
 for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
     [ -r "$aliases" ] && [ -f "$aliases" ] && source "$aliases"
 done
-unset aliases
 
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
@@ -30,10 +29,13 @@ unset aliases
 #---------------------------------------------------------------------------
 # BASH - FUNCTIONS/OPTIONS/PROMPT
 #---------------------------------------------------------------------------
-for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
+# local if for environment specific stuffs, it is gitignored
+for stuffs in ~/.dotfiles/shell/{functions,options,prompt,local}.sh; do
     [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
-unset stuffs
+
+[ "$(hostname)" = "jamin-work" ] || [ -z "$WORK" ] &&
+    source ~/.dotfiles/shell/work.sh
 
 #---------------------------------------------------------------------------
 # BASH - TOOLS
@@ -41,7 +43,6 @@ unset stuffs
 for things in ~/.dotfiles/shell/tools/[!_]*; do
     [ -r "$things" ] && [ -f "$things" ] && source "$things"
 done
-unset things
 
 #---------------------------------------------------------------------------
 # BASH - COMPLETIONS
@@ -51,7 +52,6 @@ unset things
 for completions in ~/.dotfiles/shell/completions/[!_]*; do
     [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
-unset completions
 
 #---------------------------------------------------------------------------
 # TMUX - ATTACH

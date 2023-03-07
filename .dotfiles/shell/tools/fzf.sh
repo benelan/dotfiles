@@ -61,7 +61,6 @@ command -v setxkbmap >/dev/null 2>/dev/null &&
                         --header='Remap CapsLock' --height=15
             )"
         setxkbmap -option -option "${selected:-caps:ctrl_modifier}"
-        unset selected
     }
 
 ###############################################################################

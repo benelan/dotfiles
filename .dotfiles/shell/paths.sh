@@ -19,7 +19,6 @@ pathremove() {
         fi
     done
     export "$var"="${newpath#:}"
-    unset newpath dir var IFS
 }
 
 # Usage: pathprepend /path/to/bin [PATH]
@@ -34,7 +33,6 @@ pathprepend() {
     value=$(indirect_expand "$var")
     # shellcheck disable=2140
     export "${var}"="${1}${value:+:${value}}"
-    unset var value
 }
 
 # Usage: pathappend /path/to/bin [PATH]
@@ -47,7 +45,6 @@ pathappend() {
     value=$(indirect_expand "$var")
     # shellcheck disable=2140
     export "${var}"="${value:+${value}:}${1}"
-    unset var value
 }
 
 

@@ -1,5 +1,6 @@
 # personal
 .dotfiles/git/personal.gitconfig
+.dotfiles/shell/local.sh
 .config/mutt/gmail.gpg
 notes/*
 !notes/.zk

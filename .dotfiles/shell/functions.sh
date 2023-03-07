@@ -266,7 +266,6 @@ gclw() {
     git fetch origin
     git worktree add asdf "$(gbdefault)"
     cd asdf || return
-    unset dir
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,8 +301,6 @@ fgco() {
         awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
         # dedup -> pick -> checkout branch
         uniq | $PICK_BRANCH_CMD "$@" | xargs git checkout
-
-    unset PICK_BRANCH_CMD SEARCH_TERM
 }
 
 # Adds some additional default fzf options
@@ -356,22 +353,7 @@ gbprune() {
             while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
                 [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] &&
                 git branch -D "$branch"; done
-    unset TARGET_BRANCH mergeBase branch
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Toggles a label we use for running visual snapshots on a pull request
-if type -P gh >/dev/null 2>&1; then
-    cc-snapshots() {
-        if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
-            local current_branch
-            current_branch="$(git symbolic-ref --short HEAD)"
-            gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
-            gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
-        fi
-    }
-fi
 
 # Arrays
 #---------------------------------------------------------------------------------
