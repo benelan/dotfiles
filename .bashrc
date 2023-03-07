@@ -31,10 +31,13 @@ unset aliases
 # BASH - FUNCTIONS/OPTIONS/PROMPT
 #---------------------------------------------------------------------------
 # local if for environment specific stuffs, it is gitignored
-for stuffs in ~/.dotfiles/shell/{functions,options,prompt}.sh; do
+for stuffs in ~/.dotfiles/shell/{functions,options,prompt,local}.sh; do
     [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
 unset stuffs
+
+[ "$(hostname)" = "jamin-work" ] || [ -z "$WORK" ] &&
+    source ~/.dotfiles/shell/work.sh
 
 #---------------------------------------------------------------------------
 # BASH - TOOLS
