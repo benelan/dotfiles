@@ -37,6 +37,7 @@ lsb-release
 lynx
 make
 mount
+mplayer
 neofetch
 net-tools
 ninja-build
@@ -57,11 +58,15 @@ shellcheck
 socat
 sqlite3
 taskwarrior
+tcpdump
 telnet
 tmux
+transmission-cli
 trash-cli
 tree
 unzip
+urlview
+vifm
 vim
 vim-gui-common
 wget
