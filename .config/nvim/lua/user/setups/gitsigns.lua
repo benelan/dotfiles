@@ -21,7 +21,7 @@ keymap("n", "<leader>gtw", "<cmd>Gitsigns toggle_word_diff<CR>", "Toggle word di
 keymap("n", "<leader>gtl", "<cmd>Gitsigns toggle_linehl<CR>", "Toggle line highlight")
 keymap("n", "<leader>gtn", "<cmd>Gitsigns toggle_numhl<CR>", "Toggle number highlight")
 
-keymap("n", "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", "Buffer File History")
+keymap("n", "<leader>gh", "<cmd>DiffviewFileHistory % --follow<cr>", "Buffer File History")
 keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
 keymap("n", "<leader>gy", "<cmd>GBrowse!<cr>", "Yank URL")
 
@@ -32,7 +32,7 @@ keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
 keymap({ "n", "x" }, "]h", "<cmd>Gitsigns next_hunk<CR>", "Next hunk")
 keymap({ "n", "x" }, "[h", "<cmd>Gitsigns prev_hunk<CR>", "Previous hunk")
 keymap({ "n", "x" }, "<leader>gC", "<cmd>Telescope git_bcommits<cr>", "Checkout Buffer Commit")
-keymap({ "n", "x" }, "<leader>gH", "<cmd>DiffviewFileHistory<cr>", "All Files History")
+keymap({ "n", "x" }, "<leader>gH", "<cmd>DiffviewFileHistory --follow<cr>", "All Files History")
 keymap({ "n", "x" }, "<leader>gR", "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer")
 keymap({ "n", "x" }, "<leader>gS", "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer")
 keymap({ "n", "x" }, "<leader>gB", "<cmd>Telescope git_branches<cr>", "Checkout Branch")
