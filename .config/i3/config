@@ -123,7 +123,7 @@ set $ws6 "06"
 set $ws7 "07"
 set $ws8 "08"
 set $ws9 "09"
-set $wsX "10"
+# set $wsX "10"
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -135,7 +135,7 @@ bindsym $mod+6 workspace number $ws6
 bindsym $mod+7 workspace number $ws7
 bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
-bindsym $mod+0 workspace number $ws10
+# bindsym $mod+0 workspace number $ws10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
@@ -147,7 +147,7 @@ bindsym $mod+Shift+6 move container to workspace number $ws6
 bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+# bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -209,11 +209,12 @@ set $white #ffffff
 bar {
         position bottom
         status_command i3status
+        tray_output primary
         colors {
             # bar background color
             background $bg
             # text color used for blocks that do not have a color specified.
-            # statusline $yellow
+            statusline $fg
             # workspaces section
             #                    border  backgr. text
             focused_workspace    $aqua $aqua $darkgray

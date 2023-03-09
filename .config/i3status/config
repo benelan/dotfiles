@@ -14,24 +14,38 @@ general {
         color_bad = "#cc241d"
 }
 
-order += "disk /"
+order += "wireless _first_"
+order += "ethernet _first_"
 order += "battery all"
 order += "load"
+order += "memory"
 order += "tztime local"
+
+wireless _first_ {
+        format_up = "W: (%quality at %essid) %ip"
+        format_down = "W: down"
+}
+
+ethernet _first_ {
+        format_up = "E: %ip (%speed)"
+        format_down = "E: down"
+}
 
 battery all {
         format = "%status %percentage %remaining"
-        low_threshold = 25
+        low_threshold = 30
+}
+
+load {
+        format = "CPU: %1min"
+}
+
+memory {
+        format = "MEM: %used"
+        threshold_degraded = "4G"
+        format_degraded = "MEM: %used / %available"
 }
 
 tztime local {
         format = "%Y-%m-%d %H:%M:%S"
-}
-
-load {
-        format = "%1min"
-}
-
-disk "/" {
-        format = "%avail"
 }
