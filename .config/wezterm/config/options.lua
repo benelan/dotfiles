@@ -51,7 +51,7 @@ return {
   hide_tab_bar_if_only_one_tab = true,
   adjust_window_size_when_changing_font_size = false,
   window_decorations = "NONE",
-  window_background_opacity = 0.95,
+  window_background_opacity = 0.85,
   window_padding = {
     left = 0,
     right = 0,

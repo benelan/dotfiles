@@ -4,13 +4,14 @@ exists() {
     test -x "$(command -v "$1")"
 }
 
+TERMINAL="wezterm"
 EDITOR='vi'
 exists nvim && EDITOR='nvim' || {
     exists vim && EDITOR='vim'
 } || {
     exists nano && EDITOR='nano'
 }
-export EDITOR
+export EDITOR TERMINAL
 
 LESS="-i -M -R -w"
 LESSHISTFILE=-
