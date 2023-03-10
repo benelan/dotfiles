@@ -8,19 +8,13 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
+#############################################################################
+# Startup scripts/processes
+#############################################################################
+
 exec --no-startup-id "compton --daemon"
 exec --no-startup-id "conky --daemonize"
 exec --no-startup-id ~/.dotfiles/bin/init-laptop
-
-set $mod Mod4
-
-for_window [class="^.*"] border pixel 2
-                          # class                 border  backgr. text    indicator child_border
-for_window [class="^.*"] client.focused          #77dd77 #285577 #ffffff #2e9ef4   #285577
-
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:Iosevka Nerd Font 12
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -40,6 +34,12 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
+
+#############################################################################
+# Keybindings
+#############################################################################
+
+set $mod Mod4
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -185,9 +185,13 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-#######
-#THEME#
-#######
+#############################################################################
+# Theme
+#############################################################################
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font pango:Iosevka Nerd Font 12
 
 # set primary gruvbox colorscheme colors
 # set $bg #504945
@@ -224,16 +228,12 @@ bar {
         }
 }
 
-# green gruvbox
 # class                 border|backgr|text|indicator|child_border
-#client.focused          $green $green $darkgray $purple $darkgray
-#client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
-#client.unfocused        $darkgray $darkgray $yellow $purple $darkgray
-#client.urgent           $red $red $white $red $red
-
-# blue gruvbox
-# class                 border|backgr|text|indicator|child_border
-client.focused          $gray $gray $darkgray $fg $darkgray
+client.focused          $aqua $aqua $darkgray $fg $darkgray
 client.focused_inactive $darkgray $darkgray $yellow $fg $darkgray
 client.unfocused        $darkgray $darkgray $yellow $fg $darkgray
 client.urgent           $red $red $white $red $red
+
+# smaller window borders
+for_window [class="^.*"] border pixel 1
+
