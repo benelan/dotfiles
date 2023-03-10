@@ -7,11 +7,11 @@
 # If the above line is not correctly displayed, fix your editor first!
 
 general {
-        colors = true
-        interval = 5
-        color_good = "#98971a"
-        color_degraded = "#d79921"
-        color_bad = "#cc241d"
+    colors = true
+    interval = 5
+    color_good = "#98971a"
+    color_degraded = "#d79921"
+    color_bad = "#cc241d"
 }
 
 order += "wireless _first_"
@@ -19,33 +19,44 @@ order += "ethernet _first_"
 order += "battery all"
 order += "load"
 order += "memory"
+order += "volume master"
 order += "tztime local"
 
 wireless _first_ {
-        format_up = "W: (%quality at %essid) %ip"
-        format_down = "W: down"
+    format_up = "W: %quality (%essid)"
+    format_down = "W: down"
 }
 
 ethernet _first_ {
-        format_up = "E: %ip (%speed)"
-        format_down = "E: down"
+    format_up = "E: %speed"
+    format_down = "E: down"
 }
 
 battery all {
-        format = "%status %percentage %remaining"
-        low_threshold = 30
+    format = "%status %percentage (%remaining)"
+    low_threshold = "30"
+    threshold_type = "percentage"
 }
 
 load {
-        format = "CPU: %1min"
+    format = "CPU: %1min"
+    max_threshold = "3"
 }
 
 memory {
-        format = "MEM: %used"
-        threshold_degraded = "4G"
-        format_degraded = "MEM: %used / %available"
+    format = "MEM: %used (%available)"
+    threshold_degraded = "40%"
+    threshold_critical = "10%"
+}
+
+volume master {
+    format = "VOL: %volume"
+    format_muted = "VOL: muted (%volume)"
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
 }
 
 tztime local {
-        format = "%Y-%m-%d %H:%M:%S"
+    format = "%Y-%m-%d %H:%M:%S "
 }
