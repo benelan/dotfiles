@@ -184,12 +184,13 @@ if has("autocmd")
                     \ set nobuflisted |
                     \ nnoremap <silent> <buffer> q :close<CR>
 
+
         autocmd FileType markdown,gitcommit,text
                     \ setlocal wrap spell nornu nonu |
-                    \ nnoremap <buffer> <silent> j gj |
-                    \ nnoremap <buffer> <silent> k gk |
-                    \ nnoremap <buffer> <silent> ^ g^ |
-                    \ nnoremap <buffer> <silent> $ g$
+                    " \ nnoremap <buffer> <silent> g^ g^ |
+                    " \ nnoremap <buffer> <silent> g$ g$ |
+                    \ nnoremap <buffer> <silent> gj gj |
+                    \ nnoremap <buffer> <silent> gk gk
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
