@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-# shellcheck disable=2139
 
 # For running npm scripts in a docker container due to a Stencil bug
 # https://github.com/ionic-team/stencil/issues/3853
 # Uses a bind mount so works for local development, e.g.
 # $ cc-drun npm run test:watch
-alias cc-drun="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) --publish 3333:3333 --name calcite-components calcite-components"
-alias cc-dbuild="docker build --tag calcite-components ."
+alias cc-docker='docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) --publish 3333:3333 --name calcite-components calcite-components'
+alias cc-build-docker="docker build --tag calcite-components ."
 # I need to link the Dockerfile to the current git worktree
-alias cc-dlink="ln -f ~/dev/work/calcite-components/Dockerfile"
+alias cc-link-dockerfile="ln -f ~/dev/work/calcite-components/Dockerfile"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

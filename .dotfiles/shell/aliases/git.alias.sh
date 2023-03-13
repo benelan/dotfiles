@@ -12,11 +12,6 @@ alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
 alias gbdefault-bare='git remote show $(git remote | grep -Eo "(upstream|origin)" | tail -1) | grep "HEAD branch" | cut -d" " -f5'
 alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
 
-# git wip (work in progress)
-# commit changes that will cleaned up later during rebase
-alias gwip='git add -A && git commit -qm "chore: [WIP] $(date -Iseconds)"'
-
-
 # add
 ######
 alias ga='git add'
@@ -48,14 +43,13 @@ alias gbc="git for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y 
 #########
 alias gc='git commit --verbose'
 alias gca='git commit --verbose --all'
-alias gcm='git commit --verbose -Sm'
+alias gcm='git commit --verbose -m'
 # Add uncommitted and unstaged changes to the last commit
-alias gcam='git commit --verbose -am'
-alias gcaamd='git commit --all --amend -C HEAD'
 alias gcamd='git commit --verbose --amend'
 alias gcamdne='git commit --amend --no-edit'
 alias gci='git commit --interactive'
-alias gcsam='git commit -S -am'
+# commit changes that will cleaned up later during rebase
+alias gwip='git commit -qm "chore: [WIP] $(date -Iseconds)"'
 
 # checkout
 ###########
