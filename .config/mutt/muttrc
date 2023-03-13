@@ -12,16 +12,17 @@ set mail_check         = 60
 set realname           = "Ben Elan"
 set signature          = "~/.config/mutt/signature"
 set sort               = "reverse-date-received"
+set ssl_starttls       = yes
 set ssl_force_tls      = yes
 set timeout            = 300
 set text_flowed        = yes
+set quit               = ask-yes
 
+# source "~/.config/mutt/colors.muttrc"
 
 # Try to render everything in plaintext
 auto_view text/html
 alternative_order text/plain text/rich text/markdown text/html
-
-
 
 # -----------------------------------------------------
 # --> Gmail account settings
@@ -87,8 +88,8 @@ macro index,pager gf "<change-folder>?"
 bind  index,pager    a   group-reply
 bind  generic        ]]  tag-entry
 bind  pager          ]]  tag-message
-bind  index          ]t tag-thread
-macro pager          ]t "<exit><mark-message>q<enter><tag-thread>'q<display-message>"    "tag-thread"
+bind  index          ]t  tag-thread
+macro pager          ]t  "<exit><mark-message>q<enter><tag-thread>'q<display-message>"    "tag-thread"
 macro index,pager    gx  "<pipe-message>urlview<Enter>"                                   "call urlview to extract URLs out of a message"
 macro attach,compose gx  "<pipe-entry>urlview<Enter>"                                     "call urlview to extract URLs out of a message"
 macro index,pager    dd  "<delete-message><sync-mailbox>"                                 "move message to trash"

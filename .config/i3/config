@@ -29,7 +29,7 @@ exec --no-startup-id dex --autostart --environment i3
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c 000000 --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -194,9 +194,10 @@ bindsym $mod+r mode "resize"
 font pango:Iosevka Nerd Font 12
 
 # set primary gruvbox colorscheme colors
-# set $bg #504945
-# set $bg #3c3836
-set $bg #32302f
+set $bg3 #665c54
+set $bg2 #504945
+set $bg1 #3c3836
+set $bg0_s #32302f
 set $fg #ebdbb2
 set $red #cc241d
 set $green #98971a
@@ -216,7 +217,7 @@ bar {
         tray_output primary
         colors {
             # bar background color
-            background $bg
+            background $bg0_s
             # text color used for blocks that do not have a color specified.
             statusline $fg
             # workspaces section
@@ -224,14 +225,14 @@ bar {
             focused_workspace    $aqua $aqua $darkgray
             inactive_workspace   $darkgray $darkgray $yellow
             active_workspace     $darkgray $darkgray $yellow
-            urgent_workspace     $red $red $bg
+            urgent_workspace     $red $red $bg0_s
         }
 }
 
 # class                 border|backgr|text|indicator|child_border
-client.focused          $aqua $aqua $darkgray $fg $darkgray
-client.focused_inactive $darkgray $darkgray $yellow $fg $darkgray
-client.unfocused        $darkgray $darkgray $yellow $fg $darkgray
+client.focused          $aqua $aqua $darkgray $gray $bg3
+client.focused_inactive $darkgray $darkgray $yellow $gray $darkgray
+client.unfocused        $darkgray $darkgray $yellow $gray $darkgray
 client.urgent           $red $red $white $red $red
 
 # smaller window borders
