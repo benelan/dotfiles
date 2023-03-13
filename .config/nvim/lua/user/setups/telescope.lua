@@ -36,7 +36,8 @@ telescope.setup {
       "%.git/",
       "node_modules/",
       "dist/",
-      "build/", -- home directories
+      "build/",
+      -- home directories
       "%.cache/",
       "%.var/",
       "%.mozilla/",
@@ -57,7 +58,8 @@ telescope.setup {
       "%.png",
       "%.jpeg",
       "%.avi",
-      "%.ico", -- packages
+      "%.ico",
+      -- packages
       "%.7z",
       "%.dmg%",
       "%.gz",
@@ -91,8 +93,10 @@ telescope.setup {
         ["<M-k>"] = telescope_actions.cycle_history_prev,
         ["<C-j>"] = telescope_actions.move_selection_next,
         ["<C-k>"] = telescope_actions.move_selection_previous,
-        ["<tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_next,
-        ["<s-tab>"] = telescope_actions.toggle_selection + telescope_actions.move_selection_previous,
+        ["<tab>"] = telescope_actions.toggle_selection
+          + telescope_actions.move_selection_next,
+        ["<s-tab>"] = telescope_actions.toggle_selection
+          + telescope_actions.move_selection_previous,
         ["<esc>"] = telescope_actions.close,
         ["<M-p>"] = telescope_action_layout.toggle_preview,
         ["<M-m>"] = telescope_action_layout.toggle_mirror,
@@ -120,34 +124,60 @@ telescope.setup {
       },
     },
   },
-  -- extensions = {
-  --   project = {
-  --     hidden_files = true,
-  --     base_dirs = {
-  --       "~/.dotfiles",
-  --       "~/.config/nvim",
-  --       "~/dev/work/calcite-components",
-  --       "~/dev/work/calcite-components-examples",
-  --       "~/dev/work/arcgis-esm-samples",
-  --     },
-  --   },
-  -- },
 }
-keymap("n", "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find")
-keymap("n", "<leader>ff", "<cmd>Telescope find_files hidden=true<cr>", "Find File")
-keymap("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
-keymap("n", "<leader>ft", "<cmd>Telescope live_grep<cr>", "Find Text")
-keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", "Find Text")
 
-keymap("n", "<leader>lB", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics")
+local telescope_builtin = require "telescope.builtin"
+
+-- when a count N is given to a telescope mapping called through the following
+-- function, the search is started in the Nth parent directory
+local function telescope_cwd(picker, args)
+  telescope_builtin[picker](
+    vim.tbl_extend(
+      "error",
+      args or {},
+      { cwd = ("../"):rep(vim.v.count) .. "." }
+    )
+  )
+end
+
+keymap("n", "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find")
+keymap("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
+keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", "Find Text")
+keymap("n", "<leader>ff", function()
+  telescope_cwd("find_files", { hidden = true })
+end, "Find File")
+keymap("n", "<leader>ft", function()
+  telescope_cwd "live_grep"
+end, "Find Text")
+
+keymap(
+  "n",
+  "<leader>lB",
+  "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
+  "Buffer Diagnostics"
+)
 keymap("n", "<leader>lQ", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix")
-keymap("n", "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols")
-keymap("n", "<leader>lW", "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics")
+keymap(
+  "n",
+  "<leader>lS",
+  "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+  "Workspace Symbols"
+)
+keymap(
+  "n",
+  "<leader>lW",
+  "<cmd>Telescope diagnostics<cr>",
+  "Workspace Diagnostics"
+)
 keymap("n", "<leader>lW", "<cmd>Telescope lsp_references<cr>", "References")
-keymap("n", "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols")
+keymap(
+  "n",
+  "<leader>ls",
+  "<cmd>Telescope lsp_document_symbols<cr>",
+  "Document Symbols"
+)
 
 telescope.load_extension "fzf"
--- telescope.load_extension "project"
 -- telescope.load_extension "git_worktree"
 -- telescope.load_extension "session-lens"
 

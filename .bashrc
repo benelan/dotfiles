@@ -61,4 +61,4 @@ unset completions
 # TMUX - ATTACH
 #---------------------------------------------------------------------------
 # ensure tmux is running, `tat` is in .dotfiles/bin
-[ -z "$TMUX" ] && export OG_TERM="$TERM" && tat
+# [ -z "$TMUX" ] && export OG_TERM="$TERM" && tat
