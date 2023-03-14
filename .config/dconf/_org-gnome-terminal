@@ -4,11 +4,35 @@ default-show-menubar=false
 headerbar=@mb false
 mnemonics-enabled=true
 new-terminal-mode='tab'
-theme-variant='system'
+theme-variant='dark'
 
 [legacy/keybindings]
+close-tab='<Control><Shift>q'
+close-window='<Control><Alt>q'
+find-next='<Control><Alt>n'
+find-previous='<Control><Alt><Shift>N'
+full-screen='<Control><Shift>m'
+move-tab-left='<Control><Shift>Left'
+move-tab-right='<Control><Shift>Right'
+new-window='<Control><Shift>w'
+next-tab='<Control><Shift>n'
 paste='<Primary><Shift>v'
+prev-tab='<Control><Shift>p'
+reset='disabled'
 select-all='<Primary><Shift>a'
+switch-to-tab-1='<Control><Shift>1'
+switch-to-tab-10='disabled'
+switch-to-tab-2='<Control><Shift>2'
+switch-to-tab-3='<Control><Shift>3'
+switch-to-tab-4='<Control><Shift>4'
+switch-to-tab-5='<Control><Shift>5'
+switch-to-tab-6='<Control><Shift>6'
+switch-to-tab-7='<Control><Shift>7'
+switch-to-tab-8='<Control><Shift>8'
+switch-to-tab-9='<Control><Shift>9'
+zoom-in='<Control><Shift>plus'
+zoom-normal='<Control><Shift>0'
+zoom-out='<Control><Shift>minus'
 
 [legacy/profiles:]
 default='d64bb3c0-657e-4832-a859-f82b2dbd3ac1'

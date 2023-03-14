@@ -1,4 +1,5 @@
 [keybindings]
+move-to-center=['<Primary><Super>m']
 move-to-workspace-1=['<Super><Shift>1']
 move-to-workspace-10=['<Super><Shift>0']
 move-to-workspace-2=['<Super><Shift>2']
@@ -9,7 +10,9 @@ move-to-workspace-6=['<Super><Shift>6']
 move-to-workspace-7=['<Super><Shift>7']
 move-to-workspace-8=['<Super><Shift>8']
 move-to-workspace-9=['<Super><Shift>9']
-move-to-workspace-last=['<Shift><Super>End', '<Super>0']
+move-to-workspace-down=['<Super><Shift>j']
+move-to-workspace-last=['<Shift><Super>End']
+move-to-workspace-up=['<Super><Shift>k']
 switch-to-workspace-1=['<Super>1']
 switch-to-workspace-10=['<Super>0']
 switch-to-workspace-2=['<Super>2']
@@ -20,14 +23,14 @@ switch-to-workspace-6=['<Super>6']
 switch-to-workspace-7=['<Super>7']
 switch-to-workspace-8=['<Super>8']
 switch-to-workspace-9=['<Super>9']
-switch-to-workspace-last=@as []
+switch-to-workspace-last=['<Super>Backspace']
+toggle-fullscreen=['<Super><Shift>M']
 
 [preferences]
 action-double-click-titlebar='toggle-maximize'
 action-middle-click-titlebar='minimize'
+audible-bell=false
 auto-raise=false
 button-layout='appmenu:close'
 focus-mode='click'
 num-workspaces=10
-theme='Gruvbox'
-titlebar-font='Roboto Slab Bold Italic 11'
