@@ -16,17 +16,8 @@
 keymap("", "<Space>", "<Nop>")
 vim.g.mapleader = " "
 
-keymap("n", "<Backspace>", "<C-^>")
-
 -- Press jk to escape
 keymap("i", "jk", "<ESC>")
-
--- Stay in indent mode
-keymap("v", "<", "<gv")
-keymap("v", ">", ">gv")
-
-keymap("v", "p", '"_dP')
-keymap("n", "x", '"_x')
 
 -- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
@@ -216,6 +207,19 @@ keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
 keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
 keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
 
+-- Go to the first floating window
+vim.cmd [[
+  function! s:GotoFirstFloat() abort
+    for w in range(1, winnr('$'))
+      let c = nvim_win_get_config(win_getid(w))
+      if c.focusable && !empty(c.relative)
+        execute w . 'wincmd w'
+      endif
+    endfor
+  endfunction
+
+  command! GotoFirstFloat call <sid>GotoFirstFloat()
+]]
 keymap(
   { "n", "x" },
   "<M-f>",
@@ -258,7 +262,7 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
 -------------------------------------------------------------------------------
 
 -- list, pick, and jump to a buffer
-keymap("n", "<leader>b", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
+keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
 
 -- close/write
 keymap("n", "<leader>d", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
@@ -365,64 +369,10 @@ keymap("n", "<leader>s<Tab>", function()
 end, "Toggle autoindent")
 
 -------------------------------------------------------------------------------
-----> Vimscript
--------------------------------------------------------------------------------
-
--- Random stuff I haven't converted to Lua yet
-vim.cmd [[
-    " I would always accidently open the command history when trying to quit
-    " And you can't Nop q: for some reason, so now I record macros with Q
-    nnoremap Q q
-    nnoremap q <Nop>
-    vnoremap Q q
-    vnoremap q <Nop>
-
-    " clear search highlights
-    nnoremap <C-l> :<C-U>nohlsearch<CR><C-l>
-    inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
-    vnoremap <C-l> <Esc><C-l>gv
-
-    " go to line above/below the cursor, from insert mode
-    inoremap <S-CR> <C-O>o
-    inoremap <C-CR> <C-O>O
-
-  " clear search highlights if there any
-    nnoremap <silent> <expr> <CR> {-> v:hlsearch ? "<cmd>nohl\<CR>" : "\<CR>"}()
-
-  " move down jumping over blank lines and indents
-  nnoremap <silent> gj :let _=&lazyredraw<CR>
-  \:set lazyredraw<CR>/\%<C-R>=virtcol(".")
-  \<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
-  " move up jumping over blank lines and indents
-  nnoremap <silent> gk :let _=&lazyredraw<CR>
-  \:set lazyredraw<CR>?\%<C-R>=virtcol(".")
-  \<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
-  "" uses last changed or yanked text as an object
-  onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
-  "" uses entire buffer as an object
-  onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
-  omap <leader>5 <leader>%
-]]
-
--- Go to the first floating window
-vim.cmd [[
-  function! s:GotoFirstFloat() abort
-    for w in range(1, winnr('$'))
-      let c = nvim_win_get_config(win_getid(w))
-      if c.focusable && !empty(c.relative)
-        execute w . 'wincmd w'
-      endif
-    endfor
-  endfunction
-
-  command! GotoFirstFloat call <sid>GotoFirstFloat()
-]]
-
--------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------
+
+keymap("n", "<leader>fz", "<cmd>FZF<cr>", "FZF")
 
 -- Vifm
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
@@ -486,6 +436,7 @@ keymap(
   "<cmd>lua require('goto-preview').close_all_win()<CR>",
   "Close previews"
 )
+
 keymap("n", "gpf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
 
 -- Zk

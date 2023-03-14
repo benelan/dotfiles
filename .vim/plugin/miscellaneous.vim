@@ -25,6 +25,64 @@ let g:markdown_fenced_languages = [
       \ 'ts=typescript', 'tsx=typescriptreact',
       \ 'js=javascript', 'jsx=javascriptreact' ]
 
+
+" ---------------------------------------------------------------------------
+" | Keymaps                                                                 |
+" ---------------------------------------------------------------------------
+
+" I always accidently opened the command history when trying to quit
+" And you can't Nop q: for some reason, so now I record macros with Q
+nnoremap Q q
+nnoremap q <Nop>
+vnoremap Q q
+vnoremap q <Nop>
+
+vnoremap p "_dP
+nnoremap x "_x
+
+nnoremap <Backspace> <C-^>
+
+vnoremap < <gv
+vnoremap > >gv
+
+nnoremap J mzJ`z
+
+noremap & :&&<CR>
+ounmap &
+sunmap &
+
+" clear search highlights
+nnoremap <C-l> :<C-U>nohlsearch<CR><C-l>
+inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
+vnoremap <C-l> <Esc><C-l>gv
+
+" go to line above/below the cursor, from insert mode
+inoremap <S-CR> <C-O>o
+inoremap <C-CR> <C-O>O
+
+" clear search highlights if there any
+nnoremap <silent> <expr> <CR>
+      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
+      \ line('w$') < line('$')
+        \ ? "\<PageDown>"
+        \ : ":\<C-U>next\<CR>" }()
+
+"" https://vi.stackexchange.com/a/213
+" move down jumping over blank lines and indents
+nnoremap <silent> gj :let _=&lazyredraw<CR>
+            \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
+            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+" move up jumping over blank lines and indents
+nnoremap <silent> gk :let _=&lazyredraw<CR>
+            \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
+            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
+"" uses last changed or yanked text as an object
+onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
+"" uses entire buffer as an object
+onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
+omap <leader>5 <leader>%
+
 "" Leader,r acts as a replacement operator
 map <Leader>r <Plug>(ReplaceOperator)
 ounmap <Leader>r

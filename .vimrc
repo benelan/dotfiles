@@ -101,7 +101,6 @@ if has('persistent_undo')
     set undofile
 endif
 
-
 let s:fzf_path=expand('$HOME/.dotfiles/vendor/fzf')
 if isdirectory(s:fzf_path)
   set runtimepath+=s:fzf_path
@@ -119,22 +118,8 @@ vnoremap <leader>fz :FZF<CR>
 inoremap jk <esc>
 nnoremap Y y$
 
-nnoremap Q q
-nnoremap q <Nop>
-
-nnoremap <Backspace> <C-^>
-
-vnoremap < <gv
-vnoremap > >gv
-
-nnoremap J mzJ`z
-
 nnoremap n nzzzv
 nnoremap N Nzzzv
-
-"" go to line above/below the cursor, from insert mode
-inoremap <S-CR> <C-O>o
-inoremap <C-CR> <C-O>O
 
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
@@ -142,26 +127,9 @@ nnoremap <leader>c "_c
 vnoremap <leader>c "_c
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
-vnoremap p "_dP
-nnoremap x "_x
 
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
-
-nnoremap <silent> <expr> <CR>
-      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
-      \ line('w$') < line('$')
-        \ ? "\<PageDown>"
-        \ : ":\<C-U>next\<CR>" }()
-
-"" clear search highlights
-nnoremap <C-L> :<C-U>nohlsearch<CR><C-L>
-inoremap <C-L> <C-O>:execute "normal \<C-L>"<CR>
-vnoremap <C-L> <Esc><C-L>gv
-
-noremap & :&&<CR>
-ounmap &
-sunmap &
 
 if empty(mapcheck('<C-U>', 'i'))
   inoremap <C-U> <C-G>u<C-U>
@@ -169,10 +137,6 @@ endif
 if empty(mapcheck('<C-W>', 'i'))
   inoremap <C-W> <C-G>u<C-W>
 endif
-
-"" https://vi.stackexchange.com/a/213
-nnoremap <silent> gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-nnoremap <silent> gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),'<Bar>')<CR>
 
@@ -316,12 +280,6 @@ nnoremap <leader>H :<C-U>history :<CR>
 nnoremap <leader>` :<C-U>marks<CR>
 "" shows all registers
 nnoremap <leader>R :<C-U>registers<CR>
-"" uses last changed or yanked text as an object
-onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
-"" uses entire buffer as an object
-onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
-omap <leader>5 <leader>%
-
 " start ex command for vimgrep
 nnoremap <leader><C-/> :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
@@ -396,7 +354,6 @@ if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 endif
 
-
 " ----------------------------------------------------------------------
 " | Helper Functions                                                   |
 " ----------------------------------------------------------------------
@@ -441,7 +398,6 @@ function g:GitBranch()
         return ""
     endif
 endfunction
-
 
 " ----------------------------------------------------------------------
 " | Statusline                                                         |
