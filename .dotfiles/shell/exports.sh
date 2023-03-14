@@ -1,16 +1,21 @@
 #!/bin/sh
+# shellcheck disable=3003
 
 exists() {
     test -x "$(command -v "$1")"
 }
 
-TERMINAL="wezterm"
-EDITOR='vi'
-exists nvim && EDITOR='nvim' || {
-    exists vim && EDITOR='vim'
-} || {
-    exists nano && EDITOR='nano'
-}
+TERMINAL="gnome-terminal"
+exists wezterm && TERMINAL='wezterm'
+
+EDITOR='nano'
+exists nvim && EDITOR='nvim' ||
+    {
+        exists vim && EDITOR='vim'
+    } ||
+    {
+        exists vi && EDITOR='vi'
+    }
 export EDITOR TERMINAL
 
 LESS="-i -M -R -w"
@@ -59,7 +64,6 @@ NOSPLASH=1
 NOWELCOME=1
 export CLICOLOR GREP_COLOR NOSPLASH NOWELCOME
 
-# If HOSTNAME isn't set by this shell, we'll do it
 if [ -z "$HOSTNAME" ]; then
     HOSTNAME=$(uname -n)
 fi
@@ -67,14 +71,18 @@ fi
 # Don't warn me about new mail
 unset -v MAILCHECK
 
+DEV="$HOME/dev"
+WORK="$DEV/work"
+PERSONAL="$DEV/personal"
+NOTES="$HOME/notes"
 DOTFILES="$HOME/.dotfiles"
-ZK_NOTEBOOK_DIR="$HOME/notes"
-export DOTFILES ZK_NOTEBOOK_DIR
+export DOTFILES DEV WORK PERSONAL NOTES
 
 VOLTA_HOME=~/.volta
 BUN_INSTALL="$HOME/.bun"
 BAT_THEME="gruvbox-dark"
-export VOLTA_HOME BAT_THEME BUN_INSTALL
+ZK_NOTEBOOK_DIR="$NOTES"
+export VOLTA_HOME BAT_THEME BUN_INSTALL ZK_NOTEBOOK_DIR
 
 NNN_FCOLORS="0404040000000600010F0F02"
 NNN_PLUG='f:finder;o:fzopen;d:diffs;z:autojump'

@@ -9,7 +9,7 @@ alias g='git'
 # gets the default git branch
 alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
 # Same as above but works in bare repos and is more accurate, but slower
-alias gbdefault-bare='git remote show $(git remote | grep -Eo "(upstream|origin)" | tail -1) | grep "HEAD branch" | cut -d" " -f5'
+alias gbdefault-bare='git remote show "$(git remote | grep -Eo "(upstream|origin)" | tail -1)" | grep "HEAD branch" | cut -d" " -f5'
 alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
 
 # add
@@ -270,7 +270,7 @@ alias dbD='dot branch --delete --force'
 # commit
 #########
 alias dc='dot commit --verbose'
-alias dcm='dot commit --verbose -Sm'
+alias dcm='dot commit --verbose -m'
 alias dcamd='dot commit --amend'
 alias dcamdne='dot commit --amend --no-edit'
 
