@@ -1,5 +1,6 @@
 local status_ok, _ = pcall(require, "nvim-treesitter")
-local configs_status_ok, treesitter_configs = pcall(require, "nvim-treesitter.configs")
+local configs_status_ok, treesitter_configs =
+  pcall(require, "nvim-treesitter.configs")
 if not status_ok or not configs_status_ok then
   return
 end
@@ -105,7 +106,10 @@ treesitter_configs.setup {
         ["[l"] = { query = "@loop.outer", desc = "Start of previous loop" },
       },
       goto_previous_end = {
-        ["[M"] = { query = "@function.outer", desc = "End of previous function" },
+        ["[M"] = {
+          query = "@function.outer",
+          desc = "End of previous function",
+        },
         ["[I"] = {
           query = "@conditional.outer",
           desc = "End of previous conditional",

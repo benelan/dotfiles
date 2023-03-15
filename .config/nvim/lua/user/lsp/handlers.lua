@@ -107,12 +107,7 @@ local function lsp_keymaps(bufnr)
     "<cmd>lua vim.lsp.buf.declaration()<CR>",
     "LSP declaration"
   )
-  buf_keymap(
-    "n",
-    "gF",
-    "<cmd>lua vim.lsp.buf.format()<CR>",
-    "Format"
-  )
+  buf_keymap("n", "gF", "<cmd>lua vim.lsp.buf.format()<CR>", "Format")
   buf_keymap(
     "n",
     "gI",

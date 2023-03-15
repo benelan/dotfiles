@@ -23,7 +23,9 @@ null_ls.setup {
     code_actions.shellcheck,
     diagnostics.actionlint.with {
       runtime_condition = function()
-        return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()):match "github/workflows" ~= nil
+        return vim.api
+          .nvim_buf_get_name(vim.api.nvim_get_current_buf())
+          :match "github/workflows" ~= nil
       end,
     },
     diagnostics.markdownlint.with {

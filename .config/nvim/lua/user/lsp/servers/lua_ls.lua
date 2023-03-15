@@ -1,14 +1,8 @@
 return {
   settings = {
     Lua = {
-      hint = {
-        arrayIndex = "Disable",
-        enable = true,
-        setType = true,
-      },
-      diagnostics = {
-        globals = { "vim", "packer_plugins" },
-      },
+      hint = { arrayIndex = "Disable", enable = true, setType = true },
+      diagnostics = { globals = { "vim", "packer_plugins" } },
       workspace = {
         library = {
           [vim.fn.expand "$VIMRUNTIME/lua"] = true,
@@ -16,9 +10,7 @@ return {
           [os.getenv "HOME" .. "/.config/wezterm"] = true,
         },
       },
-      telemetry = {
-        enable = false,
-      },
+      telemetry = { enable = false },
       format = { enable = true },
     },
   },

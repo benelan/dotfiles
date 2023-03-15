@@ -16,7 +16,12 @@ return {
           url = "https://json.schemastore.org/jsconfig.json",
         },
         {
-          fileMatch = { ".prettierrc", ".prettierrc.json", "prettier.config.json", ".prettierrc.js" },
+          fileMatch = {
+            ".prettierrc",
+            ".prettierrc.json",
+            "prettier.config.json",
+            ".prettierrc.js",
+          },
           url = "https://json.schemastore.org/prettierrc.json",
         },
         {
@@ -28,7 +33,12 @@ return {
           url = "https://json.schemastore.org/stylelintrc.json",
         },
         {
-          fileMatch = { ".babelrc", ".babelrc.json", "babel.config.json", ".babelrc.js" },
+          fileMatch = {
+            ".babelrc",
+            ".babelrc.json",
+            "babel.config.json",
+            ".babelrc.js",
+          },
           url = "https://json.schemastore.org/babelrc.json",
         },
         {

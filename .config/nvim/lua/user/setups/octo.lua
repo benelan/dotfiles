@@ -47,7 +47,10 @@ octo.setup {
       list_changed_files = { lhs = "<leader>opf", desc = "List changed files" },
       show_pr_diff = { lhs = "<leader>opd", desc = "Show diff" },
       add_reviewer = { lhs = "<leader>opar", desc = "Add reviewer" },
-      remove_reviewer = { lhs = "<leader>opDr", desc = "Remove reviewer request" },
+      remove_reviewer = {
+        lhs = "<leader>opDr",
+        desc = "Remove reviewer request",
+      },
       add_assignee = { lhs = "<leader>opaa", desc = "Add assignee" },
       remove_assignee = { lhs = "<leader>opDa", desc = "Remove assignee" },
       create_label = { lhs = nil, desc = "Create label" },
@@ -79,14 +82,20 @@ octo.setup {
       react_hooray = { lhs = "<leader>orp", desc = "add/remove 🎉 reaction" },
       react_heart = { lhs = "<leader>orh", desc = "add/remove ❤️ reaction" },
       react_eyes = { lhs = "<leader>or", desc = "add/remove 👀 reaction" },
-      react_thumbs_up = { lhs = "<leader>or+", desc = "add/remove 👍 reaction" },
+      react_thumbs_up = {
+        lhs = "<leader>or+",
+        desc = "add/remove 👍 reaction",
+      },
       react_thumbs_down = {
         lhs = "<leader>or-",
         desc = "add/remove 👎 reaction",
       },
       react_rocket = { lhs = "<leader>orr", desc = "add/remove 🚀 reaction" },
       react_laugh = { lhs = "<leader>orl", desc = "add/remove 😄 reaction" },
-      react_confused = { lhs = "<leader>orc", desc = "add/remove 😕 reaction" },
+      react_confused = {
+        lhs = "<leader>orc",
+        desc = "add/remove 😕 reaction",
+      },
     },
     submit_win = {
       approve_review = { lhs = "<leader>orA", desc = "Approve review" },
@@ -113,8 +122,14 @@ octo.setup {
       next_entry = { lhs = "j", desc = "Next changed file" },
       prev_entry = { lhs = "k", desc = "Previous changed file" },
       select_entry = { lhs = "<cr>", desc = "Show selected changed file diffs" },
-      refresh_files = { lhs = "<leader>or", desc = "Refresh changed files panel" },
-      focus_files = { lhs = "<leader>of", desc = "Focus to changed files panel" },
+      refresh_files = {
+        lhs = "<leader>or",
+        desc = "Refresh changed files panel",
+      },
+      focus_files = {
+        lhs = "<leader>of",
+        desc = "Focus to changed files panel",
+      },
       toggle_files = { lhs = "<leader>ot", desc = "Toggle changed files panel" },
       select_next_entry = { lhs = "]q", desc = "Previous changed file" },
       select_prev_entry = { lhs = "[q", desc = "Next changed file" },
@@ -146,8 +161,18 @@ keymap("n", "<leader>oprs", "<cmd>Octo review start<CR>", "Start review")
 keymap("n", "<leader>oprf", "<cmd>Octo review submit<CR>", "Finish review")
 
 -- My stuff
-keymap("n", "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>", "List my assigned issues")
-keymap("n", "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>", "List my created issues")
+keymap(
+  "n",
+  "<leader>omia",
+  "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
+  "List my assigned issues"
+)
+keymap(
+  "n",
+  "<leader>omic",
+  "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
+  "List my created issues"
+)
 keymap("n", "<leader>omr", "<cmd>Octo repo list<CR>", "List my repos")
 keymap("n", "<leader>omg", "<cmd>Octo gist list<CR>", "List my gists")
 keymap(

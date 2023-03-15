@@ -31,5 +31,10 @@ if require("zk.util").notebook_root(vim.fn.expand "%:p") ~= nil then
   keymap("n", "<leader>zl", "<Cmd>ZkLinks<CR>", "Links")
 
   -- Open the code actions for a visual selection.
-  keymap("v", "<leader>za", ":'<,'>lua vim.lsp.buf.range_code_action()<CR>", "Code action")
+  keymap(
+    "v",
+    "<leader>za",
+    ":'<,'>lua vim.lsp.buf.range_code_action()<CR>",
+    "Code action"
+  )
 end

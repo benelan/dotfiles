@@ -1,7 +1,12 @@
 local mason_status_ok, mason = pcall(require, "mason")
-local mason_lspconfig_status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+local mason_lspconfig_status_ok, mason_lspconfig =
+  pcall(require, "mason-lspconfig")
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status_ok or not mason_lspconfig_status_ok or not mason_status_ok then
+if
+  not lspconfig_status_ok
+  or not mason_lspconfig_status_ok
+  or not mason_status_ok
+then
   return
 end
 
@@ -37,7 +42,10 @@ local settings = {
 }
 
 mason.setup(settings)
-mason_lspconfig.setup { ensure_installed = servers, automatic_installation = true }
+mason_lspconfig.setup {
+  ensure_installed = servers,
+  automatic_installation = true,
+}
 
 for _, server in pairs(servers) do
   local opts = {

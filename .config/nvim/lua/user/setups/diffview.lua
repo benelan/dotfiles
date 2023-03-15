@@ -36,7 +36,12 @@ diffview.setup {
         actions.focus_files,
         { desc = "Bring focus to the file panel" },
       },
-      { "n", "<leader>e", actions.toggle_files, { desc = "Toggle the file panel" } },
+      {
+        "n",
+        "<leader>e",
+        actions.toggle_files,
+        { desc = "Toggle the file panel" },
+      },
     },
     file_history_panel = {
       {
@@ -45,7 +50,12 @@ diffview.setup {
         actions.focus_files,
         { desc = "Bring focus to the file panel" },
       },
-      { "n", "<leader>e", actions.toggle_files, { desc = "Toggle the file panel" } },
+      {
+        "n",
+        "<leader>e",
+        actions.toggle_files,
+        { desc = "Toggle the file panel" },
+      },
     },
   },
 }
