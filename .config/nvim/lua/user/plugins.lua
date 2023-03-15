@@ -57,30 +57,14 @@ return packer.startup(function(use)
       require "user.setups.cmp"
     end,
     requires = {
-      {
-        "hrsh7th/cmp-buffer", -- buffer completions
-      },
-      {
-        "hrsh7th/cmp-path", -- path completions
-      },
-      {
-        "saadparwaiz1/cmp_luasnip", -- snippet completions
-      },
-      {
-        "hrsh7th/cmp-nvim-lsp", -- lsp completion
-      },
-      {
-        "hrsh7th/cmp-nvim-lua", -- lua language completion
-      },
-      {
-        "hrsh7th/cmp-nvim-lsp-signature-help", -- signature completions
-      },
-      {
-        "hrsh7th/cmp-cmdline", -- commandline completion
-      },
-      -- {
+      "hrsh7th/cmp-buffer", -- buffer completions
+      "hrsh7th/cmp-cmdline", -- commandline completion
+      "hrsh7th/cmp-nvim-lsp", -- lsp completion
+      "hrsh7th/cmp-nvim-lsp-signature-help", -- signature completions
+      "hrsh7th/cmp-nvim-lua", -- lua language completion
+      "hrsh7th/cmp-path", -- path completions
+      "saadparwaiz1/cmp_luasnip", -- snippet completions
       --   "folke/neodev.nvim", -- NeoVim Lua API info
-      -- },
     },
   }
 
@@ -112,8 +96,6 @@ return packer.startup(function(use)
       },
       {
         "williamboman/mason.nvim", -- language server installer/manager
-      },
-      {
         "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
       },
     },
@@ -262,16 +244,7 @@ return packer.startup(function(use)
   use { "vifm/vifm.vim", event = "BufWinEnter" } -- integrates vifm (file explorer)
   use { "rstacruz/vim-closer", event = "InsertEnter" } -- closes brackets after <CR>
   use { "mbbill/undotree", event = "BufWinEnter" } -- Easily go back in undo history
-  use {
-    "unblevable/quick-scope", -- highlight letter in words for fastest horiz movement
-    event = "BufWinEnter",
-  }
-  use {
-    "folke/which-key.nvim", -- keymap helper for the memory deficient
-    config = function()
-      require "user.setups.which-key"
-    end,
-  }
+  use { "unblevable/quick-scope", event = "BufWinEnter" } -- hi for fast horiz movement
 
   -----------------------------------------------------------------------------
 
