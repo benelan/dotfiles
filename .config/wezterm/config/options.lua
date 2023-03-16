@@ -6,16 +6,14 @@ return {
   -- https://wezfurlong.org/wezterm/config/lua/config/term
   term = "wezterm", -- xterm-256color
   default_cwd = wezterm.home_dir,
-  -- default_domain = "WSL:Ubuntu",
+  -- default_domain = "WSL:Ubuntu-22.04",
   font = wezterm.font_with_fallback {
-    "Iosevka Nerd Font",
+    -- "Iosevka Nerd Font",
     "Iosevka",
     "Ubuntu Mono",
-    "Fira Mono",
-    "Liberation Mono",
-    "Monospace",
   },
   font_size = 12,
+  -- use_cap_height_to_scale_fallback_fonts = true,
   scrollback_lines = 10000,
   color_scheme = utils.color_scheme,
   colors = {
@@ -48,34 +46,17 @@ return {
   enable_wayland = false,
   enable_kitty_graphics = true,
   warn_about_missing_glyphs = false,
+  allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace",
   hide_tab_bar_if_only_one_tab = true,
   adjust_window_size_when_changing_font_size = false,
   window_decorations = "NONE",
   window_background_opacity = 0.85,
-  window_padding = {
-    left = 0,
-    right = 0,
-    top = 0,
-    bottom = 0,
-  },
-  inactive_pane_hsb = {
-    saturation = 0.7,
-    brightness = 0.8,
-  },
+  window_padding = { left = 0, right = 0, top = 0, bottom = 0 },
+  inactive_pane_hsb = { saturation = 0.7, brightness = 0.8 },
   switch_to_last_active_tab_when_closing_tab = true,
   clean_exit_codes = { 130 },
   exit_behavior = "CloseOnCleanExit",
   window_close_confirmation = "NeverPrompt",
-  -- skip_close_confirmation_for_processes_named = {
-  --   "bash",
-  --   "sh",
-  --   "btop",
-  --   "lazygit",
-  --   "gh",
-  --   "wslhost.exe",
-  --   "wsl.exe",
-  --   "conhost.exe",
-  -- },
   launch_menu = {
     { args = { "btop" } },
     { args = { "gh", "dash" } },
@@ -97,44 +78,27 @@ return {
     {
       label = "edit CC",
       cwd = wezterm.home_dir .. "/dev/work/calcite-components",
-      args = {
-        "nvim",
-        ".",
-        "-c",
-        ":Telescope git_files",
-      },
+      args = { "nvim", ".", "-c", ":Telescope git_files" },
     },
   },
   leader = { key = " ", mods = "ALT|SHIFT", timeout_milliseconds = 1500 },
   hyperlink_rules = {
     -- Linkify things that look like URLs and the host has a TLD name.
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
-    {
-      regex = "\\b\\w+://[\\w.-]+\\.[a-z]{2,15}\\S*\\b",
-      format = "$0",
-    },
+    { regex = "\\b\\w+://[\\w.-]+\\.[a-z]{2,15}\\S*\\b", format = "$0" },
 
     -- linkify email addresses
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
-    {
-      regex = [[\b\w+@[\w-]+(\.[\w-]+)+\b]],
-      format = "mailto:$0",
-    },
+    { regex = [[\b\w+@[\w-]+(\.[\w-]+)+\b]], format = "mailto:$0" },
 
     -- file:// URI
     -- Compiled-in default. Used if you don't specify any hyperlink_rules.
-    {
-      regex = [[\bfile://\S*\b]],
-      format = "$0",
-    },
+    { regex = [[\bfile://\S*\b]], format = "$0" },
 
     -- Linkify things that look like URLs with numeric addresses as hosts.
     -- E.g. http://127.0.0.1:8000 for a local development server,
     -- or http://192.168.1.1 for the web interface of many routers.
-    {
-      regex = [[\b\w+://(?:[\d]{1,3}\.){3}[\d]{1,3}\S*\b]],
-      format = "$0",
-    },
+    { regex = [[\b\w+://(?:[\d]{1,3}\.){3}[\d]{1,3}\S*\b]], format = "$0" },
     -- Make username/project paths clickable. This implies paths like the following are for GitHub.
     -- ( "nvim-treesitter/nvim-treesitter" | wbthomason/packer.nvim | wez/wezterm | "wez/wezterm.git" )
     -- As long as a full URL hyperlink regex exists above this it should not match a full URL to

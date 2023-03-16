@@ -1,48 +1,64 @@
-local M = {}
 local wezterm = require "wezterm"
 local utils = require "utils"
 local act = wezterm.action
+local M = {}
 
 M.keys = {
   -- Pane management
-  { key = "q", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = true } },
-  { key = "h", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Left" },
-  { key = "l", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Right" },
-  { key = "k", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Up" },
-  { key = "j", mods = "ALT|SHIFT", action = act.ActivatePaneDirection "Down" },
-  { key = "w", mods = "ALT|SHIFT", action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" } },
-  { key = "b", mods = "ALT|SHIFT", action = act.RotatePanes "CounterClockwise" },
-  { key = "f", mods = "ALT|SHIFT", action = act.RotatePanes "Clockwise" },
-  -- vim style splits (split/vsplit)
-  { key = "s", mods = "ALT|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },
-  { key = "v", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
-  -- tmux style splits
-  { key = "-", mods = "ALT|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },
-  { key = "|", mods = "ALT|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
+  {
+    key = "q",
+    mods = "CTRL|SHIFT",
+    action = act.CloseCurrentPane { confirm = false },
+  },
+  { key = "h", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection "Left" },
+  { key = "l", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection "Right" },
+  { key = "k", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection "Up" },
+  { key = "j", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection "Down" },
+  {
+    key = "w",
+    mods = "ALT|SHIFT",
+    action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" },
+  },
+  { key = "<", mods = "CTRL|SHIFT", action = act.RotatePanes "CounterClockwise" },
+  { key = ">", mods = "CTRL|SHIFT", action = act.RotatePanes "Clockwise" },
+  {
+    key = "_",
+    mods = "CTRL|SHIFT",
+    action = act.SplitVertical { domain = "CurrentPaneDomain" },
+  },
+  {
+    key = "|",
+    mods = "CTRL|SHIFT",
+    action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
+  },
 
   -- Tab management
-  { key = "h", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
-  { key = "l", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
-  { key = "p", mods = "ALT|SHIFT", action = act.ActivateTabRelative(-1) },
-  { key = "n", mods = "ALT|SHIFT", action = act.ActivateTabRelative(1) },
+  { key = "p", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
+  { key = "n", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
   { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
-  { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },
+  {
+    key = "Delete",
+    mods = "CTRL|SHIFT",
+    action = act.CloseCurrentTab { confirm = true },
+  },
 
   -- General mappings
   { key = ":", mods = "CTRL|SHIFT", action = act.QuickSelect },
   { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
   { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
-  { key = "Insert", mods = "CTRL|SHIFT", action = act.PasteFrom "PrimarySelection" },
-  { key = "Backspace", mods = "CTRL|SHIFT", action = "ResetFontSize" },
-  { key = "+", mods = "CTRL|SHIFT", action = "IncreaseFontSize" },
-  { key = "-", mods = "CTRL|SHIFT", action = "DecreaseFontSize" },
+  {
+    key = "Insert",
+    mods = "CTRL|SHIFT",
+    action = act.PasteFrom "PrimarySelection",
+  },
+  { key = "~", mods = "ALT|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
+  { key = "Backspace", mods = "ALT|SHIFT", action = "ResetFontSize" },
+  { key = "+", mods = "ALT|SHIFT", action = "IncreaseFontSize" },
+  { key = "_", mods = "ALT|SHIFT", action = "DecreaseFontSize" },
   { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },
   { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
   { key = "r", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
-  { key = "d", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
-  { key = "K", mods = "CTRL|SHIFT", action = act.Nop },
-  { key = "k", mods = "CTRL|SHIFT", action = act.Nop },
-  { key = "~", mods = "CTRL|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
+  { key = "F12", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
 
   -- Keymaps for activating key tables
   {
@@ -72,18 +88,14 @@ M.keys = {
 M.key_tables = {
   resize_pane = {
     { key = "Escape", action = "PopKeyTable" },
-    { key = "LeftArrow", mods = "SHIFT", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "RightArrow", mods = "SHIFT", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "DownArrow", mods = "SHIFT", action = act.AdjustPaneSize { "Down", 1 } },
-    { key = "UpArrow", mods = "SHIFT", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "h", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "l", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "k", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "j", action = act.AdjustPaneSize { "Down", 1 } },
-    { key = "h", mods = "SHIFT", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "l", mods = "SHIFT", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "k", mods = "SHIFT", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "j", mods = "SHIFT", action = act.AdjustPaneSize { "Down", 1 } },
+    { key = "LeftArrow", action = act.AdjustPaneSize { "Left", 1 } },
+    { key = "RightArrow", action = act.AdjustPaneSize { "Right", 1 } },
+    { key = "DownArrow", action = act.AdjustPaneSize { "Down", 1 } },
+    { key = "UpArrow", action = act.AdjustPaneSize { "Up", 5 } },
+    { key = "h", action = act.AdjustPaneSize { "Left", 5 } },
+    { key = "l", action = act.AdjustPaneSize { "Right", 5 } },
+    { key = "k", action = act.AdjustPaneSize { "Up", 5 } },
+    { key = "j", action = act.AdjustPaneSize { "Down", 5 } },
   },
 
   activate_pane = {
@@ -100,7 +112,11 @@ M.key_tables = {
   copy_mode = utils.merge_lists(wezterm.gui.default_key_tables().copy_mode, {
     { key = "u", mods = "CTRL", action = act.CopyMode "MoveToViewportTop" },
     { key = "d", mods = "CTRL", action = act.CopyMode "MoveToViewportBottom" },
-    { key = "/", mods = "NONE", action = act.Search "CurrentSelectionOrEmptyString" },
+    {
+      key = "/",
+      mods = "NONE",
+      action = act.Search "CurrentSelectionOrEmptyString",
+    },
     {
       key = "n",
       mods = "NONE",
