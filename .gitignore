@@ -2,6 +2,7 @@
 .dotfiles/git/personal.gitconfig
 .dotfiles/shell/local.sh
 .config/mutt/gmail.gpg
+.config/wezterm/ssh.lua
 notes/*
 !notes/.zk
 !notes/.telekasten
