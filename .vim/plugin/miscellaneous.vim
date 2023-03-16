@@ -30,7 +30,7 @@ let g:markdown_fenced_languages = [
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-" I would always accidently opened the command history when trying to quit
+" I would always accidently opened the Ex command history
 " And you can't Nop q: for some reason, so now I record macros with Q
 nnoremap Q q
 nnoremap q <Nop>
@@ -148,22 +148,24 @@ command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Visual mode pressing * or # searches for the current selection
-function! VisualSelection(direction, extra_filter) range
+function! VisualSelection(action) range
     let l:saved_reg = @"
     execute "normal! vgvy"
 
     let l:pattern = escape(@", "\\/.*'$^~[]")
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
-    if a:direction == 'gv'
-        call feedkeys(":Ack '" . l:pattern . "' ")
-    elseif a:direction == 'replace'
+    if a:action == 'replace'
         call feedkeys(":%s/" . l:pattern . "/")
     endif
 
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
+
+xnoremap <silent> + :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> * :<C-u>call VisualSelection('')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection('')<CR>?<C-R>=@/<CR><CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -294,8 +294,6 @@ tnoremap <Esc><Esc> <C-\><C-n>
 tnoremap <S-Space> <Space>
 tnoremap <C-Space> <Space>
 
-xnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 "" File explorer
 noremap <silent> <leader>E :NetrwToggle<CR>
 "" Diff conflicts
