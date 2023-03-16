@@ -47,13 +47,12 @@ vnoremap > >gv
 
 nnoremap J mzJ`z
 
-noremap & :&&<CR>
-ounmap &
-sunmap &
+nnoremap & :&&<CR>
+vnoremap & :&&<CR>
 
 " clear search highlights
 nnoremap <leader><C-l> :<C-U>nohlsearch<CR><C-l>
-inoremap <leader><C-l> <C-O>:execute "normal \<C-l>"<CR>
+inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
 vnoremap <leader><C-l> <Esc><C-l>gv
 
 " go to line above/below the cursor, from insert mode
@@ -84,21 +83,20 @@ onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
 omap <leader>5 <leader>%
 
 "" Leader,r acts as a replacement operator
-map <Leader>r <Plug>(ReplaceOperator)
-ounmap <Leader>r
-sunmap <Leader>r
+nnoremap <Leader>r <Plug>(ReplaceOperator)
+vnoremap <Leader>r <Plug>(ReplaceOperator)
 
-nmap g: <Plug>(ColonOperator)
+nnoremap g: <Plug>(ColonOperator)
 
 " Repeat the last command and add a bang
 nnoremap <Leader>! :<Up><Home><S-Right>!<CR>
 nmap <Leader>1 <Leader>!
 
-noremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
+nnoremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
 nnoremap <Leader><Delete> :bdelete<CR>
 
 nnoremap <Leader>/ :Commentary<CR>
-xnoremap <Leader>/ :Commentary<CR>
+vnoremap <Leader>/ :Commentary<CR>
 
 " ---------------------------------------------------------------------------
 " | User commands                                                           |

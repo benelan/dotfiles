@@ -280,9 +280,9 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
 keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
 
 -- close/write
-keymap("n", "<leader>d", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
+keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
 keymap("n", "<M-x>", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
-keymap({ "n", "i" }, "<M-q>", "<CMD>wqa<CR>", "Write Quit All")
+keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Write Quit All")
 keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write All")
 
 -- sudo save the file
