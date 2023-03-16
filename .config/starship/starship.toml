@@ -60,10 +60,10 @@ style = "bold orange"
 [character]
 success_symbol = "[↳](bold green-light) "
 error_symbol = "[✘](bold red-light) "
-vimcmd_symbol = "[V](bold green-light) "
-vimcmd_replace_one_symbol = "[V](bold yellow-light) "
-vimcmd_replace_symbol = "[V](bold yellow-light) "
-vimcmd_visual_symbol = "[V](bold purple-light) "
+vimcmd_symbol = "[ ](bold green-light) "
+vimcmd_replace_one_symbol = "[ ](bold yellow-light) "
+vimcmd_replace_symbol = "[ ](bold yellow-light) "
+vimcmd_visual_symbol = "[ ](bold purple-light) "
 
 [cmd_duration]
 format = "[took](fg) [$duration]($style) "
@@ -79,12 +79,12 @@ truncation_length = 0
 symbol = ""
 
 [hg_branch]
-symbol = "⎇  "
+symbol = ""
 
 [git_branch]
-format = "[on](fg) [$symbol$branch(:$remote_branch)]($style) "
+format = "[on](fg) [$symbol $branch(:$remote_branch)]($style) "
 style = "bold blue"
-symbol = "⎇  "
+symbol = ""
 
 [git_metrics]
 disabled = true
@@ -92,18 +92,18 @@ disabled = true
 [git_status]
 style = "bold blue"
 ahead = "[🠕$count](aqua-light)"
-diverged = "[🠕$ahead_count](aqua-light)[🠗$behind_count](yellow-light)"
-behind = "[🠗$count](yellow-light)"
+diverged = "[🠕$ahead_count](aqua-light)[🠗$behind_count](orange-light)"
+behind = "[🠗$count](orange-light)"
 staged = "[+$count](green)"
 deleted = "[-$count](red)"
-untracked = "[?$count](yellow)"
-modified = "[*$count](orange)"
-stashed = "[\\$$count](purple)"
-renamed = "[=$count](purple-light)"
+untracked = "[?$count](purple)"
+modified = "[*$count](yellow)"
+stashed = "[\\$$count](orange)"
+renamed = "[~$count](aqua)"
 conflicted = "[!$count](red-light)"
 
 [package]
-format = "[is](fg) [$symbol$version]($style) "
+format = "[is](fg) [$symbol $version]($style) "
 style = "bold orange"
 symbol = " " # 🙭
 
