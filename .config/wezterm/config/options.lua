@@ -13,7 +13,7 @@ return {
     "Ubuntu Mono",
   },
   font_size = 12,
-  -- use_cap_height_to_scale_fallback_fonts = true,
+  use_cap_height_to_scale_fallback_fonts = true,
   scrollback_lines = 10000,
   color_scheme = utils.color_scheme,
   colors = {
