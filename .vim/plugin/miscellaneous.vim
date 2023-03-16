@@ -97,6 +97,9 @@ nmap <Leader>1 <Leader>!
 noremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
 nnoremap <Leader><Delete> :bdelete<CR>
 
+nnoremap <Leader>/ :Commentary<CR>
+xnoremap <Leader>/ :Commentary<CR>
+
 " ---------------------------------------------------------------------------
 " | User commands                                                           |
 " ---------------------------------------------------------------------------
@@ -293,12 +296,13 @@ function! MyFoldText()
       let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
   endif
 
-  let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
-  let foldSize = 1 + v:foldend - v:foldstart
-  let foldSizeStr = " " . foldSize . " lines "
-  let foldLevelStr = repeat("+--", v:foldlevel)
-  let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
-  return line . expansionString . foldSizeStr . foldLevelStr
+  let w = winwidth(0) - &foldcolumn - &numberwidth - (&signcolumn == "yes" ? 2 : 0)
+
+  let foldSize = " " . (1 + v:foldend - v:foldstart)
+              \ . " lines " . repeat(".::", v:foldlevel) . "."
+  let separator = repeat(" ", 3) . '<~'
+  let expansion = repeat("~", w - strwidth(line.separator.foldSize))
+  return line . separator . expansion . foldSize
 endfunction
 
 " ---------------------------------------------------------------------------
