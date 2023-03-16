@@ -38,3 +38,11 @@ if require("zk.util").notebook_root(vim.fn.expand "%:p") ~= nil then
     "Code action"
   )
 end
+
+keymap("n", "<C-z>", "[s1z=", "Correct latest misspelled word")
+keymap(
+  "i",
+  "<C-z>",
+  "<C-g>u<Esc>[s1z=`]a<C-g>u",
+  "Correct latest misspelled word"
+)

@@ -1,4 +1,4 @@
-vim.opt.clipboard = "unnamed,unnamedplus"
+vim.opt.clipboard = "unnamed"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 100
 vim.opt.confirm = true
@@ -40,6 +40,7 @@ vim.opt.cursorline = true
 vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
 vim.opt.fillchars = "diff:╱" -- the default looks too much like a fold
 vim.opt.listchars:append "extends:»,precedes:«"
+vim.opt.linebreak = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 
@@ -73,11 +74,11 @@ local function git_branch()
   if
     vim.fn.exists "g:loaded_fugitive" == 1
     and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
+    and vim.fn["fugitive#Head"]() ~= ""
   then
-    local branch = vim.fn["fugitive#Head"]()
-    if branch and branch ~= "" then
-      return "⎇  " .. branch
-    end
+    return " " .. vim.fn["fugitive#Head"]()
+  -- elseif vim.b.gitsigns_head then
+  --   return "  " .. vim.b.gitsigns_head
   end
   return ""
 end

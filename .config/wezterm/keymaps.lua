@@ -16,7 +16,7 @@ M.keys = {
   { key = "j", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection "Down" },
   {
     key = "w",
-    mods = "ALT|SHIFT",
+    mods = "CTRL|SHIFT",
     action = act.PaneSelect { alphabet = "asdfghjklqwertyuipzxcvmnb" },
   },
   { key = "<", mods = "CTRL|SHIFT", action = act.RotatePanes "CounterClockwise" },
@@ -35,7 +35,6 @@ M.keys = {
   -- Tab management
   { key = "p", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
   { key = "n", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
-  { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
   {
     key = "Delete",
     mods = "CTRL|SHIFT",
@@ -43,21 +42,16 @@ M.keys = {
   },
 
   -- General mappings
+  { key = "o", mods = "CTRL|SHIFT", action = act.SpawnWindow },
+  { key = "{", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
+  { key = "{", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
+  { key = "}", mods = "CTRL|SHIFT", action = act.PasteFrom "PrimarySelection" },
   { key = ":", mods = "CTRL|SHIFT", action = act.QuickSelect },
-  { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
-  { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
   {
-    key = "Insert",
+    key = "~",
     mods = "CTRL|SHIFT",
-    action = act.PasteFrom "PrimarySelection",
+    action = act.ClearScrollback "ScrollbackOnly",
   },
-  { key = "~", mods = "ALT|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
-  { key = "Backspace", mods = "ALT|SHIFT", action = "ResetFontSize" },
-  { key = "+", mods = "ALT|SHIFT", action = "IncreaseFontSize" },
-  { key = "_", mods = "ALT|SHIFT", action = "DecreaseFontSize" },
-  { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },
-  { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },
-  { key = "r", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
   { key = "F12", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
 
   -- Keymaps for activating key tables
@@ -107,6 +101,7 @@ M.key_tables = {
     { key = "l", action = act.ActivatePaneDirection "Right" },
     { key = "k", action = act.ActivatePaneDirection "Up" },
     { key = "j", action = act.ActivatePaneDirection "Down" },
+    { key = "q", action = act.CloseCurrentPane { confirm = false } },
   },
 
   copy_mode = utils.merge_lists(wezterm.gui.default_key_tables().copy_mode, {

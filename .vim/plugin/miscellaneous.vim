@@ -30,7 +30,7 @@ let g:markdown_fenced_languages = [
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-" I always accidently opened the command history when trying to quit
+" I would always accidently opened the command history when trying to quit
 " And you can't Nop q: for some reason, so now I record macros with Q
 nnoremap Q q
 nnoremap q <Nop>
@@ -52,9 +52,9 @@ ounmap &
 sunmap &
 
 " clear search highlights
-nnoremap <C-l> :<C-U>nohlsearch<CR><C-l>
-inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
-vnoremap <C-l> <Esc><C-l>gv
+nnoremap <leader><C-l> :<C-U>nohlsearch<CR><C-l>
+inoremap <leader><C-l> <C-O>:execute "normal \<C-l>"<CR>
+vnoremap <leader><C-l> <Esc><C-l>gv
 
 " go to line above/below the cursor, from insert mode
 inoremap <S-CR> <C-O>o
@@ -69,11 +69,11 @@ nnoremap <silent> <expr> <CR>
 
 "" https://vi.stackexchange.com/a/213
 " move down jumping over blank lines and indents
-nnoremap <silent> gj :let _=&lazyredraw<CR>
+nnoremap <silent> gJ :let _=&lazyredraw<CR>
             \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
             \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 " move up jumping over blank lines and indents
-nnoremap <silent> gk :let _=&lazyredraw<CR>
+nnoremap <silent> gK :let _=&lazyredraw<CR>
             \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
             \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
@@ -165,7 +165,7 @@ endfunction
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Don't close window when deleting a buffer
-function s:BdeleteKeepWindow(action, bang)
+function s:BgoneHeathen(action, bang)
   let l:currentBufNum = bufnr("%")
   let l:alternateBufNum = bufnr("#")
   if buflisted(l:alternateBufNum)
@@ -182,10 +182,10 @@ function s:BdeleteKeepWindow(action, bang)
 endfunction
 
 command! -bang -complete=buffer -nargs=? Bdelete
-	\ :call s:BdeleteKeepWindow("bdelete", <q-bang>)
+	\ :call s:BgoneHeathen("bdelete", <q-bang>)
 
 command! -bang -complete=buffer -nargs=? Bwipeout
-	\ :call s:BdeleteKeepWindow("bwipeout", <q-bang>)
+	\ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
 " ---------------------------------------------------------------------------
 " | Autocommands                                                            |
@@ -242,13 +242,12 @@ if has("autocmd")
                     \ set nobuflisted |
                     \ nnoremap <silent> <buffer> q :close<CR>
 
-
         autocmd FileType markdown,gitcommit,text
                     \ setlocal wrap spell nornu nonu |
-                    " \ nnoremap <buffer> <silent> g^ g^ |
-                    " \ nnoremap <buffer> <silent> g$ g$ |
-                    \ nnoremap <buffer> <silent> gj gj |
-                    \ nnoremap <buffer> <silent> gk gk
+                    \ nnoremap <buffer> <silent> ^ g^ |
+                    \ nnoremap <buffer> <silent> $ g$ |
+                    \ nnoremap <buffer> <silent> j gj |
+                    \ nnoremap <buffer> <silent> k gk
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

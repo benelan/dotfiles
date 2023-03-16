@@ -38,6 +38,39 @@ keymap("t", "<esc>", "<C-\\><C-N>")
 keymap("n", "cd", "<CMD>cd %:h <Bar> pwd<CR>", "Change directory to buffer")
 keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 
+-- Search visually selected text
+-- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])
+-- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><CR>]])
+
+-- Search inside visually highlighted text
+keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
+
+keymap({ "n", "x" }, "gy", '"+y', "Copy to system clipboard")
+keymap("n", "gp", '"+p', "Paste from system clipboard")
+keymap("x", "gp", '"+P', "Paste from system clipboard")
+
+-- Add empty lines before and after cursor line
+keymap(
+  "n",
+  "gO",
+  "<Cmd>call append(line('.') - 1, repeat([''], v:count1))<CR>",
+  "Put empty line above"
+)
+keymap(
+  "n",
+  "go",
+  "<Cmd>call append(line('.'), repeat([''], v:count1))<CR>",
+  "Put empty line below"
+)
+
+-- Reselect latest changed, put, or yanked text
+vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
+  expr = true,
+  silent = true,
+  noremap = true,
+  desc = "Visually select changed text",
+})
+
 -------------------------------------------------------------------------------
 ----> Prepare Ex commands
 -------------------------------------------------------------------------------
@@ -114,26 +147,6 @@ keymap(
   "Previous Error"
 )
 
--- Add blank lines (not a list but same keymap set)
-local function create_array(count, item)
-  local array = {}
-  for _ = 1, count do
-    table.insert(array, item)
-  end
-  return array
-end
-local paste_blank_line = function(line)
-  local lines = create_array(vim.v.count1, "")
-  vim.api.nvim_buf_set_lines(0, line, line, true, lines)
-end
-keymap("n", "]<space>", function()
-  paste_blank_line(vim.fn.line ".")
-end, "Add Space Below")
-
-keymap("n", "[<space>", function()
-  paste_blank_line(vim.fn.line "." - 1)
-end, "Add Space Above")
-
 -------------------------------------------------------------------------------
 ----> Git Mergetool
 -------------------------------------------------------------------------------
@@ -190,6 +203,8 @@ keymap(
 keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
 
 -- create vim style splits
+keymap("n", [[<C-\>]], "<C-w>v", "Vertical Split")
+keymap("n", [[<C-_>]], "<C-w>s", "Horizontal Split")
 keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
 keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
 
@@ -198,14 +213,14 @@ keymap("n", "<M-\\>", "<C-w>v", "Vertical Split")
 keymap("n", "<M-->", "<C-w>s", "Horizontal Split")
 
 ---- navigate
-keymap("n", "<M-h>", "<C-w>h", "Focus Window Left")
-keymap("n", "<M-j>", "<C-w>j", "Focus Window Below")
-keymap("n", "<M-k>", "<C-w>k", "Focus Window Above")
-keymap("n", "<M-l>", "<C-w>l", "Focus Window Right")
-keymap({ "v", "t" }, "<M-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
-keymap({ "v", "t" }, "<M-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
-keymap({ "v", "t" }, "<M-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
-keymap({ "v", "t" }, "<M-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
+keymap("n", "<C-h>", "<C-w>h", "Focus Window Left")
+keymap("n", "<C-j>", "<C-w>j", "Focus Window Below")
+keymap("n", "<C-k>", "<C-w>k", "Focus Window Above")
+keymap("n", "<C-l>", "<C-w>l", "Focus Window Right")
+keymap({ "v", "t" }, "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
+keymap({ "v", "t" }, "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
+keymap({ "v", "t" }, "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
+keymap({ "v", "t" }, "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
 
 -- Go to the first floating window
 vim.cmd [[
@@ -372,6 +387,8 @@ end, "Toggle autoindent")
 ----> Plugins
 -------------------------------------------------------------------------------
 
+-- FZF
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>fz", "<cmd>FZF<cr>", "FZF")
 
 -- Vifm
@@ -386,53 +403,35 @@ keymap("n", "<leader>Et", "<cmd>TabVifm<cr>", "Vifm (tab)")
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")
 
--- Codeium
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-keymap("i", "<M-y>", function()
-  return vim.fn["codeium#Accept"]()
-end, "Codeium Accept")
-keymap("i", "<M-c>", function()
-  return vim.fn["codeium#Complete"]()
-end, "Codeium Complete")
-keymap("i", "<M-n>", function()
-  return vim.fn["codeium#CycleCompletions"](1)
-end, "Codeium Next")
-keymap("i", "<M-p>", function()
-  return vim.fn["codeium#CycleCompletions"](-1)
-end, "Codeium Previous")
-keymap("i", "<M-e>", function()
-  return vim.fn["codeium#Clear"]()
-end, "Codeium Clear")
-
 -- Goto Preview
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap(
   "n",
-  "gpI",
+  "gPI",
   "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",
   "Preview implementation"
 )
 keymap(
   "n",
-  "gpd",
+  "gPd",
   "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",
   "Preview definition"
 )
 keymap(
   "n",
-  "gpt",
+  "gPt",
   "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>",
   "Preview type definition"
 )
 keymap(
   "n",
-  "gpr",
+  "gPr",
   "<cmd>lua require('goto-preview').goto_preview_references()<CR>",
   "Preview references"
 )
 keymap(
   "n",
-  "gpq",
+  "gPq",
   "<cmd>lua require('goto-preview').close_all_win()<CR>",
   "Close previews"
 )
@@ -466,3 +465,21 @@ keymap(
 )
 -- Search for the notes matching the current visual selection.
 keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", "Find notes")
+
+-- Codeium
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+-- keymap("i", "<M-y>", function()
+--   return vim.fn["codeium#Accept"]()
+-- end, "Codeium Accept")
+-- keymap("i", "<M-c>", function()
+--   return vim.fn["codeium#Complete"]()
+-- end, "Codeium Complete")
+-- keymap("i", "<M-n>", function()
+--   return vim.fn["codeium#CycleCompletions"](1)
+-- end, "Codeium Next")
+-- keymap("i", "<M-p>", function()
+--   return vim.fn["codeium#CycleCompletions"](-1)
+-- end, "Codeium Previous")
+-- keymap("i", "<M-e>", function()
+--   return vim.fn["codeium#Clear"]()
+-- end, "Codeium Clear")

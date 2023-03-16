@@ -79,7 +79,7 @@ truncation_length = 0
 symbol = ""
 
 [hg_branch]
-symbol = " "
+symbol = " "
 
 [git_branch]
 format = "[on](fg) [$symbol $branch(:$remote_branch)]($style) "
