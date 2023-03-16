@@ -403,6 +403,9 @@ keymap("n", "<leader>Et", "<cmd>TabVifm<cr>", "Vifm (tab)")
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")
 
+-- Treesj
+keymap({ "n", "x" }, "<leader><Tab>", "<cmd>TSJToggle<cr>", "Split or Join")
+
 -- Goto Preview
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap(

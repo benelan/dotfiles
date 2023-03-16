@@ -39,9 +39,14 @@ packer.init {
 return packer.startup(function(use)
   use "wbthomason/packer.nvim" -- packer manages itself
 
-  -- if os.getenv "OG_TERM" == "wezterm" then
-  -- use "nvim-tree/nvim-web-devicons"
-  -- end
+  -----------------------------------------------------------------------------
+  ----> General
+  -----------------------------------------------------------------------------
+  use { "vifm/vifm.vim", event = "BufWinEnter" } -- integrates vifm (file explorer)
+  use { "unblevable/quick-scope", event = "BufWinEnter" } -- horiz motion highlights
+
+  -- wezterm has built in nerd font glyphs, so no patched fonts are required
+  -- if os.getenv "OG_TERM" == "wezterm" then use "nvim-tree/nvim-web-devicons" end
 
   -- use the local fzf plugin if it's installed
   if vim.fn.isdirectory(os.getenv "HOME" .. "/.dotfiles/vendor/fzf/") then
@@ -49,7 +54,7 @@ return packer.startup(function(use)
   end
 
   -----------------------------------------------------------------------------
-  ----> Completions
+  ----> Completion/Snippets
   -----------------------------------------------------------------------------
   use {
     "hrsh7th/nvim-cmp", -- completion engine
@@ -65,21 +70,17 @@ return packer.startup(function(use)
       "hrsh7th/cmp-path", -- path completions
       "saadparwaiz1/cmp_luasnip", -- snippet completions
       --   "folke/neodev.nvim", -- NeoVim Lua API info
+      {
+        "L3MON4D3/LuaSnip", -- snippet engine
+        tag = "v1.*",
+        requires = {
+          "rafamadriz/friendly-snippets", -- a bunch of snippets to use
+        },
+      },
     },
   }
 
   -- use "Exafunction/codeium.vim"
-
-  -----------------------------------------------------------------------------
-  ----> Snippets
-  -----------------------------------------------------------------------------
-  use {
-    "L3MON4D3/LuaSnip", -- snippet engine
-    tag = "v1.*",
-    requires = {
-      "rafamadriz/friendly-snippets", -- a bunch of snippets to use
-    },
-  }
 
   -----------------------------------------------------------------------------
   ----> LSP
@@ -123,9 +124,7 @@ return packer.startup(function(use)
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
         run = "make",
       },
-      -- {
       --   "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-      -- },
     },
   }
 
@@ -135,36 +134,45 @@ return packer.startup(function(use)
   use {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     run = ":TSUpdate",
-    module_pattern = "treesitter.*",
     config = function()
       require "user.setups.treesitter"
     end,
-    requires = {
-      {
-        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
-        event = "InsertEnter",
-        after = "nvim-treesitter",
-      },
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        event = "BufWinEnter",
-        after = "nvim-treesitter",
-      },
-      -- {
-      --   "nvim-treesitter/playground", -- for creating syntax queries
-      --   event = "BufWinEnter",
-      --   after = "nvim-treesitter",
-      -- },
+  }
+  use {
+    {
+      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    {
+      "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    {
+      "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+      event = "InsertEnter",
+      after = "nvim-treesitter",
+    },
+    {
+      "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    -- {
+    --   "nvim-treesitter/playground", -- for creating syntax queries
+    --   event = "BufWinEnter",
+    --   after = "nvim-treesitter",
+    -- },
+    {
+      "Wansmer/treesj",
+      after = "nvim-treesitter",
+      cmd = { "TSJToggle" },
+      config = function()
+        require("treesj").setup {
+          use_default_keymaps = false,
+        }
+      end,
     },
   }
 
@@ -237,14 +245,6 @@ return packer.startup(function(use)
     cmd = { "MarkdownPreviewToggle" },
     ft = { "markdown" },
   }
-
-  -----------------------------------------------------------------------------
-  ----> Utils
-  -----------------------------------------------------------------------------
-  use { "vifm/vifm.vim", event = "BufWinEnter" } -- integrates vifm (file explorer)
-  use { "rstacruz/vim-closer", event = "InsertEnter" } -- closes brackets after <CR>
-  use { "mbbill/undotree", event = "BufWinEnter" } -- Easily go back in undo history
-  use { "unblevable/quick-scope", event = "BufWinEnter" } -- hi for fast horiz movement
 
   -----------------------------------------------------------------------------
 
