@@ -1,6 +1,6 @@
 local utils = require "utils"
-local keymaps = require "config.keymaps"
-local options = require "config.options"
-require("config.right-status").setup()
+local keymaps = require "keymaps"
+local options = require "options"
+require("right-status").setup()
 
 return utils.merge_tables(keymaps, options)
