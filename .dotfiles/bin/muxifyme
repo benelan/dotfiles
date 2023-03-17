@@ -28,7 +28,8 @@ if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/nu
     fi
     [[ -z "$branch" ]] && exit 0
 
-    task_name="$(basename "$branch" | tr "./" "__")"
+    # shellcheck disable=2086
+    task_name="$(basename $branch | tr "./" "__")"
     target="$session_name:$task_name"
     ! tmux has-session -t "$target" >/dev/null 2>&1 &&
         tmux new-window -dn "${task_name}"
