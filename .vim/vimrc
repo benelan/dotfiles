@@ -272,7 +272,7 @@ sunmap <leader>sw
 
 nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
-nnoremap <leader>e :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
+nnoremap <leader>E :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
 
 "" shows command history
 nnoremap <leader>H :<C-U>history :<CR>
@@ -295,7 +295,8 @@ tnoremap <S-Space> <Space>
 tnoremap <C-Space> <Space>
 
 "" File explorer
-noremap <silent> <leader>E :NetrwToggle<CR>
+nnoremap <silent> <leader>e :NetrwToggle<CR>
+
 "" Diff conflicts
 nnoremap [x :ConflictPreviousHunk<cr>
 nnoremap ]x :ConflictNextHunk<cr>
