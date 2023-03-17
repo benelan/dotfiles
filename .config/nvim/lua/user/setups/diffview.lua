@@ -6,7 +6,7 @@ end
 
 diffview.setup {
   enhanced_diff_hl = true,
-  use_icons = vim.g.ben_use_icons,
+  use_icons = vim.g.use_devicons == true,
   signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
   keymaps = {
     view = {

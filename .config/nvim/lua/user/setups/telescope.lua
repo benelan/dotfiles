@@ -8,7 +8,6 @@ local telescope_action_layout = require "telescope.actions.layout"
 
 telescope.setup {
   defaults = {
-    color_devicons = vim.g.ben_use_icons,
     prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
     selection_caret = "  ", -- ➜  ⮞     🡺  🡲
     multi_icon = "✘  ", -- ✘  ✔

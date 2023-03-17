@@ -5,7 +5,7 @@ end
 
 octo.setup {
   pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
-  file_panel = { use_icons = vim.g.ben_use_icons },
+  file_panel = { use_icons = vim.g.use_devicons == true },
   right_bubble_delimiter = "",
   left_bubble_delimiter = "",
   mappings = {

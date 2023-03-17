@@ -58,8 +58,12 @@ vim.g.codeium_filetypes = { bash = false }
 -- My global stuffs
 
 -- wezterm has built in nerd font glyphs, so no patched fonts are required
-if os.getenv "TERM" == "wezterm" or os.getenv "OG_TERM" == "wezterm" then
-  vim.g.ben_use_icons = true
+if
+  true
+  or os.getenv "TERM" == "wezterm"
+  or os.getenv "OG_TERM" == "wezterm"
+then
+  vim.g.use_devicons = true
 end
 
 _G.keymap = function(mode, lhs, rhs, desc)
