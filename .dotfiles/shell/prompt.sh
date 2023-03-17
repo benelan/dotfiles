@@ -2,11 +2,10 @@
 
 # Use Starship for the prompt if installed
 # Otherwise create a prompt manually
-if [[ "$(type -P starship)" ]]; then
-    # Only use Nerd Font symbols if one of the fonts is installed
-    # FONTS_DIR="$HOME/.local/share/fonts"
-    # if [[ $(find "$FONTS_DIR" -iname '*Nerd Font*') ]]; then
-        # export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
+if is-supported starship; then
+    # Only use Nerd Font symbols if they are available
+    # if [[ $(find "$HOME/.local/share/fonts" -iname '*Nerd Font*') ]] || [[ "$TERM" == "wezterm" ]] || [[ "$OG_TERM" == "wezterm" ]]; then
+    #     export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
     # else
         export STARSHIP_CONFIG=~/.config/starship/starship.toml
     # fi

@@ -55,6 +55,13 @@ vim.g.codeium_manual = true
 vim.g.codeium_disable_bindings = true
 vim.g.codeium_filetypes = { bash = false }
 
+-- My global stuffs
+
+-- wezterm has built in nerd font glyphs, so no patched fonts are required
+if os.getenv "TERM" == "wezterm" or os.getenv "OG_TERM" == "wezterm" then
+  vim.g.ben_use_icons = true
+end
+
 _G.keymap = function(mode, lhs, rhs, desc)
   vim.keymap.set(
     mode,
@@ -64,6 +71,7 @@ _G.keymap = function(mode, lhs, rhs, desc)
   )
 end
 
+-- Autocommads
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
     vim.highlight.on_yank {

@@ -5,6 +5,9 @@ end
 
 octo.setup {
   pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
+  file_panel = { use_icons = vim.g.ben_use_icons },
+  right_bubble_delimiter = "",
+  left_bubble_delimiter = "",
   mappings = {
     issue = {
       copy_url = { lhs = "<leader>oU", desc = "Copy url" },

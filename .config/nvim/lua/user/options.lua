@@ -97,7 +97,7 @@ local function buffer_diagnostics()
       severity = vim.diagnostic.severity.WARN,
     })),
     "%#HintFloat#", -- "%#DiagnosticVirtualTextHint#",
-    "  󱠂  ",
+    "    ", -- " ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.HINT,
     }))

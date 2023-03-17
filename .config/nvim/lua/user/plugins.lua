@@ -46,7 +46,9 @@ return packer.startup(function(use)
   use { "unblevable/quick-scope", event = "BufWinEnter" } -- horiz motion highlights
 
   -- wezterm has built in nerd font glyphs, so no patched fonts are required
-  -- if os.getenv "OG_TERM" == "wezterm" then use "nvim-tree/nvim-web-devicons" end
+  if vim.g.ben_use_icons then
+    use "nvim-tree/nvim-web-devicons"
+  end
 
   -- use the local fzf plugin if it's installed
   if vim.fn.isdirectory(os.getenv "HOME" .. "/.dotfiles/vendor/fzf/") then

@@ -20,7 +20,7 @@ local diagnostic_levels = {
   },
   {
     name = "DiagnosticSignHint",
-    text = "󱠂 ",
+    text =  " ", -- " ",
     severity = vim.diagnostic.severity.HINT,
   },
   {
@@ -63,8 +63,8 @@ M.setup = function()
     vim.lsp.with(vim.lsp.handlers.signature_help, { border = "solid" })
 end
 
--- Skip past hints so I can fix my errors first
--- Stolen from TJ Devries
+-- Skip past lower level diagnostics so I can fix my errors first
+-- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua
 local get_highest_error_severity = function()
   for _, level in ipairs(diagnostic_levels) do
     local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
@@ -162,6 +162,7 @@ M.on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
   end
   lsp_keymaps(bufnr)
+  vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 end
 
 return M

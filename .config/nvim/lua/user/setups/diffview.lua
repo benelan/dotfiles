@@ -6,7 +6,7 @@ end
 
 diffview.setup {
   enhanced_diff_hl = true,
-  use_icons = false, -- os.getenv "OG_TERM" == "wezterm",
+  use_icons = vim.g.ben_use_icons,
   signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
   keymaps = {
     view = {
