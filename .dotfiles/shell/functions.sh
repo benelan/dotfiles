@@ -426,7 +426,7 @@ cmdfu() {
 }
 
 # display one random command from commandlinefu.com
-rcmdfu() {
+cmdfu-random() {
     curl -sL https://www.commandlinefu.com/commands/random/json |
         jq -r '.[0] | "\n" + "# " + .summary + "\n" + .command'
 

@@ -1,20 +1,16 @@
 #!/bin/sh
 # shellcheck disable=3003
 
-exists() {
-    test -x "$(command -v "$1")"
-}
-
 TERMINAL="gnome-terminal"
-exists wezterm && TERMINAL='wezterm'
+is-supported wezterm && TERMINAL='wezterm'
 
 EDITOR='nano'
-exists nvim && EDITOR='nvim' ||
+is-supported nvim && EDITOR='nvim' ||
     {
-        exists vim && EDITOR='vim'
+        is-supported vim && EDITOR='vim'
     } ||
     {
-        exists vi && EDITOR='vi'
+        is-supported vi && EDITOR='vi'
     }
 export EDITOR TERMINAL
 
