@@ -1,9 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-# This came from Gary Bernhardt's dotfiles:
+# This originally came from Gary Bernhardt's dotfiles:
 #
 #   https://github.com/garybernhardt/dotfiles
-
 
 # This script efficiently bulk-renames identifiers, with confirmation of each
 # change. For example, to rename the User class to Person in all files in app
@@ -22,10 +21,10 @@
 # identifier, then open them all in a vim instance. Vim will have two new keys
 # mapped:
 #
-#   <leader>j to do a global search and replace from the old to the new
+#   <leader>rr to do a global search and replace from the old to the new
 #   identifier. This uses :s///c, so it will individually confirm each change.
 #
-#   <leader>k to write the current file and delete the buffer (going to the
+#   <leader>rn to write the current file and delete the buffer (going to the
 #   next file). This is for when you're doing renaming in the current file.
 #
 # For both file searching and vim replacing, word boundaries are used. So, if
@@ -33,15 +32,15 @@
 # "User", that file won't be matched. If a file containing "Users" also matches
 # "User", the vim search/replace still won't hit the "Users" token.
 #
-# A typical session will look like this (assuming <leader> is ","):
+# A typical session will look like this:
 #
 #       # Run script
-#   ,j  # Trigger rename process in first file
+#   <space>rr  # Trigger rename process in first file
 #   y   # Replace first identifier found
 #   n   # Don't replace second identifier
 #       # No more matches are found, so Vim drops us back in normal mode
-#   ,k  # Write file and go to the next one
-#   ,j  # Trigger rename process in second file
+#   <space>rn  # Write file and go to the next one
+#   <space>rr  # Trigger rename process in second file
 #       # Etc.
 #
 # This is much more efficient than clumsily typing the ag, then the ":%s",
@@ -62,17 +61,45 @@
 set -e
 
 if [ $# -lt 3 ]; then
-    echo "usage: $(basename $0) old_identifier new_identifier paths ..." >&2
-    echo "example: rename-identifier User Person {app,lib}/**/*.rb" >&2
+    echo "Usage:   rename-identifier old_identifier new_identifier paths..." >&2
+    echo "Example: rename-identifier web-component ReactWrapper src/{components,utils}/**/*.ts?x" >&2
     exit 1
 fi
 
-old=$1
+orig=$1
 new=$2
-shift; shift
-files=$*
+shift
+shift
+search_files=$*
 
-files=$(ag -l '\b'$old'\b' $files)
-leader_j='nnoremap <leader>j :%s/\<'$old'\>/'$new'/gc<cr>'
-leader_k='nnoremap <leader>k :update\|:bd<cr>'
-vim -c "$leader_j" -c "$leader_k" $files
+is-supported rg && search_cmd='rg' ||
+    {
+        is-supported ag && search_cmd='ag'
+    } ||
+    {
+        is-supported grep && search_cmd='grep'
+    } ||
+    {
+        echo "Error: missing required dependency - install rg, ag, or grep" && exit 1
+    }
+
+is-supported nvim && edit_cmd='nvim' ||
+    {
+        is-supported vim && edit_cmd='vim'
+    } ||
+    {
+        is-supported vi && edit_cmd='vi'
+    } ||
+    {
+        echo "Error: missing required dependency - install nvim, vim, or vi" && exit 1
+    }
+
+# shellcheck disable=2086
+match_files=$($search_cmd -l '\b'$orig'\b' $search_files)
+space_rr='nnoremap <space>rr :%s/\<'$orig'\>/'$new'/gc<cr>'
+space_rn='nnoremap <space>rn :update\|:bd<cr>'
+space_rA='nnoremap <space>rA :bufdo %s/\<'$orig'\>/'$new'/ge\|:update<cr>'
+# shellcheck disable=2086
+$edit_cmd -c "$space_rr" -c "$space_rn" -c "$space_rA" $match_files
+
+unset cmd old new search_files search_cmd edit_cmd match_files rename_replace rename_continue rename_all
