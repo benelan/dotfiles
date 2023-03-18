@@ -1,7 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
-selected_path="${1:-"$(find ~/dev/work ~/dev/personal -maxdepth 1 -mindepth 1 -type d | fzf --cycle -0 -1)"}"
-[[ -z "$selected_path" ]] || [[ ! -d "$selected_path" ]] && selected_path="$PWD"
-tat "$selected_path"
-unset selected_path
+path="${1:-"$(find ~/dev/work ~/dev/personal -maxdepth 1 -mindepth 1 -type d | fzf --cycle -0 -1)"}"
+[ -z "$path" ] || [ ! -d "$path" ] && path="$PWD"
+session_name="$(basename "$path" | tr . _)"
+
+if [ -z "$TMUX" ]; then
+    tmux new-session -As "$session_name" -c "$path" -e "OG_TERM=$OG_TERM"
+else
+    if ! tmux has-session -t "=$session_name" >/dev/null 2>&1; then
+        tmux new-session -Ads "$session_name" -c "$path" -e "OG_TERM=$OG_TERM" >/dev/null 2>&1
+    fi
+    tmux switch-client -t "$session_name"
+fi
+unset path session_name

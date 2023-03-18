@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
+set -e
 
 # If the tmux server isn't running, pick a session first
-[[ -z $(pgrep tmux) ]] && muxsesh && exit 0
+[[ -z $(pgrep tmux) ]] && muxsesh
 
 session_name="$(tmux display-message -p "#S")"
-if [[ -d ~/dev/work/$session_name ]]; then
-    session_dir=~/dev/work/$session_name
-elif [[ -d ~/dev/personal/$session_name ]]; then
-    session_dir=~/dev/personal/$session_name
+if [[ -d "$WORK/$session_name" ]]; then
+    session_dir="$WORK/$session_name"
+elif [[ -d "$PERSONAL/$session_name" ]]; then
+    session_dir="$PERSONAL/$session_name"
 else
     session_dir="$(pwd)"
 fi
@@ -17,7 +18,8 @@ cd "$session_dir" || exit 0
 if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$session_dir" ]]; then
     if [[ $# -eq 1 ]]; then
         github_user=$(git config --global github.user)
-        branch="-b ${github_user:$(id -un)}/$1"
+        branch="${github_user:-$(id -un)}/$1"
+        ! git show-ref --verify --quiet "refs/heads/$branch" && branch_flags="-b "
     else
         branch="$(
             # remote and local branches sorted by commit date
@@ -28,26 +30,28 @@ if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/nu
     fi
     [[ -z "$branch" ]] && exit 0
 
-    # shellcheck disable=2086
-    task_name="$(basename $branch | tr "./" "__")"
+    task_name="$(basename "$branch" | tr "./" "__")"
     target="$session_name:$task_name"
-    ! tmux has-session -t "$target" >/dev/null 2>&1 &&
-        tmux new-window -dn "${task_name}"
     # assumes a bare repo will be using worktrees
     if [[ $(git config --get core.bare) = "true" ]]; then
-        if [[ ! -d "$session_dir/$task_name" ]]; then
-            git worktree add "$task_name" "$branch"
-            if [[ -f "$session_dir/$task_name/package.json" ]]; then
-                tmux send-keys -t "$target" "cd $session_dir/$task_name && npm install" Enter
-            fi
-        else
-            tmux send-keys -t "$target" "cd $session_dir/$task_name" Enter
+        task_dir="$session_dir/$task_name"
+        if [[ ! -d "$task_dir" ]]; then
+            # shellcheck disable=2086
+            git worktree add $task_name $branch_flags$branch
+            [[ -f "$task_dir/package.json" ]] && extra_cmds="npm install"
         fi
     else
-        git checkout "$branch"
+        # shellcheck disable=2086
+        git checkout $branch_flags$branch
     fi
-    [[ -z $TMUX ]] && tmux attach -t "$target"
+    tmux new-window -Sdn "$task_name" -c "${task_dir:-"$session_dir"}"
+    [[ -n "$extra_cmds" ]] && tmux send-keys -t "$target" "$extra_cmds" Enter
+
+    if [[ -z "$TMUX" ]]; then
+        tmux attach -t "$target"
+    else
+        tmux switch-client -t "$target"
+    fi
 fi
 
-echo "$session_dir"
-unset session_dir session_name task_name target branch new_worktree github_user
+unset session_dir session_name task_name branch branch_flags github_user extra_cmds
