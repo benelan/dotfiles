@@ -99,7 +99,6 @@ function install_wezterm() {
         curl -o "$tempfile" https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
         tic -x -o ~/.terminfo "$tempfile" &&
         rm "$tempfile"
-
 }
 
 # CLI install scripts (suitable for servers)

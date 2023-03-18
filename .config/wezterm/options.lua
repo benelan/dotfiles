@@ -8,7 +8,7 @@ return {
   default_cwd = wezterm.home_dir,
   -- default_domain = "WSL:Ubuntu-22.04",
   font = wezterm.font_with_fallback {
-    -- "Iosevka Nerd Font",
+    "Iosevka Nerd Font",
     "Iosevka",
     "Ubuntu Mono",
   },

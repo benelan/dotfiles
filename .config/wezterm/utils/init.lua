@@ -2,7 +2,7 @@
 local wezterm = require "wezterm"
 local M = {}
 
-M.color_scheme = "GruvboxDark (Gogh)"
+M.color_scheme = "GruvboxDark"
 M.colors = wezterm.get_builtin_color_schemes()[M.color_scheme]
 
 -- Equivalent to POSIX basename(3)
