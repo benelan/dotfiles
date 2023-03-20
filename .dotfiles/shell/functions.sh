@@ -264,9 +264,10 @@ gclw() {
     git clone --bare "$1" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
-    git worktree add asdf "$(gbdefault)"
-    cd asdf || return
-    unset dir
+    default_git_branch="$(gbdefault)"
+    git worktree add "$default_git_branch" "$default_git_branch"
+    cd "$default_git_branch" || return
+    unset dir default_git_branch
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,14 +333,17 @@ function gcofup() {
 function gcoup() {
     git checkout "$(gbdefault)"
     git pull
-    local branch_name
-    branch_name="$(git config github.user)/$1"
+    branch_name="$(git config github.user)/$1" || {
+        is-supported id && branch_name="$(id -un)/$1"
+    } || branch_name="$1"
+
     if git show-ref --verify --quiet "refs/heads/$branch_name"; then
         git checkout "$branch_name"
     else
         git checkout -b "$branch_name"
     fi
     git merge "$(gbdefault)"
+    unset branch_name
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
