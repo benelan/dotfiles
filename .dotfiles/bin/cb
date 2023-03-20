@@ -4,11 +4,23 @@
 # https://gist.github.com/RichardBronosky/56d8f614fab2bacdd8b048fb58d0c0c7
 
 linux_copy() {
-    cat | xclip -selection clipboard
+    if is-supported xclip; then
+        cat | xclip -selection clipboard
+    elif is-supported xsel; then
+        cat | xsel -bi
+    elif is-supported wl-copy; then
+        cat | wl-copy
+    fi
 }
 
 linux_paste() {
-    xclip -selection clipboard -o
+    if is-supported xclip; then
+        xclip -selection clipboard -o
+    elif is-supported xsel; then
+        xsel -bo
+    elif is-supported wl-copy; then
+        wl-paste
+    fi
 }
 
 windows_wsl_copy() {
@@ -107,7 +119,7 @@ function debug() {
 }
 
 main() {
-    # detect the operating system (uses a script in ~/.dotfiles/bin)
+    # detect the operating system (uses ~/.dotfiles/bin/os-detect)
     os="$(os-detect)"
     # exit if the OS is not supported
     ! [[ "$os" == @(windows_cygwin|windows_wsl|linux|osx)* ]] &&

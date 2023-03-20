@@ -14,7 +14,7 @@ is-supported nvim && EDITOR='nvim' ||
     }
 export EDITOR TERMINAL
 
-LESS="-i -M -R -w"
+LESS="-i -M -J -R -Q -w"
 LESSHISTFILE=-
 export LESS LESSHISTFILE
 
