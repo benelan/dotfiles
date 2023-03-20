@@ -1,0 +1,39 @@
+#!/bin/sh
+set -e
+
+if [ -n "$1" ] && [ -d "$1" ]; then
+    path="$1"
+else
+    path="$(pwd)"
+fi
+
+session_name="$(basename "$path" | tr . _)"
+
+in_tmux() {
+    [ -n "$TMUX" ]
+}
+
+no_tmux_server() {
+    [ -z "$(pgrep tmux)" ]
+}
+
+session_exists() {
+    tmux has-session -t "=$session_name" >/dev/null 2>&1
+}
+
+create_detached_session() {
+    (tmux new-session -Ad -s "$session_name" -e "OG_TERM=$OG_TERM" -c "$path" >/dev/null 2>&1)
+}
+
+create_if_needed_and_attach() {
+    if in_tmux; then
+        if ! session_exists; then
+            create_detached_session
+        fi
+        tmux switch-client -t "$session_name"
+    else
+        tmux new-session -As "$session_name" -c "$path" -e "OG_TERM=$TERM"
+    fi
+}
+
+create_if_needed_and_attach

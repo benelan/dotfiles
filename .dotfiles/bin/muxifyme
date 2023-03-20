@@ -1,23 +1,26 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
 # If the tmux server isn't running, pick a session first
-[[ -z $(pgrep tmux) ]] && muxsesh
+[ -z "$(pgrep tmux)" ] && muxsesh && return
 
 session_name="$(tmux display-message -p "#S")"
-if [[ -d "$WORK/$session_name" ]]; then
-    session_dir="$WORK/$session_name"
-elif [[ -d "$PERSONAL/$session_name" ]]; then
-    session_dir="$PERSONAL/$session_name"
+if [ -d "$WORK/$session_name" ]; then
+    start_dir="$WORK/$session_name"
+elif [ -d "$PERSONAL/$session_name" ]; then
+    start_dir="$PERSONAL/$session_name"
+elif [ "$session_name" = "$(basename ~)" ]; then
+    # pick a project if in the home session
+    muxsesh && return
 else
-    session_dir="$(pwd)"
+    start_dir="$(pwd)"
 fi
 
-cd "$session_dir" || exit 0
+cd "$start_dir" || return
 
-if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$session_dir" ]]; then
-    if [[ $# -eq 1 ]]; then
-        github_user=$(git config --global github.user)
+if [ -d "$start_dir/.git" ] || [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$start_dir" ]; then
+    if [ $# -eq 1 ]; then
+        github_user="$(git config --global github.user)"
         branch="${github_user:-$(id -un)}/$1"
         ! git show-ref --verify --quiet "refs/heads/$branch" && branch_flags="-b "
     else
@@ -28,30 +31,22 @@ if [[ -d "$session_dir/.git" ]] || [[ "$(git rev-parse --show-toplevel 2>/dev/nu
                 awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF | uniq | fzf -1 -0 --cycle
         )"
     fi
-    [[ -z "$branch" ]] && exit 0
+    [ -z "$branch" ] && return
 
     task_name="$(basename "$branch" | tr "./" "__")"
-    target="$session_name:$task_name"
-    # assumes a bare repo will be using worktrees
-    if [[ $(git config --get core.bare) = "true" ]]; then
-        task_dir="$session_dir/$task_name"
-        if [[ ! -d "$task_dir" ]]; then
+    # naively assumes a bare repo will be using worktrees
+    if [ "$(git config --get core.bare)" = "true" ]; then
+        start_dir="$start_dir/$task_name"
+        if [ ! -d "$start_dir" ]; then
             # shellcheck disable=2086
             git worktree add $task_name $branch_flags$branch
-            [[ -f "$task_dir/package.json" ]] && extra_cmds="npm install"
+            [ -f "$start_dir/package.json" ] && extra_cmds="npm install"
         fi
     else
         # shellcheck disable=2086
         git checkout $branch_flags$branch
     fi
-    tmux new-window -Sdn "$task_name" -c "${task_dir:-"$session_dir"}"
-    [[ -n "$extra_cmds" ]] && tmux send-keys -t "$target" "$extra_cmds" Enter
-
-    if [[ -z "$TMUX" ]]; then
-        tmux attach -t "$target"
-    else
-        tmux switch-client -t "$target"
-    fi
+    muxtask "$start_dir" "$extra_cmds"
 fi
 
-unset session_dir session_name task_name branch branch_flags github_user extra_cmds
+unset start_dir session_name task_name target branch branch_flags github_user extra_cmds
