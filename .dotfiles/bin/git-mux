@@ -1,0 +1,220 @@
+#!/usr/bin/env sh
+set -e
+
+export GIT_MUX_PROJECTS="${GIT_MUX_PROJECTS:-"$HOME"}"
+export GIT_MUX_SELECT_CMD="${GIT_MUX_SELECT_CMD:-"fzf -1 -0 --cycle --reverse --height 30"}"
+export GIT_MUX_BRANCH_PREFIX="${GIT_MUX_BRANCH_PREFIX:-""}"
+
+GIT_MUX_DEBUG="${GIT_MUX_DEBUG:-""}"
+GIT_MUX_TMUX_SESSION="$(tmux display-message -p "#S")"
+
+sanitize_name() {
+    basename "$1" | tr "./" "__"
+}
+
+debugger() {
+    if [ -n "$GIT_MUX_DEBUG" ]; then
+        echo "$1"
+    fi
+}
+
+tmux_session_exists() {
+    tmux has-session -t "=$1" >/dev/null 2>&1
+}
+
+in_tmux() {
+    [ -n "$TMUX" ]
+}
+
+no_tmux_server() {
+    [ -z "$(pgrep tmux)" ]
+}
+
+create_detached_tmux_session() {
+    (tmux new-session -Ad -s "$1" -c "1" >/dev/null 2>&1)
+}
+
+tmux_create_if_needed_and_attach() {
+    project_name="$(sanitize_name "$1")"
+    debugger "project > creating/attaching to \"$project_name\" at path \"$1\""
+    if in_tmux; then
+        if ! tmux_session_exists "$project_name"; then
+            create_detached_tmux_session "$project_name"
+        fi
+        tmux switch-client -t "$project_name"
+    else
+        tmux new-session -As "$project_name" -c "$1"
+    fi
+}
+
+select_project() {
+    # shellcheck disable=2086
+    find $GIT_MUX_PROJECTS -maxdepth 1 -mindepth 1 -type d | $GIT_MUX_SELECT_CMD
+}
+
+handle_project() {
+    if [ -n "$1" ] && [ -d "$1" ]; then
+        debugger "project > valid path provided: $1"
+        tmux_create_if_needed_and_attach "$1"
+    else
+        debugger "project > a valid path was not provided, selecting a project"
+        tmux_create_if_needed_and_attach "$(select_project)"
+    fi
+}
+
+select_branch() {
+    # remote and local branches sorted by commit date
+    git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
+        # search, remove 'origin/' prefix from branch names, remove empty line(s), dedupe, select
+        awk '/'"$GIT_MUX_BRANCH_DEFAULT_QUERY"'/{gsub("^origin/(HEAD)?","");print}' |
+        awk NF | uniq | $GIT_MUX_SELECT_CMD
+}
+
+find_project_directory() {
+    for projects_dir in $GIT_MUX_PROJECTS; do
+        if [ -d "$projects_dir/$GIT_MUX_TMUX_SESSION" ]; then
+            echo "$projects_dir/$GIT_MUX_TMUX_SESSION"
+            return
+        fi
+    done
+    if [ "$GIT_MUX_TMUX_SESSION" = "$(basename ~)" ]; then
+        # pick a project if in the home session
+        select_project && return
+    else
+        pwd
+    fi
+}
+
+git_task() {
+    task_start_dir="$(find_project_directory)"
+
+    debugger "task > project's directory: $task_start_dir"
+    cd "$task_start_dir" || return 1
+
+    if [ -d "$task_start_dir/.git" ] || [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$task_start_dir" ]; then
+        if [ -n "$1" ]; then
+            task_branch="$GIT_MUX_BRANCH_PREFIX$1"
+            ! git show-ref --verify --quiet "refs/heads/$task_branch" && task_branch_flags="-b "
+            debugger "task > provided branch with prefix: $task_branch"
+        else
+            task_branch=$(select_branch)
+            debugger "task > selected branch: $task_branch"
+        fi
+
+        task_name="$(sanitize_name "$task_branch")"
+        debugger "task > sanitized task name: $task_name"
+
+        # naively assumes a bare repo will be using worktrees
+        if [ "$(git config --get core.bare)" = "true" ]; then
+
+            debugger "task > project is bare repo, using git-worktree"
+            task_start_dir="$task_start_dir/$task_name"
+
+            debugger "task > worktree directory: $task_start_dir"
+            if [ ! -d "$task_start_dir" ]; then
+                debugger "task > worktree does not exist, adding now"
+                # shellcheck disable=2086
+                git worktree add $task_name $task_branch_flags$task_branch
+            fi
+        else
+
+            debugger "task > checking out branch"
+            # shellcheck disable=2086
+            git checkout $task_branch_flags$task_branch
+        fi
+
+        handle_task "$task_start_dir" "$*"
+    fi
+
+    unset task_start_dir task_name task_branch task_branch_flags
+}
+
+################################################################################
+# Attaches/switches to a new "scratch" window when no arguments are provided.
+# When a path argument is provided, a window is created at that location and
+# attached/switched to, unless additional arguments are provided, in which case
+# they are sent to the window instead.
+################################################################################
+handle_task() {
+    debugger "task > args: $*"
+    # Check if the provided argument is a valid path
+    if [ -n "$1" ] && [ -d "$1" ]; then
+        task_name=$(sanitize_name "$1")
+        task_dir="$(cd "$1" && pwd)"
+    # Use a scratch window if the path isn't provided or resolved
+    else
+        git_task "$*"
+        return 0
+    fi
+
+    debugger "task > creating new \"$task_name\" task in \"$task_dir\": $*"
+    tmux new-window -Sdn "$task_name" -c "$task_dir"
+
+    # Attach, switch, or send keys to the new task
+    if [ -n "$2" ]; then
+        shift
+        debugger "task > executing command (not attaching/switching): \"$*\""
+        tmux send-keys -t "$GIT_MUX_TMUX_SESSION:$task_name" "$*" Enter
+    elif [ -n "$TMUX" ]; then
+
+        debugger "task > switching client"
+        tmux switch-client -t "$GIT_MUX_TMUX_SESSION:$task_name"
+    else
+        debugger "task > attaching"
+        tmux attach -t "$GIT_MUX_TMUX_SESSION:$task_name"
+    fi
+
+    unset task_name task_dir
+}
+
+usage() {
+    if [ -n "$1" ]; then
+        echo "$1"
+        echo
+    fi
+    echo "Usage: $0 <command> [<args>]"
+    echo
+    echo "Comands:"
+    echo "  startup, s         Create a tmux session if one doesn't exist, and attach"
+    echo "  project, p         Create or switch to a project, usually a git repo."
+    echo "  task, t            Create, switch, or send text to a task within a project."
+    echo ""
+    echo "Example: $0 task ~/projects/my-app 'npm i && npm run build'"
+    exit 1
+}
+
+parse_args() {
+    if [ -n "$1" ]; then
+        case $1 in
+            t | task)
+                shift
+                handle_task "$*"
+                ;;
+            p | project)
+                shift
+                handle_project "$*"
+                ;;
+            s | startup)
+                shift
+                tmux_create_if_needed_and_attach "$*"
+                ;;
+            -h | --help)
+                usage
+                ;;
+            # h | help)
+            #     command_usage
+            #     ;;
+            d | debug)
+                GIT_MUX_DEBUG=1
+                shift
+                echo "running in debug mode"
+                parse_args "$@"
+                ;;
+            *)
+                usage "Unknown command passed: $1"
+                ;;
+        esac
+    fi
+}
+
+parse_args "$@"
