@@ -35,7 +35,8 @@ function install_protonvpn_cli() {
 # Install Discord
 # https://discord.com/download
 function install_discord() {
-    curl -sSLo ~/.dotfiles/cache/discord.deb https://discord.com/api/download?platform=linux\&format=deb
+    curl -sSLo ~/.dotfiles/cache/discord.deb \
+        https://discord.com/api/download?platform=linux\&format=deb
     sudo apt install ~/.dotfiles/cache/discord.deb
     sudo apt-get update
 }
@@ -48,7 +49,8 @@ function install_docker_desktop() {
     # sudo rm /usr/local/bin/com.docker.cli
     # sudo apt remove docker-desktop
     # sudo apt purge docker-desktop
-    curl -sSLo ~/.dotfiles/cache/$filename https://desktop.docker.com/linux/main/amd64/$filename
+    curl -sSLo ~/.dotfiles/cache/$filename \
+        https://desktop.docker.com/linux/main/amd64/$filename
     sudo apt install ~/.dotfiles/cache/$filename
     sudo apt-get update
 }
@@ -56,11 +58,17 @@ function install_docker_desktop() {
 # Install Docker Engine
 # https://docs.docker.com/engine/install/ubuntu/
 function install_docker_engine() {
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpgecho \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    sudo mkdir -m 0755 -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+        sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+            sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) \
+      signed-by=/etc/apt/keyrings/docker.gpg] \
+        https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" |
+        sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+
     sudo apt update
     sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 }
@@ -72,7 +80,9 @@ function install_gh_cli() {
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
         sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
         sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |
+        echo "deb [arch=$(dpkg --print-architecture) \
+          signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+          https://cli.github.com/packages stable main" |
         sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null &&
         sudo apt update &&
         sudo apt install gh -y
@@ -83,7 +93,8 @@ function install_gh_cli() {
 function install_brave_browser() {
     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" |
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+         https://brave-browser-apt-release.s3.brave.com/ stable main" |
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
     sudo apt update
     sudo apt install brave-browser
@@ -92,11 +103,13 @@ function install_brave_browser() {
 # Install WezTerm
 # https://wezfurlong.org/wezterm/install/linux.html
 function install_wezterm() {
-    curl -sSLo ~/.dotfiles/cache/wezterm-nightly.deb https://github.com/wez/wezterm/releases/download/nightly/wezterm-nightly.Ubuntu22.04.deb
+    curl -sSLo ~/.dotfiles/cache/wezterm-nightly.deb \
+        https://github.com/wez/wezterm/releases/download/nightly/wezterm-nightly.Ubuntu22.04.deb
     sudo apt install -y ~/.dotfiles/cache/wezterm-nightly.deb
     # https://wezfurlong.org/wezterm/config/lua/config/term.html
     tempfile=$(mktemp) &&
-        curl -o "$tempfile" https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
+        curl -o "$tempfile" \
+            https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
         tic -x -o ~/.terminfo "$tempfile" &&
         rm "$tempfile"
 }
