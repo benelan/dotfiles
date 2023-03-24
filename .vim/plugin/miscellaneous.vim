@@ -2,29 +2,6 @@
 " | Settings                                                                |
 " ---------------------------------------------------------------------------
 
-let g:netrw_altfile = 1
-let g:netrw_alto = 1
-let g:netrw_altv = 1
-let g:netrw_banner = 0
-" let g:netrw_keepdir = 0
-" let g:netrw_liststyle = 3
-let g:netrw_localmkdiropt	= " -p"
-let g:netrw_preview = 1
-let g:netrw_sort_by = "extent"
-let g:netrw_usetab = 1
-let g:netrw_winsize = 25
-
-let g:markdown_recommended_style = 0
-" Helps with syntax highlighting by specififying filetypes
-" for common abbreviations used in markdown fenced code blocks
-let g:markdown_fenced_languages = [
-    \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
-    \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
-    \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
-    \ 'yml=yaml', 'shell=sh', 'py=python',
-    \ 'ts=typescript', 'tsx=typescriptreact',
-    \ 'js=javascript', 'jsx=javascriptreact' ]
-
 let g:rooter_patterns = [
     \ "!.bashrc", "!>home", "!Desktop/",
     \ ".git/", ".git", ".gitignore",
@@ -36,6 +13,23 @@ let g:rooter_patterns = [
 
 " vim.g.rooter_change_directory_for_non_project_files = "current"
 
+" Enable per-command history
+" - When set, CTRL-N and CTRL-P will be bound to 'next-history' and
+"   'previous-history' instead of 'down' and 'up'.
+let g:fzf_history_dir = '~/.dotfiles/cache/fzf-history'
+
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
 " ---------------------------------------------------------------------------
 " | Keymaps                                                                 |
@@ -71,11 +65,9 @@ inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
 
 " clear search highlights if there any
-nnoremap <silent> <expr> <CR>
-      \{-> v:hlsearch ? "<cmd>nohl\<CR>" :
-      \ line('w$') < line('$')
-        \ ? "\<PageDown>"
-        \ : ":\<C-U>next\<CR>" }()
+nnoremap <silent> <expr> <CR> {-> v:hlsearch
+            \ ? "<cmd>nohl\<CR>" : line('w$') < line('$')
+            \ ? "\<PageDown>" : ":\<C-U>next\<CR>" }()
 
 "" https://vi.stackexchange.com/a/213
 " move down jumping over blank lines and indents

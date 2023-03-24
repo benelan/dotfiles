@@ -46,6 +46,7 @@ keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
 
 keymap({ "n", "x" }, "gy", '"+y', "Copy to system clipboard")
+keymap({ "n", "x" }, "gY", '"+y$', "Copy EOL to system clipboard")
 keymap("n", "gp", '"+p', "Paste from system clipboard")
 keymap("x", "gp", '"+P', "Paste from system clipboard")
 
@@ -439,7 +440,7 @@ keymap(
   "Close previews"
 )
 
-keymap("n", "gpf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
+keymap("n", "gPf", "<cmd>GotoFirstFloat<CR>", "Focus first preview")
 
 -- Zk
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --

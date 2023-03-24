@@ -1,4 +1,4 @@
-vim.opt.clipboard = "unnamed"
+vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 100
 vim.opt.confirm = true

@@ -215,10 +215,10 @@ nnoremap <leader>- :split<cr>
 nnoremap <leader>\ :vsplit<cr>
 
 " Navigate splits
-nnoremap <leader>h <C-W>h
-nnoremap <leader>j <C-W>j
-nnoremap <leader>k <C-W>k
-nnoremap <leader>l <C-W>l
+nnoremap <C-h> <C-W>h
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-l> <C-W>l
 nnoremap <leader>o <C-w>o
 
 " Move splits
