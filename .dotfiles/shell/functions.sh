@@ -282,11 +282,11 @@ fgco() {
     # [usage] to checkout "benelan/2807-fix-slot-doc":
     # $ gfco slot
     # [usage] same thing with additional fzf options, see `man fzf`
-    # $ gfco slot --cycle --exact --reverse --header='Checkout Branch' --height=10
+    # $ gfco slot --exact --reverse --header='Checkout Branch' --height=10
 
     SEARCH_TERM="$1"
     if is-supported fzf; then
-        PICK_BRANCH_CMD="fzf --cycle --exit-0 --select-1"
+        PICK_BRANCH_CMD="fzf"
         [ "$#" -gt 0 ] && shift
     else
         # Choose the first branch if fzf isn't isntalled

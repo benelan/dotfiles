@@ -21,17 +21,28 @@ is-supported fd &&
     export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 
 # fzf default window options
-FZF_DEFAULT_OPTS='--preview-window "right:57%"'
+FZF_DEFAULT_OPTS='--preview-window "right:57%" --cycle --exit-0 --select-1 '
 # fzf default keybingings
 FZF_DEFAULT_OPTS+=' --bind "ctrl-f:preview-page-down,ctrl-b:preview-page-up,ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down,shift-up:preview-top,shift-down:preview-bottom,alt-up:half-page-up,alt-down:half-page-down"'
 # fzf colorscheme (gruvbox)
 FZF_DEFAULT_OPTS+=' --color=bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934'
 
 export FZF_DEFAULT_OPTS
+export FZF_COMPLETION_TRIGGER='--'
 
-###############################################################################
-# My creations
-###############################################################################
+
+# Use fd (https://github.com/sharkdp/fd) instead of the default find
+# command for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+_fzf_compgen_path() {
+  fd --hidden --follow --exlude "node_modules" --exclude ".git" . "$1"
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -57,8 +68,7 @@ command -v setxkbmap >/dev/null 2>/dev/null &&
         [[ -f /usr/share/X11/xkb/rules/base.lst ]] &&
             selected="$(
                 grep -Eo "caps:\w*" /usr/share/X11/xkb/rules/base.lst |
-                    fzf --exit-0 --select-1 --reverse --cycle \
-                        --header='Remap CapsLock' --height=15
+                    fzf --reverse --header='Remap CapsLock' --height=15
             )"
         setxkbmap -option -option "${selected:-caps:ctrl_modifier}"
         unset selected
@@ -81,88 +91,8 @@ else
     FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
 fi
 
-# fzd - cd to selected directory
-fzdd() {
-    local dir
-    dir="$(
-        find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null |
-            fzf +m \
-                --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
-                --preview-window='right:hidden:wrap' \
-                --bind=ctrl-v:toggle-preview \
-                --bind=ctrl-x:toggle-sort \
-                --header='(view:ctrl-v) (sort:ctrl-x)'
-    )" || return
-    cd "$dir" || return
-}
-
-# fzda - including hidden directories
-fzda() {
-    local dir
-    dir="$(
-        find "${1:-.}" -type d 2>/dev/null |
-            fzf +m \
-                --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
-                --preview-window='right:hidden:wrap' \
-                --bind=ctrl-v:toggle-preview \
-                --bind=ctrl-x:toggle-sort \
-                --header='(view:ctrl-v) (sort:ctrl-x)'
-    )" || return
-    cd "$dir" || return
-}
-
-# fzdr - cd to selected parent directory
-fzdp() {
-    local dirs=()
-    local parent_dir
-
-    get_parent_dirs() {
-        if [[ -d "$1" ]]; then dirs+=("$1"); else return; fi
-        if [[ "$1" == '/' ]]; then
-            for _dir in "${dirs[@]}"; do echo "$_dir"; done
-        else
-            get_parent_dirs "$(dirname "$1")"
-        fi
-    }
-
-    parent_dir="$(
-        get_parent_dirs "$(realpath "${1:-$PWD}")" |
-            fzf +m \
-                --preview 'tree -C {} | head -n $FZF_PREVIEW_LINES' \
-                --preview-window='right:hidden:wrap' \
-                --bind=ctrl-v:toggle-preview \
-                --bind=ctrl-x:toggle-sort \
-                --header='(view:ctrl-v) (sort:ctrl-x)'
-    )" || return
-
-    cd "$parent_dir" || return
-}
-
-# fzst - cd into the directory from stack
-fzdst() {
-    local dir
-    dir="$(
-        dirs |
-            sed 's#\s#\n#g' |
-            uniq |
-            sed "s#^~#$HOME#" |
-            fzf +s +m -1 -q "$*" \
-                --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
-                --preview-window='right:hidden:wrap' \
-                --bind=ctrl-v:toggle-preview \
-                --bind=ctrl-x:toggle-sort \
-                --header='(view:ctrl-v) (sort:ctrl-x)'
-    )"
-    # check $dir exists for Ctrl-C interrupt
-    # or change directory to $HOME (= no value cd)
-    if [[ -d "$dir" ]]; then
-        cd "$dir" || return
-    fi
-}
-
 # fzdf - cd into the directory of the selected file
 fzdf() {
-    local file
     file="$(
         fzf +m -q "$*" \
             --preview="${FZF_PREVIEW_CMD}" \
@@ -172,18 +102,16 @@ fzdf() {
             --header='(view:ctrl-v) (sort:ctrl-x)'
     )"
     cd "$(dirname "$file")" || return
+    unset file
 }
 
 # fzz - selectable cd to frecency directory
 fzz() {
-    local dir
-
     dir="$(
         fasd -dl |
             fzf \
                 --tac \
                 --reverse \
-                --select-1 \
                 --no-sort \
                 --no-multi \
                 --tiebreak=index \
@@ -195,83 +123,8 @@ fzz() {
                 --bind=ctrl-x:toggle-sort \
                 --header='(view:ctrl-v) (sort:ctrl-x)'
     )" || return
-
     cd "$dir" || return
-}
-
-# fzd - cd into selected directory with options
-# The super function of fzdd, fzda, fzdp, fzst, fzdf, fzz
-fzd() {
-    read -r -d '' helptext <<EOF
-usage: zd [OPTIONS]
-  zd: cd to selected options below
-OPTIONS:
-  -d [path]: Directory (default)
-  -a [path]: Directory included hidden
-  -p [path]: Parent directory
-  -s [query]: Directory from stack
-  -f [query]: Directory of the selected file
-  -z [query]: Frecency directory
-  -h: Print this usage
-EOF
-
-    usage() {
-        echo "$helptext"
-    }
-
-    if [[ -z "$1" ]]; then
-        # no arg
-        fzdd
-    elif [[ "$1" == '..' ]]; then
-        # arg is '..'
-        shift
-        fzdp "$1"
-    elif [[ "$1" == '-' ]]; then
-        # arg is '-'
-        shift
-        fzdst "$*"
-    elif [[ "${1:0:1}" != '-' ]]; then
-        # first string is not -
-        fzd "$(realpath "$1")"
-    else
-        # args is start from '-'
-        while getopts dapfszh OPT; do
-            case "$OPT" in
-                d)
-                    shift
-                    fzdd "$1"
-                    ;;
-                a)
-                    shift
-                    fzda "$1"
-                    ;;
-                p)
-                    shift
-                    fzdp "$1"
-                    ;;
-                s)
-                    shift
-                    fzst "$*"
-                    ;;
-                f)
-                    shift
-                    fzdf "$*"
-                    ;;
-                z)
-                    shift
-                    fzz "$*"
-                    ;;
-                h)
-                    usage
-                    return 0
-                    ;;
-                *)
-                    usage
-                    return 1
-                    ;;
-            esac
-        done
-    fi
+    unset dir
 }
 
 # -----------------------------------------------------------------------------
@@ -288,7 +141,7 @@ frm() {
 #   - CTRL-O to open with `open` command,
 #   - CTRL-E or Enter key to open with the $EDITOR
 feo() {
-    IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
+    IFS=$'\n' out=("$(fzf-tmux --query="$1" --expect=ctrl-o,ctrl-e)")
     key=$(head -1 <<<"$out")
     file=$(head -2 <<<"$out" | tail -1)
     if [ -n "$file" ]; then
@@ -314,8 +167,8 @@ fif() {
 # filter output of `fasd` using `fzf` else
 fze() {
     [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
-    local file
     file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && "${EDITOR:-vim}" "${file}" || return 1
+    unset file
 }
 
 # -----------------------------------------------------------------------------
@@ -329,7 +182,6 @@ fkill() {
     else
         pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
     fi
-
     if [ "x$pid" != "x" ]; then
         echo "$pid" | xargs kill -"${1:-9}"
     fi
@@ -370,7 +222,7 @@ fgcop() {
     git checkout "$(awk '{print $2}' <<<"$target")"
 }
 
-# fcoc - checkout git commit
+# fgcoc - checkout git commit
 fgcoc() {
     local commits commit
     commits=$(git log --pretty=oneline --abbrev-commit --reverse) &&
