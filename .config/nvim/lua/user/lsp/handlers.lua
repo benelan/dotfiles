@@ -101,20 +101,22 @@ local function lsp_keymaps(bufnr)
     }
   end, "Previous diagnostic")
 
-  buf_keymap(
-    "n",
-    "gD",
-    "<cmd>lua vim.lsp.buf.declaration()<CR>",
-    "LSP declaration"
-  )
+  buf_keymap("n", "gQ", "<cmd>lua vim.diagnostic.setqflist()<CR>", "Quickfix diagnostics")
+  buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
   buf_keymap("n", "gF", "<cmd>lua vim.lsp.buf.format()<CR>", "Format")
+  buf_keymap("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", "LSP rename")
   buf_keymap(
     "n",
     "gI",
     "<cmd>lua vim.lsp.buf.implementation()<CR>",
     "LSP implementation"
   )
-  buf_keymap("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", "LSP rename")
+  buf_keymap(
+    "n",
+    "gD",
+    "<cmd>lua vim.lsp.buf.declaration()<CR>",
+    "LSP declaration"
+  )
   buf_keymap(
     "n",
     "gT",
@@ -151,7 +153,6 @@ local function lsp_keymaps(bufnr)
     "<cmd>lua vim.lsp.buf.references()<CR>",
     "LSP references"
   )
-  buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
 end
 
 M.on_attach = function(client, bufnr)

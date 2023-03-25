@@ -174,7 +174,7 @@ cmp.setup {
       cmp.config.compare.order,
     },
   },
-  window = { completion = { winhighlight = "Normal:Pmenu" } },
+  -- window = { completion = { winhighlight = "Normal:Pmenu" } },
   experimental = { ghost_text = true },
 }
 

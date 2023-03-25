@@ -329,11 +329,9 @@ if has("autocmd")
         " autocmd BufWritePost *.py silent make! <afile> | silent redraw!
         autocmd FileType bash,sh compiler shellcheck
         " autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
-        autocmd FileType javascript,typescript,javascriptreact,typescriptreact compiler eslint
+        autocmd FileType javascript,typescript,javascriptreact,typescriptreact
+              \ compiler eslint | set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
         " autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
-
-        " javascript/typescript formatting
-        autocmd FileType set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
 
         autocmd QuickFixCmdPost [^l]* cwindow
     augroup END

@@ -26,7 +26,7 @@ vim.opt.wildignore:append(
     .. "*.sqlite*,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,"
     .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip"
 )
-vim.opt.path:append "src/**,api/**,lua/**,utils/**,static,config"
+vim.opt.path = ".,src/**,api/**,lua/**,utils/**,static,config,,"
 vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 

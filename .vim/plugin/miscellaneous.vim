@@ -65,9 +65,9 @@ inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
 
 " clear search highlights if there any
-nnoremap <silent> <expr> <CR> {-> v:hlsearch
-            \ ? "<cmd>nohl\<CR>" : line('w$') < line('$')
-            \ ? "\<PageDown>" : ":\<C-U>next\<CR>" }()
+" nnoremap <silent> <expr> <CR> {-> v:hlsearch
+"             \ ? "<cmd>nohl\<CR>" : line('w$') < line('$')
+"             \ ? "\<PageDown>" : ":\<C-U>next\<CR>" }()
 
 "" https://vi.stackexchange.com/a/213
 " move down jumping over blank lines and indents
@@ -164,7 +164,7 @@ function! VisualSelection(action) range
     let @" = l:saved_reg
 endfunction
 
-xnoremap <silent> + :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> % :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
 xnoremap <silent> * :<C-u>call VisualSelection('')<CR>/<C-R>=@/<CR><CR>
 xnoremap <silent> # :<C-u>call VisualSelection('')<CR>?<C-R>=@/<CR><CR>
 
@@ -192,6 +192,13 @@ command! -bang -complete=buffer -nargs=? Bdelete
 
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BgoneHeathen("bwipeout", <q-bang>)
+
+function! Grep(...)
+    let s:command = join([&grepprg] + [expandcmd(join(a:000, ' '))], ' ')
+    return system(s:command)
+endfunction
+
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 
 " ---------------------------------------------------------------------------
 " | Autocommands                                                            |
@@ -230,13 +237,13 @@ if has("autocmd")
 
     " Automatically switch back and forth between absolute and relative line numbers
     " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-    augroup relative_line_numbers
-        autocmd!
-        autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
-                    \ if &number && mode() != "i" | set relativenumber | endif
-        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
-                    \ if &number | set norelativenumber | endif
-    augroup END
+    " augroup relative_line_numbers
+    "     autocmd!
+    "     autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
+    "                 \ if &number && mode() != "i" | set relativenumber | endif
+    "     autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
+    "                 \ if &number | set norelativenumber | endif
+    " augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -265,7 +272,17 @@ if has("autocmd")
         autocmd BufLeave term://* stopinsert
     augroup END
 
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+     augroup quickfix
+        autocmd!
+        autocmd QuickFixCmdPost cgetexpr cwindow
+                    \| call setqflist([], 'a', {'title': ':' . s:command})
+        autocmd QuickFixCmdPost lgetexpr lwindow
+                    \| call setloclist(0, [], 'a', {'title': ':' . s:command})
+    augroup END
+
+   " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Use templates when creating specific new files
     augroup templates

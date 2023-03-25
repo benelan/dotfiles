@@ -61,14 +61,14 @@ function! ReplaceOperator(type) abort
 endfunction
 
 " Helper function for normal mode map
-function! operators#register(register) abort
+function! operators#replace(register) abort
   let s:register = a:register
   set operatorfunc=ReplaceOperator
   return 'g@'
 endfunction
 
-nnoremap <expr> <Plug>(ReplaceOperator) operator#replace(v:register)
-xnoremap <expr> <Plug>(ReplaceOperator) operator#replace(v:register)
+nnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
+xnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
 
 " ---------------------------------------------------------------------------
 " | Colon Operator                                                          \

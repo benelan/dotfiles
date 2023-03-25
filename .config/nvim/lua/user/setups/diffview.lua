@@ -59,3 +59,19 @@ diffview.setup {
     },
   },
 }
+
+keymap({ "n", "x" }, "<leader>gq", "<cmd>DiffviewClose<cr>", "Close Diffview")
+keymap({ "n", "x" }, "<leader>gd", "<cmd>DiffviewOpen<cr>", "Open Diffview")
+keymap("x", "<leader>gh", ":'<,'>DiffviewFileHistory<cr>", "Selection History")
+keymap(
+  { "n", "x" },
+  "<leader>gH",
+  "<cmd>DiffviewFileHistory --follow<cr>",
+  "All Files History"
+)
+keymap(
+  "n",
+  "<leader>gh",
+  "<cmd>DiffviewFileHistory % --follow<cr>",
+  "Buffer File History"
+)

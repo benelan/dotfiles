@@ -84,9 +84,11 @@ telescope.setup {
       "--trim",
       "--hidden",
       "--glob=!.git/",
+      "--glob=!node_modules/",
     },
     mappings = {
       i = {
+        ["<C-c>"] = telescope_actions.close,
         ["<Down>"] = telescope_actions.cycle_history_next,
         ["<Up>"] = telescope_actions.cycle_history_prev,
         ["<M-j"] = telescope_actions.cycle_history_next,
@@ -102,14 +104,30 @@ telescope.setup {
         ["<M-m>"] = telescope_action_layout.toggle_mirror,
         ["<A-l>"] = telescope_action_layout.cycle_layout_next,
         ["<A-h>"] = telescope_action_layout.cycle_layout_prev,
+        ["<C-q>"] = function(...)
+          telescope_actions.smart_send_to_qflist(...)
+          telescope_actions.open_qflist(...)
+        end,
       },
       n = {
         ["<C-j>"] = telescope_actions.move_selection_next,
         ["<C-k>"] = telescope_actions.move_selection_previous,
+        ["<C-q>"] = function(...)
+          telescope_actions.smart_send_to_qflist(...)
+          telescope_actions.open_qflist(...)
+        end,
       },
     },
   },
   pickers = {
+    live_grep = { only_sort_text = true },
+    buffers = {
+      initial_mode = "normal",
+      mappings = {
+        i = { ["<C-d>"] = telescope_actions.delete_buffer },
+        n = { ["dd"] = telescope_actions.delete_buffer },
+      },
+    },
     find_files = {
       mappings = {
         n = {
@@ -126,6 +144,11 @@ telescope.setup {
   },
 }
 
+telescope.load_extension "fzf"
+
+-------------------------------------------------------------------------------
+-- Keymaps
+-------------------------------------------------------------------------------
 local telescope_builtin = require "telescope.builtin"
 
 -- when a count N is given to a telescope mapping called through the following
@@ -141,8 +164,14 @@ local function telescope_cwd(picker, args)
 end
 
 keymap("n", "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find")
-keymap("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
-keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", "Find Text")
+keymap("n", "<leader>fo", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", "Find Buffer")
+keymap(
+  "n",
+  "<leader>fr",
+  "<cmd>Telescope resume<cr>",
+  "Resume Previous Fuzzying"
+)
 keymap("n", "<leader>ff", function()
   telescope_cwd("find_files", { hidden = true })
 end, "Find File")
@@ -150,49 +179,73 @@ keymap("n", "<leader>ft", function()
   telescope_cwd "live_grep"
 end, "Find Text")
 
+-- LSP keymaps
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+keymap("n", "<leader>lr", "<cmd>Telescope lsp_references<cr>", "References")
+keymap("n", "<leader>lq", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix")
 keymap(
   "n",
-  "<leader>lB",
+  "<leader>lQ",
+  "<cmd>Telescope quickfixhistory<cr>",
+  "Telescope Quickfix History"
+)
+keymap(
+  "n",
+  "<leader>lt",
+  "<cmd>Telescope lsp_type_definitions<cr>",
+  "Workspace Diagnostics"
+)
+keymap(
+  "n",
+  "<leader>ld",
   "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
   "Buffer Diagnostics"
 )
-keymap("n", "<leader>lQ", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix")
 keymap(
   "n",
-  "<leader>lS",
-  "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-  "Workspace Symbols"
-)
-keymap(
-  "n",
-  "<leader>lW",
+  "<leader>lD",
   "<cmd>Telescope diagnostics<cr>",
   "Workspace Diagnostics"
 )
-keymap("n", "<leader>lW", "<cmd>Telescope lsp_references<cr>", "References")
 keymap(
   "n",
   "<leader>ls",
   "<cmd>Telescope lsp_document_symbols<cr>",
   "Document Symbols"
 )
+keymap(
+  "n",
+  "<leader>lS",
+  "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+  "Workspace Symbols"
+)
 
-telescope.load_extension "fzf"
--- telescope.load_extension "git_worktree"
--- telescope.load_extension "session-lens"
-
--- keymap(
---   "n",
---   "<leader>gws",
---   "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
---   "Switch worktree"
--- )
--- keymap(
---   "n",
---   "<leader>gwa",
---   "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
---   "Create worktree"
--- )
-
--- keymap("n", "<leader>Sf", "<cmd>SearchSession<cr>", "Search Session")
--- keymap("n", "<leader>Ss", "<cmd>SaveSession<cr>", "Search Session")
+-- Git keymaps
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+keymap("n", "<leader>fg", function()
+  telescope_cwd "live_grep"
+end, "Find Git Files")
+keymap(
+  { "n", "x" },
+  "<leader>gb",
+  "<cmd>Telescope git_branches<cr>",
+  "Checkout Branch"
+)
+keymap(
+  { "n", "x" },
+  "<leader>gc",
+  "<cmd>Telescope git_bcommits<cr>",
+  "Checkout Buffer Commit"
+)
+keymap(
+  { "n", "x" },
+  "<leader>gC",
+  "<cmd>Telescope git_commits<cr>",
+  "Checkout Commit"
+)
+keymap(
+  { "n", "x" },
+  "<leader>gg",
+  "<cmd>Telescope git_status<cr>",
+  "Checkout Commit"
+)
