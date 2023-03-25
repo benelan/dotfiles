@@ -58,6 +58,15 @@ treesitter_configs.setup {
   autotag = { enable = true },
   playground = { enable = true },
   context_commentstring = { enable = true, enable_autocmd = false },
+  textsubjects = {
+    enable = true,
+    prev_selection = ",",
+    keymaps = {
+      [";"] = "textsubjects-smart",
+      ["."] = "textsubjects-container-outer",
+      ["i."] = "textsubjects-container-inner",
+    },
+  },
   textobjects = {
     select = {
       enable = true,

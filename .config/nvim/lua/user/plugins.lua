@@ -147,6 +147,11 @@ return packer.startup(function(use)
       after = "nvim-treesitter",
     },
     {
+      "RRethy/nvim-treesitter-textsubjects",
+      event = "BufWinEnter",
+      after = "nvim-treesitter",
+    },
+    {
       "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
       event = "BufWinEnter",
       after = "nvim-treesitter",
