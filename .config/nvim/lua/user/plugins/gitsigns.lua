@@ -1,5 +1,5 @@
 return {
-  "lewis6991/gitsigns.nvim", -- git change indicators and blame
+  "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
   event = "VeryLazy",
   config = function()
     local status_ok, gitsigns = pcall(require, "gitsigns")

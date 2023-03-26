@@ -1,16 +1,13 @@
------------------------------------------------------------------------------
-----> Telescope
------------------------------------------------------------------------------
 return {
-  "nvim-telescope/telescope.nvim", -- fuzzy search tool
+  "nvim-telescope/telescope.nvim", -- fuzzy finding tool
   event = "VeryLazy",
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
-      "nvim-telescope/telescope-fzf-native.nvim", -- fzf for telescope
+      "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
       build = "make",
     },
-    --   "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+    -- "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
     -- "ThePrimeagen/harpoon", -- file marks on steroids
   },
   config = function()

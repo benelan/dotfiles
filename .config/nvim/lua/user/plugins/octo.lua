@@ -1,5 +1,5 @@
 return {
-  "pwntester/octo.nvim", -- GitHub integration, requires: https://cli.github.com
+  "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
   dependencies = { "nvim-lua/plenary.nvim" },
   event = "VeryLazy",
   config = function()

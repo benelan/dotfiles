@@ -1,8 +1,5 @@
------------------------------------------------------------------------------
-----> Debug Adapter
------------------------------------------------------------------------------
 return {
-  "mfussenegger/nvim-dap",
+  "mfussenegger/nvim-dap", -- debug adapter protocol
   enabled = false,
   cmd = {
     "DapContinue",

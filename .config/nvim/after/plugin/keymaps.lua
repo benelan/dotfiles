@@ -13,10 +13,6 @@
 -- >          c	    Command-line                                              |
 -- >          t	    Terminal-Job                                              |
 -------------------------->  :h map-listing  <---------------------------------
-keymap("", "<Space>", "<Nop>")
-vim.g.mapleader = " "
-
--- Press jk to escape
 keymap("i", "jk", "<ESC>")
 
 -- open uri/path under the cursor or line
@@ -387,6 +383,7 @@ end, "Toggle autoindent")
 -------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------
+
 -- Undotree
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")

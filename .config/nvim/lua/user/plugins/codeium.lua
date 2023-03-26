@@ -1,6 +1,7 @@
 return {
-  "Exafunction/codeium.vim",
+  "Exafunction/codeium.vim", -- AI completion
   enabled = false,
+  event = "InsertEnter",
   init = function()
     -- codeium options
     vim.g.codeium_enabled = false

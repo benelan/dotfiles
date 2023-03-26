@@ -7,7 +7,7 @@ if vim.fn.executable "/usr/bin/python3" then
   vim.g.python3_host_prog = "/usr/bin/python3"
 end
 
--- Volta manages Node versions like nvm
+-- Volta manages Node versions similar to nvm
 if vim.fn.isdirectory "~/.volta/bin/neovim-node-host" then
   vim.g.node_host_prog = "~/.volta/bin/neovim-node-host"
 end
@@ -50,12 +50,8 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   end,
 })
 
--- wezterm has built in nerd font glyphs, so no patched fonts are required
-if
-  true
-  or os.getenv "TERM" == "wezterm"
-  or os.getenv "OG_TERM" == "wezterm"
-then
+-- wezterm has built in nerd font glyphs so no patched fonts are required
+if true or os.getenv "TERM" == "wezterm" then
   vim.g.use_devicons = true
 end
 

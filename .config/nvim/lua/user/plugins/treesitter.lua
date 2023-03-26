@@ -1,6 +1,3 @@
------------------------------------------------------------------------------
-----> Treesitter
------------------------------------------------------------------------------
 return {
   "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
   build = ":TSUpdate",

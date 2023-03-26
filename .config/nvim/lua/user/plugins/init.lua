@@ -38,4 +38,35 @@ return {
     keys = { "<C-a>", "<C-x>" },
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+  {
+    "rmagatti/goto-preview", -- open lsp previews in floating window
+    config = true,
+    keys = {
+      {
+        "gPI",
+        "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",
+        desc = "Preview implementation",
+      },
+      {
+        "gPd",
+        "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",
+        desc = "Preview definition",
+      },
+      {
+        "gPt",
+        "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>",
+        desc = "Preview type definition",
+      },
+      {
+        "gPr",
+        "<cmd>lua require('goto-preview').goto_preview_references()<CR>",
+        desc = "Preview references",
+      },
+      {
+        "gPq",
+        "<cmd>lua require('goto-preview').close_all_win()<CR>",
+        desc = "Close previews",
+      },
+    },
+  },
 }
