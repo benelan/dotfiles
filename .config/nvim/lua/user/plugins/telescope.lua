@@ -11,11 +11,7 @@ return {
     -- "ThePrimeagen/harpoon", -- file marks on steroids
   },
   config = function()
-    local status_ok, telescope = pcall(require, "telescope")
-    if not status_ok then
-      return
-    end
-
+    local telescope = require "telescope"
     local telescope_actions = require "telescope.actions"
     local telescope_action_layout = require "telescope.actions.layout"
 

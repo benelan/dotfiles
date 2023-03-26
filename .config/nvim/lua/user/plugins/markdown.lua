@@ -1,10 +1,22 @@
 return {
   {
+    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
+    build = "cd app && npm install",
+    ft = { "markdown" },
+  },
+  {
     "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
-    event = "VeryLazy",
+    ft = "markdown",
+    cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
+    keys = {
+      { "<leader>zn", desc = "New note" },
+      { "<leader>zo", desc = "Open notes" },
+      { "<leader>zt", desc = "Tags" },
+      { "<leader>zf", desc = "Find notes" },
+      { "<leader>zf", desc = "Find notes" },
+    },
     config = function()
       require("zk").setup { picker = "telescope" }
-      -- Create a new note after asking for its title.
       keymap(
         "n",
         "<leader>zn",
@@ -30,12 +42,5 @@ return {
       -- Search for the notes matching the current visual selection.
       keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", "Find notes")
     end,
-  },
-
-  {
-    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
-    build = "cd app && npm install",
-    cmd = { "MarkdownPreviewToggle" },
-    ft = { "markdown" },
   },
 }

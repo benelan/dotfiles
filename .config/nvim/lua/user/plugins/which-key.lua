@@ -1,16 +1,10 @@
 return {
   "folke/which-key.nvim", -- keymap helper for the memory deficient
   event = "VeryLazy",
+  opts = {},
   config = function()
-    local status_ok, which_key = pcall(require, "which-key")
-    if not status_ok then
-      return
-    end
-
-    which_key.setup()
-
     -- Normal mode
-    which_key.register({
+    require("which-key").register({
       ["gP"] = { name = "Preview" },
       ["<leader>"] = {
         b = { name = "Buffers" },
@@ -53,7 +47,7 @@ return {
     }, { mode = "n" })
 
     -- Visual mode
-    which_key.register({
+    require("which-key").register({
       ["<leader>"] = {
         g = { name = "Git", m = { name = "Mergetool" } },
         z = { name = "Ztk" },

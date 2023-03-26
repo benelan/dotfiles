@@ -69,7 +69,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local lazy_opts = {
+-- Load plugins
+require("lazy").setup("user.plugins", {
   diff = "diffview.nvim",
   rtp = {
     disabled_plugins = {
@@ -79,19 +80,22 @@ local lazy_opts = {
       "gzip",
       "logipat",
       "matchit",
+      "matchparen",
       "perl_provider",
       "rrhelper",
       "ruby_provider",
       "spellfile_plugin",
       "tar",
       "tarPlugin",
+      "tohtml",
+      "tutor",
       "vimball",
       "vimballPlugin",
       "zip",
       "zipPlugin",
     },
   },
-}
-
--- Load plugins
-require("lazy").setup("user.plugins", lazy_opts)
+  ui = {
+    icons = { cmd = " ", import = "󰶮 ", plugin = " ", start = "󰐍 " },
+  },
+})

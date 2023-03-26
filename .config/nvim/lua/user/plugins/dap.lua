@@ -8,13 +8,36 @@ return {
     "DapToggleRepl",
     "DapShowLog",
   },
-  dependencies = { "theHamsta/nvim-dap-virtual-text", "rcarriga/nvim-dap-ui" },
+  dependencies = {
+    {
+      "theHamsta/nvim-dap-virtual-text",
+      opts = { highlight_new_as_changed = true, commented = true },
+    },
+    {
+      "rcarriga/nvim-dap-ui",
+      opts = {
+        controls = {
+          element = "repl",
+          enabled = true,
+          icons = {
+            pause = "󰏦 ",
+            play = "󰐍 ",
+            run_last = "🗘 ",
+            step_back = "🠔 ",
+            step_into = "↳ ",
+            step_out = " ",
+            step_over = "↷ ",
+            terminate = "✘ ",
+          },
+        },
+      },
+    },
+  },
   config = function()
     local status_ok, dap = pcall(require, "dap")
     local ui_status_ok, dapui = pcall(require, "dapui")
-    local vt_status_ok, virtual_text = pcall(require, "nvim-dap-virtual-text")
 
-    if not status_ok or not ui_status_ok or not vt_status_ok then
+    if not status_ok or not ui_status_ok then
       return
     end
 
@@ -150,29 +173,11 @@ return {
     }
 
     -----------------------------------------------------------------------------
-    -- DAP Virtual Text
-    -----------------------------------------------------------------------------
-    virtual_text.setup { highlight_new_as_changed = true, commented = true }
-
-    -----------------------------------------------------------------------------
     -- DAP UI
     -----------------------------------------------------------------------------
-    dapui.setup {
-      controls = {
-        element = "repl",
-        enabled = true,
-        icons = {
-          pause = "⏸",
-          play = "▶",
-          run_last = "🗘",
-          step_back = "🠔",
-          step_into = "↳",
-          step_out = "",
-          step_over = "↷",
-          terminate = "✘",
-        },
-      },
-    }
+
+    -- Enable virtual text
+    vim.g.dap_virtual_text = true
 
     dap.set_log_level "TRACE"
 
@@ -186,9 +191,6 @@ return {
     dap.listeners.before.event_exited["dapui_config"] = function()
       dapui.close()
     end
-
-    -- Enable virtual text
-    vim.g.dap_virtual_text = true
 
     vim.fn.sign_define("DapBreakpoint", {
       text = ">",

@@ -2,12 +2,7 @@ return {
   "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
   event = "VeryLazy",
   config = function()
-    local status_ok, gitsigns = pcall(require, "gitsigns")
-    if not status_ok then
-      return
-    end
-
-    gitsigns.setup {
+    require("gitsigns").setup {
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "right_align", -- 'eol' | 'overlay' | 'right_align'

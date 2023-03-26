@@ -4,23 +4,18 @@ return {
     { "nvim-lua/plenary.nvim" }, -- neovim utils
     { "neovim/nvim-lspconfig" }, -- neovim's LSP implementation
   },
-  config = function()
-    local status_ok, null_ls = pcall(require, "null-ls")
-    if not status_ok then
-      return
-    end
-
+  opts = function()
     -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
-    local formatting = null_ls.builtins.formatting
-    local diagnostics = null_ls.builtins.diagnostics
-    local code_actions = null_ls.builtins.code_actions
-    local hover = null_ls.builtins.hover
+    local formatting = require("null-ls").builtins.formatting
+    local diagnostics = require("null-ls").builtins.diagnostics
+    local code_actions = require("null-ls").builtins.code_actions
+    local hover = require("null-ls").builtins.hover
 
     local quiet_diagnostics = { virtual_text = false, signs = false }
 
     -- Install with Mason if you don't have all of these linters/formatters
     -- :MasonInstall actionlint cspell jq shellcheck...
-    null_ls.setup {
+    return {
       debug = false,
       fallback_severity = vim.diagnostic.severity.WARN,
       sources = {

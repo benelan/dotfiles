@@ -1,16 +1,40 @@
 return {
   "sindrets/diffview.nvim", -- diff and history viewer
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = "VeryLazy",
-  -- cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-  config = function()
-    local status_ok, diffview = pcall(require, "diffview")
-    local actions_status_ok, actions = pcall(require, "diffview.actions")
-    if not status_ok or not actions_status_ok then
-      return
-    end
-
-    diffview.setup {
+  cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+  keys = {
+    {
+      "<leader>gq",
+      "<cmd>DiffviewClose<cr>",
+      { "n", "x" },
+      desc = "Close Diffview",
+    },
+    {
+      "<leader>gd",
+      "<cmd>DiffviewOpen<cr>",
+      { "n", "x" },
+      desc = "Open Diffview",
+    },
+    {
+      "<leader>gh",
+      ":'<,'>DiffviewFileHistory<cr>",
+      "x",
+      desc = "Selection History",
+    },
+    {
+      "<leader>gH",
+      "<cmd>DiffviewFileHistory --follow<cr>",
+      { "n", "x" },
+      desc = "All Files History",
+    },
+    {
+      "<leader>gh",
+      "<cmd>DiffviewFileHistory % --follow<cr>",
+      desc = "Buffer File History",
+    },
+  },
+  opts = function()
+    return {
       enhanced_diff_hl = true,
       use_icons = vim.g.use_devicons == true,
       signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
@@ -19,19 +43,19 @@ return {
           {
             "n",
             "<leader>b",
-            actions.focus_files,
+            require("diffview.actions").focus_files,
             { desc = "Bring focus to the file panel" },
           },
           {
             "n",
             "<leader>e",
-            actions.toggle_files,
+            require("diffview.actions").toggle_files,
             { desc = "Toggle the file panel." },
           },
           {
             "n",
             "<leader>cD",
-            actions.conflict_choose "none",
+            require("diffview.actions").conflict_choose "none",
             { desc = "Delete the conflict region" },
           },
         },
@@ -39,13 +63,13 @@ return {
           {
             "n",
             "<leader>b",
-            actions.focus_files,
+            require("diffview.actions").focus_files,
             { desc = "Bring focus to the file panel" },
           },
           {
             "n",
             "<leader>e",
-            actions.toggle_files,
+            require("diffview.actions").toggle_files,
             { desc = "Toggle the file panel" },
           },
         },
@@ -53,43 +77,17 @@ return {
           {
             "n",
             "<leader>b",
-            actions.focus_files,
+            require("diffview.actions").focus_files,
             { desc = "Bring focus to the file panel" },
           },
           {
             "n",
             "<leader>e",
-            actions.toggle_files,
+            require("diffview.actions").toggle_files,
             { desc = "Toggle the file panel" },
           },
         },
       },
     }
-
-    keymap(
-      { "n", "x" },
-      "<leader>gq",
-      "<cmd>DiffviewClose<cr>",
-      "Close Diffview"
-    )
-    keymap({ "n", "x" }, "<leader>gd", "<cmd>DiffviewOpen<cr>", "Open Diffview")
-    keymap(
-      "x",
-      "<leader>gh",
-      ":'<,'>DiffviewFileHistory<cr>",
-      "Selection History"
-    )
-    keymap(
-      { "n", "x" },
-      "<leader>gH",
-      "<cmd>DiffviewFileHistory --follow<cr>",
-      "All Files History"
-    )
-    keymap(
-      "n",
-      "<leader>gh",
-      "<cmd>DiffviewFileHistory % --follow<cr>",
-      "Buffer File History"
-    )
   end,
 }

@@ -1,5 +1,17 @@
+keymap("n", "<C-z>", "[s1z=", "Correct latest misspelled word")
+keymap(
+  "i",
+  "<C-z>",
+  "<C-g>u<Esc>[s1z=`]a<C-g>u",
+  "Correct latest misspelled word"
+)
+
+local status_ok, zk = pcall(require, "zk.util")
+if not status_ok then
+  return
+end
 -- Add the key mappings only for Markdown files in a zk notebook.
-if require("zk.util").notebook_root(vim.fn.expand "%:p") ~= nil then
+if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   -- Create a new note after asking for its title.
   -- This overrides the global `<leader>zn` mapping to create the note in the same directory as the current buffer.
   keymap(
@@ -38,11 +50,3 @@ if require("zk.util").notebook_root(vim.fn.expand "%:p") ~= nil then
     "Code action"
   )
 end
-
-keymap("n", "<C-z>", "[s1z=", "Correct latest misspelled word")
-keymap(
-  "i",
-  "<C-z>",
-  "<C-g>u<Esc>[s1z=`]a<C-g>u",
-  "Correct latest misspelled word"
-)

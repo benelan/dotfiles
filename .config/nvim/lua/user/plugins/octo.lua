@@ -1,14 +1,55 @@
 return {
   "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = "VeryLazy",
-  config = function()
-    local status_ok, octo = pcall(require, "octo")
-    if not status_ok then
-      return
-    end
+  cmd = "Octo",
+  keys = {
+    -- Find possible actions
+    { "<leader>oa", "<cmd>Octo actions<CR>", desc = "Actions" },
 
-    octo.setup {
+    -- Find possible actions
+    { "<leader>os", "<cmd>Octo search<CR>", desc = "Search" },
+
+    -- Issues
+    { "<leader>oil", "<cmd>Octo issue list<CR>", desc = "List issues" },
+    { "<leader>oic", "<cmd>Octo issue create<CR>", desc = "Create issue" },
+    { "<leader>ois", "<cmd>Octo issue search<CR>", desc = "Search issues" },
+
+    -- Pull requests
+    { "<leader>opl", "<cmd>Octo pr list<CR>", desc = "List pull requests" },
+    { "<leader>opc", "<cmd>Octo pr create<CR>", desc = "Create pull request" },
+    { "<leader>ops", "<cmd>Octo pr search<CR>", desc = "Search pull request" },
+
+    -- Reviews
+    { "<leader>oprr", "<cmd>Octo review resume<CR>", desc = "Resume review" },
+    { "<leader>oprs", "<cmd>Octo review start<CR>", desc = "Start review" },
+    { "<leader>oprf", "<cmd>Octo review submit<CR>", desc = "Finish review" },
+
+    -- My stuff
+    {
+      "<leader>omia",
+      "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
+      desc = "List my assigned issues",
+    },
+    {
+      "<leader>omic",
+      "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
+      desc = "List my created issues",
+    },
+    { "<leader>omr", "<cmd>Octo repo list<CR>", desc = "List my repos" },
+    { "<leader>omg", "<cmd>Octo gist list<CR>", desc = "List my gists" },
+    {
+      "<leader>ompc",
+      "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
+      "desc = List my created pull requests",
+    },
+    {
+      "<leader>ompa",
+      "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
+      "desc = List my assigned pull requests",
+    },
+  },
+  config = function()
+    require("octo").setup {
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       file_panel = { use_icons = vim.g.use_devicons == true },
       right_bubble_delimiter = "",
@@ -182,54 +223,5 @@ return {
         },
       },
     }
-
-    -- Find possible actions
-    keymap("n", "<leader>oa", "<cmd>Octo actions<CR>", "Actions")
-
-    -- Find possible actions
-    keymap("n", "<leader>os", "<cmd>Octo search<CR>", "Search")
-
-    -- Issues
-    keymap("n", "<leader>oil", "<cmd>Octo issue list<CR>", "List issues")
-    keymap("n", "<leader>oic", "<cmd>Octo issue create<CR>", "Create issue")
-    keymap("n", "<leader>ois", "<cmd>Octo issue search<CR>", "Search issues")
-
-    -- Pull requests
-    keymap("n", "<leader>opl", "<cmd>Octo pr list<CR>", "List pull requests")
-    keymap("n", "<leader>opc", "<cmd>Octo pr create<CR>", "Create pull request")
-    keymap("n", "<leader>ops", "<cmd>Octo pr search<CR>", "Search pull request")
-
-    -- Reviews
-    keymap("n", "<leader>oprr", "<cmd>Octo review resume<CR>", "Resume review")
-    keymap("n", "<leader>oprs", "<cmd>Octo review start<CR>", "Start review")
-    keymap("n", "<leader>oprf", "<cmd>Octo review submit<CR>", "Finish review")
-
-    -- My stuff
-    keymap(
-      "n",
-      "<leader>omia",
-      "<cmd>Octo issue list assignee=benelan state=OPEN<CR>",
-      "List my assigned issues"
-    )
-    keymap(
-      "n",
-      "<leader>omic",
-      "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>",
-      "List my created issues"
-    )
-    keymap("n", "<leader>omr", "<cmd>Octo repo list<CR>", "List my repos")
-    keymap("n", "<leader>omg", "<cmd>Octo gist list<CR>", "List my gists")
-    keymap(
-      "n",
-      "<leader>ompc",
-      "<cmd>Octo search is:open is:pr author:benelan sort:updated<CR>",
-      "List my created pull requests"
-    )
-    keymap(
-      "n",
-      "<leader>ompa",
-      "<cmd>Octo search is:open is:pr assignee:benelan sort:updated<CR>",
-      "List my assigned pull requests"
-    )
   end,
 }

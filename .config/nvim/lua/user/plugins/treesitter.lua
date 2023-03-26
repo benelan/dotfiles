@@ -20,24 +20,19 @@ return {
       "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
       event = "VeryLazy",
     },
-    -- {
-    --   "nvim-treesitter/playground", -- for creating syntax queries
-    -- },
+    {
+      "nvim-treesitter/playground", -- for creating syntax queries
+      cmd = "TSPlaygroundToggle",
+      enabled = false,
+    },
     {
       "Wansmer/treesj",
       keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "Join Toggle" } },
-      cmd = { "TSJToggle" },
-      opts = { use_default_keymaps = false, max_join_length = 150 },
+      cmd = "TSJToggle",
+      opts = { use_default_keymaps = false, max_join_length = 300 },
     },
   },
   config = function()
-    local status_ok, _ = pcall(require, "nvim-treesitter")
-    local configs_status_ok, treesitter_configs =
-      pcall(require, "nvim-treesitter.configs")
-    if not status_ok or not configs_status_ok then
-      return
-    end
-
     local swap_next, swap_prev = (function()
       local swap_objects = {
         a = "@parameter.inner",
@@ -53,7 +48,7 @@ return {
       return n, p
     end)()
 
-    treesitter_configs.setup {
+    require("nvim-treesitter.configs").setup {
       ensure_installed = {
         "bash",
         "css",
