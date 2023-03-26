@@ -1,10 +1,10 @@
 function! s:gruvbox_material_custom() abort
-    let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#A0460A', '208']})
+    let s:palette = gruvbox_material#get_palette('medium', 'original', {'bg_orange': ['#5A3B0A', '130'], 'bg_visual_yellow': ['#7a380b', '208']})
     call gruvbox_material#highlight('CmpItemAbbrDeprecated', s:palette.grey1, s:palette.none, "strikethrough")
     call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
     call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
     call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
-    call gruvbox_material#highlight('DiffDelete', s:palette.bg4, s:palette.bg_diff_red)
+    call gruvbox_material#highlight('DiffDelete', s:palette.none, s:palette.bg_diff_red)
     call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
     call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
     highlight! link CursorLineNr Purple
