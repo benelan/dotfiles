@@ -13,6 +13,7 @@ if vim.fn.isdirectory "~/.volta/bin/neovim-node-host" then
 end
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- neovide options
 if vim.fn.exists "g:neovide" == 1 then

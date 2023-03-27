@@ -22,21 +22,26 @@ end
 
 local function buffer_diagnostics()
   return string.format(
-    "%s%s%d%s%s%d%s%s%d",
+    "%s%s%d%s%s%d%s%s%d%s%s%d",
     "%#ErrorFloat#", -- "%#DiagnosticVirtualTextError#",
-    "    ",
+    "    ", -- " ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.ERROR,
     })),
     "%#WarningFloat#", -- "%#DiagnosticVirtualTextWarn#",
-    "    ",
+    "    ", -- " ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.WARN,
     })),
     "%#HintFloat#", -- "%#DiagnosticVirtualTextHint#",
-    "    ", -- " ",
+    "    ", -- "            ",
     table_length(vim.diagnostic.get(0, {
       severity = vim.diagnostic.severity.HINT,
+    })),
+    "%#InfoFloat#", -- "%#DiagnosticVirtualTextInfo#",
+    "    ", -- " ",
+    table_length(vim.diagnostic.get(0, {
+      severity = vim.diagnostic.severity.INFO,
     }))
   )
 end

@@ -1,5 +1,6 @@
 vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
+vim.opt.showcmd = false
 vim.opt.updatetime = 100
 vim.opt.confirm = true
 vim.opt.pastetoggle = "<leader><C-v>"
