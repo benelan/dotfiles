@@ -2,14 +2,20 @@ return {
   "hrsh7th/nvim-cmp", -- completion engine
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
-    "hrsh7th/cmp-buffer", -- buffer completions
-    "hrsh7th/cmp-cmdline", -- commandline completion
-    "hrsh7th/cmp-nvim-lsp", -- lsp completion
-    "hrsh7th/cmp-nvim-lsp-signature-help", -- signature completions
-    "hrsh7th/cmp-nvim-lua", -- lua language completion
-    "hrsh7th/cmp-path", -- path completions
-    "saadparwaiz1/cmp_luasnip", -- snippet completions
-    --   "folke/neodev.nvim", -- NeoVim Lua API info
+    { "hrsh7th/cmp-path" }, -- relative path completions
+    { "hrsh7th/cmp-buffer" }, -- buffer completions
+    { "hrsh7th/cmp-cmdline" }, -- commandline completion
+    { "hrsh7th/cmp-nvim-lsp" }, -- lsp completion
+    { "hrsh7th/cmp-nvim-lua" }, -- lua language and nvim API completion
+    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- function signature completions
+    { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- lsp document symbol completion
+    { "petertriho/cmp-git" }, -- issue/pr/mentions/commit completion in git_commit/octo buffers
+    { "ray-x/cmp-treesitter" }, -- treesitter node completion
+    { "saadparwaiz1/cmp_luasnip" }, -- snippet completions
+    { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- relative path rg completions
+    { "David-Kunz/cmp-npm", cond = vim.fn.executable "npm" == 1 }, -- npm completion in package.json buffers
+    { "f3fora/cmp-spell", enabled = false }, -- completion for vim's spellsuggest
+    { "folke/neodev.nvim", enabled = false }, -- NeoVim Lua API info
     {
       "L3MON4D3/LuaSnip", -- snippet engine
       version = "v1.*",
@@ -50,7 +56,7 @@ return {
       Number = "   ",
       Object = "   ",
       Operator = "   ",
-      Package = "   ",
+      Package = "   ", -- 
       Property = "   ",
       Reference = "   ",
       Snippet = "   ",
@@ -176,6 +182,11 @@ return {
             nvim_lua = " [API] ",
             path = "[PATH] ",
             luasnip = "[SNIP] ",
+            treesitter = "[TREE] ",
+            rg = "  [RG] ",
+            git = " [GIT] ",
+            nvim_lsp_document_symbol = " [SYM] ",
+            spell = " [SPL] ",
           })[entry.source.name]
           return vim_item
         end,
@@ -184,29 +195,43 @@ return {
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
         { name = "luasnip" },
+        { name = "treesitter" },
+        { name = "git" },
         { name = "buffer" },
         { name = "path" },
         { name = "nvim_lsp_signature_help" },
+        {
+          name = "spell",
+          option = {
+            enable_in_context = function()
+              return vim.bo.spell == true
+            end,
+          },
+        },
       },
       sorting = {
         comparators = {
           cmp.config.compare.offset,
           cmp.config.compare.exact,
           cmp.config.compare.score,
-          cmp.config.compare.kind,
           cmp.config.compare.sort_text,
+          cmp.config.compare.recently_used,
+          cmp.config.compare.kind,
           cmp.config.compare.length,
           cmp.config.compare.order,
         },
       },
-      -- window = { completion = { winhighlight = "Normal:Pmenu" } },
       experimental = { ghost_text = true },
     }
 
     -- Use buffer source for `/` and `?`
     cmp.setup.cmdline({ "/", "?" }, {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = { { name = "buffer" } },
+      sources = {
+        { name = "nvim_lsp_document_symbol" },
+        { name = "treesitter" },
+        { name = "buffer" },
+      },
     })
 
     -- Use cmdline & path source for ':'
@@ -214,7 +239,10 @@ return {
       mapping = cmp.mapping.preset.cmdline(),
       sources = cmp.config.sources(
         { { name = "path" } },
-        { { name = "cmdline" } }
+        { { name = "cmdline" } },
+        {
+          { name = "rg", keyword_length = 3 },
+        }
       ),
     })
 
