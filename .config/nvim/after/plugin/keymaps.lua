@@ -27,6 +27,23 @@ keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
 keymap("n", "n", "nzzzv", "Next search result")
 keymap("n", "N", "Nzzzv", "Previous search result")
 
+-- Clear search highlight and escape
+keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
+
+-- Add undo break points
+keymap("i", ",", ",<c-g>u")
+keymap("i", "?", ",<c-g>u")
+keymap("i", ".", ".<c-g>u")
+keymap("i", ";", ";<c-g>u")
+
+-- Move Lines
+keymap("n", "<A-j>", "<cmd>m .+1<cr>==", "Move line down")
+keymap("n", "<A-k>", "<cmd>m .-2<cr>==", "Move line up")
+keymap("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", "Move line down")
+keymap("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", "Move line up")
+keymap("v", "<A-j>", ":m '>+1<cr>gv=gv", "Move line down")
+keymap("v", "<A-k>", ":m '<-2<cr>gv=gv", "Move line up")
+
 -- escape terminal mode
 keymap("t", "<esc>", "<C-\\><C-N>")
 
@@ -387,4 +404,3 @@ end, "Toggle autoindent")
 -- Undotree
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")
-

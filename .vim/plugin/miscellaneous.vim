@@ -6,7 +6,7 @@ let g:rooter_patterns = [
     \ "!.bashrc", "!>home", "!Desktop/",
     \ ".git/", ".git", ".gitignore",
     \ "package.json", "tsconfig.json",
-    \ "init.lua", "Cargo.toml", "go.mod",
+    \ "Cargo.toml", "go.mod",
     \ "Dockerfile", "src/", "lua/", ">.config/",
     \ "CONTRIBUTING.md", "CHANGELOG.md", "README.md",
     \ ".root" ]
@@ -95,7 +95,6 @@ nnoremap g: <Plug>(ColonOperator)
 nnoremap <Leader>! :<Up><Home><S-Right>!<CR>
 nmap <Leader>1 <Leader>!
 
-nnoremap <Leader>j :<C-U>buffers<CR>:buffer<Space>
 nnoremap <Leader><Delete> :bdelete<CR>
 
 nnoremap <Leader>/ :Commentary<CR>

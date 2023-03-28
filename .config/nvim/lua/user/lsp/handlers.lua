@@ -1,11 +1,13 @@
 local M = {}
 local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not cmp_status_ok then
-  return M
+if cmp_status_ok then
+  M.capabilities = cmp_nvim_lsp.default_capabilities(
+    vim.lsp.protocol.make_client_capabilities()
+  )
+  M.capabilities.textDocument.completion.completionItem.snippetSupport = true
+else
+  M.capabilities = vim.lsp.protocol.make_client_capabilities()
 end
-
-M.capabilities = cmp_nvim_lsp.default_capabilities()
-M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 local diagnostic_levels = {
   {
@@ -20,7 +22,7 @@ local diagnostic_levels = {
   },
   {
     name = "DiagnosticSignHint",
-    text =  " ", -- " ",
+    text = " ",
     severity = vim.diagnostic.severity.HINT,
   },
   {
@@ -101,7 +103,12 @@ local function lsp_keymaps(bufnr)
     }
   end, "Previous diagnostic")
 
-  buf_keymap("n", "gQ", "<cmd>lua vim.diagnostic.setqflist()<CR>", "Quickfix diagnostics")
+  buf_keymap(
+    "n",
+    "gQ",
+    "<cmd>lua vim.diagnostic.setqflist()<CR>",
+    "Quickfix diagnostics"
+  )
   buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover")
   buf_keymap("n", "gF", "<cmd>lua vim.lsp.buf.format()<CR>", "Format")
   buf_keymap("n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", "LSP rename")

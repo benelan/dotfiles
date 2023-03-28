@@ -1,3 +1,6 @@
+-------------------------------------------------------------------------------
+----> Settings
+-------------------------------------------------------------------------------
 -- NeoVim built from source
 if vim.fn.isdirectory "~/.dotfiles/vendor/neovim/runtime" then
   vim.env.VIMRUNTIME = "~/.dotfiles/vendor/neovim/runtime"
@@ -26,17 +29,22 @@ if vim.fn.exists "g:neovide" == 1 then
   vim.g.neovide_cursor_trail_size = 0
 end
 
-_G.keymap = function(mode, lhs, rhs, desc)
-  vim.keymap.set(
-    mode,
-    lhs,
-    rhs,
-    { silent = true, noremap = true, desc = desc or nil }
-  )
+-- wezterm has built in nerd font glyphs so no patched fonts are required
+if true or os.getenv "TERM" == "wezterm" then
+  vim.g.use_devicons = true
 end
 
--- Autocommads
+-------------------------------------------------------------------------------
+----> Autocommands
+-------------------------------------------------------------------------------
+local function augroup(name)
+  return vim.api.nvim_create_augroup("bens_" .. name, {
+    clear = true,
+  })
+end
+vim.api.nvim_create_augroup("bens_autocmds", { clear = true })
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
+  group = augroup "yank_highlight",
   callback = function()
     vim.highlight.on_yank {
       higroup = "Visual",
@@ -46,16 +54,32 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 })
 
 vim.api.nvim_create_autocmd({ "VimResized" }, {
+  group = augroup "resize_windows",
   callback = function()
     vim.cmd "tabdo wincmd ="
   end,
 })
 
--- wezterm has built in nerd font glyphs so no patched fonts are required
-if true or os.getenv "TERM" == "wezterm" then
-  vim.g.use_devicons = true
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  group = augroup "checktime",
+  command = "checktime",
+})
+
+-------------------------------------------------------------------------------
+----> Global Functions
+-------------------------------------------------------------------------------
+_G.keymap = function(mode, lhs, rhs, desc)
+  vim.keymap.set(
+    mode,
+    lhs,
+    rhs,
+    { silent = true, noremap = true, desc = desc or nil }
+  )
 end
 
+-------------------------------------------------------------------------------
+----> Load Plugins
+-------------------------------------------------------------------------------
 -- Bootstrap Lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -70,7 +94,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Load plugins
 require("lazy").setup("user.plugins", {
   diff = "diffview.nvim",
   rtp = {

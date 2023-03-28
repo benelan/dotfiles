@@ -1,7 +1,6 @@
 vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
-vim.opt.showcmd = false
-vim.opt.updatetime = 100
+vim.opt.updatetime = 200
 vim.opt.confirm = true
 vim.opt.pastetoggle = "<leader><C-v>"
 
@@ -13,11 +12,11 @@ vim.opt.foldlevelstart = 99
 if vim.fn.executable "rg" == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --glob '!.git'"
 end
-
 vim.opt.hlsearch = false
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.wildignorecase = true
+vim.opt.wildmode = "longest:full,full"
 vim.opt.wildignore:append(
   ".git/*,node_modules/*,dist/*,build/*"
     .. "*.7z,*.avi,*.db,*.docx,*.filepart,*.flac,"
@@ -28,11 +27,12 @@ vim.opt.wildignore:append(
     .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip"
 )
 vim.opt.path = ".,src/**,api/**,lua/**,utils/**,static,config,,"
-vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
+vim.opt.pumheight = math.floor(vim.api.nvim_list_uis()[1].height / 2) or 20
 
-vim.opt.laststatus = 3
+vim.opt.showcmd = false
 vim.opt.showtabline = 2
+vim.opt.laststatus = 3
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.signcolumn = "yes"
@@ -48,6 +48,7 @@ vim.opt.sidescrolloff = 8
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.shiftwidth = 2
+vim.opt.shiftround = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = -1
 
@@ -59,4 +60,5 @@ vim.opt.splitright = true
 
 vim.opt.swapfile = false
 vim.opt.undofile = true
-vim.opt.undolevels = 4269
+vim.opt.undolevels = 10000
+vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
