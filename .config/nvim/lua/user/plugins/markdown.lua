@@ -5,6 +5,23 @@ return {
     ft = { "markdown" },
   },
   {
+    "jakewvincent/mkdnflow.nvim",
+    ft = "markdown",
+    opts = {
+      links = {
+        style = "wiki",
+        transform_explicit = function(text)
+          return text:gsub(" ", "-"):lower()
+        end,
+      },
+      perspective = {
+        priority = "root",
+        root_tell = "index.md",
+        fallback = "first",
+      },
+    },
+  },
+  {
     "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
     ft = "markdown",
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
