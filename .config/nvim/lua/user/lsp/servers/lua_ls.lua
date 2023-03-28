@@ -2,7 +2,7 @@ return {
   settings = {
     Lua = {
       hint = { arrayIndex = "Disable", enable = true, setType = true },
-      diagnostics = { globals = { "vim", "packer_plugins" } },
+      diagnostics = { globals = { "vim" } },
       workspace = {
         library = {
           [vim.fn.expand "$VIMRUNTIME/lua"] = true,
@@ -11,7 +11,7 @@ return {
         },
       },
       telemetry = { enable = false },
-      format = { enable = true },
+      format = { enable = false },
     },
   },
 }

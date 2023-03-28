@@ -9,6 +9,8 @@ function! s:gruvbox_material_custom() abort
     call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
     highlight! link CursorLineNr Purple
     highlight! link TreesitterContext Normal
+    highlight EyelinerPrimary guifg=#f5b12c "gui=underline
+    highlight EyelinerSecondary guifg=#4c7bd7 "gui=underline
 endfunction
 
 augroup GruvboxMaterialCustom

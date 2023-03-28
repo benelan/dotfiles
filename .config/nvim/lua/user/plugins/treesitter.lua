@@ -1,7 +1,8 @@
 return {
   "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
+  version = false,
   build = ":TSUpdate",
-  lazy = false,
+  event = { "BufReadPost", "BufNewFile" },
   dependencies = {
     {
       "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
