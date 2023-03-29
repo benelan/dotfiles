@@ -1,11 +1,6 @@
 -------------------------------------------------------------------------------
 ----> Settings
 -------------------------------------------------------------------------------
--- NeoVim built from source
-if vim.fn.isdirectory "~/.dotfiles/vendor/neovim/runtime" then
-  vim.env.VIMRUNTIME = "~/.dotfiles/vendor/neovim/runtime"
-end
-
 -- disable unused builtins
 vim.tbl_map(function(p)
   vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
@@ -41,18 +36,15 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- neovide options
-if vim.fn.exists "g:neovide" == 1 then
-  vim.g.neovide_confirm_quit = false
-  vim.g.neovide_cursor_antialiasing = false
-  vim.g.neovide_hide_mouse_when_typing = true
-  vim.g.neovide_transparency = 0.98
+if vim.g.neovide then
+  vim.g.neovide_transparency = 0.97
   vim.g.neovide_scroll_animation_length = 0
   vim.g.neovide_cursor_animation_length = 0
   vim.g.neovide_cursor_trail_size = 0
 end
 
 -- wezterm has built in nerd font glyphs so no patched fonts are required
-if true or os.getenv "TERM" == "wezterm" then
+if os.getenv "TERM" == "wezterm" then
   vim.g.use_devicons = true
 end
 

@@ -49,7 +49,7 @@ keymap("t", "<esc>", "<C-\\><C-N>")
 
 -- directory navigation
 keymap("n", "cd", "<CMD>cd %:h <Bar> pwd<CR>", "Change directory to buffer")
--- keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
+keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 
 -- Search visually selected text
 -- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])

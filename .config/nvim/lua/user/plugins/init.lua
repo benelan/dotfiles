@@ -17,7 +17,6 @@ return {
     event = "VeryLazy",
     keys = {
       { "-", "<cmd>Vifm<cr>", desc = "Vifm" },
-      { "<leader>e", "<cmd>Vifm<cr>", desc = "Vifm" },
     },
   },
   { "romainl/vim-qf", event = "VeryLazy" }, -- quickfix list improvements
