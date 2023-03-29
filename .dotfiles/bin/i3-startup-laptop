@@ -4,7 +4,7 @@
 [ "$(hostname)" != "jamin-os" ] && exit 0
 
 # Configure laptop display
-xrandr --output eDP-1 --mode 2880x1620 --rate 60 --primary
+xrandr --output eDP-1 --mode 2048x1152 --rate 60 --primary --scale 1
 
 # Change touchpad settings
 touchpad_id=$(xinput list | grep -i "Touchpad" | cut -d '=' -f2 | cut -d '[' -f1)

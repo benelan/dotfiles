@@ -14,7 +14,7 @@
 
 exec --no-startup-id "compton --daemon"
 exec --no-startup-id "conky --daemonize"
-exec --no-startup-id ~/.dotfiles/bin/init-laptop
+exec --no-startup-id ~/.dotfiles/bin/i3-startup-laptop
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
