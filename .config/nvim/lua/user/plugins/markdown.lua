@@ -2,7 +2,7 @@ return {
   {
     "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
     build = "cd app && npm install",
-    ft = { "markdown" },
+    cmd = "MarkdownPreviewToggle",
   },
   {
     "jakewvincent/mkdnflow.nvim",

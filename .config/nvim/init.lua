@@ -6,14 +6,36 @@ if vim.fn.isdirectory "~/.dotfiles/vendor/neovim/runtime" then
   vim.env.VIMRUNTIME = "~/.dotfiles/vendor/neovim/runtime"
 end
 
-if vim.fn.executable "/usr/bin/python3" then
-  vim.g.python3_host_prog = "/usr/bin/python3"
-end
-
--- Volta manages Node versions similar to nvm
-if vim.fn.isdirectory "~/.volta/bin/neovim-node-host" then
-  vim.g.node_host_prog = "~/.volta/bin/neovim-node-host"
-end
+-- disable unused builtins
+vim.tbl_map(function(p)
+  vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
+end, {
+  "2html_plugin",
+  "getscript",
+  "getscriptPlugin",
+  "gzip",
+  "logiPat",
+  "matchit",
+  "matchparen",
+  "node_provider",
+  "perl_provider",
+  "python3_provider",
+  "pythonx_provider",
+  "rrhelper",
+  "ruby_provider",
+  "spellfile_plugin",
+  "tar",
+  "tarPlugin",
+  "tutor_mode_plugin",
+  "vimball",
+  "vimballPlugin",
+  "zip",
+  "zipPlugin",
+  -- 'netrw',
+  -- 'netrwFileHandlers',
+  -- 'netrwPlugin',
+  -- 'netrwSettings',
+})
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -42,7 +64,7 @@ local function augroup(name)
     clear = true,
   })
 end
-vim.api.nvim_create_augroup("bens_autocmds", { clear = true })
+
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = augroup "yank_highlight",
   callback = function()
@@ -95,30 +117,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("user.plugins", {
-  diff = "diffview.nvim",
-  rtp = {
-    disabled_plugins = {
-      "2html_plugin",
-      "getscript",
-      "getscriptPlugin",
-      "gzip",
-      "logipat",
-      "matchit",
-      "matchparen",
-      "perl_provider",
-      "rrhelper",
-      "ruby_provider",
-      "spellfile_plugin",
-      "tar",
-      "tarPlugin",
-      "tohtml",
-      "tutor",
-      "vimball",
-      "vimballPlugin",
-      "zip",
-      "zipPlugin",
-    },
-  },
+  diff = { cmd = "diffview.nvim" },
   ui = {
     icons = { cmd = " ", import = "󰶮 ", plugin = " ", start = "󰐍 " },
   },
