@@ -1,5 +1,4 @@
-
-#!/bin/sh
+#!/usr/bin/env sh
 
 # Generates a QR code for wifi
 # https://git.sr.ht/~moviuro/moviuro.bin/tree/master/item/wifi-qr

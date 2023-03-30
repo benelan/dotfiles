@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Get the introductory paragraph from a Wikipedia article using
 # David Leadbeater's Wikipedia-over-DNS service.

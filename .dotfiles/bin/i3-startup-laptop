@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # shellcheck disable=2086
 
 [ "$(hostname)" != "jamin-os" ] && exit 0
