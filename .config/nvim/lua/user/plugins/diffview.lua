@@ -36,7 +36,7 @@ return {
   opts = function()
     return {
       enhanced_diff_hl = true,
-      use_icons = vim.g.use_devicons == true,
+      use_icons = vim.g.use_devicons,
       signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
       keymaps = {
         view = {

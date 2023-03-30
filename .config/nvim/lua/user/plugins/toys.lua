@@ -17,16 +17,6 @@ return {
     },
   },
   {
-    "lukas-reineke/indent-blankline.nvim",
-    enabled = false,
-    opts = {
-      char = "┊",
-      show_trailing_blankline_indent = false,
-      use_treesitter = true,
-      show_current_context = true,
-    },
-  },
-  {
     "jinh0/eyeliner.nvim",
     enabled = false,
     opts = { highlight_on_key = false, dim = true },
@@ -96,10 +86,19 @@ return {
     end,
   },
   {
+    "lukas-reineke/indent-blankline.nvim",
+    enabled = false,
+    opts = {
+      char = "┊",
+      show_trailing_blankline_indent = false,
+      use_treesitter = true,
+      show_current_context = true,
+    },
+  },
+  {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
     enabled = true,
-    event = "VeryLazy",
-    opts = {},
+    event = "CursorHold",
     config = function()
       -- Normal mode
       require("which-key").register({
@@ -143,10 +142,16 @@ return {
           },
         },
       }, { mode = "n" })
-
       -- Visual mode
       require("which-key").register({
         ["<leader>"] = {
+          c = {
+            name = "Cheat",
+            q = { name = "Questions" },
+            a = { name = "Answers" },
+            h = { name = "History" },
+            s = { name = "See also" },
+          },
           g = { name = "Git", m = { name = "Mergetool" } },
           z = { name = "Zk" },
         },

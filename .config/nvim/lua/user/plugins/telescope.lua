@@ -1,6 +1,6 @@
 return {
   "nvim-telescope/telescope.nvim", -- fuzzy finding tool
-  event = "VeryLazy",
+  cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
@@ -10,33 +10,114 @@ return {
     -- "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
     -- "ThePrimeagen/harpoon", -- file marks on steroids
   },
-  config = function()
-    local telescope = require "telescope"
-    local telescope_actions = require "telescope.actions"
-    local telescope_action_layout = require "telescope.actions.layout"
-
-    telescope.setup {
+  keys = function()
+    -- when a count N is given to a telescope mapping called through the following
+    -- function, the search is started in the Nth parent directory
+    local function telescope_cwd(picker, args)
+      require("telescope.builtin")[picker](
+        vim.tbl_extend(
+          "error",
+          args or {},
+          { cwd = ("../"):rep(vim.v.count) .. "." }
+        )
+      )
+    end
+    return {
+      { "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find" },
+      { "<leader>fo", "<cmd>Telescope oldfiles<cr>", "Find Recent File" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", "Find Buffer" },
+      { "<leader>fr", "<cmd>Telescope resume<cr>", "Resume Previous Fuzzying" },
+      {
+        "<leader>ff",
+        function()
+          telescope_cwd("find_files", { hidden = true })
+        end,
+        "Find File",
+      },
+      {
+        "<leader>ft",
+        function()
+          telescope_cwd "live_grep"
+        end,
+        "Find Text",
+      },
+      -- LSP keymaps
+      -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+      { "<leader>lr", "<cmd>Telescope lsp_references<cr>", "References" },
+      { "<leader>lq", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
+      {
+        "<leader>lQ",
+        "<cmd>Telescope quickfixhistory<cr>",
+        "Telescope Quickfix History",
+      },
+      {
+        "<leader>lt",
+        "<cmd>Telescope lsp_type_definitions<cr>",
+        "Workspace Diagnostics",
+      },
+      {
+        "<leader>ld",
+        "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
+        "Buffer Diagnostics",
+      },
+      {
+        "<leader>lD",
+        "<cmd>Telescope diagnostics<cr>",
+        "Workspace Diagnostics",
+      },
+      {
+        "<leader>ls",
+        "<cmd>Telescope lsp_document_symbols<cr>",
+        "Document Symbols",
+      },
+      {
+        "<leader>lS",
+        "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+        "Workspace Symbols",
+      },
+      -- Git keymaps
+      -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+      {
+        "<leader>fg",
+        function()
+          telescope_cwd "git_files"
+        end,
+        "Find Git Files",
+      },
+      {
+        "<leader>gb",
+        "<cmd>Telescope git_branches<cr>",
+        { "n", "x" },
+        "Checkout Branch",
+      },
+      {
+        "<leader>gc",
+        "<cmd>Telescope git_bcommits<cr>",
+        { "n", "x" },
+        "Checkout Buffer Commit",
+      },
+      {
+        "<leader>gC",
+        "<cmd>Telescope git_commits<cr>",
+        { "n", "x" },
+        "Checkout Commit",
+      },
+      {
+        "<leader>gg",
+        "<cmd>Telescope git_status<cr>",
+        { "n", "x" },
+        "Checkout Commit",
+      },
+    }
+  end,
+  opts = function()
+    return {
       defaults = {
         prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
         selection_caret = "  ", -- ➜  ⮞     🡺  🡲
         multi_icon = "✘  ", -- ✘  ✔
         entry_prefix = "   ",
-        layout_strategy = "horizontal",
-        layout_config = {
-          width = 0.9,
-          height = 0.9,
-          prompt_position = "top",
-          horizontal = {
-            preview_width = function(_, cols, _)
-              if cols > 200 then
-                return math.floor(cols * 0.4)
-              else
-                return math.floor(cols * 0.6)
-              end
-            end,
-          },
-          vertical = { anchor = "N", preview_height = 0.5 },
-        },
+        layout_config = { prompt_position = "top" },
         sorting_strategy = "ascending",
         cycle_layout_list = { "horizontal", "vertical", "bottom_pane" },
         set_env = { ["COLORTERM"] = "truecolor" },
@@ -97,33 +178,33 @@ return {
         },
         mappings = {
           i = {
-            ["<C-c>"] = telescope_actions.close,
-            ["<Down>"] = telescope_actions.cycle_history_next,
-            ["<Up>"] = telescope_actions.cycle_history_prev,
-            ["<M-j"] = telescope_actions.cycle_history_next,
-            ["<M-k>"] = telescope_actions.cycle_history_prev,
-            ["<C-j>"] = telescope_actions.move_selection_next,
-            ["<C-k>"] = telescope_actions.move_selection_previous,
-            ["<tab>"] = telescope_actions.toggle_selection
-              + telescope_actions.move_selection_next,
-            ["<s-tab>"] = telescope_actions.toggle_selection
-              + telescope_actions.move_selection_previous,
-            ["<esc>"] = telescope_actions.close,
-            ["<M-p>"] = telescope_action_layout.toggle_preview,
-            ["<M-m>"] = telescope_action_layout.toggle_mirror,
-            ["<A-l>"] = telescope_action_layout.cycle_layout_next,
-            ["<A-h>"] = telescope_action_layout.cycle_layout_prev,
+            ["<C-c>"] = require("telescope.actions").close,
+            ["<Down>"] = require("telescope.actions").cycle_history_next,
+            ["<Up>"] = require("telescope.actions").cycle_history_prev,
+            ["<M-j"] = require("telescope.actions").cycle_history_next,
+            ["<M-k>"] = require("telescope.actions").cycle_history_prev,
+            ["<C-j>"] = require("telescope.actions").move_selection_next,
+            ["<C-k>"] = require("telescope.actions").move_selection_previous,
+            ["<tab>"] = require("telescope.actions").toggle_selection
+              + require("telescope.actions").move_selection_next,
+            ["<s-tab>"] = require("telescope.actions").toggle_selection
+              + require("telescope.actions").move_selection_previous,
+            ["<esc>"] = require("telescope.actions").close,
+            ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
+            ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
+            ["<A-l>"] = require("telescope.actions.layout").cycle_layout_next,
+            ["<A-h>"] = require("telescope.actions.layout").cycle_layout_prev,
             ["<C-q>"] = function(...)
-              telescope_actions.smart_send_to_qflist(...)
-              telescope_actions.open_qflist(...)
+              require("telescope.actions").smart_send_to_qflist(...)
+              require("telescope.actions").open_qflist(...)
             end,
           },
           n = {
-            ["<C-j>"] = telescope_actions.move_selection_next,
-            ["<C-k>"] = telescope_actions.move_selection_previous,
+            ["<C-j>"] = require("telescope.actions").move_selection_next,
+            ["<C-k>"] = require("telescope.actions").move_selection_previous,
             ["<C-q>"] = function(...)
-              telescope_actions.smart_send_to_qflist(...)
-              telescope_actions.open_qflist(...)
+              require("telescope.actions").smart_send_to_qflist(...)
+              require("telescope.actions").open_qflist(...)
             end,
           },
         },
@@ -133,8 +214,8 @@ return {
         buffers = {
           initial_mode = "normal",
           mappings = {
-            i = { ["<C-d>"] = telescope_actions.delete_buffer },
-            n = { ["dd"] = telescope_actions.delete_buffer },
+            i = { ["<C-d>"] = require("telescope.actions").delete_buffer },
+            n = { ["dd"] = require("telescope.actions").delete_buffer },
           },
         },
         find_files = {
@@ -142,9 +223,10 @@ return {
             n = {
               -- change directory in normal mode
               ["<leader>cd"] = function(prompt_bufnr)
-                local selection = telescope_actions.state.get_selected_entry()
+                local selection =
+                  require("telescope.actions").state.get_selected_entry()
                 local dir = vim.fn.fnamemodify(selection.path, ":p:h")
-                telescope_actions.close(prompt_bufnr)
+                require("telescope.actions").close(prompt_bufnr)
                 vim.cmd(string.format("silent cd %s", dir))
               end,
             },
@@ -152,116 +234,9 @@ return {
         },
       },
     }
-
-    telescope.load_extension "fzf"
-
-    -------------------------------------------------------------------------------
-    -- Keymaps
-    -------------------------------------------------------------------------------
-    local telescope_builtin = require "telescope.builtin"
-
-    -- when a count N is given to a telescope mapping called through the following
-    -- function, the search is started in the Nth parent directory
-    local function telescope_cwd(picker, args)
-      telescope_builtin[picker](
-        vim.tbl_extend(
-          "error",
-          args or {},
-          { cwd = ("../"):rep(vim.v.count) .. "." }
-        )
-      )
-    end
-
-    keymap("n", "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find")
-    keymap("n", "<leader>fo", "<cmd>Telescope oldfiles<cr>", "Find Recent File")
-    keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", "Find Buffer")
-    keymap(
-      "n",
-      "<leader>fr",
-      "<cmd>Telescope resume<cr>",
-      "Resume Previous Fuzzying"
-    )
-    keymap("n", "<leader>ff", function()
-      telescope_cwd("find_files", { hidden = true })
-    end, "Find File")
-    keymap("n", "<leader>ft", function()
-      telescope_cwd "live_grep"
-    end, "Find Text")
-
-    -- LSP keymaps
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-    keymap("n", "<leader>lr", "<cmd>Telescope lsp_references<cr>", "References")
-    keymap(
-      "n",
-      "<leader>lq",
-      "<cmd>Telescope quickfix<cr>",
-      "Telescope Quickfix"
-    )
-    keymap(
-      "n",
-      "<leader>lQ",
-      "<cmd>Telescope quickfixhistory<cr>",
-      "Telescope Quickfix History"
-    )
-    keymap(
-      "n",
-      "<leader>lt",
-      "<cmd>Telescope lsp_type_definitions<cr>",
-      "Workspace Diagnostics"
-    )
-    keymap(
-      "n",
-      "<leader>ld",
-      "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
-      "Buffer Diagnostics"
-    )
-    keymap(
-      "n",
-      "<leader>lD",
-      "<cmd>Telescope diagnostics<cr>",
-      "Workspace Diagnostics"
-    )
-    keymap(
-      "n",
-      "<leader>ls",
-      "<cmd>Telescope lsp_document_symbols<cr>",
-      "Document Symbols"
-    )
-    keymap(
-      "n",
-      "<leader>lS",
-      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-      "Workspace Symbols"
-    )
-
-    -- Git keymaps
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-    keymap("n", "<leader>fg", function()
-      telescope_cwd "live_grep"
-    end, "Find Git Files")
-    keymap(
-      { "n", "x" },
-      "<leader>gb",
-      "<cmd>Telescope git_branches<cr>",
-      "Checkout Branch"
-    )
-    keymap(
-      { "n", "x" },
-      "<leader>gc",
-      "<cmd>Telescope git_bcommits<cr>",
-      "Checkout Buffer Commit"
-    )
-    keymap(
-      { "n", "x" },
-      "<leader>gC",
-      "<cmd>Telescope git_commits<cr>",
-      "Checkout Commit"
-    )
-    keymap(
-      { "n", "x" },
-      "<leader>gg",
-      "<cmd>Telescope git_status<cr>",
-      "Checkout Commit"
-    )
+  end,
+  config = function(_, opts)
+    require("telescope").setup(opts)
+    require("telescope").load_extension "fzf"
   end,
 }

@@ -43,10 +43,10 @@ if vim.g.neovide then
   vim.g.neovide_cursor_trail_size = 0
 end
 
--- wezterm has built in nerd font glyphs so no patched fonts are required
-if os.getenv "TERM" == "wezterm" then
-  vim.g.use_devicons = true
-end
+-- nerd font glyphs are shipped with wezterm so patched fonts
+-- aren't required. OG_TERM env var is set when attching to tmux.
+vim.g.use_devicons = os.getenv "TERM" == "wezterm"
+  or os.getenv "OG_TERM" == "wezterm"
 
 -------------------------------------------------------------------------------
 ----> Autocommands
