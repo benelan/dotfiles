@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 alias c='clear'
 alias q='exit'
@@ -19,18 +19,19 @@ alias cbf="xclip -se c <"
 alias f="vifm"
 
 # Directory listing/traversal
-LS_COLORS=$(is-supported "ls --color" --color -G)
-LS_TIMESTYLEISO=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
-LS_GROUPDIRSFIRST=$(is-supported "ls --group-directories-first" --group-directories-first)
+COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)
+TIMESTYLEISO_SUPPORTED=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
+GROUPDIRSFIRST_SUPPORTED=$(is-supported "ls --group-directories-first" --group-directories-first)
 
+alias ls='ls $COLORS_SUPPORTED'
 # list all files/dirs, short format, sort by time
-alias l='ls -Art $LS_COLORS $LS_GROUPDIRSFIRST'
+alias l='ls -Art $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
 # list all files/dirs, long format, sort by time
-alias ll='ls -hogArt $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
+alias ll='ls -hogArt $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
 # List directories, long format, sort by time
-alias lsd='ls -radgoth */ $LS_COLORS $LS_TIMESTYLEISO'
+alias lsd='ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED'
 # Lists hidden files, long format, sort by time
-alias lsh='ls -radgoth .?* $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST'
+alias lsh='ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated
@@ -63,6 +64,10 @@ alias vimh='vim -c ":h | only"'
 # For example, to list all directories that contain a certain file:
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
+
+# Show 256 TERM colors
+# shellcheck disable=2154
+alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput setaf "$i"; tput setab "$i")$(printf %$((COLUMNS - 6))s | tr " " "=")$(tput op)" && i=$((i+1)); done'
 
 # Navigation
 # -----------------------------------------------------------------------------
@@ -112,4 +117,3 @@ alias lock='gnome-screensaver-command --lock'
 
 alias gsschemas='gsettings list-schemas | grep -i'
 alias gskeys='gsettings list-keys'
-

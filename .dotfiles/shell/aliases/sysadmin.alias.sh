@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 alias hosts='sudo $EDITOR /etc/hosts'
 

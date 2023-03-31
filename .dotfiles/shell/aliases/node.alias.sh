@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 is-supported node || return
 

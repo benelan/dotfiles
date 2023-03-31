@@ -58,7 +58,7 @@ function _init-alias_completion() {
         read -ra alias_arg_words <<<"$alias_args"
 
         # skip alias if there is no completion function triggered by the aliased command
-        if ! array-contains-element "$alias_cmd" "${completions[@]}"; then
+        if ! _array_contains_element "$alias_cmd" "${completions[@]}"; then
             if [[ -n "$completion_loader" ]]; then
                 # force loading of completions for the aliased command
                 "${completion_loader:?}" "${alias_cmd}"

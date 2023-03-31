@@ -1,35 +1,32 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Utilities
 #---------------------------------------------------------------------------------
 
-function clip() {
-    xclip -selection clipboard "$@"
-}
-
-function paste() {
-    xclip -o -selection clipboard
+# Search history.
+hist() {
+    grep --color=always "$*" "$HISTFILE" |
+        less --no-init --raw-control-chars --quiet
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Readline library requires bash version 4 or later
-# shellcheck disable=2128
-if [ "$BASH_VERSINFO" -ge 4 ]; then
-    # toggle sudo at the beginning of the current or the
-    # previous command by hitting the ESC key twice
-    function sudo-command-line() {
-        [[ ${#READLINE_LINE} -eq 0 ]] && READLINE_LINE=$(fc -l -n -1 | xargs)
-        if [[ $READLINE_LINE == sudo\ * ]]; then
-            READLINE_LINE="${READLINE_LINE#sudo }"
-        else
-            READLINE_LINE="sudo $READLINE_LINE"
-        fi
-        READLINE_POINT=${#READLINE_LINE}
-    }
-    # Define shortcut keys: [Esc] [Esc]
-    bind -x '"\e\e": sudo-command-line'
-fi
+# Search for text within the current directory.
+s() {
+    grep --color=always "$*" --ignore-case --recursive \
+        --exclude-dir=".git" --exclude-dir="node_modules" . |
+        less --no-init --raw-control-chars --quiet
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# https://leahneukirchen.org/dotfiles/bin/goog
+goog() {
+    curl -A Mozilla/4.0 -skLm 10 \
+        "http://www.google.com/search?nfpr=\&q=$(echo "$*" | tr ' ' '+')" |
+        grep -oP '\/url\?q=.+?&amp' |
+        sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -37,53 +34,13 @@ fi
 # Use $EDITOR to edit text inside a pipeline
 # Write all data to a temporary file, edit that file, then print it
 # again.
-function vipe() {
+vipe() {
     tmp=$(mktemp)
     trap 'rm -f "$tmp"' 0
     cat >"$tmp"
     ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
     cat "$tmp"
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# runs argument in background
-function quiet() {
-    nohup "$@" &>/dev/null </dev/null &
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Search history.
-h() {
-    #           ┌─ Enable colors for pipe.
-    #           │  ("--color=auto" enables colors only
-    #           │   if the output is in the terminal.)
-    grep --color=always "$*" "$HISTFILE" |
-        less --no-init --raw-control-chars
-    #    │         └─ Display ANSI color escape sequences in raw form.
-    #    └─ Don't clear the screen after quitting less.
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Search for text within the current directory.
-function s() {
-    grep --color=always "$*" \
-        --exclude-dir=".git" \
-        --exclude-dir="node_modules" \
-        --ignore-case \
-        --recursive \
-        . |
-        less --no-init --raw-control-chars
-    #    │         └─ Display ANSI color escape sequences in raw form.
-    #    └─ Don't clear the screen after quitting less.
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# open vim help pages from shell prompt
-function :h { nvim +":h $1" +'wincmd o' +'nnoremap q :q!<CR>'; }
 
 # Filesystem
 #---------------------------------------------------------------------------------
@@ -115,7 +72,7 @@ md2html() {
 if is-supported inotifywait; then
     # runs a command when a target file is modified
     # $ onmodify note.md md2html note
-    function onmodify() {
+    onmodify() {
         TARGET=${1:-.}
         shift
         echo "$TARGET" "$*"
@@ -131,57 +88,41 @@ fi
 
 # Get gzipped file size
 gz() {
-    local ORIGSIZE GZIPSIZE RATIO SAVED
     ORIGSIZE=$(wc -c <"$1")
     GZIPSIZE=$(gzip -c "$1" | wc -c)
     RATIO=$(echo "$GZIPSIZE * 100/ $ORIGSIZE" | bc -l)
     SAVED=$(echo "($ORIGSIZE - $GZIPSIZE) * 100/ $ORIGSIZE" | bc -l)
     printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# disk usage per directory, in Mac OS X and Linux
-function usage() {
-    case $OSTYPE in
-        *'darwin'*)
-            du -hd 1 "$@"
-            ;;
-        *'linux'*)
-            du -h --max-depth=1 "$@"
-            ;;
-    esac
+    unset ORIGSIZE GZIPSIZE RATIO SAVED
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Create a data URL from a file
 dataurl() {
-    local MIMETYPE
     MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
-    if [[ $MIMETYPE == "text/*" ]]; then
+    if [ "$MIMETYPE" = "text/*" ]; then
         MIMETYPE="${MIMETYPE};charset=utf-8"
     fi
     echo "data:${MIMETYPE};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+    unset MIMETYPE
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Recursively search parent directory for file
-parent-find() {
+parent_find() {
     # param 1: name of file or directory to find
     # param 2: directory to start from (defaults to PWD)
     # example: $ parent-find .git
 
-    local file="$1"
-    local dir="${2:-$PWD}"
-    test -e "$dir/$file" && echo "$dir" && return 0
-    [ '/' = "$dir" ] && return 1
-    parent-find "$file" "$(dirname "$dir")"
+    test -e "${2:-$PWD}/$1" && echo "${2:-$PWD}" && return 0
+    [ '/' = "${2:-$PWD}" ] && return 1
+    parent-find "$1" "$(dirname "${2:-$PWD}")"
 }
 
 # removes duplicate lines from a file
-function dedup-lines() {
+dedup_lines() {
     # param: file to dedup
     # example: $ dedup-lines deps.txt > unique_deps.txt
     awk '!visited[$0]++' "$@"
@@ -197,18 +138,7 @@ unshorten() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# https://leahneukirchen.org/dotfiles/bin/goog
-function goog() {
-    Q=$*
-    echo -e "$(curl -A Mozilla/4.0 -skLm 10 \
-        http://www.google.com/search?nfpr=\&q="${Q// /+}" |
-        grep -oP '\/url\?q=.+?&amp' | sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g')"
-
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function crt {
+crt() {
     openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
         -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
 }
@@ -216,31 +146,31 @@ function crt {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # add entry to ssh config
-function add-ssh() {
-    [[ $# -ne 3 ]] && echo "add_ssh host hostname user" && return 1
-    [[ ! -d ~/.ssh ]] && mkdir -m 700 ~/.ssh
-    [[ ! -e ~/.ssh/config ]] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
-    echo -en "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" >>~/.ssh/config
+add_ssh() {
+    [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
+    [ ! -d ~/.ssh ] && mkdir -m 700 ~/.ssh
+    [ ! -e ~/.ssh/config ] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
+    printf "%s" "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" >>~/.ssh/config
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # list hosts defined in ssh config
-function sshlist() {
+ssh_list() {
     awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # add all ssh private keys to agent
-function ssh-add-all() {
+ssh_add_all() {
     grep -slR "PRIVATE" ~/.ssh | xargs ssh-add
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # display all ip addresses for this host
-function ips() {
+ips() {
     if is-supported ifconfig; then
         ifconfig | awk '/inet /{ gsub(/addr:/, ""); print $2 }'
     elif is-supported ip; then
@@ -309,14 +239,15 @@ fgco() {
 
 # Adds some additional default fzf options
 # and uses my username as the default search term
-function gcof() {
-    local SEARCH_TERM="${1:-"$USER"}"
+gcof() {
+    SEARCH_TERM="${1:-"$USER"}"
     [ "$#" -gt 0 ] && shift
     gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
+    unset SEARCH_TERM
 }
 
 # checkout master, pull, find and checkout branch, merge master/main
-function gcofup() {
+gcofup() {
     git checkout "$(gbdefault)"
     git pull
     gcof "$@"
@@ -330,7 +261,7 @@ function gcofup() {
 # Syncs the checked out branch with the default branch
 # [Usage] create/checkout branch benelan/2807-slots and sync with master:
 # $ gcoup 2807-slots
-function gcoup() {
+gcoup() {
     git checkout "$(gbdefault)"
     git pull
     branch_name="$(git config github.user)/$1" || {
@@ -347,27 +278,11 @@ function gcoup() {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# git-branch-prune
-# locally removes branches already [squash) merged into the default branch
-gbprune() {
-    # shellcheck disable=1001,1083
-    TARGET_BRANCH="$(gbdefault)" &&
-        git fetch --prune --all &&
-        git checkout -q "$TARGET_BRANCH" &&
-        git for-each-ref refs/heads/ "--format=%(refname:short)" |
-        grep -v -e main -e master -e develop -e dev |
-            while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
-                [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] &&
-                git branch -D "$branch"; done
-    unset TARGET_BRANCH mergeBase branch
-}
-
 # Arrays
 #---------------------------------------------------------------------------------
 
-# This function searches an array for an exact match against the term passed
-# as the first argument to the function. This function exits as soon as
+# This searches an array for an exact match against the term passed
+# as the first argument to the function. This exits as soon as
 # a match is found.
 #
 # Returns:
@@ -376,26 +291,27 @@ gbprune() {
 # Examples:
 #   $ declare -a fruits=(apple orange pear mandarin)
 #
-#   $ array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
+#   $ _array_contains_element apple "@{fruits[@]}" && echo 'contains apple'
 #   contains apple
 #
-#   $ if array-contains-element pear "${fruits[@]}"; then
+#   $ if _array_contains_element pear "${fruits[@]}"; then
 #       echo "contains pear!"
 #     fi
 #   contains pear!
 #
 #
-function array-contains-element() {
-    local e element="${1?}"
+_array_contains_element() {
+    element="${1?}"
     shift
     for e in "$@"; do
-        [[ "$e" == "${element}" ]] && return 0
+        [ "$e" = "${element}" ] && return 0
     done
+    unset element e
     return 1
 }
 
 # Dedupe an array (without embedded newlines).
-function array-dedup() {
+array_dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
@@ -405,32 +321,22 @@ function array-dedup() {
 # $ cht :help
 
 # cheatsheet
-cht() {
-    curl "https://cheat.sh/$1"
-}
-
+cht() { curl "https://cheat.sh/$1"; }
 # cheatsheet: javascript
-chtjs() {
-    local query="$*"
-    curl "https://cheat.sh/javascript/${query// /+}"
-}
-
+chtjs() { curl "https://cheat.sh/javascript/""$(echo "$*" | tr ' ' '+')"; }
 # cheatsheet: typescript
-chtts() {
-    local query="$*"
-    curl "https://cheat.sh/typescript/${query// /+}"
-}
+chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 
 # search commandlinefu.com
 cmdfu() {
-    local query="$*"
-    curl -sL "https://www.commandlinefu.com/commands/matching/${query// /-}/$(
-        echo -n "$query" | base64
+    query=$(echo "$*" | tr " " "-")
+    curl -sL "https://www.commandlinefu.com/commands/matching/$query/$(
+        echo "$query" | base64
     )/plaintext" | tail -n +2
 }
 
 # display one random command from commandlinefu.com
-cmdfu-random() {
+cmdfu_random() {
     curl -sL https://www.commandlinefu.com/commands/random/json |
         jq -r '.[0] | "\n" + "# " + .summary + "\n" + .command'
 
@@ -444,26 +350,13 @@ cmdfu-random() {
 # Misc
 #---------------------------------------------------------------------------------
 
-# Show 256 TERM colors
-colors() {
-    local Y
-    Y="$(printf %$((COLUMNS - 6))s)"
-    for i in {0..256}; do
-        o=00$i
-        echo -e "${o:${#o}-3:3}" "$(
-            tput setaf "$i"
-            tput setab "$i"
-        )""${Y// /=}""$(tput op)"
-    done
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 vcd() {
     cd "$(command vifm --choose-dir - "$@")" || return 1
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # make one or more directories and cd into the last one
-function mcd() {
+mcd() {
     mkdir -p -- "$@" && cd -- "${!#}" || return 1
 }

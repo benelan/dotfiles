@@ -15,7 +15,7 @@ esac
 # Finally start sourcing startup scripts from ~/.dotfiles/shell
 # You can append an underscore to file names to skip them
 #---------------------------------------------------------------------------
-# SHELL - ALIASES
+# SHELL - ALIASES/FUNCTIONS
 #---------------------------------------------------------------------------
 # NOTE: don't skip to git alias file, it will break stuff
 for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
@@ -23,15 +23,16 @@ for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
 done
 unset aliases
 
+[ -f ~/.dotfiles/shell/functions.sh ] && source ~/.dotfiles/shell/functions.sh
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
 #---------------------------------------------------------------------------
-# BASH - FUNCTIONS/OPTIONS/PROMPT
+# BASH - OPTIONS/PROMPT
 #---------------------------------------------------------------------------
 # local if for environment specific stuffs, it is gitignored
-for stuffs in ~/.dotfiles/shell/{functions,options,prompt,local}.sh; do
+for stuffs in ~/.dotfiles/shell/{options,prompt,local}.sh; do
     [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
 unset stuffs

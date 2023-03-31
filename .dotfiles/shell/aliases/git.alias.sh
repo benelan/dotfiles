@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # shellcheck disable=2139
 
 # Git
@@ -11,6 +11,10 @@ alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
 # Same as above but works in bare repos and is more accurate, but slower
 alias gbdefault-bare='git remote show "$(git remote | grep -Eo "(upstream|origin)" | tail -1)" | grep "HEAD branch" | cut -d" " -f5'
 alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
+
+# deletes local branches already squash merged into the default branch
+# shellcheck disable=2016,2034,2154
+alias gbprune='TARGET_BRANCH="$(gbdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
 
 # add
 ######
@@ -76,6 +80,8 @@ alias ge='$EDITOR $(git diff --name-only HEAD)'
 # sync origin's default branch and edit the changed files
 # shellcheck disable=2154
 alias geom='default_branch=$(gbdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
+# open Diffview.nvim
+egdf() { nvim +":DiffviewOpen $*"; }
 
 # fetch
 ########
@@ -244,6 +250,8 @@ edit_dotfiles() {
         --cmd 'let $GIT_DIR = expand("~/.git")'
 }
 
+eddf() { edit_dotfiles ~/.bashrc -c "DiffviewOpen $*"; }
+
 alias edot="edit_dotfiles -c 'Telescope git_files'"
 alias envim="edit_dotfiles ~/.config/nvim/init.lua"
 
@@ -366,3 +374,6 @@ alias dfz="dot fuzzy"
 # https://cli.github.com/
 # https://github.com/dlvhdr/gh-dash
 alias ghd="gh dash"
+# Open Octo with my issues/prs
+alias eghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
+alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'

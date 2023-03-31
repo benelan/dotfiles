@@ -252,7 +252,7 @@ if has("autocmd")
 
         autocmd FileType qf,help,man
                     \ set nobuflisted |
-                    \ nnoremap <silent> <buffer> q :close<CR>
+                    \ nnoremap <silent> <buffer> q :q<CR>
 
         autocmd FileType markdown,gitcommit,text
                     \ setlocal wrap spell nornu nonu |
