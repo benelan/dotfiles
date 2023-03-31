@@ -31,6 +31,37 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+" See `man fzf-tmux` for available options
+if exists('$TMUX')
+  let g:fzf_layout = { 'tmux': '-p90%,60%' }
+else
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+endif
+
+function! s:get_git_root()
+  let dir = substitute(split(expand('%:p:h'), '[/\\]\.git\([/\\]\|$\)')[0], '^fugitive://', '', '')
+  let root = systemlist('git -C ' . shellescape(dir) . ' rev-parse --show-toplevel')[0]
+  return v:shell_error ? '' : root
+endfunction
+
+" The query history for this command will be stored as 'ls' inside g:fzf_history_dir.
+" The name is ignored if g:fzf_history_dir is not defined.
+command! -bang -complete=dir -nargs=? LS
+    \ call fzf#run(fzf#wrap('ls', {'source': 'ls', 'dir': <q-args>}, <bang>0))
+
+command! -bang GFiles
+    \ call fzf#run(fzf#wrap('gfiles', {'source': 'git ls-files', 'sink': 'e', 'dir': s:get_git_root()}, <bang>0))
+
+command! -bar -bang -nargs=? -complete=buffer Buffers
+    \ call fzf#run(fzf#wrap('buffers', {
+    \ 'source':  map(filter(range(1, bufnr('$')),
+    \ 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf"'),
+    \'bufname(v:val)'),
+    \ 'options': ['+m', '-x', '--ansi', '--prompt', 'Buffer > ', '--query', <q-args>],
+    \ 'sink': 'e'}, <bang>0))
+
+let g:easy_align_bypass_fold = 1
+
 " ---------------------------------------------------------------------------
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
@@ -63,6 +94,9 @@ vnoremap <leader><C-l> <Esc><C-l>gv
 " go to line above/below the cursor, from insert mode
 inoremap <S-CR> <C-O>o
 inoremap <C-CR> <C-O>O
+
+tnoremap <C-p> <Up>
+tnoremap <C-n> <Down>
 
 " clear search highlights if there any
 " nnoremap <silent> <expr> <CR> {-> v:hlsearch
@@ -99,6 +133,11 @@ nnoremap <Leader><Delete> :bdelete<CR>
 
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
+
+" Start interactive EasyAlign in visual mode (e.g. vipg-)
+xnoremap g- <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. g-ip)
+nnoremap g- <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------------------
 " | User commands                                                           |
@@ -231,7 +270,7 @@ if has("autocmd")
       autocmd BufLeave *.vim,.vimrc             normal! mV
       autocmd BufLeave *.yml,*.yaml             normal! mY
       " Clear actively used marks to prevent jumping to other projects
-      autocmd BufLeave *                        delmarks AQWZX 
+      autocmd BufLeave *                        delmarks AQWZX
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

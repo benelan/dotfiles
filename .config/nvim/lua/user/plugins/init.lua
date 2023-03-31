@@ -6,7 +6,11 @@ return {
   {
     dir = "~/.dotfiles/vendor/fzf",
     cmd = "FZF",
-    keys = { { "<leader>fz", "<cmd>FZF<cr>", desc = "FZF" } },
+    keys = {
+      { "<leader>fzf", ":FZF<cr>", desc = "FZF Files" },
+      { "<leader>fzg", ":GFiles<cr>", desc = "FZF Git Files" },
+      { "<leader>fzb", ":Buffers<cr>", desc = "FZF Buffers" },
+    },
   },
 
   -----------------------------------------------------------------------------
@@ -15,9 +19,7 @@ return {
   {
     "vifm/vifm.vim", -- integrates vifm (file explorer)
     event = "VeryLazy",
-    keys = {
-      { "-", "<cmd>Vifm<cr>", desc = "Vifm" },
-    },
+    keys = { { "-", "<cmd>Vifm<cr>", desc = "Vifm" } },
   },
   { "romainl/vim-qf", event = "VeryLazy" }, -- quickfix list improvements
   {

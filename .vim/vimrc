@@ -112,9 +112,6 @@ endif
 
 let mapleader = " "
 
-nnoremap <leader>fz :FZF<CR>
-vnoremap <leader>fz :FZF<CR>
-
 inoremap jk <esc>
 nnoremap Y y$
 
@@ -127,6 +124,13 @@ nnoremap <leader>c "_c
 vnoremap <leader>c "_c
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
+
+nnoremap <leader>ff :FZF<CR>
+vnoremap <leader>ff :FZF<CR>
+nnoremap <leader>fg :GFiles<CR>
+vnoremap <leader>fg :GFiles<CR>
+nnoremap <leader>fb :Buffers<CR>
+vnoremap <leader>fb :Buffers<CR>
 
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
@@ -222,16 +226,16 @@ nnoremap <C-l> <C-W>l
 nnoremap <leader>o <C-w>o
 
 " Move splits
-nnoremap <leader>Left <C-W>H
-nnoremap <leader>Down <C-W>J
-nnoremap <leader>Up <C-W>K
-nnoremap <leader>Right <C-W>L
+nnoremap <leader><Left> <C-W>H
+nnoremap <leader><Down> <C-W>J
+nnoremap <leader><Up> <C-W>K
+nnoremap <leader><Right> <C-W>L
 
 " Resize splits
-nnoremap <C-Up> :resize +5<CR>
-nnoremap <C-Down> :resize -5<CR>
-nnoremap <C-Right> :vertical resize +5<CR>
-nnoremap <C-Left> :vertical resize -5<CR>
+nnoremap <leader><leader>k :resize +5<CR>
+nnoremap <leader><leader>j :resize -5<CR>
+nnoremap <leader><leader>l :vertical resize +5<CR>
+nnoremap <leader><leader>h :vertical resize -5<CR>
 
 "" toggles automatic indentation based on the previous line
 nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
