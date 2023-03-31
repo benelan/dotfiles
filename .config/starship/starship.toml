@@ -58,7 +58,7 @@ threshold = 35
 style = "bold orange"
 
 [character]
-success_symbol = "[↳](bold green-light) "
+success_symbol = "[❯](bold green-light) "
 error_symbol = "[✘](bold red-light) "
 vimcmd_symbol = "[ ](bold green-light) "
 vimcmd_replace_one_symbol = "[ ](bold yellow-light) "

@@ -1,33 +1,73 @@
-set editing-mode vi
+# This file controls the behaviour of line input editing for
+# programs that use the GNU Readline library.  Existing
+# programs include FTP, Bash, and GDB.
+# https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Readline-Init-File-Syntax
+#
+# You can re-read the inputrc file with C-x C-r.
+# Lines beginning with '#' are comments.
+#
+# First, include any system-wide bindings and variable
+# assignments from /etc/Inputrc
+$include /etc/inputrc
 
+set keymap vi-command
+"\ee": emacs-editing-mode
+
+set keymap vi-insert
+"\ee": emacs-editing-mode
+"jk": vi-movement-mode
+
+set keymap emacs
+"\ee": vi-editing-mode
+"jk": "\eejk"
+
+set editing-mode emacs 
 set bell-style none
-
+set keyseq-timeout 1200
+set colored-stats on
+set colored-completion-prefix on
 set completion-ignore-case on
-
-set show-all-if-ambiguous on
-
-set mark-symlinked-directories on
-
-set match-hidden-files off
-
-set page-completions off
-
 set completion-query-items 200
-
-set visible-stats on
-
+set menu-complete-display-prefix on
+set mark-symlinked-directories on
+set match-hidden-files off
+set page-completions off
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
 set skip-completed-text on
-
-set input-meta on
-set output-meta on
-set convert-meta off
+set visible-stats on
+# set input-meta on
+# set output-meta on
+# set convert-meta on
 
 TAB: menu-complete
+"\e[Z": menu-complete-backward
 
 # Use the string that has already been typed as the prefix for searching
 # through commands (i.e. more intelligent Up/Down-arrow behavior)
 "\e[B": history-search-forward
 "\e[A": history-search-backward
 
-# Use Alt/Meta + Delete to delete the preceding word
+# use Alt+Left/Right to move word by word in command
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+
+# Use Alt+Delete to delete the preceding word
 "\e[3;3~": kill-word
+
+# Use Alt-/ pipe the last command to fzf and 
+# pass the output to a new command
+"\e/": '"$(!!|fzf)"\C-a \C-m\C-m'
+
+### BASH
+
+$if Bash
+# Wrap a command in $( ... )
+"\C-xq": "\C-a\$(\C-e)"
+# Wrap a command in $( .... | fzf)
+"\C-xf": "\C-e | fzf)\C-a(\C-a$\C-b\C-a "
+# C-M-o is dabbrev-expand
+"\e\C-o": dabbrev-expand
+$endif
+
+

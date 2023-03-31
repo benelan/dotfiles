@@ -1,5 +1,41 @@
 #!/usr/bin/env bash
 
+if tput setaf 1 >/dev/null 2>&1; then
+    reset=$(tput sgr0)
+    bold=$(tput bold)
+    underline=$(tput smul)
+    # Gruvbox colors from: https://github.com/morhetz/gruvbox
+    black=$(tput setaf 235)
+    blue=$(tput setaf 66)
+    aqua=$(tput setaf 72)
+    green=$(tput setaf 106)
+    orange=$(tput setaf 166)
+    purple=$(tput setaf 132)
+    red=$(tput setaf 124)
+    white=$(tput setaf 230)
+    yellow=$(tput setaf 172)
+else
+    reset="\e[0m"
+    bold='\e[1m'
+    underline='e[4m'
+    black="\e[1;30m"
+    blue="\e[1;34m"
+    aqua="\e[1;36m"
+    green="\e[1;32m"
+    orange="\e[1;33m"
+    purple="\e[1;35m"
+    red="\e[1;31m"
+    white="\e[1;37m"
+    yellow="\e[1;33m"
+fi
+export bold underline black blue aqua \
+    green orange purple red white yellow
+
+bind "set show-mode-in-prompt on"
+bind "set emacs-mode-string \"${yellow}E${reset} \""
+bind "set vi-cmd-mode-string \"${red}V${reset} \""
+bind "set vi-ins-mode-string \"${green}V${reset} \""
+
 # Use Starship for the prompt if installed
 # Otherwise create a prompt manually
 if is-supported starship; then
@@ -7,7 +43,7 @@ if is-supported starship; then
     # if [[ $(find "$HOME/.local/share/fonts" -iname '*Nerd Font*') ]] || [[ "$TERM" == "wezterm" ]] || [[ "$OG_TERM" == "wezterm" ]]; then
     #     export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
     # else
-        export STARSHIP_CONFIG=~/.config/starship/starship.toml
+    export STARSHIP_CONFIG=~/.config/starship/starship.toml
     # fi
     eval "$(starship init bash)"
 else
@@ -19,37 +55,6 @@ else
     elif infocmp xterm-256color >/dev/null 2>&1; then
         export TERM='xterm-256color'
     fi
-
-    if tput setaf 1 >/dev/null 2>&1; then
-        reset=$(tput sgr0)
-        bold=$(tput bold)
-        underline=$(tput smul)
-        # Gruvbox colors from: https://github.com/morhetz/gruvbox
-        black=$(tput setaf 235)
-        blue=$(tput setaf 66)
-        aqua=$(tput setaf 72)
-        green=$(tput setaf 106)
-        orange=$(tput setaf 166)
-        purple=$(tput setaf 132)
-        red=$(tput setaf 124)
-        white=$(tput setaf 230)
-        yellow=$(tput setaf 172)
-    else
-        reset="\e[0m"
-        bold='\e[1m'
-        underline='e[4m'
-        black="\e[1;30m"
-        blue="\e[1;34m"
-        aqua="\e[1;36m"
-        green="\e[1;32m"
-        orange="\e[1;33m"
-        purple="\e[1;35m"
-        red="\e[1;31m"
-        white="\e[1;37m"
-        yellow="\e[1;33m"
-    fi
-    export bold underline black blue aqua \
-        green orange purple red white yellow
 
     # Highlight the user name when logged in as root.
     if [[ "${USER}" == "root" ]]; then
@@ -82,8 +87,8 @@ else
     pre_prompt+="\[${reset}\]"             # reset styling
 
     post_prompt="\n"
-    post_prompt+="\[${blue}\]\! "  # history line number for easy hist expansion
-    post_prompt+="\[${white}\]☕  " # add symbol, other options: ∴ ↪ ↳
+    post_prompt+="\[${blue}\]\!"   # history line number for easy hist expansion
+    post_prompt+="\[${white}\] ❯ " # add symbol, other options: ∴ ↪ ↳ ↳  ☕
     post_prompt+="\[${reset}\]"    # reset styling
 
     PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'

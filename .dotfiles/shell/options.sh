@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
 # Keep around 128K lines of history in file
-HISTFILESIZE=131072
+export HISTFILESIZE=131072
 
 # Omit duplicates and commands that begin with a space from history.
-HISTCONTROL='ignoreboth:erasedups'
+export HISTCONTROL='ignoreboth:erasedups'
 
 # Keep the times of the commands in history
-HISTTIMEFORMAT='%F %T  '
+export HISTTIMEFORMAT='%F %T  '
+
+# Highlight section titles in manual pages.
+export LESS_TERMCAP_md=$'\e[01;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[04;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
 
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'
@@ -20,16 +26,10 @@ if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
 fi
 
 # Use vi editing mode instead of emacs
-set -o vi
-set +o emacs
+# set -o vi
+# set +o emacs
 # Disable <CTRL-D> which is used to exit the shell
 set -o ignoreeof
-
-# Tab completion setup
-bind '"\t":menu-complete'
-bind "set show-all-if-ambiguous on"
-bind "set completion-ignore-case on"
-bind "set menu-complete-display-prefix on"
 
 # Automatically prepend `cd` to directory names
 shopt -s autocd
