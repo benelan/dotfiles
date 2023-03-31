@@ -23,57 +23,73 @@ return {
       )
     end
     return {
-      { "<leader>f", "<cmd>Telescope<cr>", "Fuzzy Find" },
-      { "<leader>fo", "<cmd>Telescope oldfiles<cr>", "Find Recent File" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", "Find Buffer" },
-      { "<leader>fr", "<cmd>Telescope resume<cr>", "Resume Previous Fuzzying" },
+      { "<leader>f", "<cmd>Telescope<cr>", desc = "Fuzzy Find" },
+      {
+        "<leader>fo",
+        "<cmd>Telescope oldfiles<cr>",
+        desc = "Find Recent File",
+      },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find Buffer" },
+      {
+        "<leader>fr",
+        "<cmd>Telescope resume<cr>",
+        desc = "Resume Previous Fuzzying",
+      },
       {
         "<leader>ff",
         function()
           telescope_cwd("find_files", { hidden = true })
         end,
-        "Find File",
+        desc = "Find File",
       },
       {
         "<leader>ft",
         function()
           telescope_cwd "live_grep"
         end,
-        "Find Text",
+        desc = "Find Text",
       },
       -- LSP keymaps
       -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-      { "<leader>lr", "<cmd>Telescope lsp_references<cr>", "References" },
-      { "<leader>lq", "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
+      {
+        "<leader>lr",
+        "<cmd>Telescope lsp_references<cr>",
+        desc = "References",
+      },
+      {
+        "<leader>lq",
+        "<cmd>Telescope quickfix<cr>",
+        desc = "Telescope Quickfix",
+      },
       {
         "<leader>lQ",
         "<cmd>Telescope quickfixhistory<cr>",
-        "Telescope Quickfix History",
+        desc = "Telescope Quickfix History",
       },
       {
         "<leader>lt",
         "<cmd>Telescope lsp_type_definitions<cr>",
-        "Workspace Diagnostics",
+        desc = "Workspace Diagnostics",
       },
       {
         "<leader>ld",
         "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
-        "Buffer Diagnostics",
+        desc = "Buffer Diagnostics",
       },
       {
         "<leader>lD",
         "<cmd>Telescope diagnostics<cr>",
-        "Workspace Diagnostics",
+        desc = "Workspace Diagnostics",
       },
       {
         "<leader>ls",
         "<cmd>Telescope lsp_document_symbols<cr>",
-        "Document Symbols",
+        desc = "Document Symbols",
       },
       {
         "<leader>lS",
         "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-        "Workspace Symbols",
+        desc = "Workspace Symbols",
       },
       -- Git keymaps
       -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
@@ -82,31 +98,31 @@ return {
         function()
           telescope_cwd "git_files"
         end,
-        "Find Git Files",
+        desc = "Find Git Files",
       },
       {
         "<leader>gb",
         "<cmd>Telescope git_branches<cr>",
         { "n", "x" },
-        "Checkout Branch",
+        desc = "Checkout Branch",
       },
       {
         "<leader>gc",
         "<cmd>Telescope git_bcommits<cr>",
         { "n", "x" },
-        "Checkout Buffer Commit",
+        desc = "Checkout Buffer Commit",
       },
       {
         "<leader>gC",
         "<cmd>Telescope git_commits<cr>",
         { "n", "x" },
-        "Checkout Commit",
+        desc = "Checkout Commit",
       },
       {
         "<leader>gg",
         "<cmd>Telescope git_status<cr>",
         { "n", "x" },
-        "Checkout Commit",
+        desc = "Checkout Commit",
       },
     }
   end,
