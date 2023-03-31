@@ -12,12 +12,13 @@ if has('syntax') && !exists('syntax_on')
 endif
 
 set omnifunc=syntaxcomplete#Complete
+set completefunc=syntaxcomplete#Complete
 set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
-set tabstop=4 softtabstop=-1 shiftwidth=4 smarttab expandtab
+set tabstop=4 softtabstop=-1 shiftwidth=4 shiftround smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
@@ -101,9 +102,8 @@ if has('persistent_undo')
     set undofile
 endif
 
-let s:fzf_path=expand('$HOME/.dotfiles/vendor/fzf')
-if isdirectory(s:fzf_path)
-  set runtimepath+=s:fzf_path
+if isdirectory(expand("$HOME/.dotfiles/vendor/fzf"))
+  set runtimepath+=~/.dotfiles/vendor/fzf
 endif
 
 " ----------------------------------------------------------------------
@@ -274,12 +274,6 @@ nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
 nnoremap <leader>E :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
 
-"" shows command history
-nnoremap <leader>H :<C-U>history :<CR>
-"" shows my marks
-nnoremap <leader>` :<C-U>marks<CR>
-"" shows all registers
-nnoremap <leader>R :<C-U>registers<CR>
 " start ex command for vimgrep
 nnoremap <leader><C-/> :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep

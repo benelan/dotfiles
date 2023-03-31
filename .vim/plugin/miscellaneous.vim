@@ -163,7 +163,7 @@ function! VisualSelection(action) range
     let @" = l:saved_reg
 endfunction
 
-xnoremap <silent> % :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> = :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
 xnoremap <silent> * :<C-u>call VisualSelection('')<CR>/<C-R>=@/<CR><CR>
 xnoremap <silent> # :<C-u>call VisualSelection('')<CR>?<C-R>=@/<CR><CR>
 
@@ -215,11 +215,11 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Create marks for specific filetypes when leaving buffer
-    augroup filetype_marks
+    augroup global_marks
       autocmd!
+    " Create marks for specific filetypes when leaving buffer
       autocmd BufLeave *.css,*.scss,*.sass      normal! mC
-      autocmd BufLeave *.csv,*.json*            normal! mD
+      autocmd BufLeave *.csv,*.json,*.toml      normal! mD
       autocmd BufLeave *.go                     normal! mG
       autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
       autocmd BufLeave *.js,*.jsx               normal! mJ
@@ -228,8 +228,10 @@ if has("autocmd")
       autocmd BufLeave *.rs                     normal! mR
       autocmd BufLeave *.sh,*.bash              normal! mS
       autocmd BufLeave *.ts,*.tsx               normal! mT
-      autocmd BufLeave *.vim                    normal! mV
+      autocmd BufLeave *.vim,.vimrc             normal! mV
       autocmd BufLeave *.yml,*.yaml             normal! mY
+      " Clear actively used marks to prevent jumping to other projects
+      autocmd BufLeave *                        delmarks AQWZX 
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
