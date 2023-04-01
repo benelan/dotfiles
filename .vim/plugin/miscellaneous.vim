@@ -14,9 +14,9 @@ let g:rooter_patterns = [
 " vim.g.rooter_change_directory_for_non_project_files = "current"
 
 " Enable per-command history
-" - When set, CTRL-N and CTRL-P will be bound to 'next-history' and
-"   'previous-history' instead of 'down' and 'up'.
-let g:fzf_history_dir = '~/.dotfiles/cache/fzf-history'
+" - When set, CTRL-N and CTRL-P will be bound to "next-history" and
+"   "previous-history" instead of "down" and "up".
+let g:fzf_history_dir = "~/.dotfiles/cache/fzf-history"
 
 " An action can be a reference to a function that processes selected lines
 function! s:build_quickfix_list(lines)
@@ -26,39 +26,38 @@ function! s:build_quickfix_list(lines)
 endfunction
 
 let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
+  \ "ctrl-q": function("s:build_quickfix_list"),
+  \ "ctrl-t": "tab split",
+  \ "ctrl-x": "split",
+  \ "ctrl-v": "vsplit" }
 
 " See `man fzf-tmux` for available options
-if exists('$TMUX')
-  let g:fzf_layout = { 'tmux': '-p90%,60%' }
+if exists("$TMUX")
+  let g:fzf_layout = { "tmux": "-p90%,60%" }
 else
-  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+  let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
 endif
 
 function! s:get_git_root()
-  let dir = substitute(split(expand('%:p:h'), '[/\\]\.git\([/\\]\|$\)')[0], '^fugitive://', '', '')
-  let root = systemlist('git -C ' . shellescape(dir) . ' rev-parse --show-toplevel')[0]
-  return v:shell_error ? '' : root
+  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
+  let root = systemlist("git -C " . shellescape(dir) . " rev-parse --show-toplevel")[0]
+  return v:shell_error ? "" : root
 endfunction
 
-" The query history for this command will be stored as 'ls' inside g:fzf_history_dir.
+" The query history for this command will be stored as "ls" inside g:fzf_history_dir.
 " The name is ignored if g:fzf_history_dir is not defined.
 command! -bang -complete=dir -nargs=? LS
-    \ call fzf#run(fzf#wrap('ls', {'source': 'ls', 'dir': <q-args>}, <bang>0))
+    \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
 
 command! -bang GFiles
-    \ call fzf#run(fzf#wrap('gfiles', {'source': 'git ls-files', 'sink': 'e', 'dir': s:get_git_root()}, <bang>0))
+    \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": s:get_git_root()}, <bang>0))
 
 command! -bar -bang -nargs=? -complete=buffer Buffers
-    \ call fzf#run(fzf#wrap('buffers', {
-    \ 'source':  map(filter(range(1, bufnr('$')),
-    \ 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf"'),
-    \'bufname(v:val)'),
-    \ 'options': ['+m', '-x', '--ansi', '--prompt', 'Buffer > ', '--query', <q-args>],
-    \ 'sink': 'e'}, <bang>0))
+    \ call fzf#run(fzf#wrap("buffers", 
+    \ {"source": map(filter(range(1, bufnr("$")),
+    \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
+    \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
+    \ "sink": "e"}, <bang>0))
 
 let g:easy_align_bypass_fold = 1
 
@@ -100,7 +99,7 @@ tnoremap <C-n> <Down>
 
 " clear search highlights if there any
 " nnoremap <silent> <expr> <CR> {-> v:hlsearch
-"             \ ? "<cmd>nohl\<CR>" : line('w$') < line('$')
+"             \ ? "<cmd>nohl\<CR>" : line("w$") < line("$")
 "             \ ? "\<PageDown>" : ":\<C-U>next\<CR>" }()
 
 "" https://vi.stackexchange.com/a/213
@@ -114,9 +113,9 @@ nnoremap <silent> gK :let _=&lazyredraw<CR>
             \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 "" uses last changed or yanked text as an object
-onoremap <leader>. :<C-U>execute 'normal! `[v`]'<CR>
+onoremap <leader>. :<C-U>execute "normal! `[v`]"<CR>
 "" uses entire buffer as an object
-onoremap <leader>% :<C-U>execute 'normal! 1GVG'<CR>
+onoremap <leader>% :<C-U>execute "normal! 1GVG"<CR>
 omap <leader>5 <leader>%
 
 "" Leader,r acts as a replacement operator
@@ -155,29 +154,29 @@ command! NetrwToggle call <sid>NetrwToggle()
 
 " Go to next/previous merge conflict hunks
 function! s:conflictGoToMarker(pos, hunk) abort
-    if filter(copy(a:hunk), 'v:val == [0, 0]') == []
+    if filter(copy(a:hunk), "v:val == [0, 0]") == []
         call cursor(a:hunk[0][0], a:hunk[0][1])
         return 1
     else
-        echohl ErrorMsg | echo 'conflict not found' | echohl None
-        call setpos('.', a:pos)
+        echohl ErrorMsg | echo "conflict not found" | echohl None
+        call setpos(".", a:pos)
         return 0
     endif
 endfunction
 
 function! s:conflictNext(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), [
-                \ searchpos('^<<<<<<<', (a:cursor ? 'cW' : 'W')),
-                \ searchpos('^=======', 'cW'),
-                \ searchpos('^>>>>>>>', 'cW'),
+    return s:conflictGoToMarker(getpos("."), [
+                \ searchpos("^<<<<<<<", (a:cursor ? "cW" : "W")),
+                \ searchpos("^=======", "cW"),
+                \ searchpos("^>>>>>>>", "cW"),
                 \ ])
 endfunction
 
 function! s:conflictPrevious(cursor) abort
-    return s:conflictGoToMarker(getpos('.'), reverse([
-                \ searchpos('^>>>>>>>', (a:cursor ? 'bcW' : 'bW')),
-                \ searchpos('^=======', 'bcW'),
-                \ searchpos('^<<<<<<<', 'bcW'),
+    return s:conflictGoToMarker(getpos("."), reverse([
+                \ searchpos("^>>>>>>>", (a:cursor ? "bcW" : "bW")),
+                \ searchpos("^=======", "bcW"),
+                \ searchpos("^<<<<<<<", "bcW"),
                 \ ]))
 endfunction
 
@@ -194,7 +193,7 @@ function! VisualSelection(action) range
     let l:pattern = escape(@", "\\/.*'$^~[]")
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
-    if a:action == 'replace'
+    if a:action == "replace"
         call feedkeys(":%s/" . l:pattern . "/")
     endif
 
@@ -202,9 +201,9 @@ function! VisualSelection(action) range
     let @" = l:saved_reg
 endfunction
 
-xnoremap <silent> = :<C-u>call VisualSelection('replace')<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> * :<C-u>call VisualSelection('')<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection('')<CR>?<C-R>=@/<CR><CR>
+xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> * :<C-u>call VisualSelection("")<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection("")<CR>?<C-R>=@/<CR><CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -221,7 +220,7 @@ function s:BgoneHeathen(action, bang)
       new
   endif
   if buflisted(l:currentBufNum)
-      execute(a:action.a:bang.' '.l:currentBufNum)
+      execute(a:action.a:bang." ".l:currentBufNum)
   endif
 endfunction
 
@@ -232,7 +231,7 @@ command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
 function! Grep(...)
-    let s:command = join([&grepprg] + [expandcmd(join(a:000, ' '))], ' ')
+    let s:command = join([&grepprg] + [expandcmd(join(a:000, " "))], " ")
     return system(s:command)
 endfunction
 
@@ -270,7 +269,7 @@ if has("autocmd")
       autocmd BufLeave *.vim,.vimrc             normal! mV
       autocmd BufLeave *.yml,*.yaml             normal! mY
       " Clear actively used marks to prevent jumping to other projects
-      autocmd BufLeave *                        delmarks AQWZX
+      autocmd VimLeave *                        delmarks AQWZX
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -317,9 +316,9 @@ if has("autocmd")
      augroup quickfix
         autocmd!
         autocmd QuickFixCmdPost cgetexpr cwindow
-                    \| call setqflist([], 'a', {'title': ':' . s:command})
+                    \| call setqflist([], "a", {"title": ":" . s:command})
         autocmd QuickFixCmdPost lgetexpr lwindow
-                    \| call setloclist(0, [], 'a', {'title': ':' . s:command})
+                    \| call setloclist(0, [], "a", {"title": ":" . s:command})
     augroup END
 
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -347,20 +346,20 @@ function! MyFoldText()
   " get first non-blank line
   let fs = v:foldstart
 
-  while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+  while getline(fs) =~ "^\s*$" | let fs = nextnonblank(fs + 1)
   endwhile
 
   if fs > v:foldend
       let line = getline(v:foldstart)
   else
-      let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+      let line = substitute(getline(fs), "\t", repeat(" ", &tabstop), "g")
   endif
 
   let w = winwidth(0) - &foldcolumn - &numberwidth - (&signcolumn == "yes" ? 2 : 0)
 
   let foldSize = " " . (1 + v:foldend - v:foldstart)
               \ . " lines " . repeat(".::", v:foldlevel) . "."
-  let separator = repeat(" ", 3) . '<~'
+  let separator = repeat(" ", 3) . "<~"
   let expansion = repeat("~", w - strwidth(line.separator.foldSize))
   return line . separator . expansion . foldSize
 endfunction
@@ -372,45 +371,45 @@ endfunction
 set tabline=%!MyTabLine()
 
 function! BufferInfo() abort
-    let current = bufnr('%')
-    let buffers = filter(range(1, bufnr('$')), {i, v ->
-                \  buflisted(v) && getbufvar(v, '&filetype') isnot# 'qf'
+    let current = bufnr("%")
+    let buffers = filter(range(1, bufnr("$")), {i, v ->
+                \  buflisted(v) && getbufvar(v, "&filetype") isnot# "qf"
                 \ })
     let index_current = index(buffers, current) + 1
-    let modified = getbufvar(current, '&modified') ? '+' : ''
+    let modified = getbufvar(current, "&modified") ? "+" : ""
     let count_buffers = len(buffers)
     return index_current isnot# 0 && count_buffers ># 1
-                \ ? printf('%s/%s', index_current, count_buffers)
-                \ : ''
+                \ ? printf("%s/%s", index_current, count_buffers)
+                \ : ""
 endfunction
 
 function! TabCWD() abort
-    let cwd = fnamemodify(getcwd(), ':~')
-    if cwd isnot# '~/'
+    let cwd = fnamemodify(getcwd(), ":~")
+    if cwd isnot# "~/"
         let cwd = len(cwd) <=# 15 ? pathshorten(cwd) : cwd
         return cwd
     else
-        return ''
+        return ""
     endif
 endfunction
 
 function! TabCount() abort
-    let count_tabs = tabpagenr('$')
+    let count_tabs = tabpagenr("$")
     return count_tabs isnot# 1
-                \ ? printf('T%d/%d', tabpagenr(), count_tabs)
-                \ : ''
+                \ ? printf("T%d/%d", tabpagenr(), count_tabs)
+                \ : ""
 endfunction
 
 function! TabLineRightInfo() abort
-  let right_info = '%=' . '%( %{BufferInfo()} %)'
-  let right_info .= '%#TabLine#' . '%( %{TabCWD()} %)'
-  let right_info .= '%#TabLineFill#' . '%( %{TabCount()} %)'
+  let right_info = "%=" . "%( %{BufferInfo()} %)"
+  let right_info .= "%#TabLine#" . "%( %{TabCWD()} %)"
+  let right_info .= "%#TabLineFill#" . "%( %{TabCount()} %)"
   return right_info
 endfunction
 
 function! MyTabLine()
-  let s = ''
-  for i in range(tabpagenr('$'))
+  let s = ""
+  for i in range(tabpagenr("$"))
     let tab = i + 1
     let winnr = tabpagewinnr(tab)
     let buflist = tabpagebuflist(tab)
@@ -418,16 +417,16 @@ function! MyTabLine()
     let bufname = bufname(bufnr)
     let bufmodified = getbufvar(bufnr, "&mod")
 
-    let s .= '%' . tab . 'T'
-    let s .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let s .= ' ' . tab .':'
-    let s .= (bufname != '' ? '['. fnamemodify(bufname, ':t') . '] ' : '[No Name] ')
+    let s .= "%" . tab . "T"
+    let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
+    let s .= " " . tab .":"
+    let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "] " : "[No Name] ")
 
     if bufmodified
-      let s .= '[+] '
+      let s .= "[+] "
     endif
   endfor
 
-  let s .= '%#TabLineFill#'
+  let s .= "%#TabLineFill#"
   return s . TabLineRightInfo()
 endfunction

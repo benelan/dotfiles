@@ -4,10 +4,10 @@
 " ----------------------------------------------------------------------
 
 set nocompatible
-if has('autocmd')
+if has("autocmd")
     filetype plugin indent on
 endif
-if has('syntax') && !exists('syntax_on')
+if has("syntax") && !exists("syntax_on")
     syntax enable
 endif
 
@@ -46,11 +46,11 @@ if &ttimeoutlen == -1
     set ttimeout ttimeoutlen=100
 endif
 
-if has('extra_search')
+if has("extra_search")
     set hlsearch incsearch
 endif
 
-if has('multi_byte_encoding')
+if has("multi_byte_encoding")
     set listchars+=extends:»,precedes:«
     let &showbreak= "…  "
 else
@@ -58,24 +58,24 @@ else
     set listchars+=extends:>,precedes:<
 endif
 
-if exists('+breakindent')
+if exists("+breakindent")
     set breakindent
 endif
 
-if has('syntax')
+if has("syntax")
     set cursorline
     set colorcolumn=+2
 endif
 
-if exists('+wildignorecase')
+if exists("+wildignorecase")
     set wildignorecase
 endif
 
-if exists('+spelloptions')
+if exists("+spelloptions")
     set spelloptions+=camel
 endif
 
-if has('cmdline_hist') && &history < 1000
+if has("cmdline_hist") && &history < 1000
     set history=1000
 endif
 if &tabpagemax < 50
@@ -85,11 +85,11 @@ if !empty(&viminfo)
     set viminfo^=!
 endif
 
-if has('virtualedit')
+if has("virtualedit")
     set virtualedit+=block
 endif
 
-if !exists('loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+if !exists("loaded_matchit") && findfile("plugin/matchit.vim", &rtp) ==# ""
     runtime! macros/matchit.vim
 endif
 
@@ -97,7 +97,7 @@ if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
-if has('persistent_undo')
+if has("persistent_undo")
     set undodir=$HOME/.vim/undos
     set undofile
 endif
@@ -118,6 +118,11 @@ nnoremap Y y$
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
+inoremap , ,<C-g>u
+inoremap ? ?<C-g>u
+inoremap . .<C-g>u
+inoremap ; ;<C-g>u
+
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 nnoremap <leader>c "_c
@@ -135,17 +140,17 @@ vnoremap <leader>fb :Buffers<CR>
 "" replace word under cursor in whole buffer
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
-if empty(mapcheck('<C-U>', 'i'))
+if empty(mapcheck("<C-U>", "i"))
   inoremap <C-U> <C-G>u<C-U>
 endif
-if empty(mapcheck('<C-W>', 'i'))
+if empty(mapcheck("<C-W>", "i"))
   inoremap <C-W> <C-G>u<C-W>
 endif
 
-vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),'<Bar>')<CR>
+vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),"<Bar>")<CR>
 
 "" :W sudo saves the file
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 
 "" Search and replace the word under the cursor
 nnoremap <leader>* :%s/\<<C-r><C-w>\>//<Left>
@@ -173,6 +178,9 @@ nnoremap ]j <C-o>
 "" Change list
 nnoremap [c g;
 nnoremap ]c g,
+"" Diff conflicts
+nnoremap [x :ConflictPreviousHunk<cr>
+nnoremap ]x :ConflictNextHunk<cr>
 
 "" Selecting hunks when using vimdiff as mergetool
 nnoremap <leader>gmU :diffupdate<cr>
@@ -276,16 +284,12 @@ sunmap <leader>sw
 
 nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
-nnoremap <leader>E :Ex <bar> :sil! /<C-R>=expand('%:t')<CR><CR><CMD>nohlsearch<CR>
+nnoremap <leader>E :Ex <bar> :sil! /<C-R>=expand("%:t")<CR><CR><CMD>nohlsearch<CR>
 
 " start ex command for vimgrep
 nnoremap <leader><C-/> :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
 nnoremap <leader><C-?> :<C-U>lhelpgrep \c<S-Left>
-" start ex command for normal
-nnoremap <leader><C-N> :normal!<space>
-" start ex command with previous command
-nnoremap <leader><leader>c :<up>
 
 tnoremap <leader><Esc> <C-\><C-n>
 tnoremap <Esc><Esc> <C-\><C-n>
@@ -294,10 +298,6 @@ tnoremap <C-Space> <Space>
 
 "" File explorer
 nnoremap <silent> <leader>e :NetrwToggle<CR>
-
-"" Diff conflicts
-nnoremap [x :ConflictPreviousHunk<cr>
-nnoremap ]x :ConflictNextHunk<cr>
 
 " ----------------------------------------------------------------------
 " | Autocommands                                                       |
@@ -311,7 +311,7 @@ if has("autocmd")
         autocmd!
         " Automatically reload .vimrc
         autocmd BufWritePost $MYVIMRC Src
-        if exists('##SourceCmd')
+        if exists("##SourceCmd")
           autocmd  SourceCmd $MYVIMRC Src
         endif
 
@@ -377,28 +377,25 @@ tnoremap <silent> <C-t> <C-w>N:call <SID>ToggleTerminal()<CR>
 
 function! StripTrailingWhitespace()
     let save_cursor = getpos(".")
-    let old_query = getreg('/')
+    let old_query = getreg("/")
     silent! %s/\s\+$//e
-    call setpos('.', save_cursor)
-    call setreg('/', old_query)
+    call setpos(".", save_cursor)
+    call setreg("/", old_query)
 endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-function g:GitBranch()
-    let l:branch_name = trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
-    if l:branch_name != ""
-        return  "⎇  ". l:branch_name
-    else
-        return ""
-    endif
+function! g:GitBranch()
+  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "","")
+  let root = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
+  return v:shell_error ? "" : " " . root
 endfunction
 
 " ----------------------------------------------------------------------
 " | Statusline                                                         |
 " ----------------------------------------------------------------------
 
-set statusline=%#TabLineSel#                   " TabLineSel highlight
+set statusline=%#TabLineSel#                    " TabLineSel highlight
 set statusline+=\ \                             " Whitespace
 set statusline+=[%n]                            " Buffer number
 set statusline+=%m                              " Modified flag
@@ -413,7 +410,7 @@ set statusline+=%y                              " File type
 set statusline+=\ \                             " Whitespace
 set statusline+=%#TabLineFill#                  " TabLineFill highlight
 set statusline+=\ \                             " Whitespace
-set statusline+=%{g:GitBranch()}                " Git status info
+set statusline+=%{g:GitBranch()}                " Git branch name
 set statusline+=%=                              " Left/Right separator
 set statusline+=\ \                             " Whitespace
 set statusline+=%#TabLine#                      " TabLine highlight
