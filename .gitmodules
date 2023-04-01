@@ -1,9 +1,6 @@
-[submodule ".dotfiles/vendor/fzf"]
-	path = .dotfiles/vendor/fzf
-	url = https://github.com/junegunn/fzf.git
-[submodule ".dotfiles/vendor/git-fuzzy"]
-	path = .dotfiles/vendor/git-fuzzy
-	url = git@github.com:bigH/git-fuzzy.git
-[submodule ".dotfiles/vendor/neovim"]
-	path = .dotfiles/vendor/neovim
+[submodule "dev/lib/neovim"]
+	path = dev/lib/neovim
 	url = git@github.com:neovim/neovim.git
+[submodule "dev/lib/fzf"]
+	path = dev/lib/fzf
+	url = git@github.com:junegunn/fzf.git

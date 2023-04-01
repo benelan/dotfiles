@@ -59,11 +59,8 @@ pathappend() {
 [ -d "$HOME/.luarocks/bin" ] && pathappend "$HOME/.luarocks/bin"
 [ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
 
-[ -d "$HOME/.dotfiles/vendor/fzf/bin" ] &&
-    pathappend "$HOME/.dotfiles/vendor/fzf/bin"
-
-[ -d "$HOME/.dotfiles/vendor/git-fuzzy/bin" ] &&
-    pathappend "$HOME/.dotfiles/vendor/git-fuzzy/bin"
+[ -d "$HOME/dev/lib/fzf/bin" ] &&
+    pathappend "$HOME/dev/lib/fzf/bin"
 
 [ -d "$HOME/.local/share/nvim/mason/bin" ] &&
     pathprepend "$HOME/.local/share/nvim/mason/bin"

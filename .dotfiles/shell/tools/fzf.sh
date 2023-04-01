@@ -8,12 +8,12 @@ is-supported fzf || return
 # Auto-completion
 # ---------------
 [[ $- == *i* ]] &&
-    source "$HOME/.dotfiles/vendor/fzf/shell/completion.bash" 2>/dev/null
+    source "$HOME/dev/lib/fzf/shell/completion.bash" 2>/dev/null
 
 # Key bindings
 # ------------
-[ -f "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash" ] &&
-    source "$HOME/.dotfiles/vendor/fzf/shell/key-bindings.bash"
+[ -f "$HOME/dev/lib/fzf/shell/key-bindings.bash" ] &&
+    source "$HOME/dev/lib/fzf/shell/key-bindings.bash"
 
 # Settings
 # --------

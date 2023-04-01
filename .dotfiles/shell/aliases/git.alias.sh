@@ -220,7 +220,6 @@ alias gunhide='git update-index --no-assume-unchanged'
 # plugins
 ##########
 alias glz="lazygit"
-alias gfz="git fuzzy"
 alias fgbd="git branch | fzf --multi | xargs git branch -d"
 
 # Dotfiles
@@ -366,7 +365,6 @@ alias dunhide='dot update-index --no-assume-unchanged'
 ##########
 alias lazydot="lazygit --git-dir='${HOME}/.git' --work-tree='${HOME}'"
 alias dlz="lazydot"
-alias dfz="dot fuzzy"
 
 # GitHub
 # -----------------------------------------------------------------------------

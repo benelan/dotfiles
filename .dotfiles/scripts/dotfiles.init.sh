@@ -81,14 +81,14 @@ printf "\n➜ Making scripts and bins executable\n"
 [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
 [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
-# Install vendors
+# Install libs
 printf "\n➜ Installing git submodules\n\n"
 
 cd && dot submodule update --init --recursive
 
 # fzf install script
 [ ! "$(command -v fzf)" ] &&
-    ~/.dotfiles/vendor/fzf/install \
+    ~/dev/lib/fzf/install \
         --bin --key-bindings --completion --no-update-rc
 
 printf "\n✔ Initialization complete\n"

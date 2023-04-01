@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-VENDOR_PATH="$HOME/.dotfiles/vendor"
-FZF_PATH="$VENDOR_PATH/fzf"
-NEOVIM_PATH="$VENDOR_PATH/neovim"
+LIB_PATH="$HOME/dev/lib"
+FZF_PATH="$LIB_PATH/fzf"
+NEOVIM_PATH="$LIB_PATH/neovim"
 
 /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive
 
@@ -28,4 +28,4 @@ if [ -d "$NEOVIM_PATH" ]; then
     sudo make install
 fi
 
-unset VENDOR_PATH FZF_PATH NEOVIM_PATH
+unset LIB_PATH FZF_PATH NEOVIM_PATH
