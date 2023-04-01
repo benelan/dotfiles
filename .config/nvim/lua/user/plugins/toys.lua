@@ -113,7 +113,7 @@ return {
             s = { name = "See also" },
           },
           -- d = { name = "Debug" },
-          f = { name = "Find" },
+          f = { name = "Find", z = { name = "FZF" } },
           l = { name = "LSP" },
           s = { name = "Settings" },
           t = { name = "Tabs" },
@@ -121,7 +121,7 @@ return {
           g = {
             name = "Git",
             m = { name = "Mergetool" },
-            t = { name = "Toggle options" },
+            t = { name = "Toggle Options" },
             -- w = { name = "Worktree" },
           },
           o = {

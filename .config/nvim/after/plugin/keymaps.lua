@@ -394,11 +394,3 @@ end, "Toggle cursorcolumn")
 keymap("n", "<leader>s<Tab>", function()
   toggle_option "autoindent"
 end, "Toggle autoindent")
-
--------------------------------------------------------------------------------
-----> Plugins
--------------------------------------------------------------------------------
-
--- Undotree
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree")

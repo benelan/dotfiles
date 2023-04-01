@@ -45,12 +45,6 @@ return {
       "Toggle number highlight"
     )
 
-    keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
-    keymap("n", "<leader>gy", "<cmd>GBrowse!<cr>", "Yank URL")
-
-    keymap("x", "<leader>go", ":'<,'>GBrowse<cr>", "Open In Browser")
-    keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
-
     keymap({ "n", "x" }, "]h", "<cmd>Gitsigns next_hunk<CR>", "Next hunk")
     keymap({ "n", "x" }, "[h", "<cmd>Gitsigns prev_hunk<CR>", "Previous hunk")
     keymap(

@@ -2,7 +2,12 @@ return {
   -----------------------------------------------------------------------------
   ----> Local
   -----------------------------------------------------------------------------
-  { dir = "~/.vim", lazy = false, priority = 1000 },
+  {
+    dir = "~/.vim",
+    lazy = false,
+    priority = 1000,
+    keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Undotree" } },
+  },
   {
     dir = "~/.dotfiles/vendor/fzf",
     cmd = "FZF",
@@ -16,6 +21,7 @@ return {
   -----------------------------------------------------------------------------
   ----> General
   -----------------------------------------------------------------------------
+  { "folke/lazy.nvim", version = "*" },
   {
     "vifm/vifm.vim", -- integrates vifm (file explorer)
     event = "VeryLazy",
@@ -30,6 +36,12 @@ return {
   {
     "tpope/vim-fugitive", -- Git integration
     event = "VeryLazy",
+    config = function()
+      keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
+      keymap("x", "<leader>go", ":'<,'>GBrowse<cr>", "Open In Browser")
+      keymap("n", "<leader>gy", "<cmd>GBrowse!<cr>", "Yank URL")
+      keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
+    end,
     dependencies = {
       "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
     },
@@ -54,42 +66,12 @@ return {
           augend.constant.alias.bool,
         },
       }
-      vim.keymap.set(
-        "n",
-        "<C-a>",
-        require("dial.map").inc_normal(),
-        { noremap = true }
-      )
-      vim.keymap.set(
-        "n",
-        "<C-x>",
-        require("dial.map").dec_normal(),
-        { noremap = true }
-      )
-      vim.keymap.set(
-        "v",
-        "<C-a>",
-        require("dial.map").inc_visual(),
-        { noremap = true }
-      )
-      vim.keymap.set(
-        "v",
-        "<C-x>",
-        require("dial.map").dec_visual(),
-        { noremap = true }
-      )
-      vim.keymap.set(
-        "v",
-        "g<C-a>",
-        require("dial.map").inc_gvisual(),
-        { noremap = true }
-      )
-      vim.keymap.set(
-        "v",
-        "g<C-x>",
-        require("dial.map").dec_gvisual(),
-        { noremap = true }
-      )
+      keymap("n", "<C-a>", require("dial.map").inc_normal())
+      keymap("n", "<C-x>", require("dial.map").dec_normal())
+      keymap("v", "<C-a>", require("dial.map").inc_visual())
+      keymap("v", "<C-x>", require("dial.map").dec_visual())
+      keymap("v", "g<C-a>", require("dial.map").inc_gvisual())
+      keymap("v", "g<C-x>", require("dial.map").dec_gvisual())
     end,
   },
   {

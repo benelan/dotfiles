@@ -246,23 +246,22 @@ return {
       ),
     })
 
-    local opts = { noremap = true, silent = true }
-    vim.keymap.set({ "i", "s" }, "<C-l>", function()
+    keymap({ "i", "s" }, "<C-l>", function()
       if ls.expand_or_jumpable() then
         ls.expand_or_jump()
       end
-    end, opts)
+    end)
 
-    vim.keymap.set({ "i", "s" }, "<C-h>", function()
+    keymap({ "i", "s" }, "<C-h>", function()
       if ls.jumpable(-1) then
         ls.jump(1)
       end
-    end, opts)
+    end)
 
-    vim.keymap.set({ "i" }, "<C-c>", function()
+    keymap({ "i" }, "<C-c>", function()
       if ls.choice_active() then
         ls.change_choice(1)
       end
-    end, opts)
+    end)
   end,
 }

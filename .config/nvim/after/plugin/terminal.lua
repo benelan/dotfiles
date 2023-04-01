@@ -35,10 +35,5 @@ vim.api.nvim_create_user_command(
   { desc = "Toggle floating terminal" }
 )
 
-vim.keymap.set("n", "<A-t>", vim.cmd.FTerm, { noremap = true, silent = true })
-vim.keymap.set(
-  "t",
-  "<A-t>",
-  "<C-\\><C-n><cmd>FTerm<cr>",
-  { noremap = true, silent = true }
-)
+keymap("n", "<A-t>", vim.cmd.FTerm, "Open floating terminal")
+keymap("t", "<A-t>", "<C-\\><C-n><cmd>FTerm<cr>", "Close floating terminal")
