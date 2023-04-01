@@ -1,6 +1,24 @@
 return {
   "dbeniamine/cheat.sh-vim", -- integrates https://cht.sh
-  event = "VeryLazy",
+  keys = {
+    { "<leader>cC", desc = "Toggle comments globably" },
+    { "<leader>cb", desc = "Open answer in new buffer" },
+    { "<leader>cc", desc = "Toggle comments in previous request" },
+    { "<leader>c.", desc = "Repeat previous query" },
+    { "<leader>cr", desc = "Replace question with answer in current buffer" },
+    { "<leader>cP", desc = "Paste answer above question in current buffer" },
+    { "<leader>cp", desc = "Paste answer below question in current buffer" },
+    { "<leader>ce", desc = "Query error from quickfix list" },
+    { "<leader>ce", desc = "Query error from quickfix list" },
+    { "<leader>can", desc = "Next answer" },
+    { "<leader>cap", desc = "Previous answer" },
+    { "<leader>cqn", desc = "Next question" },
+    { "<leader>cqp", desc = "Previous question" },
+    { "<leader>chn", desc = "Next history" },
+    { "<leader>chp", desc = "Previous history" },
+    { "<leader>csn", desc = "Next 'see also' section" },
+    { "<leader>csp", desc = "Previous 'see also' section" },
+  },
   init = function()
     vim.g.CheatSheetDoNotMap = true
   end,
