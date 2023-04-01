@@ -3,7 +3,7 @@ gui:
   showIcons: true
   theme:
     activeBorderColor:
-      - "#98971a"
+      - "#d65d0e"
       - bold
     inactiveBorderColor:
       - "#a89984"
@@ -33,7 +33,8 @@ gui:
 git:
   disableForcePushing: true
   paging:
-    pager: delta -s --paging=never --true-color=never --no-gitconfig --syntax-theme=gruvbox-dark
+    # if stuff looks goofy, add --true-color=never
+    pager: delta -s --paging=never
 reporting: "off"
 os:
   editCommandTemplate: "{{editor}} +{{line}} -- {{filename}}"
