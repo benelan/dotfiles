@@ -47,6 +47,24 @@ tmux_create_if_needed_and_attach() {
     fi
 }
 
+# Clones a bare repo for use with git-worktree and creates an
+# initial worktree called asdf that tracks the default branch.
+# https://git-scm.com/docs/git-worktree
+bare_clone() {
+    new_repo_dir="${2:-"$(basename "$1" .git)"}"
+    mkdir -p "$new_repo_dir"
+    cd "$new_repo_dir" || return
+    debugger "clone > cloning bare repo for \"$1\" in \"$(pwd)\""
+    git clone --bare "$1" .git
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git fetch origin
+    default_git_branch="$(gbdefault)"
+    debugger "clone > creating worktree for default branch: $default_git_branch"
+    git worktree add "$default_git_branch" "$default_git_branch"
+    cd "$default_git_branch" || return
+    unset new_repo_dir default_git_branch
+}
+
 select_project() {
     # shellcheck disable=2086
     find $GIT_MUX_PROJECTS -maxdepth 1 -mindepth 1 -type d | $GIT_MUX_SELECT_CMD
@@ -83,6 +101,7 @@ find_project_directory() {
     else
         pwd
     fi
+    unset projects_dir
 }
 
 git_task() {
@@ -186,6 +205,10 @@ usage() {
 parse_args() {
     if [ -n "$1" ]; then
         case $1 in
+            c | clone)
+                shift
+                bare_clone "$*"
+                ;;
             t | task)
                 shift
                 handle_task "$*"
@@ -214,6 +237,8 @@ parse_args() {
                 usage "Unknown command passed: $1"
                 ;;
         esac
+    else
+        usage
     fi
 }
 
