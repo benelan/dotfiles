@@ -38,6 +38,28 @@ install_commentary() {
         https://raw.githubusercontent.com/tpope/vim-commentary/master/doc/commentary.txt
 }
 
+
+install_eunuch() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-eunuch/master/plugin/eunuch.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-eunuch/master/doc/eunuch.txt
+}
+
+install_rsi() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-rsi/master/plugin/rsi.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-rsi/master/doc/rsi.txt
+}
+
+install_vinegar() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-vinegar/master/plugin/vinegar.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-vinegar/master/doc/vinegar.txt
+}
+
 install_rooter() {
     $INSTALL_CMD $VIM_PLUGIN \
         https://raw.githubusercontent.com/airblade/vim-rooter/master/plugin/rooter.vim
@@ -83,13 +105,20 @@ install_undotree() {
         https://raw.githubusercontent.com/mbbill/undotree/master/syntax/undotree.vim
 }
 
-install_closer
 install_commentary
+install_eunuch
+install_repeat
+# install_rsi
+install_surround
+# install_vinegar
+
+install_closer
 install_easy_align
 install_gruvbox_material
-install_repeat
 install_rooter
-install_surround
 install_undotree
+
+# generate help tags
+vim +"helptags ~/.vim/doc" +"quit"
 
 unset VIM_AUTOLOAD VIM_COLORS VIM_DIR VIM_DOC VIM_PLUGIN VIM_SYNTAX
