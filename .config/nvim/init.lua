@@ -46,7 +46,7 @@ end
 -- nerd font glyphs are shipped with wezterm so patched fonts
 -- aren't required. OG_TERM env var is set when attching to tmux.
 vim.g.use_devicons = os.getenv "TERM" == "wezterm"
-  or os.getenv "OG_TERM" == "wezterm"
+  or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
 
 -------------------------------------------------------------------------------
 ----> Autocommands

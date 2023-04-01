@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
+export OG_TERM="$TERM"
+
 if [ -n "$1" ] && [ -d "$1" ]; then
     path="$1"
 else
@@ -32,7 +34,7 @@ create_if_needed_and_attach() {
         fi
         tmux switch-client -t "$session_name"
     else
-        tmux new-session -As "$session_name" -c "$path" -e "OG_TERM=$TERM"
+        tmux new-session -As "$session_name" -c "$path" -e "OG_TERM=$OG_TERM"
     fi
 }
 
