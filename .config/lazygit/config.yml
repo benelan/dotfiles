@@ -1,6 +1,6 @@
 gui:
   showBottomLine: false
-  showIcons: true
+  showIcons: false
   theme:
     activeBorderColor:
       - "#d65d0e"
