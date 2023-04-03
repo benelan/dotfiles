@@ -27,43 +27,41 @@ local function format_numeric_data(d)
 end
 
 local function buffer_diagnostics()
-  local diagnostic_info = {
+  return format_numeric_data {
     {
       highlight = "%#ErrorFloat#", -- "%#DiagnosticVirtualTextError#",
-      icon = "    ", -- " ","    ", -- " ",
+      icon = "    ", -- " ",
       count = table_length(
         vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
       ),
     },
     {
       highlight = "%#WarningFloat#", -- "%#DiagnosticVirtualTextWarn#",
-      icon = "    ",
+      icon = "    ", -- " ",
       count = table_length(
         vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
       ),
     },
     {
       highlight = "%#HintFloat#", -- "%#DiagnosticVirtualTextHint#",
-      icon = "    ", -- "    ",
+      icon = "    ", -- "   ",
       count = table_length(
         vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
       ),
     },
     {
       highlight = "%#InfoFloat#", -- "%#DiagnosticVirtualTextInfo#",
-      icon = "    ", -- " ",
+      icon = "    ", -- "",
       count = table_length(
         vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
       ),
     },
   }
-  return format_numeric_data(diagnostic_info)
 end
 
-local function git_info()
+local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
-  local home_dir = vim.fn.expand "~"
-  if gs and gs.root ~= home_dir and gs.head ~= "" then
+  if gs and gs.root ~= vim.fn.expand "~" and gs.head ~= "" then
     local status_info = {
       {
         highlight = "%#GitStatusLineAdd#", -- "%#GitSignsAdd",
@@ -82,21 +80,30 @@ local function git_info()
       },
     }
     return "   " .. gs.head .. format_numeric_data(status_info) .. "  "
-  elseif
+  end
+  return ""
+end
+
+local function fugitive_git_branch()
+  if
     vim.g.loaded_fugitive == 1
-    and vim.fn["FugitiveGitDir"]() ~= home_dir .. "/.git"
-    and vim.fn["fugitive#Head"]() ~= ""
+    and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
   then
-    return "   " .. vim.fn["fugitive#Head"]() .. "  "
-    -- else
-    --   local branch = vim.fn.systemlist(
-    --     "git -C "
-    --       .. vim.fn.shellescape(vim.fn.expand "%:h:p")
-    --       .. " branch --show-current"
-    --   )[1]
-    --   if not branch:find " " then
-    --     return "   " .. branch .. "  "
-    --   end
+    local head = vim.fn["fugitive#Head"]()
+    if head ~= "" then
+      return "   " .. head .. "  "
+    end
+  end
+  return ""
+end
+
+local function vanilla_git_branch()
+  local root = vim.fn["g:GitRootDirectory"]()
+  if root ~= "" and root ~= vim.fn.expand "~" then
+    local branch = vim.fn["g:GitBranch"]()
+    if branch ~= "" and not branch:find " " then
+      return "   " .. branch .. "  "
+    end
   end
   return ""
 end
@@ -105,7 +112,7 @@ function StatusLine()
   return "%#TabLineSel#"
     .. "  [%n]%m%r%h%w%q%y  "
     .. "%#NormalFloat#" -- .. "%#Normal#"
-    .. git_info()
+    .. gitsigns_info() -- fugitive_git_branch(), -- vanilla_git_branch(),
     .. "%#TabLineFill#"
     .. "  %=  "
     .. buffer_diagnostics()
