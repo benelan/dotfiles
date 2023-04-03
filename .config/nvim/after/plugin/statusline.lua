@@ -19,11 +19,9 @@ local function format_numeric_data(d)
       template = template .. "%s%s%d"
     end
   end
-  if #template > 0 then
-    unpack = unpack or table.unpack
-    return string.format(template, unpack(output))
-  end
-  return ""
+  return #template > 0
+      and string.format(template, (unpack or table.unpack)(output))
+    or ""
 end
 
 local function buffer_diagnostics()
@@ -61,7 +59,7 @@ end
 
 local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
-  if gs and gs.root ~= vim.fn.expand "~" and gs.head ~= "" then
+  if gs and gs.head ~= "" then
     local status_info = {
       {
         highlight = "%#GitStatusLineAdd#", -- "%#GitSignsAdd",
@@ -84,35 +82,29 @@ local function gitsigns_info()
   return ""
 end
 
-local function fugitive_git_branch()
-  if
-    vim.g.loaded_fugitive == 1
-    and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
-  then
-    local head = vim.fn["fugitive#Head"]()
-    if head ~= "" then
-      return "   " .. head .. "  "
-    end
-  end
-  return ""
-end
+-- local function fugitive_git_branch()
+--   if
+--     vim.g.loaded_fugitive == 1
+--     and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
+--   then
+--     local head = vim.fn["fugitive#Head"]()
+--     if head ~= "" then
+--       return "   " .. head .. "  "
+--     end
+--   end
+--   return ""
+-- end
 
-local function vanilla_git_branch()
-  local root = vim.fn["g:GitRootDirectory"]()
-  if root ~= "" and root ~= vim.fn.expand "~" then
-    local branch = vim.fn["g:GitBranch"]()
-    if branch ~= "" and not branch:find " " then
-      return "   " .. branch .. "  "
-    end
-  end
-  return ""
-end
+-- local function vanilla_git_branch()
+--   local branch = vim.fn["g:GitBranch"]()
+--   return branch ~= "" and "   " .. branch .. "  " or ""
+-- end
 
 function StatusLine()
   return "%#TabLineSel#"
     .. "  [%n]%m%r%h%w%q%y  "
     .. "%#NormalFloat#" -- .. "%#Normal#"
-    .. gitsigns_info() -- fugitive_git_branch(), -- vanilla_git_branch(),
+    .. gitsigns_info()
     .. "%#TabLineFill#"
     .. "  %=  "
     .. buffer_diagnostics()
