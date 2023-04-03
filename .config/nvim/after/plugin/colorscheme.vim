@@ -51,7 +51,7 @@ let &t_ut=''
 if exists("g:colors_name") && g:colors_name == "gruvbox-material"
 
     function! s:gruvbox_material_custom() abort
-        let s:palette = gruvbox_material#get_palette('medium', 'original', {
+        let s:palette = gruvbox_material#get_palette('soft', 'material', {
                     \'bg_orange': ['#5A3B0A', '130'],
                     \ 'bg_visual_yellow': ['#7a380b', '208']
                     \ })
@@ -62,10 +62,13 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
         call gruvbox_material#highlight('DiffDelete', s:palette.none, s:palette.bg_diff_red)
         call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
+        call gruvbox_material#highlight('GitStatusLineChange', s:palette.orange, s:palette.bg3)
+        call gruvbox_material#highlight('GitStatusLineAdd', s:palette.green, s:palette.bg3)
+        call gruvbox_material#highlight('GitStatusLineDelete', s:palette.red, s:palette.bg3)
         highlight! link CursorLineNr Purple
         highlight! link TreesitterContext Normal
         highlight EyelinerPrimary guifg=#f5b12c "gui=underline
-        highlight EyelinerSecondary guifg=#4c7bd7 "gui=underline
+        highlight EyelinerSecondary guifg=#4c7bd7 "gui=underine
     endfunction
 
     augroup GruvboxMaterialCustom
