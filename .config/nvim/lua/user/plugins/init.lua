@@ -9,7 +9,7 @@ return {
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Undotree" } },
   },
   {
-    dir = "~/.dotfiles/vendor/fzf",
+    dir = "~/dev/lib/fzf",
     cmd = "FZF",
     keys = {
       { "<leader>fzf", ":FZF<cr>", desc = "FZF Files" },

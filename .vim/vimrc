@@ -103,7 +103,13 @@ if has("persistent_undo")
 endif
 
 if isdirectory(expand("$HOME/.dotfiles/vendor/fzf"))
-  set runtimepath+=~/.dotfiles/vendor/fzf
+    set runtimepath+=~/dev/lib/fzf
+    nnoremap <leader>ff :FZF<CR>
+    vnoremap <leader>ff :FZF<CR>
+    nnoremap <leader>fg :GFiles<CR>
+    vnoremap <leader>fg :GFiles<CR>
+    nnoremap <leader>fb :Buffers<CR>
+    vnoremap <leader>fb :Buffers<CR>
 endif
 
 " ----------------------------------------------------------------------
@@ -129,16 +135,6 @@ nnoremap <leader>c "_c
 vnoremap <leader>c "_c
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
-
-nnoremap <leader>ff :FZF<CR>
-vnoremap <leader>ff :FZF<CR>
-nnoremap <leader>fg :GFiles<CR>
-vnoremap <leader>fg :GFiles<CR>
-nnoremap <leader>fb :Buffers<CR>
-vnoremap <leader>fb :Buffers<CR>
-
-"" replace word under cursor in whole buffer
-nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
 if empty(mapcheck("<C-U>", "i"))
   inoremap <C-U> <C-G>u<C-U>
