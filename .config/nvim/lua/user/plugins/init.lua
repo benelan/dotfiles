@@ -27,7 +27,13 @@ return {
     event = "VeryLazy",
     keys = { { "-", "<cmd>Vifm<cr>", desc = "Vifm" } },
   },
-  { "romainl/vim-qf", event = "VeryLazy" }, -- quickfix list improvements
+  {
+    "romainl/vim-qf", -- quickfix list improvements
+    event = "VeryLazy",
+    init = function()
+      vim.g.qf_mapping_ack_style = 1
+    end,
+  },
   {
     "nvim-tree/nvim-web-devicons",
     lazy = true,

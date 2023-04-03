@@ -143,15 +143,8 @@ if empty(mapcheck("<C-W>", "i"))
   inoremap <C-W> <C-G>u<C-W>
 endif
 
-vnoremap <leader>x :<C-w>exe join(getline("'<","'>"),"<Bar>")<CR>
-
 "" :W sudo saves the file
 command! W execute "w !sudo tee % > /dev/null" <bar> edit!
-
-"" Search and replace the word under the cursor
-nnoremap <leader>* :%s/\<<C-r><C-w>\>//<Left>
-"" search and find line number for
-nnoremap <leader># :g//#<Left><Left>
 
 "" Argument list
 nnoremap [a :previous<CR>
@@ -171,9 +164,6 @@ nnoremap ]t :tabnext<CR>
 "" Jump list
 nnoremap [j <C-i>
 nnoremap ]j <C-o>
-"" Change list
-nnoremap [c g;
-nnoremap ]c g,
 "" Diff conflicts
 nnoremap [x :ConflictPreviousHunk<cr>
 nnoremap ]x :ConflictNextHunk<cr>
@@ -280,12 +270,15 @@ sunmap <leader>sw
 
 nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
-nnoremap <leader>E :Ex <bar> :sil! /<C-R>=expand("%:t")<CR><CR><CMD>nohlsearch<CR>
-
 " start ex command for vimgrep
-nnoremap <leader><C-/> :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
-nnoremap <leader><C-?> :<C-U>lhelpgrep \c<S-Left>
+nnoremap <leader>eh :<C-U>lhelpgrep \c<S-Left>
+"" replace word under cursor in whole buffer
+nnoremap <leader>es :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+"" Search and replace the word under the cursor
+nnoremap <leader>en :g//#<Left><Left>
+
 
 tnoremap <leader><Esc> <C-\><C-n>
 tnoremap <Esc><Esc> <C-\><C-n>
@@ -366,8 +359,8 @@ function! s:ToggleTerminal() abort
     endif
 endfunction
 
-nnoremap <silent> <C-t> :call <SID>ToggleTerminal()<CR>
-tnoremap <silent> <C-t> <C-w>N:call <SID>ToggleTerminal()<CR>
+nnoremap <silent> <leader>T :call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <leader>T <C-w>N:call <SID>ToggleTerminal()<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -383,8 +376,8 @@ endfunction
 
 function! g:GitBranch()
   let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "","")
-  let root = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
-  return v:shell_error ? "" : " " . root
+  let branch = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
+  return v:shell_error ? "" : " " . branch
 endfunction
 
 " ----------------------------------------------------------------------

@@ -92,13 +92,13 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 -- :vimgrep
 keymap(
   "n",
-  "<C-/>",
+  "<leader>eg",
   ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
   "Execute vimgrep"
 )
 
 -- :lhelpgrep
-keymap("n", "<C-?>", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
+keymap("n", "<leader>eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 
 -------------------------------------------------------------------------------
 ----> Lists (next/previous)

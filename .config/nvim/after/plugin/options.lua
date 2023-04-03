@@ -3,6 +3,7 @@ vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
 vim.opt.pastetoggle = "<leader><C-v>"
+vim.opt.virtualedit:append "block"
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -26,7 +27,7 @@ vim.opt.wildignore:append(
     .. "*.sqlite*,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,"
     .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip"
 )
-vim.opt.path = ".,src/**,api/**,lua/**,utils/**,static,config,,"
+vim.opt.path = ".,./src/**,./api/**,./lua/**,./utils/**,./static,./config,,"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.pumheight = math.floor(vim.api.nvim_list_uis()[1].height / 2) or 20
 

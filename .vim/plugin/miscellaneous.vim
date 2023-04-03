@@ -71,8 +71,8 @@ let g:easy_align_bypass_fold = 1
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-" I would always accidently opened the Ex command history
-" And you can't Nop q: for some reason, so now I record macros with Q
+" I always accidently opened the Ex command history, and you can't Nop q:
+" so now I record macros with Q
 nnoremap Q q
 nnoremap q <Nop>
 vnoremap Q q
@@ -118,30 +118,31 @@ nnoremap <silent> gK :let _=&lazyredraw<CR>
             \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
             \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
-"" uses last changed or yanked text as an object
+" use last changed or yanked text as an object
 onoremap <leader>. :<C-U>execute "normal! `[v`]"<CR>
-"" uses entire buffer as an object
+" use entire buffer as an object
 onoremap <leader>% :<C-U>execute "normal! 1GVG"<CR>
 omap <leader>5 <leader>%
 
-"" Leader,r acts as a replacement operator
 nnoremap <Leader>r <Plug>(ReplaceOperator)
 vnoremap <Leader>r <Plug>(ReplaceOperator)
 
 nnoremap g: <Plug>(ColonOperator)
 
-" Repeat the last command and add a bang
-nnoremap <Leader>! :<Up><Home><S-Right>!<CR>
-nmap <Leader>1 <Leader>!
+" expand the buffer's directory
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
-nnoremap <Leader><Delete> :bdelete<CR>
+" repeat the last command and add a bang
+nnoremap <leader>! :<Up><Home><S-Right>!<CR>
 
-nnoremap <Leader>/ :Commentary<CR>
-vnoremap <Leader>/ :Commentary<CR>
+nnoremap <leader><Delete> :bdelete<CR>
 
-" Start interactive EasyAlign in visual mode (e.g. vipg-)
+nnoremap <leader>/ :Commentary<CR>
+vnoremap <leader>/ :Commentary<CR>
+
+" start interactive EasyAlign in visual mode (e.g. vipg-)
 xnoremap g- <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. g-ip)
+" start interactive EasyAlign for a motion/text object (e.g. g-ip)
 nnoremap g- <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------------------
@@ -436,3 +437,13 @@ function! MyTabLine()
   let s .= "%#TabLineFill#"
   return s . TabLineRightInfo()
 endfunction
+
+
+" ---------------------------------------------------------------------------
+" | Abbreviations                                                           |
+" ---------------------------------------------------------------------------
+inoreabbrev teh the
+inoreabbrev CC Calcite Components
+inoreabbrev CDS Calcite Design System
+inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
+
