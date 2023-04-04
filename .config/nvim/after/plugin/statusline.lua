@@ -12,7 +12,7 @@ local function format_numeric_data(d)
   local template = ""
   local output = {}
   for _, item in ipairs(d) do
-    if item.count > 0 then
+    if item.count and item.count > 0 then
       output[#output + 1] = item.highlight
       output[#output + 1] = item.icon
       output[#output + 1] = item.count
