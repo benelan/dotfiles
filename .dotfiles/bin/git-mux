@@ -22,6 +22,9 @@ tmux_session_exists() {
     tmux has-session -t "=$1" >/dev/null 2>&1
 }
 
+################################################################################
+# TMUX UTILS
+################################################################################
 in_tmux() {
     [ -n "$TMUX" ]
 }
@@ -47,9 +50,11 @@ tmux_create_if_needed_and_attach() {
     fi
 }
 
+################################################################################
 # Clones a bare repo for use with git-worktree and creates an
-# initial worktree called asdf that tracks the default branch.
+# initial worktree for the repo's default branch.
 # https://git-scm.com/docs/git-worktree
+################################################################################
 bare_clone() {
     new_repo_dir="${2:-"$(basename "$1" .git)"}"
     mkdir -p "$new_repo_dir"
@@ -104,16 +109,22 @@ find_project_directory() {
     unset projects_dir
 }
 
+################################################################################
+# The logic that handles the git portion of the 'task' subcommand.
+# See handle_task documentation below for more info.
+################################################################################
 git_task() {
     task_start_dir="$(find_project_directory)"
 
     debugger "task > project's directory: $task_start_dir"
     cd "$task_start_dir" || return 1
 
-    if [ -d "$task_start_dir/.git" ] || [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$task_start_dir" ]; then
+    if [ -d "$task_start_dir/.git" ] ||
+        [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$task_start_dir" ]; then
         if [ -n "$1" ]; then
             task_branch="$GIT_MUX_BRANCH_PREFIX$1"
-            ! git show-ref --verify --quiet "refs/heads/$task_branch" && task_branch_flags="-b "
+            ! git show-ref --verify --quiet "refs/heads/$task_branch" &&
+                task_branch_flags="-b "
             debugger "task > provided branch with prefix: $task_branch"
         else
             task_branch=$(select_branch)
@@ -149,10 +160,26 @@ git_task() {
 }
 
 ################################################################################
-# Attaches/switches to a new "scratch" window when no arguments are provided.
-# When a path argument is provided, a window is created at that location and
-# attached/switched to, unless additional arguments are provided, in which case
-# they are sent to the window instead.
+# Attaches/switches to a tmux window. If the next argument is a valid path,
+# the window is created in that directory. If there are arguments after a valid
+# path, they are sent to the window and ran instead of attaching/switching.
+#
+#
+# If the initial argument isn't a valid path it is treated a a git branch and
+# creates/switches to a corresponding git worktree (when relevant). If no
+# argument is provided it prompts to select an existing branch.
+#
+# Examples:
+#
+# Install deps and start app in a tmux window, creating one if it doesn't exist
+# $ git mux task packages/app npm install && npm start
+#
+# Create/checkout branch in tmux window, creating a git worktree if relevant.
+# Appends $GIT_MUX_BRANCH_PREFIX to the argument when creating a new branch.
+# $ git mux task 123-fix-bug
+#
+# Uses $GIT_MUX_SELECT_CMD to select an existing branch.
+# $ git mux t
 ################################################################################
 handle_task() {
     debugger "task > args: $*"
@@ -160,7 +187,6 @@ handle_task() {
     if [ -n "$1" ] && [ -d "$1" ]; then
         task_name=$(sanitize_name "$1")
         task_dir="$(cd "$1" && pwd)"
-    # Use a scratch window if the path isn't provided or resolved
     else
         git_task "$*"
         return 0
