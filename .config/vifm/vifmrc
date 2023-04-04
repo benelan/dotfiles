@@ -178,6 +178,11 @@ command! reload :write | restart full
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.
 
+" Text
+filextype {*.md,*.mdx},<text/*>
+        \ {Open in EDITOR}
+        \ $EDITOR %f,
+
 " Pdf
 filextype {*.pdf},<application/pdf> zathura %c %i &, apvlv %c, xpdf %c
 fileviewer {*.pdf},<application/pdf> pdftotext -nopgbrk %c -
@@ -226,14 +231,14 @@ fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
          \ ffprobe -pretty %c 2>&1
 
 " Web
-filextype {*.html,*.htm},<text/html>
-        \ {Open with dwb}
-        \ dwb %f %i &,
-        \ {Open with firefox}
-        \ firefox %f &,
-        \ {Open with uzbl}
-        \ uzbl-browser %f %i &,
-filetype {*.html,*.htm},<text/html> links, lynx
+" filextype {*.html,*.htm},<text/html>
+"         \ {Open with dwb}
+"         \ dwb %f %i &,
+"         \ {Open with firefox}
+"         \ firefox %f &,
+"         \ {Open with uzbl}
+"         \ uzbl-browser %f %i &,
+" filetype {*.html,*.htm},<text/html> links, lynx
 
 " Object
 filetype {*.o},<application/x-object> nm %f | less
