@@ -41,6 +41,7 @@ return {
   },
   {
     "tpope/vim-fugitive", -- Git integration
+    cmd = { "G" },
     event = "VeryLazy",
     config = function()
       keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
