@@ -1,16 +1,19 @@
 #!/usr/bin/env sh
 set -e
 
-export GIT_MUX_PROJECTS="${GIT_MUX_PROJECTS:-"$HOME"}"
+has() { command -v "$1" >/dev/null 2>&1; }
+
+if [ -z "$GIT_MUX_SELECT_CMD" ] && ! has fzf; then
+    echo "Error: install fzf or specify a different method for selection with the GIT_MUX_SELECT_CMD environment variable"
+    exit 1
+fi
+
 export GIT_MUX_SELECT_CMD="${GIT_MUX_SELECT_CMD:-"fzf -1 -0 --cycle --reverse --height 30"}"
+export GIT_MUX_PROJECTS="${GIT_MUX_PROJECTS:-"$HOME"}"
 export GIT_MUX_BRANCH_PREFIX="${GIT_MUX_BRANCH_PREFIX:-""}"
 
 GIT_MUX_DEBUG="${GIT_MUX_DEBUG:-""}"
 GIT_MUX_TMUX_SESSION="$(tmux display-message -p "#S")"
-
-sanitize_name() {
-    basename "$1" | tr "./" "__"
-}
 
 debugger() {
     if [ -n "$GIT_MUX_DEBUG" ]; then
@@ -18,13 +21,18 @@ debugger() {
     fi
 }
 
+sanitize_name() {
+    basename "$1" | tr "./" "__"
+}
+
+################################################################################
+# tmux utils
+# Mostly from https://github.com/thoughtbot/dotfiles/blob/main/bin/tat
+################################################################################
 tmux_session_exists() {
     tmux has-session -t "=$1" >/dev/null 2>&1
 }
 
-################################################################################
-# TMUX UTILS
-################################################################################
 in_tmux() {
     [ -n "$TMUX" ]
 }
@@ -63,18 +71,32 @@ bare_clone() {
     git clone --bare "$1" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
-    default_git_branch="$(gbdefault)"
+    # 60% of the time, it works every time (requires an origin or upstream remote)
+    default_git_branch="$(
+        git remote show "$(
+            git remote | grep -Eo "(upstream|origin)" | tail -1
+        )" | grep "HEAD branch" | cut -d" " -f5
+    )"
     debugger "clone > creating worktree for default branch: $default_git_branch"
     git worktree add "$default_git_branch" "$default_git_branch"
     cd "$default_git_branch" || return
     unset new_repo_dir default_git_branch
 }
 
+################################################################################
+# Use $GIT_MUX_SELECT_CMD to select a project from within the $GIT_MUX_PROJECTS
+# directories.
+################################################################################
 select_project() {
     # shellcheck disable=2086
     find $GIT_MUX_PROJECTS -maxdepth 1 -mindepth 1 -type d | $GIT_MUX_SELECT_CMD
 }
 
+################################################################################
+# Creates or attaches to a tmux session for a project. If the following argument
+# is a valid path, it is used for the project. Otherwise the user is prompted
+# to select a project.
+################################################################################
 handle_project() {
     if [ -n "$1" ] && [ -d "$1" ]; then
         debugger "project > valid path provided: $1"
@@ -85,6 +107,9 @@ handle_project() {
     fi
 }
 
+################################################################################
+# Use $GIT_MUX_SELECT_CMD to select an existing git branch for creating a task.
+################################################################################
 select_branch() {
     # remote and local branches sorted by commit date
     git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
@@ -93,6 +118,9 @@ select_branch() {
         awk NF | uniq | $GIT_MUX_SELECT_CMD
 }
 
+################################################################################
+# Determines the absolute path of the selected or provided project.
+################################################################################
 find_project_directory() {
     for projects_dir in $GIT_MUX_PROJECTS; do
         if [ -d "$projects_dir/$GIT_MUX_TMUX_SESSION" ]; then
@@ -217,14 +245,15 @@ usage() {
         echo "$1"
         echo
     fi
-    echo "Usage: $0 <command> [<args>]"
+    echo "Usage: git mux <command> [<args>]"
     echo
     echo "Comands:"
-    echo "  startup, s         Create a tmux session if one doesn't exist, and attach"
+    echo "  startup, s         Create a tmux session if one doesn't exist, and attach to the home project."
     echo "  project, p         Create or switch to a project, usually a git repo."
-    echo "  task, t            Create, switch, or send text to a task within a project."
+    echo "  task,    t         Create, switch, or send text to a task within a project, usually a git branch."
+    echo "  debug,   d         Runs the following subcommand and arguments with logging."
     echo ""
-    echo "Example: $0 task ~/projects/my-app 'npm i && npm run build'"
+    echo "Example: git mux task ~/projects/my-app 'npm i && npm run build'"
     exit 1
 }
 
