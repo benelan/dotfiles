@@ -32,9 +32,9 @@ export bold underline black blue aqua \
     green orange purple red white yellow
 
 bind "set show-mode-in-prompt on"
-bind "set emacs-mode-string \"${yellow}E${reset} \""
-bind "set vi-cmd-mode-string \"${red}V${reset} \""
-bind "set vi-ins-mode-string \"${green}V${reset} \""
+bind "set emacs-mode-string \"E \""
+bind "set vi-cmd-mode-string \"C \""
+bind "set vi-ins-mode-string \"I \""
 
 # Use Starship for the prompt if installed
 # Otherwise create a prompt manually
