@@ -13,7 +13,6 @@ export GIT_MUX_PROJECTS="${GIT_MUX_PROJECTS:-"$HOME"}"
 export GIT_MUX_BRANCH_PREFIX="${GIT_MUX_BRANCH_PREFIX:-""}"
 
 GIT_MUX_DEBUG="${GIT_MUX_DEBUG:-""}"
-GIT_MUX_TMUX_SESSION="$(tmux display-message -p "#S")"
 
 debugger() {
     if [ -n "$GIT_MUX_DEBUG" ]; then
@@ -26,8 +25,7 @@ sanitize_name() {
 }
 
 ################################################################################
-# tmux utils
-# Mostly from https://github.com/thoughtbot/dotfiles/blob/main/bin/tat
+# tmux utils from https://github.com/thoughtbot/dotfiles/blob/main/bin/tat
 ################################################################################
 tmux_session_exists() {
     tmux has-session -t "=$1" >/dev/null 2>&1
@@ -37,8 +35,8 @@ in_tmux() {
     [ -n "$TMUX" ]
 }
 
-no_tmux_server() {
-    [ -z "$(pgrep tmux)" ]
+has_tmux_server() {
+    [ -n "$(pgrep tmux)" ]
 }
 
 create_detached_tmux_session() {
@@ -57,6 +55,8 @@ tmux_create_if_needed_and_attach() {
         tmux new-session -As "$project_name" -c "$1"
     fi
 }
+
+has_tmux_server && GIT_MUX_TMUX_SESSION="$(tmux display-message -p "#S")"
 
 ################################################################################
 # Clones a bare repo for use with git-worktree and creates an
@@ -112,10 +112,11 @@ handle_project() {
 ################################################################################
 select_branch() {
     # remote and local branches sorted by commit date
-    git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
-        # search, remove 'origin/' prefix from branch names, remove empty line(s), dedupe, select
-        awk '/'"$GIT_MUX_BRANCH_DEFAULT_QUERY"'/{gsub("^origin/(HEAD)?","");print}' |
-        awk NF | uniq | $GIT_MUX_SELECT_CMD
+    git for-each-ref refs/remotes refs/heads \
+        --sort=-committerdate --format='%(refname:short)' |
+        # filter by query, remove 'origin/' prefix, dedupe, select branch
+        awk '/'"$GIT_MUX_BRANCH_DEFAULT_QUERY"'/{gsub("^origin/(HEAD)?","")};!x[$0]++' |
+        $GIT_MUX_SELECT_CMD
 }
 
 ################################################################################

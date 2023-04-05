@@ -61,5 +61,9 @@ unset completions
 #---------------------------------------------------------------------------
 # TMUX - ATTACH
 #---------------------------------------------------------------------------
+# shellcheck disable=2155
+export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
+export GIT_MUX_PROJECTS="$HOME/dev/personal $HOME/dev/work"
+export OG_TERM="$TERM"
 # ensure tmux is running
-[ -z "$TMUX" ] && ta
+[ -z "$TMUX" ] && git mux startup
