@@ -21,7 +21,7 @@ is-supported fd &&
     export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 
 # fzf default window options
-FZF_DEFAULT_OPTS='--preview-window "right:57%" --cycle --exit-0 --select-1 '
+FZF_DEFAULT_OPTS='--preview-window "right:57%" --cycle --exit-0 --select-1 --reverse '
 # fzf default keybingings
 FZF_DEFAULT_OPTS+=' --bind "ctrl-f:preview-page-down,ctrl-b:preview-page-up,ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down,shift-up:preview-top,shift-down:preview-bottom,alt-up:half-page-up,alt-down:half-page-down"'
 # fzf colorscheme (gruvbox)
@@ -30,18 +30,17 @@ FZF_DEFAULT_OPTS+=' --color=bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg
 export FZF_DEFAULT_OPTS
 export FZF_COMPLETION_TRIGGER='--'
 
-
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.
 # - The first argument to the function ($1) is the base path to start traversal
 # - See the source code (completion.{bash,zsh}) for the details.
 _fzf_compgen_path() {
-  fd --hidden --follow --exlude "node_modules" --exclude ".git" . "$1"
+    fd --hidden --follow --exlude "node_modules" --exclude ".git" . "$1"
 }
 
 # Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+    fd --type d --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,23 +90,9 @@ else
     FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
 fi
 
-# fzdf - cd into the directory of the selected file
-fzdf() {
-    file="$(
-        fzf +m -q "$*" \
-            --preview="${FZF_PREVIEW_CMD}" \
-            --preview-window='right:hidden:wrap' \
-            --bind=ctrl-v:toggle-preview \
-            --bind=ctrl-x:toggle-sort \
-            --header='(view:ctrl-v) (sort:ctrl-x)'
-    )"
-    cd "$(dirname "$file")" || return
-    unset file
-}
-
-# fzz - selectable cd to frecency directory
-fzz() {
-    dir="$(
+# selectable cd to frecency directory using fasd
+fz() {
+    cd "$(
         fasd -dl |
             fzf \
                 --tac \
@@ -123,26 +108,42 @@ fzz() {
                 --bind=ctrl-x:toggle-sort \
                 --header='(view:ctrl-v) (sort:ctrl-x)'
     )" || return
-    cd "$dir" || return
-    unset dir
+}
+
+# cd into the directory of the selected file
+fzdf() {
+    cd "$(
+        fzf +m -q "$*" \
+            --preview="${FZF_PREVIEW_CMD}" \
+            --preview-window='right:hidden:wrap' \
+            --bind=ctrl-v:toggle-preview \
+            --bind=ctrl-x:toggle-sort \
+            --header='(view:ctrl-v) (sort:ctrl-x)' |
+            xargs dirname
+    )" || return
 }
 
 # -----------------------------------------------------------------------------
 # file
 # -----------------------------------------------------------------------------
 
-# Run a command with multiple files
-# Usage: $ frm vlc
-frm() {
-    fzf -m -x | xargs -d'\n' -r "$@"
+# fasd & fzf
+# open best matched file using `fasd` if given argument
+# otherwise filter output of `fasd` using `fzf`
+fze() {
+    [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && "${EDITOR:-vim}" "${file}" || return 1
+    unset file
 }
 
 # Open the selected file in the default editor
 #   - CTRL-O to open with `open` command,
 #   - CTRL-E or Enter key to open with the $EDITOR
 feo() {
-    IFS=$'\n' out=("$(fzf-tmux --query="$1" --expect=ctrl-o,ctrl-e)")
+    IFS=$'\n' out=("$(fzf --query="$1" --expect=ctrl-o,ctrl-e)")
+    # shellcheck disable=2128
     key=$(head -1 <<<"$out")
+    # shellcheck disable=2128
     file=$(head -2 <<<"$out" | tail -1)
     if [ -n "$file" ]; then
         if [ "$key" = ctrl-o ]; then
@@ -162,13 +163,10 @@ fif() {
         fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
-# fasd & fzf change directory
-# open best matched file using `fasd` if given argument
-# filter output of `fasd` using `fzf` else
-fze() {
-    [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && "${EDITOR:-vim}" "${file}" || return 1
-    unset file
+# Run a command with multiple files
+# Usage: $ frm vlc
+frm() {
+    fzf -m -x | xargs -d'\n' -r "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -176,68 +174,20 @@ fze() {
 # -----------------------------------------------------------------------------
 
 fkill() {
-    local pid
     if [ "$UID" != "0" ]; then
-        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+        kill_pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
     else
-        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+        kill_pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
     fi
-    if [ "x$pid" != "x" ]; then
-        echo "$pid" | xargs kill -"${1:-9}"
+    if [ "x$kill_pid" != "x" ]; then
+        echo "$kill_pid" | xargs kill -"${1:-9}"
     fi
+    unset kill_pid
 }
 
 # -----------------------------------------------------------------------------
 # git
 # -----------------------------------------------------------------------------
-
-# fgco - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
-fgcor() {
-    local branches branch
-    branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
-        branch=$(echo "$branches" |
-            fzf-tmux -d $((2 + $(wc -l <<<"$branches"))) +m) &&
-        git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
-}
-
-# fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
-fgcop() {
-    local tags branches target
-    branches=$(
-        git --no-pager branch --all \
-            --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" |
-            sed '/^$/d'
-    ) || return
-    tags=$(
-        git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}'
-    ) || return
-    target=$(
-        (
-            echo "$branches"
-            echo "$tags"
-        ) |
-            fzf --no-hscroll --no-multi -n 2 \
-                --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'"
-    ) || return
-    git checkout "$(awk '{print $2}' <<<"$target")"
-}
-
-# fgcoc - checkout git commit
-fgcoc() {
-    local commits commit
-    commits=$(git log --pretty=oneline --abbrev-commit --reverse) &&
-        commit=$(echo "$commits" | fzf --tac +s +m -e) &&
-        git checkout "$(echo "$commit" | sed "s/ .*//")"
-}
-
-# fgcs - get git commit sha
-# example usage: git rebase -i `fcs`
-fgcs() {
-    local commits commit
-    commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
-        commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
-        echo -n "$(echo "$commit" | sed "s/ .*//")"
-}
 
 # fgshow - git commit browser
 fgshow() {
@@ -251,45 +201,11 @@ fgshow() {
 FZF-EOF"
 }
 
-# fgstash - easier way to deal with stashes
-# type fstash to get a list of your stashes
-# enter shows you the contents of the stash
-# ctrl-d shows a diff of the stash against your current HEAD
-# ctrl-b checks the stash out as a branch, for easier merging
-fgstash() {
-    local out q k sha
-    while out=$(
-        git stash list --pretty="%C(yellow)%h %>(14)%Cgreen%cr %C(blue)%gs" |
-            fzf --ansi --no-sort --query="$q" --print-query \
-                --expect=ctrl-d,ctrl-b
-    ); do
-        mapfile -t out <<<"$out"
-        q="${out[0]}"
-        k="${out[1]}"
-        sha="${out[-1]}"
-        sha="${sha%% *}"
-        [[ -z "$sha" ]] && continue
-        if [[ "$k" == 'ctrl-d' ]]; then
-            git diff "$sha"
-        elif [[ "$k" == 'ctrl-b' ]]; then
-            git stash branch "stash-$sha" "$sha"
-            break
-        else
-            git stash show -p "$sha"
-        fi
-    done
-}
-
 # -----------------------------------------------------------------------------
 # jq
 # -----------------------------------------------------------------------------
 
 if is-supported jq; then
-    # run npm script
-    fnr() {
-        npm run "$(jq -r '.scripts | keys[] ' <package.json | sort | fzf)"
-    }
-
     # find an emoji
     # usage: $ find_emoji | cb
     function femoji() {

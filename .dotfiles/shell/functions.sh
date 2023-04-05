@@ -183,25 +183,6 @@ ips() {
 # Git
 #---------------------------------------------------------------------------------
 
-# git clone worktree
-# Clones a bare repo for use with git-worktree and creates an
-# initial worktree called asdf that tracks the default branch.
-# https://git-scm.com/docs/git-worktree
-gclw() {
-    dir="${2:-"$(basename "$1" .git)"}"
-    mkdir "$dir"
-    cd "$dir" || return
-    git clone --bare "$1" .git
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    git fetch origin
-    default_git_branch="$(gbdefault)"
-    git worktree add "$default_git_branch" "$default_git_branch"
-    cd "$default_git_branch" || return
-    unset dir default_git_branch
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 # git (find|fuzzy) checkout
 # Checkout a branch based on search term.
 # If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
@@ -228,11 +209,11 @@ fgco() {
     fi
 
     # remote and local branches sorted by commit date
-    git for-each-ref refs/remotes refs/heads --sort='-committerdate' --format='%(refname:short)' |
-        # search, remove 'origin/' prefix from branch names, remove empty line(s)
-        awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","");print}' | awk NF |
-        # dedup -> pick -> checkout branch
-        uniq | $PICK_BRANCH_CMD "$@" | xargs git checkout
+    git for-each-ref refs/remotes refs/heads --sort=-committerdate --format='%(refname:short)' |
+        # filter by search term, remove 'origin/' prefix from branch names, and dedupe
+        awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","")};!x[$0]++' |
+        # pick -> checkout branch
+        $PICK_BRANCH_CMD "$@" | xargs git checkout
 
     unset PICK_BRANCH_CMD SEARCH_TERM
 }
@@ -244,37 +225,6 @@ gcof() {
     [ "$#" -gt 0 ] && shift
     gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
     unset SEARCH_TERM
-}
-
-# checkout master, pull, find and checkout branch, merge master/main
-gcofup() {
-    git checkout "$(gbdefault)"
-    git pull
-    gcof "$@"
-    git merge "$(gbdefault)"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# checks out a branch starting with my github username,
-# or creates it if it doesn't exist.
-# Syncs the checked out branch with the default branch
-# [Usage] create/checkout branch benelan/2807-slots and sync with master:
-# $ gcoup 2807-slots
-gcoup() {
-    git checkout "$(gbdefault)"
-    git pull
-    branch_name="$(git config github.user)/$1" || {
-        is-supported id && branch_name="$(id -un)/$1"
-    } || branch_name="$1"
-
-    if git show-ref --verify --quiet "refs/heads/$branch_name"; then
-        git checkout "$branch_name"
-    else
-        git checkout -b "$branch_name"
-    fi
-    git merge "$(gbdefault)"
-    unset branch_name
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

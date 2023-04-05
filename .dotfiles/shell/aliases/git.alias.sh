@@ -6,29 +6,14 @@
 
 alias g='git'
 
-# gets the default git branch
-alias gbdefault-fast='basename "$(git rev-parse --abbrev-ref origin/HEAD)"'
-# Same as above but works in bare repos and is more accurate, but slower
-alias gbdefault-bare='git remote show "$(git remote | grep -Eo "(upstream|origin)" | tail -1)" | grep "HEAD branch" | cut -d" " -f5'
-alias gbdefault='echo $(if [ $(git config --get core.bare) = "true" ]; then gbdefault-bare; else gbdefault-fast; fi)'
-
 # deletes local branches already squash merged into the default branch
 # shellcheck disable=2016,2034,2154
-alias gbprune='TARGET_BRANCH="$(gbdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
+alias gbprune='TARGET_BRANCH="$(g bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
 
 # add
 ######
 alias ga='git add'
 alias gall='git add --all'
-alias gap='git add --patch'
-
-# bisect
-#########
-alias gbi="git bisect"
-alias gbis="git bisect start"
-alias gbig="git bisect good"
-alias gbib="git bisect bad"
-alias gbir="git bisect reset"
 
 # branch
 #########
@@ -51,24 +36,16 @@ alias gcm='git commit --verbose -m'
 # Add uncommitted and unstaged changes to the last commit
 alias gcamd='git commit --verbose --amend'
 alias gcamdne='git commit --amend --no-edit'
-alias gci='git commit --interactive'
-# commit changes that will cleaned up later during rebase
-alias gwip='git commit -qm "chore: [WIP] $(date -Iseconds)"'
 
 # checkout
 ###########
 alias gco='git checkout'
 alias gcob='git checkout -b'
-alias gcobu='git checkout -b ${USER}/'
-alias gcom='git checkout "$(gbdefault)"'
+alias gcom='git checkout "$(g bdefault)"'
 
 # clone
 ########
 alias gcl='git clone'
-
-# cherry-pick
-##############
-alias gcp='git cherry-pick'
 
 # diff
 #######
@@ -79,15 +56,13 @@ alias gdft='git difftool'
 alias ge='$EDITOR $(git diff --name-only HEAD)'
 # sync origin's default branch and edit the changed files
 # shellcheck disable=2154
-alias geom='default_branch=$(gbdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
+alias geom='default_branch=$(g bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
 # open Diffview.nvim
-egdf() { nvim +":DiffviewOpen $*"; }
+egdf() { nvim +"DiffviewOpen $*"; }
 
 # fetch
 ########
 alias gf='git fetch --all --prune'
-alias gft='git fetch --all --prune --tags'
-alias gfuom='git fetch origin -v; git fetch upstream -v; git merge upstream/"$(gbdefault)"'
 
 # log
 ######
@@ -98,7 +73,7 @@ alias gg=' git log --graph'
 # https://stackoverflow.com/questions/39220870/in-git-list-names-of-branches-with-unpushed-commits
 alias glup='git log --branches --not --remotes --no-walk --decorate --oneline'
 # show commits in current branch that aren't merged to the default branch
-alias glum='git log "$(gbdefault)" ^HEAD'
+alias glum='git log "$(g bdefault)" ^HEAD'
 # show new commits created by the last command, e.g. pull
 alias gnew='git log HEAD@{1}..HEAD@{0}'
 
@@ -112,93 +87,53 @@ alias glsum='git diff --name-only --diff-filter=U'
 # merge
 ########
 alias gm='git merge'
-alias gmm='git merge "$(gbdefault)"'
-alias gmom='git fetch && git merge origin/$(gbdefault)'
+alias gmm='git merge "$(g bdefault)"'
+alias gmom='git fetch && git merge origin/$(g bdefault)'
 alias gmt='git mergetool'
-
-# patch
-########
-alias gpatch='git format-patch -1'
 
 # push
 #######
 alias gp='git push'
-alias gpo='git push origin HEAD'
-alias gpom='git push origin "$(gbdefault)"'
-alias gpu='git push --set-upstream'
-alias gpuo='git push --set-upstream origin'
 alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
 #######
 alias gpl='git pull'
-alias gplum='git pull upstream "$(gbdefault)"'
-alias gplp='git pull && git push'
-
-# remote
-#########
-alias gr='git remote'
+alias gplum='git pull upstream "$(g bdefault)"'
 
 # rebase
 #########
 alias grb='git rebase'
-alias grbi='git rebase -i'
-alias grba='git rebase -i --auto'
-alias grbc='git rebase --continue'
-alias grbm='git rebase "$(gbdefault)"'
-alias grbma='GIT_SEQUENCE_EDITOR=: git rebase  "$(gbdefault)" -i --autosquash'
+alias grbma='GIT_SEQUENCE_EDITOR=: git rebase "$(g bdefault)" -i --autosquash'
 # Rebase with latest remote
-alias gfrom='git fetch origin "$(gbdefault)" && git rebase origin/"$(gbdefault)" && git update-ref refs/heads/"$(gbdefault)" origin/"$(gbdefault)"'
+alias gfrom='git fetch origin "$(g bdefault)" && git rebase origin/"$(g bdefault)" && git update-ref refs/heads/"$(g bdefault)" origin/"$(g bdefault)"'
 
 # reset
 ########
 alias gr='git reset'
 alias grs='git reset --soft'
 alias grH='git reset --hard'
-alias gus='git reset HEAD'
 alias gpristine='git reset --hard && git clean -dfx'
 
 # status
 #########
 alias gs='git status'
 
-# shortlog
-###########
-alias gsl='git shortlog -sn'
-
-# show
-#######
-alias gsh='git show'
-
 # stash
 ########
 alias gst='git stash'
-alias gstb='git stash branch'
-alias gstD='git stash drop'
 alias gstl='git stash list'
 alias gstpo='git stash pop'
 # 'stash push' introduced in git v2.13.2
 alias gstpu='git stash push'
-alias gstpum='git stash push -m'
 
 # submodules
 #############
 alias gsmu='git submodule update --init --recursive'
 
-# switch
-#########
-# these aliases requires git v2.23+
-alias gsw='git switch'
-alias gswc='git switch --create'
-alias gswm='git switch "$(gbdefault)"'
-alias gswt='git switch --track'
-
 # tag
 ######
 alias gt='git tag'
-alias gta='git tag --annotate'
-alias gtD='git tag --delete'
-alias gtl='git tag --list'
 # outputs the tag following the provided commit sha
 # useful for finding the first reproducible version
 # for bugs after using git bisect to get the sha
@@ -220,7 +155,14 @@ alias gunhide='git update-index --no-assume-unchanged'
 # plugins
 ##########
 alias glz="lazygit"
+# delete multiple branches
 alias fgbd="git branch | fzf --multi | xargs git branch -d"
+# fgcoc - checkout git commit
+alias fgcoc='git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout'
+# get git commit sha
+alias fgcs='git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"'
+# open fugitive status
+alias G="nvim +G +'wincmd o'"
 
 # Dotfiles
 # -----------------------------------------------------------------------------
@@ -238,41 +180,32 @@ dot() {
         /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
     fi
 }
+alias d='dot'
 
 # creates env vars so git plugins
 # work with the bare dotfiles repo
 edit_dotfiles() {
     # shellcheck disable=2016
     "$EDITOR" "${@:-}" \
-        --cmd "cd %:h | pwd" \
+        --cmd "if len(argv()) > 0 | cd %:h | endif" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'
 }
 
-eddf() { edit_dotfiles ~/.bashrc -c "DiffviewOpen $*"; }
-
-alias edot="edit_dotfiles -c 'Telescope git_files'"
+eddf() { edit_dotfiles +"DiffviewOpen $*"; }
+alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias envim="edit_dotfiles ~/.config/nvim/init.lua"
-
-alias d='dot'
+alias D="edit_dotfiles +G +'wincmd o'"
 
 # add
 ######
 alias da='dot add'
 # doesn't add untracked files
 alias dall='dot add --update'
-alias dap='dot add --patch'
-# track new files in commonly added locations
-alias danvim="dot add ${HOME}/.config/nvim/*"
-alias dadots="dot add ${HOME}/.dotfiles/*"
-alias dash="dot add ${HOME}/.dotfiles/shell/*"
-alias dascripts="dot add ${HOME}/.dotfiles/scripts/*"
-alias dabin="dot add ${HOME}/.dotfiles/bin/*"
 
 # branch
 #########
 alias db='dot branch'
-alias dbD='dot branch --delete --force'
 
 # commit
 #########
@@ -294,21 +227,11 @@ alias ddfs='dot diff --staged'
 alias ddft='dot difftool'
 alias de='$EDITOR $(dot diff --name-only)'
 
-# files
-########
-# Show unmerged (conflicted) files
-alias dlsum='dot diff --name-only --diff-filter=U'
-
 # log
 ######
 alias dgg='dot log --graph --pretty=format:'\''%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'\'' --abbrev-commit --date=relative'
 alias dgf='dot log --graph --date=short --pretty=format:'\''%C(auto)%h %Cgreen%an%Creset %Cblue%cd%Creset %C(auto)%d %s'\'''
-alias dgs='dg --stat'
 alias dgup='dot log --branches --not --remotes --no-walk --decorate --oneline'
-alias dll='dot log --graph --pretty=oneline --abbrev-commit'
-# Show commits since last pull
-alias dnew='dot log HEAD@{1}..HEAD@{0}'
-alias dwc='dot whatchanged'
 
 # merge
 ########
@@ -319,34 +242,23 @@ alias dmt='dot mergetool'
 # pull
 #######
 alias dpl='dot pull'
-alias dplp='dot pull && dot push'
 
 # push
 #######
 alias dp='dot push'
-alias dpo='dot push origin HEAD'
-alias dpu='dot push --set-upstream'
 alias dpuoc='dot push --set-upstream origin $(dot symbolic-ref --short HEAD)'
 
 # reset
 ########
 alias dr='dot reset'
-alias drs='dot reset --soft'
 alias drH='dot reset --hard'
-
-# show
-#######
-alias dsh='dot show'
 
 # stash
 ########
 alias dst='dot stash'
-alias dstb='dot stash branch'
-alias dstd='dot stash drop'
 alias dstl='dot stash list'
 alias dstpo='dot stash pop'
 alias dstpu='dot stash push'
-alias dstpum='dot stash push -m'
 
 # status
 #########

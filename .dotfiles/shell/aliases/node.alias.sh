@@ -21,9 +21,9 @@ alias nrb="npm run build"
 alias ncu="npx npm-check-updates"
 alias npxplz='npx $(fc -ln -1)'
 
-is-supported fzf && is-supported npm-fuzzy || return
-
-alias nfz="npm-fuzzy"
-alias nfzs="npm-fuzzy search"
-alias nfzl="npm-fuzzy ls-versions"
-alias nfzu="npm-fuzzy uninstall"
+# aliases using other tools
+is-supported fzf || return
+is-supported jq &&
+    alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
+is-supported npm-fuzzy &&
+    alias nfz="npm-fuzzy"
