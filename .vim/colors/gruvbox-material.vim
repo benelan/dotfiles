@@ -10,7 +10,7 @@
 let s:configuration = gruvbox_material#get_configuration()
 let s:palette = gruvbox_material#get_palette(s:configuration.background, s:configuration.foreground, s:configuration.colors_override)
 let s:path = expand('<sfile>:p') " the path of this script
-let s:last_modified = 'Tue Jan  3 02:26:57 UTC 2023'
+let s:last_modified = 'Wed Apr  5 09:49:31 UTC 2023'
 let g:gruvbox_material_loaded_file_types = []
 
 if !(exists('g:colors_name') && g:colors_name ==# 'gruvbox-material' && s:configuration.better_performance)
@@ -82,6 +82,7 @@ else
 endif
 call gruvbox_material#highlight('IncSearch', s:palette.bg0, s:palette.bg_red)
 call gruvbox_material#highlight('Search', s:palette.bg0, s:palette.bg_green)
+highlight! link CurSearch IncSearch
 call gruvbox_material#highlight('ColorColumn', s:palette.none, s:palette.bg2)
 if s:configuration.ui_contrast ==# 'low'
   call gruvbox_material#highlight('Conceal', s:palette.bg5, s:palette.none)
@@ -155,6 +156,8 @@ elseif s:configuration.menu_selection_background ==# 'red'
 else
   call gruvbox_material#highlight('PmenuSel', s:palette.bg3, s:palette[s:configuration.menu_selection_background])
 endif
+call gruvbox_material#highlight('PmenuKind', s:palette.green, s:palette.bg3)
+call gruvbox_material#highlight('PmenuExtra', s:palette.grey2, s:palette.bg3)
 highlight! link WildMenu PmenuSel
 call gruvbox_material#highlight('PmenuThumb', s:palette.none, s:palette.grey0)
 call gruvbox_material#highlight('NormalFloat', s:palette.fg1, s:palette.bg3)
@@ -353,14 +356,13 @@ call gruvbox_material#highlight('Character', s:palette.green, s:palette.none)
 call gruvbox_material#highlight('Constant', s:palette.aqua, s:palette.none)
 call gruvbox_material#highlight('Macro', s:palette.aqua, s:palette.none)
 call gruvbox_material#highlight('Identifier', s:palette.blue, s:palette.none)
+call gruvbox_material#highlight('Todo', s:palette.bg0, s:palette.blue, 'bold')
 if s:configuration.disable_italic_comment
   call gruvbox_material#highlight('Comment', s:palette.grey1, s:palette.none)
   call gruvbox_material#highlight('SpecialComment', s:palette.grey1, s:palette.none)
-  call gruvbox_material#highlight('Todo', s:palette.purple, s:palette.none)
 else
   call gruvbox_material#highlight('Comment', s:palette.grey1, s:palette.none, 'italic')
   call gruvbox_material#highlight('SpecialComment', s:palette.grey1, s:palette.none, 'italic')
-  call gruvbox_material#highlight('Todo', s:palette.purple, s:palette.none, 'italic')
 endif
 call gruvbox_material#highlight('Delimiter', s:palette.fg0, s:palette.none)
 call gruvbox_material#highlight('Ignore', s:palette.grey1, s:palette.none)
@@ -471,6 +473,44 @@ elseif s:configuration.current_word ==# 'grey background'
 else
   call gruvbox_material#highlight('CurrentWord', s:palette.none, s:palette.none, s:configuration.current_word)
 endif
+" Define a color for each LSP item kind to create highlights for nvim-cmp, aerial.nvim, nvim-navic and coc.nvim
+let g:gruvbox_material_lsp_kind_color = [
+      \ ["Array", "Aqua"],
+      \ ["Boolean", "Aqua"],
+      \ ["Class", "Red"],
+      \ ["Color", "Aqua"],
+      \ ["Constant", "Blue"],
+      \ ["Constructor", "Green"],
+      \ ["Default", "Aqua"],
+      \ ["Enum", "Yellow"],
+      \ ["EnumMember", "Purple"],
+      \ ["Event", "Orange"],
+      \ ["Field", "Green"],
+      \ ["File", "Green"],
+      \ ["Folder", "Aqua"],
+      \ ["Function", "Green"],
+      \ ["Interface", "Yellow"],
+      \ ["Key", "Red"],
+      \ ["Keyword", "Red"],
+      \ ["Method", "Green"],
+      \ ["Module", "Purple"],
+      \ ["Namespace", "Purple"],
+      \ ["Null", "Aqua"],
+      \ ["Number", "Aqua"],
+      \ ["Object", "Aqua"],
+      \ ["Operator", "Orange"],
+      \ ["Package", "Purple"],
+      \ ["Property", "Blue"],
+      \ ["Reference", "Aqua"],
+      \ ["Snippet", "Aqua"],
+      \ ["String", "Aqua"],
+      \ ["Struct", "Yellow"],
+      \ ["Text", "Fg"],
+      \ ["TypeParameter", "Yellow"],
+      \ ["Unit", "Purple"],
+      \ ["Value", "Purple"],
+      \ ["Variable", "Blue"],
+      \ ]
 " }}}
 " }}}
 " Terminal: {{{
@@ -517,7 +557,7 @@ endif
 call gruvbox_material#highlight('TSStrong', s:palette.none, s:palette.none, 'bold')
 call gruvbox_material#highlight('TSEmphasis', s:palette.none, s:palette.none, 'italic')
 call gruvbox_material#highlight('TSUnderline', s:palette.none, s:palette.none, 'underline')
-call gruvbox_material#highlight('TSNote', s:palette.bg0, s:palette.blue, 'bold')
+call gruvbox_material#highlight('TSNote', s:palette.bg0, s:palette.green, 'bold')
 call gruvbox_material#highlight('TSWarning', s:palette.bg0, s:palette.yellow, 'bold')
 call gruvbox_material#highlight('TSDanger', s:palette.bg0, s:palette.red, 'bold')
 highlight! link TSAnnotation Purple
@@ -670,29 +710,8 @@ if has('nvim-0.8.0')
   highlight! link @variable.builtin TSVariableBuiltin
 endif
 " }}}
-" neovim/lsp-semantic-tokens {{{
-highlight! link LspNamespace TSNamespace
-highlight! link LspType TSType
-highlight! link LspClass TSType
-highlight! link LspEnum TSType
-highlight! link LspInterface TSType
-highlight! link LspStruct TSType
-highlight! link LspTypeParameter TSType
-highlight! link LspParameter TSParameter
-highlight! link LspVariable TSVariable
-highlight! link LspProperty TSProperty
-highlight! link LspEnumMember TSVariableBuiltin
-highlight! link LspEvent TSLabel
-highlight! link LspFunction TSFunction
-highlight! link LspMethod TSMethod
-highlight! link LspMacro TSMacro
-highlight! link LspKeyword TSKeyword
-highlight! link LspModifier TSOperator
-highlight! link LspComment TSComment
-highlight! link LspString TSString
-highlight! link LspNumber TSNumber
-highlight! link LspRegexp TSStringRegexp
-highlight! link LspOperator TSOperator
+" github/copilot.vim {{{
+highlight! link CopilotSuggestion Grey
 " }}}
 " neoclide/coc.nvim {{{
 call gruvbox_material#highlight('CocHoverRange', s:palette.none, s:palette.none, 'bold,underline')
@@ -1138,31 +1157,16 @@ highlight! link CmpItemAbbr Fg
 highlight! link CmpItemAbbrDeprecated Grey
 highlight! link CmpItemMenu Fg
 highlight! link CmpItemKind Yellow
-highlight! link CmpItemKindText Fg
-highlight! link CmpItemKindMethod Green
-highlight! link CmpItemKindFunction Green
-highlight! link CmpItemKindConstructor Green
-highlight! link CmpItemKindField Green
-highlight! link CmpItemKindVariable Blue
-highlight! link CmpItemKindClass Yellow
-highlight! link CmpItemKindInterface Yellow
-highlight! link CmpItemKindModule Yellow
-highlight! link CmpItemKindProperty Blue
-highlight! link CmpItemKindUnit Purple
-highlight! link CmpItemKindValue Purple
-highlight! link CmpItemKindEnum Yellow
-highlight! link CmpItemKindKeyword Red
-highlight! link CmpItemKindSnippet Aqua
-highlight! link CmpItemKindColor Aqua
-highlight! link CmpItemKindFile Aqua
-highlight! link CmpItemKindReference Aqua
-highlight! link CmpItemKindFolder Aqua
-highlight! link CmpItemKindEnumMember Purple
-highlight! link CmpItemKindConstant Blue
-highlight! link CmpItemKindStruct Yellow
-highlight! link CmpItemKindEvent Orange
-highlight! link CmpItemKindOperator Orange
-highlight! link CmpItemKindTypeParameter Yellow
+for kind in g:gruvbox_material_lsp_kind_color
+  execute "highlight! link CmpItemKind" . kind[0] . " " . kind[1]
+endfor
+" }}}
+" SmiteshP/nvim-navic {{{
+highlight! link NavicText Fg
+highlight! link NavicSeparator Grey
+for kind in g:gruvbox_material_lsp_kind_color
+  execute "highlight! link NavicIcons" . kind[0] . " " . kind[1]
+endfor
 " }}}
 " folke/trouble.nvim {{{
 highlight! link TroubleText Fg
@@ -1424,33 +1428,9 @@ highlight! link packerTimeLow Green
 " https://github.com/neoclide/coc.nvim
 highlight! link CocTreeOpenClose Aqua
 highlight! link CocTreeDescription Grey
-highlight! link CocSymbolFile Green
-highlight! link CocSymbolModule Purple
-highlight! link CocSymbolNamespace Purple
-highlight! link CocSymbolPackage Purple
-highlight! link CocSymbolClass Red
-highlight! link CocSymbolMethod Green
-highlight! link CocSymbolProperty Blue
-highlight! link CocSymbolField Green
-highlight! link CocSymbolConstructor Green
-highlight! link CocSymbolEnum Yellow
-highlight! link CocSymbolInterface Yellow
-highlight! link CocSymbolFunction Green
-highlight! link CocSymbolVariable Blue
-highlight! link CocSymbolConstant Blue
-highlight! link CocSymbolString Aqua
-highlight! link CocSymbolNumber Aqua
-highlight! link CocSymbolBoolean Aqua
-highlight! link CocSymbolArray Aqua
-highlight! link CocSymbolObject Aqua
-highlight! link CocSymbolKey Red
-highlight! link CocSymbolNull Aqua
-highlight! link CocSymbolEnumMember Aqua
-highlight! link CocSymbolStruct Yellow
-highlight! link CocSymbolEvent Orange
-highlight! link CocSymbolOperator Orange
-highlight! link CocSymbolTypeParameter Yellow
-highlight! link CocSymbolDefault Aqua
+for kind in g:gruvbox_material_lsp_kind_color
+  execute "highlight! link CocSymbol" . kind[0] . " " . kind[1]
+endfor
 " syn_end }}}
 " syn_begin: coc-explorer {{{
 " https://github.com/weirongxu/coc-explorer
@@ -1527,32 +1507,9 @@ highlight! link FocusedSymbol NormalFloat
 " https://github.com/stevearc/aerial.nvim
 highlight! link AerialLine CursorLine
 highlight! link AerialGuide LineNr
-highlight! link AerialFileIcon Green
-highlight! link AerialModuleIcon Purple
-highlight! link AerialNamespaceIcon Purple
-highlight! link AerialPackageIcon Purple
-highlight! link AerialClassIcon Red
-highlight! link AerialMethodIcon Green
-highlight! link AerialPropertyIcon Blue
-highlight! link AerialFieldIcon Green
-highlight! link AerialConstructorIcon Green
-highlight! link AerialEnumIcon Yellow
-highlight! link AerialInterfaceIcon Yellow
-highlight! link AerialFunctionIcon Green
-highlight! link AerialVariableIcon Blue
-highlight! link AerialConstantIcon Blue
-highlight! link AerialStringIcon Aqua
-highlight! link AerialNumberIcon Aqua
-highlight! link AerialBooleanIcon Aqua
-highlight! link AerialArrayIcon Aqua
-highlight! link AerialObjectIcon Aqua
-highlight! link AerialKeyIcon Red
-highlight! link AerialNullIcon Aqua
-highlight! link AerialEnumMemberIcon Aqua
-highlight! link AerialStructIcon Yellow
-highlight! link AerialEventIcon Orange
-highlight! link AerialOperatorIcon Orange
-highlight! link AerialTypeParameterIcon Yellow
+for kind in g:gruvbox_material_lsp_kind_color
+  execute "highlight! link Aerial" . kind[0] . "Icon " . kind[1]
+endfor
 " syn_end }}}
 " syn_begin: nerdtree {{{
 " https://github.com/preservim/nerdtree
@@ -2934,4 +2891,3 @@ highlight! link helpSectionDelim Grey
 " }}}
 
 " vim: set sw=2 ts=2 sts=2 et tw=80 ft=vim fdm=marker fmr={{{,}}}:
-
