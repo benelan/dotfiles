@@ -32,7 +32,7 @@ keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
 
 -- Add undo break points
 keymap("i", ",", ",<c-g>u")
-keymap("i", "?", ",<c-g>u")
+keymap("i", "?", "?<c-g>u")
 keymap("i", ".", ".<c-g>u")
 keymap("i", ";", ";<c-g>u")
 
