@@ -136,11 +136,11 @@
 [format]
   ; pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
   pretty = format:"%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)"
-  ;                           │        │            │            │             └─ author name
-  ;                           │        │            │            └─ message
-  ;                           │        │            └─ decorations (branch, heads or tags)
-  ;                           │        └─ date
-  ;                           └─ hash (abbreviated)
+  ;                          │            │           │           │           └─ author name
+  ;                          │            │           │           └─ message
+  ;                          │            │           └─ decorations (branch, heads or tags)
+  ;                          │            └─ date
+  ;                          └─ hash     (abbreviated)
 
 [init]
   defaultBranch = master
@@ -162,27 +162,27 @@
   ; Pull in remote changes for the current repository and all its submodules.
   up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
-  ; Switch to a branch, creating it if necessary.
+  ; switch to a branch, creating it if necessary.
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
   ; use fzf to fixup commits to autosquash
-  fixup = "!git log -n 13 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup"
+  cf = "!git log -n 13 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup"
 
-  squash = !GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash
+  rsq = !GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash
 
   ; log the last n commits, e.g. $ git ln 69
   ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
 
-  ; Find branches containing commit
+  ; find branches containing commit
   fb = "!f() { git branch -a --contains $1; }; f"
 
-  ; Find tags containing commit
+  ; find tags containing commit
   ft = "!f() { git describe --always --contains $1; }; f"
 
-  ; Find commits by source code
+  ; find commits by source code
   fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
 
-  ; Find commits by commit message
+  ; find commits by commit message
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
   ri = rebase --interactive --autosquash
@@ -191,29 +191,20 @@
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
 
-  ; Remove the old tag with this name and tag the latest commit with it.
+  ; remove the old tag with this name and tag the latest commit with it.
   retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
 
-  ; Show verbose output about tags, branches,  remotes, or aliases
-  tags = tag -l
-  branches = branch --all
-  remotes = remote --verbose
-  aliases = config --get-regexp alias
-
-  ; Amend the currently staged files to the latest commit.
-  amend = commit --amend --reuse-message=HEAD
-
-  ; Credit an author on the latest commit.
+  ; credit an author on the latest commit.
   credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
 
-  ; List contributors with number of commits.
+  ; list contributors with number of commits.
   contributors = shortlog --summary --numbered
 
+  ; get the default branch
+  bdefault = "!f() { echo $(if [ $(git config --get core.bare) = 'true' ]; then git bdefault-bare; else git bdefault-fast; fi); }; f"
   bdefault-fast = "!f() { basename $(git rev-parse --abbrev-ref origin/HEAD);}; f"
-
   bdefault-bare = "!f() { git remote show $(git remote | grep -Eo '(upstream|origin)' | tail -1) | grep 'HEAD branch' | cut -d' ' -f5; }; f"
 
-  bdefault = "!f() { echo $(if [ $(git config --get core.bare) = 'true' ]; then git bdefault-bare; else git bdefault-fast; fi); }; f"
 
   ; list of local branches and their most recent commit
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
