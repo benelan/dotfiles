@@ -37,10 +37,13 @@ return {
       Boolean = " ◩  ",
       Class = " 🝆  ",
       Color = "   ",
+      Comment = "   ",
+      Conditional = "   ",
       Constant = " 󰭷  ",
       Constructor = "   ",
       Enum = "   ",
       EnumMember = "   ",
+      Error = "   ",
       Event = "   ",
       Field = "   ",
       File = "   ",
@@ -160,21 +163,6 @@ return {
       formatting = {
         fields = { "abbr", "menu", "kind" },
         format = function(entry, vim_item)
-          if
-            vim.tbl_contains({ "path" }, entry.source.name)
-            and icons_status_okay
-          then
-            local icon, hl_group =
-              devicons.get_icon(entry:get_completion_item().label)
-            if icon then
-              vim_item.kind = " " .. icon .. "  " .. vim_item.kind .. "  "
-              vim_item.kind_hl_group = hl_group
-            else
-              vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
-            end
-          else
-            vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
-          end
           vim_item.menu = ({
             buffer = " [BUF] ",
             nvim_lsp = " [LSP] ",
@@ -188,6 +176,24 @@ return {
             nvim_lsp_document_symbol = " [SYM] ",
             spell = " [SPL] ",
           })[entry.source.name]
+          if
+            vim.tbl_contains({ "path" }, entry.source.name)
+            and icons_status_okay
+          then
+            local icon, hl_group =
+              devicons.get_icon(entry:get_completion_item().label)
+            if icon then
+              vim_item.kind = " " .. icon .. "  " .. vim_item.kind .. "  "
+              vim_item.kind_hl_group = hl_group
+              return vim_item
+            end
+          end
+          local kind_icon = kinds[vim_item.kind]
+          if kind_icon then
+            vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
+          else
+            vim_item.kind = "    " .. vim_item.kind .. "  "
+          end
           return vim_item
         end,
       },
