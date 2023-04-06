@@ -443,7 +443,6 @@ endfunction
 " | Abbreviations                                                           |
 " ---------------------------------------------------------------------------
 inoreabbrev teh the
-inoreabbrev CC Calcite Components
 inoreabbrev CDS Calcite Design System
 inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
 
