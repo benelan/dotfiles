@@ -372,17 +372,17 @@ function! StripTrailingWhitespace()
     call setreg("/", old_query)
 endfunction
 
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function! g:GitBranch()
-  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "","")
-  let branch = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
-  return v:shell_error ? "" : " " . branch
-endfunction
-
 " ----------------------------------------------------------------------
 " | Statusline                                                         |
 " ----------------------------------------------------------------------
+
+function! FugitiveGitBranch()
+  if g:loaded_fugitive && FugitiveGitDir() != expand("~") .. "/.git"
+    let head = fugitive#Head()
+    return head != "" ? "   " .. head .. "  " : ""
+  endif
+  return ""
+endfunction
 
 set statusline=%#TabLineSel#                    " TabLineSel highlight
 set statusline+=\ \                             " Whitespace
@@ -392,14 +392,11 @@ set statusline+=%r                              " Readonly flag
 set statusline+=%h                              " Help file flag
 set statusline+=%w                              " Preview window flag
 set statusline+=%q                              " Quickfix/location list flag
-set statusline+=\ \                             " Whitespace
-set statusline+=%#TabLine#                      " TabLine highlight
-set statusline+=\ \                             " Whitespace
 set statusline+=%y                              " File type
 set statusline+=\ \                             " Whitespace
+set statusline+=%#TabLine#                      " TabLine highlight
+set statusline+=%{g:FugitiveGitBranch()}        " Git branch name
 set statusline+=%#TabLineFill#                  " TabLineFill highlight
-set statusline+=\ \                             " Whitespace
-set statusline+=%{g:GitBranch()}                " Git branch name
 set statusline+=%=                              " Left/Right separator
 set statusline+=\ \                             " Whitespace
 set statusline+=%#TabLine#                      " TabLine highlight
@@ -410,4 +407,3 @@ set statusline+=%#TabLineSel#                   " TabLineSel highlight
 set statusline+=\ \                             " Whitespace
 set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
 set statusline+=\ \                             " Whitespace
-

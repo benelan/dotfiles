@@ -6,6 +6,7 @@ return {
     dir = "~/.vim",
     lazy = false,
     priority = 1000,
+    cmd = { "G" },
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Undotree" } },
   },
   {
@@ -23,6 +24,15 @@ return {
   -----------------------------------------------------------------------------
   { "folke/lazy.nvim", version = "*" },
   {
+    "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
+    config = function()
+      keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
+      keymap("x", "<leader>go", ":'<,'>GBrowse<cr>", "Open In Browser")
+      keymap("n", "<leader>gy", "<cmd>GBrowse!<cr>", "Yank URL")
+      keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
+    end,
+  },
+  {
     "vifm/vifm.vim", -- integrates vifm (file explorer)
     event = "VeryLazy",
     keys = { { "-", "<cmd>Vifm<cr>", desc = "Vifm" } },
@@ -38,20 +48,6 @@ return {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
     cond = vim.g.use_devicons == true,
-  },
-  {
-    "tpope/vim-fugitive", -- Git integration
-    cmd = { "G" },
-    event = "VeryLazy",
-    config = function()
-      keymap("n", "<leader>go", "<cmd>GBrowse<cr>", "Open In Browser")
-      keymap("x", "<leader>go", ":'<,'>GBrowse<cr>", "Open In Browser")
-      keymap("n", "<leader>gy", "<cmd>GBrowse!<cr>", "Yank URL")
-      keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
-    end,
-    dependencies = {
-      "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
-    },
   },
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs

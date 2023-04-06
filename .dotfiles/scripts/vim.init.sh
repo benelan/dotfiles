@@ -38,7 +38,6 @@ install_commentary() {
         https://raw.githubusercontent.com/tpope/vim-commentary/master/doc/commentary.txt
 }
 
-
 install_eunuch() {
     $INSTALL_CMD $VIM_PLUGIN \
         https://raw.githubusercontent.com/tpope/vim-eunuch/master/plugin/eunuch.vim
@@ -58,6 +57,23 @@ install_vinegar() {
         https://raw.githubusercontent.com/tpope/vim-vinegar/master/plugin/vinegar.vim
     $INSTALL_CMD $VIM_DOC \
         https://raw.githubusercontent.com/tpope/vim-vinegar/master/doc/vinegar.txt
+}
+
+install_fugitive() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/plugin/fugitive.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/doc/fugitive.txt
+    $INSTALL_CMD $VIM_AUTOLOAD \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/autoload/fugitive.vim
+    $INSTALL_CMD $VIM_SYNTAX \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/syntax/fugitive.vim
+    $INSTALL_CMD $VIM_SYNTAX \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/syntax/fugitiveblame.vim
+    $INSTALL_CMD "$VIM_DIR/ftdetect" \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/ftdetect/fugitive.vim
+    $INSTALL_CMD "$VIM_DIR/ftplugin" \
+        https://raw.githubusercontent.com/tpope/vim-fugitive/master/ftplugin/fugitiveblame.vim
 }
 
 install_rooter() {
@@ -107,10 +123,11 @@ install_undotree() {
 
 install_commentary
 install_eunuch
+install_fugitive
 install_repeat
-# install_rsi
+install_rsi
 install_surround
-# install_vinegar
+install_vinegar
 
 install_closer
 install_easy_align
