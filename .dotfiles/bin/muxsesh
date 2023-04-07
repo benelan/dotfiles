@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-set -e
-
-ta "${1:-"$(find ~/dev/work ~/dev/personal -maxdepth 1 -mindepth 1 -type d | fzf --cycle -0 -1)"}"
