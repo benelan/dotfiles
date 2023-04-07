@@ -151,6 +151,7 @@ git_task() {
             ! git show-ref --verify --quiet "refs/heads/$task_branch" &&
                 task_branch_flags="-b "
             debugger "task > provided branch with prefix: $task_branch"
+            shift
         else
             task_branch=$(select_branch)
             debugger "task > selected branch: $task_branch"
