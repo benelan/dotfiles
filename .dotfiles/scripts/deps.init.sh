@@ -6,78 +6,75 @@ set -e
 # Comment out functions at the bottom to skip sections.
 
 FONTS_DIR="$HOME/.local/share/fonts"
+BIN_DIR="$HOME/.local/bin"
+mkdir -p "$FONTS_DIR" "$BIN_DIR"
 
 # Install The four common font weights
 # https://github.com/ryanoasis/nerd-fonts
-function install_fonts_minimal() {
-    mkdir -p "$FONTS_DIR"
-    cd "$FONTS_DIR" || return
-
+install_fonts_minimal() {
     # Iosevka
-    curl -sSLo "Iosevka Bold Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/Iosevka Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/complete/Iosevka%20Bold%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "Iosevka Bold Italic Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/Iosevka Bold Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/complete/Iosevka%20Bold%20Italic%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "Iosevka Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/Iosevka Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/complete/Iosevka%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "Iosevka Italic Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/Iosevka Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/complete/Iosevka%20Italic%20Nerd%20Font%20Complete.ttf
 
     # Jet Brains Mono
-    curl -sSLo "JetBrainsMono Bold Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/JetBrainsMono Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Bold/complete/JetBrains%20Mono%20Bold%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "JetBrainsMono Bold Italic Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/JetBrainsMono Bold Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/BoldItalic/complete/JetBrains%20Mono%20Bold%20Italic%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "JetBrainsMono Regular Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/JetBrainsMono Regular Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/complete/JetBrains%20Mono%20Regular%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "JetBrainsMono Italic Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/JetBrainsMono Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Italic/complete/JetBrains%20Mono%20Italic%20Nerd%20Font%20Complete.ttf
 
     # Sauce Code Pro
-    curl -sSLo "SauceCodePro Bold Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/SauceCodePro Bold Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Bold/complete/Sauce%20Code%20Pro%20Bold%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "SauceCodePro Bold Italic Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/SauceCodePro Bold Italic Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Bold-Italic/complete/Sauce%20Code%20Pro%20Bold%20Italic%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "SauceCodePro Nerd Font Complete.ttf" \
+    curl -sSLo "$FONTS_DIR/SauceCodePro Nerd Font Complete.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
-    curl -sSLo "SauceCodePro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
+    curl -sSLo "$FONTS_DIR/SauceCodePro Italic Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Italic/complete/Sauce%20Code%20Pro%20Italic%20Nerd%20Font%20Complete.ttf
 
     # reload the font cache
     fc-cache -rf
 }
 
 # Install the full font families from zip files
-function install_fonts_full() {
-    mkdir -p "$FONTS_DIR"
+install_fonts_full() {
     # Add any other zipped fonts to download and install
     # NerdFont glyphs are used by a lot of tools, e.g. Starship and NeoVim
     # Find more options here: https://www.nerdfonts.com/font-downloads
-    local fonts=(
+    font_families=(
         https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/JetBrainsMono.zip
         https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Iosevka.zip
         https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/SourceCodePro.zip
     )
-    mkdir -p "$FONTS_DIR"
-    for f in "${fonts[@]}"; do
+    for f in "${font_families[@]}"; do
         curl -sS "$f" >"$FONTS_DIR/font.zip"
         unzip "$FONTS_DIR/font.zip"
         rm "$FONTS_DIR/font.zip"
     done
-    unset f
     # reload the font cache
     fc-cache -rf
+    unset f font_families
 }
 
 # Install the Rust language
 # https://www.rust-lang.org/tools/install
-function install_rust() {
+install_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     pathappend "$HOME/.cargo/bin"
 }
 
 # Install the Go language
 # https://go.dev/doc/install
-function install_golang() {
+install_golang() {
     # checksum will need to be updated when using a new go version
     checksum="c9c08f783325c4cf840a94333159cc937f05f75d36a8b307951d5bd959cf2ab8"
     outfile="go1.19.4.linux-amd64.tar.gz"
@@ -94,8 +91,8 @@ function install_golang() {
 
 # Install Volta for managing Node/NPM
 # https://docs.volta.sh/guide/getting-started
-function install_volta() {
-    if [[ ! "$(type -P volta)" ]]; then
+install_volta() {
+    if ! is-supported volta; then
         curl https://get.volta.sh | bash -s -- --skip-setup
         export VOLTA_HOME=~/.volta
         pathappend "$VOLTA_HOME/bin"
@@ -105,23 +102,20 @@ function install_volta() {
 
 # Install Rust CLI tools
 # https://crates.io
-function install_cargo_packages() {
+install_cargo_packages() {
     cargo install $(cat "$HOME/.dotfiles/deps/cargo")
-
-    mkdir -p ~/.local/bin
-
     # link batcat to bat due to package name conflict
-    [[ ! "$(type -P bat)" ]] && [[ "$(type -P batcat)" ]] &&
-        ln -s "$(type -P batcat)" ~/.local/bin/bat
+    ! is-supported bat && is-supported batcat &&
+        ln -s "$(command -v batcat)" "$BIN_DIR/bat"
     # link fdfind to fd
-    [[ ! "$(type -P fd)" ]] && [[ "$(type -P fdfind)" ]] &&
-        ln -s "$(type -P fdfind)" ~/.local/bin/fd
+    ! is-supported fd && is-supported fdfind &&
+        ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
 }
 
 # Install global Node packages
 # https://www.npmjs.com
-function install_node_packages() {
-    if [ "$(type -P volta)" ]; then
+install_node_packages() {
+    if is-supported volta; then
         volta install $(cat "$HOME/.dotfiles/deps/node")
     else
         npm install -g $(cat "$HOME/.dotfiles/deps/node")
@@ -130,7 +124,7 @@ function install_node_packages() {
 
 # Install Go CLI tools
 # https://pkg.go.dev
-function install_go_packages() {
+install_go_packages() {
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         go install "$pkg"
     done <"$HOME/.dotfiles/deps/golang"
@@ -139,25 +133,25 @@ function install_go_packages() {
 
 # Install Python CLI tools
 # https://pypi.org/project/pipx
-function install_pip_packages() {
-    [ "$(type -P pipx)" ] && local pipx="pipx"
+install_pip_packages() {
+    is-supported pipx && pipx="pipx"
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         "${pipx:-"pip"}" install --user "$pkg"
     done <"$HOME/.dotfiles/deps/pip"
-    unset pkg
+    unset pkg pipx
 }
 
 # Install Starship prompt
 # https://starship.rs/guide
-function install_starship() {
-    if [[ ! "$(type -P starship)" ]]; then
-        sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$HOME/.local/bin" >/dev/null
+install_starship() {
+    if ! is-supported starship; then
+        sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$BIN_DIR" >/dev/null
     fi
 }
 
 # Install helpful bash scripts for git workflows
 # https://github.com/tj/git-extras
-function install_git_extras() {
+install_git_extras() {
     curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh | sudo bash /dev/stdin
 }
 
@@ -171,4 +165,4 @@ install_node_packages
 install_pip_packages
 install_cargo_packages
 install_starship
-# install_git_extras
+install_git_extras
