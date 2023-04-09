@@ -59,5 +59,6 @@ clone_work_gh_repo "benelan/github-scripts"
 clone_work_gh_repo "benelan/milestone-action"
 clone_work_gh_repo "benelan/need-info-action"
 clone_work_gh_repo "benelan/test"
+clone_personal_gh_repo "benelan/git-mux"
 
 unset WORK_PATH PERSONAL_PATH OVERWRITE_REPOS
