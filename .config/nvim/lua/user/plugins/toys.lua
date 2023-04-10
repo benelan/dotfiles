@@ -100,60 +100,62 @@ return {
     enabled = true,
     event = "CursorHold",
     config = function()
+      require("which-key").setup { icons = { separator = "⮞" } }
+
       -- Normal mode
-      require("which-key").register({
-        ["gP"] = { name = "Preview" },
+      require("which-key").register {
+        ["gP"] = { name = "preview" },
         ["<leader>"] = {
-          b = { name = "Buffers" },
+          b = { name = "buffers" },
           c = {
-            name = "Cheat",
-            q = { name = "Questions" },
-            a = { name = "Answers" },
-            h = { name = "History" },
-            s = { name = "See also" },
+            name = "cheat",
+            q = { name = "questions" },
+            a = { name = "answers" },
+            h = { name = "history" },
+            s = { name = "see also" },
           },
           -- d = { name = "Debug" },
-          f = { name = "Find", z = { name = "FZF" } },
-          l = { name = "LSP" },
-          s = { name = "Settings" },
-          t = { name = "Tabs" },
-          z = { name = "Zk" },
+          f = { name = "find", z = { name = "fzf" } },
+          l = { name = "lsp" },
+          s = { name = "settings" },
+          t = { name = "tabs" },
+          z = { name = "zk" },
           g = {
-            name = "Git",
-            m = { name = "Mergetool" },
-            t = { name = "Toggle Options" },
+            name = "git",
+            m = { name = "mergetool" },
+            t = { name = "toggle options" },
             -- w = { name = "Worktree" },
           },
           o = {
-            name = "Octo (GitHub)",
-            i = { name = "Issues", D = { name = "Remove" }, a = { name = "Add" } },
+            name = "octo (github)",
+            i = { name = "issues", D = { name = "remove" }, a = { name = "add" } },
             m = {
-              name = "My stuff",
-              i = { name = "Issues" },
-              p = { name = "Pull requests" },
+              name = "my stuff",
+              i = { name = "issues" },
+              p = { name = "pull requests" },
             },
             p = {
-              name = "Pull requests",
-              D = { name = "Remove" },
-              a = { name = "Add" },
-              r = { name = "Reviews" },
+              name = "pull requests",
+              D = { name = "remove" },
+              a = { name = "add" },
+              r = { name = "reviews" },
             },
-            r = { name = "Reactions" },
+            r = { name = "reactions" },
           },
         },
-      }, { mode = "n" })
+      }
       -- Visual mode
       require("which-key").register({
         ["<leader>"] = {
           c = {
-            name = "Cheat",
-            q = { name = "Questions" },
-            a = { name = "Answers" },
-            h = { name = "History" },
-            s = { name = "See also" },
+            name = "cheat",
+            q = { name = "questions" },
+            a = { name = "answers" },
+            h = { name = "history" },
+            s = { name = "see also" },
           },
-          g = { name = "Git", m = { name = "Mergetool" } },
-          z = { name = "Zk" },
+          g = { name = "git", m = { name = "mergetool" } },
+          z = { name = "zk" },
         },
       }, { mode = "x" })
     end,

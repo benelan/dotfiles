@@ -15,7 +15,7 @@ return {
         return vim.fn["codeium#Accept"]()
       end,
       "i",
-      desc = "Codeium Accept",
+      desc = "Codeium accept"
     },
     {
       "<M-c>",
@@ -23,7 +23,7 @@ return {
         return vim.fn["codeium#Complete"]()
       end,
       "i",
-      desc = "Codeium Complete",
+      desc = "Codeium complete",
     },
     {
       "<M-n>",
@@ -31,7 +31,7 @@ return {
         return vim.fn["codeium#CycleCompletions"](1)
       end,
       "i",
-      desc = "Codeium Next",
+      desc = "Codeium next",
     },
     {
       "<M-p>",
@@ -39,7 +39,7 @@ return {
         return vim.fn["codeium#CycleCompletions"](-1)
       end,
       "i",
-      desc = "Codeium Previous",
+      desc = "Codeium previous",
     },
     {
       "<M-e>",
@@ -47,7 +47,7 @@ return {
         return vim.fn["codeium#Clear"]()
       end,
       "i",
-      desc = "Codeium Clear",
+      desc = "Codeium clear",
     },
   },
 }

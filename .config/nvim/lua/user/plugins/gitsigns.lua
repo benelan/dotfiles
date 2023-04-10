@@ -51,43 +51,43 @@ return {
       { "n", "x" },
       "<leader>gR",
       "<cmd>Gitsigns reset_buffer<cr>",
-      "Reset Buffer"
+      "Reset buffer"
     )
     keymap(
       { "n", "x" },
       "<leader>gS",
       "<cmd>Gitsigns stage_buffer<cr>",
-      "Stage Buffer"
+      "Stage buffer"
     )
     keymap(
       { "n", "x" },
       "<leader>gl",
       "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>",
-      "Blame Line"
+      "Blame line"
     )
     keymap(
       { "n", "x" },
       "<leader>gp",
       "<cmd>Gitsigns preview_hunk<cr>",
-      "Preview Hunk"
+      "Preview hunk"
     )
     keymap(
       { "n", "x" },
       "<leader>gr",
       "<cmd>Gitsigns reset_hunk<cr>",
-      "Reset Hunk"
+      "Reset hunk"
     )
     keymap(
       { "n", "x" },
       "<leader>gs",
       "<cmd>Gitsigns stage_hunk<cr>",
-      "Stage Hunk"
+      "Stage hunk"
     )
     keymap(
       { "n", "x" },
       "<leader>gu",
       "<cmd>Gitsigns undo_stage_hunk<cr>",
-      "Unstage Hunk"
+      "Unstage hunk"
     )
   end,
 }

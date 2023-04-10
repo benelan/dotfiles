@@ -105,108 +105,108 @@ keymap("n", "<leader>eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 -------------------------------------------------------------------------------
 
 -- tab
-keymap("n", "]t", "<CMD>tabnext<CR>", "Next Tab")
-keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous Tab")
-keymap("n", "]T", "<CMD>tablast<CR>", "Last Tab")
-keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous Tab")
+keymap("n", "]t", "<CMD>tabnext<CR>", "Next tab")
+keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous tab")
+keymap("n", "]T", "<CMD>tablast<CR>", "Last tab")
+keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous tab")
 
 -- buffer
-keymap("n", "]b", "<CMD>bnext<CR>", "Next Buffer")
-keymap("n", "[b", "<CMD>bprevious<CR>", "Previous Buffer")
-keymap("n", "]B", "<CMD>blast<CR>", "Last Buffer")
-keymap("n", "[B", "<CMD>bfirst<CR>", "First Buffer")
+keymap("n", "]b", "<CMD>bnext<CR>", "Next buffer")
+keymap("n", "[b", "<CMD>bprevious<CR>", "Previous buffer")
+keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
+keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
 
 -- argument
-keymap("n", "]a", "<CMD>next<CR>", "Next Argument")
-keymap("n", "[a", "<CMD>previous<CR>", "Previous Argument")
-keymap("n", "]A", "<CMD>last<CR>", "Last Argument")
-keymap("n", "[A", "<CMD>first<CR>", "First Argument")
+keymap("n", "]a", "<CMD>next<CR>", "Next argument")
+keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
+keymap("n", "]A", "<CMD>last<CR>", "Last argument")
+keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
 -- quickfix
-keymap("n", "]q", "<CMD>cnext<CR>", "Next Quickfix")
-keymap("n", "[q", "<CMD>cprevious<CR>", "Previous Quickfix")
-keymap("n", "]Q", "<CMD>clast<CR>", "Last Quickfix")
-keymap("n", "[Q", "<CMD>cfirst<CR>", "First Quickfix")
+keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
+keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
+keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
+keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 
 -- location
-keymap("n", "]l", "<CMD>lnext<CR>", "Next Location")
-keymap("n", "[l", "<CMD>lprevious<CR>", "Previous Location")
-keymap("n", "]l", "<CMD>llast<CR>", "Last Location")
-keymap("n", "[l", "<CMD>lfirst<CR>", "First Location")
+keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
+keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
+keymap("n", "]l", "<CMD>llast<CR>", "Last location")
+keymap("n", "[l", "<CMD>lfirst<CR>", "First location")
 
 -- jump
-keymap("n", "]j", "<C-o>", "Next Jump")
-keymap("n", "[j", "<C-i>", "Previous Jump")
+keymap("n", "]j", "<C-o>", "Next jump")
+keymap("n", "[j", "<C-i>", "Previous jump")
 
 -- change
-keymap("n", "]c", "g,", "Next Change")
-keymap("n", "[c", "g;", "Previous Change")
+keymap("n", "]c", "g,", "Next change")
+keymap("n", "[c", "g;", "Previous change")
 
 -- diff conflict
-keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next Conflict")
-keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous Conflict")
+keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next conflict")
+keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous conflict")
 
 -- diagnostic error
 keymap(
   "n",
   "]e",
   "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
-  "Next Error"
+  "Next error"
 )
 
 keymap(
   "n",
   "[e",
   "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
-  "Previous Error"
+  "Previous error"
 )
 
 -------------------------------------------------------------------------------
 ----> Git Mergetool
 -------------------------------------------------------------------------------
 
-keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update Merge Diff")
+keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update merge diff")
 
 keymap(
   { "n", "v" },
   "<leader>gmr",
   "<cmd>diffget RE<cr>",
-  "Choose Hunk From Remote"
+  "Choose hunk from remote"
 )
 
 keymap(
   { "n", "v" },
   "<leader>gmR",
   "<cmd>%diffget RE<cr>",
-  "Choose All From Remote"
+  "Choose all from remote"
 )
 
 keymap(
   { "n", "v" },
   "<leader>gmb",
   "<cmd>diffget BA<cr>",
-  "Choose Hunk From Base"
+  "Choose hunk from base"
 )
 
 keymap(
   { "n", "v" },
   "<leader>gmB",
   "<cmd>%diffget BA<cr>",
-  "Choose All From Base"
+  "Choose all from base"
 )
 
 keymap(
   { "n", "v" },
   "<leader>gml",
   "<cmd>diffget LO<cr>",
-  "Choose Hunk From Local"
+  "Choose hunk from local"
 )
 
 keymap(
   { "n", "v" },
   "<leader>gmL",
   "<cmd>diffget LO<cr>",
-  "Choose All From Local"
+  "Choose all from local"
 )
 
 -------------------------------------------------------------------------------
@@ -214,25 +214,25 @@ keymap(
 -------------------------------------------------------------------------------
 
 -- hide splits
-keymap("n", "<M-o>", "<C-w>o", "Close Other Windows")
+keymap("n", "<M-o>", "<C-w>o", "Close other windows")
 
 -- create vim style splits
-keymap("n", "<M-v>", "<C-w>v", "Vertical Split")
-keymap("n", "<M-s>", "<C-w>s", "Horizontal Split")
+keymap("n", "<M-v>", "<C-w>v", "Vertical split")
+keymap("n", "<M-s>", "<C-w>s", "Horizontal split")
 
 -- create tmux style splits
-keymap("n", "<M-\\>", "<C-w>v", "Vertical Split")
-keymap("n", "<M-->", "<C-w>s", "Horizontal Split")
+keymap("n", "<M-\\>", "<C-w>v", "Vertical split")
+keymap("n", "<M-->", "<C-w>s", "Horizontal split")
 
 ---- navigate
-keymap("n", "<C-h>", "<C-w>h", "Focus Window Left")
-keymap("n", "<C-j>", "<C-w>j", "Focus Window Below")
-keymap("n", "<C-k>", "<C-w>k", "Focus Window Above")
-keymap("n", "<C-l>", "<C-w>l", "Focus Window Right")
-keymap("v", "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus Window Left")
-keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus Window Below")
-keymap({ "v", "t" }, "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus Window Above")
-keymap({ "v", "t" }, "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus Window Right")
+keymap("n", "<C-h>", "<C-w>h", "Focus window left")
+keymap("n", "<C-j>", "<C-w>j", "Focus window below")
+keymap("n", "<C-k>", "<C-w>k", "Focus window above")
+keymap("n", "<C-l>", "<C-w>l", "Focus window right")
+keymap("v", "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus window left")
+keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus window below")
+keymap({ "v", "t" }, "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus window above")
+keymap({ "v", "t" }, "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window right")
 
 -- Go to the first floating window
 vim.cmd [[
@@ -251,51 +251,51 @@ keymap(
   { "n", "x" },
   "<M-f>",
   "<CMD>GotoFirstFloat<CR>",
-  "Focus First Floating Window"
+  "Focus first floating window"
 )
 
 -- resize
-keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease Horizontal Window Size")
-keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase Horizontal Window Size")
+keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease horizontal window size")
+keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase horizontal window size")
 keymap(
   "n",
   "<C-Left>",
   "<CMD>vertical resize -5<CR>",
-  "Decrease Vertical Window Size"
+  "Decrease vertical window size"
 )
 keymap(
   "n",
   "<C-Right>",
   "<CMD>vertical resize +5<CR>",
-  "Increase Vertical Window Size"
+  "Increase vertical window size"
 )
 
 --  move
-keymap("n", "<M-Left>", "<C-w>H", "Move Window Left")
-keymap("n", "<M-Down>", "<C-w>J", "Move Window Down")
-keymap("n", "<M-Up>", "<C-w>K", "Move Window Up")
-keymap("n", "<M-Right>", "<C-w>L", "Move Window Right")
+keymap("n", "<M-Left>", "<C-w>H", "Move window left")
+keymap("n", "<M-Down>", "<C-w>J", "Move window down")
+keymap("n", "<M-Up>", "<C-w>K", "Move window up")
+keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
 -------------------------------------------------------------------------------
 ----> Tabs
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New Tab")
-keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close Other Tabs")
-keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close Tab")
+keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New tab")
+keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close other tabs")
+keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 
 -------------------------------------------------------------------------------
 ----> Buffers
 -------------------------------------------------------------------------------
 
 -- list, pick, and jump to a buffer
-keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to Buffer")
+keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to buffer")
 
 -- close/write
-keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close Buffer (Keep Window)")
-keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close Buffer (Keep Window)")
+keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close buffer (keep window)")
+keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer (keep window)")
 keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Quit")
-keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write All")
+keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write all")
 
 -- sudo save the file
 vim.api.nvim_create_user_command(

@@ -222,7 +222,7 @@ return {
       "n",
       "<leader>dC",
       "<cmd>lua require'dap'.run_to_cursor()<cr>",
-      "Run To Cursor"
+      "Run to cursor"
     )
     keymap(
       "n",
@@ -234,7 +234,7 @@ return {
       "n",
       "<leader>db",
       "<cmd>lua require'dap'.step_back()<cr>",
-      "Step Back"
+      "Step back"
     )
     keymap(
       "n",
@@ -252,19 +252,19 @@ return {
       "n",
       "<leader>dd",
       "<cmd>lua require'dap'.session()<cr>",
-      "Get Session"
+      "Get session"
     )
     keymap(
       "n",
       "<leader>di",
       "<cmd>lua require'dap'.step_into()<cr>",
-      "Step Into"
+      "Step into"
     )
     keymap(
       "n",
       "<leader>do",
       "<cmd>lua require'dap'.step_over()<cr>",
-      "Step Over"
+      "Step over"
     )
     keymap("n", "<leader>dp", "<cmd>lua require'dap'.pause()<cr>", "Pause")
     keymap("n", "<leader>dq", "<cmd>lua require'dap'.close()<cr>", "Quit")
@@ -272,19 +272,19 @@ return {
       "n",
       "<leader>dr",
       "<cmd>lua require'dap'.repl.toggle()<cr>",
-      "Toggle Repl"
+      "Toggle repl"
     )
     keymap(
       "n",
       "<leader>dt",
       "<cmd>lua require'dap'.toggle_breakpoint()<cr>",
-      "Toggle Breakpoint"
+      "Toggle breakpoint"
     )
     keymap(
       "n",
       "<leader>du",
       "<cmd>lua require'dap'.step_out()<cr>",
-      "Step Out"
+      "Step out"
     )
   end,
 }
