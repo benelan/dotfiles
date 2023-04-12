@@ -17,13 +17,9 @@ esac
 #---------------------------------------------------------------------------
 # SHELL - ALIASES/FUNCTIONS
 #---------------------------------------------------------------------------
-# NOTE: don't skip to git alias file, it will break stuff
-for aliases in ~/.dotfiles/shell/aliases/[!_]*; do
-    [ -r "$aliases" ] && [ -f "$aliases" ] && source "$aliases"
-done
-unset aliases
-
+[ -f ~/.dotfiles/shell/aliases.sh ] && source ~/.dotfiles/shell/aliases.sh
 [ -f ~/.dotfiles/shell/functions.sh ] && source ~/.dotfiles/shell/functions.sh
+
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
@@ -31,22 +27,14 @@ unset aliases
 #---------------------------------------------------------------------------
 # BASH - OPTIONS/PROMPT
 #---------------------------------------------------------------------------
-# local if for environment specific stuffs, it is gitignored
-for stuffs in ~/.dotfiles/shell/{options,prompt,local}.sh; do
+# add any enviornment-specific stuff to local.sh (it's gitignored)
+for stuffs in ~/.dotfiles/shell/{options,prompt,tools,local}.sh; do
     [ -r "$stuffs" ] && [ -f "$stuffs" ] && source "$stuffs"
 done
 unset stuffs
 
 [ "$(hostname)" = "jamin-work" ] || [ -z "$WORK" ] &&
     source ~/.dotfiles/shell/work.sh
-
-#---------------------------------------------------------------------------
-# BASH - TOOLS
-#---------------------------------------------------------------------------
-for things in ~/.dotfiles/shell/tools/[!_]*; do
-    [ -r "$things" ] && [ -f "$things" ] && source "$things"
-done
-unset things
 
 #---------------------------------------------------------------------------
 # BASH - COMPLETIONS

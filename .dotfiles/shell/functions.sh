@@ -1,5 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
+# -----------------------------------------------------------------------------
 # Utilities
 #---------------------------------------------------------------------------------
 
@@ -42,8 +43,16 @@ vipe() {
     cat "$tmp"
 }
 
+# -----------------------------------------------------------------------------
 # Filesystem
 #---------------------------------------------------------------------------------
+
+if is-supported fff; then
+    ff() {
+        fff "$@"
+        cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
+    }
+fi
 
 # Format JSON and sort fields
 # arg1: input file
@@ -128,6 +137,7 @@ dedup_lines() {
     awk '!visited[$0]++' "$@"
 }
 
+# -----------------------------------------------------------------------------
 # Networking
 #---------------------------------------------------------------------------------
 
@@ -180,6 +190,7 @@ ips() {
     fi
 }
 
+# -----------------------------------------------------------------------------
 # Git
 #---------------------------------------------------------------------------------
 
@@ -218,16 +229,7 @@ fgco() {
     unset PICK_BRANCH_CMD SEARCH_TERM
 }
 
-# Adds some additional default fzf options
-# and uses my username as the default search term
-gcof() {
-    SEARCH_TERM="${1:-"$USER"}"
-    [ "$#" -gt 0 ] && shift
-    gfco "$SEARCH_TERM" --reverse --header='Checkout Branch' --height=15 "$@"
-    unset SEARCH_TERM
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# -----------------------------------------------------------------------------
 # Arrays
 #---------------------------------------------------------------------------------
 
@@ -265,6 +267,7 @@ array_dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
+# -----------------------------------------------------------------------------
 # Cheatsheets
 # -----------------------------------------------------------------------------
 # https://github.com/chubin/cheat.sh
@@ -297,16 +300,177 @@ cmdfu_random() {
     # )\n"
 }
 
+# -----------------------------------------------------------------------------
+# FZF
+# -----------------------------------------------------------------------------
+# Functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples
+
+if is-supported fzf; then
+    # fzf --preview command for file and directory
+    if type bat >/dev/null 2>&1; then
+        # shellcheck disable=2016
+        FZF_PREVIEW_CMD='bat --color=always --plain --line-range :$FZF_PREVIEW_LINES {}'
+    elif type pygmentize >/dev/null 2>&1; then
+        # shellcheck disable=2016
+        FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {} | pygmentize -g'
+    else
+        # shellcheck disable=2016
+        FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
+    fi
+
+    # cd into the directory of the selected file
+    fzfile() {
+        cd "$(
+            fzf +m -q "$*" \
+                --preview="${FZF_PREVIEW_CMD}" \
+                --preview-window='right:hidden:wrap' \
+                --bind=ctrl-v:toggle-preview \
+                --bind=ctrl-x:toggle-sort \
+                --header='(view:ctrl-v) (sort:ctrl-x)' |
+                xargs dirname
+        )" || return
+    }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if is-supported fasd; then
+        # selectable cd to frecency directory using fasd
+        fz() {
+            # shellcheck disable=2016
+            cd "$(
+                fasd -dl |
+                    fzf \
+                        --tac \
+                        --reverse \
+                        --no-sort \
+                        --no-multi \
+                        --tiebreak=index \
+                        --bind=ctrl-x:toggle-sort \
+                        --query "$*" \
+                        --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
+                        --preview-window='right:hidden:wrap' \
+                        --bind=ctrl-v:toggle-preview \
+                        --bind=ctrl-x:toggle-sort \
+                        --header='(view:ctrl-v) (sort:ctrl-x)'
+            )" || return
+        }
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        # open best matched file using `fasd` if given argument
+        # otherwise filter output of `fasd` using `fzf`
+        fze() {
+            [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
+            file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" &&
+                "${EDITOR:-vim}" "${file}" || return 1
+            unset file
+        }
+    fi
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Open the selected file in the default editor
+    #   - CTRL-O to open with `open` command,
+    #   - CTRL-E or Enter key to open with the $EDITOR
+    feo() {
+        IFS=$'\n' out=("$(fzf --query="$1" --expect=ctrl-o,ctrl-e)")
+        # shellcheck disable=2128
+        key=$(head -1 <<<"$out")
+        # shellcheck disable=2128
+        file=$(head -2 <<<"$out" | tail -1)
+        if [ -n "$file" ]; then
+            if [ "$key" = ctrl-o ]; then
+                open "$file"
+            else
+                ${EDITOR:-vim} "$file"
+            fi
+        fi
+    }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    fif() {
+        if [ ! "$#" -gt 0 ]; then
+            echo "Need a string to search for!"
+            return 1
+        fi
+        rg --files-with-matches --no-messages "$1" |
+            fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+    }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Select multiple files to run a command on, e.g. $ fmr vlc
+    fmr() { fzf -m -x | xargs -d'\n' -r "$@"; }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    fkill() {
+        if [ "$UID" != "0" ]; then
+            kill_pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+        else
+            kill_pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+        fi
+        if [ "x$kill_pid" != "x" ]; then
+            echo "$kill_pid" | xargs kill -"${1:-9}"
+        fi
+        unset kill_pid
+    }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # fgshow - git commit browser
+    fgshow() {
+        git log --graph --color=always \
+            --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+            fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+                --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+                FZF-EOF"
+    }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    if is-supported jq; then
+        # find an emoji
+        # usage: $ find_emoji | cb
+        function femoji() {
+            emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
+            if [ ! -r "$emoji_cache" ]; then
+                curl -sSLo "$emoji_cache" \
+                    https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json
+            fi
+
+            jq <"$emoji_cache" -r '.[] | [
+            .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
+            ] | @tsv
+            ' | fzf --prompt 'Search emojis > ' | cut -f1
+            unset emoji_cache
+        }
+    fi
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Gets a gsetting value using fzf
+    fgsget() {
+        gsettings list-schemas | fzf |
+            while read -r _GS_SCHEMA; do
+                gsettings list-keys "$_GS_SCHEMA" | fzf |
+                    while read -r _GS_KEY; do
+                        echo "Schema: $_GS_SCHEMA"
+                        echo "Key: $_GS_KEY"
+                        echo "Value: $(gsettings get "$_GS_SCHEMA" "$_GS_KEY")"
+                    done
+            done
+    }
+fi
+
+#---------------------------------------------------------------------------------
 # Misc
 #---------------------------------------------------------------------------------
 
-vcd() {
-    cd "$(command vifm --choose-dir - "$@")" || return 1
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+# use vifm to cd
+vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 # make one or more directories and cd into the last one
-mcd() {
-    mkdir -p -- "$@" && cd -- "${!#}" || return 1
-}
+mcd() { mkdir -p -- "$@" && cd -- "${!#}" || return 1; }

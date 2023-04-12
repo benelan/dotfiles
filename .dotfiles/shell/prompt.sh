@@ -47,8 +47,6 @@ if is-supported starship; then
     # fi
     eval "$(starship init bash)"
 else
-    # shellcheck disable=1090
-    source ~/.dotfiles/shell/tools/git-prompt.sh
 
     if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
         export TERM='gnome-256color'
