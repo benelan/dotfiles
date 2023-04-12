@@ -161,8 +161,6 @@ alias fgbd="git branch | fzf --multi | xargs git branch -d"
 alias fgcoc='git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout'
 # get git commit sha
 alias fgcs='git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"'
-# open fugitive status
-alias G="nvim +G +'wincmd o'"
 
 # Dotfiles
 # -----------------------------------------------------------------------------
@@ -195,7 +193,7 @@ edit_dotfiles() {
 eddf() { edit_dotfiles +"DiffviewOpen $*"; }
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias envim="edit_dotfiles ~/.config/nvim/init.lua"
-alias D="edit_dotfiles +G +'wincmd o'"
+alias G="edit_dotfiles +G +'wincmd o'"
 
 # add
 ######
