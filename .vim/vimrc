@@ -11,8 +11,7 @@ if has("syntax") && !exists("syntax_on")
     syntax enable
 endif
 
-set omnifunc=syntaxcomplete#Complete
-set completefunc=syntaxcomplete#Complete
+set omnifunc=syntaxcomplete#Complete completefunc=syntaxcomplete#Complete
 set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
@@ -22,8 +21,8 @@ set tabstop=4 softtabstop=-1 shiftwidth=4 shiftround smarttab expandtab
 set complete-=i wildmenu wildmode=list:longest,full
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
-set backupdir=$HOME/.vim/backups directory=$HOME/.vim/swaps
-set sessionoptions-=options viewoptions-=options noswapfile
+set backupdir=$HOME/.vim/backups noswapfile
+set sessionoptions-=options viewoptions-=options
 set path-=/usr/include define= include=
 set foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
@@ -164,9 +163,6 @@ nnoremap ]t :tabnext<CR>
 "" Jump list
 nnoremap [j <C-i>
 nnoremap ]j <C-o>
-"" Diff conflicts
-nnoremap [x :ConflictPreviousHunk<cr>
-nnoremap ]x :ConflictNextHunk<cr>
 
 "" Selecting hunks when using vimdiff as mergetool
 nnoremap <leader>gmU :diffupdate<cr>
@@ -177,8 +173,6 @@ nnoremap <leader>gmB :%diffget BA<cr
 nnoremap <leader>gml :diffget LO<cr>
 nnoremap <leader>gmL :diffget LO<cr>
 
-"" close the current buffer
-nnoremap <leader>bd :Bdelete<cr>
 "" close all the buffers
 nnoremap <leader>bda :bufdo bd<cr>
 "" picks buffer
@@ -202,11 +196,9 @@ let s:last_tab = 1
 nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let s:last_tab = tabpagenr()
 
-" Save/delete buffers
-inoremap <C-Q> :Bdelete<cr>
+" Save buffers
 nnoremap <leader>w :w<cr>
-nnoremap <leader>q :q<cr>
-inoremap <C-S> :write<cr>
+inoremap <C-S> :write<cr><esc>
 
 " Create splits
 nnoremap <leader>- :split<cr>
@@ -284,9 +276,6 @@ tnoremap <leader><Esc> <C-\><C-n>
 tnoremap <Esc><Esc> <C-\><C-n>
 tnoremap <S-Space> <Space>
 tnoremap <C-Space> <Space>
-
-"" File explorer
-nnoremap <silent> <leader>e :NetrwToggle<CR>
 
 " ----------------------------------------------------------------------
 " | Autocommands                                                       |
@@ -377,11 +366,10 @@ endfunction
 " ----------------------------------------------------------------------
 
 function! FugitiveGitBranch()
-  if g:loaded_fugitive && FugitiveGitDir() != expand("~") .. "/.git"
-    let head = fugitive#Head()
-    return head != "" ? "   " .. head .. "  " : ""
-  endif
-  return ""
+    return exists("g:loaded_fugitive")
+          \ && FugitiveGitDir() != expand("~") .. "/.git"
+          \ ? "   " .. fugitive#Head() .. "  "
+          \ : ""
 endfunction
 
 set statusline=%#TabLineSel#                    " TabLineSel highlight

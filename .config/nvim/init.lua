@@ -67,11 +67,14 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = augroup "resize_windows",
-  callback = function()
-    vim.cmd "tabdo wincmd ="
-  end,
+vim.api.nvim_create_autocmd(
+  { "VimResized" },
+  { group = augroup "resize_windows", command = "wincmd =" }
+)
+
+vim.api.nvim_create_autocmd({ "DirChanged" }, {
+  group = augroup "set_osc7",
+  command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {

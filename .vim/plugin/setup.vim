@@ -97,16 +97,9 @@ inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
 vnoremap <leader><C-l> <Esc><C-l>gv
 
 " go to line above/below the cursor, from insert mode
-inoremap <S-CR> <C-O>o
-inoremap <C-CR> <C-O>O
+inoremap <C-Down> <C-O>o
+inoremap <C-Up> <C-O>O
 
-tnoremap <C-p> <Up>
-tnoremap <C-n> <Down>
-
-" clear search highlights if there any
-" nnoremap <silent> <expr> <CR> {-> v:hlsearch
-"             \ ? "<cmd>nohl\<CR>" : line("w$") < line("$")
-"             \ ? "\<PageDown>" : ":\<C-U>next\<CR>" }()
 
 "" https://vi.stackexchange.com/a/213
 " move down jumping over blank lines and indents
@@ -124,11 +117,6 @@ onoremap <leader>. :<C-U>execute "normal! `[v`]"<CR>
 onoremap <leader>% :<C-U>execute "normal! 1GVG"<CR>
 omap <leader>5 <leader>%
 
-nnoremap <Leader>r <Plug>(ReplaceOperator)
-vnoremap <Leader>r <Plug>(ReplaceOperator)
-
-nnoremap g: <Plug>(ColonOperator)
-
 " expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
@@ -137,8 +125,14 @@ nnoremap <leader>! :<Up><Home><S-Right>!<CR>
 
 nnoremap <leader><Delete> :bdelete<CR>
 
+nnoremap g: <Plug>(ColonOperator)
+nnoremap <Leader>r <Plug>(ReplaceOperator)
+vnoremap <Leader>r <Plug>(ReplaceOperator)
+
 nnoremap <leader>/ :Commentary<CR>
 vnoremap <leader>/ :Commentary<CR>
+
+nnoremap <leader>u :UndotreeToggle<CR>
 
 " start interactive EasyAlign in visual mode (e.g. vipg-)
 xnoremap g- <Plug>(EasyAlign)
@@ -146,7 +140,7 @@ xnoremap g- <Plug>(EasyAlign)
 nnoremap g- <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------------------
-" | User commands                                                           |
+" | Helper functions and user commands                                      |
 " ---------------------------------------------------------------------------
 
 function! s:NetrwToggle()
@@ -156,6 +150,21 @@ function! s:NetrwToggle()
 endfunction
 
 command! NetrwToggle call <sid>NetrwToggle()
+nnoremap <silent> <leader>e :NetrwToggle<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function! s:QuickFixToggle()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
+command! QuickFixToggle call <sid>QuickFixToggle()
+nnoremap <silent> <C-q> :QuickFixToggle<CR>
+nnoremap <silent> <leader>q :QuickFixToggle<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -189,6 +198,8 @@ endfunction
 
 command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
 command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
+nnoremap [x :ConflictPreviousHunk<CR>
+nnoremap ]x :ConflictNextHunk<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -236,6 +247,10 @@ command! -bang -complete=buffer -nargs=? Bdelete
 
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BgoneHeathen("bwipeout", <q-bang>)
+
+nnoremap <silent> <leader>bd :Bdelete<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function! Grep(...)
     let s:command = join([&grepprg] + [expandcmd(join(a:000, " "))], " ")
@@ -445,4 +460,3 @@ endfunction
 inoreabbrev teh the
 inoreabbrev CDS Calcite Design System
 inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
-

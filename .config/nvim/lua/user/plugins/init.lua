@@ -1,14 +1,11 @@
 return {
-  -----------------------------------------------------------------------------
-  ----> Local
-  -----------------------------------------------------------------------------
   {
     dir = "~/.vim",
     lazy = false,
     priority = 1000,
     cmd = { "G" },
-    keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Undotree" } },
   },
+  -----------------------------------------------------------------------------
   {
     dir = "~/dev/lib/fzf",
     cmd = "FZF",
@@ -18,11 +15,11 @@ return {
       { "<leader>fzb", ":Buffers<cr>", desc = "FZF Buffers" },
     },
   },
-
-  -----------------------------------------------------------------------------
-  ----> General
   -----------------------------------------------------------------------------
   { "folke/lazy.nvim", version = "*" },
+  -----------------------------------------------------------------------------
+  { "vifm/vifm.vim", event = "VeryLazy", keys = { { "-", "<cmd>Vifm<cr>" } } },
+  -----------------------------------------------------------------------------
   {
     "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
     config = function()
@@ -32,23 +29,21 @@ return {
       keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
     end,
   },
+  -----------------------------------------------------------------------------
   {
-    "vifm/vifm.vim", -- integrates vifm (file explorer)
-    event = "VeryLazy",
-    keys = { { "-", "<cmd>Vifm<cr>", desc = "Vifm" } },
-  },
-  {
-    "romainl/vim-qf", -- quickfix list improvements
+    "romainl/vim-qf", -- quickfix/location list improvements
     event = "VeryLazy",
     init = function()
       vim.g.qf_mapping_ack_style = 1
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
     cond = vim.g.use_devicons == true,
   },
+  -----------------------------------------------------------------------------
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
     keys = { "<C-a>", "<C-x>" },
@@ -77,6 +72,7 @@ return {
       keymap("v", "g<C-x>", require("dial.map").dec_gvisual())
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "rmagatti/goto-preview", -- open lsp previews in floating window
     config = true,

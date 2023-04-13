@@ -49,7 +49,6 @@ keymap("t", "<esc>", "<C-\\><C-N>")
 
 -- directory navigation
 keymap("n", "cd", "<CMD>cd %:h <Bar> pwd<CR>", "Change directory to buffer")
-keymap("n", "<leader>e", "<cmd>NetrwToggle<cr>", "Netrw")
 
 -- Search visually selected text
 -- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])
@@ -141,10 +140,6 @@ keymap("n", "[j", "<C-i>", "Previous jump")
 -- change
 keymap("n", "]c", "g,", "Next change")
 keymap("n", "[c", "g;", "Previous change")
-
--- diff conflict
-keymap("n", "]x", "<cmd>ConflictNextHunk<cr>", "Next conflict")
-keymap("n", "[x", "<cmd>ConflictPreviousHunk<cr>", "Previous conflict")
 
 -- diagnostic error
 keymap(
@@ -292,8 +287,7 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to buffer")
 
 -- close/write
-keymap("n", "<leader>bd", "<CMD>Bdelete<CR>", "Close buffer (keep window)")
-keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer (keep window)")
+keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
 keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Quit")
 keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write all")
 

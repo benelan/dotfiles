@@ -23,7 +23,7 @@ return {
   },
   {
     "Wansmer/treesj",
-    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "Join Toggle" } },
+    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "JoinToggle" } },
     cmd = "TSJToggle",
     opts = { use_default_keymaps = false, max_join_length = 300 },
   },
