@@ -2,26 +2,25 @@ return {
   "hrsh7th/nvim-cmp", -- completion engine
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
-    { "hrsh7th/cmp-path" }, -- relative path completions
-    { "hrsh7th/cmp-buffer" }, -- buffer completions
-    { "hrsh7th/cmp-cmdline" }, -- commandline completion
-    { "hrsh7th/cmp-nvim-lsp" }, -- lsp completion
-    { "hrsh7th/cmp-nvim-lua" }, -- lua language and nvim API completion
-    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- function signature completions
-    { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- lsp document symbol completion
-    { "petertriho/cmp-git" }, -- issue/pr/mentions/commit completion in git_commit/octo buffers
-    { "ray-x/cmp-treesitter" }, -- treesitter node completion
-    { "saadparwaiz1/cmp_luasnip" }, -- snippet completions
-    { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- relative path rg completions
-    { "David-Kunz/cmp-npm", cond = vim.fn.executable "npm" == 1 }, -- npm completion in package.json buffers
-    { "f3fora/cmp-spell", enabled = false }, -- completion for vim's spellsuggest
-    { "folke/neodev.nvim", enabled = false }, -- NeoVim Lua API info
+    { "f3fora/cmp-spell", enabled = false }, -- vim's spellsuggest
+    { "folke/neodev.nvim", enabled = false }, -- nvim lua API
+    { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= "" }, -- visible text in other tmux panes
+    { "David-Kunz/cmp-npm", cond = vim.fn.executable "npm" == 1 }, -- package.json buffers
+    { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
+    { "hrsh7th/cmp-buffer" }, -- buffers
+    { "hrsh7th/cmp-cmdline" }, -- commandline
+    { "hrsh7th/cmp-nvim-lsp" }, -- lsp
+    { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- lsp document symbol
+    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- function signature
+    { "hrsh7th/cmp-nvim-lua" }, -- lua language and nvim API
+    { "hrsh7th/cmp-path" }, -- relative paths
+    { "petertriho/cmp-git" }, -- issue/pr/mentions/commit in git_commit/octo buffers
+    { "ray-x/cmp-treesitter" }, -- treesitter nodes
+    { "saadparwaiz1/cmp_luasnip" }, -- snippets
     {
       "L3MON4D3/LuaSnip", -- snippet engine
       version = "v1.*",
-      dependencies = {
-        "rafamadriz/friendly-snippets", -- a bunch of snippets to use
-      },
+      dependencies = { "rafamadriz/friendly-snippets" },
     },
   },
   config = function()
@@ -59,7 +58,7 @@ return {
       Number = "   ",
       Object = "   ",
       Operator = "   ",
-      Package = "   ", -- 
+      Package = "   ",
       Property = "   ",
       Reference = "   ",
       Snippet = "   ",
@@ -165,16 +164,17 @@ return {
         format = function(entry, vim_item)
           vim_item.menu = ({
             buffer = " [BUF] ",
+            git = " [GIT] ",
+            luasnip = "[SNIP] ",
             nvim_lsp = " [LSP] ",
+            nvim_lsp_document_symbol = " [SYM] ",
             nvim_lsp_signature_help = " [LSP] ",
             nvim_lua = " [API] ",
             path = "[PATH] ",
-            luasnip = "[SNIP] ",
-            treesitter = "[TREE] ",
             rg = "  [RG] ",
-            git = " [GIT] ",
-            nvim_lsp_document_symbol = " [SYM] ",
             spell = " [SPL] ",
+            tmux = "[TMUX] ",
+            treesitter = "[TREE] ",
           })[entry.source.name]
           if
             vim.tbl_contains({ "path" }, entry.source.name)
@@ -201,11 +201,12 @@ return {
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
         { name = "luasnip" },
-        { name = "treesitter" },
         { name = "git" },
         { name = "buffer" },
         { name = "path" },
+        { name = "tmux" },
         { name = "nvim_lsp_signature_help" },
+        { name = "treesitter", keyword_length = 4 },
         {
           name = "spell",
           option = {
@@ -230,7 +231,14 @@ return {
       experimental = { ghost_text = true },
     }
 
-    -- Use buffer source for `/` and `?`
+    cmp.setup.filetype("gitcommit", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources(
+        { { name = "cmp_git" } },
+        { { name = "buffer" } }
+      ),
+    })
+
     cmp.setup.cmdline({ "/", "?" }, {
       mapping = cmp.mapping.preset.cmdline(),
       sources = {
@@ -240,16 +248,12 @@ return {
       },
     })
 
-    -- Use cmdline & path source for ':'
     cmp.setup.cmdline(":", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources(
-        { { name = "path" } },
-        { { name = "cmdline" } },
-        {
-          { name = "rg", keyword_length = 3 },
-        }
-      ),
+      sources = cmp.config.sources({ { name = "cmdline" } }, {
+        { name = "path" },
+        { name = "rg", keyword_length = 4 },
+      }),
     })
 
     keymap({ "i", "s" }, "<C-l>", function()
