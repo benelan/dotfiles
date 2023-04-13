@@ -24,6 +24,13 @@ install_repeat() {
         https://raw.githubusercontent.com/tpope/vim-repeat/master/autoload/repeat.vim
 }
 
+install_abolish() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-abolish/master/plugin/abolish.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-abolish/master/doc/abolish.txt
+}
+
 install_surround() {
     $INSTALL_CMD $VIM_PLUGIN \
         https://raw.githubusercontent.com/tpope/vim-surround/master/plugin/surround.vim
@@ -50,6 +57,13 @@ install_rsi() {
         https://raw.githubusercontent.com/tpope/vim-rsi/master/plugin/rsi.vim
     $INSTALL_CMD $VIM_DOC \
         https://raw.githubusercontent.com/tpope/vim-rsi/master/doc/rsi.txt
+}
+
+install_obession() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tpope/vim-obsession/master/plugin/obsession.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tpope/vim-obsession/master/doc/obsession.txt
 }
 
 install_vinegar() {
@@ -92,6 +106,17 @@ install_closer() {
         https://raw.githubusercontent.com/rstacruz/vim-closer/master/autoload/closer.vim
 }
 
+install_codi() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/metakirby5/codi.vim/master/plugin/codi.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/metakirby5/codi.vim/master/doc/codi.txt
+    $INSTALL_CMD $VIM_AUTOLOAD \
+        https://raw.githubusercontent.com/metakirby5/codi.vim/master/autoload/codi.vim
+    $INSTALL_CMD "$VIM_AUTOLOAD/codi" \
+        https://raw.githubusercontent.com/metakirby5/codi.vim/master/autoload/codi/load.vim
+}
+
 install_easy_align() {
     $INSTALL_CMD $VIM_PLUGIN \
         https://raw.githubusercontent.com/junegunn/vim-easy-align/master/plugin/easy_align.vim
@@ -99,6 +124,20 @@ install_easy_align() {
         https://raw.githubusercontent.com/junegunn/vim-easy-align/master/doc/easy_align.txt
     $INSTALL_CMD $VIM_AUTOLOAD \
         https://raw.githubusercontent.com/junegunn/vim-easy-align/master/autoload/easy_align.vim
+}
+
+install_exchange() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/tommcdo/vim-exchange/master/plugin/exchange.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/tommcdo/vim-exchange/master/doc/exchange.txt
+}
+
+install_grepper() {
+    $INSTALL_CMD $VIM_PLUGIN \
+        https://raw.githubusercontent.com/mhinz/vim-grepper/master/plugin/grepper.vim
+    $INSTALL_CMD $VIM_DOC \
+        https://raw.githubusercontent.com/mhinz/vim-grepper/master/doc/grepper.txt
 }
 
 install_gruvbox_material() {
@@ -121,16 +160,21 @@ install_undotree() {
         https://raw.githubusercontent.com/mbbill/undotree/master/syntax/undotree.vim
 }
 
+# install_abolish
 install_commentary
 install_eunuch
 install_fugitive
+# install_obession
 install_repeat
 install_rsi
 install_surround
-install_vinegar
+# install_vinegar
 
 install_closer
+# install_codi
 install_easy_align
+# install_exchange
+# install_grepper
 install_gruvbox_material
 install_rooter
 install_undotree
