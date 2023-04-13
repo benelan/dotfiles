@@ -16,11 +16,26 @@ return {
       },
     },
   },
+  -----------------------------------------------------------------------------
+  {
+    "uga-rosa/ccc.nvim",
+    enabled = true,
+    cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
+    opts = {
+      save_on_quit = true,
+      highlighter = {
+        auto_enable = true,
+        filetypes = { "css", "scss", "sass", "json" },
+      },
+    },
+  },
+  -----------------------------------------------------------------------------
   {
     "jinh0/eyeliner.nvim",
     enabled = false,
     opts = { highlight_on_key = false, dim = true },
   },
+  -----------------------------------------------------------------------------
   {
     "kosayoda/nvim-lightbulb",
     enabled = false,
@@ -33,6 +48,7 @@ return {
       })
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "petertriho/nvim-scrollbar",
     enabled = false,
@@ -58,6 +74,7 @@ return {
       require("scrollbar.handlers.gitsigns").setup()
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "lvimuser/lsp-inlayhints.nvim",
     enabled = false,
@@ -85,6 +102,7 @@ return {
       })
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "lukas-reineke/indent-blankline.nvim",
     enabled = false,
@@ -95,6 +113,7 @@ return {
       show_current_context = true,
     },
   },
+  -----------------------------------------------------------------------------
   {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
     enabled = true,
