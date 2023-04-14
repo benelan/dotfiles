@@ -10,7 +10,7 @@
 let s:configuration = gruvbox_material#get_configuration()
 let s:palette = gruvbox_material#get_palette(s:configuration.background, s:configuration.foreground, s:configuration.colors_override)
 let s:path = expand('<sfile>:p') " the path of this script
-let s:last_modified = 'Wed Apr  5 09:49:31 UTC 2023'
+let s:last_modified = 'Tue Apr 11 15:49:51 UTC 2023'
 let g:gruvbox_material_loaded_file_types = []
 
 if !(exists('g:colors_name') && g:colors_name ==# 'gruvbox-material' && s:configuration.better_performance)
@@ -708,6 +708,32 @@ if has('nvim-0.8.0')
   highlight! link @uri TSURI
   highlight! link @variable TSVariable
   highlight! link @variable.builtin TSVariableBuiltin
+endif
+if has('nvim-0.9.0')
+  highlight! link @lsp.type.class TSType
+  highlight! link @lsp.type.comment TSComment
+  highlight! link @lsp.type.decorator TSFunction
+  highlight! link @lsp.type.enum TSType
+  highlight! link @lsp.type.enumMember TSProperty
+  highlight! link @lsp.type.events TSLabel
+  highlight! link @lsp.type.function TSFunction
+  highlight! link @lsp.type.interface TSType
+  highlight! link @lsp.type.keyword TSKeyword
+  highlight! link @lsp.type.macro TSConstMacro
+  highlight! link @lsp.type.method TSMethod
+  highlight! link @lsp.type.modifier TSTypeQualifier
+  highlight! link @lsp.type.namespace TSNamespace
+  highlight! link @lsp.type.number TSNumber
+  highlight! link @lsp.type.operator TSOperator
+  highlight! link @lsp.type.parameter TSParameter
+  highlight! link @lsp.type.property TSProperty
+  highlight! link @lsp.type.regexp TSStringRegex
+  highlight! link @lsp.type.string TSString
+  highlight! link @lsp.type.struct TSType
+  highlight! link @lsp.type.type TSType
+  highlight! link @lsp.type.typeParameter TSTypeDefinition
+  highlight! link @lsp.type.variable TSVariable
+  highlight! link DiagnosticUnnecessary WarningText
 endif
 " }}}
 " github/copilot.vim {{{
@@ -1584,6 +1610,7 @@ if !s:configuration.transparent_background
   call gruvbox_material#highlight('NeoTreeEndOfBuffer', s:palette.bg_dim, s:palette.bg_dim)
   call gruvbox_material#highlight('NeoTreeVertSplit', s:palette.bg0, s:palette.bg0)
 endif
+highlight! link NeoTreeDirectoryIcon Orange
 highlight! link NeoTreeGitAdded Green
 highlight! link NeoTreeGitConflict Yellow
 highlight! link NeoTreeGitDeleted Red
@@ -2861,6 +2888,7 @@ highlight! link tomlBoolean Aqua
 highlight! link tomlTableArray tomlTable
 " syn_end }}}
 " syn_begin: gitcommit {{{
+" builtin {{{
 highlight! link gitcommitSummary Red
 highlight! link gitcommitUntracked Grey
 highlight! link gitcommitDiscarded Grey
@@ -2869,6 +2897,12 @@ highlight! link gitcommitUnmerged Grey
 highlight! link gitcommitOnBranch Grey
 highlight! link gitcommitArrow Grey
 highlight! link gitcommitFile Green
+" }}}
+" nvim-treesitter/nvim-treesitter {{{
+if has('nvim-0.8.0')
+  highlight! link @text.gitcommit Fg
+endif
+" }}}
 " syn_end }}}
 " syn_begin: dosini {{{
 call gruvbox_material#highlight('dosiniHeader', s:palette.red, s:palette.none, 'bold')
