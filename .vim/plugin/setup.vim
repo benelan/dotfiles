@@ -92,14 +92,18 @@ nnoremap & :&&<CR>
 vnoremap & :&&<CR>
 
 " clear search highlights
-nnoremap <leader><C-l> :<C-U>nohlsearch<CR><C-l>
-inoremap <C-l> <C-O>:execute "normal \<C-l>"<CR>
-vnoremap <leader><C-l> <Esc><C-l>gv
+nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
+vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
+inoremap <M-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
+
+nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " go to line above/below the cursor, from insert mode
 inoremap <C-Down> <C-O>o
 inoremap <C-Up> <C-O>O
 
+cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
+cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
 "" https://vi.stackexchange.com/a/213
 " move down jumping over blank lines and indents
@@ -135,9 +139,9 @@ vnoremap <leader>/ :Commentary<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " start interactive EasyAlign in visual mode (e.g. vipg-)
-xnoremap g- <Plug>(EasyAlign)
+xnoremap gA <Plug>(EasyAlign)
 " start interactive EasyAlign for a motion/text object (e.g. g-ip)
-nnoremap g- <Plug>(EasyAlign)
+nnoremap gA <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------------------
 " | Helper functions and user commands                                      |
@@ -269,8 +273,10 @@ if has("autocmd")
     " Open the file at its last location
     augroup open_file_at_previous_line
     autocmd!
-        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$")
-                        \ | exe "normal! g'\"" | endif
+        autocmd BufReadPost *
+                    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+                    \     execute "normal! g'\"" |
+                    \ endif
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

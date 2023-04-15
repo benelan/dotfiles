@@ -1,10 +1,5 @@
 return {
-  {
-    dir = "~/.vim",
-    lazy = false,
-    priority = 1000,
-    cmd = { "G" },
-  },
+  { dir = "~/.vim", lazy = false, priority = 1000, cmd = { "G" } },
   -----------------------------------------------------------------------------
   {
     dir = "~/dev/lib/fzf",
@@ -46,7 +41,24 @@ return {
   -----------------------------------------------------------------------------
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
-    keys = { "<C-a>", "<C-x>" },
+    keys = {
+      {
+        "<C-a>",
+        function()
+          return require("dial.map").inc_normal()
+        end,
+        expr = true,
+        desc = "Increment",
+      },
+      {
+        "<C-x>",
+        function()
+          return require("dial.map").dec_normal()
+        end,
+        expr = true,
+        desc = "Decrement",
+      },
+    },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       local augend = require "dial.augend"
@@ -64,12 +76,6 @@ return {
           augend.constant.alias.bool,
         },
       }
-      keymap("n", "<C-a>", require("dial.map").inc_normal())
-      keymap("n", "<C-x>", require("dial.map").dec_normal())
-      keymap("v", "<C-a>", require("dial.map").inc_visual())
-      keymap("v", "<C-x>", require("dial.map").dec_visual())
-      keymap("v", "g<C-a>", require("dial.map").inc_gvisual())
-      keymap("v", "g<C-x>", require("dial.map").dec_gvisual())
     end,
   },
   -----------------------------------------------------------------------------

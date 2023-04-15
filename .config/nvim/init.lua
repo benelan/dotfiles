@@ -6,19 +6,19 @@ vim.tbl_map(function(p)
   vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
 end, {
   "2html_plugin",
-  "getscript",
-  "getscriptPlugin",
   "gzip",
-  "logiPat",
-  "matchit",
-  "matchparen",
+  -- "matchit",
+  -- "matchparen",
+  -- "netrw",
+  -- "netrwFileHandlers",
+  -- "netrwPlugin",
+  -- "netrwSettings",
   "node_provider",
   "perl_provider",
   "python3_provider",
   "pythonx_provider",
-  "rrhelper",
+  "remote_plugins",
   "ruby_provider",
-  "spellfile_plugin",
   "tar",
   "tarPlugin",
   "tutor_mode_plugin",
@@ -26,10 +26,6 @@ end, {
   "vimballPlugin",
   "zip",
   "zipPlugin",
-  -- 'netrw',
-  -- 'netrwFileHandlers',
-  -- 'netrwPlugin',
-  -- 'netrwSettings',
 })
 
 vim.g.mapleader = " "
@@ -52,7 +48,7 @@ vim.g.use_devicons = os.getenv "TERM" == "wezterm"
 ----> Autocommands
 -------------------------------------------------------------------------------
 local function augroup(name)
-  return vim.api.nvim_create_augroup("bens_" .. name, {
+  return vim.api.nvim_create_augroup("ben_" .. name, {
     clear = true,
   })
 end
@@ -72,14 +68,28 @@ vim.api.nvim_create_autocmd(
   { group = augroup "resize_windows", command = "wincmd =" }
 )
 
+-- set the OSC7 escape code when changing directories
 vim.api.nvim_create_autocmd({ "DirChanged" }, {
   group = augroup "set_osc7",
   command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
+-- check if file changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = augroup "checktime",
   command = "checktime",
+})
+
+-- if necessary, create directories when saving file
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = augroup "auto_create_dir",
+  callback = function(event)
+    local file = vim.loop.fs_realpath(event.match) or event.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+    local backup = vim.fn.fnamemodify(file, ":p:~:h")
+    backup = backup:gsub("[/\\]", "%%")
+    vim.go.backupext = backup
+  end,
 })
 
 -------------------------------------------------------------------------------

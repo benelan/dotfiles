@@ -51,7 +51,7 @@ let &t_SH = "\e[%d q"
 let &t_RS = "\eP$q q\e\\"
 let &t_SI = "\e[5 q"
 let &t_SR = "\e[3 q"
-let &t_EI = "\e[1 q"
+" let &t_EI = "\e[1 q"
 let &t_VS = "\e[?12l"
 " Focus tracking
 let &t_fe = "\e[?1004h"
