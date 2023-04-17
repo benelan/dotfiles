@@ -88,8 +88,11 @@ if has("virtualedit")
     set virtualedit+=block
 endif
 
-if !exists("loaded_matchit") && findfile("plugin/matchit.vim", &rtp) ==# ""
+if !exists("loaded_matchit")
+  if findfile("plugin/matchit.vim", &rtp) ==# ""
     runtime! macros/matchit.vim
+  elseif finddir("pack/dist/opt/matchit", &rtp) != ""
+    packadd matchit
 endif
 
 if v:version > 703 || v:version == 703 && has("patch541")
@@ -366,10 +369,11 @@ endfunction
 " ----------------------------------------------------------------------
 
 function! FugitiveGitBranch()
-    return exists("g:loaded_fugitive")
-          \ && FugitiveGitDir() != expand("~") .. "/.git"
-          \ ? "   " .. fugitive#Head() .. "  "
-          \ : ""
+  if exists("g:loaded_fugitive") && FugitiveGitDir() != expand("~") .. "/.git"
+    let head = fugitive#Head()
+    return head != "" ? "   " .. head .. "  " : ""
+  endif
+  return ""
 endfunction
 
 set statusline=%#TabLineSel#                    " TabLineSel highlight
