@@ -16,12 +16,6 @@ return {
       desc = "Open Diffview",
     },
     {
-      "<leader>gh",
-      ":'<,'>DiffviewFileHistory<cr>",
-      "x",
-      desc = "Selection history",
-    },
-    {
       "<leader>gH",
       "<cmd>DiffviewFileHistory --follow<cr>",
       { "n", "x" },
@@ -33,8 +27,16 @@ return {
       desc = "Buffer file history",
     },
   },
+  config = function()
+    keymap(
+      "x",
+      "<leader>gh",
+      ":'<,'>DiffviewFileHistory<cr>",
+      "Selection history"
+    )
+  end,
   opts = function()
-    local actions = require("diffview.actions")
+    local actions = require "diffview.actions"
     return {
       enhanced_diff_hl = true,
       use_icons = vim.g.use_devicons,
@@ -53,16 +55,74 @@ return {
             actions.toggle_files,
             { desc = "Toggle the file panel." },
           },
-      { "n", "<leader>ml",  actions.conflict_choose("ours"),        { desc = "Choose the LOCAL version of a conflict" } },
-      { "n", "<leader>mr",  actions.conflict_choose("theirs"),      { desc = "Choose the REMOTE version of a conflict" } },
-      { "n", "<leader>mb",  actions.conflict_choose("base"),        { desc = "Choose the BASE version of a conflict" } },
-      { "n", "<leader>ma",  actions.conflict_choose("all"),         { desc = "Choose all the versions of a conflict" } },
-      { "n", "<leader>mx",  actions.conflict_choose("none"),        { desc = "Delete the conflict region" } },
-      { "n", "<leader>mL",  actions.conflict_choose_all("ours"),    { desc = "Choose the LOCAL version of a conflict for the whole file" } },
-      { "n", "<leader>mR",  actions.conflict_choose_all("theirs"),  { desc = "Choose the REMOTE version of a conflict for the whole file" } },
-      { "n", "<leader>mB",  actions.conflict_choose_all("base"),    { desc = "Choose the BASE version of a conflict for the whole file" } },
-      { "n", "<leader>mA",  actions.conflict_choose_all("all"),     { desc = "Choose all the versions of a conflict for the whole file" } },
-      { "n", "<leader>mX",  actions.conflict_choose_all("none"),    { desc = "Delete the conflict region for the whole file" } },
+          {
+            "n",
+            "<leader>ml",
+            actions.conflict_choose "ours",
+            { desc = "Choose the LOCAL version of a conflict" },
+          },
+          {
+            "n",
+            "<leader>mr",
+            actions.conflict_choose "theirs",
+            { desc = "Choose the REMOTE version of a conflict" },
+          },
+          {
+            "n",
+            "<leader>mb",
+            actions.conflict_choose "base",
+            { desc = "Choose the BASE version of a conflict" },
+          },
+          {
+            "n",
+            "<leader>ma",
+            actions.conflict_choose "all",
+            { desc = "Choose all the versions of a conflict" },
+          },
+          {
+            "n",
+            "<leader>mx",
+            actions.conflict_choose "none",
+            { desc = "Delete the conflict region" },
+          },
+          {
+            "n",
+            "<leader>mL",
+            actions.conflict_choose_all "ours",
+            {
+              desc = "Choose the LOCAL version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mR",
+            actions.conflict_choose_all "theirs",
+            {
+              desc = "Choose the REMOTE version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mB",
+            actions.conflict_choose_all "base",
+            {
+              desc = "Choose the BASE version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mA",
+            actions.conflict_choose_all "all",
+            {
+              desc = "Choose all the versions of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mX",
+            actions.conflict_choose_all "none",
+            { desc = "Delete the conflict region for the whole file" },
+          },
         },
         file_panel = {
           {
@@ -77,11 +137,44 @@ return {
             actions.toggle_files,
             { desc = "Toggle the file panel" },
           },
-      { "n", "<leader>mL",  actions.conflict_choose_all("ours"),    { desc = "Choose the LOCAL version of a conflict for the whole file" } },
-      { "n", "<leader>mR",  actions.conflict_choose_all("theirs"),  { desc = "Choose the REMOTE version of a conflict for the whole file" } },
-      { "n", "<leader>mB",  actions.conflict_choose_all("base"),    { desc = "Choose the BASE version of a conflict for the whole file" } },
-      { "n", "<leader>mA",  actions.conflict_choose_all("all"),     { desc = "Choose all the versions of a conflict for the whole file" } },
-      { "n", "<leader>mX",  actions.conflict_choose_all("none"),    { desc = "Delete the conflict region for the whole file" } },
+          {
+            "n",
+            "<leader>mL",
+            actions.conflict_choose_all "ours",
+            {
+              desc = "Choose the LOCAL version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mR",
+            actions.conflict_choose_all "theirs",
+            {
+              desc = "Choose the REMOTE version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mB",
+            actions.conflict_choose_all "base",
+            {
+              desc = "Choose the BASE version of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mA",
+            actions.conflict_choose_all "all",
+            {
+              desc = "Choose all the versions of a conflict for the whole file",
+            },
+          },
+          {
+            "n",
+            "<leader>mX",
+            actions.conflict_choose_all "none",
+            { desc = "Delete the conflict region for the whole file" },
+          },
         },
         file_history_panel = {
           {
