@@ -13,8 +13,6 @@
 -- >          c	    Command-line                                              |
 -- >          t	    Terminal-Job                                              |
 -------------------------->  :h map-listing  <---------------------------------
-keymap("i", "jk", "<ESC>")
-
 -- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 
@@ -31,10 +29,15 @@ keymap("n", "N", "Nzzzv", "Previous search result")
 keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
 
 -- Add undo break points
-keymap("i", ",", ",<c-g>u")
-keymap("i", "?", "?<c-g>u")
-keymap("i", ".", ".<c-g>u")
-keymap("i", ";", ";<c-g>u")
+local undo_before_chars = { "[", "(", "{", "<" }
+for _, char in ipairs(undo_before_chars) do
+  keymap("i", char, "<c-g>u" .. char)
+end
+
+local undo_after_chars = { ",", "?", ".", "!", ";", "]", ")", "}", ">" }
+for _, char in ipairs(undo_after_chars) do
+  keymap("i", char, char .. "<c-g>u")
+end
 
 -- Move Lines
 keymap("n", "<A-j>", "<cmd>m .+1<cr>==", "Move line down")
@@ -48,31 +51,26 @@ keymap("v", "<A-k>", ":m '<-2<cr>gv=gv", "Move line up")
 keymap("t", "<esc>", "<C-\\><C-N>")
 
 -- directory navigation
-keymap("n", "cd", "<CMD>cd %:h <Bar> pwd<CR>", "Change directory to buffer")
+keymap("n", "cd", "<cmd>cd %:h <bar> pwd<cr>", "Change directory to buffer")
 
 -- Search visually selected text
--- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])
--- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><CR>]])
+-- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<cr><cr>]])
+-- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<cr><cr>]])
 
 -- Search inside visually highlighted text
 keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
-
-keymap({ "n", "x" }, "gy", '"+y', "Copy to system clipboard")
-keymap({ "n", "x" }, "gY", '"+y$', "Copy EOL to system clipboard")
-keymap("n", "gp", '"+p', "Paste from system clipboard")
-keymap("x", "gp", '"+P', "Paste from system clipboard")
 
 -- Add empty lines before and after cursor line
 keymap(
   "n",
   "gO",
-  "<Cmd>call append(line('.') - 1, repeat([''], v:count1))<CR>",
+  "<cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>",
   "Put empty line above"
 )
 keymap(
   "n",
   "go",
-  "<Cmd>call append(line('.'), repeat([''], v:count1))<CR>",
+  "<cmd>call append(line('.'), repeat([''], v:count1))<cr>",
   "Put empty line below"
 )
 
@@ -104,34 +102,34 @@ keymap("n", "<leader>eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 -------------------------------------------------------------------------------
 
 -- tab
-keymap("n", "]t", "<CMD>tabnext<CR>", "Next tab")
-keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous tab")
-keymap("n", "]T", "<CMD>tablast<CR>", "Last tab")
-keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous tab")
+keymap("n", "]t", "<cmd>tabnext<cr>", "Next tab")
+keymap("n", "[t", "<cmd>tabprevious<cr>", "Previous tab")
+keymap("n", "]T", "<cmd>tablast<cr>", "Last tab")
+keymap("n", "[T", "<cmd>tabfirst<cr>", "Previous tab")
 
 -- buffer
-keymap("n", "]b", "<CMD>bnext<CR>", "Next buffer")
-keymap("n", "[b", "<CMD>bprevious<CR>", "Previous buffer")
-keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
-keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
+keymap("n", "]b", "<cmd>bnext<cr>", "Next buffer")
+keymap("n", "[b", "<cmd>bprevious<cr>", "Previous buffer")
+keymap("n", "]B", "<cmd>blast<cr>", "Last buffer")
+keymap("n", "[B", "<cmd>bfirst<cr>", "First buffer")
 
 -- argument
-keymap("n", "]a", "<CMD>next<CR>", "Next argument")
-keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
-keymap("n", "]A", "<CMD>last<CR>", "Last argument")
-keymap("n", "[A", "<CMD>first<CR>", "First argument")
+keymap("n", "]a", "<cmd>next<cr>", "Next argument")
+keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
+keymap("n", "]A", "<cmd>last<cr>", "Last argument")
+keymap("n", "[A", "<cmd>first<cr>", "First argument")
 
 -- quickfix
-keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
-keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
-keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
-keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
+keymap("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
+keymap("n", "[q", "<cmd>cprevious<cr>", "Previous quickfix")
+keymap("n", "]Q", "<cmd>clast<cr>", "Last quickfix")
+keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
 
 -- location
-keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
-keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
-keymap("n", "]l", "<CMD>llast<CR>", "Last location")
-keymap("n", "[l", "<CMD>lfirst<CR>", "First location")
+keymap("n", "]l", "<cmd>lnext<cr>", "Next location")
+keymap("n", "[l", "<cmd>lprevious<cr>", "Previous location")
+keymap("n", "]l", "<cmd>llast<cr>", "Last location")
+keymap("n", "[l", "<cmd>lfirst<cr>", "First location")
 
 -- jump
 keymap("n", "]j", "<C-o>", "Next jump")
@@ -245,23 +243,23 @@ vim.cmd [[
 keymap(
   { "n", "x" },
   "<M-f>",
-  "<CMD>GotoFirstFloat<CR>",
+  "<cmd>GotoFirstFloat<cr>",
   "Focus first floating window"
 )
 
 -- resize
-keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease horizontal window size")
-keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase horizontal window size")
+keymap("n", "<C-Up>", "<cmd>resize +5<cr>", "Decrease horizontal window size")
+keymap("n", "<C-Down>", "<cmd>resize -5<cr>", "Increase horizontal window size")
 keymap(
   "n",
   "<C-Left>",
-  "<CMD>vertical resize -5<CR>",
+  "<cmd>vertical resize -5<cr>",
   "Decrease vertical window size"
 )
 keymap(
   "n",
   "<C-Right>",
-  "<CMD>vertical resize +5<CR>",
+  "<cmd>vertical resize +5<cr>",
   "Increase vertical window size"
 )
 
@@ -275,21 +273,21 @@ keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 ----> Tabs
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New tab")
-keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close other tabs")
-keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
+keymap("n", "<leader>tn", "<cmd>tabnew<cr>", "New tab")
+keymap("n", "<leader>to", "<cmd>tabonly<cr>", "Close other tabs")
+keymap("n", "<leader>tc", "<cmd>tabclose<cr>", "Close tab")
 
 -------------------------------------------------------------------------------
 ----> Buffers
 -------------------------------------------------------------------------------
 
 -- list, pick, and jump to a buffer
-keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to buffer")
+keymap("n", "<leader>bj", ":<C-U>buffers<cr>:buffer<Space>", "Jump to buffer")
 
 -- close/write
-keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
-keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Quit")
-keymap({ "n", "i" }, "<M-w>", "<CMD>wa<CR>", "Write all")
+keymap("n", "<M-x>", "<cmd>bdelete<cr>", "Close buffer")
+keymap({ "n", "i" }, "<M-q>", "<cmd>q<cr>", "Quit")
+keymap({ "n", "i" }, "<M-w>", "<cmd>wa<cr>", "Write all")
 
 -- sudo save the file
 vim.api.nvim_create_user_command(
@@ -305,10 +303,19 @@ vim.api.nvim_create_user_command(
 local toggle_option = function(option, x, y)
   local on = x or true
   local off = y or false
-  local opt_value = vim.api.nvim_win_get_option(0, option)
+
+  local has_win_opt, opt_value = pcall(vim.api.nvim_win_get_option, 0, option)
+  if not has_win_opt then
+    opt_value = vim.api.nvim_get_option(option)
+  end
+
   local toggled = opt_value == off and on or off
 
-  vim.api.nvim_win_set_option(0, option, toggled)
+  if has_win_opt then
+    vim.api.nvim_win_set_option(0, option, toggled)
+  else
+    vim.api.nvim_set_option(option, toggled)
+  end
   vim.cmd.set(option .. "?")
 end
 
@@ -361,7 +368,7 @@ keymap("n", "<leader>sf", function()
   toggle_option("foldcolumn", "0", "1")
 end, "Toggle foldcolumn")
 
-keymap("n", "<leader>sc", function()
+keymap("n", "<leader>s|", function()
   toggle_option("colorcolumn", "0", "80")
 end, "Toggle colorcolumn")
 
@@ -388,3 +395,7 @@ end, "Toggle cursorcolumn")
 keymap("n", "<leader>s<Tab>", function()
   toggle_option "autoindent"
 end, "Toggle autoindent")
+
+keymap("n", "<leader>sc", function()
+  toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")
+end, "Toggle clipboard")

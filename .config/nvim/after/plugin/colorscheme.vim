@@ -59,7 +59,7 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
         call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
         call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffDelete', s:palette.none, s:palette.bg_diff_red)
+        call gruvbox_material#highlight('DiffDelete', s:palette.bg3, s:palette.bg_diff_red)
         call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
         call gruvbox_material#highlight('GitStatusLineChange', s:palette.orange, s:palette.bg3)

@@ -116,10 +116,9 @@ nnoremap <silent> gK :let _=&lazyredraw<CR>
             \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 " use last changed or yanked text as an object
-onoremap <leader>. :<C-U>execute "normal! `[v`]"<CR>
+onoremap V :<C-U>execute "normal! `[v`]"<CR>
 " use entire buffer as an object
-onoremap <leader>% :<C-U>execute "normal! 1GVG"<CR>
-omap <leader>5 <leader>%
+onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
 " expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
@@ -130,8 +129,8 @@ nnoremap <leader>! :<Up><Home><S-Right>!<CR>
 nnoremap <leader><Delete> :bdelete<CR>
 
 nnoremap g: <Plug>(ColonOperator)
-nnoremap <Leader>r <Plug>(ReplaceOperator)
-vnoremap <Leader>r <Plug>(ReplaceOperator)
+nnoremap <leader>r <Plug>(ReplaceOperator)
+vnoremap <leader>r <Plug>(ReplaceOperator)
 
 nnoremap <leader>/ :Commentary<CR>
 vnoremap <leader>/ :Commentary<CR>
@@ -147,6 +146,12 @@ nnoremap gA <Plug>(EasyAlign)
 " | Helper functions and user commands                                      |
 " ---------------------------------------------------------------------------
 
+command! QuickFixToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
+nnoremap <silent> <C-q> :QuickFixToggle<CR>
+nnoremap <silent> <leader>q :QuickFixToggle<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 function! s:NetrwToggle()
   try | Rexplore
   catch | Explore
@@ -155,20 +160,6 @@ endfunction
 
 command! NetrwToggle call <sid>NetrwToggle()
 nnoremap <silent> <leader>e :NetrwToggle<CR>
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-function! s:QuickFixToggle()
-    if empty(filter(getwininfo(), 'v:val.quickfix'))
-        copen
-    else
-        cclose
-    endif
-endfunction
-
-command! QuickFixToggle call <sid>QuickFixToggle()
-nnoremap <silent> <C-q> :QuickFixToggle<CR>
-nnoremap <silent> <leader>q :QuickFixToggle<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -231,19 +222,11 @@ xnoremap <silent> # :<C-u>call VisualSelection("")<CR>?<C-R>=@/<CR><CR>
 
 " Don't close window when deleting a buffer
 function s:BgoneHeathen(action, bang)
-  let l:currentBufNum = bufnr("%")
-  let l:alternateBufNum = bufnr("#")
-  if buflisted(l:alternateBufNum)
-      buffer #
-  else
-      bnext
-  endif
-  if bufnr("%") == l:currentBufNum
-      new
-  endif
-  if buflisted(l:currentBufNum)
-      execute(a:action.a:bang." ".l:currentBufNum)
-  endif
+  let l:cur = bufnr("%")
+  let l:alt = bufnr("#")
+  if buflisted(l:alt) | buffer # | else | bnext | endif
+  if bufnr("%") == l:cur | new | endif
+  if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
 endfunction
 
 command! -bang -complete=buffer -nargs=? Bdelete
@@ -271,17 +254,17 @@ if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Open the file at its last location
-    augroup open_file_at_previous_line
+    augroup ben_open_file_at_previous_line
     autocmd!
         autocmd BufReadPost *
-                    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-                    \     execute "normal! g'\"" |
-                    \ endif
+                    \ if line("'\"") > 1 && line("'\"") <= line("$")
+                    \|   execute "normal! g'\""
+                    \| endif
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    augroup global_marks
+    augroup ben_global_marks
       autocmd!
     " Create marks for specific filetypes when leaving buffer
       autocmd BufLeave *.css,*.scss,*.sass      normal! mC
@@ -302,46 +285,46 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Automatically switch back and forth between absolute and relative line numbers
-    " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-    " augroup relative_line_numbers
-    "     autocmd!
-    "     autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
-    "                 \ if &number && mode() != "i" | set relativenumber | endif
-    "     autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
-    "                 \ if &number | set norelativenumber | endif
-    " augroup END
-
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    augroup filetype_options
+    augroup ben_filetype_options
         autocmd!
         autocmd FileType * setlocal formatoptions-=o
 
         autocmd FileType qf,help,man
-                    \ set nobuflisted |
-                    \ nnoremap <silent> <buffer> q :q<CR>
+                    \ set nobuflisted
+                    \| nnoremap <silent> <buffer> q :q<CR>
 
-        autocmd FileType markdown,gitcommit,text
-                    \ setlocal wrap spell nornu nonu |
-                    \ nnoremap <buffer> <silent> ^ g^ |
-                    \ nnoremap <buffer> <silent> $ g$ |
-                    \ nnoremap <buffer> <silent> j gj |
-                    \ nnoremap <buffer> <silent> k gk
+        autocmd FileType markdown,mdx,gitcommit,text
+                    \ setlocal wrap spell
+                    \| nnoremap <buffer> <silent> ^ g^
+                    \| nnoremap <buffer> <silent> $ g$
+                    \| nnoremap <buffer> <silent> j gj
+                    \| nnoremap <buffer> <silent> k gk
+                    \| nnoremap <buffer> <silent> g^ ^
+                    \| nnoremap <buffer> <silent> g$ $
+                    \| nnoremap <buffer> <silent> gj j
+                    \| nnoremap <buffer> <silent> gk k
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Start insert mode when entering terminal and normal when leaving
-    augroup terminal_insert_mode
+    augroup ben_toggle_options
         autocmd!
+        " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
+        "  autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
+        "                 \ if &number && mode() != "i" | set relativenumber | endif
+        "  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
+        "                 \ if &number | set norelativenumber | endif
+
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
+
+        autocmd InsertLeave,WinEnter * set cursorline
+        autocmd InsertEnter,WinLeave * set nocursorline
     augroup END
 
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-     augroup quickfix
+     augroup ben_quickfix
         autocmd!
         autocmd QuickFixCmdPost cgetexpr cwindow
                     \| call setqflist([], "a", {"title": ":" . s:command})
@@ -352,7 +335,7 @@ if has("autocmd")
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Use templates when creating specific new files
-    augroup templates
+    augroup ben_templates
         autocmd!
         autocmd BufNewFile *.html 0r ~/.dotfiles/templates/index.html
         autocmd BufNewFile .gitignore 0r ~/.dotfiles/templates/.gitignore
