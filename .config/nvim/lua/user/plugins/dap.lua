@@ -15,22 +15,25 @@ return {
     },
     {
       "rcarriga/nvim-dap-ui",
-      opts = {
-        controls = {
-          element = "repl",
-          enabled = true,
-          icons = {
-            pause = "󰏦 ",
-            play = "󰐍 ",
-            run_last = "🗘 ",
-            step_back = "🠔 ",
-            step_into = "↳ ",
-            step_out = " ",
-            step_over = "↷ ",
-            terminate = "✘ ",
+      opts = function()
+        local icons = require("user.resources").icons.ui
+        return {
+          controls = {
+            element = "repl",
+            enabled = true,
+            icons = {
+              pause = icons.Pause,
+              play = icons.Play,
+              run_last = icons.Repeat,
+              step_back = icons.ArrowBack,
+              step_into = icons.ArrowInto,
+              step_out = icons.ArrowOut,
+              step_over = icons.ArrowOver,
+              terminate = icons.X,
+            },
           },
-        },
-      },
+        }
+      end,
     },
   },
   config = function()

@@ -121,9 +121,16 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local icons = require("user.resources").icons
+
 require("lazy").setup("user.plugins", {
   diff = { cmd = "diffview.nvim" },
   ui = {
-    icons = { cmd = " ", import = "󰶮 ", plugin = " ", start = "󰐍 " },
+    icons = {
+      cmd = icons.ui.Command,
+      import = icons.kind.Module,
+      plugin = icons.kind.Package,
+      start = icons.ui.Play,
+    },
   },
 })

@@ -36,28 +36,6 @@ return {
     },
   },
   opts = {
-    diagnostic_levels = {
-      {
-        name = "DiagnosticSignError",
-        text = " ",
-        severity = vim.diagnostic.severity.ERROR,
-      },
-      {
-        name = "DiagnosticSignWarn",
-        text = " ",
-        severity = vim.diagnostic.severity.WARN,
-      },
-      {
-        name = "DiagnosticSignHint",
-        text = " ",
-        severity = vim.diagnostic.severity.HINT,
-      },
-      {
-        name = "DiagnosticSignInfo",
-        text = " ",
-        severity = vim.diagnostic.severity.Info,
-      },
-    },
     diagnostics = {
       virtual_text = true,
       update_in_insert = false,
@@ -76,6 +54,7 @@ return {
     capabilities = {},
   },
   config = function(_, opts)
+    local diagnostic_levels = require("user.resources").icons.diagnostics
     vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
     vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
@@ -96,17 +75,18 @@ return {
       opts.capabilities or {}
     )
 
-    for _, sign in ipairs(opts.diagnostic_levels) do
-      vim.fn.sign_define(
-        sign.name,
-        { texthl = sign.name, text = sign.text, numhl = "" }
-      )
+    for _, sign in ipairs(diagnostic_levels) do
+      vim.fn.sign_define("DiagnosticSign" .. sign.name, {
+        texthl = "DiagnosticSign" .. sign.name,
+        text = sign.text,
+        numhl = "",
+      })
     end
 
     -- Skip past lower level diagnostics so I can fix my errors first
     -- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua
     local get_highest_error_severity = function()
-      for _, level in ipairs(opts.diagnostic_levels) do
+      for _, level in ipairs(diagnostic_levels) do
         local diags =
           vim.diagnostic.get(0, { severity = { min = level.severity } })
         if #diags > 0 then

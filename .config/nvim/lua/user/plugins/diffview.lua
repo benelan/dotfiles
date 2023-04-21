@@ -37,10 +37,15 @@ return {
   end,
   opts = function()
     local actions = require "diffview.actions"
+    local icons = require("user.resources").icons.ui
     return {
       enhanced_diff_hl = true,
       use_icons = vim.g.use_devicons,
-      signs = { fold_closed = "🞂 ", fold_open = "🞃 ", done = "✔ " },
+      signs = {
+        fold_closed = icons.Collapsed,
+        fold_open = icons.Expanded,
+        done = icons.Done,
+      },
       keymaps = {
         view = {
           {

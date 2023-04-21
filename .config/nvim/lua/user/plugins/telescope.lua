@@ -127,11 +127,12 @@ return {
     }
   end,
   opts = function()
+    local icons = require("user.resources").icons.ui
     return {
       defaults = {
-        prompt_prefix = " ❯  ", -- ❯ ❱ ⧽
-        selection_caret = "  ", -- ➜  ⮞     🡺  🡲
-        multi_icon = "✘  ", -- ✘  ✔
+        prompt_prefix = icons.Prompt,
+        selection_caret = icons.Select,
+        multi_icon = icons.X,
         entry_prefix = "   ",
         layout_config = { prompt_position = "top" },
         sorting_strategy = "ascending",

@@ -1,3 +1,4 @@
+local icons = require("user.resources").icons
 vim.opt.statusline = "%!v:lua.StatusLine()"
 
 local function table_length(T)
@@ -14,7 +15,7 @@ local function format_numeric_data(d)
   for _, item in ipairs(d) do
     if item.count and item.count > 0 then
       output[#output + 1] = "%#" .. item.highlight .. "#"
-      output[#output + 1] = "  " .. item.icon .. "  "
+      output[#output + 1] = "  " .. item.icon .. " "
       output[#output + 1] = item.count
       template = template .. "%s%s%d"
     end
@@ -25,36 +26,18 @@ local function format_numeric_data(d)
 end
 
 local function buffer_diagnostics()
-  return format_numeric_data {
-    {
-      highlight = "ErrorFloat", -- "DiagnosticVirtualTextError",
-      icon = "", -- " ",
+  local data = {}
+  for _, diagnostic in ipairs(icons.diagnostics) do
+    data[#data + 1] = {
+      icon = diagnostic.text,
       count = table_length(
-        vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+        vim.diagnostic.get(0, { severity = diagnostic.severity })
       ),
-    },
-    {
-      highlight = "WarningFloat", -- "DiagnosticVirtualTextWarn",
-      icon = "", -- " ",
-      count = table_length(
-        vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-      ),
-    },
-    {
-      highlight = "HintFloat", -- "DiagnosticVirtualTextHint",
-      icon = "", -- "   ",
-      count = table_length(
-        vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-      ),
-    },
-    {
-      highlight = "InfoFloat", -- "DiagnosticVirtualTextInfo",
-      icon = "", -- "",
-      count = table_length(
-        vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-      ),
-    },
-  }
+      highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name)
+        .. "Float",
+    }
+  end
+  return format_numeric_data(data)
 end
 
 local function gitsigns_info()
@@ -63,21 +46,25 @@ local function gitsigns_info()
     local status_info = {
       {
         highlight = "GitStatusLineAdd", -- "GitSignsAdd",
-        icon = "",
+        icon = icons.ui.Add,
         count = gs.added,
       },
       {
         highlight = "GitStatusLineChange", -- "GitSignsChange",
-        icon = "",
+        icon = icons.ui.Edit,
         count = gs.changed,
       },
       {
         highlight = "GitStatusLineDelete", -- "GitSignsDelete",
-        icon = "",
+        icon = icons.ui.Delete,
         count = gs.removed,
       },
     }
-    return "   " .. gs.head .. format_numeric_data(status_info) .. "  "
+    return "  "
+      .. icons.ui.Branch
+      .. gs.head
+      .. format_numeric_data(status_info)
+      .. "  "
   end
   return ""
 end
@@ -89,7 +76,7 @@ end
 --   then
 --     local head = vim.fn["fugitive#Head"]()
 --     if head ~= "" then
---       return "   " .. head .. "  "
+--       return "  " .. icons.ui.Branch .. head .. "  "
 --     end
 --   end
 --   return ""

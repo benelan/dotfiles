@@ -43,7 +43,7 @@ return {
     opts = { autocmd = { enabled = true } },
     init = function()
       vim.fn.sign_define("LightBulbSign", {
-        text = "",
+        text = require("user.resources").icons.ui.Light,
         texthl = "Yellow",
       })
     end,
@@ -106,7 +106,7 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     enabled = false,
     opts = {
-      char = "┊",
+      char = require("user.resources").icons.ui.Separator,
       show_trailing_blankline_indent = false,
       use_treesitter = true,
       show_current_context = true,

@@ -31,45 +31,7 @@ return {
     end
     local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
 
-    local kinds = {
-      Array = "   ",
-      Boolean = " ◩  ",
-      Class = " 🝆  ",
-      Color = "   ",
-      Comment = "   ",
-      Conditional = "   ",
-      Constant = " 󰭷  ",
-      Constructor = "   ",
-      Enum = "   ",
-      EnumMember = "   ",
-      Error = "   ",
-      Event = "   ",
-      Field = "   ",
-      File = "   ",
-      Folder = "   ",
-      Function = "   ", -- 󰡱
-      Interface = "   ", -- 
-      Key = " 󰌋  ",
-      Keyword = " 󰌋  ",
-      Method = "   ",
-      Module = " 󰶮  ",
-      Namespace = "   ",
-      Null = " ∅  ",
-      Number = "   ",
-      Object = "   ",
-      Operator = "   ",
-      Package = "   ",
-      Property = "   ",
-      Reference = "   ",
-      Snippet = "   ",
-      String = "   ",
-      Struct = "   ",
-      Text = "   ",
-      TypeParameter = "   ",
-      Unit = "   ",
-      Value = "   ",
-      Variable = "   ",
-    }
+    local kinds = require("user.resources").icons.kind
 
     local has_words_before = function()
       unpack = unpack or table.unpack
@@ -95,6 +57,7 @@ return {
         end,
       },
       mapping = {
+        ["<CR>"] = cmp.mapping.confirm { select = false },
         ["<C-k>"] = cmp.mapping.select_prev_item(),
         ["<C-j>"] = cmp.mapping.select_next_item(),
         ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
@@ -117,7 +80,6 @@ return {
           },
           { "i", "c" }
         ),
-        ["<CR>"] = cmp.mapping.confirm { select = false },
         ["<C-n>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
@@ -188,9 +150,8 @@ return {
               return vim_item
             end
           end
-          local kind_icon = kinds[vim_item.kind]
-          if kind_icon then
-            vim_item.kind = kinds[vim_item.kind] .. vim_item.kind .. "  "
+          if kinds[vim_item.kind] then
+            vim_item.kind = " " .. kinds[vim_item.kind] .. " " .. vim_item.kind .. "  "
           else
             vim_item.kind = "    " .. vim_item.kind .. "  "
           end
@@ -264,7 +225,7 @@ return {
 
     keymap({ "i", "s" }, "<C-h>", function()
       if ls.jumpable(-1) then
-        ls.jump(1)
+        ls.jump(-1)
       end
     end)
 
