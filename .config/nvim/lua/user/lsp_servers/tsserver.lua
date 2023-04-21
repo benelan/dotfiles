@@ -31,6 +31,7 @@ local function add_missing_imports()
 end
 
 return {
+  capabilities = { documentFormattingProvider = false },
   commands = {
     TypescriptOrganizeImports = {
       organize_imports,

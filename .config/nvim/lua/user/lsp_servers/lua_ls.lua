@@ -1,4 +1,5 @@
 return {
+  capabilities = { documentFormattingProvider = false },
   settings = {
     Lua = {
       hint = { arrayIndex = "Disable", enable = true, setType = true },
