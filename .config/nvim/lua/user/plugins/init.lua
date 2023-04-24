@@ -84,27 +84,27 @@ return {
     config = true,
     keys = {
       {
-        "gPI",
+        "gpI",
         "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",
         desc = "Preview implementation",
       },
       {
-        "gPd",
+        "gpd",
         "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",
         desc = "Preview definition",
       },
       {
-        "gPt",
+        "gpt",
         "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>",
         desc = "Preview type definition",
       },
       {
-        "gPr",
+        "gpr",
         "<cmd>lua require('goto-preview').goto_preview_references()<CR>",
         desc = "Preview references",
       },
       {
-        "gPq",
+        "gpq",
         "<cmd>lua require('goto-preview').close_all_win()<CR>",
         desc = "Close previews",
       },
