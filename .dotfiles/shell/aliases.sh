@@ -18,7 +18,10 @@ alias rr='rm -rf'
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-alias f="vifm"
+alias f='$(is-supported vifm vifm fff)'
+alias t="tmux"
+alias e='${EDITOR:-vim}'
+alias se='sudo e'
 
 # Directory listing/traversal
 COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)
@@ -35,13 +38,10 @@ alias lsd='ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED'
 # Lists hidden files, long format, sort by time
 alias lsh='ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
 
-# Always enable colored `grep` output
-# Note: `GREP_OPTIONS="--color=auto"` is deprecated
+# Always enable colored `grep` output (`GREP_OPTIONS="--color=auto"` is deprecated)
 alias grep='grep --color=auto'
-alias fgrep='grep -f --color=auto'
-alias egrep='grep -e --color=auto'
 
-# Colorizes diff output, if possible.
+# Colorizes diff output,if possible
 is-supported colordiff && alias diff='colordiff'
 
 # Finds directories.
@@ -55,11 +55,6 @@ alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
 # shellcheck disable=2139
 alias functions="declare -f | awk '/^[a-z].* ()/{gsub(\" .*$\",\"\"); print $1};'"
 alias paths='echo -e ${PATH//:/\\n}'
-
-# Sets editors and defaults.
-alias edit='${EDITOR:-vim}'
-alias e='edit'
-alias se='sudo e'
 
 # Intuitive map function
 # For example, to list all directories that contain a certain file:
@@ -87,8 +82,8 @@ if is-supported fasd; then
     alias zsf='fasd -sif'
     alias zd='fasd -d'
     alias zf='fasd -f'
-    alias ze='f -e nvim'
-    alias zo='a -e xdg-open'
+    alias ze='zf -e $EDITOR'
+    alias zo='za -e xdg-open'
     alias z='_fasd_cd -d'
     alias zz='_fasd_cd -d -i'
 
@@ -98,8 +93,10 @@ if is-supported fasd; then
             fasd "$@"
         else
             _fasd_ret="$(fasd -e 'printf %s' "$@")"
-            [ -z "$_fasd_ret" ] && return
-            [ -d "$_fasd_ret" ] && cd "$_fasd_ret" || printf '%s\n' "$_fasd_ret"
+            [ -n "$_fasd_ret" ] &&
+                [ -d "$_fasd_ret" ] &&
+                cd "$_fasd_ret" ||
+                printf '%s\n' "$_fasd_ret"
             unset _fasd_ret
         fi
     }
@@ -162,40 +159,21 @@ alias match-uri="grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.
 
 # display iptables rules
 alias ipt='sudo /sbin/iptables'
-alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
-alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
-alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
-alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
-alias firewall=iptlist
-
-# pass options to free
-is-supported free && alias meminfo='free -m -l -t'
+alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
 
 if is-supported ps; then
     # searchable process list
     alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
     # get top processes eating memory
     alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
-    alias psmem10='ps auxf | sort -nrk 4 | head -10 | perl -e "print reverse <>"'
     # get top processes eating cpu
     alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
-    alias pscpu10='ps auxf | sort -nrk 3 | head -10 | perl -e "print reverse <>"'
 fi
 
 # systemd shortcuts (Linux)
 if is-supported systemctl; then
     alias sc='systemctl'
-    alias scu='systemctl --user'
-    alias scdr='systemctl daemon-reload'
-    alias scudr='systemctl --user daemon-reload'
-    alias scr='systemctl restart'
-    alias scur='systemctl --user restart'
-    alias scq='systemctl stop'
-    alias scuq='systemctl --user stop'
-    alias scs='systemctl start'
-    alias scus='systemctl --user start'
     alias sclt='systemctl list-units --type target --all'
-    alias scult='systemctl list-units --type target --all --user'
 fi
 
 # Gets external IP address
@@ -237,17 +215,11 @@ fi
 # Node/NPM
 # -----------------------------------------------------------------------------
 
-if is-supported node; then
-    alias node-dev="export NODE_ENV=development"
-    alias node-prod="export NODE_ENV=production"
-fi
-
 if is-supported npm; then
     alias ni="npm install"
-    alias nrmi="rm -rf node_modules && npm install"
-    alias nui="npm uninstall"
-    alias nst="npm start"
-    alias nlk="npm link"
+    alias nu="npm uninstall"
+    alias ns="npm start"
+    alias nl="npm link"
     alias nt="npm test"
     alias nr="npm run"
     alias nrb="npm run build"
@@ -273,12 +245,7 @@ fi
 
 # Locks the session.
 is-supported gnome-screensaver-command &&
-    alias lock='gnome-screensaver-command --lock'
-
-if is-supported gsettings; then
-    alias gsschemas='gsettings list-schemas | grep -i'
-    alias gskeys='gsettings list-keys'
-fi
+    alias afk='gnome-screensaver-command --lock'
 
 # -----------------------------------------------------------------------------
 # Git
@@ -288,7 +255,7 @@ alias g='git'
 
 # deletes local branches already squash merged into the default branch
 # shellcheck disable=2016,2034,2154
-alias gbprune='TARGET_BRANCH="$(g bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
+alias gbprune='TARGET_BRANCH="$(git bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
 
 # add
 ######
@@ -321,7 +288,7 @@ alias gcamdne='git commit --amend --no-edit'
 ###########
 alias gco='git checkout'
 alias gcob='git checkout -b'
-alias gcom='git checkout "$(g bdefault)"'
+alias gcom='git checkout "$(git bdefault)"'
 
 # clone
 ########
@@ -336,7 +303,7 @@ alias gdft='git difftool'
 alias ge='$EDITOR $(git diff --name-only HEAD)'
 # sync origin's default branch and edit the changed files
 # shellcheck disable=2154
-alias geom='default_branch=$(g bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); unset default_branch'
+alias geom='default_branch=$(git bdefault); git fetch; git merge "origin/$default_branch"; $EDITOR $(git diff --name-only HEAD "origin/$default_branch"); unset default_branch'
 # open Diffview.nvim
 egdf() { nvim +"DiffviewOpen $*"; }
 
@@ -353,7 +320,7 @@ alias gg=' git log --graph'
 # https://stackoverflow.com/questions/39220870/in-git-list-names-of-branches-with-unpushed-commits
 alias glup='git log --branches --not --remotes --no-walk --decorate --oneline'
 # show commits in current branch that aren't merged to the default branch
-alias glum='git log "$(g bdefault)" ^HEAD'
+alias glum='git log "$(git bdefault)" ^HEAD'
 # show new commits created by the last command, e.g. pull
 alias gnew='git log HEAD@{1}..HEAD@{0}'
 
@@ -367,8 +334,8 @@ alias glsum='git diff --name-only --diff-filter=U'
 # merge
 ########
 alias gm='git merge'
-alias gmm='git merge "$(g bdefault)"'
-alias gmom='git fetch && git merge origin/$(g bdefault)'
+alias gmm='git merge "$(git bdefault)"'
+alias gmom='git fetch && git merge "origin/$(git bdefault)"'
 alias gmt='git mergetool'
 
 # push
@@ -379,14 +346,14 @@ alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 # pull
 #######
 alias gpl='git pull'
-alias gplum='git pull upstream "$(g bdefault)"'
+alias gplum='git pull upstream "$(git bdefault)"'
 
 # rebase
 #########
 alias grb='git rebase'
-alias grbma='GIT_SEQUENCE_EDITOR=: git rebase "$(g bdefault)" -i --autosquash'
+alias grbma='GIT_SEQUENCE_EDITOR=: git rebase "$(git bdefault)" -i --autosquash'
 # Rebase with latest remote
-alias gfrom='git fetch origin "$(g bdefault)" && git rebase origin/"$(g bdefault)" && git update-ref refs/heads/"$(g bdefault)" origin/"$(g bdefault)"'
+alias gfrom='default_branch="(git bdefault)"; git fetch origin "$default_branch" && git rebase "origin/$default_branch" && git update-ref "refs/heads/$default_branch" "origin/$default_branch"; unset default_branch'
 
 # reset
 ########
@@ -424,11 +391,11 @@ alias gtnext='git name-rev --tags --name-only'
 ##########
 alias gw='git worktree'
 alias gwa='git worktree add'
-alias gwR='git worktree remove'
+alias gwr='git worktree remove'
 alias gwl='git worktree list'
 alias gwp='git worktree prune'
 
-alias ghm='cd "$(git rev-parse --show-toplevel)"'
+alias groot='cd "$(git rev-parse --show-toplevel)"'
 alias ghide='git update-index --assume-unchanged'
 alias gunhide='git update-index --no-assume-unchanged'
 
