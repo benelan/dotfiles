@@ -1,34 +1,37 @@
 #!/usr/bin/env bash
 
-if tput setaf 1 >/dev/null 2>&1; then
-    reset=$(tput sgr0)
-    bold=$(tput bold)
-    underline=$(tput smul)
-    # Gruvbox colors from: https://github.com/morhetz/gruvbox
-    black=$(tput setaf 235)
-    blue=$(tput setaf 66)
-    aqua=$(tput setaf 72)
-    green=$(tput setaf 106)
-    orange=$(tput setaf 166)
-    purple=$(tput setaf 132)
-    red=$(tput setaf 124)
-    white=$(tput setaf 230)
-    yellow=$(tput setaf 172)
-else
-    reset="\e[0m"
-    bold='\e[1m'
-    underline='e[4m'
-    black="\e[1;30m"
-    blue="\e[1;34m"
-    aqua="\e[1;36m"
-    green="\e[1;32m"
-    orange="\e[1;33m"
-    purple="\e[1;35m"
-    red="\e[1;31m"
-    white="\e[1;37m"
-    yellow="\e[1;33m"
-fi
-export bold underline black blue aqua \
+{
+    if tput setaf 1 >/dev/null 2>&1; then
+        reset=$(tput sgr0)
+        bold=$(tput bold)
+        underline=$(tput smul)
+        # Gruvbox colors from: https://github.com/morhetz/gruvbox
+        black=$(tput setaf 235)
+        blue=$(tput setaf 66)
+        aqua=$(tput setaf 72)
+        green=$(tput setaf 106)
+        orange=$(tput setaf 166)
+        purple=$(tput setaf 132)
+        red=$(tput setaf 124)
+        white=$(tput setaf 230)
+        yellow=$(tput setaf 172)
+    else
+        reset="\e[0m"
+        bold='\e[1m'
+        underline='e[4m'
+        black="\e[1;30m"
+        blue="\e[1;34m"
+        aqua="\e[1;36m"
+        green="\e[1;32m"
+        orange="\e[1;33m"
+        purple="\e[1;35m"
+        red="\e[1;31m"
+        white="\e[1;37m"
+        yellow="\e[1;33m"
+    fi
+} >/dev/null 2>&1
+
+export bold underline reset black blue aqua \
     green orange purple red white yellow
 
 bind "set show-mode-in-prompt on"
@@ -40,18 +43,19 @@ bind "set vi-ins-mode-string \"I \""
 # Otherwise create a prompt manually
 if is-supported starship; then
     # Only use Nerd Font symbols if they are available
-    # if [[ $(find "$HOME/.local/share/fonts" -iname '*Nerd Font*') ]] || [[ "$TERM" == "wezterm" ]] || [[ "$OG_TERM" == "wezterm" ]]; then
+    # if [ "$TERM" == "wezterm" ] ||
+    #     # [ -n "$(find "$HOME/.local/share/fonts" -iname '*Nerd Font*')" ] ||
+    #     tmux showenv | grep -q 'TERM=wezterm'; then
     #     export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
     # else
-    export STARSHIP_CONFIG=~/.config/starship/starship.toml
+        export STARSHIP_CONFIG=~/.config/starship/starship.toml
     # fi
     eval "$(starship init bash)"
 else
 
-    if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
-        export TERM='gnome-256color'
-    elif infocmp xterm-256color >/dev/null 2>&1; then
-        export TERM='xterm-256color'
+    # If Bash 4.0 is available, trim very long paths in prompt
+    if ((BASH_VERSINFO[0] >= 4)); then
+        PROMPT_DIRTRIM=4
     fi
 
     # Highlight the user name when logged in as root.
@@ -81,14 +85,16 @@ else
     pre_prompt+="\[${reset}\] at "
     pre_prompt+="\[${bold}\]\[${hostStyle}\]\h" # host
     pre_prompt+="\[${reset}\] in "
-    pre_prompt+="\[${bold}\]\[${aqua}\]\w" # working directory full path
+    pre_prompt+="\[${bold}\]\[${blue}\]\w" # working directory full path
     pre_prompt+="\[${reset}\]"             # reset styling
 
     post_prompt="\n"
-    post_prompt+="\[${blue}\]\!"   # history line number for easy hist expansion
-    post_prompt+="\[${white}\] ❯ " # add symbol, other options: ∴ ↪ ↳ ↳  ☕
-    post_prompt+="\[${reset}\]"    # reset styling
+    post_prompt+="\[${purple}\][\!]" # history line number for easy hist expansion
+    # shellcheck disable=2181,2016
+    post_prompt+='$(if [ $? -ne 0 ]; then printf "\[%s\] ✘  " "$red"; else printf "\[%s\] ❯ " "$green"; fi)'
+    post_prompt+="\[${reset}\]" # reset styling
 
+    # shellcheck disable=2154
     PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 
     PS2="\[${yellow}\]→ \[${reset}\]"

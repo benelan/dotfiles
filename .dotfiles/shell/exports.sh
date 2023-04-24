@@ -6,7 +6,7 @@ export PERSONAL="$DEV/personal"
 export NOTES="$HOME/notes"
 export DOTFILES="$HOME/.dotfiles"
 
-export LESS="-i -M -J -R -Q -w"
+export LESS="-diwMJRQ"
 export LESSHISTFILE=-
 
 # Keep around 16K lines of history in memory

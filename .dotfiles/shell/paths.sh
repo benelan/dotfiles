@@ -50,13 +50,13 @@ pathappend() {
     unset var value
 }
 
+[ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
+[ -d "$HOME/.local/bin" ] && pathappend "$HOME/.local/bin"
+[ -d "$HOME/.cargo/bin" ] && pathappend "$HOME/.cargo/bin"
 [ -d "$HOME/go/bin" ] && pathappend "$HOME/go/bin"
 [ -d "$HOME/.bun/bin" ] && pathappend "$HOME/.bun/bin"
-[ -d "$HOME/.cargo/bin" ] && pathappend "$HOME/.cargo/bin"
 [ -d "$HOME/.volta/bin" ] && pathappend "$HOME/.volta/bin"
-[ -d "$HOME/.local/bin" ] && pathappend "$HOME/.local/bin"
 [ -d "$HOME/.luarocks/bin" ] && pathappend "$HOME/.luarocks/bin"
-[ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
 
 [ -d "$HOME/dev/personal/git-mux" ] &&
     pathappend "$HOME/dev/personal/git-mux"
