@@ -16,7 +16,7 @@
     {
       "name": "global",
       "addWords": true,
-      "path": "~/.dotfiles/spelling/global.txt"
+      "path": "~/.dotfiles/assets/spelling_wordlist.txt"
     },
     {
       "name": "vim",

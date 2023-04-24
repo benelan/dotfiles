@@ -30,6 +30,16 @@ return {
               :match "github/workflows" ~= nil
           end,
         },
+        diagnostics.codespell.with {
+          method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+          extra_args = {
+            "--builtin",
+            "clear,rare,informal,usage,code,names,en-GB_to_en-US",
+            "--ignore-words",
+            os.getenv "HOME" .. ".dotfiles/spelling/codespell_ignore.txt",
+          },
+          diagnostic_config = quiet_diagnostics,
+        },
         diagnostics.markdownlint.with {
           extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
           prefer_local = "node_modules/.bin",
