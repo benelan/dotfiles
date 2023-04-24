@@ -15,4 +15,4 @@
     # hyperlinks = true
 
  [include]
-    path = ./delta.themes.gitconfig
+    path = ./delta-themes

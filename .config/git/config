@@ -1,10 +1,10 @@
 [include]
   ; https://github.com/GitAlias/gitalias
-  path = ~/.dotfiles/git/gitalias.gitconfig
+  path = ~/.config/git/gitalias
   ; https://github.com/dandavison/delta
-  path = ~/.dotfiles/git/delta.gitconfig
+  path = ~/.config/git/delta
   ; semi-personal info (mostly to prevent bot emails)
-  path = ~/.dotfiles/git/personal.gitconfig
+  path = ~/.config/git/personal
 
 [github]
     user = benelan
