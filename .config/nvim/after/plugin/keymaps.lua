@@ -89,13 +89,13 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 -- :vimgrep
 keymap(
   "n",
-  "<leader>eg",
+  "<leader>Eg",
   ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
   "Execute vimgrep"
 )
 
 -- :lhelpgrep
-keymap("n", "<leader>eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
+keymap("n", "<leader>Eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 
 -------------------------------------------------------------------------------
 ----> Lists (next/previous)
@@ -287,14 +287,7 @@ keymap("n", "<leader>bj", ":<C-U>buffers<cr>:buffer<Space>", "Jump to buffer")
 -- close/write
 keymap("n", "<M-x>", "<cmd>bdelete<cr>", "Close buffer")
 keymap({ "n", "i" }, "<M-q>", "<cmd>q<cr>", "Quit")
-keymap({ "n", "i" }, "<M-w>", "<cmd>wa<cr>", "Write all")
-
--- sudo save the file
-vim.api.nvim_create_user_command(
-  "W",
-  "execute 'w !sudo tee % > /dev/null' <Bar> edit!",
-  {}
-)
+keymap({ "n", "i" }, "<M-w>", "<cmd>w<cr>", "Write")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
@@ -320,30 +313,25 @@ local toggle_option = function(option, x, y)
 end
 
 local diagnostic_toggle = function(global)
-  local vars, bufnr, cmd
-  if global then
-    vars = vim.g
-    bufnr = nil
-  else
-    vars = vim.b
-    bufnr = 0
-  end
+  local vars = global and vim.g or vim.b
   vars.diagnostics_disabled = not vars.diagnostics_disabled
-  if vars.diagnostics_disabled then
-    cmd = "disable"
-    vim.api.nvim_echo({ { "Disabling diagnostics…" } }, false, {})
-  else
-    cmd = "enable"
-    vim.api.nvim_echo({ { "Enabling diagnostics…" } }, false, {})
-  end
+  local cmd = vars.diagnostics_disabled and "disable" or "enable"
+
+  vim.api.nvim_echo({
+    {
+      string.format("%s diagnostics %sd", global and "Global" or "Buffer", cmd),
+    },
+  }, false, {})
+
   vim.schedule(function()
-    vim.diagnostic[cmd](bufnr)
+    vim.diagnostic[cmd](global and nil or 0)
   end)
 end
 
 keymap("n", "<leader>sd", function()
   diagnostic_toggle()
 end, "Toggle buffer diagnostics")
+
 keymap("n", "<leader>sD", function()
   diagnostic_toggle(true)
 end, "Toggle global diagnostics")
@@ -363,14 +351,6 @@ end, "Toggle spell")
 keymap("n", "<leader>sp", function()
   toggle_option "paste"
 end, "Toggle paste")
-
-keymap("n", "<leader>sf", function()
-  toggle_option("foldcolumn", "0", "1")
-end, "Toggle foldcolumn")
-
-keymap("n", "<leader>s|", function()
-  toggle_option("colorcolumn", "0", "80")
-end, "Toggle colorcolumn")
 
 keymap("n", "<leader>sh", function()
   toggle_option "hlsearch"
@@ -395,6 +375,14 @@ end, "Toggle cursorcolumn")
 keymap("n", "<leader>s<Tab>", function()
   toggle_option "autoindent"
 end, "Toggle autoindent")
+
+keymap("n", "<leader>sf", function()
+  toggle_option("foldcolumn", "0", "1")
+end, "Toggle foldcolumn")
+
+keymap("n", "<leader>s|", function()
+  toggle_option("colorcolumn", "0", "80")
+end, "Toggle colorcolumn")
 
 keymap("n", "<leader>sc", function()
   toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")

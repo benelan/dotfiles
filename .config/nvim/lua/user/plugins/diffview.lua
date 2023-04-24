@@ -4,12 +4,6 @@ return {
   cmd = { "DiffviewOpen", "DiffviewFileHistory" },
   keys = {
     {
-      "<leader>gq",
-      "<cmd>DiffviewClose<cr>",
-      { "n", "x" },
-      desc = "Close Diffview",
-    },
-    {
       "<leader>gd",
       "<cmd>DiffviewOpen<cr>",
       { "n", "x" },
@@ -17,13 +11,13 @@ return {
     },
     {
       "<leader>gH",
-      "<cmd>DiffviewFileHistory --follow<cr>",
+      "<cmd>DiffviewFileHistory --max-count=1000<cr>",
       { "n", "x" },
       desc = "All files history",
     },
     {
       "<leader>gh",
-      "<cmd>DiffviewFileHistory % --follow<cr>",
+      "<cmd>DiffviewFileHistory % --follow --max-count=1000<cr>",
       desc = "Buffer file history",
     },
   },
@@ -31,7 +25,7 @@ return {
     keymap(
       "x",
       "<leader>gh",
-      ":'<,'>DiffviewFileHistory<cr>",
+      ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>",
       "Selection history"
     )
   end,

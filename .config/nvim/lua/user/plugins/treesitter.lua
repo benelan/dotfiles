@@ -32,7 +32,7 @@ return {
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
-    config = function()
+    opts = function()
       local swap_next, swap_prev = (function()
         local swap_objects = {
           a = "@parameter.inner",
@@ -48,7 +48,7 @@ return {
         return n, p
       end)()
 
-      require("nvim-treesitter.configs").setup {
+      return {
         ensure_installed = {
           "astro",
           "bash",

@@ -122,15 +122,36 @@ return {
         "<leader>gg",
         "<cmd>Telescope git_status<cr>",
         { "n", "x" },
-        desc = "Checkout commit",
+        desc = "Status",
       },
     }
   end,
   opts = function()
+    local default_mappings = {
+      ["<C-c>"] = "close",
+      ["<C-x>"] = false,
+      ["<C-s>"] = "select_horizontal",
+      ["<C-d>"] = "results_scrolling_down",
+      ["<C-u>"] = "results_scrolling_up",
+      ["<C-f>"] = "preview_scrolling_down",
+      ["<C-b>"] = "preview_scrolling_up",
+      ["<C-j>"] = "move_selection_next",
+      ["<C-k>"] = "move_selection_previous",
+      ["<M-j>"] = "cycle_history_next",
+      ["<M-k>"] = "cycle_history_prev",
+      ["<M-l>"] = require("telescope.actions.layout").cycle_layout_next,
+      ["<M-h>"] = require("telescope.actions.layout").cycle_layout_prev,
+      ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
+      ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
+      ["<C-q>"] = function(...)
+        require("telescope.actions").smart_send_to_qflist(...)
+        require("telescope.actions").open_qflist(...)
+      end,
+    }
     local icons = require("user.resources").icons.ui
     return {
       defaults = {
-        prompt_prefix = icons.Prompt,
+        prompt_prefix = string.format(" %s ", icons.Prompt),
         selection_caret = icons.Select,
         multi_icon = icons.X,
         entry_prefix = "   ",
@@ -193,58 +214,35 @@ return {
           "--glob=!.git/",
           "--glob=!node_modules/",
         },
-        mappings = {
-          i = {
-            ["<C-c>"] = require("telescope.actions").close,
-            ["<Down>"] = require("telescope.actions").cycle_history_next,
-            ["<Up>"] = require("telescope.actions").cycle_history_prev,
-            ["<M-j"] = require("telescope.actions").cycle_history_next,
-            ["<M-k>"] = require("telescope.actions").cycle_history_prev,
-            ["<C-j>"] = require("telescope.actions").move_selection_next,
-            ["<C-k>"] = require("telescope.actions").move_selection_previous,
-            ["<tab>"] = require("telescope.actions").toggle_selection
-              + require("telescope.actions").move_selection_next,
-            ["<s-tab>"] = require("telescope.actions").toggle_selection
-              + require("telescope.actions").move_selection_previous,
-            ["<esc>"] = require("telescope.actions").close,
-            ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
-            ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
-            ["<A-l>"] = require("telescope.actions.layout").cycle_layout_next,
-            ["<A-h>"] = require("telescope.actions.layout").cycle_layout_prev,
-            ["<C-q>"] = function(...)
-              require("telescope.actions").smart_send_to_qflist(...)
-              require("telescope.actions").open_qflist(...)
-            end,
-          },
-          n = {
-            ["<C-j>"] = require("telescope.actions").move_selection_next,
-            ["<C-k>"] = require("telescope.actions").move_selection_previous,
-            ["<C-q>"] = function(...)
-              require("telescope.actions").smart_send_to_qflist(...)
-              require("telescope.actions").open_qflist(...)
-            end,
-          },
-        },
+        mappings = { i = default_mappings, n = default_mappings },
       },
       pickers = {
         live_grep = { only_sort_text = true },
         buffers = {
+          ignore_current_buffer = true,
+          sort_lastused = true,
+          sort_mru = true,
           initial_mode = "normal",
           mappings = {
-            i = { ["<C-d>"] = require("telescope.actions").delete_buffer },
-            n = { ["dd"] = require("telescope.actions").delete_buffer },
+            i = { ["<M-d>"] = "delete_buffer" },
+            n = { ["dd"] = "delete_buffer" },
           },
         },
         find_files = {
           mappings = {
             n = {
               -- change directory in normal mode
-              ["<leader>cd"] = function(prompt_bufnr)
-                local selection =
-                  require("telescope.actions").state.get_selected_entry()
-                local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+              ["cd"] = function(prompt_bufnr)
                 require("telescope.actions").close(prompt_bufnr)
-                vim.cmd(string.format("silent cd %s", dir))
+                vim.cmd(
+                  string.format(
+                    "silent cd %s",
+                    vim.fn.fnamemodify(
+                      require("telescope.actions.state").get_selected_entry().path,
+                      ":p:h"
+                    )
+                  )
+                )
               end,
             },
           },

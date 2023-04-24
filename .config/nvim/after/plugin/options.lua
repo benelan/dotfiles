@@ -1,3 +1,16 @@
+local has_res, res = pcall(require, "user.resources")
+if has_res then
+  vim.opt.fillchars = { diff = res.icons.ui.FillSlash }
+  vim.opt.listchars = {
+    extends = res.icons.ui.CaretDoubleRight,
+    precedes = res.icons.ui.CaretDoubleLeft,
+    trail = res.icons.ui.FillDot,
+    multispace = res.icons.ui.FillDot .. " ",
+    nbsp = res.icons.ui.Space,
+    eol = res.icons.ui.CaretDown,
+  }
+end
+
 vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 200
@@ -12,7 +25,8 @@ vim.opt.foldlevelstart = 99
 if vim.fn.executable "rg" == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --glob '!.git'"
 end
-vim.opt.hlsearch = false
+vim.opt.grepformat:prepend "%f:%l:%c:%m"
+vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.wildignorecase = true
@@ -39,8 +53,6 @@ vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 
 vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
-vim.opt.fillchars = "diff:╱" -- the default looks too much like a fold
-vim.opt.listchars:append "extends:»,precedes:«"
 vim.opt.linebreak = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8

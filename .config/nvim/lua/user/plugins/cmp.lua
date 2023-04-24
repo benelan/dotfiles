@@ -145,15 +145,14 @@ return {
             local icon, hl_group =
               devicons.get_icon(entry:get_completion_item().label)
             if icon then
-              vim_item.kind = " " .. icon .. "  " .. vim_item.kind .. "  "
+              vim_item.kind = string.format(" %s  %s  ", icon, vim_item.kind)
               vim_item.kind_hl_group = hl_group
-              return vim_item
             end
-          end
-          if kinds[vim_item.kind] then
-            vim_item.kind = " " .. kinds[vim_item.kind] .. " " .. vim_item.kind .. "  "
+          elseif kinds[vim_item.kind] then
+            vim_item.kind =
+              string.format(" %s  %s ", kinds[vim_item.kind], vim_item.kind)
           else
-            vim_item.kind = "    " .. vim_item.kind .. "  "
+            vim_item.kind = string.format("    %s  ", vim_item.kind)
           end
           return vim_item
         end,

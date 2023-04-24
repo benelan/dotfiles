@@ -32,7 +32,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "jinh0/eyeliner.nvim",
-    enabled = false,
+    -- enabled = false,
     opts = { highlight_on_key = false, dim = true },
   },
   -----------------------------------------------------------------------------
@@ -52,6 +52,7 @@ return {
   {
     "petertriho/nvim-scrollbar",
     enabled = false,
+    event = "VeryLazy",
     dependencies = { "lewis6991/gitsigns.nvim" },
     opts = {
       max_lines = 10000,
@@ -133,6 +134,7 @@ return {
             s = { name = "see also" },
           },
           -- d = { name = "Debug" },
+          E = { name = "ex" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
           s = { name = "settings" },
@@ -142,7 +144,7 @@ return {
             name = "git",
             m = { name = "mergetool" },
             t = { name = "toggle options" },
-            -- w = { name = "Worktree" },
+            -- w = { name = "worktree" },
           },
           o = {
             name = "octo (github)",

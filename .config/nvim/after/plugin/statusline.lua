@@ -14,8 +14,8 @@ local function format_numeric_data(d)
   local output = {}
   for _, item in ipairs(d) do
     if item.count and item.count > 0 then
-      output[#output + 1] = "%#" .. item.highlight .. "#"
-      output[#output + 1] = "  " .. item.icon .. " "
+      output[#output + 1] = string.format("%%#%s#", item.highlight)
+      output[#output + 1] = string.format(" %s ", item.icon)
       output[#output + 1] = item.count
       template = template .. "%s%s%d"
     end
@@ -60,11 +60,12 @@ local function gitsigns_info()
         count = gs.removed,
       },
     }
-    return "  "
-      .. icons.ui.Branch
-      .. gs.head
-      .. format_numeric_data(status_info)
-      .. "  "
+    return string.format(
+      "  %s%s %s  ",
+      icons.ui.Branch,
+      gs.head,
+      format_numeric_data(status_info)
+    )
   end
   return ""
 end
@@ -76,7 +77,7 @@ end
 --   then
 --     local head = vim.fn["fugitive#Head"]()
 --     if head ~= "" then
---       return "  " .. icons.ui.Branch .. head .. "  "
+--       return string.format("  %s%s  ", icons.ui.Branch, head)
 --     end
 --   end
 --   return ""

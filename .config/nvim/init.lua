@@ -47,14 +47,8 @@ vim.g.use_devicons = os.getenv "TERM" == "wezterm"
 -------------------------------------------------------------------------------
 ----> Autocommands
 -------------------------------------------------------------------------------
-local function augroup(name)
-  return vim.api.nvim_create_augroup("ben_" .. name, {
-    clear = true,
-  })
-end
-
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-  group = augroup "yank_highlight",
+  group = vim.api.nvim_create_augroup("ben_yank_highlight", { clear = true }),
   callback = function()
     vim.highlight.on_yank {
       higroup = "Visual",
@@ -63,26 +57,26 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd(
-  { "VimResized" },
-  { group = augroup "resize_windows", command = "wincmd =" }
-)
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+  group = vim.api.nvim_create_augroup("ben_resize_windows", { clear = true }),
+  command = "wincmd =",
+})
 
 -- set the OSC7 escape code when changing directories
 vim.api.nvim_create_autocmd({ "DirChanged" }, {
-  group = augroup "set_osc7",
+  group = vim.api.nvim_create_augroup("ben_set_osc7", { clear = true }),
   command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
 -- check if file changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = augroup "checktime",
+  group = vim.api.nvim_create_augroup("ben_checktime", { clear = true }),
   command = "checktime",
 })
 
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = augroup "auto_create_dir",
+  group = vim.api.nvim_create_augroup("ben_auto_create_dir", { clear = true }),
   callback = function(event)
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")

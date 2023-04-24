@@ -112,6 +112,9 @@ return {
     end, "Previous diagnostic")
 
     vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("ben_lsp_server_setup", {
+        clear = true,
+      }),
       callback = function(args)
         -- local client = vim.lsp.get_client_by_id(args.data.client_id)
         local bufmap = function(mode, lhs, rhs, desc)
@@ -139,12 +142,16 @@ return {
     })
 
     for _, server in pairs(servers) do
-      local has_server_opts, server_opts =
+      local has_user_opts, user_opts =
         pcall(require, "user.lsp_servers." .. server)
-      if has_server_opts then
-        opts = vim.tbl_deep_extend("force", capabilities, server_opts)
-      end
-      require("lspconfig")[server].setup(opts)
+
+      local server_opts = vim.tbl_deep_extend(
+        "force",
+        { capabilities = capabilities },
+        has_user_opts and user_opts or {}
+      )
+
+      require("lspconfig")[server].setup(server_opts)
     end
   end,
 }

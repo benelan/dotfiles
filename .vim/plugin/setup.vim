@@ -3,13 +3,15 @@
 " ---------------------------------------------------------------------------
 
 let g:rooter_patterns = [
-    \ "!.bashrc", "!>home", "!Desktop/",
-    \ ".git/", ".git", ".gitignore",
-    \ "package.json", "tsconfig.json",
-    \ "Cargo.toml", "go.mod",
-    \ "Dockerfile", "src/", "lua/", ">.config/",
-    \ "CONTRIBUTING.md", "CHANGELOG.md", "README.md",
-    \ ".root" ]
+    \  "!.bashrc", "!>home", "!Desktop/",
+    \  ".git/", ".git", ".gitignore",
+    \  "package.json", "tsconfig.json",
+    \  "Cargo.toml", "go.mod",
+    \  "Dockerfile", "src/", "lua/",
+    \  ">".expand("~")."/.config/",
+    \  "CONTRIBUTING.md", "CHANGELOG.md",
+    \  ".root"
+    \]
 
 " vim.g.rooter_change_directory_for_non_project_files = "current"
 
@@ -96,7 +98,7 @@ nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstar
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
 inoremap <M-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
-nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap <leader>Em  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " go to line above/below the cursor, from insert mode
 inoremap <C-Down> <C-O>o
@@ -124,7 +126,7 @@ onoremap B :<C-U>execute "normal! 1GVG"<CR>
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 " repeat the last command and add a bang
-nnoremap <leader>! :<Up><Home><S-Right>!<CR>
+nnoremap <leader>E! :<Up><Home><S-Right>!<CR>
 
 nnoremap <leader><Delete> :bdelete<CR>
 
