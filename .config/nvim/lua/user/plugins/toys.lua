@@ -19,7 +19,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "uga-rosa/ccc.nvim",
-    enabled = true,
+    -- enabled = false,
     cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
     opts = {
       save_on_quit = true,
@@ -116,7 +116,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
-    enabled = true,
+    -- enabled = false,
     event = "CursorHold",
     config = function()
       require("which-key").setup { icons = { separator = "⮞" } }
@@ -148,7 +148,11 @@ return {
           },
           o = {
             name = "octo (github)",
-            i = { name = "issues", D = { name = "remove" }, a = { name = "add" } },
+            i = {
+              name = "issues",
+              D = { name = "remove" },
+              a = { name = "add" },
+            },
             m = {
               name = "my stuff",
               i = { name = "issues" },

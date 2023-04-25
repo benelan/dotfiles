@@ -149,10 +149,7 @@ return {
                 desc = "Next conditional start",
               },
               ["]l"] = { query = "@loop.outer", desc = "Next loop start" },
-              ["]gc"] = {
-                query = "@comment.*",
-                desc = "Next comment start",
-              },
+              ["]gc"] = { query = "@comment.*", desc = "Next comment start" },
               ["]gs"] = {
                 query = "@scope",
                 query_group = "locals",
@@ -173,10 +170,7 @@ return {
                 query = "@conditional.outer",
                 desc = "Previous conditional start",
               },
-              ["[l"] = {
-                query = "@loop.outer",
-                desc = "Previous loop start",
-              },
+              ["[l"] = { query = "@loop.outer", desc = "Previous loop start" },
               ["[gc"] = {
                 query = "@comment.*",
                 desc = "Previous comment start",
@@ -193,22 +187,13 @@ return {
               },
             },
             goto_next_end = {
-              ["]F"] = {
-                query = "@function.outer",
-                desc = "Next function end",
-              },
+              ["]F"] = { query = "@function.outer", desc = "Next function end" },
               ["]I"] = {
                 query = "@conditional.outer",
                 desc = "Next conditional end",
               },
-              ["]L"] = {
-                query = "@loop.outer",
-                desc = "Next loop end",
-              },
-              ["]gC"] = {
-                query = "@comment.*",
-                desc = "Next comment end",
-              },
+              ["]L"] = { query = "@loop.outer", desc = "Next loop end" },
+              ["]gC"] = { query = "@comment.*", desc = "Next comment end" },
             },
             goto_previous_end = {
               ["[F"] = {
@@ -219,14 +204,8 @@ return {
                 query = "@conditional.outer",
                 desc = "Previous conditional end",
               },
-              ["[L"] = {
-                query = "@loop.outer",
-                desc = "Previous loop end",
-              },
-              ["[gC"] = {
-                query = "@comment.*",
-                desc = "Previous comment end",
-              },
+              ["[L"] = { query = "@loop.outer", desc = "Previous loop end" },
+              ["[gC"] = { query = "@comment.*", desc = "Previous comment end" },
             },
           },
           swap = {

@@ -15,7 +15,7 @@ return {
         return vim.fn["codeium#Accept"]()
       end,
       "i",
-      desc = "Codeium accept"
+      desc = "Codeium accept",
     },
     {
       "<M-c>",

@@ -39,7 +39,10 @@ return {
           fileMatch = { "web-types.json" },
           url = "https://json.schemastore.org/web-types.json",
         },
-        { fileMatch = { "turbo.json" }, url = "https://turbo.build/schema.json" },
+        {
+          fileMatch = { "turbo.json" },
+          url = "https://turbo.build/schema.json",
+        },
         {
           fileMatch = { "lerna.json" },
           url = "https://json.schemastore.org/lerna.json",

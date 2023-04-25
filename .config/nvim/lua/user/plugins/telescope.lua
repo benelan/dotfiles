@@ -6,6 +6,9 @@ return {
     {
       "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
       build = "make",
+      config = function()
+        require("telescope").load_extension "fzf"
+      end,
     },
     -- "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
     -- "ThePrimeagen/harpoon", -- file marks on steroids
@@ -252,6 +255,5 @@ return {
   end,
   config = function(_, opts)
     require("telescope").setup(opts)
-    require("telescope").load_extension "fzf"
   end,
 }
