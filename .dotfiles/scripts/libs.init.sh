@@ -5,7 +5,7 @@ LIB_PATH="$HOME/dev/lib"
 FZF_PATH="$LIB_PATH/fzf"
 NEOVIM_PATH="$LIB_PATH/neovim"
 
-/usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive
+/usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive --rebase
 
 if [ -d "$NEOVIM_PATH" ]; then
     cd "$NEOVIM_PATH" || exit 1

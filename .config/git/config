@@ -120,7 +120,7 @@
   short = true
 
 [pull]
-	rebase = false
+	rebase = true
 
 [help]
   ; Correct and execute mistyped commands.
