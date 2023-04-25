@@ -114,10 +114,10 @@ keymap("n", "]B", "<cmd>blast<cr>", "Last buffer")
 keymap("n", "[B", "<cmd>bfirst<cr>", "First buffer")
 
 -- argument
-keymap("n", "]a", "<cmd>next<cr>", "Next argument")
-keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
-keymap("n", "]A", "<cmd>last<cr>", "Last argument")
-keymap("n", "[A", "<cmd>first<cr>", "First argument")
+-- keymap("n", "]a", "<cmd>next<cr>", "Next argument")
+-- keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
+-- keymap("n", "]A", "<cmd>last<cr>", "Last argument")
+-- keymap("n", "[A", "<cmd>first<cr>", "First argument")
 
 -- quickfix
 keymap("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
@@ -125,19 +125,19 @@ keymap("n", "[q", "<cmd>cprevious<cr>", "Previous quickfix")
 keymap("n", "]Q", "<cmd>clast<cr>", "Last quickfix")
 keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
 
--- location
-keymap("n", "]l", "<cmd>lnext<cr>", "Next location")
-keymap("n", "[l", "<cmd>lprevious<cr>", "Previous location")
-keymap("n", "]l", "<cmd>llast<cr>", "Last location")
-keymap("n", "[l", "<cmd>lfirst<cr>", "First location")
+-- -- location
+-- keymap("n", "]l", "<cmd>lnext<cr>", "Next location")
+-- keymap("n", "[l", "<cmd>lprevious<cr>", "Previous location")
+-- keymap("n", "]l", "<cmd>llast<cr>", "Last location")
+-- keymap("n", "[l", "<cmd>lfirst<cr>", "First location")
 
 -- jump
-keymap("n", "]j", "<C-o>", "Next jump")
-keymap("n", "[j", "<C-i>", "Previous jump")
+-- keymap("n", "]j", "<C-o>", "Next jump")
+-- keymap("n", "[j", "<C-i>", "Previous jump")
 
 -- change
-keymap("n", "]c", "g,", "Next change")
-keymap("n", "[c", "g;", "Previous change")
+-- keymap("n", "]c", "g,", "Next change")
+-- keymap("n", "[c", "g;", "Previous change")
 
 -- diagnostic error
 keymap(

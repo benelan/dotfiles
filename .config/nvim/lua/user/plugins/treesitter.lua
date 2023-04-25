@@ -1,10 +1,8 @@
 return {
   {
+    "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
     "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-    event = "VeryLazy",
-  },
-  { "RRethy/nvim-treesitter-textsubjects", event = "VeryLazy" },
-  {
+    "RRethy/nvim-treesitter-textsubjects", -- smart text objects
     "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
     event = "VeryLazy",
   },
@@ -13,8 +11,10 @@ return {
     event = "InsertEnter",
   },
   {
-    "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-    event = "VeryLazy",
+    "Wansmer/treesj",
+    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "JoinToggle" } },
+    cmd = "TSJToggle",
+    opts = { use_default_keymaps = false, max_join_length = 300 },
   },
   {
     "nvim-treesitter/playground", -- for creating syntax queries
@@ -22,17 +22,11 @@ return {
     cmd = "TSPlaygroundToggle",
   },
   {
-    "Wansmer/treesj",
-    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "JoinToggle" } },
-    cmd = "TSJToggle",
-    opts = { use_default_keymaps = false, max_join_length = 300 },
-  },
-  {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
-    opts = function()
+    config = function()
       local swap_next, swap_prev = (function()
         local swap_objects = {
           a = "@parameter.inner",
@@ -48,7 +42,7 @@ return {
         return n, p
       end)()
 
-      return {
+      require("nvim-treesitter.configs").setup {
         ensure_installed = {
           "astro",
           "bash",
@@ -89,8 +83,10 @@ return {
         },
         highlight = {
           enable = true,
-          additional_vim_regex_highlighting = { "markdown", "mdx" },
+          additional_vim_regex_highlighting = { "markdown" },
+          disable = { "markdown" },
         },
+        indent = { enable = true },
         autopairs = { enable = true },
         autotag = { enable = true },
         playground = { enable = true },
@@ -100,76 +96,137 @@ return {
           prev_selection = ",",
           keymaps = {
             [";"] = "textsubjects-smart",
-            ["."] = "textsubjects-container-outer",
-            ["i."] = "textsubjects-container-inner",
+            ["a;"] = "textsubjects-container-outer",
+            ["i;"] = "textsubjects-container-inner",
           },
         },
         textobjects = {
+          lsp_interop = {
+            enable = true,
+            border = "solid",
+            peek_definition_code = {
+              ["gpf"] = "@function.outer",
+              ["gpc"] = "@class.outer",
+            },
+          },
           select = {
             enable = true,
             lookahead = true,
             keymaps = {
-              ["aa"] = "@parameter.outer", -- argument
-              ["ia"] = "@parameter.inner",
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["ac"] = "@class.outer",
-              ["ic"] = "@class.inner",
-              ["al"] = "@loop.outer",
-              ["il"] = "@loop.inner",
-              ["ai"] = "@conditional.outer", -- if
-              ["ii"] = "@conditional.inner",
+              ["aa"] = { query = "@parameter.outer", desc = "parameter" }, -- argument
+              ["ia"] = { query = "@parameter.inner", desc = "inner parameter" },
+              ["af"] = { query = "@function.outer", desc = "function" },
+              ["if"] = { query = "@function.inner", desc = "inner function" },
+              ["al"] = { query = "@loop.outer", desc = "loop" },
+              ["il"] = { query = "@loop.inner", desc = "inner loop" },
+              ["ac"] = { query = "@class.outer", desc = "class" },
+              ["ic"] = { query = "@class.inner", desc = "inner class" },
+              ["ai"] = { query = "@conditional.outer", desc = "conditional" }, -- if
+              ["ii"] = {
+                query = "@conditional.inner",
+                desc = "inner conditional",
+              },
+              ["as"] = { query = "@scope", query_group = "locals", "scope" },
+              ["is"] = {
+                query = "@scope",
+                query_group = "locals",
+                "inner scope",
+              },
+              ["agc"] = { query = "@comment.*", desc = "comment" },
+              ["igc"] = { query = "@comment.*", desc = "comment" },
             },
           },
           move = {
             enable = true,
             set_jumps = true,
             goto_next_start = {
-              ["]m"] = {
+              ["]f"] = {
                 query = "@function.outer",
-                desc = "Start of next function",
+                desc = "Next function start",
               },
               ["]i"] = {
                 query = "@conditional.outer",
-                desc = "Start of next conditional",
+                desc = "Next conditional start",
               },
-              ["]l"] = { query = "@loop.outer", desc = "Start of next loop" },
-            },
-            goto_next_end = {
-              ["]M"] = {
-                query = "@function.outer",
-                desc = "End of next function",
+              ["]l"] = { query = "@loop.outer", desc = "Next loop start" },
+              ["]gc"] = {
+                query = "@comment.*",
+                desc = "Next comment start",
               },
-              ["]I"] = {
-                query = "@conditional.outer",
-                desc = "End of next conditional",
+              ["]gs"] = {
+                query = "@scope",
+                query_group = "locals",
+                desc = "Next scope start",
               },
-              ["]L"] = { query = "@loop.outer", desc = "End of next loop" },
+              ["]z"] = {
+                query = "@fold",
+                query_group = "folds",
+                desc = "Next fold start",
+              },
             },
             goto_previous_start = {
-              ["[m"] = {
+              ["[f"] = {
                 query = "@function.outer",
-                desc = "Start of previous function",
+                desc = "Previous function start",
               },
               ["[i"] = {
                 query = "@conditional.outer",
-                desc = "Start of previous conditional",
+                desc = "Previous conditional start",
               },
               ["[l"] = {
                 query = "@loop.outer",
-                desc = "Start of previous loop",
+                desc = "Previous loop start",
+              },
+              ["[gc"] = {
+                query = "@comment.*",
+                desc = "Previous comment start",
+              },
+              ["[gs"] = {
+                query = "@scope",
+                query_group = "locals",
+                desc = "Previous scope start",
+              },
+              ["[z"] = {
+                query = "@fold",
+                query_group = "folds",
+                desc = "Previous fold start",
+              },
+            },
+            goto_next_end = {
+              ["]F"] = {
+                query = "@function.outer",
+                desc = "Next function end",
+              },
+              ["]I"] = {
+                query = "@conditional.outer",
+                desc = "Next conditional end",
+              },
+              ["]L"] = {
+                query = "@loop.outer",
+                desc = "Next loop end",
+              },
+              ["]gC"] = {
+                query = "@comment.*",
+                desc = "Next comment end",
               },
             },
             goto_previous_end = {
-              ["[M"] = {
+              ["[F"] = {
                 query = "@function.outer",
-                desc = "End of previous function",
+                desc = "Previous function end",
               },
               ["[I"] = {
                 query = "@conditional.outer",
-                desc = "End of previous conditional",
+                desc = "Previous conditional end",
               },
-              ["[L"] = { query = "@loop.outer", desc = "End of previous loop" },
+              ["[L"] = {
+                query = "@loop.outer",
+                desc = "Previous loop end",
+              },
+              ["[gC"] = {
+                query = "@comment.*",
+                desc = "Previous comment end",
+              },
             },
           },
           swap = {
