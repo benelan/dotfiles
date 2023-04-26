@@ -82,6 +82,43 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "ThePrimeagen/harpoon", -- file marks on steroids
+    config = true,
+    keys = {
+      {
+        "<M-a>",
+        "<cmd>lua require('harpoon.ui').nav_file(1)<cr>",
+        desc = "Harpoon mark 1",
+      },
+      {
+        "<M-s>",
+        "<cmd>lua require('harpoon.ui').nav_file(2)<cr>",
+        desc = "Harpoon mark 2",
+      },
+      {
+        "<M-d>",
+        "<cmd>lua require('harpoon.ui').nav_file(3)<cr>",
+        desc = "Harpoon mark 3",
+      },
+      {
+        "<M-f>",
+        "<cmd>lua require('harpoon.ui').nav_file(4)<cr>",
+        desc = "Harpoon mark 4",
+      },
+      {
+        "<M-g>",
+        "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>",
+        desc = "Harpoon ui menu",
+      },
+      {
+        "<M-h>",
+        "<cmd>lua require('harpoon.mark').add_file()<cr>",
+        desc = "Harpoon add file",
+      },
+    },
+  },
+  {
+    -----------------------------------------------------------------------------
     "rmagatti/goto-preview", -- open lsp previews in floating window
     config = true,
     keys = {

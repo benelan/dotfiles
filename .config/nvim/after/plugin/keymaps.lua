@@ -242,7 +242,7 @@ vim.cmd [[
 ]]
 keymap(
   { "n", "x" },
-  "<M-f>",
+  "<M-p>",
   "<cmd>GotoFirstFloat<cr>",
   "Focus first floating window"
 )

@@ -145,7 +145,7 @@ return {
             name = "git",
             m = { name = "mergetool" },
             t = { name = "toggle options" },
-            -- w = { name = "worktree" },
+            w = { name = "worktree" },
           },
           o = {
             name = "octo (github)",

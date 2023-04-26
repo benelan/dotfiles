@@ -18,23 +18,37 @@ return {
         require("neoclip").setup(opts)
         require("telescope").load_extension "neoclip"
       end,
-      keys = function()
-        return {
-          {
-            "<leader>fy",
-            "<cmd>Telescope neoclip<cr>",
-            desc = "Clipboard history",
-          },
-          {
-            "<leader>fm",
-            "<cmd>Telescope macroscope<cr>",
-            desc = "Macro history",
-          },
-        }
-      end,
+      keys = {
+        {
+          "<leader>fy",
+          "<cmd>Telescope neoclip<cr>",
+          desc = "Clipboard history",
+        },
+        {
+          "<leader>fm",
+          "<cmd>Telescope macroscope<cr>",
+          desc = "Macro history",
+        },
+      },
     },
-    -- "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-    -- "ThePrimeagen/harpoon", -- file marks on steroids
+    {
+      "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+      config = function()
+        require("telescope").load_extension "git_worktree"
+      end,
+      keys = {
+        {
+          "<leader>gwf",
+          "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
+          desc = "Find git wortree",
+        },
+        {
+          "<leader>gwa",
+          "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
+          desc = "Add git wortree",
+        },
+      },
+    },
   },
   keys = function()
     -- when a count N is given to a telescope mapping called through the following
