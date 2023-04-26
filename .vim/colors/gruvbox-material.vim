@@ -10,7 +10,7 @@
 let s:configuration = gruvbox_material#get_configuration()
 let s:palette = gruvbox_material#get_palette(s:configuration.background, s:configuration.foreground, s:configuration.colors_override)
 let s:path = expand('<sfile>:p') " the path of this script
-let s:last_modified = 'Tue Apr 11 15:49:51 UTC 2023'
+let s:last_modified = 'Mon Apr 24 19:15:08 UTC 2023'
 let g:gruvbox_material_loaded_file_types = []
 
 if !(exists('g:colors_name') && g:colors_name ==# 'gruvbox-material' && s:configuration.better_performance)
@@ -456,11 +456,16 @@ if s:configuration.diagnostic_virtual_text ==# 'grey'
   highlight! link VirtualTextError Grey
   highlight! link VirtualTextInfo Grey
   highlight! link VirtualTextHint Grey
-else
+elseif s:configuration.diagnostic_virtual_text ==# 'colored'
   highlight! link VirtualTextWarning Yellow
   highlight! link VirtualTextError Red
   highlight! link VirtualTextInfo Blue
   highlight! link VirtualTextHint Green
+else
+  call gruvbox_material#highlight('VirtualTextWarning', s:palette.yellow, s:palette.bg_visual_yellow)
+  call gruvbox_material#highlight('VirtualTextError', s:palette.red, s:palette.bg_visual_red)
+  call gruvbox_material#highlight('VirtualTextInfo', s:palette.blue, s:palette.bg_visual_blue)
+  call gruvbox_material#highlight('VirtualTextHint', s:palette.green, s:palette.bg_visual_green)
 endif
 call gruvbox_material#highlight('ErrorFloat', s:palette.red, s:palette.bg3)
 call gruvbox_material#highlight('WarningFloat', s:palette.yellow, s:palette.bg3)
@@ -697,6 +702,8 @@ if has('nvim-0.8.0')
   highlight! link @text.strong TSStrong
   highlight! link @text.title TSTitle
   highlight! link @text.todo TSTodo
+  highlight! link @text.todo.checked Green
+  highlight! link @text.todo.unchecked Ignore
   highlight! link @text.underline TSUnderline
   highlight! link @text.uri TSURI
   highlight! link @text.warning TSWarning
@@ -735,6 +742,8 @@ if has('nvim-0.9.0')
   highlight! link @lsp.type.variable TSVariable
   highlight! link DiagnosticUnnecessary WarningText
 endif
+highlight! link TSModuleInfoGood Green
+highlight! link TSModuleInfoBad Red
 " }}}
 " github/copilot.vim {{{
 highlight! link CopilotSuggestion Grey
@@ -1850,6 +1859,12 @@ highlight! link htmlArg Aqua
 highlight! link htmlScriptTag Purple
 highlight! link htmlSpecialTagName RedItalic
 " }}}
+" nvim-treesitter/nvim-treesitter {{{
+highlight! link htmlTSText TSNone
+if has('nvim-0.8.0')
+  highlight! link @text.html htmlTSText
+endif
+" }}}
 " syn_end }}}
 " syn_begin: xml {{{
 " builtin: https://github.com/chrisbra/vim-xml-ftplugin {{{
@@ -1982,6 +1997,12 @@ highlight! link jsObjectValue Blue
 highlight! link jsTemplateExpression Yellow
 highlight! link jsTemplateBraces Yellow
 highlight! link jsClassMethodType Orange
+" }}}
+" nvim-treesitter/nvim-treesitter {{{
+if has('nvim-0.9.0')
+  highlight! link @lsp.typemod.variable.defaultLibrary.javascript TSConstBuiltin
+  highlight! link @lsp.typemod.variable.defaultLibrary.javascriptreact TSConstBuiltin
+endif
 " }}}
 " yajs: https://github.com/othree/yajs.vim {{{
 highlight! link javascriptEndColons Fg
@@ -2276,6 +2297,16 @@ highlight! link typescriptDOMFormProp Aqua
 highlight! link typescriptBOMHistoryProp Aqua
 highlight! link typescriptMathStaticProp Aqua
 " }}}
+" nvim-treesitter/nvim-treesitter {{{
+highlight! link tsxTSConstructor TSType
+if has('nvim-0.8.0')
+  highlight! link @constructor.tsx tsxTSConstructor
+endif
+if has('nvim-0.9.0')
+  highlight! link @lsp.typemod.variable.defaultLibrary.typescript TSConstBuiltin
+  highlight! link @lsp.typemod.variable.defaultLibrary.typescriptreact TSConstBuiltin
+endif
+" }}}
 " syn_end }}}
 " syn_begin: dart {{{
 " dart-lang: https://github.com/dart-lang/dart-vim-plugin {{{
@@ -2436,6 +2467,12 @@ highlight! link luaFuncArgName Blue
 highlight! link luaEllipsis Orange
 highlight! link luaDocTag Green
 " }}}
+" nvim-treesitter/nvim-treesitter {{{
+highlight! link luaTSConstructor luaBraces
+if has('nvim-0.8.0')
+  highlight! link @constructor.lua luaTSConstructor
+endif
+" }}}
 " syn_end }}}
 " syn_begin: moon {{{
 " moonscript-vim: https://github.com/leafo/moonscript-vim {{{
@@ -2484,18 +2521,36 @@ highlight! link scalaKeywordModifier Orange
 " }}}
 " syn_end }}}
 " syn_begin: go {{{
-" builtin: https://github.com/google/vim-ft-go {{{
-highlight! link goDirective PurpleItalic
-highlight! link goConstants Aqua
+" builtin: https://github.com/fatih/vim-go {{{
+highlight! link goPackage Define
+highlight! link goImport Include
+highlight! link goVar OrangeItalic
+highlight! link goConst goVar
+highlight! link goType Yellow
+highlight! link goSignedInts goType
+highlight! link goUnsignedInts goType
+highlight! link goFloats goType
+highlight! link goComplexes goType
+highlight! link goVarDefs Aqua
 highlight! link goDeclType OrangeItalic
-" }}}
-" polyglot: {{{
-highlight! link goPackage PurpleItalic
-highlight! link goImport PurpleItalic
-highlight! link goVarArgs Blue
-highlight! link goBuiltins GreenBold
+highlight! link goFunctionCall Function
 highlight! link goPredefinedIdentifiers Aqua
-highlight! link goVar Orange
+highlight! link goBuiltins GreenBold
+highlight! link goVarArgs Grey
+" }}}
+" nvim-treesitter/nvim-treesitter {{{
+highlight! link goTSInclude Purple
+highlight! link goTSNamespace Fg
+highlight! link goTSConstBuiltin AquaItalic
+if has('nvim-0.8.0')
+  highlight! link @include.go goTSInclude
+  highlight! link @namespace.go goTSNamespace
+  highlight! link @constant.builtin.go goTSConstBuiltin
+endif
+if has('nvim-0.9.0')
+  highlight! link @lsp.typemod.variable.defaultLibrary.go goTSConstBuiltin
+  highlight! link @lsp.type.namespace.go goTSNamespace
+endif
 " }}}
 " syn_end }}}
 " syn_begin: rust {{{
@@ -2900,7 +2955,7 @@ highlight! link gitcommitFile Green
 " }}}
 " nvim-treesitter/nvim-treesitter {{{
 if has('nvim-0.8.0')
-  highlight! link @text.gitcommit Fg
+  highlight! link @text.gitcommit TSNone
 endif
 " }}}
 " syn_end }}}
