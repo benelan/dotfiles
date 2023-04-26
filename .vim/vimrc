@@ -93,6 +93,7 @@ if !exists("loaded_matchit")
     runtime! macros/matchit.vim
   elseif finddir("pack/dist/opt/matchit", &rtp) != ""
     packadd matchit
+  endif
 endif
 
 if v:version > 703 || v:version == 703 && has("patch541")
@@ -323,8 +324,7 @@ if has("autocmd")
     augroup strip_whitespaces
         let excludedFileTypes = []
         autocmd!
-        autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 |
-            \ :call StripTrailingWhitespace()
+        autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 | :call StripTrailingWhitespace() | endif
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
