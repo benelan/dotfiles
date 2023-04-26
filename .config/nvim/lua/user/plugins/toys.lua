@@ -108,6 +108,7 @@ return {
     enabled = false,
     opts = {
       char = require("user.resources").icons.ui.Separator,
+      indent_blankline_filetype_exclude = require("user.resources").exclude_filetypes,
       show_trailing_blankline_indent = false,
       use_treesitter = true,
       show_current_context = true,

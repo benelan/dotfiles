@@ -15,6 +15,8 @@ return {
   -----------------------------------------------------------------------------
   { "vifm/vifm.vim", event = "VeryLazy", keys = { { "-", "<cmd>Vifm<cr>" } } },
   -----------------------------------------------------------------------------
+  { "wellle/targets.vim", event = "VeryLazy" },
+  -----------------------------------------------------------------------------
   {
     "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
     config = function()

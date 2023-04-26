@@ -76,4 +76,24 @@ M.icons = {
   },
 }
 
+M.exclude_filetypes = {
+  "",
+  "DiffviewFiles",
+  "TelescopePrompt",
+  "ccc-ui",
+  "checkhealth",
+  "dap-repl",
+  "fugitive",
+  "help",
+  "lazy",
+  "lspinfo",
+  "man",
+  "mason",
+  "netrw",
+  "octo",
+  "qf",
+  "tsplayground",
+  "undotree",
+}
+
 return M
