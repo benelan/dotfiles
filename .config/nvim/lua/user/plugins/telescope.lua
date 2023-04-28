@@ -13,7 +13,13 @@ return {
     {
       "AckslD/nvim-neoclip.lua",
       dependencies = { "kkharji/sqlite.lua" },
-      opts = { enable_persistent_history = true },
+      opts = {
+        enable_persistent_history = true,
+        keys = {
+          i = { paste_behind = "<C-h>", paste = "<C-l>" },
+          n = { paste_behind = "h", paste = "l" },
+        },
+      },
       config = function(_, opts)
         require("neoclip").setup(opts)
         require("telescope").load_extension "neoclip"
@@ -21,12 +27,12 @@ return {
       keys = {
         {
           "<leader>fy",
-          "<cmd>Telescope neoclip<cr>",
+          "<cmd>lua require('telescope').extensions.neoclip.default()<cr>",
           desc = "Clipboard history",
         },
         {
           "<leader>fm",
-          "<cmd>Telescope macroscope<cr>",
+          "<cmd>lua require('telescope').extensions.macroscope.default()<cr>",
           desc = "Macro history",
         },
       },

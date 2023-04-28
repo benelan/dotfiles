@@ -73,7 +73,7 @@ return {
           },
           { "i", "c" }
         ),
-        ["<C-x>"] = cmp.mapping(
+        ["<C-c>"] = cmp.mapping(
           cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
@@ -192,15 +192,25 @@ return {
     }
 
     cmp.setup.filetype("gitcommit", {
-      mapping = cmp.mapping.preset.cmdline(),
       sources = cmp.config.sources(
         { { name = "cmp_git" } },
         { { name = "buffer" } }
       ),
     })
 
+    local cmd_mapping = {
+      ["<C-e>"] = cmp.mapping { c = cmp.mapping.close() },
+      ["<C-y>"] = cmp.mapping(
+        cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        },
+        { "c" }
+      ),
+    }
+
     cmp.setup.cmdline({ "/", "?" }, {
-      mapping = cmp.mapping.preset.cmdline(),
+      mapping = cmd_mapping,
       sources = {
         { name = "nvim_lsp_document_symbol" },
         { name = "treesitter" },
@@ -209,7 +219,7 @@ return {
     })
 
     cmp.setup.cmdline(":", {
-      mapping = cmp.mapping.preset.cmdline(),
+      mapping = cmd_mapping,
       sources = cmp.config.sources({ { name = "cmdline" } }, {
         { name = "path" },
         { name = "rg", keyword_length = 4 },
@@ -228,7 +238,7 @@ return {
       end
     end)
 
-    keymap({ "i" }, "<C-c>", function()
+    keymap({ "i" }, "<C-x>c", function()
       if ls.choice_active() then
         ls.change_choice(1)
       end

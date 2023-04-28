@@ -206,9 +206,6 @@ keymap(
 ----> Windows
 -------------------------------------------------------------------------------
 
--- hide splits
-keymap("n", "<M-o>", "<C-w>o", "Close other windows")
-
 -- create vim style splits
 keymap("n", "<M-v>", "<C-w>v", "Vertical split")
 keymap("n", "<M-s>", "<C-w>s", "Horizontal split")
@@ -242,7 +239,7 @@ vim.cmd [[
 ]]
 keymap(
   { "n", "x" },
-  "<M-p>",
+  "<M-f>",
   "<cmd>GotoFirstFloat<cr>",
   "Focus first floating window"
 )
