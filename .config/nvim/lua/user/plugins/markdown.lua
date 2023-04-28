@@ -9,14 +9,13 @@ return {
     ft = "markdown",
     opts = {
       links = {
-        style = "wiki",
+        -- style = "wiki",
         transform_explicit = function(text)
           return text:gsub(" ", "-"):lower()
         end,
       },
       perspective = {
-        priority = "root",
-        root_tell = "index.md",
+        priority = "current",
         fallback = "first",
       },
     },
