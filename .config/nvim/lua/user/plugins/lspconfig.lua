@@ -117,6 +117,22 @@ return {
       }),
       callback = function(args)
         -- local client = vim.lsp.get_client_by_id(args.data.client_id)
+        vim.api.nvim_buf_set_option(
+          args.buf,
+          "formatexpr",
+          "v:lua.vim.lsp.formatexpr()"
+        )
+        vim.api.nvim_buf_set_option(
+          args.buf,
+          "omnifunc",
+          "v:lua.vim.lsp.omnifunc"
+        )
+        vim.api.nvim_buf_set_option(
+          args.buf,
+          "tagfunc",
+          "v:lua.vim.lsp.tagfunc"
+        )
+
         local bufmap = function(mode, lhs, rhs, desc)
           vim.keymap.set(mode, lhs, rhs, {
             buffer = args.buf,
