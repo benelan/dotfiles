@@ -18,7 +18,7 @@ alias rr='rm -rf'
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-alias f='$(is-supported vifm vifm fff)'
+alias -- -="vifm || fff"
 alias t="tmux"
 alias e='${EDITOR:-vim}'
 alias se='sudo e'
@@ -69,7 +69,7 @@ alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput s
 # Navigation
 # -----------------------------------------------------------------------------
 
-alias -- -="cd -"
+alias -- --="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -401,6 +401,7 @@ alias gunhide='git update-index --no-assume-unchanged'
 
 # plugins
 ##########
+alias gx="git mux"
 alias glz="lazygit"
 # delete multiple branches
 alias fgbd="git branch | fzf --multi | xargs git branch -d"
