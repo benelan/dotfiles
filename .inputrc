@@ -12,6 +12,7 @@ $include /etc/inputrc
 
 set keymap vi-command
 "\ee": emacs-editing-mode
+i: emacs-editing-mode
 
 set keymap vi-insert
 "\ee": emacs-editing-mode
@@ -19,13 +20,12 @@ set keymap vi-insert
 
 set keymap emacs
 "\ee": vi-editing-mode
-"jk": "\eejk"
+ESC: "\eejk"
 
 set editing-mode emacs
 set bell-style none
 set keyseq-timeout 1200
 
-set blink-matching-paren on
 set colored-completion-prefix on
 set colored-stats on
 set completion-ignore-case on

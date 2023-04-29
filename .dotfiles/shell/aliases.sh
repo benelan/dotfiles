@@ -18,7 +18,7 @@ alias rr='rm -rf'
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-alias -- -="vifm || fff"
+alias -- -="vifm"
 alias t="tmux"
 alias e='${EDITOR:-vim}'
 alias se='sudo e'
