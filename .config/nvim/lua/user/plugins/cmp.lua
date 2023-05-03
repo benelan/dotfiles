@@ -60,26 +60,32 @@ return {
         ["<CR>"] = cmp.mapping.confirm { select = false },
         ["<C-k>"] = cmp.mapping.select_prev_item(),
         ["<C-j>"] = cmp.mapping.select_next_item(),
-        ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-        ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-e>"] = cmp.mapping {
           i = cmp.mapping.abort(),
           c = cmp.mapping.close(),
         },
-        ["<C-y>"] = cmp.mapping(
-          cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Insert,
-            select = true,
-          },
-          { "i", "c" }
-        ),
-        ["<C-c>"] = cmp.mapping(
-          cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = false,
-          },
-          { "i", "c" }
-        ),
+        ["<C-y>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.mapping.confirm {
+              behavior = cmp.ConfirmBehavior.Insert,
+              select = true,
+            }
+          else
+            fallback()
+          end
+        end, { "i", "s", "c" }),
+        ["<M-y>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.mapping.confirm {
+              behavior = cmp.ConfirmBehavior.Replace,
+              select = false,
+            }
+          else
+            fallback()
+          end
+        end, { "i", "s", "c" }),
         ["<C-n>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
@@ -88,7 +94,7 @@ return {
           else
             fallback()
           end
-        end, { "i", "s", "c" }),
+        end, { "i" }),
         ["<C-p>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
@@ -97,7 +103,7 @@ return {
           else
             fallback()
           end
-        end, { "i", "s", "c" }),
+        end, { "i" }),
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
@@ -110,7 +116,7 @@ return {
           else
             fallback()
           end
-        end, { "i", "s", "c" }),
+        end, { "i" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
@@ -119,7 +125,7 @@ return {
           else
             fallback()
           end
-        end, { "i", "s", "c" }),
+        end, { "i" }),
       },
       formatting = {
         fields = { "abbr", "menu", "kind" },
@@ -181,9 +187,22 @@ return {
           cmp.config.compare.offset,
           cmp.config.compare.exact,
           cmp.config.compare.score,
-          cmp.config.compare.sort_text,
-          cmp.config.compare.recently_used,
+
+          function(entry1, entry2)
+            local _, entry1_under = entry1.completion_item.label:find "^_+"
+            local _, entry2_under = entry2.completion_item.label:find "^_+"
+            entry1_under = entry1_under or 0
+            entry2_under = entry2_under or 0
+            if entry1_under > entry2_under then
+              return false
+            elseif entry1_under < entry2_under then
+              return true
+            end
+          end,
+
           cmp.config.compare.kind,
+          cmp.config.compare.recently_used,
+          cmp.config.compare.sort_text,
           cmp.config.compare.length,
           cmp.config.compare.order,
         },
@@ -199,8 +218,16 @@ return {
     })
 
     local cmd_mapping = {
+      ["<Tab>"] = cmp.config.disable,
       ["<C-e>"] = cmp.mapping { c = cmp.mapping.close() },
       ["<C-y>"] = cmp.mapping(
+        cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Insert,
+          select = true,
+        },
+        { "c" }
+      ),
+      ["<M-y>"] = cmp.mapping(
         cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
@@ -238,7 +265,7 @@ return {
       end
     end)
 
-    keymap({ "i" }, "<C-x>c", function()
+    keymap({ "i" }, "<C-;>", function()
       if ls.choice_active() then
         ls.change_choice(1)
       end
