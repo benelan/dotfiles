@@ -36,7 +36,7 @@ return {
             "--builtin",
             "clear,rare,informal,usage,code,names,en-GB_to_en-US",
             "--ignore-words",
-            os.getenv "HOME" .. ".dotfiles/spelling/codespell_ignore.txt",
+            os.getenv "HOME" .. ".dotfiles/assets/codespell_ignore.txt",
           },
           diagnostic_config = quiet_diagnostics,
         },
@@ -47,14 +47,9 @@ return {
         diagnostics.proselint.with { diagnostic_config = quiet_diagnostics },
         diagnostics.stylelint.with { prefer_local = "node_modules/.bin" },
         diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
-        formatting.jq.with { extra_filetypes = { "jsonc", "json5" } },
         formatting.markdown_toc,
         formatting.markdownlint.with { prefer_local = "node_modules/.bin" },
-        formatting.prettier.with {
-          disabled_filetypes = { "json", "jsonc", "json5" },
-          prefer_local = "node_modules/.bin",
-        },
-        formatting.lua_format,
+        formatting.prettier.with { prefer_local = "node_modules/.bin" },
         -- Reminder: be careful with shellharden if you (ab)use expansion
         -- it can break your code w/o warning when you format()
         -- formatting.shellharden,

@@ -1,5 +1,9 @@
 return {
-  capabilities = { documentFormattingProvider = false },
+  capabilities = {
+    documentFormattingProvider = false,
+    documentRangeFormattingProvider = false,
+    ocumentHighlightProvider = false,
+  },
   settings = {
     Lua = {
       hint = { arrayIndex = "Disable", enable = true, setType = true },
@@ -13,6 +17,10 @@ return {
       },
       telemetry = { enable = false },
       format = { enable = false },
+      completion = {
+        callSnippet = "Replace",
+        displayContext = 4,
+      },
     },
   },
 }
