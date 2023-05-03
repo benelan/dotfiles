@@ -66,26 +66,20 @@ return {
           i = cmp.mapping.abort(),
           c = cmp.mapping.close(),
         },
-        ["<C-y>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.mapping.confirm {
-              behavior = cmp.ConfirmBehavior.Insert,
-              select = true,
-            }
-          else
-            fallback()
-          end
-        end, { "i", "s", "c" }),
-        ["<M-y>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.mapping.confirm {
-              behavior = cmp.ConfirmBehavior.Replace,
-              select = false,
-            }
-          else
-            fallback()
-          end
-        end, { "i", "s", "c" }),
+        ["<C-y>"] = cmp.mapping(
+          cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Insert,
+            select = true,
+          },
+          { "i", "c" }
+        ),
+        ["<M-y>"] = cmp.mapping(
+          cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = false,
+          },
+          { "i", "c" }
+        ),
         ["<C-n>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
