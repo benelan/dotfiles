@@ -2,16 +2,38 @@ return {
   {
     "AckslD/nvim-neoclip.lua",
     dependencies = { "kkharji/sqlite.lua" },
-    opts = {
-      enable_persistent_history = true,
-      continuous_sync = true,
-      keys = {
-        telescope = {
-          i = { paste_behind = "<C-h>", paste = "<C-l>" },
-          n = { paste_behind = "h", paste = "l" },
+    opts = function()
+      local function is_whitespace(line)
+        return vim.fn.match(line, [[^\s*$]]) ~= -1
+      end
+
+      local function all(table)
+        for _, entry in ipairs(table) do
+          if not is_whitespace(entry) then
+            return false
+          end
+        end
+        return true
+      end
+
+      return {
+        enable_persistent_history = true,
+        content_spec_column = true,
+        continuous_sync = true,
+        on_select = { move_to_front = true },
+        on_paste = { move_to_front = true },
+        on_replay = { move_to_front = true },
+        filter = function(data)
+          return not all(data.event.regcontents)
+        end,
+        keys = {
+          telescope = {
+            i = { paste_behind = "<C-h>", paste = "<C-l>" },
+            n = { paste_behind = "h", paste = "l" },
+          },
         },
-      },
-    },
+      }
+    end,
     init = function()
       require("telescope").load_extension "neoclip"
     end,
@@ -30,6 +52,7 @@ return {
   },
   {
     "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
+    enabled = false,
     config = function()
       require("telescope").load_extension "git_worktree"
     end,
@@ -210,6 +233,7 @@ return {
           sorting_strategy = "ascending",
           cycle_layout_list = { "horizontal", "vertical", "bottom_pane" },
           set_env = { ["COLORTERM"] = "truecolor" },
+          dynamic_preview_title = true,
           file_ignore_patterns = {
             -- dev directories
             "%.git/",
