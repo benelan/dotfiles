@@ -58,8 +58,6 @@ return {
       },
       mapping = {
         ["<CR>"] = cmp.mapping.confirm { select = false },
-        ["<C-k>"] = cmp.mapping.select_prev_item(),
-        ["<C-j>"] = cmp.mapping.select_next_item(),
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-e>"] = cmp.mapping {
@@ -80,6 +78,24 @@ return {
           },
           { "i", "c" }
         ),
+        ["<C-j>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+          elseif vim.g.codeium_enabled then
+            return vim.fn["codeium#CycleCompletions"](1)
+          else
+            fallback()
+          end
+        end, { "i" }),
+        ["<C-k>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+          elseif vim.g.codeium_enabled then
+            return vim.fn["codeium#CycleCompletions"](-1)
+          else
+            fallback()
+          end
+        end, { "i" }),
         ["<C-n>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
@@ -107,6 +123,8 @@ return {
             ls.expand_or_jump()
             -- elseif has_words_before() then
             --   cmp.complete()
+          elseif vim.g.codeium_enabled then
+            return vim.fn["codeium#CycleCompletions"](1)
           else
             fallback()
           end
@@ -116,6 +134,8 @@ return {
             cmp.select_prev_item()
           elseif ls.jumpable(-1) then
             ls.jump(-1)
+          elseif vim.g.codeium_enabled then
+            return vim.fn["codeium#CycleCompletions"](-1)
           else
             fallback()
           end
@@ -250,18 +270,26 @@ return {
     keymap({ "i", "s" }, "<C-l>", function()
       if ls.expand_or_jumpable() then
         ls.expand_or_jump()
+      elseif ls.jumpable(1) then
+        ls.jump(1)
+      elseif vim.g.codeium_enabled then
+        return vim.fn["codeium#Accept"]()
       end
     end)
 
     keymap({ "i", "s" }, "<C-h>", function()
       if ls.jumpable(-1) then
         ls.jump(-1)
+      elseif vim.g.codeium_enabled then
+        return vim.fn["codeium#Clear"]()
       end
     end)
 
     keymap({ "i" }, "<C-;>", function()
       if ls.choice_active() then
         ls.change_choice(1)
+      elseif vim.g.codeium_enabled then
+        return vim.fn["codeium#Complete"]()
       end
     end)
   end,

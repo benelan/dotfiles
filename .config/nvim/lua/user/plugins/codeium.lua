@@ -18,7 +18,7 @@ return {
       desc = "Codeium accept",
     },
     {
-      "<M-c>",
+      "<M-;>",
       function()
         return vim.fn["codeium#Complete"]()
       end,
