@@ -93,22 +93,22 @@ return {
     config = true,
     keys = {
       {
-        "<M-u>",
+        "<M-1>",
         "<cmd>lua require('harpoon.ui').nav_file(1)<cr>",
         desc = "Harpoon mark 1",
       },
       {
-        "<M-i>",
+        "<M-2>",
         "<cmd>lua require('harpoon.ui').nav_file(2)<cr>",
         desc = "Harpoon mark 2",
       },
       {
-        "<M-o>",
+        "<M-3>",
         "<cmd>lua require('harpoon.ui').nav_file(3)<cr>",
         desc = "Harpoon mark 3",
       },
       {
-        "<M-p>",
+        "<M-4>",
         "<cmd>lua require('harpoon.ui').nav_file(4)<cr>",
         desc = "Harpoon mark 4",
       },

@@ -24,14 +24,16 @@ return {
     },
   },
   config = function()
-    local cmp_status_ok, cmp = pcall(require, "cmp")
-    local snip_status_ok, ls = pcall(require, "luasnip")
-    if not cmp_status_ok or not snip_status_ok then
-      return
-    end
+    local cmp = require "cmp"
+    local ls = require "luasnip"
     local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
-
     local kinds = require("user.resources").icons.kind
+    local vscode_snips = require "luasnip/loaders/from_vscode"
+
+    vscode_snips.lazy_load() -- load plugin snippets
+    vscode_snips.lazy_load { -- load personal snippets
+      paths = { "~/.config/Code/User" },
+    }
 
     local has_words_before = function()
       unpack = unpack or table.unpack
@@ -44,16 +46,10 @@ return {
           == nil
     end
 
-    local vscode_snips = require "luasnip/loaders/from_vscode"
-    vscode_snips.lazy_load() -- load plugin snippets
-    vscode_snips.lazy_load { -- load personal snippets
-      paths = { "~/.config/Code/User" },
-    }
-
     cmp.setup {
       snippet = {
         expand = function(args)
-          require("luasnip").lsp_expand(args.body)
+          ls.lsp_expand(args.body)
         end,
       },
       mapping = {
@@ -71,7 +67,7 @@ return {
           },
           { "i", "c" }
         ),
-        ["<M-y>"] = cmp.mapping(
+        ["<M-x>"] = cmp.mapping(
           cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
@@ -241,7 +237,7 @@ return {
         },
         { "c" }
       ),
-      ["<M-y>"] = cmp.mapping(
+      ["<M-x>"] = cmp.mapping(
         cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
