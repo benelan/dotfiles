@@ -33,6 +33,7 @@ return {
   {
     "jinh0/eyeliner.nvim",
     -- enabled = false,
+    event = "VeryLazy",
     opts = { highlight_on_key = false, dim = true },
   },
   -----------------------------------------------------------------------------
@@ -106,6 +107,7 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     enabled = false,
+    event = "BufWinEnter",
     opts = {
       char = require("user.resources").icons.ui.Separator,
       indent_blankline_filetype_exclude = require("user.resources").exclude_filetypes,
