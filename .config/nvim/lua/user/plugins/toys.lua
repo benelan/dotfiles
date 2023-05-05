@@ -54,7 +54,7 @@ return {
     "simrat39/symbols-outline.nvim",
     enabled = false,
     keys = {
-      { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutlineToggle" }
+      { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutlineToggle" },
     },
     opts = {
       keymaps = {
@@ -268,6 +268,7 @@ return {
             t = { name = "toggle options" },
             w = { name = "worktree" },
           },
+          n = { name = "neogen" },
           o = {
             name = "octo (github)",
             i = {

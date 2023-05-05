@@ -1,6 +1,18 @@
 return {
   {
-    "iamcco/markdown-preview.nvim", -- opens markdown preview in browser
+    "danymat/neogen", -- Generates doc annotations
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = { snippet_engine = "luasnip" },
+    cmd = "Neogen",
+    keys = {
+      { "<leader>nf", "<cmd>Neogen func<cr>", desc = "Annotate function" },
+      { "<leader>nc", "<cmd>Neogen class<cr>", desc = "Annotate class" },
+      { "<leader>nt", "<cmd>Neogen type<cr>", desc = "Annotate type" },
+      { "<leader>nb", "<cmd>Neogen file<cr>", desc = "Annotate buffer" },
+    },
+  },
+  {
+    "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
     build = "cd app && npm install",
     cmd = "MarkdownPreviewToggle",
   },
