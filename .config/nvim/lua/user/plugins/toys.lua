@@ -51,6 +51,134 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "simrat39/symbols-outline.nvim",
+    enabled = false,
+    keys = {
+      { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutlineToggle" }
+    },
+    opts = {
+      keymaps = {
+        hover_symbol = "K",
+        toggle_preview = "p",
+      },
+      fold_markers = {
+        require("user.resources").icons.ui.Collapsed,
+        require("user.resources").icons.ui.Expanded,
+      },
+      symbols = {
+        File = {
+          icon = require("user.resources").icons.kind.File,
+          hl = "@text.uri",
+        },
+        Module = {
+          icon = require("user.resources").icons.kind.Module,
+          hl = "@namespace",
+        },
+        Namespace = {
+          icon = require("user.resources").icons.kind.Namespace,
+          hl = "@namespace",
+        },
+        Package = {
+          icon = require("user.resources").icons.kind.Package,
+          hl = "@namespace",
+        },
+        Class = {
+          icon = require("user.resources").icons.kind.Class,
+          hl = "@type",
+        },
+        Method = {
+          icon = require("user.resources").icons.kind.Method,
+          hl = "@method",
+        },
+        Property = {
+          icon = require("user.resources").icons.kind.Property,
+          hl = "@method",
+        },
+        Field = {
+          icon = require("user.resources").icons.kind.Field,
+          hl = "@field",
+        },
+        Constructor = {
+          icon = require("user.resources").icons.kind.Constructor,
+          hl = "@constructor",
+        },
+        Enum = {
+          icon = require("user.resources").icons.kind.Enum,
+          hl = "@type",
+        },
+        Interface = {
+          icon = require("user.resources").icons.kind.Interface,
+          hl = "@type",
+        },
+        Function = {
+          icon = require("user.resources").icons.kind.Function,
+          hl = "@function",
+        },
+        Variable = {
+          icon = require("user.resources").icons.kind.Variable,
+          hl = "@constant",
+        },
+        Constant = {
+          icon = require("user.resources").icons.kind.Constant,
+          hl = "@constant",
+        },
+        String = {
+          icon = require("user.resources").icons.kind.String,
+          hl = "@string",
+        },
+        Number = {
+          icon = require("user.resources").icons.kind.Number,
+          hl = "@number",
+        },
+        Boolean = {
+          icon = require("user.resources").icons.kind.Boolean,
+          hl = "@boolean",
+        },
+        Array = {
+          icon = require("user.resources").icons.kind.Array,
+          hl = "@constant",
+        },
+        Object = {
+          icon = require("user.resources").icons.kind.Object,
+          hl = "@type",
+        },
+        Key = { icon = require("user.resources").icons.kind.Key, hl = "@type" },
+        Null = {
+          icon = require("user.resources").icons.kind.Null,
+          hl = "@type",
+        },
+        EnumMember = {
+          icon = require("user.resources").icons.kind.EnumMember,
+          hl = "@field",
+        },
+        Struct = {
+          icon = require("user.resources").icons.kind.Struct,
+          hl = "@type",
+        },
+        Event = {
+          icon = require("user.resources").icons.kind.Event,
+          hl = "@type",
+        },
+        Operator = {
+          icon = require("user.resources").icons.kind.Operator,
+          hl = "@operator",
+        },
+        TypeParameter = {
+          icon = require("user.resources").icons.kind.TypeParameter,
+          hl = "@parameter",
+        },
+        Component = {
+          icon = require("user.resources").icons.kind.Component,
+          hl = "@function",
+        },
+        Fragment = {
+          icon = require("user.resources").icons.kind.Fragment,
+          hl = "@constant",
+        },
+      },
+    },
+  },
+  {
     "petertriho/nvim-scrollbar",
     enabled = false,
     event = "VeryLazy",
@@ -58,19 +186,10 @@ return {
     opts = {
       max_lines = 10000,
       hide_if_all_visible = true,
-      marks = {
-        Error = { highlight = "DiagnosticSignError" },
-        Warn = { highlight = "DiagnosticSignWarn" },
-        Info = { highlight = "DiagnosticSignInfo" },
-        Hint = { highlight = "DiagnosticSignHint" },
-        Misc = { highlight = "Purple" },
-      },
-      handlers = {
-        cursor = true,
-        diagnostic = true,
-        gitsigns = true,
-        handle = true,
-      },
+      handle = { highlight = "TabLine" },
+      marks = { Misc = { highlight = "Purple" } },
+      handlers = { gitsigns = true },
+      excluded_filetypes = require("user.resources").exclude_filetypes,
     },
     config = function(_, opts)
       require("scrollbar").setup(opts)
