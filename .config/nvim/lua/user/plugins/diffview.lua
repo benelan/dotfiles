@@ -21,14 +21,6 @@ return {
       desc = "Buffer file history",
     },
   },
-  config = function()
-    keymap(
-      "x",
-      "<leader>gh",
-      ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>",
-      "Selection history"
-    )
-  end,
   opts = function()
     local actions = require "diffview.actions"
     local icons = require("user.resources").icons.ui
@@ -191,5 +183,14 @@ return {
         },
       },
     }
+  end,
+  config = function(_, opts)
+    require("diffview").setup(opts)
+    keymap(
+      "x",
+      "<leader>gh",
+      ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>",
+      "Selection history"
+    )
   end,
 }
