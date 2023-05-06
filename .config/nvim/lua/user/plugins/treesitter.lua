@@ -22,6 +22,74 @@ return {
     cmd = "TSPlaygroundToggle",
   },
   {
+    "ziontee113/syntax-tree-surfer",
+    config = function()
+      require("syntax-tree-surfer").setup {}
+      -- Visual Selection from Normal Mode
+      keymap("n", "vx", "<cmd>STSSelectMasterNode<cr>", "Select master node")
+      keymap("n", "vn", "<cmd>STSSelectCurrentNode<cr>", "Select current node")
+
+      -- Select Nodes in Visual Mode
+      keymap("x", "J", "<cmd>STSSelectNextSiblingNode<cr>", "Next sibling node")
+      keymap(
+        "x",
+        "K",
+        "<cmd>STSSelectPrevSiblingNode<cr>",
+        "Previous sibling node"
+      )
+      keymap("x", "H", "<cmd>STSSelectParentNode<cr>", "Parent node")
+      keymap("x", "L", "<cmd>STSSelectChildNode<cr>", "Child node")
+
+      keymap("x", "<M-n>", "<cmd>STSSwapNextVisual<cr>", "Swap next node")
+      keymap("x", "<M-p>", "<cmd>STSSwapPrevVisual<cr>", "Swap previous node")
+
+      -- Holds a node, or swaps the held node
+      keymap("n", "<leader>SX", "<cmd>STSSwapOrHold<cr>", "Exchange nodes")
+      keymap(
+        "x",
+        "<leader>SX",
+        "<cmd>STSSwapOrHoldVisual<cr>",
+        "Exchange nodes"
+      )
+
+      -- Targeted jump to specified node types
+      keymap("n", "<leader>Sj", function()
+        require("syntax-tree-surfer").targeted_jump {
+          "function",
+          "if_statement",
+          "else_clause",
+          "else_statement",
+          "elseif_statement",
+          "for_statement",
+          "while_statement",
+          "switch_statement",
+        }
+      end, "Treesurfer jump")
+
+      keymap("n", "<leader>SO", function()
+        require("syntax-tree-surfer").go_to_top_node_and_execute_commands(
+          false,
+          { "normal! O", "normal! O", "startinsert" }
+        )
+      end, "Goto above node")
+
+      keymap("n", "<leader>So", function()
+        require("syntax-tree-surfer").go_to_top_node_and_execute_commands(
+          true,
+          { "normal! o", "normal! o", "startinsert" }
+        )
+      end, "Goto below node")
+
+      -- "default" means that you jump to the default_desired_types or your lastest jump types
+      keymap("n", "<M-n>", function()
+        require("syntax-tree-surfer").filtered_jump("default", true) --> true means jump forward
+      end, "Next node")
+      keymap("n", "<M-p>", function()
+        require("syntax-tree-surfer").filtered_jump("default", false) --> false means jump backwards
+      end, "Previous node")
+    end,
+  },
+  {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
