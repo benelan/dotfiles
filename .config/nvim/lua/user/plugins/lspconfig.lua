@@ -166,8 +166,9 @@ return {
         { capabilities = capabilities },
         has_user_opts and user_opts or {}
       )
-
-      require("lspconfig")[server].setup(server_opts)
+      if server ~= "zk" then
+        require("lspconfig")[server].setup(server_opts)
+      end
     end
   end,
 }

@@ -1,3 +1,5 @@
+vim.bo.conceallevel = 2
+
 keymap("n", "<C-z>", "[s1z=", "Correct latest misspelled word")
 keymap(
   "i",
@@ -10,6 +12,7 @@ local status_ok, zk = pcall(require, "zk.util")
 if not status_ok then
   return
 end
+
 -- Add the key mappings only for Markdown files in a zk notebook.
 if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   -- Create a new note after asking for its title.
