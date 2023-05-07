@@ -113,6 +113,7 @@
 [rebase]
   ; Create a temporary stash entry before the operation begins.
   autostash = true
+  autosquash = true
 
 [status]
   ; Enable submodule summary of commits.
@@ -166,9 +167,9 @@
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
   ; use fzf to fixup commits to autosquash
-  cf = "!git log -n 13 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup"
+  cf = "!git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup | git rebase -i HEAD~20"
 
-  rsq = !GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash
+  rbi= !GIT_SEQUENCE_EDITOR=: git rebase --interactive
 
   ; log the last n commits, e.g. $ git ln 69
   ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
@@ -185,14 +186,12 @@
   ; find commits by commit message
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
-  ri = rebase --interactive --autosquash
-
   ; add and remove file(s) to index
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
 
   ; remove the old tag with this name and tag the latest commit with it.
-  retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+  retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag -a \"$1\" HEAD -m \"$1\"; }; r"
 
   ; credit an author on the latest commit.
   credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
@@ -204,7 +203,6 @@
   bdefault = "!f() { echo $(if [ $(git config --get core.bare) = 'true' ]; then git bdefault-bare; else git bdefault-fast; fi); }; f"
   bdefault-fast = "!f() { basename $(git rev-parse --abbrev-ref origin/HEAD);}; f"
   bdefault-bare = "!f() { git remote show $(git remote | grep -Eo '(upstream|origin)' | tail -1) | grep 'HEAD branch' | cut -d' ' -f5; }; f"
-
 
   ; list of local branches and their most recent commit
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
