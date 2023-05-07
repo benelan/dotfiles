@@ -75,7 +75,7 @@ fi
 
 md2html() {
     pandoc "$1.md" --output="$1.html" --standalone \
-        --css="$HOME/.dotfiles/templates/pandoc.css" --from=gfm --to=html5
+        --css="$HOME/.dotfiles/assets/pandoc.css" --from=gfm --to=html5
 }
 
 if is-supported inotifywait; then
