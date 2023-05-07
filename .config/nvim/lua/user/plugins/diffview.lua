@@ -48,13 +48,13 @@ return {
           },
           {
             "n",
-            "<leader>ml",
+            "<leader>mo",
             actions.conflict_choose "ours",
             { desc = "Choose the LOCAL version of a conflict" },
           },
           {
             "n",
-            "<leader>mr",
+            "<leader>mt",
             actions.conflict_choose "theirs",
             { desc = "Choose the REMOTE version of a conflict" },
           },
@@ -78,7 +78,7 @@ return {
           },
           {
             "n",
-            "<leader>mL",
+            "<leader>mO",
             actions.conflict_choose_all "ours",
             {
               desc = "Choose the LOCAL version of a conflict for the whole file",
@@ -86,7 +86,7 @@ return {
           },
           {
             "n",
-            "<leader>mR",
+            "<leader>mT",
             actions.conflict_choose_all "theirs",
             {
               desc = "Choose the REMOTE version of a conflict for the whole file",
@@ -130,7 +130,7 @@ return {
           },
           {
             "n",
-            "<leader>mL",
+            "<leader>mO",
             actions.conflict_choose_all "ours",
             {
               desc = "Choose the LOCAL version of a conflict for the whole file",
@@ -138,7 +138,7 @@ return {
           },
           {
             "n",
-            "<leader>mR",
+            "<leader>mT",
             actions.conflict_choose_all "theirs",
             {
               desc = "Choose the REMOTE version of a conflict for the whole file",

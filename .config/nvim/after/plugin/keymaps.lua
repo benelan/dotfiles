@@ -153,6 +153,20 @@ keymap(
   "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
   "Previous error"
 )
+-- diagnostic warning
+keymap(
+  "n",
+  "]w",
+  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warning' })<cr>",
+  "Next warning"
+)
+
+keymap(
+  "n",
+  "[w",
+  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Warning' })<cr>",
+  "Previous warning"
+)
 
 -------------------------------------------------------------------------------
 ----> Git Mergetool
@@ -198,7 +212,7 @@ keymap(
 keymap(
   { "n", "v" },
   "<leader>gmL",
-  "<cmd>diffget LO<cr>",
+  "<cmd>%diffget LO<cr>",
   "Choose all from local"
 )
 
