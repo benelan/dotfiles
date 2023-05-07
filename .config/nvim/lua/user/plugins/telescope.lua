@@ -225,6 +225,7 @@ return {
       local icons = require("user.resources").icons.ui
       return {
         defaults = {
+          -- path_display = { "smart" },
           prompt_prefix = string.format(" %s ", icons.Prompt),
           selection_caret = icons.Select,
           multi_icon = icons.X,
