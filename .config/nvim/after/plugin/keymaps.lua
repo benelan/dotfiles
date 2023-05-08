@@ -157,14 +157,14 @@ keymap(
 keymap(
   "n",
   "]w",
-  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warning' })<cr>",
+  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warn' })<cr>",
   "Next warning"
 )
 
 keymap(
   "n",
   "[w",
-  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Warning' })<cr>",
+  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Warn' })<cr>",
   "Previous warning"
 )
 
