@@ -31,12 +31,12 @@ return {
           end,
         },
         diagnostics.codespell.with {
-          method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+          -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
           extra_args = {
             "--builtin",
             "clear,rare,informal,usage,code,names,en-GB_to_en-US",
             "--ignore-words",
-            os.getenv "HOME" .. ".dotfiles/assets/codespell_ignore.txt",
+            os.getenv "HOME" .. "/.dotfiles/assets/codespell_ignore.txt",
           },
           diagnostic_config = quiet_diagnostics,
         },
@@ -48,7 +48,6 @@ return {
         diagnostics.stylelint.with { prefer_local = "node_modules/.bin" },
         diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
         formatting.markdown_toc,
-        formatting.markdownlint.with { prefer_local = "node_modules/.bin" },
         formatting.prettier.with { prefer_local = "node_modules/.bin" },
         -- Reminder: be careful with shellharden if you (ab)use expansion
         -- it can break your code w/o warning when you format()
