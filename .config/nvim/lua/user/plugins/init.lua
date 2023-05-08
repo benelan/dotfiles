@@ -89,6 +89,41 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "rest-nvim/rest.nvim",
+    ft = "http",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = "http",
+        group = vim.api.nvim_create_augroup(
+          "ben_http_keymaps",
+          { clear = true }
+        ),
+        callback = function()
+          vim.keymap.set("n", "<leader><CR>", "<Plug>RestNvim", {
+            desc = "Run request under cursor",
+            buffer = true,
+            noremap = true,
+            silent = true,
+          })
+          vim.keymap.set("n", "<leader><Backspace>", "<Plug>RestNvimLast", {
+            desc = "Run previous request",
+            buffer = true,
+            noremap = true,
+            silent = true,
+          })
+          vim.keymap.set("n", "<leader>p", "<Plug>RestNvimPreview", {
+            desc = "Preview request curl command",
+            buffer = true,
+            noremap = true,
+            silent = true,
+          })
+        end,
+      })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "ThePrimeagen/harpoon", -- file marks on steroids
     config = true,
     keys = {
@@ -124,8 +159,8 @@ return {
       },
     },
   },
+  -----------------------------------------------------------------------------
   {
-    -----------------------------------------------------------------------------
     "rmagatti/goto-preview", -- open lsp previews in floating window
     config = true,
     keys = {
@@ -156,6 +191,7 @@ return {
       },
     },
   },
+  -----------------------------------------------------------------------------
   {
     "ggandor/leap.nvim",
     -- enabled = false,
