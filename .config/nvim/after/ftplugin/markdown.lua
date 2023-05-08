@@ -1,4 +1,4 @@
-vim.bo.conceallevel = 2
+vim.wo.conceallevel = 2
 
 keymap("n", "<C-z>", "[s1z=", "Correct latest misspelled word")
 keymap(
