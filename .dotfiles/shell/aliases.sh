@@ -18,7 +18,7 @@ alias rr='rm -rf'
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-alias -- -="vifm"
+alias -- -="vifm ."
 alias t="tmux"
 alias e='${EDITOR:-vim}'
 alias se='sudo e'
@@ -28,15 +28,20 @@ COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)
 TIMESTYLEISO_SUPPORTED=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
 GROUPDIRSFIRST_SUPPORTED=$(is-supported "ls --group-directories-first" --group-directories-first)
 
-alias ls='ls $COLORS_SUPPORTED'
+# shellcheck disable=2139
+alias ls="ls $COLORS_SUPPORTED"
 # list all files/dirs, short format, sort by time
-alias l='ls -Art $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
+# shellcheck disable=2139
+alias l="ls -Art $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
 # list all files/dirs, long format, sort by time
-alias ll='ls -hogArt $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
+# shellcheck disable=2139
+alias ll="ls -hogArt $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
 # List directories, long format, sort by time
-alias lsd='ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED'
+# shellcheck disable=2139
+alias lsd="ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED"
 # Lists hidden files, long format, sort by time
-alias lsh='ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED'
+# shellcheck disable=2139
+alias lsh="ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
 
 # Always enable colored `grep` output (`GREP_OPTIONS="--color=auto"` is deprecated)
 alias grep='grep --color=auto'
