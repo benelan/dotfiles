@@ -40,7 +40,7 @@ if vim.g.neovide then
 end
 
 -- nerd font glyphs are shipped with wezterm so patched fonts
--- aren't required. OG_TERM env var is set when attching to tmux.
+-- aren't required. OG_TERM env var is set when attaching to tmux.
 vim.g.use_devicons = os.getenv "TERM" == "wezterm"
   or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
 
@@ -109,7 +109,7 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=stable",
     lazypath,
   }
 end

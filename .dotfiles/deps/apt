@@ -12,6 +12,7 @@ coreutils
 cron
 curl
 datamash
+ddgr
 diffutils
 doxygen
 feh
@@ -26,6 +27,7 @@ gzip
 handbrake-cli
 htop
 imagemagick
+jq
 libfontconfig1-dev
 libfreetype6-dev
 librsvg2-bin
@@ -49,7 +51,9 @@ pandoc
 perl
 pkg-config
 python3
+python3-dev
 python3-pip
+python3-setuptools
 python3-venv
 qrencode
 rsync
@@ -60,6 +64,7 @@ sqlite3
 taskwarrior
 tcpdump
 telnet
+thefuck
 tmux
 transmission-cli
 trash-cli

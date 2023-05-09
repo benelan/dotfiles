@@ -1,5 +1,6 @@
 crate
 falsy
+master
 hist
 jupyter
 lite

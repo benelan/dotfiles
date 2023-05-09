@@ -28,10 +28,15 @@ return {
   dependencies = {
     {
       "williamboman/mason.nvim", -- language server installer/manager
+      build = {
+        ":MasonInstall stylua write-good proselint codespell chrome-debug-adapter firefox-debug-adapter js-debug-adapter node-debug2-adapter",
+        ":MasonUpdate",
+      },
       opts = {},
     },
     {
       "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
+      build = ":MasonUpdate",
       opts = { ensure_installed = servers, automatic_installation = true },
     },
   },
