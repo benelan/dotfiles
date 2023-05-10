@@ -296,7 +296,7 @@ if has("autocmd")
                     \| nnoremap <silent> <buffer> q :q<CR>
 
         autocmd FileType markdown,mdx,gitcommit,text
-                    \ setlocal wrap spell
+                    \ setlocal wrap spell nocursorline
                     \| nnoremap <buffer> <silent> ^ g^
                     \| nnoremap <buffer> <silent> $ g$
                     \| nnoremap <buffer> <silent> j gj

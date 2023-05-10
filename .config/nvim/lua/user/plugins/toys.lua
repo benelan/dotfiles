@@ -32,7 +32,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "jinh0/eyeliner.nvim",
-    -- enabled = false,
+    enabled = false,
     event = "VeryLazy",
     opts = { highlight_on_key = false, dim = true },
   },
@@ -257,6 +257,8 @@ return {
           },
           -- d = { name = "Debug" },
           E = { name = "ex" },
+          S = { name = "surf-syntax" },
+          P = { name = "present" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
           s = { name = "settings" },
@@ -306,5 +308,38 @@ return {
         },
       }, { mode = "x" })
     end,
+  },
+  -----------------------------------------------------------------------------
+  -- Presentation plugins
+  {
+    "folke/zen-mode.nvim",
+    -- enabled = false,
+    cmd = "ZenMode",
+    keys = {
+      { "<leader>Pz", "<cmd>ZenMode<cr>" },
+    },
+    opts = {
+      window = {
+        options = {
+          signcolumn = "no",
+          number = false,
+          relativenumber = false,
+          cursorline = false,
+        },
+      },
+      plugins = {
+        twilight = { enabled = true },
+        tmux = { enabled = true },
+        wezterm = { enabled = true, font = "+6" },
+        gitsigns = { enabled = true },
+      },
+    },
+  },
+  {
+    "folke/twilight.nvim",
+    -- enabled = false,
+    cmd = "Twilight",
+    keys = { { "<leader>Pt", "<cmd>Twilight<cr>" } },
+    opts = { context = 4 },
   },
 }

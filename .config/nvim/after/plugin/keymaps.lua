@@ -308,16 +308,21 @@ local toggle_option = function(option, x, y)
   local on = x or true
   local off = y or false
 
-  local has_win_opt, opt_value = pcall(vim.api.nvim_win_get_option, 0, option)
-  if not has_win_opt then
-    opt_value = vim.api.nvim_get_option(option)
-  end
+  local has_win_opt, win_opt_value =
+    pcall(vim.api.nvim_win_get_option, 0, option)
 
-  local toggled = opt_value == off and on or off
+  local has_buf_opt, buf_opt_value =
+    pcall(vim.api.nvim_buf_get_option, 0, option)
 
   if has_win_opt then
+    local toggled = win_opt_value == off and on or off
     vim.api.nvim_win_set_option(0, option, toggled)
+  elseif has_buf_opt then
+    local toggled = buf_opt_value == off and on or off
+    vim.api.nvim_buf_set_option(0, option, toggled)
   else
+    local opt_value = vim.api.nvim_get_option(option)
+    local toggled = opt_value == off and on or off
     vim.api.nvim_set_option(option, toggled)
   end
   vim.cmd.set(option .. "?")
@@ -391,6 +396,10 @@ keymap("n", "<leader>sf", function()
   toggle_option("foldcolumn", "0", "1")
 end, "Toggle foldcolumn")
 
+keymap("n", "<leader>sM", function()
+  toggle_option "modifiable"
+end, "Toggle modifiable")
+
 keymap("n", "<leader>s|", function()
   toggle_option("colorcolumn", "0", "80")
 end, "Toggle colorcolumn")
@@ -398,3 +407,21 @@ end, "Toggle colorcolumn")
 keymap("n", "<leader>sc", function()
   toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")
 end, "Toggle clipboard")
+
+local prezMode = false
+keymap("n", "<leader>sP", function()
+  vim.bo.modifiable = prezMode
+  vim.opt.relativenumber = prezMode
+  vim.opt.number = prezMode
+  vim.opt.spell = prezMode
+  vim.opt.cursorline = prezMode
+  vim.opt.ruler = prezMode
+  vim.opt.showmode = prezMode
+  vim.opt.signcolumn = prezMode and "yes" or "no"
+  vim.opt.laststatus = prezMode and 3 or 0
+  vim.opt.showtabline = prezMode and 2 or 0
+  vim.schedule(function()
+    vim.diagnostic[prezMode and "disable" or "enable"](nil)
+  end)
+  prezMode = not prezMode
+end, "Toggle Present mode")
