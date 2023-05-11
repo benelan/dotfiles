@@ -19,20 +19,29 @@ return {
   -----------------------------------------------------------------------------
   {
     "uga-rosa/ccc.nvim",
-    -- enabled = false,
+    enabled = false,
     cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
     opts = {
       save_on_quit = true,
       highlighter = {
         auto_enable = true,
-        filetypes = { "css", "scss", "sass", "json" },
+        filetypes = {
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+          "css",
+          "scss",
+          "sass",
+          "json",
+        },
       },
     },
   },
   -----------------------------------------------------------------------------
   {
     "jinh0/eyeliner.nvim",
-    enabled = false,
+    -- enabled = false,
     event = "VeryLazy",
     opts = { highlight_on_key = false, dim = true },
   },
@@ -257,8 +266,7 @@ return {
           },
           -- d = { name = "Debug" },
           E = { name = "ex" },
-          S = { name = "surf-syntax" },
-          P = { name = "present" },
+          S = { name = "surf" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
           s = { name = "settings" },
@@ -268,7 +276,7 @@ return {
             name = "git",
             m = { name = "mergetool" },
             t = { name = "toggle options" },
-            w = { name = "worktree" },
+            -- w = { name = "worktree" },
           },
           n = { name = "neogen" },
           o = {
@@ -313,10 +321,10 @@ return {
   -- Presentation plugins
   {
     "folke/zen-mode.nvim",
-    -- enabled = false,
+    enabled = false,
     cmd = "ZenMode",
     keys = {
-      { "<leader>Pz", "<cmd>ZenMode<cr>" },
+      { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" },
     },
     opts = {
       window = {
@@ -328,7 +336,7 @@ return {
         },
       },
       plugins = {
-        twilight = { enabled = true },
+        twilight = { enabled = false },
         tmux = { enabled = true },
         wezterm = { enabled = true, font = "+6" },
         gitsigns = { enabled = true },
@@ -337,9 +345,9 @@ return {
   },
   {
     "folke/twilight.nvim",
-    -- enabled = false,
+    enabled = false,
     cmd = "Twilight",
-    keys = { { "<leader>Pt", "<cmd>Twilight<cr>" } },
-    opts = { context = 4 },
+    keys = { { "<leader>T", "<cmd>Twilight<cr>", desc = "TwilightToggle" } },
+    opts = { context = 13 },
   },
 }
