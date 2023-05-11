@@ -15,6 +15,10 @@ export LESS_TERMCAP_me=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[04;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 
+# generate LS_COLORS
+[ -r ~/.dir_colors ] && [ -f ~/.dir_colors ] &&
+    eval "$(dircolors ~/.dir_colors)"
+
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'
 
