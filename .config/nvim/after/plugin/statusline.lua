@@ -1,5 +1,5 @@
 local icons = require("user.resources").icons
-vim.opt.statusline = "%!v:lua.StatusLine()"
+vim.opt.statusline = "%!v:lua.MyStatusLine()"
 
 local function table_length(T)
   local len = 0
@@ -14,10 +14,10 @@ local function format_numeric_data(d)
   local output = {}
   for _, item in ipairs(d) do
     if item.count and item.count > 0 then
-      output[#output + 1] = string.format("%%#%s#", item.highlight)
-      output[#output + 1] = string.format(" %s ", item.icon)
-      output[#output + 1] = item.count
-      template = template .. "%s%s%d"
+      table.insert(output, item.highlight)
+      table.insert(output, item.icon)
+      table.insert(output, item.count)
+      template = template .. "%%#%s# %s %d "
     end
   end
   return #template > 0
@@ -28,14 +28,14 @@ end
 local function buffer_diagnostics()
   local data = {}
   for _, diagnostic in ipairs(icons.diagnostics) do
-    data[#data + 1] = {
+    table.insert(data, {
       icon = diagnostic.text,
       count = table_length(
         vim.diagnostic.get(0, { severity = diagnostic.severity })
       ),
       highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name)
         .. "Float",
-    }
+    })
   end
   return format_numeric_data(data)
 end
@@ -43,31 +43,31 @@ end
 local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
-    local status_info = {
-      {
-        highlight = "GitStatusLineAdd", -- "GitSignsAdd",
-        icon = icons.ui.Add,
-        count = gs.added,
-      },
-      {
-        highlight = "GitStatusLineChange", -- "GitSignsChange",
-        icon = icons.ui.Edit,
-        count = gs.changed,
-      },
-      {
-        highlight = "GitStatusLineDelete", -- "GitSignsDelete",
-        icon = icons.ui.Delete,
-        count = gs.removed,
-      },
-    }
     return string.format(
-      "  %s%s %s  ",
+      "%%#NormalFloat#  %s%s %s ",
       icons.ui.Branch,
       gs.head,
-      format_numeric_data(status_info)
+      format_numeric_data {
+        {
+          highlight = "GitStatusLineAdd", -- "GitSignsAdd",
+          icon = icons.ui.Add,
+          count = gs.added,
+        },
+        {
+          highlight = "GitStatusLineChange", -- "GitSignsChange",
+          icon = icons.ui.Edit,
+          count = gs.changed,
+        },
+        {
+          highlight = "GitStatusLineDelete", -- "GitSignsDelete",
+          icon = icons.ui.Delete,
+          count = gs.removed,
+        },
+      }
     )
+  else
+    return ""
   end
-  return ""
 end
 
 -- local function fugitive_git_branch()
@@ -77,22 +77,26 @@ end
 --   then
 --     local head = vim.fn["fugitive#Head"]()
 --     if head ~= "" then
---       return string.format("  %s%s  ", icons.ui.Branch, head)
+--       return string.format("%%#NormalFloat#  %s%s  ", icons.ui.Branch, head)
 --     end
 --   end
 --   return ""
 -- end
 
-function StatusLine()
+function MyStatusLine()
   return "%#TabLineSel#"
     .. "  [%n]%m%r%h%w%q%y  "
-    .. "%#NormalFloat#" -- "%#Normal#"
+    -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
+    -------------------------------------------
     .. "%#TabLineFill#"
-    .. "  %=  "
+    .. "%="
+    -------------------------------------------
+    .. "%#NormalFloat# " -- "%#Normal#"
     .. buffer_diagnostics()
-    .. "%#NormalFloat#" -- "%#Normal#"
-    .. "  %f  "
+    .. "%#NormalFloat# " -- "%#Normal#"
+    .. "%f  "
+    -------------------------------------------
     .. "%#TabLineSel#"
     .. "  %c:[%l/%L]%<  "
 end
