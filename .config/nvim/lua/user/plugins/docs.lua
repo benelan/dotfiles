@@ -20,8 +20,10 @@ return {
     "jakewvincent/mkdnflow.nvim",
     ft = "markdown",
     opts = {
+      filetypes = { mdx = true },
       links = {
         -- style = "wiki",
+        conceal = true,
         transform_explicit = function(text)
           return text:gsub(" ", "-"):lower()
         end,
@@ -29,6 +31,16 @@ return {
       perspective = {
         priority = "current",
         fallback = "first",
+      },
+      mappings = {
+        MkdnToggleToDo = { { "n", "v" }, "<leader><Tab>" },
+        MkdnMoveSource = { "n", "<leader>zR" },
+        MkdnTab = { "i", "<Tab>" },
+        MkdnSTab = { "i", "<S-Tab>" },
+        MkdnTableNextCell = false,
+        MkdnTablePrevCell = false,
+        MkdnFoldSedtion = false,
+        MkdnUnfoldSedtion = false,
       },
     },
   },

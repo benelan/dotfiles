@@ -4,6 +4,41 @@ local act = wezterm.action
 local M = {}
 
 M.keys = {
+  {
+    key = "Enter",
+    mods = "ALT",
+    action = act.DisableDefaultAssignment,
+  },
+  {
+    key = "=",
+    mods = "CTRL",
+    action = act.DisableDefaultAssignment,
+  },
+  {
+    key = "+",
+    mods = "ALT|SHIFT",
+    action = act.IncreaseFontSize,
+  },
+  {
+    key = "-",
+    mods = "CTRL",
+    action = act.DisableDefaultAssignment,
+  },
+  {
+    key = "_",
+    mods = "ALT|SHIFT",
+    action = act.DecreaseFontSize,
+  },
+  {
+    key = "0",
+    mods = "CTRL",
+    action = act.DecreaseFontSize,
+  },
+  {
+    key = ")",
+    mods = "ALT|SHIFT",
+    action = act.ResetFontSize,
+  },
   -- Pane management
   {
     key = "q",
