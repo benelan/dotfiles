@@ -5,16 +5,34 @@ return {
     config = { snippet_engine = "luasnip" },
     cmd = "Neogen",
     keys = {
-      { "<leader>nf", "<cmd>Neogen func<cr>", desc = "Annotate function" },
-      { "<leader>nc", "<cmd>Neogen class<cr>", desc = "Annotate class" },
-      { "<leader>nt", "<cmd>Neogen type<cr>", desc = "Annotate type" },
-      { "<leader>nb", "<cmd>Neogen file<cr>", desc = "Annotate buffer" },
+      { "<leader>df", "<cmd>Neogen func<cr>", desc = "Annotate function" },
+      { "<leader>dc", "<cmd>Neogen class<cr>", desc = "Annotate class" },
+      { "<leader>dt", "<cmd>Neogen type<cr>", desc = "Annotate type" },
+      { "<leader>db", "<cmd>Neogen file<cr>", desc = "Annotate buffer" },
     },
   },
   {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
+    ft = "markdown",
     build = "cd app && npm install",
     cmd = "MarkdownPreviewToggle",
+    keys = {
+      {
+        "<leader>dP",
+        "<cmd>MarkdownPreviewToggle<cr>",
+        desc = "Markdown preview",
+      },
+    },
+  },
+  {
+    "mzlogin/vim-markdown-toc",
+    ft = "markdown",
+    cmd = { "GenTocGFM", "GenTocRedcarpet", "GenTocGitLab", "GenTocMarked" },
+    keys = { { "<leader>dC", "<cmd>GenTocGFM<cr>", desc = "Markdown TOC" } },
+    init = function()
+      vim.g.vmt_dont_insert_fence = true
+      vim.g.vmt_list_item_char = "-"
+    end,
   },
   {
     "jakewvincent/mkdnflow.nvim",

@@ -267,6 +267,7 @@ return {
           -- d = { name = "Debug" },
           E = { name = "ex" },
           S = { name = "surf" },
+          d = { name = "doc" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
           s = { name = "settings" },
@@ -278,7 +279,6 @@ return {
             t = { name = "toggle options" },
             -- w = { name = "worktree" },
           },
-          n = { name = "neogen" },
           o = {
             name = "octo (github)",
             i = {
