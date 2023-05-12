@@ -1,3 +1,8 @@
+# NOTEBOOK SETTINGS
+[notebook]
+
+dir = "$NOTES"
+
 # NOTE SETTINGS
 [note]
 
@@ -24,6 +29,7 @@ ignore = [
   ".cache/*",
   ".plugins/*",
   ".telekasten/*",
+  ".obsidian/*",
   ".index",
   ".current",
   "log.md"
@@ -203,7 +209,7 @@ recent = "zk edit --sort created- --created-after 'last two weeks' --interactive
 hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"
 
 # Edit this configuration file.
-conf = '$EDITOR "$ZK_NOTEBOOK_DIR/.zk/config.toml"'
+conf = '$EDITOR "~.config/zk/config.toml"'
 
-daily = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/daily"'
-weekly = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/weekly"'
+daily = 'zk new --no-input daily'
+weekly = 'zk new --no-input weekly'
