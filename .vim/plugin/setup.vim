@@ -67,13 +67,12 @@ command! -bar -bang -nargs=? -complete=buffer Buffers
     \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
     \ "sink": "e"}, <bang>0))
 
-let g:easy_align_bypass_fold = 1
 
 " ---------------------------------------------------------------------------
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-" I always accidently opened the Ex command history, and you can't Nop q:
+" I always accidentally opened the Ex command history, and you can't Nop q:
 " so now I record macros with Q
 nnoremap Q q
 nnoremap q <Nop>
@@ -135,11 +134,6 @@ nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
 
 nnoremap <leader>u :UndotreeToggle<CR>
-
-" start interactive EasyAlign in visual mode (e.g. vipg-)
-xnoremap gA <Plug>(EasyAlign)
-" start interactive EasyAlign for a motion/text object (e.g. g-ip)
-nnoremap gA <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------------------
 " | Helper functions and user commands                                      |

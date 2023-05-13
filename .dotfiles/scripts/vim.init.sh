@@ -172,7 +172,7 @@ install_surround
 
 install_closer
 # install_codi
-install_easy_align
+# install_easy_align
 install_exchange
 # install_grepper
 install_gruvbox_material
