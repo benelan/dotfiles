@@ -1,5 +1,11 @@
 return {
   {
+    "nvim-tree/nvim-web-devicons",
+    lazy = true,
+    cond = vim.g.use_devicons == true,
+  },
+  -----------------------------------------------------------------------------
+  {
     "Eandrju/cellular-automaton.nvim",
     enabled = false,
     cmd = "CellularAutomaton",
