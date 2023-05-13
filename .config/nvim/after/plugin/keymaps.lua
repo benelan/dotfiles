@@ -31,12 +31,12 @@ keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<" }
 for _, char in ipairs(undo_before_chars) do
-  keymap("i", char, "<c-g>u" .. char)
+  keymap("i", char, "<C-g>u" .. char)
 end
 
 local undo_after_chars = { ",", "?", ".", "!", ";", "]", ")", "}", ">" }
 for _, char in ipairs(undo_after_chars) do
-  keymap("i", char, char .. "<c-g>u")
+  keymap("i", char, char .. "<C-g>u")
 end
 
 -- Move Lines

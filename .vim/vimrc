@@ -121,23 +121,23 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     vnoremap <leader>fb :Buffers<CR>
 endif
 
-inoremap jk <esc>
 nnoremap Y y$
 
 nnoremap n nzzzv
 nnoremap N Nzzzv
+
+nnoremap <C-u> <C-u>zz
+nnoremap <C-d> <C-d>zz
 
 inoremap , ,<C-g>u
 inoremap ? ?<C-g>u
 inoremap . .<C-g>u
 inoremap ; ;<C-g>u
 
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
-nnoremap <leader>c "_c
-vnoremap <leader>c "_c
-nnoremap <leader>y "+y
-vnoremap <leader>y "+y
+xnoremap g/ <esc>/\\%V
+nnoremap go <cmd>call append(line('.'), repeat([''], v:count1))<cr>
+nnoremap gO <cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>
+nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
 if empty(mapcheck("<C-U>", "i"))
   inoremap <C-U> <C-G>u<C-U>
@@ -152,21 +152,30 @@ command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 "" Argument list
 nnoremap [a :previous<CR>
 nnoremap ]a :next<CR>
+nnoremap [A :last<CR>
+nnoremap ]A :first<CR>
 "" Buffer list
 nnoremap [b :bprevious<CR>
 nnoremap ]b :bnext<CR>
+nnoremap [B :blast<CR>
+nnoremap ]B :bfirst<CR>
 "" Quickfix list
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
+nnoremap [Q :clast<CR>
+nnoremap ]Q :cfirst<CR>
 "" Location list
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
+nnoremap [L :llast<CR>
+nnoremap ]L :lfirst<CR>
 "" Tab list
 nnoremap [t :tabprevious<CR>
 nnoremap ]t :tabnext<CR>
-"" Jump list
-nnoremap [j <C-i>
-nnoremap ]j <C-o>
+nnoremap [T :tlast<CR>
+nnoremap ]T :tfirst<CR>
+
+nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
 "" Selecting hunks when using vimdiff as mergetool
 nnoremap <leader>gmU :diffupdate<cr>
@@ -192,9 +201,6 @@ nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
 
-"" Opens a new tab with the current buffer's path
-nnoremap <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
-
 "" toggles between this and the last accessed tab
 let s:last_tab = 1
 nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
@@ -213,24 +219,19 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
-nnoremap <leader>o <C-w>o
-
-" Move splits
-nnoremap <leader><Left> <C-W>H
-nnoremap <leader><Down> <C-W>J
-nnoremap <leader><Up> <C-W>K
-nnoremap <leader><Right> <C-W>L
 
 " Resize splits
-nnoremap <leader><leader>k :resize +5<CR>
-nnoremap <leader><leader>j :resize -5<CR>
-nnoremap <leader><leader>l :vertical resize +5<CR>
-nnoremap <leader><leader>h :vertical resize -5<CR>
+nnoremap <leader><Left> :vertical resize -5<CR>
+nnoremap <leader><Down> :resize -5<CR>
+nnoremap <leader><Up> :resize +5<CR>
+nnoremap <leader><Right> :vertical resize +5<CR>
 
 "" toggles automatic indentation based on the previous line
 nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
 nnoremap <leader>sx :<C-U>set cursorline! cursorline?<CR>
+"" toggles highlighted cursor column; works in visual mode
+noremap <leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
 "" toggles highlighting search results
 nnoremap <leader>sh :<C-U>set hlsearch! hlsearch?<CR>
 "" toggles showing matches as I enter my pattern
@@ -239,42 +240,34 @@ nnoremap <leader>si :<C-U>set incsearch! incsearch?<CR>
 nnoremap <leader>ss :<C-U>set spell! spell?<CR>
 "" toggles paste
 nnoremap <leader>sp :<C-U>set paste! paste?<CR>
+"" toggles showing tab, end-of-line, and trailing white space
+noremap <leader>sl :<C-U>set list! list?<CR>
+"" toggles line number display
+noremap <leader>sn :<C-U>set relativenumber! relativenumber?<CR>
+"" toggles position display in bottom right
+noremap <leader>sr :<C-U>set ruler! ruler?<CR>
+"" toggles soft wrapping
+noremap <leader>sw :<C-U>set wrap! wrap?<CR>
+"" toggle modifiable
+nnoremap <leader>sM :<C-U>set modifiable! modifiable?<CR>
 "" toggle colorcolumn
 nnoremap <silent> <leader>sc :execute "set colorcolumn="
                   \ . (&colorcolumn == "" ? "80" : "")<CR>
-
-"" toggles highlighted cursor column; works in visual mode
-noremap <leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
-ounmap <leader>sy
-sunmap <leader>sy
-"" toggles showing tab, end-of-line, and trailing white space
-noremap <leader>sl :<C-U>set list! list?<CR>
-ounmap <leader>sl
-sunmap <leader>sl
-"" toggles line number display
-noremap <leader>sn :<C-U>set relativenumber! relativenumber?<CR>
-ounmap <leader>sn
-sunmap <leader>sn
-"" toggles position display in bottom right
-noremap <leader>sr :<C-U>set ruler! ruler?<CR>
-ounmap <leader>sr
-sunmap <leader>sr
-"" toggles soft wrapping
-noremap <leader>sw :<C-U>set wrap! wrap?<CR>
-ounmap <leader>sw
-sunmap <leader>sw
-
-nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+"" toggle foldcolumn
+nnoremap <silent> <leader>sf :execute "set foldcolumn="
+                  \ . (&foldcolumn == "0" ? "1" : "0")<CR>
+"" toggle system clipboard
+nnoremap <silent> <leader>sc :execute "set clipboard="
+                  \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
 
 " start ex command for vimgrep
-nnoremap <leader>eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
-nnoremap <leader>eh :<C-U>lhelpgrep \c<S-Left>
+nnoremap <leader>Eh :<C-U>lhelpgrep \c<S-Left>
 "" replace word under cursor in whole buffer
-nnoremap <leader>es :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+nnoremap <leader>Es :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 "" Search and replace the word under the cursor
-nnoremap <leader>en :g//#<Left><Left>
-
+nnoremap <leader>En :g//#<Left><Left>
 
 tnoremap <leader><Esc> <C-\><C-n>
 tnoremap <Esc><Esc> <C-\><C-n>

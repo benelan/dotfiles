@@ -7,5 +7,5 @@ let g:markdown_fenced_languages = [
     \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
     \ 'yml=yaml', 'shell=sh', 'py=python',
     \ 'ts=typescript', 'tsx=typescriptreact',
-    \ 'js=javascript', 'jsx=javascriptreact' ]
-
+    \ 'js=javascript', 'jsx=javascriptreact'
+    \ ]

@@ -221,8 +221,13 @@ return {
         bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
         bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostic")
         bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
-        bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
         bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+        bufmap(
+          { "n", "v" },
+          "gF",
+          "<cmd>lua vim.lsp.buf.format{ async = true }<cr>",
+          "Format"
+        )
       end,
     })
 
