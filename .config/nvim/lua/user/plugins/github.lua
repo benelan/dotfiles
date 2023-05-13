@@ -74,8 +74,8 @@ return {
         order_by = { field = "UPDATED_AT", direction = "DESC" },
       },
       file_panel = { use_icons = vim.g.use_devicons == true },
-      right_bubble_delimiter = "",
-      left_bubble_delimiter = "",
+      right_bubble_delimiter = "█",
+      left_bubble_delimiter = "█",
       mappings = {
         issue = {
           copy_url = { lhs = "<leader>oU", desc = "Copy url" },
@@ -238,12 +238,37 @@ return {
             lhs = "<leader>ot",
             desc = "Toggle changed files panel",
           },
-          select_next_entry = { lhs = "]q", desc = "Previous changed file" },
-          select_prev_entry = { lhs = "[q", desc = "Next changed file" },
+          select_next_entry = { lhs = "]]", desc = "Previous changed file" },
+          select_prev_entry = { lhs = "[[", desc = "Next changed file" },
           close_review_tab = { lhs = "<leader>oC", desc = "Close review tab" },
           toggle_viewed = { lhs = "<leader>ov", desc = "Toggle viewed changes" },
         },
       },
     },
+    config = function(_, opts)
+      require("octo").setup(opts)
+      vim.treesitter.language.register("markdown", "octo")
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = "octo",
+        group = vim.api.nvim_create_augroup(
+          "ben_octo_settings",
+          { clear = true }
+        ),
+        callback = function()
+          vim.keymap.set(
+            "i",
+            "@",
+            "@<C-x><C-o>",
+            { silent = true, buffer = true }
+          )
+          vim.keymap.set(
+            "i",
+            "#",
+            "#<C-x><C-o>",
+            { silent = true, buffer = true }
+          )
+        end,
+      })
+    end,
   },
 }
