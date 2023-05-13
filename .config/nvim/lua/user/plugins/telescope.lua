@@ -2,6 +2,7 @@ return {
   {
     "AckslD/nvim-neoclip.lua",
     dependencies = { "kkharji/sqlite.lua" },
+    event = "VeryLazy",
     opts = function()
       local function is_whitespace(line)
         return vim.fn.match(line, [[^\s*$]]) ~= -1
@@ -35,7 +36,6 @@ return {
       }
     end,
     init = function()
-      require("telescope").load_extension "neoclip"
     end,
     keys = {
       {
@@ -328,6 +328,7 @@ return {
     end,
     config = function(_, opts)
       require("telescope").setup(opts)
+      require("telescope").load_extension "neoclip"
     end,
   },
 }
