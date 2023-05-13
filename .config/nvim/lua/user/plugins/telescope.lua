@@ -59,7 +59,7 @@ return {
     end,
     keys = {
       {
-        "<leader>f;",
+        "<C-p>",
         "<cmd>lua require('telescope').extensions.frecency.frecency()<cr>",
         desc = "Frecent files",
       },

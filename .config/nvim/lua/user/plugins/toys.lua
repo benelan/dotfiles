@@ -260,7 +260,7 @@ return {
 
       -- Normal mode
       require("which-key").register {
-        ["gP"] = { name = "preview" },
+        ["gp"] = { name = "preview" },
         ["<leader>"] = {
           b = { name = "buffers" },
           c = {
