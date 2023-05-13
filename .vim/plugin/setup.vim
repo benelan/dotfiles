@@ -134,9 +134,6 @@ nnoremap g: <Plug>(ColonOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
 
-nnoremap <leader>/ :Commentary<CR>
-vnoremap <leader>/ :Commentary<CR>
-
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " start interactive EasyAlign in visual mode (e.g. vipg-)
