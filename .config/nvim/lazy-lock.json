@@ -47,6 +47,7 @@
   "sqlite.lua": { "branch": "master", "commit": "b7e28c8463254c46a8e61c52d27d6a2040492fc3" },
   "syntax-tree-surfer": { "branch": "master", "commit": "6571f0fe11463ea094f3dec1c8ca925daad70693" },
   "targets.vim": { "branch": "master", "commit": "642d3a4ce306264b05ea3219920b13ea80931767" },
+  "telescope-frecency.nvim": { "branch": "master", "commit": "0a4a521471141ae3c94ff0ebcffcaff3c3aad147" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "580b6c48651cabb63455e97d7e131ed557b8c7e2" },
   "telescope.nvim": { "branch": "master", "commit": "d77b37f4520e5fc2cf4c74c12e42ed4b589bd367" },
   "treesj": { "branch": "main", "commit": "b1e2976c2d7ba922371cc7f3ab08b75136c27231" },

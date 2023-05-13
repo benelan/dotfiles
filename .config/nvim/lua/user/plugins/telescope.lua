@@ -35,8 +35,6 @@ return {
         },
       }
     end,
-    init = function()
-    end,
     keys = {
       {
         "<leader>fy",
@@ -47,6 +45,23 @@ return {
         "<leader>fm",
         "<cmd>lua require('telescope').extensions.macroscope.default()<cr>",
         desc = "Macro history",
+      },
+    },
+  },
+
+  {
+    "nvim-telescope/telescope-frecency.nvim",
+    dependencies = {
+      "kkharji/sqlite.lua",
+    },
+    config = function()
+      require("telescope").load_extension "frecency"
+    end,
+    keys = {
+      {
+        "<leader>f;",
+        "<cmd>lua require('telescope').extensions.frecency.frecency()<cr>",
+        desc = "Frecent files",
       },
     },
   },
@@ -321,6 +336,27 @@ return {
                   )
                 end,
               },
+            },
+          },
+        },
+        extensions = {
+          frecency = {
+            show_scores = true,
+            ignore_patterns = {
+              "*.git/*",
+              "*/tmp/*",
+              "*/node_modules/*",
+              "*/dist/*",
+              "*/build/*",
+            },
+            workspaces = {
+              ["dots"] = os.getenv "HOME" .. "/.dotfiles",
+              ["conf"] = os.getenv "HOME" .. "/.config",
+              ["nvim"] = os.getenv "HOME" .. "/.config/nvim",
+              ["personal"] = os.getenv "HOME" .. "/dev/personal",
+              ["notes"] = os.getenv "HOME" .. "/dev/personal/notes",
+              ["work"] = os.getenv "HOME" .. "/dev/work",
+              ["cc"] = os.getenv "HOME" .. "/dev/work/calcite-components",
             },
           },
         },
