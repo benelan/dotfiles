@@ -100,6 +100,15 @@ return {
             ["i;"] = "textsubjects-container-inner",
           },
         },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "<C-n>",
+            node_incremental = "<C-n>",
+            scope_incremental = "<C-s>",
+            node_decremental = "<C-p>",
+          },
+        },
         textobjects = {
           lsp_interop = {
             enable = true,
