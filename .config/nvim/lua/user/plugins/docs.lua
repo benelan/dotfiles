@@ -2,7 +2,7 @@ return {
   {
     "danymat/neogen", -- Generates doc annotations
     dependencies = "nvim-treesitter/nvim-treesitter",
-    config = { snippet_engine = "luasnip" },
+    opts = { snippet_engine = "luasnip" },
     cmd = "Neogen",
     keys = {
       { "<leader>df", "<cmd>Neogen func<cr>", desc = "Annotate function" },
