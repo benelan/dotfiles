@@ -123,6 +123,25 @@ return {
           desc = "Resume previous fuzzying",
         },
         {
+          "<leader>fv",
+          function()
+            require("telescope.builtin")["find_files"] {
+              search_dirs = { "~/.vim", "~/.config/nvim" },
+            }
+          end,
+          desc = "Find (n)vim files",
+        },
+
+        {
+          "<leader>fd",
+          function()
+            require("telescope.builtin")["find_files"] {
+              search_dirs = { "~/.dotfiles" },
+            }
+          end,
+          desc = "Find dotfiles",
+        },
+        {
           "<leader>ff",
           function()
             telescope_cwd("find_files", { hidden = true })
