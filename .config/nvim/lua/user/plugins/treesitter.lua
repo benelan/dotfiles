@@ -8,7 +8,14 @@ return {
   },
   {
     "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
-    event = "InsertEnter",
+    ft = {
+      "html",
+      "xml",
+      "javascriptreact",
+      "typescriptreact",
+      "vue",
+      "svelte",
+    },
   },
   {
     "Wansmer/treesj",
