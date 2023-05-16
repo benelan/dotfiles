@@ -73,9 +73,9 @@ return {
     end,
     keys = {
       {
-        "<leader>gwf",
+        "<leader>gwl",
         "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
-        desc = "Find git wortree",
+        desc = "List git wortrees",
       },
       {
         "<leader>gwa",
@@ -118,9 +118,14 @@ return {
         },
         { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffer" },
         {
-          "<leader>fr",
+          "<leader>f.",
           "<cmd>Telescope resume<cr>",
           desc = "Resume previous fuzzying",
+        },
+        {
+          "<leader>fr",
+          "<cmd>Telescope registers<cr>",
+          desc = "Find registers",
         },
         {
           "<leader>fv",
@@ -197,6 +202,12 @@ return {
           "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
           desc = "Workspace symbols",
         },
+        {
+          "<leader>li",
+          "<cmd>Telescope lsp_implementations<cr>",
+          desc = "Implementations",
+        },
+
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
         {
@@ -228,7 +239,13 @@ return {
           "<leader>gg",
           "<cmd>Telescope git_status<cr>",
           { "n", "x" },
-          desc = "Status",
+          desc = "View status",
+        },
+        {
+          "<leader>g$",
+          "<cmd>Telescope git_stash<cr>",
+          { "n", "x" },
+          desc = "View stash",
         },
       }
     end,

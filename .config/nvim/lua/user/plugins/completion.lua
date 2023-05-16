@@ -128,19 +128,19 @@ return {
             { "i", "c" }
           ),
           ["<C-j>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-            elseif vim.g.codeium_enabled then
+            if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
+            elseif cmp.visible() then
+              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
             else
               fallback()
             end
           end, { "i" }),
           ["<C-k>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-            elseif vim.g.codeium_enabled then
+            if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
+            elseif cmp.visible() then
+              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
             else
               fallback()
             end
