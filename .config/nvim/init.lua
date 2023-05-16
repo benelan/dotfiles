@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
     vim.highlight.on_yank {
       higroup = "Visual",
-      timeout = 200,
+      timeout = 269,
     }
   end,
 })
@@ -83,6 +83,25 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     local backup = vim.fn.fnamemodify(file, ":p:~:h")
     backup = backup:gsub("[/\\]", "%%")
     vim.go.backupext = backup
+  end,
+})
+
+-- automatically close certain filetypes if it is the last window
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = table.concat(require("user.resources").exclude_filetypes, ","),
+  group = vim.api.nvim_create_augroup(
+    "ben_filetype_auto_quit",
+    { clear = true }
+  ),
+  callback = function()
+    vim.api.nvim_create_autocmd({ "BufEnter" }, {
+      buffer = 0,
+      group = vim.api.nvim_create_augroup(
+        "ben_filetype_auto_quit",
+        { clear = true }
+      ),
+      command = "if winnr('$') < 2 | quit | endif",
+    })
   end,
 })
 
@@ -118,7 +137,6 @@ vim.opt.rtp:prepend(lazypath)
 local icons = require("user.resources").icons
 
 require("lazy").setup("user.plugins", {
-  diff = { cmd = "diffview.nvim" },
   ui = {
     icons = {
       cmd = icons.ui.Command,

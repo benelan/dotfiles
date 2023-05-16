@@ -226,7 +226,7 @@ return {
     config = function(_, opts)
       require("lsp-inlayhints").setup(opts)
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("LspAttach_inlayhints", {}),
+        group = vim.api.nvim_create_augroup("ben_attach_inlayhints", {}),
         callback = function(args)
           if not (args.data and args.data.client_id) then
             return
