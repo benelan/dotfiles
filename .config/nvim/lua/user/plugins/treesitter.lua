@@ -1,10 +1,8 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-    "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-    "RRethy/nvim-treesitter-textsubjects", -- smart text objects
-    "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-    event = "VeryLazy",
+    "nvim-treesitter/playground", -- for creating syntax queries
+    enabled = false,
+    cmd = "TSPlaygroundToggle",
   },
   {
     "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
@@ -24,15 +22,16 @@ return {
     opts = { use_default_keymaps = false, max_join_length = 300 },
   },
   {
-    "nvim-treesitter/playground", -- for creating syntax queries
-    enabled = false,
-    cmd = "TSPlaygroundToggle",
-  },
-  {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+      "RRethy/nvim-treesitter-textsubjects", -- smart text objects
+      "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+    },
     config = function()
       local swap_next, swap_prev = (function()
         local swap_objects = {

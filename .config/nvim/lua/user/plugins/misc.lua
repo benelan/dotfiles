@@ -52,6 +52,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
+    enabled = false,
     keys = {
       {
         "<C-a>",
@@ -94,6 +95,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "rest-nvim/rest.nvim",
+    enabled = false,
     ft = { "http", "rest" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()

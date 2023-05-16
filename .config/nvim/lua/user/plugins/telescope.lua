@@ -1,6 +1,7 @@
 return {
   {
     "AckslD/nvim-neoclip.lua",
+    enabled = false,
     dependencies = { "kkharji/sqlite.lua" },
     event = "VeryLazy",
     opts = function()
@@ -51,9 +52,7 @@ return {
 
   {
     "nvim-telescope/telescope-frecency.nvim",
-    dependencies = {
-      "kkharji/sqlite.lua",
-    },
+    dependencies = "kkharji/sqlite.lua",
     config = function()
       require("telescope").load_extension "frecency"
     end,
@@ -400,7 +399,7 @@ return {
     end,
     config = function(_, opts)
       require("telescope").setup(opts)
-      require("telescope").load_extension "neoclip"
+      pcall(require("telescope").load_extension, "neoclip")
     end,
   },
 }

@@ -1,6 +1,7 @@
 return {
   {
     "nvim-tree/nvim-web-devicons",
+    -- enabled = false,
     lazy = true,
     cond = vim.g.use_devicons == true,
   },

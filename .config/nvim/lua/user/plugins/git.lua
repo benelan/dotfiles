@@ -1,6 +1,7 @@
 return {
   {
     "sindrets/diffview.nvim", -- diff and history viewer
+    pin = true,
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
