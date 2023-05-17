@@ -122,7 +122,6 @@ return {
           ),
           ["<C-z>"] = cmp.mapping(
             cmp.mapping.confirm {
-              behavior = cmp.ConfirmBehavior.Replace,
               select = true,
             },
             { "i", "c" }
@@ -190,6 +189,7 @@ return {
             end
           end, { "i" }),
         },
+        confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
         formatting = {
           fields = { "abbr", "menu", "kind" },
           format = function(entry, vim_item)
