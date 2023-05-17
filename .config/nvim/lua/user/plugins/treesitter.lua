@@ -27,7 +27,18 @@ return {
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+      {
+        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        keys = {
+          {
+            "[C",
+            function()
+              require("treesitter-context").go_to_context()
+            end,
+            desc = "Treesitter context",
+          },
+        },
+      },
       "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
       "RRethy/nvim-treesitter-textsubjects", -- smart text objects
       "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
