@@ -40,6 +40,13 @@ local function buffer_diagnostics()
   return format_numeric_data(data)
 end
 
+  local has_navic, _ = pcall(require, "nvim-navic")
+local function navic_breadcrumbs()
+  return has_navic
+      and "%#Normal#  %{%v:lua.require'nvim-navic'.get_location()%}%#Normal#  "
+    or ""
+end
+
 local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
@@ -89,7 +96,8 @@ function MyStatusLine()
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
     -------------------------------------------
-    .. "%#TabLineFill#"
+    .. "%<%#TabLineFill#"
+    .. navic_breadcrumbs()
     .. "%="
     -------------------------------------------
     .. "%#NormalFloat# " -- "%#Normal#"
@@ -98,5 +106,5 @@ function MyStatusLine()
     .. "%f  "
     -------------------------------------------
     .. "%#TabLineSel#"
-    .. "  %c:[%l/%L]%<  "
+    .. "  %c:[%l/%L]  "
 end

@@ -219,12 +219,11 @@ return {
     event = "LspAttach",
     opts = {
       icons = require("user.resources").icons.kind,
-      highlight = true,
+      separator = "  >  ",
+      highlight = true
     },
     config = function(_, opts)
       require("nvim-navic").setup(opts)
-      vim.o.winbar = "    %{%v:lua.require'nvim-navic'.get_location()%}"
-
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup(
           "ben_lsp_attach_navic",
