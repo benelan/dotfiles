@@ -50,6 +50,7 @@
   "treesj": { "branch": "main", "commit": "b1e2976c2d7ba922371cc7f3ab08b75136c27231" },
   "vifm.vim": { "branch": "master", "commit": "2d2978cde9f10d4e82700720e0ea2150d4f1ab74" },
   "vim-markdown-toc": { "branch": "master", "commit": "7ec05df27b4922830ace2246de36ac7e53bea1db" },
+  "vim-matchup": { "branch": "master", "commit": "6c8909b682803d8c3a054259079f158a73a0e30f" },
   "vim-rhubarb": { "branch": "master", "commit": "ee69335de176d9325267b0fd2597a22901d927b1" },
   "which-key.nvim": { "branch": "main", "commit": "5a6c954a5a46023c19acc03a8b6d7c3e57964fc5" },
   "zk-nvim": { "branch": "main", "commit": "275578853dc76d282ee5b31f86cd3a4f02d91f2f" }

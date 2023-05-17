@@ -95,6 +95,7 @@ return {
         indent = { enable = true },
         autopairs = { enable = true },
         autotag = { enable = true },
+        matchup = { enable = true },
         playground = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
         textsubjects = {

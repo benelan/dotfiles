@@ -7,8 +7,8 @@ vim.tbl_map(function(p)
 end, {
   "2html_plugin",
   "gzip",
-  -- "matchit",
-  -- "matchparen",
+  "matchit",
+  "matchparen",
   -- "netrw",
   -- "netrwFileHandlers",
   -- "netrwPlugin",

@@ -51,6 +51,14 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "andymass/vim-matchup",
+    lazy = false,
+    init = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
     enabled = false,
     keys = {
