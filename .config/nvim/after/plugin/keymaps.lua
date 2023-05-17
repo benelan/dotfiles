@@ -410,6 +410,7 @@ end, "Toggle clipboard")
 
 local prezMode = false
 keymap("n", "<leader>sP", function()
+  -- toggle options
   vim.bo.modifiable = prezMode
   vim.opt.relativenumber = prezMode
   vim.opt.number = prezMode
@@ -420,8 +421,23 @@ keymap("n", "<leader>sP", function()
   vim.opt.signcolumn = prezMode and "yes" or "no"
   vim.opt.laststatus = prezMode and 3 or 0
   vim.opt.showtabline = prezMode and 2 or 0
+  vim.opt.fillchars:append("eob:" .. (prezMode and "~" or " "))
+
+  -- toggle lsp diagnostics
   vim.schedule(function()
     vim.diagnostic[prezMode and "disable" or "enable"](nil)
   end)
+
+  -- toggle matchup popup
+  if vim.g.loaded_matchup == 1 then
+    vim.g.matchup_matchparen_offscreen = { method = prezMode and "popup" or "" }
+  end
+
+  -- redraw treesitter context which gets messed up
+  if vim.g.loaded_treesitter == 1 then
+    vim.cmd "TSContextToggle"
+    vim.cmd "TSContextToggle"
+  end
+
   prezMode = not prezMode
 end, "Toggle Present mode")
