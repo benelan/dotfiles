@@ -137,6 +137,8 @@ vim.opt.rtp:prepend(lazypath)
 local icons = require("user.resources").icons
 
 require("lazy").setup("user.plugins", {
+  install = { colorscheme = { "gruvbox-material", "habamax" } },
+  change_detection = { notify = false },
   ui = {
     icons = {
       cmd = icons.ui.Command,

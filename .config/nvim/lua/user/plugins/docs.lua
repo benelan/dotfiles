@@ -15,7 +15,6 @@ return {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
     ft = "markdown",
     build = "cd app && npm install",
-    cmd = "MarkdownPreviewToggle",
     keys = {
       {
         "<leader>dp",
@@ -27,7 +26,6 @@ return {
   {
     "mzlogin/vim-markdown-toc",
     ft = "markdown",
-    cmd = { "GenTocGFM", "GenTocRedcarpet", "GenTocGitLab", "GenTocMarked" },
     keys = { { "<leader>dC", "<cmd>GenTocGFM<cr>", desc = "Markdown TOC" } },
     init = function()
       vim.g.vmt_dont_insert_fence = true

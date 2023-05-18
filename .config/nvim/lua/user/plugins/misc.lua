@@ -33,8 +33,7 @@ return {
             -- Determine the location where to calculate commentstring from
             local location = nil
             if ctx.ctype == U.ctype.blockwise then
-              location =
-                require("ts_context_commentstring.utils").get_cursor_location()
+              location = { ctx.range.srow - 1, ctx.range.scol }
             elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
               location =
                 require("ts_context_commentstring.utils").get_visual_start_location()
@@ -52,7 +51,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "andymass/vim-matchup",
-    lazy = false,
+    -- enabled = false,
     init = function()
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
@@ -60,7 +59,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
-    enabled = false,
+    -- enabled = false,
     keys = {
       {
         "<C-a>",
