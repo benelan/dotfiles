@@ -42,7 +42,9 @@ vim.opt.wildignore:append(
 )
 vim.opt.path = ".,./src/**,./api/**,./lua/**,./utils/**,./static,./config,,"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
-vim.opt.pumheight = math.floor(vim.api.nvim_list_uis()[1].height / 2) or 20
+
+local ui = vim.api.nvim_list_uis()
+vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
 
 vim.opt.showcmd = false
 vim.opt.showtabline = 2
