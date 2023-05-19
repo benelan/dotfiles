@@ -24,15 +24,6 @@ return {
     },
   },
   {
-    "mzlogin/vim-markdown-toc",
-    ft = "markdown",
-    keys = { { "<leader>dC", "<cmd>GenTocGFM<cr>", desc = "Markdown TOC" } },
-    init = function()
-      vim.g.vmt_dont_insert_fence = true
-      vim.g.vmt_list_item_char = "-"
-    end,
-  },
-  {
     "jakewvincent/mkdnflow.nvim",
     ft = "markdown",
     opts = {
