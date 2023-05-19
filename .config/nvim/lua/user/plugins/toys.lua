@@ -225,10 +225,7 @@ return {
     config = function(_, opts)
       require("nvim-navic").setup(opts)
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup(
-          "ben_lsp_attach_navic",
-          { clear = true }
-        ),
+        group = vim.api.nvim_create_augroup("ben_lsp_attach_navic", {}),
         callback = function(args)
           if not (args.data and args.data.client_id) then
             return
@@ -253,7 +250,7 @@ return {
     event = "LspAttach",
     opts = {
       inlay_hints = {
-        only_current_line = true,
+        -- only_current_line = true,
         max_len_align = true,
         highlight = "Comment",
       },
@@ -261,10 +258,7 @@ return {
     config = function(_, opts)
       require("lsp-inlayhints").setup(opts)
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup(
-          "ben_lsp_attach_inlayhints",
-          { clear = true }
-        ),
+        group = vim.api.nvim_create_augroup("ben_lsp_attach_inlayhints", {}),
         callback = function(args)
           if not (args.data and args.data.client_id) then
             return

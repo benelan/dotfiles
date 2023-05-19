@@ -45,15 +45,7 @@ function _G.qftf(info)
       local qtype = e.type == "" and ""
         or " " .. e.type:sub(1, 1):upper() .. ":"
 
-      str = validFmt:format(
-        fname,
-        -- "[" .. lnums .. "]",
-        -- "[" .. cols .. "]",
-        lnums,
-        cols,
-        qtype,
-        e.text
-      )
+      str = validFmt:format(fname, lnums, cols, qtype, e.text)
     else
       str = e.text
     end
