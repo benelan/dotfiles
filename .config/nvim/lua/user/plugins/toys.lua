@@ -220,7 +220,7 @@ return {
     opts = {
       icons = require("user.resources").icons.kind,
       separator = "  >  ",
-      highlight = true
+      highlight = true,
     },
     config = function(_, opts)
       require("nvim-navic").setup(opts)
@@ -242,6 +242,11 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  {
+    "j-hui/fidget.nvim",
+    -- enabled = false,
+    config = true,
+  },
   {
     "lvimuser/lsp-inlayhints.nvim",
     enabled = false,
