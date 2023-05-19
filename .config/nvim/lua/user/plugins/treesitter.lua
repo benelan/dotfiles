@@ -1,11 +1,20 @@
 return {
   {
     "nvim-treesitter/playground", -- for creating syntax queries
+    dependencies = "nvim-treesitter/nvim-treesitter",
     enabled = false,
     cmd = "TSPlaygroundToggle",
   },
   {
+    "Wansmer/treesj",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "JoinToggle" } },
+    cmd = "TSJToggle",
+    opts = { use_default_keymaps = false, max_join_length = 300 },
+  },
+  {
     "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+    dependencies = "nvim-treesitter/nvim-treesitter",
     ft = {
       "html",
       "xml",
@@ -16,36 +25,35 @@ return {
     },
   },
   {
-    "Wansmer/treesj",
-    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "JoinToggle" } },
-    cmd = "TSJToggle",
-    opts = { use_default_keymaps = false, max_join_length = 300 },
+    "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    event = "VeryLazy",
+    keys = {
+      {
+        "[C",
+        function()
+          require("treesitter-context").go_to_context()
+        end,
+        desc = "Treesitter context",
+      },
+    },
   },
   {
     "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
+    dependencies = "nvim-treesitter/nvim-treesitter",
     lazy = true,
+  },
+  {
+    "RRethy/nvim-treesitter-textsubjects", -- smart text objects
+    "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    event = "VeryLazy",
   },
   {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = {
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        keys = {
-          {
-            "[C",
-            function()
-              require("treesitter-context").go_to_context()
-            end,
-            desc = "Treesitter context",
-          },
-        },
-      },
-      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-      "RRethy/nvim-treesitter-textsubjects", -- smart text objects
-    },
     config = function()
       local swap_next, swap_prev = (function()
         local swap_objects = {
@@ -64,34 +72,38 @@ return {
 
       require("nvim-treesitter.configs").setup {
         ensure_installed = {
-          "astro",
+          -- "astro",
           "bash",
           "css",
           "diff",
           "dockerfile",
+          "git_config",
           "git_rebase",
           "gitcommit",
           "gitignore",
-          "go",
-          "graphql",
+          -- "go",
+          -- "gomod",
+          -- "graphql",
           "html",
           "http",
           "javascript",
           "jsdoc",
           "json",
           "jsonc",
-          "latex",
+          -- "latex",
           "lua",
+          "luadoc",
           "luap",
           "markdown",
           "markdown_inline",
-          "php",
+          -- "perl",
+          -- "php",
           "python",
-          "query",
+          -- "query",
           "regex",
-          "rust",
+          -- "rust",
           "scss",
-          "sql",
+          -- "sql",
           "svelte",
           "toml",
           "tsx",
