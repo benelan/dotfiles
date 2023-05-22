@@ -58,25 +58,31 @@ return {
     keys = {
       {
         "<leader>zn",
-        "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
+        "<cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
         desc = "New note",
       },
       {
         "<leader>zo",
-        "<Cmd>ZkNotes { sort = { 'modified' } }<CR>",
+        "<cmd>ZkNotes { sort = { 'modified' } }<CR>",
         desc = "Open notes",
       },
-      { "<leader>zt", "<Cmd>ZkTags<CR>", desc = "Tags" },
+      { "<leader>zt", "<cmd>ZkTags<CR>", desc = "Tags" },
       {
         "<leader>zf",
-        "<Cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>",
+        "<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>",
         desc = "Find notes",
+        mode = "n",
+      },
+      {
+        -- Search for the notes matching the current visual selection.
+        "<leader>zf",
+        ":'<,'>ZkMatch<CR>",
+        desc = "Find notes",
+        mode = "v",
       },
     },
     config = function()
       require("zk").setup { picker = "telescope" }
-      -- Search for the notes matching the current visual selection.
-      keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", "Find notes")
     end,
   },
 }

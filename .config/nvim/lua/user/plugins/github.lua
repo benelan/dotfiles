@@ -2,14 +2,21 @@ return {
   {
     "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
     keys = {
-      { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in Browser" },
-      { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL" },
+      {
+        "<leader>go",
+        "<cmd>GBrowse<cr>",
+        desc = "Open in Browser",
+        mode = "n",
+      },
+      {
+        "<leader>go",
+        ":'<,'>GBrowse<cr>",
+        desc = "Open in Browser",
+        mode = "v",
+      },
+      { "<leader>gy", "<cmd>GBrowse!<cr>", desc = "Yank URL", mode = "n" },
+      { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL", mode = "v" },
     },
-    cmd = "GBrowse",
-    config = function()
-      keymap("x", "<leader>go", ":'<,'>GBrowse<cr>", "Open In Browser")
-      keymap("x", "<leader>gy", ":'<,'>GBrowse!<cr>", "Yank URL")
-    end,
   },
   -----------------------------------------------------------------------------
   {

@@ -21,6 +21,13 @@ return {
         "<leader>gh",
         "<cmd>DiffviewFileHistory % --follow --max-count=1000<cr>",
         desc = "Buffer file history",
+        mode = "n",
+      },
+      {
+        "<leader>gh",
+        ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>",
+        desc = "Selection history",
+        mode = "x",
       },
     },
     opts = {
@@ -31,16 +38,7 @@ return {
         fold_open = require("user.resources").icons.ui.Expanded,
         done = require("user.resources").icons.ui.Done,
       },
-    },
-    config = function(_, opts)
-      require("diffview").setup(opts)
-      keymap(
-        "x",
-        "<leader>gh",
-        ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>",
-        "Selection history"
-      )
-    end,
+    }
   },
   -----------------------------------------------------------------------------
   {

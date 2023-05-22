@@ -63,21 +63,39 @@ return {
     keys = {
       {
         "<C-a>",
-        function()
-          return require("dial.map").inc_normal()
-        end,
-        "n",
+        "<Plug>(dial-increment)",
+        mode = "n",
         desc = "Increment",
-        expr = true,
       },
       {
         "<C-x>",
-        function()
-          return require("dial.map").dec_normal()
-        end,
-        "n",
+        "<Plug>(dial-decrement)",
+        mode = "n",
         desc = "Decrement",
-        expr = true,
+      },
+      {
+        "<C-a>",
+        "<Plug>(dial-increment)",
+        mode = "v",
+        desc = "Increment",
+      },
+      {
+        "<C-x>",
+        "<Plug>(dial-decrement)",
+        mode = "v",
+        desc = "Decrement",
+      },
+      {
+        "g<C-a>",
+        "g<Plug>(dial-increment)",
+        mode = "v",
+        desc = "Increment",
+      },
+      {
+        "g<C-x>",
+        "g<Plug>(dial-decrement)",
+        mode = "v",
+        desc = "Decrement",
       },
     },
     dependencies = { "nvim-lua/plenary.nvim" },
