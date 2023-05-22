@@ -4,6 +4,14 @@ return {
   { "folke/lazy.nvim", version = "*" },
   -----------------------------------------------------------------------------
   {
+    "psliwka/vim-dirtytalk", -- programming wordlists for vim's built in spellcheck
+    build = ":DirtytalkUpdate",
+    config = function()
+      vim.opt.spelllang:append "programming"
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "romainl/vim-qf", -- quickfix/location list improvements
     enabled = false,
     event = "VeryLazy",

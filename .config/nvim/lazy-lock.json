@@ -52,6 +52,7 @@
   "telescope.nvim": { "branch": "master", "commit": "40c31fdde93bcd85aeb3447bb3e2a3208395a868" },
   "treesj": { "branch": "main", "commit": "b1e2976c2d7ba922371cc7f3ab08b75136c27231" },
   "vifm.vim": { "branch": "master", "commit": "9241d3bbbc692b52cf61c0a464e66b4a9cf5418d" },
+  "vim-dirtytalk": { "branch": "master", "commit": "067a782436835193b07eea3c8861dff26045e6bd" },
   "vim-matchup": { "branch": "master", "commit": "b8eca3b588e41e0bb1b3ae200fae88183b91a76d" },
   "vim-rhubarb": { "branch": "master", "commit": "ee69335de176d9325267b0fd2597a22901d927b1" },
   "which-key.nvim": { "branch": "main", "commit": "e271c28118998c93a14d189af3395812a1aa646c" },
