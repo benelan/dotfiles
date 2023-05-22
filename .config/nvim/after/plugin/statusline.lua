@@ -40,7 +40,7 @@ local function buffer_diagnostics()
   return format_numeric_data(data)
 end
 
-  local has_navic, _ = pcall(require, "nvim-navic")
+local has_navic, _ = pcall(require, "nvim-navic")
 local function navic_breadcrumbs()
   return has_navic
       and "%#Normal#  %{%v:lua.require'nvim-navic'.get_location()%}%#Normal#  "

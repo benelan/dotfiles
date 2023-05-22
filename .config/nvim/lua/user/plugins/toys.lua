@@ -158,7 +158,10 @@ return {
           icon = require("user.resources").icons.kind.Object,
           hl = "@type",
         },
-        Key = { icon = require("user.resources").icons.kind.Key, hl = "@type" },
+        Key = {
+          icon = require("user.resources").icons.kind.Key,
+          hl = "@type",
+        },
         Null = {
           icon = require("user.resources").icons.kind.Null,
           hl = "@type",

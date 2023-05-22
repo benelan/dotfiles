@@ -82,6 +82,7 @@ M.exclude_filetypes = {
   "",
   "DiffviewFiles",
   "TelescopePrompt",
+  "Outline",
   "ccc-ui",
   "checkhealth",
   "dap-repl",
