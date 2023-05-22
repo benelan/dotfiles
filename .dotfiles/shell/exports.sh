@@ -53,6 +53,7 @@ is-supported w3m && export BROWSER='w3m'
 is-supported volta && export VOLTA_HOME=~/.volta
 is-supported bun && export BUN_INSTALL="$HOME/.bun"
 is-supported bat && export BAT_THEME="gruvbox-dark"
+is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 
 if is-supported node; then
     # Enable persistent REPL history for `node`.
