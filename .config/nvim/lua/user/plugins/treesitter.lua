@@ -46,6 +46,7 @@ return {
   {
     "RRethy/nvim-treesitter-textsubjects", -- smart text objects
     "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+    "HiPhish/nvim-ts-rainbow2",
     dependencies = "nvim-treesitter/nvim-treesitter",
     event = "VeryLazy",
   },
@@ -123,6 +124,7 @@ return {
         autotag = { enable = true },
         matchup = { enable = true },
         playground = { enable = true },
+        rainbow = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
         textsubjects = {
           enable = true,
