@@ -245,7 +245,10 @@ return {
   {
     "j-hui/fidget.nvim",
     -- enabled = false,
-    config = true,
+    config = {
+      text = { spinner = "circle" },
+      window = { blend = 0 },
+    },
   },
   {
     "lvimuser/lsp-inlayhints.nvim",
