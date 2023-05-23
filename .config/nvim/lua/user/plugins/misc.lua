@@ -1,11 +1,19 @@
 return {
-  { dir = "~/.vim", lazy = false, priority = 1000, cmd = { "G" } },
-  -----------------------------------------------------------------------------
   { "folke/lazy.nvim", version = "*" },
+  -----------------------------------------------------------------------------
+  { dir = "~/.vim", lazy = false, priority = 1000, cmd = { "G" } },
   -----------------------------------------------------------------------------
   {
     "psliwka/vim-dirtytalk", -- programming wordlists for vim's built in spellcheck
-    build = ":DirtytalkUpdate",
+    build = {
+      ":DirtytalkUpdate",
+      "cp "
+        .. vim.fn.stdpath "data"
+        .. "/site/spell/programming.utf-8.spl"
+        .. " "
+        .. vim.fn.stdpath "config"
+        .. "/spell/programming.utf-8.spl",
+    },
     config = function()
       vim.opt.spelllang:append "programming"
     end,
