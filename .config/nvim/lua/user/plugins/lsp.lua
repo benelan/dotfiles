@@ -29,7 +29,7 @@ return {
     {
       "williamboman/mason.nvim", -- language server installer/manager
       build = {
-        ":MasonInstall stylua write-good proselint codespell chrome-debug-adapter firefox-debug-adapter js-debug-adapter node-debug2-adapter",
+        ":MasonInstall stylua write-good proselint codespell chrome-debug-adapter js-debug-adapter node-debug2-adapter",
         ":MasonUpdate",
       },
       opts = {},

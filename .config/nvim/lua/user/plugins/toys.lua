@@ -308,7 +308,7 @@ return {
             h = { name = "history" },
             s = { name = "see also" },
           },
-          -- d = { name = "debug" },
+          D = { name = "debug" },
           E = { name = "ex" },
           d = { name = "doc" },
           f = { name = "find", z = { name = "fzf" } },
