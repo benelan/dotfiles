@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
+sudo -v
+
 LIB_PATH="$HOME/dev/lib"
 FZF_PATH="$LIB_PATH/fzf"
 NEOVIM_PATH="$LIB_PATH/neovim"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
+sudo -v
+
 # Install scripts specific to Ubuntu/Debian based operating systems
 
 # Install packages for Ubuntu/Debian
