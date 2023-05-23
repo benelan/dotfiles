@@ -58,6 +58,12 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "dmmulroy/tsc.nvim",
+    cmd = "TSC",
+    config = true,
+  },
+  -----------------------------------------------------------------------------
+  {
     "andymass/vim-matchup",
     -- enabled = false,
     init = function()
@@ -164,7 +170,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "dbeniamine/cheat.sh-vim", -- integrates https://cht.sh
-    cmd = {"HowIn", "Cheat", "CheatReplace"},
+    cmd = { "HowIn", "Cheat", "CheatReplace" },
     keys = {
       { "<leader>cb", desc = "Open answer in new buffer" },
       { "<leader>cr", desc = "Replace question with answer in current buffer" },
