@@ -44,6 +44,85 @@ return {
     lazy = true,
   },
   {
+    "ThePrimeagen/refactoring.nvim",
+    keys = {
+      {
+        "<leader>Rf",
+        " <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>",
+        desc = "Extract Function",
+        mode = "v",
+      },
+      {
+        "<leader>RF",
+        " <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>",
+        desc = "Extract Function To File",
+        mode = "v",
+      },
+      {
+        "<leader>Rv",
+        " <Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>",
+        desc = "Extract Variable",
+        mode = "v",
+      },
+      {
+        "<leader>Ri",
+        " <Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>",
+        desc = "Inline Variable",
+        mode = "v",
+      },
+      {
+        "<leader>Rb",
+        " <Cmd>lua require('refactoring').refactor('Extract Block')<CR>",
+        desc = "Extract Block",
+      },
+      {
+        "<leader>RB",
+        " <Cmd>lua require('refactoring').refactor('Extract Block To File')<CR>",
+        desc = "Extract Block To File",
+      },
+      {
+        "<leader>Ri",
+        " <Cmd>lua require('refactoring').refactor('Inline Variable')<CR>",
+        desc = "Inline Variable",
+      },
+      {
+        "<leader>Rr",
+        ":lua require('refactoring').select_refactor()<CR>",
+        desc = "Select Refactor",
+        mode = "v",
+      },
+      {
+        "<leader>DP",
+        ":lua require('refactoring').debug.printf({below = false})<CR>",
+        desc = "Print Scope",
+      },
+      {
+        "<leader>Dp",
+        ":lua require('refactoring').debug.print_var({ normal = true })<CR>",
+        desc = "Print Variable",
+      },
+      {
+        "<leader>Dp",
+        ":lua require('refactoring').debug.print_var({})<CR>",
+        desc = "Print Variable",
+        mode = "v",
+      },
+      {
+        "<leader>Dc",
+        ":lua require('refactoring').debug.cleanup({})<CR>",
+        desc = "Cleanup Prints",
+      },
+    },
+    opts = {
+      prompt_func_return_type = { go = true },
+      prompt_func_param_type = { go = true },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+  {
     "RRethy/nvim-treesitter-textsubjects", -- smart text objects
     "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
     "HiPhish/nvim-ts-rainbow2",

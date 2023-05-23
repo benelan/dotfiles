@@ -61,6 +61,7 @@ return {
           fallback_severity = vim.diagnostic.severity.WARN,
           sources = {
             code_actions.gitrebase,
+            code_actions.refactoring,
             -- code_actions.gitsigns,
             code_actions.proselint,
             code_actions.shellcheck,

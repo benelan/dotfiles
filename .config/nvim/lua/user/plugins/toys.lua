@@ -309,6 +309,7 @@ return {
             s = { name = "see also" },
           },
           D = { name = "debug" },
+          R = { name = "refactor" },
           E = { name = "ex" },
           d = { name = "doc" },
           f = { name = "find", z = { name = "fzf" } },
