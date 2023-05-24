@@ -6,6 +6,9 @@
   ; semi-personal info (mostly to prevent bot emails)
   path = ~/.config/git/personal
 
+[commit]
+  template = ~/.config/git/message
+
 [github]
     user = benelan
 
@@ -41,6 +44,9 @@
 [branch]
   ; Show most recently changed branches first.
   sort = -committerdate
+
+[fetch]
+  prune = true
 
 [color]
   ; Use colors in Git commands when possible

@@ -1,0 +1,62 @@
+
+
+; <type>[(optional scope)][!]: <subject>
+; <blank line>
+; [optional body]
+; <blank line>
+; [optional footer(s)]
+;
+; type
+;   - fix:      A bug fix
+;   - feat:     A new feature
+;   - docs:     Documentation only changes, including code comments
+;   - style:    Changes that do not affect the meaning of the code (e.g. formatting)
+;   - refactor: A code change that neither fixes a bug nor adds a feature
+;   - perf:     A code change that improves performance
+;   - test:     Add or fix automated tests (e.g. unit, e2e, integration)
+;   - build:    Changes that affect the build system or external dependencies
+;   - ci:       Changes to CI configuration files and scripts
+;   - chore:    Other changes that don't modify src or test files
+;   - revert:   Reverts a previous commit
+;
+; optional scope
+;   - init:     Initialize commit
+;   - ui:       User interface changes
+;   - deps:     Dependencies upgrading/adding/removing/etc.
+;   - config:   Configuration changes
+;   - i18n:     Internationalization and localization
+;   - a11y:     Accessibility changes
+;   - ...
+;
+; optional context
+;   - !         Indicates a breaking change
+;
+; subject
+;   - Short summary
+;   - Don't end with a period
+;   - Start writing in lower case
+;   - 100 characters or less
+;   - Use the imperative tone
+;   - Use present tense
+;
+; optional body
+;   - Explain "what" and "why" instead of "how"
+;   - Can use multiple lines with "-" for bullet points
+;   - Wrap at around 100 characters
+;
+; optional footer(s)
+;   - Add info about a breaking change in the following format
+;     - BREAKING CHANGE: <description> <fix/replacement>
+;   - Link a pull request to an issue using a keyword
+;     - close #<issue number>
+;     - fix #<issue number>
+;     - resolve #<issue number>
+;   - Provide URL links for more context or further reading
+;   - Wrap at around 100 characters
+;
+;
+; --------------------
+; Conventional Commits
+; A specification for adding human and machine readable meaning to commit messages
+; Ref: https://www.conventionalcommits.org
+; --------------------
