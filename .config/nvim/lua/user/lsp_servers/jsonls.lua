@@ -2,6 +2,7 @@ return {
   settings = {
     json = {
       validate = { enable = true },
+      format = { enable = false },
       schemas = {
         {
           fileMatch = { "package.json" },

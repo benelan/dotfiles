@@ -1,80 +1,57 @@
-local function organize_imports()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.organizeImports",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
-
-local function fix_all()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.fixAll",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
-
-local function remove_unused()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.removeUnused",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
-
-local function add_missing_imports()
-  vim.lsp.buf.execute_command {
-    command = "_typescript.addMissingImports",
-    arguments = { vim.api.nvim_buf_get_name(0) },
-    title = "",
-  }
-end
+local settings = {
+  inlayHints = {
+    includeInlayParameterNameHints = "all",
+    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+    includeInlayFunctionParameterTypeHints = true,
+    includeInlayVariableTypeHints = true,
+    includeInlayPropertyDeclarationTypeHints = true,
+    includeInlayFunctionLikeReturnTypeHints = true,
+    includeInlayEnumMemberValueHints = true,
+  },
+}
 
 return {
-  capabilities = {
-    documentFormattingProvider = false,
-    documentRangeFormattingProvider = false,
-  },
+  settings = { typescript = settings, javascript = settings },
   commands = {
     TypescriptOrganizeImports = {
-      organize_imports,
+      function()
+        vim.lsp.buf.execute_command {
+          command = "_typescript.organizeImports",
+          arguments = { vim.api.nvim_buf_get_name(0) },
+          title = "",
+        }
+      end,
       description = "Organizes and removes unused imports",
     },
     TypescriptAddMissingImports = {
-      add_missing_imports,
+      function()
+        vim.lsp.buf.execute_command {
+          command = "_typescript.addMissingImports",
+          arguments = { vim.api.nvim_buf_get_name(0) },
+          title = "",
+        }
+      end,
       description = "Add imports for used but not imported symbols",
     },
     TypescriptFixAll = {
-      fix_all,
+      function()
+        vim.lsp.buf.execute_command {
+          command = "_typescript.fixAll",
+          arguments = { vim.api.nvim_buf_get_name(0) },
+          title = "",
+        }
+      end,
       description = "Fix common TypeScript problems",
     },
     TypescriptRemoveUnused = {
-      remove_unused,
+      function()
+        vim.lsp.buf.execute_command {
+          command = "_typescript.removeUnused",
+          arguments = { vim.api.nvim_buf_get_name(0) },
+          title = "",
+        }
+      end,
       description = "Remove declared but unused variables",
-    },
-  },
-  settings = {
-    typescript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayVariableTypeHints = true,
-        includeInlayPropertyDeclarationTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
-    },
-    javascript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayVariableTypeHints = true,
-        includeInlayPropertyDeclarationTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
     },
   },
 }

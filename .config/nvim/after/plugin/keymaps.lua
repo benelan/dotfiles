@@ -113,12 +113,6 @@ keymap("n", "[b", "<cmd>bprevious<cr>", "Previous buffer")
 keymap("n", "]B", "<cmd>blast<cr>", "Last buffer")
 keymap("n", "[B", "<cmd>bfirst<cr>", "First buffer")
 
--- argument
--- keymap("n", "]a", "<cmd>next<cr>", "Next argument")
--- keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
--- keymap("n", "]A", "<cmd>last<cr>", "Last argument")
--- keymap("n", "[A", "<cmd>first<cr>", "First argument")
-
 -- quickfix
 keymap("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
 keymap("n", "[q", "<cmd>cprevious<cr>", "Previous quickfix")
@@ -131,6 +125,12 @@ keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
 -- keymap("n", "]l", "<cmd>llast<cr>", "Last location")
 -- keymap("n", "[l", "<cmd>lfirst<cr>", "First location")
 
+-- argument
+-- keymap("n", "]a", "<cmd>next<cr>", "Next argument")
+-- keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
+-- keymap("n", "]A", "<cmd>last<cr>", "Last argument")
+-- keymap("n", "[A", "<cmd>first<cr>", "First argument")
+
 -- jump
 -- keymap("n", "]j", "<C-o>", "Next jump")
 -- keymap("n", "[j", "<C-i>", "Previous jump")
@@ -138,6 +138,33 @@ keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
 -- change
 -- keymap("n", "]c", "g,", "Next change")
 -- keymap("n", "[c", "g;", "Previous change")
+
+-- Skip past lower level diagnostics so I can fix my errors first
+-- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua
+local get_highest_error_severity = function()
+  for _, level in ipairs(require("user.resources").icons.diagnostics) do
+    local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
+    if #diags > 0 then
+      return level
+    end
+  end
+end
+
+keymap("n", "]d", function()
+  vim.diagnostic.goto_next {
+    severity = get_highest_error_severity(),
+    wrap = true,
+    float = true,
+  }
+end, "Next diagnostic")
+
+keymap("n", "[d", function()
+  vim.diagnostic.goto_prev {
+    severity = get_highest_error_severity(),
+    wrap = true,
+    float = true,
+  }
+end, "Previous diagnostic")
 
 -- diagnostic error
 keymap(
