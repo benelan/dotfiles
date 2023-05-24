@@ -8,28 +8,39 @@ return {
   -----------------------------------------------------------------------------
   {
     "Eandrju/cellular-automaton.nvim",
-    enabled = false,
+    -- enabled = false,
     cmd = "CellularAutomaton",
     keys = {
       {
         "<leader>s!",
         "<cmd>CellularAutomaton make_it_rain<cr>",
-        "Make it rain",
+        desc = "Make it rain",
       },
       {
         "<leader>s~",
         "<cmd>CellularAutomaton game_of_life<cr>",
-        "Game of life",
+        desc = "Game of life",
       },
     },
   },
   -----------------------------------------------------------------------------
   {
     "uga-rosa/ccc.nvim",
-    enabled = false,
+    -- enabled = false,
     cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
+    keys = {
+      {
+        "<leader>Ch",
+        "<cmd>CccHighlighterToggle<cr>",
+        desc = "Toggle color highlighter",
+      },
+      { "<leader>Cp", "<cmd>CccPick<cr>", desc = "Pick color" },
+      { "<leader>Cc", "<cmd>CccConvert<cr>", desc = "Convert color" },
+    },
     opts = {
       save_on_quit = true,
+      point_char = "x",
+      win_opts = { border = "solid" },
       highlighter = {
         auto_enable = true,
         filetypes = {
@@ -300,6 +311,10 @@ return {
       require("which-key").register {
         ["gp"] = { name = "preview" },
         ["<leader>"] = {
+          C = { name = "color" },
+          D = { name = "debug" },
+          R = { name = "refactor" },
+          E = { name = "ex" },
           b = { name = "buffers" },
           c = {
             name = "cheat",
@@ -308,9 +323,6 @@ return {
             h = { name = "history" },
             s = { name = "see also" },
           },
-          D = { name = "debug" },
-          R = { name = "refactor" },
-          E = { name = "ex" },
           d = { name = "doc" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
