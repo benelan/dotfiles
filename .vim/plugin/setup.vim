@@ -92,6 +92,10 @@ nnoremap J mzJ`z
 nnoremap & :&&<CR>
 vnoremap & :&&<CR>
 
+" Create splits
+nnoremap <leader>- :split<cr>
+nnoremap <leader>\ :vsplit<cr>
+
 " clear search highlights
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv

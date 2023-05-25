@@ -210,10 +210,6 @@ au TabLeave * let s:last_tab = tabpagenr()
 nnoremap <leader>w :w<cr>
 inoremap <C-S> :write<cr><esc>
 
-" Create splits
-nnoremap <leader>- :split<cr>
-nnoremap <leader>\ :vsplit<cr>
-
 " Navigate splits
 nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
