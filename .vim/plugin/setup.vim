@@ -259,9 +259,6 @@ if has("autocmd")
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
 
-        " check for external edits when coming back to a file
-        autocmd  FocusGained,TermClose,TermLeave * checktime
-
         " open files to their previous location
         autocmd BufReadPost *
                     \ if line("'\"") > 1 && line("'\"") <= line("$")

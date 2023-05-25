@@ -30,9 +30,18 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   end,
 })
 
+-- check if file changed externally
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  group = vim.api.nvim_create_augroup("jamin_checktime", { clear = true }),
+  command = "checktime",
+})
+
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("jamin_auto_create_dir", { clear = true }),
+  group = vim.api.nvim_create_augroup(
+    "jamin_auto_create_dir",
+    { clear = true }
+  ),
   callback = function(event)
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
