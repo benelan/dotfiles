@@ -102,7 +102,7 @@ return {
         { border = opts.diagnostics.float.border }
       )
 
-      for _, sign in ipairs(require("user.resources").icons.diagnostics) do
+      for _, sign in ipairs(require("jamin.resources").icons.diagnostics) do
         vim.fn.sign_define("DiagnosticSign" .. sign.name, {
           texthl = "DiagnosticSign" .. sign.name,
           text = sign.text,
@@ -121,7 +121,7 @@ return {
       for _, server in pairs(lsp_servers) do
         if server ~= "zk" then -- https://github.com/mickael-menu/zk-nvim#setup
           local has_user_opts, user_opts =
-            pcall(require, "user.lsp_servers." .. server)
+            pcall(require, "jamin.lsp_servers." .. server)
 
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -134,7 +134,7 @@ return {
       end
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("ben_lsp_server_setup", {
+        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {
           clear = true,
         }),
         callback = function(args)

@@ -3,8 +3,8 @@
 " Shamelessly stolen from:
 " https://vimways.org/2018/transactions-pending/
 
-if exists('g:loaded_ben_text_objects') || &cp | finish | endif
-let g:loaded_ben_text_objects = 1
+if exists('g:loaded_jamin_text_objects') || &cp | finish | endif
+let g:loaded_jamin_text_objects = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Number

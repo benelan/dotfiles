@@ -2,8 +2,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The regex can be vastly improved, but it works for the most part.
 
-if exists('g:loaded_ben_system_open_handler') || &cp | finish | endif
-let g:loaded_ben_system_open_handler = 1
+if exists('g:loaded_jamin_system_open_handler') || &cp | finish | endif
+let g:loaded_jamin_system_open_handler = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Determines the system's `open` command

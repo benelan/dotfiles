@@ -250,7 +250,7 @@ command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    augroup ben_misc
+    augroup jamin_misc
         autocmd!
         " set the OSC7 escape code when changing directories
         " https://wezfurlong.org/wezterm/shell-integration.html#osc-7-escape-sequence-to-set-the-working-directory
@@ -271,7 +271,7 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    augroup ben_global_marks
+    augroup jamin_global_marks
         autocmd!
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave *.css,*.scss,*.sass      normal! mC
@@ -292,7 +292,7 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    augroup ben_filetype_options
+    augroup jamin_filetype_options
         autocmd!
         autocmd FileType * setlocal formatoptions-=o
 
@@ -314,7 +314,7 @@ if has("autocmd")
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    augroup ben_toggle_options
+    augroup jamin_toggle_options
         autocmd!
         " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
         "  autocmd BufEnter,FocusGained,WinEnter *
@@ -331,7 +331,7 @@ if has("autocmd")
 
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-     augroup ben_quickfix
+     augroup jamin_quickfix
         autocmd!
         autocmd QuickFixCmdPost cgetexpr cwindow
                     \| call setqflist([], "a", {"title": ":" . s:command})
@@ -342,7 +342,7 @@ if has("autocmd")
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     " Use templates when creating specific new files
-    augroup ben_templates
+    augroup jamin_templates
         autocmd!
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/index.html
         autocmd BufNewFile .gitignore 0r ~/.dotfiles/assets/templates/.gitignore

@@ -272,7 +272,7 @@ return {
           require("telescope.actions").open_qflist(...)
         end,
       }
-      local icons = require("user.resources").icons.ui
+      local icons = require("jamin.resources").icons.ui
       return {
         defaults = {
           -- path_display = { "smart" },

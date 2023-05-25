@@ -259,7 +259,7 @@ return {
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = "octo",
         group = vim.api.nvim_create_augroup(
-          "ben_octo_settings",
+          "jamin_octo_settings",
           { clear = true }
         ),
         callback = function()

@@ -142,7 +142,7 @@ keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
 -- Skip past lower level diagnostics so I can fix my errors first
 -- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua
 local get_highest_error_severity = function()
-  for _, level in ipairs(require("user.resources").icons.diagnostics) do
+  for _, level in ipairs(require("jamin.resources").icons.diagnostics) do
     local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
     if #diags > 0 then
       return level

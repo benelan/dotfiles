@@ -149,7 +149,7 @@ return {
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = "http",
         group = vim.api.nvim_create_augroup(
-          "ben_http_keymaps",
+          "jamin_http_keymaps",
           { clear = true }
         ),
         callback = function()

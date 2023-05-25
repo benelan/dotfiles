@@ -99,7 +99,7 @@ return {
         },
       },
       opts = function()
-        local icons = require("user.resources").icons.ui
+        local icons = require("jamin.resources").icons.ui
         return {
           controls = {
             element = "repl",

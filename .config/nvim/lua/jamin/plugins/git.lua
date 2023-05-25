@@ -34,9 +34,9 @@ return {
       enhanced_diff_hl = true,
       use_icons = vim.g.use_devicons,
       signs = {
-        fold_closed = require("user.resources").icons.ui.Collapsed,
-        fold_open = require("user.resources").icons.ui.Expanded,
-        done = require("user.resources").icons.ui.Done,
+        fold_closed = require("jamin.resources").icons.ui.Collapsed,
+        fold_open = require("jamin.resources").icons.ui.Expanded,
+        done = require("jamin.resources").icons.ui.Done,
       },
     }
   },

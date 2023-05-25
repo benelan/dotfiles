@@ -21,7 +21,7 @@ vim.g.use_devicons = os.getenv "TERM" == "wezterm"
 ----> Autocommands
 -------------------------------------------------------------------------------
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-  group = vim.api.nvim_create_augroup("ben_yank_highlight", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_yank_highlight", { clear = true }),
   callback = function()
     vim.highlight.on_yank {
       higroup = "Visual",
@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("ben_auto_create_dir", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_auto_create_dir", { clear = true }),
   callback = function(event)
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
@@ -43,14 +43,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- automatically close certain filetypes if it is the last window
-vim.api.nvim_create_augroup("ben_filetype_auto_quit", { clear = true })
+vim.api.nvim_create_augroup("jamin_filetype_auto_quit", { clear = true })
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = table.concat(require("user.resources").exclude_filetypes, ","),
-  group = "ben_filetype_auto_quit",
+  pattern = table.concat(require("jamin.resources").exclude_filetypes, ","),
+  group = "jamin_filetype_auto_quit",
   callback = function()
     vim.api.nvim_create_autocmd({ "BufEnter" }, {
       buffer = 0,
-      group = "ben_filetype_auto_quit",
+      group = "jamin_filetype_auto_quit",
       callback = function()
         local win_count = vim.fn.winnr "$"
         if win_count == 1 then
@@ -127,10 +127,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local icons = require("user.resources").icons
+local icons = require("jamin.resources").icons
 
 -- load the plugin specs
-require("lazy").setup("user.plugins", {
+require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "habamax" } },
   change_detection = { notify = false },
   ui = {

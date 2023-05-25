@@ -80,7 +80,7 @@ return {
       local cmp = require "cmp"
       local ls = require "luasnip"
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
-      local kinds = require("user.resources").icons.kind
+      local kinds = require("jamin.resources").icons.kind
       local vscode_snips = require "luasnip/loaders/from_vscode"
 
       vscode_snips.lazy_load() -- load plugin snippets

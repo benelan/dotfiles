@@ -3,10 +3,10 @@
 " Author: Tom Ryder <tom@sanctum.geek.nz>
 " License: Same as Vim itself
 
-if exists('loaded_ben_operator') || &compatible || v:version < 700
+if exists('loaded_jamin_operator') || &compatible || v:version < 700
   finish
 endif
-let loaded_ben_operator = 1
+let loaded_jamin_operator = 1
 
 " ---------------------------------------------------------------------------
 " | Replace Operator                                                        \

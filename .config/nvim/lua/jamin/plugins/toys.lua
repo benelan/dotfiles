@@ -66,12 +66,12 @@ return {
   -----------------------------------------------------------------------------
   {
     "kosayoda/nvim-lightbulb",
-    enabled = false,
+    -- enabled = false,
     event = "VeryLazy",
     opts = { autocmd = { enabled = true } },
     init = function()
       vim.fn.sign_define("LightBulbSign", {
-        text = require("user.resources").icons.ui.Light,
+        text = require("jamin.resources").icons.ui.Light,
         texthl = "Yellow",
       })
     end,
@@ -79,7 +79,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "simrat39/symbols-outline.nvim",
-    enabled = false,
+    -- enabled = false,
     keys = {
       { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutlineToggle" },
     },
@@ -89,120 +89,120 @@ return {
         toggle_preview = "p",
       },
       fold_markers = {
-        require("user.resources").icons.ui.Collapsed,
-        require("user.resources").icons.ui.Expanded,
+        require("jamin.resources").icons.ui.Collapsed,
+        require("jamin.resources").icons.ui.Expanded,
       },
       symbols = {
         File = {
-          icon = require("user.resources").icons.kind.File,
+          icon = require("jamin.resources").icons.kind.File,
           hl = "@text.uri",
         },
         Module = {
-          icon = require("user.resources").icons.kind.Module,
+          icon = require("jamin.resources").icons.kind.Module,
           hl = "@namespace",
         },
         Namespace = {
-          icon = require("user.resources").icons.kind.Namespace,
+          icon = require("jamin.resources").icons.kind.Namespace,
           hl = "@namespace",
         },
         Package = {
-          icon = require("user.resources").icons.kind.Package,
+          icon = require("jamin.resources").icons.kind.Package,
           hl = "@namespace",
         },
         Class = {
-          icon = require("user.resources").icons.kind.Class,
+          icon = require("jamin.resources").icons.kind.Class,
           hl = "@type",
         },
         Method = {
-          icon = require("user.resources").icons.kind.Method,
+          icon = require("jamin.resources").icons.kind.Method,
           hl = "@method",
         },
         Property = {
-          icon = require("user.resources").icons.kind.Property,
+          icon = require("jamin.resources").icons.kind.Property,
           hl = "@method",
         },
         Field = {
-          icon = require("user.resources").icons.kind.Field,
+          icon = require("jamin.resources").icons.kind.Field,
           hl = "@field",
         },
         Constructor = {
-          icon = require("user.resources").icons.kind.Constructor,
+          icon = require("jamin.resources").icons.kind.Constructor,
           hl = "@constructor",
         },
         Enum = {
-          icon = require("user.resources").icons.kind.Enum,
+          icon = require("jamin.resources").icons.kind.Enum,
           hl = "@type",
         },
         Interface = {
-          icon = require("user.resources").icons.kind.Interface,
+          icon = require("jamin.resources").icons.kind.Interface,
           hl = "@type",
         },
         Function = {
-          icon = require("user.resources").icons.kind.Function,
+          icon = require("jamin.resources").icons.kind.Function,
           hl = "@function",
         },
         Variable = {
-          icon = require("user.resources").icons.kind.Variable,
+          icon = require("jamin.resources").icons.kind.Variable,
           hl = "@constant",
         },
         Constant = {
-          icon = require("user.resources").icons.kind.Constant,
+          icon = require("jamin.resources").icons.kind.Constant,
           hl = "@constant",
         },
         String = {
-          icon = require("user.resources").icons.kind.String,
+          icon = require("jamin.resources").icons.kind.String,
           hl = "@string",
         },
         Number = {
-          icon = require("user.resources").icons.kind.Number,
+          icon = require("jamin.resources").icons.kind.Number,
           hl = "@number",
         },
         Boolean = {
-          icon = require("user.resources").icons.kind.Boolean,
+          icon = require("jamin.resources").icons.kind.Boolean,
           hl = "@boolean",
         },
         Array = {
-          icon = require("user.resources").icons.kind.Array,
+          icon = require("jamin.resources").icons.kind.Array,
           hl = "@constant",
         },
         Object = {
-          icon = require("user.resources").icons.kind.Object,
+          icon = require("jamin.resources").icons.kind.Object,
           hl = "@type",
         },
         Key = {
-          icon = require("user.resources").icons.kind.Key,
+          icon = require("jamin.resources").icons.kind.Key,
           hl = "@type",
         },
         Null = {
-          icon = require("user.resources").icons.kind.Null,
+          icon = require("jamin.resources").icons.kind.Null,
           hl = "@type",
         },
         EnumMember = {
-          icon = require("user.resources").icons.kind.EnumMember,
+          icon = require("jamin.resources").icons.kind.EnumMember,
           hl = "@field",
         },
         Struct = {
-          icon = require("user.resources").icons.kind.Struct,
+          icon = require("jamin.resources").icons.kind.Struct,
           hl = "@type",
         },
         Event = {
-          icon = require("user.resources").icons.kind.Event,
+          icon = require("jamin.resources").icons.kind.Event,
           hl = "@type",
         },
         Operator = {
-          icon = require("user.resources").icons.kind.Operator,
+          icon = require("jamin.resources").icons.kind.Operator,
           hl = "@operator",
         },
         TypeParameter = {
-          icon = require("user.resources").icons.kind.TypeParameter,
+          icon = require("jamin.resources").icons.kind.TypeParameter,
           hl = "@parameter",
         },
         Component = {
-          icon = require("user.resources").icons.kind.Component,
+          icon = require("jamin.resources").icons.kind.Component,
           hl = "@function",
         },
         Fragment = {
-          icon = require("user.resources").icons.kind.Fragment,
+          icon = require("jamin.resources").icons.kind.Fragment,
           hl = "@constant",
         },
       },
@@ -219,7 +219,7 @@ return {
       handle = { highlight = "TabLine" },
       marks = { Misc = { highlight = "Purple" } },
       handlers = { gitsigns = true },
-      excluded_filetypes = require("user.resources").exclude_filetypes,
+      excluded_filetypes = require("jamin.resources").exclude_filetypes,
     },
     config = function(_, opts)
       require("scrollbar").setup(opts)
@@ -232,14 +232,14 @@ return {
     -- enabled = false,
     event = "LspAttach",
     opts = {
-      icons = require("user.resources").icons.kind,
+      icons = require("jamin.resources").icons.kind,
       separator = "  >  ",
       highlight = true,
     },
     config = function(_, opts)
       require("nvim-navic").setup(opts)
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("ben_lsp_attach_navic", {}),
+        group = vim.api.nvim_create_augroup("jamin_lsp_attach_navic", {}),
         callback = function(args)
           if not (args.data and args.data.client_id) then
             return
@@ -275,7 +275,7 @@ return {
     config = function(_, opts)
       require("lsp-inlayhints").setup(opts)
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("ben_lsp_attach_inlayhints", {}),
+        group = vim.api.nvim_create_augroup("jamin_lsp_attach_inlayhints", {}),
         callback = function(args)
           if not (args.data and args.data.client_id) then
             return
@@ -292,8 +292,8 @@ return {
     enabled = false,
     event = "BufWinEnter",
     opts = {
-      char = require("user.resources").icons.ui.Separator,
-      indent_blankline_filetype_exclude = require("user.resources").exclude_filetypes,
+      char = require("jamin.resources").icons.ui.Separator,
+      indent_blankline_filetype_exclude = require("jamin.resources").exclude_filetypes,
       show_trailing_blankline_indent = false,
       use_treesitter = true,
       show_current_context = true,

@@ -1,4 +1,4 @@
-local has_res, res = pcall(require, "user.resources")
+local has_res, res = pcall(require, "jamin.resources")
 if has_res then
   vim.opt.fillchars = { diff = res.icons.ui.FillSlash }
   vim.opt.listchars = {

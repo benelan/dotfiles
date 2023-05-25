@@ -1,4 +1,4 @@
-local icons = require("user.resources").icons
+local icons = require("jamin.resources").icons
 vim.opt.statusline = "%!v:lua.MyStatusLine()"
 
 local function table_length(T)
