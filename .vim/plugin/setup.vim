@@ -250,9 +250,19 @@ command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Open the file at its last location
-    augroup ben_open_file_at_previous_line
-    autocmd!
+    augroup ben_misc
+        autocmd!
+        " set the OSC7 escape code when changing directories
+        " https://wezfurlong.org/wezterm/shell-integration.html#osc-7-escape-sequence-to-set-the-working-directory
+        autocmd DirChanged * call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))
+
+        " equalize window sizes when vim is resized
+        autocmd VimResized * wincmd =
+
+        " check for external edits when coming back to a file
+        autocmd  FocusGained,TermClose,TermLeave * checktime
+
+        " open files to their previous location
         autocmd BufReadPost *
                     \ if line("'\"") > 1 && line("'\"") <= line("$")
                     \|   execute "normal! g'\""
@@ -262,22 +272,22 @@ if has("autocmd")
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     augroup ben_global_marks
-      autocmd!
-    " Create marks for specific filetypes when leaving buffer
-      autocmd BufLeave *.css,*.scss,*.sass      normal! mC
-      autocmd BufLeave *.csv,*.json             normal! mD
-      autocmd BufLeave *.go                     normal! mG
-      autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
-      autocmd BufLeave *.js,*.jsx               normal! mJ
-      autocmd BufLeave *.lua                    normal! mL
-      autocmd BufLeave *.py                     normal! mP
-      autocmd BufLeave *.rs                     normal! mR
-      autocmd BufLeave *.sh,*.bash              normal! mS
-      autocmd BufLeave *.ts,*.tsx               normal! mT
-      autocmd BufLeave *.vim,*vimrc             normal! mV
-      autocmd BufLeave *.yml,*.yaml             normal! mY
-      " Clear actively used marks to prevent jumping to other projects
-      autocmd VimLeave *                        delmarks AQWZX
+        autocmd!
+        " Create marks for specific filetypes when leaving buffer
+        autocmd BufLeave *.css,*.scss,*.sass      normal! mC
+        autocmd BufLeave *.csv,*.json             normal! mD
+        autocmd BufLeave *.go                     normal! mG
+        autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
+        autocmd BufLeave *.js,*.jsx               normal! mJ
+        autocmd BufLeave *.lua                    normal! mL
+        autocmd BufLeave *.py                     normal! mP
+        autocmd BufLeave *.rs                     normal! mR
+        autocmd BufLeave *.sh,*.bash              normal! mS
+        autocmd BufLeave *.ts,*.tsx               normal! mT
+        autocmd BufLeave *.vim,*vimrc             normal! mV
+        autocmd BufLeave *.yml,*.yaml             normal! mY
+        " Clear actively used marks to prevent jumping to other projects
+        autocmd VimLeave *                        delmarks AQWZX
     augroup END
 
     " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,16 +317,16 @@ if has("autocmd")
     augroup ben_toggle_options
         autocmd!
         " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-        "  autocmd BufEnter,FocusGained,InsertLeave,WinEnter *
+        "  autocmd BufEnter,FocusGained,WinEnter *
         "                 \ if &number && mode() != "i" | set relativenumber | endif
-        "  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   *
+        "  autocmd BufLeave,FocusLost,WinLeave   *
         "                 \ if &number | set norelativenumber | endif
 
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
 
-        autocmd InsertLeave,WinEnter * set cursorline
-        autocmd InsertEnter,WinLeave * set nocursorline
+        autocmd InsertLeave,WinEnter * setlocal cursorline
+        autocmd InsertEnter,WinLeave * setlocal nocursorline
     augroup END
 
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,33 +1,6 @@
 -------------------------------------------------------------------------------
 ----> Settings
 -------------------------------------------------------------------------------
--- disable unused builtins
-vim.tbl_map(function(p)
-  vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
-end, {
-  "2html_plugin",
-  "gzip",
-  "matchit",
-  "matchparen",
-  -- "netrw",
-  -- "netrwFileHandlers",
-  -- "netrwPlugin",
-  -- "netrwSettings",
-  "node_provider",
-  "perl_provider",
-  "python3_provider",
-  "pythonx_provider",
-  "remote_plugins",
-  "ruby_provider",
-  "tar",
-  "tarPlugin",
-  "tutor_mode_plugin",
-  "vimball",
-  "vimballPlugin",
-  "zip",
-  "zipPlugin",
-})
-
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -55,23 +28,6 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
       timeout = 269,
     }
   end,
-})
-
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = vim.api.nvim_create_augroup("ben_resize_windows", { clear = true }),
-  command = "wincmd =",
-})
-
--- set the OSC7 escape code when changing directories
-vim.api.nvim_create_autocmd({ "DirChanged" }, {
-  group = vim.api.nvim_create_augroup("ben_set_osc7", { clear = true }),
-  command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
-})
-
--- check if file changed externally
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = vim.api.nvim_create_augroup("ben_checktime", { clear = true }),
-  command = "checktime",
 })
 
 -- if necessary, create directories when saving file
@@ -128,8 +84,35 @@ _G.keymap = function(mode, lhs, rhs, desc)
 end
 
 -------------------------------------------------------------------------------
-----> Load Plugins
+----> Plugins
 -------------------------------------------------------------------------------
+-- prevent unused builtin plugins from loading
+vim.tbl_map(function(p)
+  vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
+end, {
+  "2html_plugin",
+  "gzip",
+  "matchit",
+  "matchparen",
+  -- "netrw",
+  -- "netrwFileHandlers",
+  -- "netrwPlugin",
+  -- "netrwSettings",
+  "node_provider",
+  "perl_provider",
+  "python3_provider",
+  "pythonx_provider",
+  "remote_plugins",
+  "ruby_provider",
+  "tar",
+  "tarPlugin",
+  "tutor_mode_plugin",
+  "vimball",
+  "vimballPlugin",
+  "zip",
+  "zipPlugin",
+})
+
 -- Bootstrap Lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -146,6 +129,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local icons = require("user.resources").icons
 
+-- load the plugin specs
 require("lazy").setup("user.plugins", {
   install = { colorscheme = { "gruvbox-material", "habamax" } },
   change_detection = { notify = false },
