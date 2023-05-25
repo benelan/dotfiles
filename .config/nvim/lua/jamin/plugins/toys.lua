@@ -259,6 +259,7 @@ return {
     config = {
       text = { spinner = "circle" },
       window = { blend = 0 },
+      sources = { ["null-ls"] = { ignore = true } },
     },
   },
   {
