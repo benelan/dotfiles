@@ -101,7 +101,14 @@ nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstar
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
 inoremap <M-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
-nnoremap <leader>Em  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+" Edit contents of register
+nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+" start ex command for vimgrep
+nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+"" start ex command for lhelpgrep
+nnoremap <leader>Eh :<C-U>lhelpgrep \c<S-Left>
+"" replace word under cursor in whole buffer
+nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
 " go to line above/below the cursor, from insert mode
 inoremap <C-Down> <C-O>o
@@ -143,9 +150,9 @@ nnoremap <leader>u :UndotreeToggle<CR>
 " | Helper functions and user commands                                      |
 " ---------------------------------------------------------------------------
 
-command! QuickFixToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
-nnoremap <silent> <C-q> :QuickFixToggle<CR>
-nnoremap <silent> <leader>q :QuickFixToggle<CR>
+command! QuickfixList execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
+nnoremap <silent> <C-q> :QuickfixList<CR>
+nnoremap <silent> <leader>q :QuickfixList<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -155,8 +162,8 @@ function! s:NetrwToggle()
   endtry
 endfunction
 
-command! NetrwToggle call <sid>NetrwToggle()
-nnoremap <silent> <leader>e :NetrwToggle<CR>
+command! Netrw call <sid>NetrwToggle()
+nnoremap <silent> <leader>e :Netrw<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -188,10 +195,10 @@ function! s:conflictPrevious(cursor) abort
                 \ ]))
 endfunction
 
-command! -nargs=0 -bang ConflictNextHunk call s:conflictNext(<bang>0)
-command! -nargs=0 -bang ConflictPreviousHunk call s:conflictPrevious(<bang>0)
-nnoremap [x :ConflictPreviousHunk<CR>
-nnoremap ]x :ConflictNextHunk<CR>
+command! -nargs=0 -bang ConflictMarkerNext call s:conflictNext(<bang>0)
+command! -nargs=0 -bang ConflictMarkerPrev call s:conflictPrevious(<bang>0)
+nnoremap [x :ConflictMarkerPrev<CR>
+nnoremap ]x :ConflictMarkerNext<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -237,8 +244,7 @@ nnoremap <silent> <leader><Delete> :Bdelete<CR>
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function! Grep(...)
-    let s:command = join([&grepprg] + [expandcmd(join(a:000, " "))], " ")
-    return system(s:command)
+    return system(join([&grepprg] + [expandcmd(join(a:000, " "))], " "))
 endfunction
 
 command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)

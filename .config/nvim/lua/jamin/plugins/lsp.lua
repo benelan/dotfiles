@@ -176,7 +176,7 @@ return {
           bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
           bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-          bufmap("n", "gT", vim.lsp.buf.type_definition, "LSP type definition")
+          bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostic")

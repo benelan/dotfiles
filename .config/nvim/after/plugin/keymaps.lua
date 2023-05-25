@@ -48,7 +48,7 @@ keymap("v", "<M-j>", ":m '>+1<cr>gv=gv", "Move line down")
 keymap("v", "<M-k>", ":m '<-2<cr>gv=gv", "Move line up")
 
 -- escape terminal mode
-keymap("t", "<esc>", "<C-\\><C-N>")
+keymap("t", "<esc><esc>", "<C-\\><C-N>")
 
 -- directory navigation
 keymap("n", "cd", "<cmd>cd %:h <bar> pwd<cr>", "Change directory to buffer")
@@ -81,21 +81,6 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
   noremap = true,
   desc = "Visually select changed text",
 })
-
--------------------------------------------------------------------------------
-----> Prepare Ex commands
--------------------------------------------------------------------------------
-
--- :vimgrep
-keymap(
-  "n",
-  "<leader>Eg",
-  ":<C-U>vimgrep /\\c/j **<S-Left><S-Left><Right>",
-  "Execute vimgrep"
-)
-
--- :lhelpgrep
-keymap("n", "<leader>Eh", ":<C-U>lhelpgrep \\c<S-Left>", "Execute lhelpgrep")
 
 -------------------------------------------------------------------------------
 ----> Lists (next/previous)
@@ -247,10 +232,6 @@ keymap(
 ----> Windows
 -------------------------------------------------------------------------------
 
--- create vim style splits
-keymap("n", "<M-v>", "<C-w>v", "Vertical split")
-keymap("n", "<M-s>", "<C-w>s", "Horizontal split")
-
 -- create tmux style splits
 keymap("n", "<M-\\>", "<C-w>v", "Vertical split")
 keymap("n", "<M-->", "<C-w>s", "Horizontal split")
@@ -262,8 +243,8 @@ keymap("n", "<C-k>", "<C-w>k", "Focus window above")
 keymap("n", "<C-l>", "<C-w>l", "Focus window right")
 keymap("v", "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus window left")
 keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus window below")
-keymap({ "v", "t" }, "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus window above")
-keymap({ "v", "t" }, "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window right")
+keymap("v", "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus window above")
+keymap("v", "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window right")
 
 -- Go to the first floating window
 vim.cmd [[

@@ -81,7 +81,7 @@ return {
     "simrat39/symbols-outline.nvim",
     -- enabled = false,
     keys = {
-      { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutlineToggle" },
+      { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutline" },
     },
     opts = {
       keymaps = {
@@ -300,6 +300,39 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- Presentation plugins
+  {
+    "folke/zen-mode.nvim",
+    enabled = false,
+    cmd = "ZenMode",
+    keys = {
+      { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" },
+    },
+    opts = {
+      window = {
+        options = {
+          signcolumn = "no",
+          number = false,
+          relativenumber = false,
+          cursorline = false,
+        },
+      },
+      plugins = {
+        twilight = { enabled = false },
+        tmux = { enabled = true },
+        wezterm = { enabled = true, font = "+6" },
+        gitsigns = { enabled = true },
+      },
+    },
+  },
+  {
+    "folke/twilight.nvim",
+    enabled = false,
+    cmd = "Twilight",
+    keys = { { "<leader>T", "<cmd>Twilight<cr>", desc = "TwilightToggle" } },
+    opts = { context = 13 },
+  },
+  -----------------------------------------------------------------------------
   {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
     -- enabled = false,
@@ -309,13 +342,27 @@ return {
 
       -- Normal mode
       require("which-key").register {
+        ["g:"] = "External program operator",
         ["gp"] = { name = "preview" },
         ["<leader>"] = {
+          ["<C-l>"] = "Redraw",
+          ["<Del>"] = "Delete buffer",
+          ["bd"] = "Delete buffer and window",
+          ["\\"] = "Vertical split",
+          ["-"] = "Horizontal split",
+          r = "Replace operator",
+          u = "Undotree",
           C = { name = "color" },
           D = { name = "debug" },
           R = { name = "refactor" },
-          E = { name = "ex" },
-          b = { name = "buffers" },
+          E = {
+            name = "ex",
+            ["!"] = "Bang repeat",
+            R = "Replace word under cursor",
+            r = "Edit register",
+            g = "Execute vimgrep",
+            h = "Execute lhelpgrep",
+          },
           c = {
             name = "cheat",
             q = { name = "questions" },
@@ -323,6 +370,7 @@ return {
             h = { name = "history" },
             s = { name = "see also" },
           },
+          b = { name = "buffers" },
           d = { name = "doc" },
           f = { name = "find", z = { name = "fzf" } },
           l = { name = "lsp" },
@@ -360,6 +408,12 @@ return {
       -- Visual mode
       require("which-key").register({
         ["<leader>"] = {
+          ["<C-l>"] = "Redraw",
+          D = { name = "debug" },
+          R = { name = "refactor" },
+          r = "Replace operator",
+          z = { name = "zk" },
+          g = { name = "git", m = { name = "mergetool" } },
           c = {
             name = "cheat",
             q = { name = "questions" },
@@ -367,43 +421,14 @@ return {
             h = { name = "history" },
             s = { name = "see also" },
           },
-          g = { name = "git", m = { name = "mergetool" } },
-          z = { name = "zk" },
         },
-      }, { mode = "x" })
+      }, { mode = "v" })
+
+      -- Operator mode
+      require("which-key").register({
+        V = "Last selection",
+        B = "Whole buffer",
+      }, { mode = "o" })
     end,
-  },
-  -----------------------------------------------------------------------------
-  -- Presentation plugins
-  {
-    "folke/zen-mode.nvim",
-    enabled = false,
-    cmd = "ZenMode",
-    keys = {
-      { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" },
-    },
-    opts = {
-      window = {
-        options = {
-          signcolumn = "no",
-          number = false,
-          relativenumber = false,
-          cursorline = false,
-        },
-      },
-      plugins = {
-        twilight = { enabled = false },
-        tmux = { enabled = true },
-        wezterm = { enabled = true, font = "+6" },
-        gitsigns = { enabled = true },
-      },
-    },
-  },
-  {
-    "folke/twilight.nvim",
-    enabled = false,
-    cmd = "Twilight",
-    keys = { { "<leader>T", "<cmd>Twilight<cr>", desc = "TwilightToggle" } },
-    opts = { context = 13 },
   },
 }

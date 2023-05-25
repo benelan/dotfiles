@@ -208,7 +208,6 @@ au TabLeave * let s:last_tab = tabpagenr()
 
 " Save buffers
 nnoremap <leader>w :w<cr>
-inoremap <C-S> :write<cr><esc>
 
 " Navigate splits
 nnoremap <C-h> <C-W>h
@@ -255,15 +254,6 @@ nnoremap <silent> <leader>sf :execute "set foldcolumn="
 "" toggle system clipboard
 nnoremap <silent> <leader>sc :execute "set clipboard="
                   \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
-
-" start ex command for vimgrep
-nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
-"" start ex command for lhelpgrep
-nnoremap <leader>Eh :<C-U>lhelpgrep \c<S-Left>
-"" replace word under cursor in whole buffer
-nnoremap <leader>Es :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
-"" Search and replace the word under the cursor
-nnoremap <leader>En :g//#<Left><Left>
 
 tnoremap <leader><Esc> <C-\><C-n>
 tnoremap <Esc><Esc> <C-\><C-n>
