@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig-base",
-  "include": ["**/*"]
+  "include": ["**/*"],
   "exclude": ["*assets*", "dist", "docs", "build", "node_modules"]
 }

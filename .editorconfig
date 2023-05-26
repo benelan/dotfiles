@@ -9,17 +9,16 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
+quote_type = double
 spaces_around_operators = true
 spaces_around_brackets = false
 
 # JavaScript/TypeScript-specific settings
-[*.{js,jsx,ts,tsx}]
+[*.{js,jsx,ts,tsx,vue,svelte}]
 quote_type = single
 curly_bracket_next_line = false
-
-# HTML-specific settings
-[*.html]
-quote_type = double
+spaces_around_brackets = true
 
 [*.vim]
 indent_size = 4
+
