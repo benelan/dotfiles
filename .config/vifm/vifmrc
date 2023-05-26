@@ -64,7 +64,7 @@ set norunexec
 
 " List of color schemes to try (picks the first one supported by the terminal)
 
-colorscheme gruvbox zenburn_1 Default-256 Default
+colorscheme gruvbox
 
 " Format for displaying time in file list. For example:
 " TIME_STAMP_FORMAT=%m/%d-%H:%M
