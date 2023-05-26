@@ -48,9 +48,13 @@ clone_gh_repo_bare() {
     repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
 
     if [ -d "$repo_dir" ]; then
+        cd "$repo_dir" || return
+
         if [ "$OVERWRITE_REPOS" = true ]; then
             printf "removing %s\n" "$repo_dir"
             rm -rf "${repo_dir:?}"
+        elif ! [ -d "$repo_dir/.git" ]; then
+            printf "dir exists but is not a git repo\n"
         else
             printf "skipping %s\n" "$repo_dir"
             unset repo_dir
@@ -58,14 +62,13 @@ clone_gh_repo_bare() {
         fi
     fi
 
-    cd "$repo_dir" || return
     printf "cloning '%s' to '%s'\n" "$2" "$repo_dir"
     git clone --bare "git@github.com:$2.git" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
 
     default_branch="$(get_default_branch)"
-    worktree_name="$("$default_branch" | tr "./" "__")"
+    worktree_name="$(echo "$default_branch" | tr "./" "__")"
     printf "creating worktree '%s' for branch '%s'\n" "$worktree_name" "$default_branch"
     git worktree add "$worktree_name" "$default_branch"
     cd "$worktree_name" || return
