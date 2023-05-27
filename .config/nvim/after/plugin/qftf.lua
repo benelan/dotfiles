@@ -1,3 +1,5 @@
+
+-- Make Quickfix list format easier to read, originally from:
 -- https://github.com/kevinhwang91/nvim-bqf#customize-quickfix-window-easter-egg
 function _G.qftf(info)
   local items
@@ -32,20 +34,39 @@ function _G.qftf(info)
         end
       end
 
+      -- ensure long line/col numbers don't break the list's formatting
       local lnum = e.lnum > 99999 and -1 or e.lnum
       local end_lnum = e.end_lnum > 99999 and -1 or e.end_lnum
-      local lnum_diff = end_lnum - lnum
-      local lnums = lnum_diff == 0 and lnum
-        or lnum .. "+" .. (lnum_diff > 99 and ">C" or lnum_diff)
+      local lnums = tostring(lnum)
+
+      -- show how many additional lines the qickfix item spans
+      if end_lnum ~= lnum and end_lnum ~= 0 then
+        local lnums_diff = end_lnum - lnum
+        -- 'H' for hecto-lines
+        lnums = lnum .. "+" .. (lnums_diff > 99 and ">H" or lnums_diff)
+      end
 
       local col = e.col > 999 and -1 or e.col
       local end_col = e.end_col > 999 and -1 or e.end_col
-      local cols = col == end_col and col or col .. "-" .. end_col
+      local cols = tostring(col)
 
+      if end_col ~= col and end_col ~= 0 then
+        local cols_diff = end_col - col
+        -- 'K' for kilo-columns
+        cols = col .. "+" .. (cols_diff > 999 and ">K" or cols_diff)
+      end
+
+      -- type initial used for syntax highlighting
       local qtype = e.type == "" and ""
         or " " .. e.type:sub(1, 1):upper() .. ":"
 
-      str = validFmt:format(fname, lnums, cols, qtype, e.text)
+      str = validFmt:format(
+        fname,
+        lnums,
+        cols,
+        qtype,
+        e.text:gsub("^%s*(.-)%s*$", "%1") -- trim leading/trailing whitespace
+      )
     else
       str = e.text
     end
@@ -55,3 +76,4 @@ function _G.qftf(info)
 end
 
 vim.o.qftf = "{info -> v:lua._G.qftf(info)}"
+
