@@ -66,7 +66,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "kosayoda/nvim-lightbulb",
-    -- enabled = false,
+    enabled = false,
     event = "VeryLazy",
     opts = { autocmd = { enabled = true } },
     init = function()
@@ -79,7 +79,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "simrat39/symbols-outline.nvim",
-    -- enabled = false,
+    enabled = false,
     keys = {
       { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutline" },
     },
