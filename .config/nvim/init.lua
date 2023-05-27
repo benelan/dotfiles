@@ -36,6 +36,13 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   command = "checktime",
 })
 
+-- set the OSC7 escape code when changing directories
+-- https://wezfurlong.org/wezterm/shell-integration.html#osc-7-escape-sequence-to-set-the-working-directory
+vim.api.nvim_create_autocmd({ "DirChanged" }, {
+  group = vim.api.nvim_create_augroup("ben_set_osc7", { clear = true }),
+  command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
+})
+
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup(

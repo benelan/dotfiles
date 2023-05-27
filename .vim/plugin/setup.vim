@@ -258,10 +258,6 @@ if has("autocmd")
 
     augroup jamin_misc
         autocmd!
-        " set the OSC7 escape code when changing directories
-        " https://wezfurlong.org/wezterm/shell-integration.html#osc-7-escape-sequence-to-set-the-working-directory
-        autocmd DirChanged * call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))
-
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
 
