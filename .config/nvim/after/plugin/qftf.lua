@@ -1,4 +1,3 @@
-
 -- Make Quickfix list format easier to read, originally from:
 -- https://github.com/kevinhwang91/nvim-bqf#customize-quickfix-window-easter-egg
 function _G.qftf(info)
@@ -46,14 +45,11 @@ function _G.qftf(info)
         lnums = lnum .. "+" .. (lnums_diff > 99 and ">H" or lnums_diff)
       end
 
-      local col = e.col > 999 and -1 or e.col
-      local end_col = e.end_col > 999 and -1 or e.end_col
-      local cols = tostring(col)
-
-      if end_col ~= col and end_col ~= 0 then
-        local cols_diff = end_col - col
-        -- 'K' for kilo-columns
-        cols = col .. "+" .. (cols_diff > 999 and ">K" or cols_diff)
+      local cols
+      if (e.col > 999 or e.end_col > 999) or e.col == e.end_col then
+        cols = e.col > 999999 and -1 or e.col
+      else
+        cols = string.format("%s-%s", e.col, e.end_col)
       end
 
       -- type initial used for syntax highlighting
@@ -76,4 +72,3 @@ function _G.qftf(info)
 end
 
 vim.o.qftf = "{info -> v:lua._G.qftf(info)}"
-
