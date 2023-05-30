@@ -1,6 +1,6 @@
 set background=dark
 set t_Co=256
-if exists('+termguicolors')
+if exists("+termguicolors")
     set termguicolors
 endif
 
@@ -46,14 +46,14 @@ let &t_RT = "\e[23;2t"
 " not contain bce. This causes incorrect background rendering when
 " using a color theme with a background color in terminals such as
 " kitty that do not support background color erase.
-let &t_ut=''
+let &t_ut=""
 
 if exists("g:colors_name") && g:colors_name == "gruvbox-material"
 
     function! s:gruvbox_material_custom() abort
-        let s:palette = gruvbox_material#get_palette('soft', 'material', {
-                    \'bg_orange': ['#5A3B0A', '130'],
-                    \ 'bg_visual_yellow': ['#7a380b', '208']
+        let s:palette = gruvbox_material#get_palette("soft", "material", {
+                    \"bg_orange": ["#5A3B0A", "130"],
+                    \ "bg_visual_yellow": ["#7a380b", "208"]
                     \ })
         call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
         call gruvbox_material#highlight("GitSignsChange", s:palette.orange, s:palette.none)
