@@ -1,8 +1,6 @@
 build-sizes
 cspell
 eslint
-markdownlint
-markdownlint-cli
 neovim
 pm2
 prettier

@@ -32,10 +32,17 @@ return {
         build = ":MasonUpdate",
         opts = {
           ensure_installed = {
+            -- linters/formatters
+            "actionlint",
+            "codespell",
+            "markdown-toc",
+            "markdownlint",
+            "proselint",
+            "shellcheck",
+            "shfmt",
             "stylua",
             "write-good",
-            "proselint",
-            "codespell",
+            -- debug adapters
             "chrome-debug-adapter",
             "js-debug-adapter",
             "node-debug2-adapter",
