@@ -1,6 +1,7 @@
 setlocal nowrap norelativenumber number
 set nobuflisted
 
+let g:qf_disable_statusline = 1
 let b:qf_isLoc = get(get(getwininfo(win_getid()), 0, {}), 'loclist', 0)
 
 if b:qf_isLoc == 1
@@ -29,3 +30,10 @@ if !exists("loaded_cfilter") && finddir("pack/dist/opt/cfilter", &rtp) != ""
     packadd cfilter
 endif
 
+
+
+function! AdjustWindowHeight(minheight, maxheight)
+  exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
+endfunction
+
+call AdjustWindowHeight(3, 10)
