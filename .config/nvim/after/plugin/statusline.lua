@@ -1,6 +1,14 @@
 local icons = require("jamin.resources").icons
 vim.opt.statusline = "%!v:lua.MyStatusLine()"
 
+---@class NumericData
+---@field icon string
+---@field highlight string
+---@field count number
+
+---Get the length of a table.
+---@param T table
+---@return string length
 local function table_length(T)
   local len = 0
   for _ in pairs(T) do
@@ -9,6 +17,10 @@ local function table_length(T)
   return len
 end
 
+---Turns a table into a string formatted for use in a statusline.
+---Only displays an item if its count is more than 0.
+---@param d NumericData
+---@return string
 local function format_numeric_data(d)
   local template = ""
   local output = {}
@@ -25,6 +37,7 @@ local function format_numeric_data(d)
     or ""
 end
 
+-- show diagnostic count if a severity has more than 0
 local function buffer_diagnostics()
   local data = {}
   for _, diagnostic in ipairs(icons.diagnostics) do
@@ -40,13 +53,22 @@ local function buffer_diagnostics()
   return format_numeric_data(data)
 end
 
-local has_navic, _ = pcall(require, "nvim-navic")
+-- navic bread crumb
+local has_navic, navic = pcall(require, "nvim-navic")
 local function navic_breadcrumbs()
-  return has_navic
-      and "%#Normal#  %{%v:lua.require'nvim-navic'.get_location()%}%#Normal#  "
+  return has_navic and navic.is_available() and navic.get_location() or ""
+end
+
+-- number of updatable plugins
+local has_lazy, lazy = pcall(require, "lazy.status")
+local function lazy_updates()
+  return has_lazy
+      and lazy.has_updates()
+      and "%#LazyStatusLineUpdates#" .. lazy.updates()
     or ""
 end
 
+-- branch name and added/deleted/changed line count
 local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
@@ -96,11 +118,12 @@ function MyStatusLine()
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
     -------------------------------------------
-    .. "%<%#TabLineFill#"
+    .. "%<%#TabLineFill#  "
     .. navic_breadcrumbs()
-    .. "%="
+    .. " %= "
+    .. lazy_updates()
     -------------------------------------------
-    .. "%#NormalFloat# " -- "%#Normal#"
+    .. "  %#NormalFloat# " -- "%#Normal#"
     .. buffer_diagnostics()
     .. "%#NormalFloat# " -- "%#Normal#"
     .. "%f  "

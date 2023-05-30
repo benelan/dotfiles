@@ -234,7 +234,7 @@ return {
     opts = {
       icons = require("jamin.resources").icons.kind,
       separator = "  >  ",
-      highlight = true,
+      -- highlight = true,
     },
     config = function(_, opts)
       require("nvim-navic").setup(opts)

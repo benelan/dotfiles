@@ -149,6 +149,7 @@ local icons = require("jamin.resources").icons
 require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "habamax" } },
   change_detection = { notify = false },
+  checker = { enabled = true, notify = false },
   ui = {
     icons = {
       cmd = icons.ui.Command,
