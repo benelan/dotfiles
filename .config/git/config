@@ -173,7 +173,7 @@
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
   ; use fzf to fixup commits to autosquash
-  cf = "!git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup | git rebase -i HEAD~20"
+  cf = "!git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup && git rebase -i HEAD~20"
 
   rbi= !GIT_SEQUENCE_EDITOR=: git rebase --interactive
 
