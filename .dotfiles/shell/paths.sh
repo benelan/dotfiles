@@ -50,25 +50,17 @@ pathappend() {
     unset var value
 }
 
-[ -d "$HOME/.dotfiles/bin" ] && pathappend "$HOME/.dotfiles/bin"
-[ -d "$HOME/.local/bin" ] && pathappend "$HOME/.local/bin"
-[ -d "$HOME/.cargo/bin" ] && pathappend "$HOME/.cargo/bin"
-[ -d "$HOME/go/bin" ] && pathappend "$HOME/go/bin"
-[ -d "$HOME/.bun/bin" ] && pathappend "$HOME/.bun/bin"
-[ -d "$HOME/.volta/bin" ] && pathappend "$HOME/.volta/bin"
-[ -d "$HOME/.luarocks/bin" ] && pathappend "$HOME/.luarocks/bin"
-
-[ -d "$HOME/dev/personal/git-mux" ] &&
-    pathappend "$HOME/dev/personal/git-mux"
-
-[ -d "$HOME/dev/lib/fzf/bin" ] &&
-    pathappend "$HOME/dev/lib/fzf/bin"
-
-[ -d "$HOME/.local/share/nvim/mason/bin" ] &&
-    pathprepend "$HOME/.local/share/nvim/mason/bin"
-
-[ -d "/usr/local/go/bin" ] && pathappend "/usr/local/go/bin"
-
+pathprepend "$HOME/.dotfiles/bin"
+pathprepend "$HOME/.local/share/nvim/mason/bin"
+pathappend "$HOME/dev/personal/git-mux"
+pathappend "$HOME/dev/lib/fzf/bin"
+pathappend "$HOME/.local/bin"
+pathappend "$HOME/.volta/bin"
+pathappend "$HOME/.bun/bin"
+pathappend "$HOME/.cargo/bin"
+pathappend "$HOME/.luarocks/bin"
+pathappend "$HOME/go/bin"
+pathappend "/usr/local/go/bin"
 pathappend "/snap/bin"
 pathappend "/usr/local/games"
 pathappend "/usr/local/sbin"
