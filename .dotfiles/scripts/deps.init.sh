@@ -7,6 +7,7 @@ set -e
 
 FONTS_DIR="$HOME/.local/share/fonts"
 BIN_DIR="$HOME/.local/bin"
+DEPS_DIR="$HOME/.dotfiles/deps"
 mkdir -p "$FONTS_DIR" "$BIN_DIR"
 
 # Install The four common font weights
@@ -15,7 +16,7 @@ install_fonts_minimal() {
     # Iosevka
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BolItalic.ttf" \
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
@@ -32,9 +33,9 @@ install_fonts_full() {
     # NerdFont glyphs are used by a lot of tools, e.g. Starship and NeoVim
     # Find more options here: https://www.nerdfonts.com/font-downloads
     font_families=(
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/JetBrainsMono.zip
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Iosevka.zip
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/SourceCodePro.zip
+        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/JetBrainsMono.zip
+        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Iosevka.zip
+        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/SourceCodePro.zip
     )
     for f in "${font_families[@]}"; do
         curl -sS "$f" >"$FONTS_DIR/font.zip"
@@ -82,60 +83,67 @@ install_volta() {
 # Install Rust CLI tools
 # https://crates.io
 install_cargo_packages() {
-    if ! is-supported cargo || ! is-supported rustup; then
-        install-rust
-    else
-        rustup update
-    fi
+    if [ -f "$DEPS_DIR/cargo" ]; then
+        if ! is-supported cargo || ! is-supported rustup; then
+            install-rust
+        else
+            rustup update
+        fi
 
-    cargo install $(cat "$HOME/.dotfiles/deps/cargo")
-    # link batcat to bat due to package name conflict
-    ! is-supported bat && is-supported batcat &&
-        ln -s "$(command -v batcat)" "$BIN_DIR/bat"
-    # link fdfind to fd
-    ! is-supported fd && is-supported fdfind &&
-        ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
+        cargo install $(cat "$DEPS_DIR/cargo")
+        # link batcat to bat due to package name conflict
+        ! is-supported bat && is-supported batcat &&
+            ln -s "$(command -v batcat)" "$BIN_DIR/bat"
+        # link fdfind to fd
+        ! is-supported fd && is-supported fdfind &&
+            ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
+    fi
 }
 
 # Install global Node packages
 # https://www.npmjs.com
 install_node_packages() {
-    if is-supported volta; then
-        volta install $(cat "$HOME/.dotfiles/deps/node")
-    else
-        if ! is-supported node; then
-            install_volta # only works on x86_64 architectures for now
+    if [ -f "$DEPS_DIR/node" ]; then
+        if is-supported volta; then
+            volta install $(cat "$DEPS_DIR/node")
+        else
+            if ! is-supported node; then
+                install_volta # only works on x86_64 architectures for now
+            fi
+            npm install -g $(cat "$DEPS_DIR/node")
         fi
-        npm install -g $(cat "$HOME/.dotfiles/deps/node")
     fi
 }
 
 # Install Go CLI tools
 # https://pkg.go.dev
 install_go_packages() {
-    if ! is-supported go; then
-        install_go
+    if [ -f "$DEPS_DIR/golang" ]; then
+        if ! is-supported go; then
+            install_go
+        fi
+        while IFS="" read -r pkg || [ -n "$pkg" ]; do
+            go install "$pkg"
+        done <"$DEPS_DIR/golang"
+        unset pkg
     fi
-
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        go install "$pkg"
-    done <"$HOME/.dotfiles/deps/golang"
-    unset pkg
 }
 
 # Install Python CLI tools
 # https://pypi.org/project/pipx
 install_pip_packages() {
-    is-supported pipx && pipx="pipx install"
+    if [ -f "$DEPS_DIR/pip" ]; then
+        is-supported pipx && pipx="pipx install"
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        ${pipx:-pip install --user} "$pkg"
-    done <"$HOME/.dotfiles/deps/pip"
+        while IFS="" read -r pkg || [ -n "$pkg" ]; do
+            ${pipx:-pip install --user} "$pkg"
+        done <"$DEPS_DIR/pip"
 
-    if [ -z "$pipx" ]; then
-        pipx upgrade-all
+        if [ -z "$pipx" ]; then
+            pipx upgrade-all
+        fi
+        unset pkg pipx
     fi
-    unset pkg pipx
 }
 
 # Install Starship prompt
