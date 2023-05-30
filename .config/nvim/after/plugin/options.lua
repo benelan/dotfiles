@@ -19,18 +19,19 @@ vim.opt.virtualedit:append "block"
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 
 if vim.fn.executable "rg" == 1 then
-  vim.opt.grepprg = "rg --vimgrep --hidden --glob '!.git'"
+  vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --glob '!{.git,node_modules}'"
 end
 vim.opt.grepformat:prepend "%f:%l:%c:%m"
 vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
+vim.opt.wildoptions = { "pum", "fuzzy" }
 vim.opt.wildignore:append(
   ".git/*,node_modules/*,dist/*,build/*"
     .. "*.7z,*.avi,*.db,*.docx,*.filepart,*.flac,"
@@ -46,7 +47,6 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 local ui = vim.api.nvim_list_uis()
 vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
 
-vim.opt.showcmd = false
 vim.opt.showtabline = 2
 vim.opt.laststatus = 3
 vim.opt.relativenumber = true
@@ -71,6 +71,7 @@ vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
 
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+vim.o.switchbuf = "useopen,uselast"
 
 vim.opt.swapfile = false
 vim.opt.undofile = true

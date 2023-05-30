@@ -1,7 +1,6 @@
 setlocal nowrap norelativenumber number
 set nobuflisted
 
-let g:qf_disable_statusline = 1
 let b:qf_isLoc = get(get(getwininfo(win_getid()), 0, {}), 'loclist', 0)
 
 if b:qf_isLoc == 1

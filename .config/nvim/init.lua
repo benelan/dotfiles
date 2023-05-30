@@ -6,7 +6,7 @@ vim.g.maplocalleader = " "
 
 -- neovide options
 if vim.g.neovide then
-  vim.g.neovide_transparency = 0.97
+  vim.g.neovide_transparency = 0.3
   vim.g.neovide_scroll_animation_length = 0
   vim.g.neovide_cursor_animation_length = 0
   vim.g.neovide_cursor_trail_size = 0
@@ -23,10 +23,7 @@ vim.g.use_devicons = os.getenv "TERM" == "wezterm"
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", { clear = true }),
   callback = function()
-    vim.highlight.on_yank {
-      higroup = "Visual",
-      timeout = 269,
-    }
+    vim.highlight.on_yank { higroup = "Visual", timeout = 269 }
   end,
 })
 
@@ -50,6 +47,9 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     { clear = true }
   ),
   callback = function(event)
+    if event.match:match "^%w%w+://" then
+      return
+    end
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
     local backup = vim.fn.fnamemodify(file, ":p:~:h")

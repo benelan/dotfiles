@@ -2,6 +2,33 @@
 " | Settings                                                                |
 " ---------------------------------------------------------------------------
 
+let g:markdown_recommended_style = 0
+" Helps with syntax highlighting by specififying filetypes
+" for common abbreviations used in markdown fenced code blocks
+let g:markdown_fenced_languages = [
+    \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
+    \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
+    \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
+    \ 'yml=yaml', 'shell=sh', 'py=python',
+    \ 'ts=typescript', 'tsx=typescriptreact',
+    \ 'js=javascript', 'jsx=javascriptreact'
+    \ ]
+
+let g:qf_disable_statusline = 1
+
+let g:netrw_altfile = 1
+let g:netrw_alto = 1
+let g:netrw_altv = 1
+let g:netrw_banner = 0
+" let g:netrw_keepdir = 0
+" let g:netrw_liststyle = 3
+let g:netrw_localmkdiropt	= " -p"
+let g:netrw_preview = 1
+let g:netrw_sort_by = "extent"
+let g:netrw_usetab = 1
+let g:netrw_winsize = 25
+let g:netrw_dirhistmax=0
+
 let g:rooter_patterns = [
     \  "!.bashrc", "!>home", "!Desktop/",
     \  ".git/", ".git", ".gitignore",
@@ -40,34 +67,6 @@ else
   let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
 endif
 
-function! g:GitRootDirectory()
-  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
-  let root = systemlist("git -C " . shellescape(dir) . " rev-parse --show-toplevel")[0]
-  return v:shell_error ? "" : root
-endfunction
-
-function! g:GitBranch()
-  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
-  let branch = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
-  return v:shell_error ? "" : branch
-endfunction
-
-" The query history for this command will be stored as "ls" inside g:fzf_history_dir.
-" The name is ignored if g:fzf_history_dir is not defined.
-command! -bang -complete=dir -nargs=? LS
-    \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
-
-command! -bang GFiles
-    \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()}, <bang>0))
-
-command! -bar -bang -nargs=? -complete=buffer Buffers
-    \ call fzf#run(fzf#wrap("buffers",
-    \ {"source": map(filter(range(1, bufnr("$")),
-    \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
-    \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
-    \ "sink": "e"}, <bang>0))
-
-
 " ---------------------------------------------------------------------------
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
@@ -83,6 +82,8 @@ vnoremap p "_dP
 nnoremap x "_x
 
 nnoremap <Backspace> <C-^>
+
+vnoremap . :norm.<CR>
 
 vnoremap < <gv
 vnoremap > >gv
@@ -248,6 +249,38 @@ function! Grep(...)
 endfunction
 
 command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function! g:GitRootDirectory()
+  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
+  let root = systemlist("git -C " . shellescape(dir) . " rev-parse --show-toplevel")[0]
+  return v:shell_error ? "" : root
+endfunction
+
+function! g:GitBranch()
+  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
+  let branch = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
+  return v:shell_error ? "" : branch
+endfunction
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" The query history for this command will be stored as "ls" inside g:fzf_history_dir.
+" The name is ignored if g:fzf_history_dir is not defined.
+command! -bang -complete=dir -nargs=? LS
+    \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
+
+command! -bang GFiles
+    \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()}, <bang>0))
+
+command! -bar -bang -nargs=? -complete=buffer Buffers
+    \ call fzf#run(fzf#wrap("buffers",
+    \ {"source": map(filter(range(1, bufnr("$")),
+    \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
+    \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
+    \ "sink": "e"}, <bang>0))
+
 
 " ---------------------------------------------------------------------------
 " | Autocommands                                                            |
