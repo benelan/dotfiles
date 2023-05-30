@@ -227,15 +227,15 @@ return {
           end,
         },
         sources = {
+          { name = "luasnip" },
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
-          { name = "luasnip" },
           { name = "git" },
-          { name = "buffer" },
-          { name = "path" },
           { name = "tmux" },
-          { name = "nvim_lsp_signature_help" },
+          { name = "path" },
           { name = "treesitter", keyword_length = 4 },
+          { name = "buffer" },
+          { name = "nvim_lsp_signature_help" },
           {
             name = "spell",
             option = {
@@ -249,6 +249,7 @@ return {
           comparators = {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
+            cmp.config.compare.sort_text,
             cmp.config.compare.score,
 
             function(entry1, entry2)
@@ -263,9 +264,8 @@ return {
               end
             end,
 
-            cmp.config.compare.kind,
             cmp.config.compare.recently_used,
-            cmp.config.compare.sort_text,
+            cmp.config.compare.kind,
             cmp.config.compare.length,
             cmp.config.compare.order,
           },
@@ -275,7 +275,7 @@ return {
 
       cmp.setup.filetype("gitcommit", {
         sources = cmp.config.sources(
-          { { name = "cmp_git" } },
+          { { name = "git" } },
           { { name = "buffer" } }
         ),
       })
