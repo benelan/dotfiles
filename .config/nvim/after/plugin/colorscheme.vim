@@ -55,17 +55,17 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
                     \'bg_orange': ['#5A3B0A', '130'],
                     \ 'bg_visual_yellow': ['#7a380b', '208']
                     \ })
-        call gruvbox_material#highlight('CmpItemAbbrDeprecated', s:palette.grey1, s:palette.none, "strikethrough")
-        call gruvbox_material#highlight('GitSignsChange', s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight('GitSignsChangeNr', s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight('GitSignsChangeLn', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffDelete', s:palette.bg5, s:palette.bg_diff_red)
-        call gruvbox_material#highlight('DiffChange', s:palette.none, s:palette.bg_orange)
-        call gruvbox_material#highlight('DiffText', s:palette.fg0, s:palette.bg_visual_yellow)
-        call gruvbox_material#highlight('GitStatusLineChange', s:palette.orange, s:palette.bg3)
-        call gruvbox_material#highlight('GitStatusLineAdd', s:palette.green, s:palette.bg3)
-        call gruvbox_material#highlight('GitStatusLineDelete', s:palette.red, s:palette.bg3)
-        call gruvbox_material#highlight("LazyStatusLineUpdates", s:palette.purple, s:palette.bg2, "italic")
+        call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
+        call gruvbox_material#highlight("GitSignsChange", s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight("GitSignsChangeNr", s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight("GitSignsChangeLn", s:palette.none, s:palette.bg_orange)
+        call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
+        call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
+        call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
+        call gruvbox_material#highlight("GitStatusLineChange", s:palette.orange, s:palette.bg3)
+        call gruvbox_material#highlight("GitStatusLineAdd", s:palette.green, s:palette.bg3)
+        call gruvbox_material#highlight("GitStatusLineDelete", s:palette.red, s:palette.bg3)
+        call gruvbox_material#highlight("LazyStatusLineUpdates", s:palette.purple, s:palette.bg2)
         highlight! link CursorLineNr Purple
         highlight! link TreesitterContext Normal
         " highlight EyelinerSecondary guifg=#c92920 "gui=underline
@@ -93,12 +93,14 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
     let g:gruvbox_material_enable_italic = 1
     " let g:gruvbox_material_enable_bold = 1
     " let g:gruvbox_material_disable_italic_comment = 1
-    let g:gruvbox_material_transparent_background = 1
     " let g:gruvbox_material_disable_terminal_colors = 1
     " let g:gruvbox_material_dim_inactive_windows = 1
+
+    if exists("g:neovide")
+        let g:gruvbox_material_transparent_background = 0
+    endif
 
     colorscheme gruvbox-material
 else
     colorscheme habamax
 endif
-
