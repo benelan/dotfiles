@@ -32,9 +32,7 @@ local function format_numeric_data(d)
       template = template .. "%%#%s# %s %d "
     end
   end
-  return #template > 0
-      and string.format(template, (unpack or table.unpack)(output))
-    or ""
+  return #template > 0 and string.format(template, (unpack or table.unpack)(output)) or ""
 end
 
 -- show diagnostic count if a severity has more than 0
@@ -43,11 +41,8 @@ local function buffer_diagnostics()
   for _, diagnostic in ipairs(icons.diagnostics) do
     table.insert(data, {
       icon = diagnostic.text,
-      count = table_length(
-        vim.diagnostic.get(0, { severity = diagnostic.severity })
-      ),
-      highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name)
-        .. "Float",
+      count = table_length(vim.diagnostic.get(0, { severity = diagnostic.severity })),
+      highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name) .. "Float",
     })
   end
   return format_numeric_data(data)
@@ -56,17 +51,13 @@ end
 -- navic bread crumb
 local has_navic, navic = pcall(require, "nvim-navic")
 local function navic_breadcrumbs()
-  return has_navic and navic.is_available() and "  " .. navic.get_location()
-    or ""
+  return has_navic and navic.is_available() and "  " .. navic.get_location() or ""
 end
 
 -- number of updatable plugins
 local has_lazy, lazy = pcall(require, "lazy.status")
 local function lazy_updates()
-  return has_lazy
-      and lazy.has_updates()
-      and "  %#LazyStatusLineUpdates#" .. lazy.updates()
-    or ""
+  return has_lazy and lazy.has_updates() and "  %#LazyStatusLineUpdates#" .. lazy.updates() or ""
 end
 
 -- debug info

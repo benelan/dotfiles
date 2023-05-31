@@ -15,13 +15,7 @@ return {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
     ft = "markdown",
     build = "cd app && npm install",
-    keys = {
-      {
-        "<leader>dp",
-        "<cmd>MarkdownPreviewToggle<cr>",
-        desc = "Markdown preview",
-      },
-    },
+    keys = { { "<leader>dp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown preview" } },
   },
   {
     "jakewvincent/mkdnflow.nvim",
@@ -35,10 +29,7 @@ return {
           return text:gsub(" ", "-"):lower()
         end,
       },
-      perspective = {
-        priority = "current",
-        fallback = "first",
-      },
+      perspective = { priority = "current", fallback = "first" },
       mappings = {
         MkdnToggleToDo = { { "n", "v" }, "<leader><Tab>" },
         MkdnMoveSource = { "n", "<leader>zR" },
@@ -55,31 +46,14 @@ return {
     "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
     ft = "markdown",
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
+    -- stylua: ignore
     keys = {
-      {
-        "<leader>zn",
-        "<cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
-        desc = "New note",
-      },
-      {
-        "<leader>zo",
-        "<cmd>ZkNotes { sort = { 'modified' } }<CR>",
-        desc = "Open notes",
-      },
+      { "<leader>zn", "<cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", desc = "New note" },
+      { "<leader>zo", "<cmd>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes" },
       { "<leader>zt", "<cmd>ZkTags<CR>", desc = "Tags" },
-      {
-        "<leader>zf",
-        "<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>",
-        desc = "Find notes",
-        mode = "n",
-      },
-      {
+      { "<leader>zf", "<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>", desc = "Find notes", mode = "n" },
         -- Search for the notes matching the current visual selection.
-        "<leader>zf",
-        ":'<,'>ZkMatch<CR>",
-        desc = "Find notes",
-        mode = "v",
-      },
+      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
     },
     config = function()
       require("zk").setup { picker = "telescope" }

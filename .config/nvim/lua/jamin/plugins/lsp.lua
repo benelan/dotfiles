@@ -32,7 +32,6 @@ return {
         build = ":MasonUpdate",
         opts = {
           ensure_installed = {
-            -- linters/formatters
             "actionlint",
             "codespell",
             "markdown-toc",
@@ -92,13 +91,7 @@ return {
           completion = {
             completionItem = {
               snippetSupport = true,
-              resolveSupport = {
-                properties = {
-                  "documentation",
-                  "detail",
-                  "additionalTextEdits",
-                },
-              },
+              resolveSupport = { properties = { "documentation", "detail", "additionalTextEdits" } },
             },
           },
         },
@@ -107,15 +100,11 @@ return {
     config = function(_, opts)
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = opts.diagnostics.float.border }
-      )
+      vim.lsp.handlers["textDocument/hover"] =
+        vim.lsp.with(vim.lsp.handlers.hover, { border = opts.diagnostics.float.border })
 
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = opts.diagnostics.float.border }
-      )
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
 
       for _, sign in ipairs(require("jamin.resources").icons.diagnostics) do
         vim.fn.sign_define("DiagnosticSign" .. sign.name, {
@@ -127,16 +116,13 @@ return {
 
       local capabilities = vim.tbl_deep_extend(
         "force",
-        require("cmp_nvim_lsp").default_capabilities(
-          vim.lsp.protocol.make_client_capabilities()
-        ),
+        require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
         opts.capabilities
       )
 
       for _, server in pairs(lsp_servers) do
         if server ~= "zk" then -- https://github.com/mickael-menu/zk-nvim#setup
-          local has_user_opts, user_opts =
-            pcall(require, "jamin.lsp_servers." .. server)
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
 
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -161,21 +147,9 @@ return {
             client.server_capabilities.documentHighlightProvider = false
           end
 
-          vim.api.nvim_buf_set_option(
-            args.buf,
-            "formatexpr",
-            "v:lua.vim.lsp.formatexpr()"
-          )
-          vim.api.nvim_buf_set_option(
-            args.buf,
-            "omnifunc",
-            "v:lua.vim.lsp.omnifunc"
-          )
-          vim.api.nvim_buf_set_option(
-            args.buf,
-            "tagfunc",
-            "v:lua.vim.lsp.tagfunc"
-          )
+          vim.api.nvim_buf_set_option(args.buf, "formatexpr", "v:lua.vim.lsp.formatexpr()")
+          vim.api.nvim_buf_set_option(args.buf, "omnifunc", "v:lua.vim.lsp.omnifunc")
+          vim.api.nvim_buf_set_option(args.buf, "tagfunc", "v:lua.vim.lsp.tagfunc")
 
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
@@ -197,22 +171,14 @@ return {
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostic")
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-          bufmap(
-            { "n", "v" },
-            "gF",
-            "<cmd>lua vim.lsp.buf.format{async=true}<cr>",
-            "Format"
-          )
+          bufmap({ "n", "v" }, "gF", "<cmd>lua vim.lsp.buf.format{async=true}<cr>", "Format")
         end,
       })
     end,
   },
   {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "williamboman/mason.nvim",
-    },
+    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
       local formatting = require("null-ls").builtins.formatting

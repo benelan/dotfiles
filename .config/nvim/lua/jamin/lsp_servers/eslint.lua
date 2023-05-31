@@ -1,6 +1,2 @@
-return {
-  settings = {
-    -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
-    workingDirectory = { mode = "auto" },
-  },
-}
+-- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+return { settings = { workingDirectory = { mode = "auto" } } }

@@ -36,34 +36,25 @@ return {
         },
       }
     end,
+    -- stylua: ignore
     keys = {
-      {
-        "<leader>fy",
-        "<cmd>lua require('telescope').extensions.neoclip.default()<cr>",
-        desc = "Clipboard history",
-      },
-      {
-        "<leader>fm",
-        "<cmd>lua require('telescope').extensions.macroscope.default()<cr>",
-        desc = "Macro history",
-      },
+      { "<leader>fy", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>", desc = "Clipboard history" },
+      { "<leader>fm", "<cmd>lua require('telescope').extensions.macroscope.default()<cr>", desc = "Macro history" },
     },
   },
-
+  -----------------------------------------------------------------------------
   {
     "nvim-telescope/telescope-frecency.nvim",
     dependencies = "kkharji/sqlite.lua",
     config = function()
       require("telescope").load_extension "frecency"
     end,
+    -- stylua: ignore
     keys = {
-      {
-        "<C-p>",
-        "<cmd>lua require('telescope').extensions.frecency.frecency()<cr>",
-        desc = "Frecent files",
-      },
+      { "<C-p>", "<cmd>lua require('telescope').extensions.frecency.frecency()<cr>", desc = "Frecent files" },
     },
   },
+  -----------------------------------------------------------------------------
   {
     "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
     enabled = false,
@@ -83,6 +74,7 @@ return {
       },
     },
   },
+  -----------------------------------------------------------------------------
   {
     "nvim-telescope/telescope.nvim", -- fuzzy finding tool
     cmd = "Telescope",
@@ -107,151 +99,48 @@ return {
       -- function, the search is started in the Nth parent directory
       local function telescope_cwd(picker, args)
         require("telescope.builtin")[picker](
-          vim.tbl_extend(
-            "error",
-            args or {},
-            { cwd = ("../"):rep(vim.v.count) .. "." }
-          )
+          vim.tbl_extend("error", args or {}, { cwd = ("../"):rep(vim.v.count) .. "." })
         )
       end
+      -- stylua: ignore
       return {
         { "<leader>f", "<cmd>Telescope<cr>", desc = "Fuzzy find" },
-        {
-          "<leader>fo",
-          "<cmd>Telescope oldfiles<cr>",
-          desc = "Find recent file",
-        },
+        { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Find recent file" },
         { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffer" },
-        {
-          "<leader>f.",
-          "<cmd>Telescope resume<cr>",
-          desc = "Resume previous fuzzying",
-        },
-        {
-          "<leader>fr",
-          "<cmd>Telescope registers<cr>",
-          desc = "Find registers",
-        },
+        { "<leader>f.", "<cmd>Telescope resume<cr>", desc = "Resume previous fuzzying" },
+        { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Find registers" },
+        { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find file" },
+        { "<leader>ft", function() telescope_cwd "live_grep" end, desc = "Find text" },
         {
           "<leader>fv",
-          function()
-            require("telescope.builtin")["find_files"] {
-              search_dirs = { "~/.vim", "~/.config/nvim" },
-            }
-          end,
+          function() require("telescope.builtin")["find_files"] { search_dirs = { "~/.vim", "~/.config/nvim" } } end,
           desc = "Find (n)vim files",
         },
-
         {
           "<leader>fd",
-          function()
-            require("telescope.builtin")["find_files"] {
-              search_dirs = { "~/.dotfiles" },
-            }
-          end,
+          function() require("telescope.builtin")["find_files"] { search_dirs = { "~/.dotfiles" } } end,
           desc = "Find dotfiles",
-        },
-        {
-          "<leader>ff",
-          function()
-            telescope_cwd("find_files", { hidden = true })
-          end,
-          desc = "Find file",
-        },
-        {
-          "<leader>ft",
-          function()
-            telescope_cwd "live_grep"
-          end,
-          desc = "Find text",
         },
         -- LSP keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-        {
-          "<leader>lr",
-          "<cmd>Telescope lsp_references<cr>",
-          desc = "References",
-        },
-        {
-          "<leader>lq",
-          "<cmd>Telescope quickfix<cr>",
-          desc = "Telescope quickfix",
-        },
-        {
-          "<leader>lQ",
-          "<cmd>Telescope quickfixhistory<cr>",
-          desc = "Telescope quickfix history",
-        },
-        {
-          "<leader>lt",
-          "<cmd>Telescope lsp_type_definitions<cr>",
-          desc = "Type definitions",
-        },
-        {
-          "<leader>ld",
-          "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
-          desc = "Buffer diagnostics",
-        },
-        {
-          "<leader>lD",
-          "<cmd>Telescope diagnostics<cr>",
-          desc = "Workspace diagnostics",
-        },
-        {
-          "<leader>ls",
-          "<cmd>Telescope lsp_document_symbols<cr>",
-          desc = "Document symbols",
-        },
-        {
-          "<leader>lS",
-          "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-          desc = "Workspace symbols",
-        },
-        {
-          "<leader>li",
-          "<cmd>Telescope lsp_implementations<cr>",
-          desc = "Implementations",
-        },
+        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
+        { "<leader>lq", "<cmd>Telescope quickfix<cr>", desc = "Telescope quickfix" },
+        { "<leader>lQ", "<cmd>Telescope quickfixhistory<cr>", desc = "Telescope quickfix history" },
+        { "<leader>lt", "<cmd>Telescope lsp_type_definitions<cr>", desc = "Type definitions" },
+        { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer diagnostics" },
+        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
+        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document symbols" },
+        { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace symbols" },
+        { "<leader>li", "<cmd>Telescope lsp_implementations<cr>", desc = "Implementations" },
 
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-        {
-          "<leader>fg",
-          function()
-            telescope_cwd "git_files"
-          end,
-          desc = "Find git files",
-        },
-        {
-          "<leader>gb",
-          "<cmd>Telescope git_branches<cr>",
-          { "n", "x" },
-          desc = "Checkout branch",
-        },
-        {
-          "<leader>gc",
-          "<cmd>Telescope git_bcommits<cr>",
-          { "n", "x" },
-          desc = "Checkout buffer commit",
-        },
-        {
-          "<leader>gC",
-          "<cmd>Telescope git_commits<cr>",
-          { "n", "x" },
-          desc = "Checkout commit",
-        },
-        {
-          "<leader>gg",
-          "<cmd>Telescope git_status<cr>",
-          { "n", "x" },
-          desc = "View status",
-        },
-        {
-          "<leader>g$",
-          "<cmd>Telescope git_stash<cr>",
-          { "n", "x" },
-          desc = "View stash",
-        },
+        { "<leader>fg", function() telescope_cwd "git_files" end, desc = "Find git files" },
+        { "<leader>gb", "<cmd>Telescope git_branches<cr>", { "n", "x" }, desc = "Checkout branch" },
+        { "<leader>gc", "<cmd>Telescope git_bcommits<cr>", { "n", "x" }, desc = "Checkout buffer commit" },
+        { "<leader>gC", "<cmd>Telescope git_commits<cr>", { "n", "x" }, desc = "Checkout commit" },
+        { "<leader>gg", "<cmd>Telescope git_status<cr>", { "n", "x" }, desc = "View status" },
+        { "<leader>g$", "<cmd>Telescope git_stash<cr>", { "n", "x" }, desc = "View stash" },
       }
     end,
     opts = function()
@@ -291,60 +180,27 @@ return {
           cycle_layout_list = { "horizontal", "vertical", "bottom_pane" },
           set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
+          -- stylua: ignore
           file_ignore_patterns = {
             -- dev directories
-            "%.git/",
-            "node_modules/",
-            "dist/",
-            "build/",
+            "%.git/", "node_modules/", "dist/", "build/",
             -- home directories
-            "%.cache/",
-            "%.var/",
-            "%.mozilla/",
-            "%.pki/",
-            "%.cert/",
-            "%.gnupg/",
-            "%.ssh/",
-            "~/Music",
-            "~/Videos",
-            "~/Steam",
-            "~/Pictures",
+            "%.cache/", "%.var/", "%.mozilla/", "%.pki/", "%.cert/", "%.gnupg/", "%.ssh/",
+            "~/Music", "~/Videos", "~/Steam", "~/Pictures",
             -- media files
-            "%.mp3",
-            "%.mp4",
-            "%.mkv",
-            "%.m4a",
-            "%.m4p",
-            "%.png",
-            "%.jpeg",
-            "%.avi",
-            "%.ico",
+            "%.mp3", "%.mp4", "%.mkv", "%.m4a", "%.m4p", "%.png", "%.jpeg", "%.avi", "%.ico",
             -- packages
-            "%.7z",
-            "%.dmg%",
-            "%.gz",
-            "%.iso",
-            "%.jar",
-            "%.rar",
-            "%.tar",
-            "%.zip",
+            "%.7z", "%.dmg%", "%.gz", "%.iso", "%.jar", "%.rar", "%.tar", "%.zip",
             -- autogenerated files
             -- "%.tmp", "%.orig", "%.lock", "%.bak",
             -- compiled
             -- "%.com", "%.class", "%.dll", "%.exe", "%.o", "%.so", "%.map", "%.min.js",
           },
+          -- stylua: ignore
           vimgrep_arguments = {
-            "rg",
-            "--color=never",
-            "--no-heading",
-            "--with-filename",
-            "--line-number",
-            "--column",
-            "--smart-case",
-            "--trim",
-            "--hidden",
-            "--glob=!.git/",
-            "--glob=!node_modules/",
+            "rg", "--color=never", "--no-heading", "--with-filename",
+            "--line-number", "--column", "--smart-case", "--trim", "--hidden",
+            "--glob=!.git/", "--glob=!node_modules/",
           },
           mappings = { i = default_mappings, n = default_mappings },
         },
@@ -383,13 +239,7 @@ return {
         extensions = {
           frecency = {
             show_scores = true,
-            ignore_patterns = {
-              "*.git/*",
-              "*/tmp/*",
-              "*/node_modules/*",
-              "*/dist/*",
-              "*/build/*",
-            },
+            ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/dist/*", "*/build/*" },
             workspaces = {
               ["dots"] = os.getenv "HOME" .. "/.dotfiles",
               ["conf"] = os.getenv "HOME" .. "/.config",

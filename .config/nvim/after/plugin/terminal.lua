@@ -16,9 +16,7 @@ local function FTerm()
 
   if terminal_window_number > 0 and window_count > 1 then
     vim.fn.execute(terminal_window_number .. "wincmd c")
-  elseif
-    terminal_buffer_number > 0 and terminal_buffer_number ~= vim.fn.bufnr "%"
-  then
+  elseif terminal_buffer_number > 0 and terminal_buffer_number ~= vim.fn.bufnr "%" then
     vim.api.nvim_open_win(terminal_buffer_number, true, winopts)
     vim.fn.execute "startinsert"
   else
@@ -29,11 +27,7 @@ local function FTerm()
   end
 end
 
-vim.api.nvim_create_user_command(
-  "FTerm",
-  FTerm,
-  { desc = "Toggle floating terminal" }
-)
+vim.api.nvim_create_user_command("FTerm", FTerm, { desc = "Toggle floating terminal" })
 
 keymap("n", "<M-t>", vim.cmd.FTerm, "Open floating terminal")
 keymap("t", "<M-t>", "<C-\\><C-n><cmd>FTerm<cr>", "Close floating terminal")

@@ -16,69 +16,27 @@ return {
   {
     "ThePrimeagen/harpoon", -- file marks on steroids
     config = true,
+    -- stylua: ignore
     keys = {
-      {
-        "<M-1>",
-        "<cmd>lua require('harpoon.ui').nav_file(1)<cr>",
-        desc = "Harpoon mark 1",
-      },
-      {
-        "<M-2>",
-        "<cmd>lua require('harpoon.ui').nav_file(2)<cr>",
-        desc = "Harpoon mark 2",
-      },
-      {
-        "<M-3>",
-        "<cmd>lua require('harpoon.ui').nav_file(3)<cr>",
-        desc = "Harpoon mark 3",
-      },
-      {
-        "<M-4>",
-        "<cmd>lua require('harpoon.ui').nav_file(4)<cr>",
-        desc = "Harpoon mark 4",
-      },
-      {
-        "<M-h>",
-        "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>",
-        desc = "Harpoon ui menu",
-      },
-      {
-        "<M-m>",
-        "<cmd>lua require('harpoon.mark').add_file()<cr>",
-        desc = "Harpoon add file",
-      },
+      { "<M-1>", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", desc = "Harpoon mark 1" },
+      { "<M-2>", "<cmd>lua require('harpoon.ui').nav_file(2)<cr>", desc = "Harpoon mark 2" },
+      { "<M-3>", "<cmd>lua require('harpoon.ui').nav_file(3)<cr>", desc = "Harpoon mark 3" },
+      { "<M-4>", "<cmd>lua require('harpoon.ui').nav_file(4)<cr>", desc = "Harpoon mark 4" },
+      { "<M-h>", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", desc = "Harpoon ui menu" },
+      { "<M-m>", "<cmd>lua require('harpoon.mark').add_file()<cr>", desc = "Harpoon add file" },
     },
   },
   -----------------------------------------------------------------------------
   {
     "rmagatti/goto-preview", -- open lsp previews in floating window
     config = true,
+    -- stylua: ignore
     keys = {
-      {
-        "gpI",
-        "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>",
-        desc = "Preview implementation",
-      },
-      {
-        "gpd",
-        "<cmd>lua require('goto-preview').goto_preview_definition()<CR>",
-        desc = "Preview definition",
-      },
-      {
-        "gpt",
-        "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>",
-        desc = "Preview type definition",
-      },
-      {
-        "gpr",
-        "<cmd>lua require('goto-preview').goto_preview_references()<CR>",
-        desc = "Preview references",
-      },
-      {
-        "gpq",
-        "<cmd>lua require('goto-preview').close_all_win()<CR>",
-        desc = "Close previews",
-      },
+      { "gpI", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", desc = "Preview implementation" },
+      { "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", desc = "Preview definition" },
+      { "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", desc = "Preview type definition" },
+      { "gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", desc = "Preview references" },
+      { "gpq", "<cmd>lua require('goto-preview').close_all_win()<CR>", desc = "Close previews" },
     },
   },
   -----------------------------------------------------------------------------

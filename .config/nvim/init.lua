@@ -42,10 +42,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup(
-    "jamin_auto_create_dir",
-    { clear = true }
-  ),
+  group = vim.api.nvim_create_augroup("jamin_auto_create_dir", { clear = true }),
   callback = function(event)
     if event.match:match "^%w%w+://" then
       return
@@ -91,12 +88,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 ----> Global Functions
 -------------------------------------------------------------------------------
 _G.keymap = function(mode, lhs, rhs, desc)
-  vim.keymap.set(
-    mode,
-    lhs,
-    rhs,
-    { silent = true, noremap = true, desc = desc or nil }
-  )
+  vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
 end
 
 -------------------------------------------------------------------------------

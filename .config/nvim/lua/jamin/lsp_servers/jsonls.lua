@@ -149,12 +149,7 @@ return {
           url = "https://json.schemastore.org/dockerd.json",
         },
         {
-          fileMatch = {
-            "docker-compose*yml",
-            "docker-compose*yaml",
-            "compose*yml",
-            "compose*yaml",
-          },
+          fileMatch = { "docker-compose*yml", "docker-compose*yaml", "compose*yml", "compose*yaml" },
           url = "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json",
         },
         {

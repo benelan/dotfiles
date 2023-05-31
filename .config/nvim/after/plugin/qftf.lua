@@ -53,8 +53,7 @@ function _G.qftf(info)
       end
 
       -- type initial used for syntax highlighting
-      local qtype = e.type == "" and ""
-        or " " .. e.type:sub(1, 1):upper() .. ":"
+      local qtype = e.type == "" and "" or " " .. e.type:sub(1, 1):upper() .. ":"
 
       str = validFmt:format(
         fname,

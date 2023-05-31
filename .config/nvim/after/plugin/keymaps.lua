@@ -67,12 +67,7 @@ keymap(
   "<cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>",
   "Put empty line above"
 )
-keymap(
-  "n",
-  "go",
-  "<cmd>call append(line('.'), repeat([''], v:count1))<cr>",
-  "Put empty line below"
-)
+keymap("n", "go", "<cmd>call append(line('.'), repeat([''], v:count1))<cr>", "Put empty line below")
 
 -- Reselect latest changed, put, or yanked text
 vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
@@ -152,26 +147,11 @@ keymap("n", "[d", function()
 end, "Previous diagnostic")
 
 -- diagnostic error
-keymap(
-  "n",
-  "]e",
-  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>",
-  "Next error"
-)
+keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>", "Next error")
 
-keymap(
-  "n",
-  "[e",
-  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>",
-  "Previous error"
-)
+keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>", "Previous error")
 -- diagnostic warning
-keymap(
-  "n",
-  "]w",
-  "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warn' })<cr>",
-  "Next warning"
-)
+keymap("n", "]w", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warn' })<cr>", "Next warning")
 
 keymap(
   "n",
@@ -186,47 +166,17 @@ keymap(
 
 keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update merge diff")
 
-keymap(
-  { "n", "v" },
-  "<leader>gmr",
-  "<cmd>diffget RE<cr>",
-  "Choose hunk from remote"
-)
+keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose hunk from remote")
 
-keymap(
-  { "n", "v" },
-  "<leader>gmR",
-  "<cmd>%diffget RE<cr>",
-  "Choose all from remote"
-)
+keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose all from remote")
 
-keymap(
-  { "n", "v" },
-  "<leader>gmb",
-  "<cmd>diffget BA<cr>",
-  "Choose hunk from base"
-)
+keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose hunk from base")
 
-keymap(
-  { "n", "v" },
-  "<leader>gmB",
-  "<cmd>%diffget BA<cr>",
-  "Choose all from base"
-)
+keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose all from base")
 
-keymap(
-  { "n", "v" },
-  "<leader>gml",
-  "<cmd>diffget LO<cr>",
-  "Choose hunk from local"
-)
+keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose hunk from local")
 
-keymap(
-  { "n", "v" },
-  "<leader>gmL",
-  "<cmd>%diffget LO<cr>",
-  "Choose all from local"
-)
+keymap({ "n", "v" }, "<leader>gmL", "<cmd>%diffget LO<cr>", "Choose all from local")
 
 -------------------------------------------------------------------------------
 ----> Windows
@@ -259,28 +209,13 @@ vim.cmd [[
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
-keymap(
-  { "n", "x" },
-  "<M-f>",
-  "<cmd>GotoFirstFloat<cr>",
-  "Focus first floating window"
-)
+keymap({ "n", "x" }, "<M-f>", "<cmd>GotoFirstFloat<cr>", "Focus first floating window")
 
 -- resize
 keymap("n", "<C-Up>", "<cmd>resize +5<cr>", "Decrease horizontal window size")
 keymap("n", "<C-Down>", "<cmd>resize -5<cr>", "Increase horizontal window size")
-keymap(
-  "n",
-  "<C-Left>",
-  "<cmd>vertical resize -5<cr>",
-  "Decrease vertical window size"
-)
-keymap(
-  "n",
-  "<C-Right>",
-  "<cmd>vertical resize +5<cr>",
-  "Increase vertical window size"
-)
+keymap("n", "<C-Left>", "<cmd>vertical resize -5<cr>", "Decrease vertical window size")
+keymap("n", "<C-Right>", "<cmd>vertical resize +5<cr>", "Increase vertical window size")
 
 --  move
 keymap("n", "<M-Left>", "<C-w>H", "Move window left")
@@ -316,11 +251,9 @@ local toggle_option = function(option, x, y)
   local on = x or true
   local off = y or false
 
-  local has_win_opt, win_opt_value =
-    pcall(vim.api.nvim_win_get_option, 0, option)
+  local has_win_opt, win_opt_value = pcall(vim.api.nvim_win_get_option, 0, option)
 
-  local has_buf_opt, buf_opt_value =
-    pcall(vim.api.nvim_buf_get_option, 0, option)
+  local has_buf_opt, buf_opt_value = pcall(vim.api.nvim_buf_get_option, 0, option)
 
   if has_win_opt then
     local toggled = win_opt_value == off and on or off

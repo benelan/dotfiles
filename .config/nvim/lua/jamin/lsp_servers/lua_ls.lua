@@ -12,10 +12,7 @@ return {
       },
       telemetry = { enable = false },
       format = { enable = false },
-      completion = {
-        callSnippet = "Replace",
-        displayContext = 4,
-      },
+      completion = { callSnippet = "Replace", displayContext = 4 },
     },
   },
 }

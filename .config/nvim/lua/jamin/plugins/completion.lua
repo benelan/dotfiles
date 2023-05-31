@@ -8,47 +8,13 @@ return {
       vim.g.codeium_disable_bindings = true
       vim.g.codeium_filetypes = { bash = false }
     end,
+    -- stylua: ignore
     keys = {
-      {
-        "<M-y>",
-        function()
-          return vim.fn["codeium#Accept"]()
-        end,
-        "i",
-        desc = "Codeium accept",
-      },
-      {
-        "<M-;>",
-        function()
-          return vim.fn["codeium#Complete"]()
-        end,
-        "i",
-        desc = "Codeium complete",
-      },
-      {
-        "<M-n>",
-        function()
-          return vim.fn["codeium#CycleCompletions"](1)
-        end,
-        "i",
-        desc = "Codeium next",
-      },
-      {
-        "<M-p>",
-        function()
-          return vim.fn["codeium#CycleCompletions"](-1)
-        end,
-        "i",
-        desc = "Codeium previous",
-      },
-      {
-        "<M-e>",
-        function()
-          return vim.fn["codeium#Clear"]()
-        end,
-        "i",
-        desc = "Codeium clear",
-      },
+      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, "i", desc = "Codeium accept" },
+      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, "i", desc = "Codeium complete" },
+      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, "i", desc = "Codeium next" },
+      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, "i", desc = "Codeium previous" },
+      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, "i", desc = "Codeium clear" },
     },
   },
   {
@@ -91,10 +57,7 @@ return {
         unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         return col ~= 0
-          and vim.api
-              .nvim_buf_get_lines(0, line - 1, line, true)[1]
-              :sub(col, col)
-              :match "%s"
+          and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s"
             == nil
       end
 
@@ -105,9 +68,9 @@ return {
           end,
         },
         mapping = {
-          ["<CR>"] = cmp.mapping.confirm { select = false },
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
+          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
+          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
           ["<C-e>"] = cmp.mapping {
             i = cmp.mapping.abort(),
             c = cmp.mapping.close(),
@@ -206,19 +169,14 @@ return {
               tmux = "[TMUX] ",
               treesitter = "[TREE] ",
             })[entry.source.name]
-            if
-              vim.tbl_contains({ "path" }, entry.source.name)
-              and icons_status_okay
-            then
-              local icon, hl_group =
-                devicons.get_icon(entry:get_completion_item().label)
+            if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
+              local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
               if icon then
                 vim_item.kind = string.format(" %s  %s  ", icon, vim_item.kind)
                 vim_item.kind_hl_group = hl_group
               end
             elseif kinds[vim_item.kind] then
-              vim_item.kind =
-                string.format(" %s  %s ", kinds[vim_item.kind], vim_item.kind)
+              vim_item.kind = string.format(" %s  %s ", kinds[vim_item.kind], vim_item.kind)
             else
               vim_item.kind = string.format("    %s  ", vim_item.kind)
             end
@@ -239,7 +197,7 @@ return {
             name = "spell",
             option = {
               enable_in_context = function()
-                return vim.bo.spell == true
+                return vim.o.spell == true
               end,
             },
           },
@@ -273,10 +231,7 @@ return {
       }
 
       cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources(
-          { { name = "git" } },
-          { { name = "buffer" } }
-        ),
+        sources = cmp.config.sources({ { name = "git" } }, { { name = "buffer" } }),
       })
 
       cmp.setup.cmdline({ "/", "?" }, {

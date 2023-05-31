@@ -1,8 +1,7 @@
-local web_langs =
-  { "javascript", "javascriptreact", "typescript", "typescriptreact" }
+local web_langs = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 return {
   "mfussenegger/nvim-dap", -- debug adapter protocol
-  -- enabled = false,
+  enabled = false,
   cmd = {
     "DapContinue",
     "DapLoadLaunchFromJSON",
@@ -10,130 +9,25 @@ return {
     "DapToggleRepl",
     "DapShowLog",
   },
+  -- stylua: ignore
   keys = {
-    {
-      "<leader>D<Tab>",
-      function()
-        require("dap").toggle_breakpoint()
-      end,
-      desc = "Toggle breakpoint",
-    },
-    {
-      "<leader>D<CR>",
-      function()
-        require("dap").continue()
-      end,
-      desc = "Continue",
-    },
-    {
-      "<leader>D<Space>",
-      function()
-        require("dap").pause()
-      end,
-      desc = "Pause",
-    },
-    {
-      "<leader>D<Del>",
-      function()
-        require("dap").disconnect()
-      end,
-      desc = "Disconnect",
-    },
-    {
-      "<leader>D<BS>",
-      function()
-        require("dap").close()
-      end,
-      desc = "Quit",
-    },
-    {
-      "<leader>Dh",
-      function()
-        require("dap").step_back()
-      end,
-      desc = "Step back",
-    },
-    {
-      "<leader>Dj",
-      function()
-        require("dap").step_into()
-      end,
-      desc = "Step into",
-    },
-    {
-      "<leader>Dk",
-      function()
-        require("dap").step_out()
-      end,
-      desc = "Step out",
-    },
-    {
-      "<leader>Dl",
-      function()
-        require("dap").step_over()
-      end,
-      desc = "Step over",
-    },
-    {
-      "<leader>Dc",
-      function()
-        require("dap").run_to_cursor()
-      end,
-      desc = "Run to cursor",
-    },
-    {
-      "<leader>Ds",
-      function()
-        require("dap").session()
-      end,
-      desc = "Get session",
-    },
-    {
-      "<leader>Dr",
-      function()
-        require("dap").repl.toggle()
-      end,
-      desc = "Toggle repl",
-    },
-    {
-      "<leader>Dv",
-      function()
-        require("dap.ext.vscode").load_launchjs()
-      end,
-      desc = "Load vscode launch file",
-    },
-    {
-      "<leader>D.",
-      function()
-        require("dap").run_last()
-      end,
-      desc = "Toggle repl",
-    },
-    {
-      "<leader>D?",
-      function()
-        require("dap.ui.widgets").hover()
-      end,
-      desc = "Hover",
-    },
-    {
-      "<leader>DL",
-      function()
-        require("dap").set_breakpoint(
-          nil,
-          nil,
-          vim.fn.input "Log point message: "
-        )
-      end,
-      desc = "Log breakpoint",
-    },
-    {
-      "<leader>DB",
-      function()
-        require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
-      end,
-      desc = "Conditional breakpoint",
-    },
+    { "<leader>D<Tab>", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
+    { "<leader>D<CR>", function() require("dap").continue() end, desc = "Continue" },
+    { "<leader>D<Space>", function() require("dap").pause() end, desc = "Pause" },
+    { "<leader>D<Del>", function() require("dap").disconnect() end, desc = "Disconnect" },
+    { "<leader>D<BS>", function() require("dap").close() end, desc = "Quit" },
+    { "<leader>Dh", function() require("dap").step_back() end, desc = "Step back" },
+    { "<leader>Dj", function() require("dap").step_into() end, desc = "Step into" },
+    { "<leader>Dk", function() require("dap").step_out() end, desc = "Step out" },
+    { "<leader>Dl", function() require("dap").step_over() end, desc = "Step over" },
+    { "<leader>Dc", function() require("dap").run_to_cursor() end, desc = "Run to cursor" },
+    { "<leader>Ds", function() require("dap").session() end, desc = "Get session" },
+    { "<leader>Dr", function() require("dap").repl.toggle() end, desc = "Toggle repl" },
+    { "<leader>Dv", function() require("dap.ext.vscode").load_launchjs() end, desc = "Load vscode launch file" },
+    { "<leader>D.", function() require("dap").run_last() end, desc = "Toggle repl" },
+    { "<leader>D?", function() require("dap.ui.widgets").hover() end, desc = "Hover" },
+    { "<leader>DL", function() require("dap").set_breakpoint(nil, nil, vim.fn.input "Log point message: ") end, desc = "Log breakpoint" },
+    { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ") end, desc = "Conditional breakpoint" },
   },
   dependencies = {
     {
@@ -151,13 +45,7 @@ return {
     },
     {
       "rcarriga/nvim-dap-ui",
-      keys = {
-        {
-          "<leader>Du",
-          "<cmd>lua require'dapui'.toggle()<cr>",
-          desc = "Toggle UI",
-        },
-      },
+      keys = { { "<leader>Du", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" } },
       opts = {
         layouts = {
           {
@@ -282,14 +170,10 @@ return {
     -- BASH
     -----------------------------------------------------------------------------
 
-    local bashdb_dir = vim.fn.stdpath "data"
-      .. "/mason/packages/bash-debug-adapter"
+    local bashdb_dir = vim.fn.stdpath "data" .. "/mason/packages/bash-debug-adapter"
 
-    dap.adapters.bashdb = {
-      type = "executable",
-      command = bashdb_dir .. "/bash-debug-adapter",
-      name = "bashdb",
-    }
+    dap.adapters.bashdb =
+      { type = "executable", command = bashdb_dir .. "/bash-debug-adapter", name = "bashdb" }
 
     for _, language in ipairs { "sh", "bash" } do
       dap.configurations[language] = {

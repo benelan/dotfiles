@@ -11,16 +11,8 @@ return {
     -- enabled = false,
     cmd = "CellularAutomaton",
     keys = {
-      {
-        "<leader>s!",
-        "<cmd>CellularAutomaton make_it_rain<cr>",
-        desc = "Make it rain",
-      },
-      {
-        "<leader>s~",
-        "<cmd>CellularAutomaton game_of_life<cr>",
-        desc = "Game of life",
-      },
+      { "<leader>s!", "<cmd>CellularAutomaton make_it_rain<cr>", desc = "Make it rain" },
+      { "<leader>s~", "<cmd>CellularAutomaton game_of_life<cr>", desc = "Game of life" },
     },
   },
   -----------------------------------------------------------------------------
@@ -29,11 +21,7 @@ return {
     -- enabled = false,
     cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
     keys = {
-      {
-        "<leader>Ch",
-        "<cmd>CccHighlighterToggle<cr>",
-        desc = "Toggle color highlighter",
-      },
+      { "<leader>Ch", "<cmd>CccHighlighterToggle<cr>", desc = "Toggle color highlighter" },
       { "<leader>Cp", "<cmd>CccPick<cr>", desc = "Pick color" },
       { "<leader>Cc", "<cmd>CccConvert<cr>", desc = "Convert color" },
     },
@@ -84,127 +72,41 @@ return {
       { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutline" },
     },
     opts = {
-      keymaps = {
-        hover_symbol = "K",
-        toggle_preview = "p",
-      },
+      keymaps = { hover_symbol = "K", toggle_preview = "p" },
       fold_markers = {
         require("jamin.resources").icons.ui.Collapsed,
         require("jamin.resources").icons.ui.Expanded,
       },
+      --stylua: ignore
       symbols = {
-        File = {
-          icon = require("jamin.resources").icons.kind.File,
-          hl = "@text.uri",
-        },
-        Module = {
-          icon = require("jamin.resources").icons.kind.Module,
-          hl = "@namespace",
-        },
-        Namespace = {
-          icon = require("jamin.resources").icons.kind.Namespace,
-          hl = "@namespace",
-        },
-        Package = {
-          icon = require("jamin.resources").icons.kind.Package,
-          hl = "@namespace",
-        },
-        Class = {
-          icon = require("jamin.resources").icons.kind.Class,
-          hl = "@type",
-        },
-        Method = {
-          icon = require("jamin.resources").icons.kind.Method,
-          hl = "@method",
-        },
-        Property = {
-          icon = require("jamin.resources").icons.kind.Property,
-          hl = "@method",
-        },
-        Field = {
-          icon = require("jamin.resources").icons.kind.Field,
-          hl = "@field",
-        },
-        Constructor = {
-          icon = require("jamin.resources").icons.kind.Constructor,
-          hl = "@constructor",
-        },
-        Enum = {
-          icon = require("jamin.resources").icons.kind.Enum,
-          hl = "@type",
-        },
-        Interface = {
-          icon = require("jamin.resources").icons.kind.Interface,
-          hl = "@type",
-        },
-        Function = {
-          icon = require("jamin.resources").icons.kind.Function,
-          hl = "@function",
-        },
-        Variable = {
-          icon = require("jamin.resources").icons.kind.Variable,
-          hl = "@constant",
-        },
-        Constant = {
-          icon = require("jamin.resources").icons.kind.Constant,
-          hl = "@constant",
-        },
-        String = {
-          icon = require("jamin.resources").icons.kind.String,
-          hl = "@string",
-        },
-        Number = {
-          icon = require("jamin.resources").icons.kind.Number,
-          hl = "@number",
-        },
-        Boolean = {
-          icon = require("jamin.resources").icons.kind.Boolean,
-          hl = "@boolean",
-        },
-        Array = {
-          icon = require("jamin.resources").icons.kind.Array,
-          hl = "@constant",
-        },
-        Object = {
-          icon = require("jamin.resources").icons.kind.Object,
-          hl = "@type",
-        },
-        Key = {
-          icon = require("jamin.resources").icons.kind.Key,
-          hl = "@type",
-        },
-        Null = {
-          icon = require("jamin.resources").icons.kind.Null,
-          hl = "@type",
-        },
-        EnumMember = {
-          icon = require("jamin.resources").icons.kind.EnumMember,
-          hl = "@field",
-        },
-        Struct = {
-          icon = require("jamin.resources").icons.kind.Struct,
-          hl = "@type",
-        },
-        Event = {
-          icon = require("jamin.resources").icons.kind.Event,
-          hl = "@type",
-        },
-        Operator = {
-          icon = require("jamin.resources").icons.kind.Operator,
-          hl = "@operator",
-        },
-        TypeParameter = {
-          icon = require("jamin.resources").icons.kind.TypeParameter,
-          hl = "@parameter",
-        },
-        Component = {
-          icon = require("jamin.resources").icons.kind.Component,
-          hl = "@function",
-        },
-        Fragment = {
-          icon = require("jamin.resources").icons.kind.Fragment,
-          hl = "@constant",
-        },
+        File = { icon = require("jamin.resources").icons.kind.File, hl = "@text.uri" },
+        Module = { icon = require("jamin.resources").icons.kind.Module, hl = "@namespace" },
+        Namespace = { icon = require("jamin.resources").icons.kind.Namespace, hl = "@namespace" },
+        Package = { icon = require("jamin.resources").icons.kind.Package, hl = "@namespace" },
+        Class = { icon = require("jamin.resources").icons.kind.Class, hl = "@type" },
+        Method = { icon = require("jamin.resources").icons.kind.Method, hl = "@method" },
+        Property = { icon = require("jamin.resources").icons.kind.Property, hl = "@method" },
+        Field = { icon = require("jamin.resources").icons.kind.Field, hl = "@field" },
+        Constructor = { icon = require("jamin.resources").icons.kind.Constructor, hl = "@constructor" },
+        Enum = { icon = require("jamin.resources").icons.kind.Enum, hl = "@type" },
+        Interface = { icon = require("jamin.resources").icons.kind.Interface, hl = "@type" },
+        Function = { icon = require("jamin.resources").icons.kind.Function, hl = "@function" },
+        Variable = { icon = require("jamin.resources").icons.kind.Variable, hl = "@constant" },
+        Constant = { icon = require("jamin.resources").icons.kind.Constant, hl = "@constant" },
+        String = { icon = require("jamin.resources").icons.kind.String, hl = "@string" },
+        Number = { icon = require("jamin.resources").icons.kind.Number, hl = "@number" },
+        Boolean = { icon = require("jamin.resources").icons.kind.Boolean, hl = "@boolean" },
+        Array = { icon = require("jamin.resources").icons.kind.Array, hl = "@constant" },
+        Object = { icon = require("jamin.resources").icons.kind.Object, hl = "@type" },
+        Key = { icon = require("jamin.resources").icons.kind.Key, hl = "@type" },
+        Null = { icon = require("jamin.resources").icons.kind.Null, hl = "@type" },
+        EnumMember = { icon = require("jamin.resources").icons.kind.EnumMember, hl = "@field" },
+        Struct = { icon = require("jamin.resources").icons.kind.Struct, hl = "@type" },
+        Event = { icon = require("jamin.resources").icons.kind.Event, hl = "@type" },
+        Operator = { icon = require("jamin.resources").icons.kind.Operator, hl = "@operator" },
+        TypeParameter = { icon = require("jamin.resources").icons.kind.TypeParameter, hl = "@parameter" },
+        Component = { icon = require("jamin.resources").icons.kind.Component, hl = "@function" },
+        Fragment = { icon = require("jamin.resources").icons.kind.Fragment, hl = "@constant" },
       },
     },
   },
@@ -306,9 +208,7 @@ return {
     "folke/zen-mode.nvim",
     enabled = false,
     cmd = "ZenMode",
-    keys = {
-      { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" },
-    },
+    keys = { { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" } },
     opts = {
       window = {
         options = {
@@ -386,16 +286,8 @@ return {
           },
           o = {
             name = "octo (github)",
-            i = {
-              name = "issues",
-              D = { name = "remove" },
-              a = { name = "add" },
-            },
-            m = {
-              name = "my stuff",
-              i = { name = "issues" },
-              p = { name = "pull requests" },
-            },
+            i = { name = "issues", D = { name = "remove" }, a = { name = "add" } },
+            m = { name = "my stuff", i = { name = "issues" }, p = { name = "pull requests" } },
             p = {
               name = "pull requests",
               D = { name = "remove" },
@@ -426,10 +318,7 @@ return {
       }, { mode = "v" })
 
       -- Operator mode
-      require("which-key").register({
-        V = "Last selection",
-        B = "Whole buffer",
-      }, { mode = "o" })
+      require("which-key").register({ V = "Last selection", B = "Whole buffer" }, { mode = "o" })
     end,
   },
 }
