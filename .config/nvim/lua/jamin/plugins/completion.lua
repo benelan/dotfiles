@@ -56,7 +56,6 @@ return {
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       { "f3fora/cmp-spell", enabled = false }, -- vim's spellsuggest
-      { "folke/neodev.nvim", enabled = false }, -- nvim lua API
       { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= "" }, -- visible text in other tmux panes
       { "David-Kunz/cmp-npm", cond = vim.fn.executable "npm" == 1 }, -- package.json buffers
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd

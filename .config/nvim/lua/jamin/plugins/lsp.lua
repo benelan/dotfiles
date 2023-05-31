@@ -69,6 +69,7 @@ return {
         build = ":MasonUpdate",
         opts = { ensure_installed = lsp_servers, automatic_installation = true },
       },
+      { "folke/neodev.nvim", config = true },
     },
     opts = {
       diagnostics = {
@@ -88,7 +89,18 @@ return {
       },
       capabilities = {
         textDocument = {
-          completion = { completionItem = { snippetSupport = true } },
+          completion = {
+            completionItem = {
+              snippetSupport = true,
+              resolveSupport = {
+                properties = {
+                  "documentation",
+                  "detail",
+                  "additionalTextEdits",
+                },
+              },
+            },
+          },
         },
       },
     },
