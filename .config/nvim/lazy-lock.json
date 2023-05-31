@@ -6,6 +6,7 @@
   "cheat.sh-vim": { "branch": "master", "commit": "e0fe468d872025477462ac5d96432f5c1aee3a0d" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-cmdline": { "branch": "main", "commit": "5af1bb7d722ef8a96658f01d6eb219c4cf746b32" },
+  "cmp-dictionary": { "branch": "main", "commit": "97961c56bada8077d1155e1a73e37e94610e1b3f" },
   "cmp-git": { "branch": "main", "commit": "f900a4cf117300fdc3ba31d26f8b6223ccd9c574" },
   "cmp-npm": { "branch": "main", "commit": "e5753b6103ce4cf887233142fa9f31b2d13b42f2" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "0e6b2ed705ddcff9738ec4ea838141654f12eeef" },

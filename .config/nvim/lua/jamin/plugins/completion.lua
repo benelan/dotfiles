@@ -1,3 +1,4 @@
+local writing_filetypes = { "markdown", "text", "gitcommit", "octo" }
 return {
   {
     "Exafunction/codeium.vim", -- AI completion
@@ -18,27 +19,50 @@ return {
     },
   },
   {
+    "David-Kunz/cmp-npm", -- package.json buffers
+    event = "BufEnter package.json",
+    cond = vim.fn.executable "npm" == 1,
+  },
+  {
+    "petertriho/cmp-git", -- issue/pr/mentions/commit in git_commit/octo buffers
+    ft = writing_filetypes,
+    filetypes = writing_filetypes,
+  },
+  {
+    "uga-rosa/cmp-dictionary",
+    cond = vim.fn.filereadable(vim.fn.stdpath "config" .. "/spell/en.dict") == 1,
+    ft = writing_filetypes,
+    config = function()
+      require("cmp_dictionary").switcher {
+        spelllang = { en = vim.fn.stdpath "config" .. "/spell/en.dict" },
+      }
+    end,
+  },
+  { "f3fora/cmp-spell", ft = writing_filetypes, enabled = false }, -- vim's spellsuggest
+  { "hrsh7th/cmp-nvim-lua", ft = "lua" }, -- lua language and nvim API
+  {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
-      { "f3fora/cmp-spell", enabled = false }, -- vim's spellsuggest
-      { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= "" }, -- visible text in other tmux panes
-      { "David-Kunz/cmp-npm", cond = vim.fn.executable "npm" == 1 }, -- package.json buffers
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
       { "hrsh7th/cmp-buffer" }, -- buffers
       { "hrsh7th/cmp-cmdline" }, -- commandline
       { "hrsh7th/cmp-nvim-lsp" }, -- lsp
       { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- lsp document symbol
       { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- function signature
-      { "hrsh7th/cmp-nvim-lua" }, -- lua language and nvim API
       { "hrsh7th/cmp-path" }, -- relative paths
-      { "petertriho/cmp-git" }, -- issue/pr/mentions/commit in git_commit/octo buffers
+      { "hrsh7th/cmp-cmdline" }, -- commandline
       { "ray-x/cmp-treesitter" }, -- treesitter nodes
-      { "saadparwaiz1/cmp_luasnip" }, -- snippets
+      { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= nil }, -- visible text in other tmux panes
+      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
       {
         "L3MON4D3/LuaSnip", -- snippet engine
+        build = "make install_jsregexp",
         version = "v1.*",
-        dependencies = { "rafamadriz/friendly-snippets" },
+        dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
+        config = function()
+          require("luasnip/loaders/from_vscode").lazy_load()
+          require("luasnip/loaders/from_vscode").lazy_load { paths = { "~/.config/Code/User" } }
+        end,
       },
     },
     config = function()
@@ -46,12 +70,6 @@ return {
       local ls = require "luasnip"
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
       local kinds = require("jamin.resources").icons.kind
-      local vscode_snips = require "luasnip/loaders/from_vscode"
-
-      vscode_snips.lazy_load() -- load plugin snippets
-      vscode_snips.lazy_load { -- load personal snippets
-        paths = { "~/.config/Code/User" },
-      }
 
       local has_words_before = function()
         unpack = unpack or table.unpack
@@ -71,23 +89,12 @@ return {
           ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
           ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
           ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
-          ["<C-e>"] = cmp.mapping {
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
-          },
+          ["<C-e>"] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
           ["<C-y>"] = cmp.mapping(
-            cmp.mapping.confirm {
-              behavior = cmp.ConfirmBehavior.Insert,
-              select = true,
-            },
+            cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true },
             { "i", "c" }
           ),
-          ["<C-z>"] = cmp.mapping(
-            cmp.mapping.confirm {
-              select = true,
-            },
-            { "i", "c" }
-          ),
+          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm { select = true }, { "i", "c" }),
           ["<C-j>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
@@ -160,14 +167,15 @@ return {
               git = " [GIT] ",
               luasnip = "[SNIP] ",
               nvim_lsp = " [LSP] ",
-              nvim_lsp_document_symbol = " [SYM] ",
-              nvim_lsp_signature_help = " [LSP] ",
+              nvim_lsp_document_symbol = "[SYMB] ",
+              nvim_lsp_signature_help = " [SIG] ",
               nvim_lua = " [API] ",
               path = "[PATH] ",
               rg = "  [RG] ",
               spell = " [SPL] ",
               tmux = "[TMUX] ",
               treesitter = "[TREE] ",
+              dictionary = "[DICT] ",
             })[entry.source.name]
             if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
@@ -184,6 +192,7 @@ return {
           end,
         },
         sources = {
+          { name = "nvim_lsp_signature_help" },
           { name = "luasnip" },
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
@@ -192,7 +201,6 @@ return {
           { name = "path" },
           { name = "treesitter", keyword_length = 4 },
           { name = "buffer" },
-          { name = "nvim_lsp_signature_help" },
           {
             name = "spell",
             option = {
@@ -201,13 +209,25 @@ return {
               end,
             },
           },
+          {
+            name = "dictionary",
+            keyword_length = 3,
+            entry_filter = function(_, ctx)
+              for _, ft in ipairs(writing_filetypes) do
+                if ft == ctx.filetype then
+                  return true
+                end
+              end
+              return false
+            end,
+          },
         },
         sorting = {
           comparators = {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
-            cmp.config.compare.sort_text,
             cmp.config.compare.score,
+            cmp.config.compare.sort_text,
 
             function(entry1, entry2)
               local _, entry1_under = entry1.completion_item.label:find "^_+"
@@ -227,12 +247,8 @@ return {
             cmp.config.compare.order,
           },
         },
-        experimental = { ghost_text = true },
+        experimental = { ghost_text = { hl_group = "Comment" } },
       }
-
-      cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources({ { name = "git" } }, { { name = "buffer" } }),
-      })
 
       cmp.setup.cmdline({ "/", "?" }, {
         sources = {
@@ -243,10 +259,11 @@ return {
       })
 
       cmp.setup.cmdline(":", {
-        sources = cmp.config.sources({ { name = "cmdline" } }, {
-          { name = "path" },
-          { name = "rg", keyword_length = 4 },
-        }),
+        sources = cmp.config.sources(
+          { { name = "cmdline" } },
+          { { name = "path" }, { name = "rg", keyword_length = 4 } },
+          { { name = "dictionary", keyword_length = 4 } }
+        ),
       })
 
       keymap({ "i", "s" }, "<C-l>", function()
