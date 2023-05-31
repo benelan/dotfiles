@@ -11,73 +11,128 @@ return {
   keys = {
     {
       "<leader>D<Tab>",
-      "<cmd>lua require'dap'.toggle_breakpoint()<cr>",
+      function()
+        require("dap").toggle_breakpoint()
+      end,
       desc = "Toggle breakpoint",
     },
     {
       "<leader>D<CR>",
-      "<cmd>lua require'dap'.continue()<cr>",
+      function()
+        require("dap").continue()
+      end,
       desc = "Continue",
     },
     {
       "<leader>D<Space>",
-      "<cmd>lua require'dap'.pause()<cr>",
+      function()
+        require("dap").pause()
+      end,
       desc = "Pause",
     },
     {
       "<leader>D<Del>",
-      "<cmd>lua require'dap'.disconnect()<cr>",
+      function()
+        require("dap").disconnect()
+      end,
       desc = "Disconnect",
     },
     {
       "<leader>D<BS>",
-      "<cmd>lua require'dap'.close()<cr>",
+      function()
+        require("dap").close()
+      end,
       desc = "Quit",
     },
     {
       "<leader>Dh",
-      "<cmd>lua require'dap'.step_back()<cr>",
+      function()
+        require("dap").step_back()
+      end,
       desc = "Step back",
     },
     {
       "<leader>Dj",
-      "<cmd>lua require'dap'.step_into()<cr>",
+      function()
+        require("dap").step_into()
+      end,
       desc = "Step into",
     },
     {
       "<leader>Dk",
-      "<cmd>lua require'dap'.step_out()<cr>",
+      function()
+        require("dap").step_out()
+      end,
       desc = "Step out",
     },
     {
       "<leader>Dl",
-      "<cmd>lua require'dap'.step_over()<cr>",
+      function()
+        require("dap").step_over()
+      end,
       desc = "Step over",
     },
     {
       "<leader>Dc",
-      "<cmd>lua require'dap'.run_to_cursor()<cr>",
+      function()
+        require("dap").run_to_cursor()
+      end,
       desc = "Run to cursor",
     },
     {
       "<leader>Ds",
-      "<cmd>lua require'dap'.session()<cr>",
+      function()
+        require("dap").session()
+      end,
       desc = "Get session",
     },
     {
       "<leader>Dr",
-      "<cmd>lua require'dap'.repl.toggle()<cr>",
+      function()
+        require("dap").repl.toggle()
+      end,
       desc = "Toggle repl",
+    },
+    {
+      "<leader>D.",
+      function()
+        require("dap").run_last()
+      end,
+      desc = "Toggle repl",
+    },
+    {
+      "<leader>D?",
+      function()
+        require("dap.ui.widgets").hover()
+      end,
+      desc = "Hover",
+    },
+    {
+      "<leader>DL",
+      function()
+        require("dap").set_breakpoint(
+          nil,
+          nil,
+          vim.fn.input "Log point message: "
+        )
+      end,
+      desc = "Log breakpoint",
+    },
+    {
+      "<leader>DB",
+      function()
+        require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
+      end,
+      desc = "Conditional breakpoint",
     },
   },
   dependencies = {
     {
+      "microsoft/vscode-js-debug",
+      build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+    },
+    {
       "mxsdev/nvim-dap-vscode-js",
-      dependencies = {
-        enabled = false,
-        "microsoft/vscode-js-debug",
-        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
-      },
       opts = {
         debugger_path = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug",
         adapters = { "pwa-node", "pwa-chrome" },
@@ -115,6 +170,12 @@ return {
     {
       "theHamsta/nvim-dap-virtual-text",
       opts = { highlight_new_as_changed = true, commented = true },
+    },
+    {
+      "nvim-telescope/telescope-dap.nvim",
+      config = function()
+        require("telescope").load_extension "dap"
+      end,
     },
   },
   config = function()
