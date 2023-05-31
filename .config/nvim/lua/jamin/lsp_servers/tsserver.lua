@@ -1,4 +1,4 @@
-local settings = {
+local shared_settings = {
   inlayHints = {
     includeInlayParameterNameHints = "all",
     includeInlayParameterNameHintsWhenArgumentMatchesName = false,
@@ -11,7 +11,11 @@ local settings = {
 }
 
 return {
-  settings = { typescript = settings, javascript = settings },
+  settings = {
+    typescript = shared_settings,
+    javascript = shared_settings,
+    completions = { completeFunctionCalls = true },
+  },
   commands = {
     TypescriptOrganizeImports = {
       function()
