@@ -72,21 +72,15 @@ return {
   },
   dependencies = {
     {
-      "theHamsta/nvim-dap-virtual-text",
-      opts = { highlight_new_as_changed = true, commented = true },
-    },
-    {
       "mxsdev/nvim-dap-vscode-js",
+      dependencies = {
+        enabled = false,
+        "microsoft/vscode-js-debug",
+        build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+      },
       opts = {
-        debugger_path = vim.fn.stdpath "data"
-          .. "/mason/packages/js-debug/src/dapDebugServer.js",
-        adapters = {
-          "pwa-node",
-          "pwa-chrome",
-          -- "pwa-msedge",
-          -- "node-terminal",
-          -- "pwa-extensionHost",
-        },
+        debugger_path = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug",
+        adapters = { "pwa-node", "pwa-chrome" },
       },
     },
     {
@@ -118,14 +112,15 @@ return {
         }
       end,
     },
+    {
+      "theHamsta/nvim-dap-virtual-text",
+      opts = { highlight_new_as_changed = true, commented = true },
+    },
   },
   config = function()
-    local status_ok, dap = pcall(require, "dap")
-    local ui_status_ok, dapui = pcall(require, "dapui")
-
-    if not status_ok or not ui_status_ok then
-      return
-    end
+    local dap = require "dap"
+    local dapui = require "dapui"
+    local reg = require "mason-registry"
 
     -- Available Debug Adapters:
     --   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
@@ -135,15 +130,15 @@ return {
     --   https://microsoft.github.io/debug-adapter-protocol/
 
     -----------------------------------------------------------------------------
-    -- ADAPTERS
+    -- WEB DEV ADAPTERS
     -----------------------------------------------------------------------------
     -- Node
     dap.adapters.node2 = {
       type = "executable",
       command = "node",
       args = {
-        vim.fn.stdpath "data"
-          .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js",
+        reg.get_package("node-debug2-adapter"):get_install_path()
+          .. "/out/src/nodeDebug.js",
       },
     }
 
@@ -152,35 +147,10 @@ return {
       type = "executable",
       command = "node",
       args = {
-        vim.fn.stdpath "data"
-          .. "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js",
+        reg.get_package("chrome-debug-adapter"):get_install_path()
+          .. "/out/src/chromeDebug.js",
       },
     }
-
-    dap.adapters["pwa-node"] = {
-      type = "server",
-      host = "localhost",
-      port = "${port}",
-      executable = {
-        command = "node",
-        args = {
-          vim.fn.stdpath "data"
-            .. "/mason/packages/js-debug/src/dapDebugServer.js",
-          "${port}",
-        },
-      },
-    }
-
-    dap.adapters.bashdb = {
-      type = "executable",
-      command = vim.fn.stdpath "data"
-        .. "/mason/packages/bash-debug-adapter/bash-debug-adapter",
-      name = "bashdb",
-    }
-
-    -----------------------------------------------------------------------------
-    -- CONFIGURATIONS
-    -----------------------------------------------------------------------------
 
     -- web dev configs
     for _, language in ipairs {
@@ -278,7 +248,18 @@ return {
       }
     end
 
-    -- bash config
+    -----------------------------------------------------------------------------
+    -- BASH ADAPTER
+    -----------------------------------------------------------------------------
+
+    local bashdb_dir = reg.get_package("bash-debug-adapter"):get_install_path()
+
+    dap.adapters.bashdb = {
+      type = "executable",
+      command = bashdb_dir .. "/bash-debug-adapter",
+      name = "bashdb",
+    }
+
     for _, language in ipairs { "sh", "bash" } do
       dap.configurations[language] = {
         {
@@ -286,10 +267,8 @@ return {
           request = "launch",
           name = "Launch - Bash",
           showDebugOutput = true,
-          pathBashdb = vim.fn.stdpath "data"
-            .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb",
-          pathBashdbLib = vim.fn.stdpath "data"
-            .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir",
+          pathBashdb = bashdb_dir .. "extension/bashdb_dir/bashdb",
+          pathBashdbLib = bashdb_dir .. "extension/bashdb_dir",
           trace = true,
           file = "${file}",
           program = "${file}",
@@ -309,9 +288,7 @@ return {
     -- UI
     -----------------------------------------------------------------------------
 
-    -- Enable virtual text
     vim.g.dap_virtual_text = true
-
     dap.set_log_level "TRACE"
 
     -- Automatically open UI
@@ -323,39 +300,6 @@ return {
     end
     dap.listeners.before.event_exited["dapui_config"] = function()
       dapui.close()
-    end
-
-    -- Remap hover
-    local keymap_restore = {}
-    dap.listeners.after["event_initialized"]["me"] = function()
-      for _, buf in pairs(vim.api.nvim_list_bufs()) do
-        local keymaps = vim.api.nvim_buf_get_keymap(buf, "n")
-        for _, keymap in pairs(keymaps) do
-          if keymap.lhs == "K" then
-            table.insert(keymap_restore, keymap)
-            vim.api.nvim_buf_del_keymap(buf, "n", "K")
-          end
-        end
-      end
-      vim.api.nvim_set_keymap(
-        "n",
-        "K",
-        '<cmd>lua require("dap.ui.widgets").hover()<CR>',
-        { silent = true }
-      )
-    end
-
-    dap.listeners.after["event_terminated"]["me"] = function()
-      for _, keymap in pairs(keymap_restore) do
-        vim.api.nvim_buf_set_keymap(
-          keymap.buffer,
-          keymap.mode,
-          keymap.lhs,
-          keymap.rhs,
-          { silent = keymap.silent == 1 }
-        )
-      end
-      keymap_restore = {}
     end
 
     vim.fn.sign_define("DapBreakpoint", {
