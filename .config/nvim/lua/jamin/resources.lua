@@ -49,6 +49,11 @@ M.icons = {
     { name = "Info", text = " ", severity = vim.diagnostic.severity.INFO },
   },
   ui = {
+    Bug = " ",
+    BugOutline = " ",
+    Robot = "󱙺 ",
+    Exit = "󰿅 ",
+    Cancel = "󰜺 ",
     Pause = "󰏦 ",
     Play = "󰐍 ",
     Repeat = "🗘 ",
@@ -75,6 +80,10 @@ M.icons = {
     CaretDown = "⌄",
     CaretDoubleRight = "»",
     CaretDoubleLeft = "«",
+    MarkerDot = "󰍎 ",
+    MarkerX = "󰼊 ",
+    MarkerQuestion = "󰼇 ",
+    MarkerExclamation = "󰼅 ",
   },
 }
 

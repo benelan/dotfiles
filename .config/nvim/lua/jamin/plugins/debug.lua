@@ -1,6 +1,8 @@
+local web_langs =
+  { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 return {
   "mfussenegger/nvim-dap", -- debug adapter protocol
-  enabled = false,
+  -- enabled = false,
   cmd = {
     "DapContinue",
     "DapLoadLaunchFromJSON",
@@ -94,6 +96,13 @@ return {
       desc = "Toggle repl",
     },
     {
+      "<leader>Dv",
+      function()
+        require("dap.ext.vscode").load_launchjs()
+      end,
+      desc = "Load vscode launch file",
+    },
+    {
       "<leader>D.",
       function()
         require("dap").run_last()
@@ -129,10 +138,12 @@ return {
   dependencies = {
     {
       "microsoft/vscode-js-debug",
+      ft = web_langs,
       build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
     },
     {
       "mxsdev/nvim-dap-vscode-js",
+      ft = web_langs,
       opts = {
         debugger_path = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug",
         adapters = { "pwa-node", "pwa-chrome" },
@@ -147,25 +158,42 @@ return {
           desc = "Toggle UI",
         },
       },
-      opts = function()
-        local icons = require("jamin.resources").icons.ui
-        return {
-          controls = {
-            element = "repl",
-            enabled = true,
-            icons = {
-              pause = icons.Pause,
-              play = icons.Play,
-              run_last = icons.Repeat,
-              step_back = icons.ArrowBack,
-              step_into = icons.ArrowInto,
-              step_out = icons.ArrowOut,
-              step_over = icons.ArrowOver,
-              terminate = icons.X,
+      opts = {
+        layouts = {
+          {
+            elements = {
+              { id = "scopes", size = 0.25 },
+              { id = "breakpoints", size = 0.25 },
+              { id = "stacks", size = 0.25 },
+              { id = "watches", size = 0.25 },
             },
+            position = "left",
+            size = 69,
           },
-        }
-      end,
+          {
+            elements = {
+              { id = "repl", size = 0.5 },
+              { id = "console", size = 0.5 },
+            },
+            position = "bottom",
+            size = 15,
+          },
+        },
+        controls = {
+          element = "repl",
+          enabled = true,
+          icons = {
+            pause = require("jamin.resources").icons.ui.Pause,
+            play = require("jamin.resources").icons.ui.Play,
+            run_last = require("jamin.resources").icons.ui.Repeat,
+            step_back = require("jamin.resources").icons.ui.ArrowBack,
+            step_into = require("jamin.resources").icons.ui.ArrowInto,
+            step_out = require("jamin.resources").icons.ui.ArrowOut,
+            step_over = require("jamin.resources").icons.ui.ArrowOver,
+            terminate = require("jamin.resources").icons.ui.X,
+          },
+        },
+      },
     },
     {
       "theHamsta/nvim-dap-virtual-text",
@@ -181,7 +209,6 @@ return {
   config = function()
     local dap = require "dap"
     local dapui = require "dapui"
-    local reg = require "mason-registry"
 
     -- Available Debug Adapters:
     --   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
@@ -191,40 +218,15 @@ return {
     --   https://microsoft.github.io/debug-adapter-protocol/
 
     -----------------------------------------------------------------------------
-    -- WEB DEV ADAPTERS
+    -- WEB DEV
     -----------------------------------------------------------------------------
-    -- Node
-    dap.adapters.node2 = {
-      type = "executable",
-      command = "node",
-      args = {
-        reg.get_package("node-debug2-adapter"):get_install_path()
-          .. "/out/src/nodeDebug.js",
-      },
-    }
-
-    -- Chrome
-    dap.adapters.chrome = {
-      type = "executable",
-      command = "node",
-      args = {
-        reg.get_package("chrome-debug-adapter"):get_install_path()
-          .. "/out/src/chromeDebug.js",
-      },
-    }
-
     -- web dev configs
-    for _, language in ipairs {
-      "javascript",
-      "typescript",
-      "javascriptreact",
-      "typescriptreact",
-    } do
+    for _, language in ipairs(web_langs) do
       dap.configurations[language] = {
         -- https://github.com/microsoft/vscode-js-debug
         -- https://github.com/mxsdev/nvim-dap-vscode-js
         {
-          name = "Attach - PWA Chrome",
+          name = "Attach - Chrome",
           type = "chrome",
           request = "attach",
           program = "${file}",
@@ -235,21 +237,21 @@ return {
           webRoot = "${workspaceFolder}",
         },
         {
-          name = "Launch - PWA Node",
+          name = "Launch - Node",
           type = "pwa-node",
           request = "launch",
           program = "${file}",
           cwd = "${workspaceFolder}",
         },
         {
-          name = "Attach - PWA Node",
+          name = "Attach - Node",
           type = "pwa-node",
           request = "attach",
           processId = require("dap.utils").pick_process,
           cwd = "${workspaceFolder}",
         },
         {
-          name = "Launch Jest Tests - PWA Node",
+          name = "Launch - Jest Tests",
           type = "pwa-node",
           request = "launch",
           -- trace = true, -- include debugger info
@@ -263,57 +265,25 @@ return {
           console = "integratedTerminal",
           internalConsoleOptions = "neverOpen",
         },
-
-        -- https://github.com/microsoft/vscode-node-debug2
         {
-          name = "Launch - Node",
-          type = "node2",
-          request = "launch",
-          program = "${file}",
-          cwd = vim.fn.getcwd(),
-          sourceMaps = true,
-          protocol = "inspector",
-          console = "integratedTerminal",
-        },
-        {
-          -- For this to work you need to make sure
-          -- the node process is started with the `--inspect` flag.
-          name = "Attach - Node",
-          type = "node2",
-          request = "attach",
-          processId = require("dap.utils").pick_process,
-        },
-        {
-          name = "Launch StencilJS Tests - Node",
-          type = "node2",
+          name = "Launch - StencilJS Tests",
+          type = "pwa-node",
           request = "launch",
           program = "${workspaceFolder}/node_modules/.bin/stencil",
           cwd = "${workspaceFolder}",
-          args = { "test", "--spec", "--e2e", "--devtools" },
+          args = { "test", "--spec", "--e2e", "--devtools", "${file}" },
           console = "integratedTerminal",
           internalConsoleOptions = "neverOpen",
-        },
-
-        -- https://github.com/microsoft/vscode-chrome-debug
-        {
-          name = "Attach - Chrome",
-          type = "chrome",
-          request = "attach",
-          program = "${file}",
-          cwd = vim.fn.getcwd(),
-          sourceMaps = true,
-          protocol = "inspector",
-          port = 9222,
-          webRoot = "${workspaceFolder}",
         },
       }
     end
 
     -----------------------------------------------------------------------------
-    -- BASH ADAPTER
+    -- BASH
     -----------------------------------------------------------------------------
 
-    local bashdb_dir = reg.get_package("bash-debug-adapter"):get_install_path()
+    local bashdb_dir = vim.fn.stdpath "data"
+      .. "/mason/packages/bash-debug-adapter"
 
     dap.adapters.bashdb = {
       type = "executable",
@@ -364,28 +334,34 @@ return {
     end
 
     vim.fn.sign_define("DapBreakpoint", {
-      text = ">",
-      texthl = "DiagnosticSignHint",
-      linehl = "",
-      numhl = "",
-    })
-    vim.fn.sign_define("DapBreakpointRejected", {
-      text = "X",
-      texthl = "DiagnosticSignError",
+      text = require("jamin.resources").icons.ui.Bug,
+      texthl = "AquaSign",
       linehl = "",
       numhl = "",
     })
     vim.fn.sign_define("DapBreakpointCondition", {
-      text = "?",
-      texthl = "DiagnosticSignHint",
+      text = require("jamin.resources").icons.ui.BugOutline,
+      texthl = "YellowSign",
+      linehl = "",
+      numhl = "",
+    })
+    vim.fn.sign_define("DapBreakpointRejected", {
+      text = require("jamin.resources").icons.ui.Cancel,
+      texthl = "RedSign",
       linehl = "",
       numhl = "",
     })
     vim.fn.sign_define("DapStopped", {
-      text = "@",
-      texthl = "DiagnosticSignWarn",
+      text = require("jamin.resources").icons.ui.Exit,
+      texthl = "PurpleSign",
       linehl = "Visual",
-      numhl = "DiagnosticSignWarn",
+      numhl = "PurpleSign",
+    })
+    vim.fn.sign_define("DapLogPoint", {
+      text = require("jamin.resources").icons.ui.Robot,
+      texthl = "BlueSign",
+      linehl = "",
+      numhl = "",
     })
   end,
 }

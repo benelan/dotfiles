@@ -56,7 +56,8 @@ end
 -- navic bread crumb
 local has_navic, navic = pcall(require, "nvim-navic")
 local function navic_breadcrumbs()
-  return has_navic and navic.is_available() and navic.get_location() or ""
+  return has_navic and navic.is_available() and "  " .. navic.get_location()
+    or ""
 end
 
 -- number of updatable plugins
@@ -64,8 +65,14 @@ local has_lazy, lazy = pcall(require, "lazy.status")
 local function lazy_updates()
   return has_lazy
       and lazy.has_updates()
-      and "%#LazyStatusLineUpdates#" .. lazy.updates()
+      and "  %#LazyStatusLineUpdates#" .. lazy.updates()
     or ""
+end
+
+-- debug info
+local has_dap, dap = pcall(require, "dap")
+local function debug_info()
+  return has_dap and "  %#DapStatusLineInfo#" .. dap.status() or ""
 end
 
 -- branch name and added/deleted/changed line count
@@ -118,9 +125,10 @@ function MyStatusLine()
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
     -------------------------------------------
-    .. "%<%#TabLineFill#  "
+    .. "%<%#TabLineFill#"
     .. navic_breadcrumbs()
     .. " %= "
+    .. debug_info()
     .. lazy_updates()
     -------------------------------------------
     .. "  %#NormalFloat# " -- "%#Normal#"

@@ -42,10 +42,6 @@ return {
             "shfmt",
             "stylua",
             "write-good",
-            -- debug adapters
-            "chrome-debug-adapter",
-            "js-debug-adapter",
-            "node-debug2-adapter",
           },
         },
         config = function(_, opts)

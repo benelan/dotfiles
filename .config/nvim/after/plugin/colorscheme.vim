@@ -62,10 +62,12 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
         call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
         call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
+
         call gruvbox_material#highlight("GitStatusLineChange", s:palette.orange, s:palette.bg3)
         call gruvbox_material#highlight("GitStatusLineAdd", s:palette.green, s:palette.bg3)
         call gruvbox_material#highlight("GitStatusLineDelete", s:palette.red, s:palette.bg3)
         call gruvbox_material#highlight("LazyStatusLineUpdates", s:palette.purple, s:palette.bg2)
+        call gruvbox_material#highlight("DapStatusLineInfo", s:palette.aqua, s:palette.bg2)
         highlight! link CursorLineNr Purple
         highlight! link TreesitterContext Normal
         " highlight EyelinerSecondary guifg=#c92920 "gui=underline
