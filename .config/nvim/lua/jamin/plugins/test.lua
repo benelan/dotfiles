@@ -27,11 +27,11 @@ return {
         status = { virtual_text = true },
         output = { open_on_run = true },
         icons = {
-          failed = require("jamin.resources").icons.ui.Failed,
-          passed = require("jamin.resources").icons.ui.Passed,
-          running = require("jamin.resources").icons.ui.Running,
-          skipped = require("jamin.resources").icons.ui.Skipped,
           unknown = require("jamin.resources").icons.kind.Conditional,
+          passed = require("jamin.resources").icons.ui.CheckMark,
+          failed = require("jamin.resources").icons.ui.X,
+          running = require("jamin.resources").icons.ui.Run,
+          skipped = require("jamin.resources").icons.ui.Skip,
         },
         adapters = {
           require "neotest-jest" { jestCommand = "npm test --", jestConfigFile = "jest.config.ts" },

@@ -167,13 +167,12 @@ return {
           require("telescope.actions").open_qflist(...)
         end,
       }
-      local icons = require("jamin.resources").icons.ui
       return {
         defaults = {
           -- path_display = { "smart" },
-          prompt_prefix = string.format(" %s ", icons.Prompt),
-          selection_caret = icons.Select,
-          multi_icon = icons.X,
+          prompt_prefix = string.format(" %s ", require("jamin.resources").icons.ui.Prompt),
+          selection_caret = require("jamin.resources").icons.ui.Select,
+          multi_icon = require("jamin.resources").icons.ui.CheckMark,
           entry_prefix = "   ",
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",

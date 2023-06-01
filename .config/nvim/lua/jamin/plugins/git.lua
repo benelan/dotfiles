@@ -32,7 +32,7 @@ return {
       signs = {
         fold_closed = require("jamin.resources").icons.ui.Collapsed,
         fold_open = require("jamin.resources").icons.ui.Expanded,
-        done = require("jamin.resources").icons.ui.Done,
+        done = require("jamin.resources").icons.ui.CheckMark,
       },
     },
   },
