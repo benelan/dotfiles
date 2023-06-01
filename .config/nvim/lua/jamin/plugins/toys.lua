@@ -67,7 +67,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "simrat39/symbols-outline.nvim",
-    enabled = false,
+    -- enabled = false,
     cmd = "SymbolsOutline",
     keys = {
       { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutline" },
@@ -144,8 +144,8 @@ return {
   -----------------------------------------------------------------------------
   {
     "j-hui/fidget.nvim",
-    event = "LspAttach",
     -- enabled = false,
+    event = "LspAttach",
     config = {
       text = { spinner = "circle" },
       window = { blend = 0 },
@@ -185,7 +185,6 @@ return {
     opts = {
       char = require("jamin.resources").icons.ui.Separator,
       indent_blankline_filetype_exclude = require("jamin.resources").exclude_filetypes,
-      show_trailing_blankline_indent = false,
       use_treesitter = true,
       show_current_context = true,
     },
