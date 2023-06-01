@@ -217,9 +217,12 @@ if is-supported docker; then
 fi
 
 # -----------------------------------------------------------------------------
-# Node/NPM
+# Web Development
 # -----------------------------------------------------------------------------
 
+alias chrome_debug="google-chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile"
+
+# node/npm
 if is-supported npm; then
     alias ni="npm install"
     alias nu="npm uninstall"

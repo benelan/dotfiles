@@ -1,4 +1,5 @@
-local web_langs = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
+local web_fts =
+  { "javascript", "javascriptreact", "typescript", "typescriptreact", "html", "vue", "svelte" }
 return {
   "mfussenegger/nvim-dap", -- debug adapter protocol
   enabled = false,
@@ -23,9 +24,9 @@ return {
     { "<leader>Dc", function() require("dap").run_to_cursor() end, desc = "Run to cursor" },
     { "<leader>Ds", function() require("dap").session() end, desc = "Get session" },
     { "<leader>Dr", function() require("dap").repl.toggle() end, desc = "Toggle repl" },
-    { "<leader>Dv", function() require("dap.ext.vscode").load_launchjs() end, desc = "Load vscode launch file" },
     { "<leader>D.", function() require("dap").run_last() end, desc = "Toggle repl" },
     { "<leader>D?", function() require("dap.ui.widgets").hover() end, desc = "Hover" },
+    { "<leader>Dv", function() require("dap.ext.vscode").load_launchjs(nil, {node = web_fts, ["pwa-node"] = web_fts}) end, desc = "Load vscode launch file" },
     { "<leader>DL", function() require("dap").set_breakpoint(nil, nil, vim.fn.input "Log point message: ") end, desc = "Log breakpoint" },
     { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ") end, desc = "Conditional breakpoint" },
   },
@@ -107,37 +108,34 @@ return {
     -- WEB DEV
     -----------------------------------------------------------------------------
     -- web dev configs
-    for _, language in ipairs(web_langs) do
+    -- https://github.com/microsoft/vscode-js-debug
+    -- https://github.com/mxsdev/nvim-dap-vscode-js
+    for _, language in ipairs(web_fts) do
       dap.configurations[language] = {
-        -- https://github.com/microsoft/vscode-js-debug
-        -- https://github.com/mxsdev/nvim-dap-vscode-js
         {
-          name = "Attach - Chrome",
-          type = "chrome",
+          -- make sure to start up Chrome in debug mode first:
+          -- $ google-chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile
+          name = "Attach to Chrome process",
+          type = "pwa-chrome",
           request = "attach",
-          program = "${file}",
           cwd = vim.fn.getcwd(),
-          sourceMaps = true,
-          protocol = "inspector",
           port = 9222,
           webRoot = "${workspaceFolder}",
         },
         {
-          name = "Launch - Node",
-          type = "pwa-node",
-          request = "launch",
-          program = "${file}",
-          cwd = "${workspaceFolder}",
-        },
-        {
-          name = "Attach - Node",
+          name = "Attach to Node process",
           type = "pwa-node",
           request = "attach",
           processId = require("dap.utils").pick_process,
-          cwd = "${workspaceFolder}",
         },
         {
-          name = "Launch - Jest Tests",
+          name = "Debug current Node file",
+          type = "pwa-node",
+          request = "launch",
+          program = "${file}",
+        },
+        {
+          name = "Debug Jest tests",
           type = "pwa-node",
           request = "launch",
           -- trace = true, -- include debugger info
@@ -148,16 +146,6 @@ return {
           },
           rootPath = "${workspaceFolder}",
           cwd = "${workspaceFolder}",
-          console = "integratedTerminal",
-          internalConsoleOptions = "neverOpen",
-        },
-        {
-          name = "Launch - StencilJS Tests",
-          type = "pwa-node",
-          request = "launch",
-          program = "${workspaceFolder}/node_modules/.bin/stencil",
-          cwd = "${workspaceFolder}",
-          args = { "test", "--spec", "--e2e", "--devtools", "${file}" },
           console = "integratedTerminal",
           internalConsoleOptions = "neverOpen",
         },
