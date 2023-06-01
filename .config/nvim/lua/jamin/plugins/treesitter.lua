@@ -19,23 +19,6 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "svelte" },
   },
-  -----------------------------------------------------------------------------
-  {
-    "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    event = "VeryLazy",
-    -- stylua: ignore
-    keys = {
-      { "[C", function() require("treesitter-context").go_to_context() end, desc = "Treesitter context" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "JoosepAlviste/nvim-ts-context-commentstring", -- jsx/tsx comments
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    lazy = true,
-  },
-  -----------------------------------------------------------------------------
   {
     "ThePrimeagen/refactoring.nvim",
     --stylua: ignore
@@ -73,6 +56,21 @@ return {
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      {
+        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        keys = {
+          {
+            "[C",
+            function()
+              require("treesitter-context").go_to_context()
+            end,
+            desc = "Treesitter context",
+          },
+        },
+      },
+      { "JoosepAlviste/nvim-ts-context-commentstring" },
+    },
     config = function()
       local swap_next, swap_prev = (function()
         local swap_objects = {
