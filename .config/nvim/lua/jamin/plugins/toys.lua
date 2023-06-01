@@ -136,23 +136,9 @@ return {
     opts = {
       icons = require("jamin.resources").icons.kind,
       separator = "  >  ",
+      lsp = { auto_attach = true },
       -- highlight = true,
     },
-    config = function(_, opts)
-      require("nvim-navic").setup(opts)
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_attach_navic", {}),
-        callback = function(args)
-          if not (args.data and args.data.client_id) then
-            return
-          end
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client.server_capabilities.documentSymbolProvider then
-            require("nvim-navic").attach(client, args.buf)
-          end
-        end,
-      })
-    end,
   },
   -----------------------------------------------------------------------------
   {
