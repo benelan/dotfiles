@@ -1,6 +1,7 @@
 return {
   {
     "tpope/vim-rhubarb", -- Open file/selection in GitHub repo
+    dependencies = "tpope/vim-fugitive",
     -- stylua: ignore
     keys = {
       { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in Browser", mode = "n" },

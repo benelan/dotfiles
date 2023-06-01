@@ -1,7 +1,36 @@
 return {
   { "folke/lazy.nvim", version = "*" },
   -----------------------------------------------------------------------------
-  { dir = "~/.vim", lazy = false, priority = 1000, cmd = { "G" } },
+  { dir = "~/.vim", lazy = false, priority = 1000 },
+  -----------------------------------------------------------------------------
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
+    keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "dmmulroy/tsc.nvim",
+    cmd = "TSC",
+    opts = { auto_close_qflist = true },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "andymass/vim-matchup",
+    -- enabled = false,
+    init = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "romainl/vim-qf", -- quickfix/location list improvements
+    enabled = false,
+    event = "VeryLazy",
+    init = function()
+      vim.g.qf_mapping_ack_style = 1
+    end,
+  },
   -----------------------------------------------------------------------------
   {
     "psliwka/vim-dirtytalk", -- programming wordlists for vim's built in spellcheck
@@ -20,11 +49,33 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "romainl/vim-qf", -- quickfix/location list improvements
-    enabled = false,
-    event = "VeryLazy",
-    init = function()
-      vim.g.qf_mapping_ack_style = 1
+    "monaqa/dial.nvim", -- increment/decrement more stuffs
+    -- enabled = false,
+    keys = {
+      { "<C-a>", "<Plug>(dial-increment)", mode = "n", desc = "Increment" },
+      { "<C-x>", "<Plug>(dial-decrement)", mode = "n", desc = "Decrement" },
+      { "<C-a>", "<Plug>(dial-increment)", mode = "v", desc = "Increment" },
+      { "<C-x>", "<Plug>(dial-decrement)", mode = "v", desc = "Decrement" },
+      { "g<C-a>", "g<Plug>(dial-increment)", mode = "v", desc = "Increment" },
+      { "g<C-x>", "g<Plug>(dial-decrement)", mode = "v", desc = "Decrement" },
+    },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local augend = require "dial.augend"
+      require("dial.config").augends:register_group {
+        default = {
+          augend.integer.alias.decimal,
+          augend.integer.alias.decimal_int,
+          augend.integer.alias.hex,
+          augend.date.alias["%Y-%m-%d"],
+          augend.date.alias["%Y/%m/%d"],
+          augend.date.alias["%m/%d/%y"],
+          augend.date.alias["%m/%d/%Y"],
+          augend.date.alias["%-m/%-d"],
+          augend.semver.alias.semver,
+          augend.constant.alias.bool,
+        },
+      }
     end,
   },
   -----------------------------------------------------------------------------
@@ -56,51 +107,6 @@ return {
             }
           end
         end,
-      }
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "dmmulroy/tsc.nvim",
-    cmd = "TSC",
-    opts = { auto_close_qflist = true },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "andymass/vim-matchup",
-    -- enabled = false,
-    init = function()
-      vim.g.matchup_matchparen_offscreen = { method = "popup" }
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "monaqa/dial.nvim", -- increment/decrement more stuffs
-    -- enabled = false,
-    keys = {
-      { "<C-a>", "<Plug>(dial-increment)", mode = "n", desc = "Increment" },
-      { "<C-x>", "<Plug>(dial-decrement)", mode = "n", desc = "Decrement" },
-      { "<C-a>", "<Plug>(dial-increment)", mode = "v", desc = "Increment" },
-      { "<C-x>", "<Plug>(dial-decrement)", mode = "v", desc = "Decrement" },
-      { "g<C-a>", "g<Plug>(dial-increment)", mode = "v", desc = "Increment" },
-      { "g<C-x>", "g<Plug>(dial-decrement)", mode = "v", desc = "Decrement" },
-    },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local augend = require "dial.augend"
-      require("dial.config").augends:register_group {
-        default = {
-          augend.integer.alias.decimal,
-          augend.integer.alias.decimal_int,
-          augend.integer.alias.hex,
-          augend.date.alias["%Y-%m-%d"],
-          augend.date.alias["%Y/%m/%d"],
-          augend.date.alias["%m/%d/%y"],
-          augend.date.alias["%m/%d/%Y"],
-          augend.date.alias["%-m/%-d"],
-          augend.semver.alias.semver,
-          augend.constant.alias.bool,
-        },
       }
     end,
   },

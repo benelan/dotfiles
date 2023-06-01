@@ -1,5 +1,20 @@
 return {
   {
+    "tpope/vim-fugitive",
+    cmd = {
+      "G",
+      "Git",
+      "Gedit",
+      "Gsplit",
+      "Gdiffsplit",
+      "Gread",
+      "Gwrite",
+      "Ggrep",
+      "GMove",
+      "GDelete",
+    },
+  },
+  {
     "sindrets/diffview.nvim", -- diff and history viewer
     pin = true,
     dependencies = { "nvim-lua/plenary.nvim" },

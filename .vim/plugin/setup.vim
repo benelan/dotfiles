@@ -145,8 +145,6 @@ nnoremap g: <Plug>(ColonOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
 
-nnoremap <leader>u :UndotreeToggle<CR>
-
 " ---------------------------------------------------------------------------
 " | Helper functions and user commands                                      |
 " ---------------------------------------------------------------------------
