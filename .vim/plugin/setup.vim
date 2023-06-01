@@ -29,18 +29,6 @@ let g:netrw_usetab = 1
 let g:netrw_winsize = 25
 let g:netrw_dirhistmax=0
 
-let g:rooter_patterns = [
-    \  "!.bashrc", "!>home", "!Desktop/",
-    \  ".git/", ".git", ".gitignore",
-    \  "package.json", "tsconfig.json",
-    \  "Cargo.toml", "go.mod",
-    \  "Dockerfile", "src/", "lua/",
-    \  ">".expand("~")."/.config/",
-    \  "CONTRIBUTING.md", "CHANGELOG.md",
-    \  ".root"
-    \]
-
-" vim.g.rooter_change_directory_for_non_project_files = "current"
 
 " Enable per-command history
 " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
