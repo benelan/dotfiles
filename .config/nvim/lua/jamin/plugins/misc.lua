@@ -24,31 +24,6 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "romainl/vim-qf", -- quickfix/location list improvements
-    enabled = false,
-    event = "VeryLazy",
-    init = function()
-      vim.g.qf_mapping_ack_style = 1
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "psliwka/vim-dirtytalk", -- programming wordlists for vim's built in spellcheck
-    build = {
-      ":DirtytalkUpdate",
-      "cp "
-        .. vim.fn.stdpath "data"
-        .. "/site/spell/programming.utf-8.spl"
-        .. " "
-        .. vim.fn.stdpath "config"
-        .. "/spell/programming.utf-8.spl",
-    },
-    config = function()
-      vim.opt.spelllang:append "programming"
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
     -- enabled = false,
     keys = {

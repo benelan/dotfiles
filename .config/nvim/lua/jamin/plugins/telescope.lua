@@ -136,11 +136,11 @@ return {
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
         { "<leader>fg", function() telescope_cwd "git_files" end, desc = "Find git files" },
-        { "<leader>gb", "<cmd>Telescope git_branches<cr>", { "n", "x" }, desc = "Checkout branch" },
-        { "<leader>gc", "<cmd>Telescope git_bcommits<cr>", { "n", "x" }, desc = "Checkout buffer commit" },
-        { "<leader>gC", "<cmd>Telescope git_commits<cr>", { "n", "x" }, desc = "Checkout commit" },
-        { "<leader>gg", "<cmd>Telescope git_status<cr>", { "n", "x" }, desc = "View status" },
-        { "<leader>g$", "<cmd>Telescope git_stash<cr>", { "n", "x" }, desc = "View stash" },
+        { "<leader>gfb", "<cmd>Telescope git_branches<cr>", { "n", "x" }, desc = "Checkout branch" },
+        { "<leader>gfc", "<cmd>Telescope git_bcommits<cr>", { "n", "x" }, desc = "Checkout buffer commit" },
+        { "<leader>gfC", "<cmd>Telescope git_commits<cr>", { "n", "x" }, desc = "Checkout commit" },
+        { "<leader>gfs", "<cmd>Telescope git_status<cr>", { "n", "x" }, desc = "View status" },
+        { "<leader>gfS", "<cmd>Telescope git_stash<cr>", { "n", "x" }, desc = "View stash" },
       }
     end,
     opts = function()

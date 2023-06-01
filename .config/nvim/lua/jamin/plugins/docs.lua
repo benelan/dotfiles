@@ -13,7 +13,6 @@ return {
   },
   {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
-    ft = "markdown",
     build = "cd app && npm install",
     keys = { { "<leader>dp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown preview" } },
   },

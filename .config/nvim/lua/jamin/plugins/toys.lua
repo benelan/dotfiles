@@ -48,7 +48,7 @@ return {
   {
     "jinh0/eyeliner.nvim",
     -- enabled = false,
-    event = "VeryLazy",
+    event = "CursorHold",
     opts = { highlight_on_key = false, dim = true },
   },
   -----------------------------------------------------------------------------
@@ -68,6 +68,7 @@ return {
   {
     "simrat39/symbols-outline.nvim",
     enabled = false,
+    cmd = "SymbolsOutline",
     keys = {
       { "<leader>O", "<cmd>SymbolsOutline<cr>", desc = "SymbolsOutline" },
     },
@@ -143,6 +144,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "j-hui/fidget.nvim",
+    event = "LspAttach",
     -- enabled = false,
     config = {
       text = { spinner = "circle" },
@@ -194,7 +196,7 @@ return {
     "folke/zen-mode.nvim",
     enabled = false,
     cmd = "ZenMode",
-    keys = { { "<leader>Z", "<cmd>ZenMode<cr>", desc = "ZenModeToggle" } },
+    keys = { { "<leader>sZ", "<cmd>ZenMode<cr>", desc = "ZenMode" } },
     opts = {
       window = {
         options = {
@@ -216,7 +218,7 @@ return {
     "folke/twilight.nvim",
     enabled = false,
     cmd = "Twilight",
-    keys = { { "<leader>T", "<cmd>Twilight<cr>", desc = "TwilightToggle" } },
+    keys = { { "<leader>sT", "<cmd>Twilight<cr>", desc = "Twilight" } },
     opts = { context = 13 },
   },
   -----------------------------------------------------------------------------
@@ -268,6 +270,7 @@ return {
             name = "git",
             m = { name = "mergetool" },
             t = { name = "toggle options" },
+            f = { name = "find" },
             -- w = { name = "worktree" },
           },
           o = {

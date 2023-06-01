@@ -32,12 +32,10 @@ return {
   dependencies = {
     {
       "microsoft/vscode-js-debug",
-      ft = web_langs,
       build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
     },
     {
       "mxsdev/nvim-dap-vscode-js",
-      ft = web_langs,
       opts = {
         debugger_path = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug",
         adapters = { "pwa-node", "pwa-chrome" },
