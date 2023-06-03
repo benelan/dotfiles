@@ -44,6 +44,7 @@
 [branch]
   ; Show most recently changed branches first.
   sort = -committerdate
+	autosetuprebase = always
 
 [fetch]
   prune = true
@@ -166,6 +167,99 @@
   pushInsteadOf = "git://gist.github.com/"
 
 [alias]
+  a = add
+  all = add --update
+
+  b = branch
+  bd = branch --delete --force
+  ; delete multiple branches
+  fbd = !git branch | fzf --multi | xargs git branch -D
+  buoc = branch -u origin/$(git symbolic-ref --short HEAD)
+  bc = for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes
+
+  c = commit --verbose
+  cA = commit --all
+  cm = commit -m
+  ca = commit --amend
+  cane = commit --amend --no-edit
+
+  co = checkout
+  cob = checkout -b
+  com = !git checkout "$(git bdefault)"
+
+  fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
+  fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+
+  cl = clone
+
+  cp = cherry-pick
+
+  d = diff
+  ds = diff --staged
+  dt = difftool
+
+  ; edit the files changed locally
+  e = "!f() { $EDITOR $(git diff --name-only HEAD); }; f"
+  ; open Diffview.nvim
+  ed = "!f() { nvim +\"DiffviewOpen $*\"; }; f"
+  ; sync origin's default branch and edit the changed files
+  eom = "!f() { default_branch=$(git bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
+
+  f = fetch --all --prune
+  g = grep
+
+  m = merge
+  mm = !git merge "$(git bdefault)"
+  mom = !git fetch && git merge "origin/$(git bdefault)"
+  mt = mergetool
+
+  p = push
+  puoc = !git push --set-upstream origin $(git symbolic-ref --short HEAD)
+
+  pl = pull
+  plum = !git pull upstream "$(git bdefault)"
+
+  r = reset
+  rs = r --soft
+  rH = r --hard
+  pristine = !git reset --hard && git clean -dfx
+
+  rb = rebase
+  rba = rebase --abort
+  rbc = rebase --continue
+  rbs = rebase --skip
+  rbi = rebase --interactive @{upstream}
+  rbom = "!f() { default_branch="(git bdefault)"; git fetch origin "$default_branch" && git rebase "origin/$default_branch" && git update-ref "refs/heads/$default_branch" "origin/$default_branch"; }; f"
+
+  s = status
+
+  st = stash
+  stl = stash list
+  stpo = stash pop
+  stpu = stash push
+
+  sm = submodule
+  smu = submodule update --init --recursive
+
+  t = tag
+  tnext = name-rev --tags --name-only
+
+  w = worktree
+  wa = worktree add
+  wr = worktree remove
+  wl = worktree list
+  wp = worktree prune
+
+  l = log
+  lg = log --graph
+  lgr = log --graph --abbrev-commit --date=relative --pretty=format:'%C(bold)%C(blue)%h%Creset%C(auto)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'
+
+  lmsg = log --stat --pretty=format:'%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s%+b%n%Creset'
+  lup = log --branches --not --remotes --no-walk --decorate --oneline
+  lum = log "$(git bdefault)" ^HEAD
+
+  new = log HEAD@{1}..HEAD@{0}
+
   ; Pull in remote changes for the current repository and all its submodules.
   up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
@@ -173,9 +267,7 @@
   go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
   ; use fzf to fixup commits to autosquash
-  cf = "!git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}' | xargs -o git commit --fixup && git rebase -i HEAD~20"
-
-  rbi= !GIT_SEQUENCE_EDITOR=: git rebase --interactive
+  cf = "!f() { sha=\"$(git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}')\" && git commit --fixup \"$sha\" && git rebase -i \"$sha\"~1;}; f"
 
   ; log the last n commits, e.g. $ git ln 69
   ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
@@ -197,7 +289,7 @@
   unhide = update-index --no-assume-unchanged
 
   ; remove the old tag with this name and tag the latest commit with it.
-  retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag -a \"$1\" HEAD -m \"$1\"; }; r"
+  retag = "!f() { git tag -d $1 && git push origin :refs/tags/$1 && git tag -a \"$1\" HEAD -m \"$1\"; }; f"
 
   ; credit an author on the latest commit.
   credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
@@ -212,3 +304,66 @@
 
   ; list of local branches and their most recent commit
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  # log like - we like this summarization our key performance indicators
+  ll = log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'
+
+  # log like long  - we like this summarization our key performance indicators
+  lll = log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'
+
+  ; Ignore all untracked files by appending them to .gitignore:
+  ignore = "!git status | grep -P \"^\\t\" | grep -vF .gitignore | sed \"s/^\\t//\" >> .gitignore"
+
+
+  edit-cached   = !"f() { git ls-files --cached          | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-deleted  = !"f() { git ls-files --deleted         | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-others   = !"f() { git ls-files --others          | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-ignored  = !"f() { git ls-files --ignored         | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-killed   = !"f() { git ls-files --killed          | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-modified = !"f() { git ls-files --modified        | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-stage    = !"f() { git ls-files --stage | cut -f2 | sort -u ; }; `git var GIT_EDITOR` `f`"
+  edit-unmerged = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; `git var GIT_EDITOR` `f`"
+  add-unmerged  = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+
+  ours   = !"f() { git checkout --ours   $@ && git add $@; }; f"
+  theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
+
+  # Work In Progress: from https://gist.github.com/492227 and VonC on stackoverflow.
+  # This enables a quick way to add all new and modified files to the index,
+  # while cleaning the index from the files removed from the working tree;
+  # this cleaning will facilitate a rebase, because there won't be any conflict
+  # due to an "unclean" working directory (not in sync with the index).
+  # The unwip will restore the deleted files to the working tree.
+  wip = !"git add --all; git ls-files --deleted -z | xargs -0 git rm; git commit --message=wip"
+  unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
+
+
+  # Stash snapshot - from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+  # Take a snapshot of your current working tree without removing changes.
+  # This is handy for refactoring where you can't quite fit what you've done
+  # into a commit but daren't stray too far from now without a backup.
+  #
+  # Running this:
+  #
+  #    $ git snapshot
+  #
+  # Creates this stash:
+  #
+  #    stash@{0}: On feature/handy-git-tricks: snapshot: Mon Apr 8 12:39:06 BST 2013
+  #
+  # And seemingly no changes to your working tree.
+  #
+  snapshot = !git stash push "snapshot: $(date)" && git stash apply "stash@{0}"
+
+  # List all issues mentioned in commit messages between range of commits
+  #
+  # Best used with tags:
+  #  $ git issues v1.0..v1.1
+  #
+  # But will work with any valid commit range:
+  #  $ git issues master..HEAD
+  issues = !sh -c \"git log $1 --oneline | grep -o \\\"#[0-9]\\+\\\" | sort -u\"
