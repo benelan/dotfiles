@@ -362,7 +362,7 @@ if has("autocmd")
     " Use templates when creating specific new files
     augroup jamin_templates
         autocmd!
-        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/index.html
+        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
         autocmd BufNewFile .gitignore 0r ~/.dotfiles/assets/templates/.gitignore
         autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
         autocmd BufNewFile .prettierrc.json 0r ~/.dotfiles/assets/templates/.prettierrc.json
