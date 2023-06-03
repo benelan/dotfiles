@@ -90,13 +90,13 @@ return {
       require("nvim-treesitter.configs").setup {
         -- stylua: ignore
         ensure_installed = {
-          "astro", "bash", "css", "diff", "dockerfile",
-          "git_config", "git_rebase", "gitcommit", "gitignore",
-          "go", "gomod", "graphql", "html", "http",
-          "javascript", "jsdoc", "json", "jsonc", "latex",
+          -- "astro", "gomod", "graphql", "sql", "latex", "php"
+          "bash", "css", "comment", "diff", "dockerfile",
+          "git_config", "git_rebase", "gitcommit", "gitignore", "go",
+          "html", "http", "javascript", "jsdoc", "json", "jsonc",
           "lua", "luadoc", "luap", "markdown", "markdown_inline",
-          "perl", "php", "python", "query", "regex", "rust",
-          "scss", "sql", "svelte", "toml", "tsx", "typescript",
+          "perl", "python", "query", "regex", "rust",
+          "scss", "svelte", "toml", "tsx", "typescript",
           "vim", "vimdoc", "vue", "yaml",
         },
         highlight = {
