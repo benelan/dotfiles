@@ -1,6 +1,4 @@
 [include]
-  ; https://github.com/GitAlias/gitalias
-  path = ~/.config/git/gitalias
   ; https://github.com/dandavison/delta
   path = ~/.config/git/delta
   ; semi-personal info (mostly to prevent bot emails)
@@ -108,7 +106,7 @@
 
 [mergetool "vimdiff"]
   ; layout available since git v2.37
-  ; if on a later version, use "nvim1337" mergetool
+  ; if on an older version, use "nvim1337" mergetool
   ; https://git-scm.com/docs/vimdiff
   layout = "LOCAL,REMOTE/MERGED+LOCAL,BASE,REMOTE/MERGED"
   trustExitCode = true
@@ -174,21 +172,18 @@
   bd = branch --delete --force
   ; delete multiple branches
   fbd = !git branch | fzf --multi | xargs git branch -D
-  buoc = branch -u origin/$(git symbolic-ref --short HEAD)
+  buoc = !git branch -u origin/$(git symbolic-ref --short HEAD)
   bc = for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes
 
   c = commit --verbose
-  cA = commit --all
-  cm = commit -m
-  ca = commit --amend
-  cane = commit --amend --no-edit
+  cA = commit --verbose --all
+  cm = commit --verbose -m
+  ca = commit --verbose --amend
+  cane = commit --verbose --amend --no-edit
 
   co = checkout
   cob = checkout -b
   com = !git checkout "$(git bdefault)"
-
-  fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
-  fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
 
   cl = clone
 
@@ -284,7 +279,13 @@
   ; find commits by commit message
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
-  ; add and remove file(s) to index
+  ; checkout commity by fuzzy finding w/ fzf
+  fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
+
+  ; get commit sha by fuzzy finding w/ fzf
+  fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+
+  ; add/remove file(s) to/from index
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
 
@@ -305,14 +306,14 @@
   ; list of local branches and their most recent commit
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;----------------------------------------------------------------------------
   ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;----------------------------------------------------------------------------
 
-  # log like - we like this summarization our key performance indicators
+  ; log like - we like this summarization our key performance indicators
   ll = log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'
 
-  # log like long  - we like this summarization our key performance indicators
+  ; log like long  - we like this summarization our key performance indicators
   lll = log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'
 
   ; Ignore all untracked files by appending them to .gitignore:
@@ -332,38 +333,38 @@
   ours   = !"f() { git checkout --ours   $@ && git add $@; }; f"
   theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
-  # Work In Progress: from https://gist.github.com/492227 and VonC on stackoverflow.
-  # This enables a quick way to add all new and modified files to the index,
-  # while cleaning the index from the files removed from the working tree;
-  # this cleaning will facilitate a rebase, because there won't be any conflict
-  # due to an "unclean" working directory (not in sync with the index).
-  # The unwip will restore the deleted files to the working tree.
+  ; Work In Progress: from https://gist.github.com/492227 and VonC on stackoverflow.
+  ; This enables a quick way to add all new and modified files to the index,
+  ; while cleaning the index from the files removed from the working tree;
+  ; this cleaning will facilitate a rebase, because there won't be any conflict
+  ; due to an "unclean" working directory (not in sync with the index).
+  ; The unwip will restore the deleted files to the working tree.
   wip = !"git add --all; git ls-files --deleted -z | xargs -0 git rm; git commit --message=wip"
   unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
 
 
-  # Stash snapshot - from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
-  # Take a snapshot of your current working tree without removing changes.
-  # This is handy for refactoring where you can't quite fit what you've done
-  # into a commit but daren't stray too far from now without a backup.
-  #
-  # Running this:
-  #
-  #    $ git snapshot
-  #
-  # Creates this stash:
-  #
-  #    stash@{0}: On feature/handy-git-tricks: snapshot: Mon Apr 8 12:39:06 BST 2013
-  #
-  # And seemingly no changes to your working tree.
-  #
+  ; Stash snapshot - from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+  ; Take a snapshot of your current working tree without removing changes.
+  ; This is handy for refactoring where you can't quite fit what you've done
+  ; into a commit but daren't stray too far from now without a backup.
+  ;
+  ; Running this:
+  ;
+  ;    $ git snapshot
+  ;
+  ; Creates this stash:
+  ;
+  ;    stash@{0}: On feature/handy-git-tricks: snapshot: Mon Apr 8 12:39:06 BST 2013
+  ;
+  ; And seemingly no changes to your working tree.
+  ;
   snapshot = !git stash push "snapshot: $(date)" && git stash apply "stash@{0}"
 
-  # List all issues mentioned in commit messages between range of commits
-  #
-  # Best used with tags:
-  #  $ git issues v1.0..v1.1
-  #
-  # But will work with any valid commit range:
-  #  $ git issues master..HEAD
+  ; List all issues mentioned in commit messages between range of commits
+  ;
+  ; Best used with tags:
+  ;  $ git issues v1.0..v1.1
+  ;
+  ; But will work with any valid commit range:
+  ;  $ git issues master..HEAD
   issues = !sh -c \"git log $1 --oneline | grep -o \\\"#[0-9]\\+\\\" | sort -u\"

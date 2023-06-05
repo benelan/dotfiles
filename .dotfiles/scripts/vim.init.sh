@@ -163,21 +163,21 @@ install_undotree() {
 # install_abolish
 install_commentary
 install_eunuch
-install_fugitive
-install_obession
+# install_fugitive
+# install_obession
 install_repeat
-install_rsi
+# install_rsi
 install_surround
 # install_vinegar
 
 install_closer
 # install_codi
 # install_easy_align
-install_exchange
+# install_exchange
 # install_grepper
 install_gruvbox_material
-install_rooter
-install_undotree
+# install_rooter
+# install_undotree
 
 # generate help tags
 vim +"helptags ~/.vim/doc" +"quit"
