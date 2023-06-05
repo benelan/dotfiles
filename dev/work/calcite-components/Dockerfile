@@ -34,7 +34,7 @@ RUN apt-get update \
   # Pretty hacky implementation - it relies on the testing block already existing
   # Alternatively, add the options directly the config or a `stencil.docker.config.ts` file
   && perl -pi -e '$_ .= qq(    browserArgs: ["--no-sandbox", "--disable-setuid-sandbox" ],\n) if /^\s+testing\:\s\{\n/' \
-  ./stencil.config.ts && npm install \
+  ./packages.calcite-components/stencil.config.ts && npm install \
   # Create non-root user to fix filesystem permission issues
   && groupadd -r runner && useradd -r -g runner -G audio,video runner \
   && mkdir -p /home/runner/Downloads \
