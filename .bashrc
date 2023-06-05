@@ -33,9 +33,6 @@ for stuffs in ~/.dotfiles/shell/{options,prompt,tools,local}.sh; do
 done
 unset stuffs
 
-[ "$(hostname)" = "jamin-work" ] || [ -z "$WORK" ] &&
-    source ~/.dotfiles/shell/work.sh
-
 #---------------------------------------------------------------------------
 # BASH - COMPLETIONS
 #---------------------------------------------------------------------------

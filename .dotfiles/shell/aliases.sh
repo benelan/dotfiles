@@ -313,3 +313,23 @@ alias ghd="gh dash"
 # Open Octo with my issues/prs
 alias eghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
+
+
+# -----------------------------------------------------------------------------
+# Work
+# -----------------------------------------------------------------------------
+
+# For running npm scripts in a docker container due to a Stencil bug
+# https://github.com/ionic-team/stencil/issues/3853
+# Uses a bind mount so works for local development
+cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
+# shellcheck disable=2139
+alias cc_docker_start="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components"
+# shellcheck disable=2139
+alias cc_docker="$cc_docker_cmd --name calcite-components calcite-components"
+
+alias cc_build_docker="docker build --tag calcite-components ."
+# I need to link the Dockerfile to the current git worktree
+alias cc_link_dockerfile="ln -f ~/dev/work/calcite-components/Dockerfile"
+
+unset cc_docker_cmd

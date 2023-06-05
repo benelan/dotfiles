@@ -466,6 +466,23 @@ if is-supported fzf; then
     }
 fi
 
+
+#---------------------------------------------------------------------------------
+# Work
+#---------------------------------------------------------------------------------
+
+# Toggles a label we use for running visual snapshots on a pull request
+if type -P gh >/dev/null 2>&1; then
+    cc_snapshot() {
+        if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
+            current_branch="$(git symbolic-ref --short HEAD)"
+            gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
+            gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
+            unset current_branch
+        fi
+    }
+fi
+
 #---------------------------------------------------------------------------------
 # Misc
 #---------------------------------------------------------------------------------
@@ -474,3 +491,4 @@ fi
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 # make one or more directories and cd into the last one
 mcd() { mkdir -p -- "$@" && cd -- "${!#}" || return 1; }
+
