@@ -12,7 +12,7 @@ return {
   {
     "vifm/vifm.vim",
     cmd = { "Vifm", "TabVifm", "SplitVifm" },
-    keys = { "-" },
+    keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()
       keymap("n", "-", "<cmd>Vifm<cr>")
     end,
