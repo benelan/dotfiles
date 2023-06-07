@@ -41,6 +41,7 @@ M.icons = {
     Unit = " ",
     Value = " ",
     Variable = " ",
+    Spell = "󰓆 ",
   },
   diagnostics = {
     { name = "Error", text = " ", severity = vim.diagnostic.severity.ERROR },
@@ -49,6 +50,7 @@ M.icons = {
     { name = "Info", text = " ", severity = vim.diagnostic.severity.INFO },
   },
   ui = {
+    Duck = "󰇥 ",
     Bug = " ",
     BugOutline = " ",
     Robot = "󱙺 ",
@@ -71,11 +73,13 @@ M.icons = {
     Branch = " ",
     Expanded = "🞃 ",
     Collapsed = "🞂 ",
+    Text = "󰦨 ", -- 󰦪
     Command = " ",
     Prompt = "❯ ", -- ❯ ❱ ⧽
     Select = "  ", -- ➜  ⮞    🡺  🡲
     Light = " ",
     Separator = "┊",
+    FillTexture = "󰔌 ",
     FillSlash = "╱",
     FillDot = "·",
     Space = "␣",

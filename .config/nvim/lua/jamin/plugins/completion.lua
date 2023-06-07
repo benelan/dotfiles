@@ -69,7 +69,7 @@ return {
       local cmp = require "cmp"
       local ls = require "luasnip"
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
-      local kinds = require("jamin.resources").icons.kind
+      local icons = require("jamin.resources").icons
 
       local has_words_before = function()
         unpack = unpack or table.unpack
@@ -183,10 +183,9 @@ return {
                 vim_item.kind = string.format(" %s  %s  ", icon, vim_item.kind)
                 vim_item.kind_hl_group = hl_group
               end
-            elseif kinds[vim_item.kind] then
-              vim_item.kind = string.format(" %s  %s ", kinds[vim_item.kind], vim_item.kind)
             else
-              vim_item.kind = string.format("    %s  ", vim_item.kind)
+              vim_item.kind =
+                string.format(" %s  %s ", icons.kind[vim_item.kind] or icons.ui.Text, vim_item.kind)
             end
             return vim_item
           end,
