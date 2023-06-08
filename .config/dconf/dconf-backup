@@ -1,0 +1,60 @@
+#!/bin/sh
+
+DCONF_CONFIG="$HOME/.config/dconf"
+
+dump() {
+    dconf dump /org/gnome/desktop/wm/ \
+        >"$DCONF_CONFIG/_org-gnome-desktop-wm"
+    dconf dump /org/gnome/shell/keybindings/ \
+        >"$DCONF_CONFIG/_org-gnome-shell-keybindings"
+    dconf dump /org/gnome/settings-daemon/plugins/media-keys/ \
+        >"$DCONF_CONFIG/_org-gnome-settings-daemon-plugins-media-keys"
+    dconf dump /org/gnome/terminal/ \
+        >"$DCONF_CONFIG/_org-gnome-terminal"
+}
+
+load() {
+    dconf load /org/gnome/desktop/wm/ \
+        <"$DCONF_CONFIG/_org-gnome-desktop-wm"
+    dconf load /org/gnome/shell/keybindings/ \
+        <"$DCONF_CONFIG/_org-gnome-shell-keybindings"
+    dconf load /org/gnome/settings-daemon/plugins/media-keys/ \
+        <"$DCONF_CONFIG/_org-gnome-settings-daemon-plugins-media-keys"
+    dconf load /org/gnome/terminal/ \
+        <"$DCONF_CONFIG/_org-gnome-terminal"
+}
+
+usage() {
+    if [ -n "$1" ]; then
+        echo "$1"
+        echo
+    fi
+    echo "Usage: dconf-backup <command>"
+    echo
+    echo "Commands:"
+    echo "  d,  dump         Export specific dconf settings for backup"
+    echo "  l,  load         Restore the dconf settings that were exported"
+    echo ""
+    echo "Example: \$ dconf-backup dump"
+    exit 1
+}
+
+main() {
+    if [ -n "$1" ]; then
+        case $1 in
+            d | dump)
+                dump
+                ;;
+            l | load)
+                load
+                ;;
+            *)
+                usage "Unknown command passed: $1"
+                ;;
+        esac
+    else
+        usage
+    fi
+}
+
+main "$@"
