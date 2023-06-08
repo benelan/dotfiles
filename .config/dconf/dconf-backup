@@ -1,52 +1,57 @@
-#!/bin/sh
-
-DCONF_CONFIG="$HOME/.config/dconf"
-
-dump() {
-    dconf dump /org/gnome/desktop/wm/ \
-        >"$DCONF_CONFIG/_org-gnome-desktop-wm"
-    dconf dump /org/gnome/shell/keybindings/ \
-        >"$DCONF_CONFIG/_org-gnome-shell-keybindings"
-    dconf dump /org/gnome/settings-daemon/plugins/media-keys/ \
-        >"$DCONF_CONFIG/_org-gnome-settings-daemon-plugins-media-keys"
-    dconf dump /org/gnome/terminal/ \
-        >"$DCONF_CONFIG/_org-gnome-terminal"
-}
-
-load() {
-    dconf load /org/gnome/desktop/wm/ \
-        <"$DCONF_CONFIG/_org-gnome-desktop-wm"
-    dconf load /org/gnome/shell/keybindings/ \
-        <"$DCONF_CONFIG/_org-gnome-shell-keybindings"
-    dconf load /org/gnome/settings-daemon/plugins/media-keys/ \
-        <"$DCONF_CONFIG/_org-gnome-settings-daemon-plugins-media-keys"
-    dconf load /org/gnome/terminal/ \
-        <"$DCONF_CONFIG/_org-gnome-terminal"
-}
+#!/usr/bin/env bash
 
 usage() {
-    if [ -n "$1" ]; then
-        echo "$1"
-        echo
-    fi
-    echo "Usage: dconf-backup <command>"
-    echo
-    echo "Commands:"
-    echo "  d,  dump         Export specific dconf settings for backup"
-    echo "  l,  load         Restore the dconf settings that were exported"
-    echo ""
-    echo "Example: \$ dconf-backup dump"
+    printf "%s\n%s\n" "$1" "$(
+        cat <<EOF
+
+A script to backup or restore dconf settings.
+Usage: dconf-backup <command>
+
+Commands:
+    b,  backup      Export dconf settings specified at the top of the script
+    r,  restore     Restore the dconf settings that were previously exported
+
+EOF
+    )"
     exit 1
+}
+
+declare -a backup_settings=(
+    "org/gnome/desktop/wm"
+    "org/gnome/settings-daemon/plugins/media-keys"
+    "org/gnome/shell/keybindings"
+    "org/gnome/terminal"
+)
+
+DCONF_CONFIG_DIR="$HOME/.config/dconf"
+mkdir -p "$DCONF_CONFIG_DIR"
+
+sanitize_filename() {
+    echo "$DCONF_CONFIG_DIR/$(echo "$1" | tr '/' '_').conf"
+}
+
+backup() {
+    for i in "${backup_settings[@]}"; do
+        dconf dump "/$i/" >"$(sanitize_filename "$i")"
+    done
+}
+
+restore() {
+    for i in "${backup_settings[@]}"; do
+        backup_file="$(sanitize_filename "$i")"
+        [ -f "$backup_file" ] && [ -r "$backup_file" ] &&
+            dconf load "/$i/" <"$backup_file"
+    done
 }
 
 main() {
     if [ -n "$1" ]; then
         case $1 in
-            d | dump)
-                dump
+            b | backup | d | dump)
+                backup
                 ;;
-            l | load)
-                load
+            r | restore | l | load)
+                restore
                 ;;
             *)
                 usage "Unknown command passed: $1"
