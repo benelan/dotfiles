@@ -1,0 +1,26 @@
+[/]
+area-screenshot-clip=['<Shift><Super>s']
+control-center=['<Shift><Super>s']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
+decrease-text-size=['<Shift><Super>underscore']
+increase-text-size=['<Shift><Super>plus']
+next=['F3']
+play=['F4']
+previous=['F2']
+screenshot=@as []
+toggle-contrast=@as []
+
+[custom-keybindings/PopLaunch1]
+binding='Launch1'
+command='gnome-control-center wifi'
+name='WiFi'
+
+[custom-keybindings/custom0]
+binding='<Super>minus'
+command='wezterm start vifm'
+name='Vifm'
+
+[custom-keybindings/custom1]
+binding='<Primary><Alt><Super>space'
+command='tilda'
+name='Open Tilda'
