@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 -------------------------------------------------------------------------------
 ---------------->            Mapping  Modes                   <----------------
 -------------------------------------------------------------------------------
@@ -13,6 +14,7 @@
 -- >          c	    Command-line                                              |
 -- >          t	    Terminal-Job                                              |
 -------------------------->  :h map-listing  <---------------------------------
+
 -- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 

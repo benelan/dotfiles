@@ -129,6 +129,9 @@ nnoremap <leader>E! :<Up><Home><S-Right>!<CR>
 
 nnoremap <silent> <leader>bd :bdelete<CR>
 
+ " Open a new tab of the current buffer and cursor position (tmux style zoom)
+nnoremap <silent> <leader>zz :exe 'tabnew +'. line('.') .' %'<cr>
+
 nnoremap g: <Plug>(ColonOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)

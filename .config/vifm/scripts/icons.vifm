@@ -11,6 +11,7 @@ set classify+='  ::.git/::/,
 
 " Files
 set classify+='  ::.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bashprofile,,.bash_profile,,.bash_logout,,.bash_history,,.bashrc,,.dmrc,,.DS_Store,,.fasd,,.gitconfig,,.gitattributes,,.gitignore,,.inputrc,,.jack-settings,,.mime.types,,.nvidia-settings-rc,,.pam_environment,,.profile,,.recently-used,,.selected_editor,,.tmux.conf,,.xinitrc,,.xinputrc,,config,,bspwmrc,,sxhkdrc,,mimeapps.list,,.zshenv,,.zprofile,,.zshrc,,.zlogin,,.zlogout,,yabairc,,skhdrc,,ini,,user-dirs.dirs,,.wgetrc,,.taskrc,,.nbrc,,.editorconfig,,.curlrc,,.actrc,,.cspell.json::,
+             \   ::.dir_colors,,.dircolors::,
              \   ::.fehbg::,
              \ 󰡨  ::Dockerfile,,docker-compose.yml::,
              \   ::dropbox::,
@@ -28,7 +29,7 @@ set classify+='  ::.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bash
              \   ::.ocamlformat,,dune,,den-project,,esy.json,,esy-lock.json,,reason.json::,
              \   ::README::'
 
-" Extentions
+" Extensions
 set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \   ::*.7z,,*.bz2,,*.cpio,,*.gz,,*.gzip,,*.lha,,*.lzh,,*.lzma,,*.rar,,*.tar,,*.tgz,,*.xz,,*.zip::,
              \   ::*.aup,,*.cue,,*.flac,,*.m4a,,*.mp3,,*.ogg,,*.wav::,
@@ -57,7 +58,7 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \   ::*.diff::,
              \   ::*.dll,,*.exe,,*.msi::,
              \   ::*.epub::,
-             \   ::*.ejs,,*.htm,,*.html,,*.slim,,*.xhtml,,*.xml::,
+             \   ::*.ejs,,*.htm,,*.html,,*.slim,,*.xhtml,,*.xml,,*.vue,,*.svelte,,*.astro::,
              \   ::*.elm::,
              \ |  ::*.fifo::,
              \ 󰟓  ::*.go::,

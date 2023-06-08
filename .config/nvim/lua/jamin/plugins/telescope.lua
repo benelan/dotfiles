@@ -4,38 +4,28 @@ return {
     enabled = false,
     dependencies = { "kkharji/sqlite.lua" },
     event = "VeryLazy",
-    opts = function()
-      local function is_whitespace(line)
-        return vim.fn.match(line, [[^\s*$]]) ~= -1
-      end
-
-      local function all(table)
-        for _, entry in ipairs(table) do
-          if not is_whitespace(entry) then
-            return false
+    opts = {
+      enable_persistent_history = true,
+      content_spec_column = true,
+      continuous_sync = true,
+      on_select = { move_to_front = true },
+      on_paste = { move_to_front = true },
+      on_replay = { move_to_front = true },
+      keys = {
+        telescope = {
+          i = { paste_behind = "<C-h>", paste = "<C-l>" },
+          n = { paste_behind = "h", paste = "l" },
+        },
+      },
+      filter = function(data)
+        for _, entry in ipairs(data.event.regcontents) do
+          if vim.fn.match(entry, [[^\s*$]]) == -1 then
+            return true
           end
         end
-        return true
-      end
-
-      return {
-        enable_persistent_history = true,
-        content_spec_column = true,
-        continuous_sync = true,
-        on_select = { move_to_front = true },
-        on_paste = { move_to_front = true },
-        on_replay = { move_to_front = true },
-        filter = function(data)
-          return not all(data.event.regcontents)
-        end,
-        keys = {
-          telescope = {
-            i = { paste_behind = "<C-h>", paste = "<C-l>" },
-            n = { paste_behind = "h", paste = "l" },
-          },
-        },
-      }
-    end,
+        return false
+      end,
+    },
     -- stylua: ignore
     keys = {
       { "<leader>fy", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>", desc = "Clipboard history" },
@@ -82,6 +72,7 @@ return {
       "nvim-lua/plenary.nvim",
       {
         "nvim-telescope/telescope-ui-select.nvim",
+        enabled = false,
         config = function()
           require("telescope").load_extension "ui-select"
         end,

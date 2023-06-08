@@ -18,7 +18,7 @@ set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
 set tabstop=4 softtabstop=-1 shiftwidth=4 shiftround smarttab expandtab
-set complete-=i wildmenu wildmode=list:longest,full
+set complete-=i wildmenu wildmode=list:longest,full completeopt=longest,menuone,preview
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
 set backupdir=$HOME/.vim/backups noswapfile

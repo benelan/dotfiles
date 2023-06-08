@@ -181,6 +181,28 @@
   ca = commit --verbose --amend
   cane = commit --verbose --amend --no-edit
 
+  ; use fzf to pick an unpushed commit to fixup and then autosquash
+  cf = "!f() { \
+    sha=$(git log @{push}.. --color=always --no-merges \
+    --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+    | fzf-tmux --no-sort --ansi \
+    | awk '{print $1}') \
+    && git commit --fixup $sha \
+    && git rebase -i $sha~1; \
+  }; f"
+
+  ; same as above but pick an unmerged (to default branch) commit.
+  ; Likely requires a force push, hence the extra 'f'
+  cff = "!f() { \
+    sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
+    --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+    | fzf-tmux --no-sort --ansi \
+    | awk '{print $1}') \
+    && git commit --fixup $sha \
+    && git rebase -i $sha~1; \
+  }; f"
+
+
   co = checkout
   cob = checkout -b
   com = !git checkout "$(git bdefault)"
@@ -255,20 +277,8 @@
 
   new = log HEAD@{1}..HEAD@{0}
 
-  ; Pull in remote changes for the current repository and all its submodules.
-  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
-
-  ; switch to a branch, creating it if necessary.
-  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-
-  ; use fzf to fixup commits to autosquash
-  cf = "!f() { sha=\"$(git log -n 20 --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' --color=always --no-merges | fzf-tmux --no-sort --ansi | awk '{print $1}')\" && git commit --fixup \"$sha\" && git rebase -i \"$sha\"~1;}; f"
-
   ; log the last n commits, e.g. $ git ln 69
   ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
-
-  ; find branches containing commit
-  fb = "!f() { git branch -a --contains $1; }; f"
 
   ; find tags containing commit
   ft = "!f() { git describe --always --contains $1; }; f"
@@ -279,11 +289,20 @@
   ; find commits by commit message
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
+  ; find branches containing commit
+  fb = "!f() { git branch -a --contains $1; }; f"
+
   ; checkout commity by fuzzy finding w/ fzf
   fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
 
   ; get commit sha by fuzzy finding w/ fzf
   fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+
+  ; Pull in remote changes for the current repository and all its submodules.
+  up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+
+  ; switch to a branch, creating it if necessary.
+  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
   ; add/remove file(s) to/from index
   hide = update-index --assume-unchanged

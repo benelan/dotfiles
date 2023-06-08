@@ -141,6 +141,27 @@ dedup_lines() {
 # Networking
 #---------------------------------------------------------------------------------
 
+# List out the pid for the process that is currently listening on the provided port
+wtfport() {
+    line="$(lsof -i -P -n | grep LISTEN | grep ":$1")"
+    pid=$(echo "$line" | awk '{print $2}')
+    pid_name=$(echo "$line" | awk '{print $1}')
+
+    # If there's nothing running, exit
+    [[ -z "$pid" ]] && exit 0
+
+    # output the process name to stderr so it won't be piped along
+    echo >&2 -e "$pid_name"
+
+    # print the process id. It can be piped, for example to pbcopy
+    echo -e "$pid"
+}
+
+# Kill the process that is currently listening on the provided port
+killport() { wtfport "$1" | xargs kill -9; }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Find real from shortened url
 unshorten() {
     curl -sIL "$1" | sed -n 's/Location: *//p'
@@ -466,7 +487,6 @@ if is-supported fzf; then
     }
 fi
 
-
 #---------------------------------------------------------------------------------
 # Work
 #---------------------------------------------------------------------------------
@@ -491,4 +511,3 @@ fi
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 # make one or more directories and cd into the last one
 mcd() { mkdir -p -- "$@" && cd -- "${!#}" || return 1; }
-

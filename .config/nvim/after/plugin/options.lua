@@ -15,6 +15,7 @@ vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
+vim.opt.modeline = false
 vim.opt.virtualedit:append "block"
 
 vim.opt.foldmethod = "expr"

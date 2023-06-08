@@ -1,4 +1,4 @@
-" vim: filetype=vifm :
+" vim: filetype=vim :
 " Sample configuration file for vifm (last updated: 31 August, 2021)
 " You can edit this file by hand.
 " The " character at the beginning of a line comments out the line.
@@ -38,7 +38,7 @@ set trashdir=~/.local/share/Trash/files
 
 " This is how many directories to store in the directory history.
 
-set history=100
+set history=420
 
 " Automatically resolve symbolic links on l or Enter.
 
@@ -50,7 +50,7 @@ set sortnumbers
 
 " Maximum number of changes that can be undone.
 
-set undolevels=1000
+set undolevels=1069
 
 " Use Vim's format of help file (has highlighting and "hyperlinks").
 " If you would rather use a plain text help file set novimhelp.
@@ -533,7 +533,7 @@ command! FZFfind : set noquickview
                 \|     execute 'goto' fnameescape($FZF_PICK)
                 \| endif
 
-nnoremap <c-i> <c-g>
+nnoremap <a-i> <c-g>
 nnoremap <c-g> :FZFlocate<cr>
 nnoremap <c-f> :FZFfind<cr>
 nnoremap <c-a> ggvG<cr>
