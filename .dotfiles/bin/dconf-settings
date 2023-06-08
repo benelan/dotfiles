@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 
-usage() {
-    printf "%s\n%s\n" "$1" "$(
-        cat <<EOF
-
-A script to backup or restore dconf settings.
-Usage: dconf-backup <command>
-
-Commands:
-    b,  backup      Export dconf settings specified at the top of the script
-    r,  restore     Restore the dconf settings that were previously exported
-
-EOF
-    )"
-    exit 1
-}
-
 declare -a backup_settings=(
     "org/gnome/desktop/wm"
     "org/gnome/settings-daemon/plugins/media-keys"
     "org/gnome/shell/keybindings"
     "org/gnome/terminal"
 )
+
+usage() {
+    printf "%s\n%s\n" "$1" "$(
+        cat <<EOF
+
+A script to backup or restore dconf settings.
+Usage: dconf-settings <command>
+
+Commands:
+    d,  dump     Backup the dconf settings specified at the top of the script
+    l,  load     Restore the dconf settings that were previously backed up
+
+EOF
+    )"
+    exit 1
+}
 
 DCONF_CONFIG_DIR="$HOME/.config/dconf"
 mkdir -p "$DCONF_CONFIG_DIR"
