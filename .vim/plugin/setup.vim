@@ -140,9 +140,47 @@ vnoremap <leader>r <Plug>(ReplaceOperator)
 " | Helper functions and user commands                                      |
 " ---------------------------------------------------------------------------
 
-command! QuickfixList execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
-nnoremap <silent> <C-q> :QuickfixList<CR>
-nnoremap <silent> <leader>q :QuickfixList<CR>
+command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
+nnoremap <silent> <C-q> :QfToggle<CR>
+nnoremap <silent> <leader>q :QfToggle<CR>
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" Save the current quickfix list to a file.
+command! Qfsave call getqflist()
+    \ ->map({i, x -> (
+    \     x.bufnr != 0
+    \         ? bufname(x.bufnr) .":". x.lnum .":". x.col .":"
+    \         : ''
+    \ ). x.text })
+    \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" Save all open buffers to a file that can be loaded as a quickfix list (-q).
+command! BufSaveAsQf call getbufinfo()
+    \ ->filter({i, x -> x.listed && x.name != ''})
+    \ ->map({i, x -> fnamemodify(x.name, ':~') .':'. string(x.lnum) .': '})
+    \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+" Load all Git changes in the work tree as quickfix entries.
+command! QfFromDiff cgetexpr
+    \ system('git quickfix -m modified')
+
+" Load all Git changes to the current file as location list entries.
+command! LlFromDiff lgetexpr
+    \ system('git quickfix -m modified -- '. expand('%:p'))
+
+" Load Git changes for the specified commits.
+command! -nargs=* QfGit cgetexpr system('git quickfix '. expand('<args>'))
+
+
+" Copy all quickfix entries for the current file into location list entries.
+com! Qf2Ll call getqflist()
+    \ ->filter({i, x -> x.bufnr == bufnr()})
+    \ ->setloclist(0)
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
