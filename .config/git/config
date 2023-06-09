@@ -35,6 +35,14 @@
   ; See https://git-scm.com/docs/git-update-index#_untracked_cache
   untrackedCache = true
 
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
 [apply]
   ; Detect whitespace errors when applying a patch.
   whitespace = fix

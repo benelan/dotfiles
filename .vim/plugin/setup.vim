@@ -29,32 +29,6 @@ let g:netrw_usetab = 1
 let g:netrw_winsize = 25
 let g:netrw_dirhistmax=0
 
-
-" Enable per-command history
-" - When set, CTRL-N and CTRL-P will be bound to "next-history" and
-"   "previous-history" instead of "down" and "up".
-let g:fzf_history_dir = "~/.dotfiles/cache/fzf-history"
-
-" An action can be a reference to a function that processes selected lines
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
-  copen
-  cc
-endfunction
-
-let g:fzf_action = {
-  \ "ctrl-q": function("s:build_quickfix_list"),
-  \ "ctrl-t": "tab split",
-  \ "ctrl-x": "split",
-  \ "ctrl-v": "vsplit" }
-
-" See `man fzf-tmux` for available options
-if exists("$TMUX")
-  let g:fzf_layout = { "tmux": "-p90%,60%" }
-else
-  let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
-endif
-
 " ---------------------------------------------------------------------------
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
@@ -76,13 +50,22 @@ vnoremap . :norm.<CR>
 vnoremap < <gv
 vnoremap > >gv
 
-nnoremap J mzJ`z
-
 nnoremap & :&&<CR>
 vnoremap & :&&<CR>
 
 nnoremap <leader>y <cmd>let @+=@*<cr>
 nnoremap <leader>p "+p
+
+" Use the repeat operator with a visual selection
+" This is useful for performing an edit on a single line, then highlighting a
+" visual block on a number of lines to repeat the edit.
+vnoremap <leader>. :normal .<cr>
+
+" Repeat a macro on a visual selection of lines
+" Same as above but with a macro; complete the command by choosing the register
+" containing the macro.
+vnoremap <leader>@ :normal @
+
 " Create splits
 nnoremap <leader>- :split<cr>
 nnoremap <leader>\ :vsplit<cr>
@@ -148,6 +131,8 @@ nnoremap <silent> <leader>q :QfToggle<CR>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
+
 " Save the current quickfix list to a file.
 command! Qfsave call getqflist()
     \ ->map({i, x -> (
@@ -157,15 +142,11 @@ command! Qfsave call getqflist()
     \ ). x.text })
     \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
 
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 " Save all open buffers to a file that can be loaded as a quickfix list (-q).
 command! BufSaveAsQf call getbufinfo()
     \ ->filter({i, x -> x.listed && x.name != ''})
     \ ->map({i, x -> fnamemodify(x.name, ':~') .':'. string(x.lnum) .': '})
     \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
-
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 " Load all Git changes in the work tree as quickfix entries.
 command! QfFromDiff cgetexpr
@@ -183,6 +164,29 @@ command! -nargs=* QfGit cgetexpr system('git quickfix '. expand('<args>'))
 com! Qf2Ll call getqflist()
     \ ->filter({i, x -> x.bufnr == bufnr()})
     \ ->setloclist(0)
+
+" Maybe return a string if the first arg is not empty.
+function! M(x, y)
+    return a:x == '' || a:x == v:false ? '' : a:y . a:x
+endfunction
+
+" grep all files in the quickfix list.
+command! -nargs=* GrepQflist call getqflist()
+    \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
+    \ ->sort() ->uniq() ->join(' ')
+    \ ->M('grep <args> ')
+    \ ->execute()
+
+" grep across all loaded buffers.
+command! -nargs=* GrepBuflist call range(0, bufnr('$'))
+    \ ->filter({i, x -> buflisted(x)})
+    \ ->map({i, x -> fnameescape(bufname(x))})
+    \ ->join(' ')
+    \ ->M('grep <args> ')
+    \ ->execute()
+
+" grep all files in the arglist.
+command! -nargs=* GrepaAglist grep <args> ##
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -295,21 +299,47 @@ endfunction
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-" The query history for this command will be stored as "ls" inside g:fzf_history_dir.
-" The name is ignored if g:fzf_history_dir is not defined.
-command! -bang -complete=dir -nargs=? LS
-    \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
+if isdirectory(expand("$HOME/dev/lib/fzf"))
+    " Enable per-command history
+    " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
+    "   "previous-history" instead of "down" and "up".
+    let g:fzf_history_dir = "~/.dotfiles/cache/fzf-history"
 
-command! -bang GFiles
-    \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()}, <bang>0))
+    " An action can be a reference to a function that processes selected lines
+    function! s:build_quickfix_list(lines)
+    call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+    copen
+    cc
+    endfunction
 
-command! -bar -bang -nargs=? -complete=buffer Buffers
-    \ call fzf#run(fzf#wrap("buffers",
-    \ {"source": map(filter(range(1, bufnr("$")),
-    \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
-    \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
-    \ "sink": "e"}, <bang>0))
+    let g:fzf_action = {
+    \ "ctrl-q": function("s:build_quickfix_list"),
+    \ "ctrl-t": "tab split",
+    \ "ctrl-x": "split",
+    \ "ctrl-v": "vsplit" }
 
+    " See `man fzf-tmux` for available options
+    if exists("$TMUX")
+    let g:fzf_layout = { "tmux": "-p90%,60%" }
+    else
+    let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
+    endif
+
+    " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
+    " The name is ignored if g:fzf_history_dir is not defined.
+    command! -bang -complete=dir -nargs=? LS
+        \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
+
+    command! -bang GFiles
+        \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()}, <bang>0))
+
+    command! -bar -bang -nargs=? -complete=buffer Buffers
+        \ call fzf#run(fzf#wrap("buffers",
+        \ {"source": map(filter(range(1, bufnr("$")),
+        \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
+        \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
+        \ "sink": "e"}, <bang>0))
+endif
 
 " ---------------------------------------------------------------------------
 " | Autocommands                                                            |

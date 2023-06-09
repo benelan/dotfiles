@@ -15,6 +15,7 @@
 .vim/undos/
 .vim/doc/tags
 .viminfo
+.luarc.json
 # unrelated home directories
 .bun
 .cache

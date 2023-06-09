@@ -1,8 +1,8 @@
 return {
   {
     "nvim-treesitter/playground", -- for creating syntax queries
-    dependencies = "nvim-treesitter/nvim-treesitter",
     enabled = false,
+    dependencies = "nvim-treesitter/nvim-treesitter",
     cmd = "TSPlaygroundToggle",
   },
   -----------------------------------------------------------------------------
@@ -21,6 +21,7 @@ return {
   },
   {
     "ThePrimeagen/refactoring.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     --stylua: ignore
     keys = {
       { "<leader>Rf", " <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>", desc = "Extract function", mode = "v" },
@@ -40,7 +41,6 @@ return {
       prompt_func_return_type = { go = true },
       prompt_func_param_type = { go = true },
     },
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
   },
   -----------------------------------------------------------------------------
   {

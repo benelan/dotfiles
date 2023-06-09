@@ -5,6 +5,7 @@ node_modules/
 build/
 dist/
 Session.vim
+Quickfix.txt
 .*cache*
 *.tmp
 *.bak

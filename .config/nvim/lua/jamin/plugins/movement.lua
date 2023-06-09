@@ -1,11 +1,11 @@
 return {
   {
     dir = "~/dev/lib/fzf",
-    cmd = { "FZF", "GFiles", "Buffers" },
+    cmd = { "FZF" },
     keys = {
-      { "<leader>fzf", ":FZF<cr>", desc = "FZF Files" },
-      { "<leader>fzg", ":GFiles<cr>", desc = "FZF Git Files" },
-      { "<leader>fzb", ":Buffers<cr>", desc = "FZF Buffers" },
+      { "<leader>fzf", "<cmd>FZF<cr>", desc = "FZF Files" },
+      { "<leader>fzg", "<cmd>GFiles<cr>", desc = "FZF Git Files" },
+      { "<leader>fzb", "<cmd>Buffers<cr>", desc = "FZF Buffers" },
     },
   },
   -----------------------------------------------------------------------------

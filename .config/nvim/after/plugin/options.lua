@@ -32,7 +32,6 @@ vim.opt.smartcase = true
 
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
-vim.opt.wildoptions = { "pum", "fuzzy" }
 vim.opt.wildignore:append(
   ".git/*,node_modules/*,dist/*,build/*"
     .. "*.7z,*.avi,*.db,*.docx,*.filepart,*.flac,"

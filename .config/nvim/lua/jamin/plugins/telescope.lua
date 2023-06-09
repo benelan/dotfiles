@@ -100,6 +100,15 @@ return {
         { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffer" },
         { "<leader>f.", "<cmd>Telescope resume<cr>", desc = "Resume previous fuzzying" },
         { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Find registers" },
+        {
+          "<leader>/",
+          function()
+            require("telescope.builtin").current_buffer_fuzzy_find(
+              require("telescope.themes").get_dropdown { winblend = 10, previewer = false }
+            )
+          end,
+          desc = "Fuzzy find in buffer",
+        },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find file" },
         { "<leader>ft", function() telescope_cwd "live_grep" end, desc = "Find text" },
         {
