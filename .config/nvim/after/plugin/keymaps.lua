@@ -384,3 +384,5 @@ keymap("n", "<leader>sP", function()
 
   prezMode = not prezMode
 end, "Toggle Present mode")
+
+keymap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
