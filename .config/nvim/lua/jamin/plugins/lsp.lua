@@ -243,10 +243,21 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
+      local hover = require("null-ls").builtins.hover
       local formatting = require("null-ls").builtins.formatting
       local diagnostics = require("null-ls").builtins.diagnostics
       local code_actions = require("null-ls").builtins.code_actions
-      local hover = require("null-ls").builtins.hover
+
+      local has_stylelint_configfile = function(utils)
+        return utils.root_has_file {
+          ".stylelintrc",
+          ".stylelintrc.js",
+          ".stylelintrc.json",
+          ".stylelintrc.yml",
+          "stylelint.config.js",
+          "node_modules/.bin/stylelint",
+        }
+      end
 
       local quiet_diagnostics = { virtual_text = false, signs = false }
 
@@ -256,11 +267,14 @@ return {
         debug = false,
         fallback_severity = vim.diagnostic.severity.WARN,
         sources = {
+          hover.dictionary,
+          hover.printenv,
+          -- code_actions.gitsigns,
           code_actions.gitrebase,
           code_actions.refactoring,
-          -- code_actions.gitsigns,
           code_actions.proselint,
           code_actions.shellcheck,
+
           diagnostics.actionlint.with {
             runtime_condition = function()
               return vim.api
@@ -268,6 +282,7 @@ return {
                 :match "github/workflows" ~= nil
             end,
           },
+
           diagnostics.codespell.with {
             -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
             extra_args = {
@@ -278,24 +293,34 @@ return {
             },
             diagnostic_config = quiet_diagnostics,
           },
+
+          diagnostics.proselint.with { diagnostic_config = quiet_diagnostics },
+          diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
+
           diagnostics.markdownlint.with {
             extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
             prefer_local = "node_modules/.bin",
+            diagnostic_config = quiet_diagnostics,
           },
-          diagnostics.proselint.with { diagnostic_config = quiet_diagnostics },
-          diagnostics.stylelint.with { prefer_local = "node_modules/.bin" },
-          diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
+
+          diagnostics.stylelint.with {
+            prefer_local = "node_modules/.bin",
+            diagnostic_config = quiet_diagnostics,
+            condition = has_stylelint_configfile,
+          },
+          formatting.stylelint.with {
+            prefer_local = "node_modules/.bin",
+            condition = has_stylelint_configfile,
+          },
+
           formatting.markdown_toc,
           formatting.prettier.with { prefer_local = "node_modules/.bin" },
+          formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+          formatting.stylua,
+          formatting.trim_whitespace,
           -- Reminder: be careful with shellharden if you (ab)use expansion
           -- it can break your code w/o warning when you format()
           -- formatting.shellharden,
-          formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-          formatting.stylelint.with { prefer_local = "node_modules/.bin" },
-          formatting.stylua,
-          formatting.trim_whitespace,
-          hover.dictionary,
-          hover.printenv,
         },
       }
     end,
