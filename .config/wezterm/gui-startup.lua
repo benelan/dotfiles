@@ -17,7 +17,11 @@ M.startup_work = function(startup_cmd)
       args = startup_cmd.args,
     }
     -- hacky workaround since wezterm.running_under_wsl() is incorrectly `false`
-  elseif process_name == "wslhost.exe" or process_name == "wsl.exe" or wezterm.running_under_wsl() then
+  elseif
+    process_name == "wslhost.exe"
+    or process_name == "wsl.exe"
+    or wezterm.running_under_wsl()
+  then
     local _, build_pane = dash_window:spawn_tab {
       workspace = "work",
     }

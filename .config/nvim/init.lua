@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 })
 
 -- workaround for: https://github.com/nvim-telescope/telescope.nvim/issues/699
-vim.api.nvim_create_autocmd({ "BufEnter", "BufNew"  }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
   group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", { clear = true }),
   command = "set foldexpr=nvim_treesitter#foldexpr()",
 })
