@@ -282,6 +282,7 @@ if has("autocmd")
               \	endif
         endif
 
+        autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()
     augroup END
 
     command! Src :source $MYVIMRC
@@ -354,12 +355,9 @@ endfunction
 " | Statusline                                                         |
 " ----------------------------------------------------------------------
 
-function! FugitiveGitBranch()
-  if exists("g:loaded_fugitive") && FugitiveGitDir() != expand("~") .. "/.git"
-    let head = fugitive#Head()
-    return head != "" ? "   " .. head .. "  " : ""
-  endif
-  return ""
+let g:git_branch="" " gets set in an autocmd above
+function! DisplayGitBranch()
+    return g:git_branch != "" ? "   " .. g:git_branch .. "  " : ""
 endfunction
 
 set statusline=%#TabLineSel#                    " TabLineSel highlight
@@ -373,7 +371,7 @@ set statusline+=%q                              " Quickfix/location list flag
 set statusline+=%y                              " File type
 set statusline+=\ \                             " Whitespace
 set statusline+=%#TabLine#                      " TabLine highlight
-set statusline+=%{g:FugitiveGitBranch()}        " Git branch name
+set statusline+=%{g:DisplayGitBranch()}         " Git branch name
 set statusline+=%#TabLineFill#                  " TabLineFill highlight
 set statusline+=%=                              " Left/Right separator
 set statusline+=\ \                             " Whitespace

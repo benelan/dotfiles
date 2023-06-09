@@ -286,14 +286,12 @@ command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function! g:GitRootDirectory()
-  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
-  let root = systemlist("git -C " . shellescape(dir) . " rev-parse --show-toplevel")[0]
+  let root = systemlist("git -C " . shellescape(expand("%:p:h"),) . " rev-parse --show-toplevel")[0]
   return v:shell_error ? "" : root
 endfunction
 
-function! g:GitBranch()
-  let dir = substitute(split(expand("%:p:h"), "[/\\]\.git\([/\\]\|$\)")[0], "^fugitive://", "", "")
-  let branch = systemlist("git -C " . shellescape(dir) . " branch --show-current")[0]
+function! GitBranch()
+  let branch = systemlist("git -C " . shellescape(expand("%:p:h"),) . " branch --show-current")[0]
   return v:shell_error ? "" : branch
 endfunction
 
@@ -331,14 +329,28 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
         \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
 
     command! -bang GFiles
-        \ call fzf#run(fzf#wrap("gfiles", {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()}, <bang>0))
+        \ call fzf#run(fzf#wrap("gfiles",
+        \ {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()},
+        \<bang>0))
 
     command! -bar -bang -nargs=? -complete=buffer Buffers
         \ call fzf#run(fzf#wrap("buffers",
-        \ {"source": map(filter(range(1, bufnr("$")),
-        \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"), "bufname(v:val)"),
-        \ "options": ["+m", "-x", "--ansi", "--prompt", "Buffer > ", "--query", <q-args>],
-        \ "sink": "e"}, <bang>0))
+        \ {"source": map(
+            \ filter(
+                \ range(1, bufnr("$")),
+                \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"
+            \ ),
+            \ "bufname(v:val)"
+        \ ),
+        \ "options": [
+            \ "+m",
+            \ "-x",
+            \ "--ansi",
+            \ "--prompt", "Buffer > ",
+            \ "--query", <q-args>
+        \ ],
+        \ "sink": "e"},
+        \ <bang>0))
 endif
 
 " ---------------------------------------------------------------------------
