@@ -81,6 +81,8 @@ nnoremap J mzJ`z
 nnoremap & :&&<CR>
 vnoremap & :&&<CR>
 
+nnoremap <leader>y <cmd>let @+=@*<cr>
+nnoremap <leader>p "+p
 " Create splits
 nnoremap <leader>- :split<cr>
 nnoremap <leader>\ :vsplit<cr>

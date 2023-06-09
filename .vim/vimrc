@@ -13,7 +13,7 @@ endif
 
 set omnifunc=syntaxcomplete#Complete completefunc=syntaxcomplete#Complete
 set number relativenumber linebreak backspace=indent,eol,start
-set mouse=a ttymouse=sgr mousehide clipboard^=unnamed,unnamedplus
+set mouse=a ttymouse=sgr mousehide clipboard^=unnamed
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
