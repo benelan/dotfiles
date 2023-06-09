@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 declare -a backup_settings=(
-    "org/gnome/desktop/wm"
-    "org/gnome/settings-daemon/plugins/media-keys"
+    "org/gnome/desktop"
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+    "org/gnome/shell/extensions"
     "org/gnome/shell/keybindings"
     "org/gnome/terminal"
 )
@@ -30,13 +31,13 @@ sanitize_filename() {
     echo "$DCONF_CONFIG_DIR/$(echo "$1" | tr '/' '_').conf"
 }
 
-backup() {
+dump() {
     for i in "${backup_settings[@]}"; do
         dconf dump "/$i/" >"$(sanitize_filename "$i")"
     done
 }
 
-restore() {
+load() {
     for i in "${backup_settings[@]}"; do
         backup_file="$(sanitize_filename "$i")"
         [ -f "$backup_file" ] && [ -r "$backup_file" ] &&
@@ -47,11 +48,11 @@ restore() {
 main() {
     if [ -n "$1" ]; then
         case $1 in
-            b | backup | d | dump)
-                backup
+            d | dump)
+                dump
                 ;;
-            r | restore | l | load)
-                restore
+            l | load)
+                load
                 ;;
             *)
                 usage "Unknown command passed: $1"
