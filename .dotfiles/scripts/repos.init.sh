@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 OVERWRITE_REPOS=${OVERWRITE_REPOS:-false}
@@ -47,6 +47,7 @@ clone_gh_repo_bare() {
     mkdir -p "$PARENT_PATH"
     repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
 
+    printf "\n%s\n---------------------\n" "$2"
     if [ -d "$repo_dir" ]; then
         cd "$repo_dir" || return
 
@@ -78,9 +79,8 @@ clone_gh_repo_bare() {
 
 clone_gh_repo_bare "work" "Esri/calcite-components"
 clone_gh_repo_bare "work" "Esri/calcite-components-examples"
-clone_gh_repo "work" "ArcGIS/calcite-components-output-targets"
+clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
 clone_gh_repo "work" "Esri/jsapi-resources"
-clone_gh_repo "work" "benelan/arcgis-esm-samples"
 clone_gh_repo "work" "benelan/calcite-samples"
 clone_gh_repo "work" "benelan/build-sizes"
 clone_gh_repo "work" "benelan/github-scripts"
@@ -89,5 +89,24 @@ clone_gh_repo "work" "benelan/need-info-action"
 clone_gh_repo "work" "benelan/test"
 clone_gh_repo "personal" "benelan/git-mux"
 clone_gh_repo "personal" "benelan/notes"
+clone_gh_repo "personal" "benelan/choroator"
+
+if [[ "$(os-detect)" =~ "linux" ]]; then
+    # install gruvbox gnome theme and icons
+    clone_gh_repo "lib" "SylEleuth/gruvbox-plus-icon-pack"
+    clone_gh_repo "lib" "Fausto-Korpsvart/Gruvbox-GTK-Theme"
+    cp -r ~/dev/lib/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
+    cp -r ~/dev/lib/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL ~/.themes
+    # remove the repos because they are yuuge
+    rm -rf ~/dev/lib/gruvbox-plus-icon-pack
+    rm -rf ~/dev/lib/Gruvbox-GTK-Theme
+
+    # while we're doing theming stuff, might as well ad a cursor
+    cd ~/dev/lib
+    curl -sSLO https://limitland.gitlab.io/flatbedcursors/FlatbedCursors-0.5.2.tar.bz2
+    extract FlatbedCursors-0.5.2.tar.bz2
+    cp -r FlatbedCursors-Orange ~/.icons
+    rm -rf FlatbedCursors*
+fi
 
 unset WORK_PATH PERSONAL_PATH OVERWRITE_REPOS

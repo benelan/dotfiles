@@ -39,11 +39,11 @@ if [[ "$os" == "linux" ]]; then
         case "$system_info" in
             *"NAME=Ubuntu"*) distro="ubuntu" ;;
             *"NAME=Pop!_OS"*) distro="pop" ;;
-            *"NAME=Linux Mint"*) distro="linuxmint" ;;
+            *"NAME=Linux Mint"*) distro="mint" ;;
             *"NAME=Zorin"*) distro="zorin" ;;
             *"NAME=elementary OS"*) distro="elementary" ;;
             *"NAME=Debian"*) distro="debian" ;;
-            *"NAME=Cumulus"*) distro="cumulus-linux" ;;
+            *"NAME=Cumulus"*) distro="cumulus" ;;
             *"NAME=Raspbian"*) distro="raspbian" ;;
             *"NAME=Kali"*) distro="kali" ;;
             *"NAME=Xbian"*) distro="xbian" ;;
@@ -63,15 +63,18 @@ if [[ "$os" == "linux" ]]; then
             *"NAME=CASP"*) distro="casp" ;;
             *"NAME=XCP-ng"*) distro="XCP-ng" ;;
             *"NAME=XenServer"*) distro="xenenterprise" ;;
-            *"NAME=Alma"*) distro="almalinux" ;;
+            *"NAME=Alma"*) distro="alma" ;;
             *"NAME=Alpine"*) distro="alpine" ;;
             *"NAME=Antergos"*) distro="antergos" ;;
             *"NAME=Slackware"*) distro="slackware" ;;
             *) distro="unknown" ;;
         esac
     fi
+
+    # append debian/ubuntu to their derivatives for pattern matching
+    # so you can do '*ubuntu' which will match derivatives too
     debian_derivatives=(ubuntu raspbian kali xbian)
-    ubuntu_derivatives=(pop linuxmint zorin elementary)
+    ubuntu_derivatives=(pop xmint zorin elementary)
     if [[ " ${debian_derivatives[*]} " =~ " ${distro} " ]]; then
         os="linux_${distro}_-_debian"
     elif [[ " ${ubuntu_derivatives[*]} " =~ " $distro " ]]; then
@@ -80,4 +83,5 @@ if [[ "$os" == "linux" ]]; then
         os="linux_$distro"
     fi
 fi
+
 echo "$os"
