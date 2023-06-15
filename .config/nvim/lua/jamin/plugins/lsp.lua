@@ -37,7 +37,6 @@ return {
             "codespell",
             "markdown-toc",
             "markdownlint",
-            "proselint",
             "shellcheck",
             "shfmt",
             "stylua",
@@ -259,7 +258,7 @@ return {
       local quiet_diagnostics = { virtual_text = false, signs = false }
 
       -- Install with Mason if you don't have all of these linters/formatters
-      -- :MasonInstall actionlint cspell jq shellcheck...
+      -- :MasonInstall shellcheck stylelint prettier markdownlint ...
       return {
         debug = false,
         fallback_severity = vim.diagnostic.severity.WARN,
@@ -269,7 +268,6 @@ return {
           -- code_actions.gitsigns,
           code_actions.gitrebase,
           code_actions.refactoring,
-          code_actions.proselint,
           code_actions.shellcheck,
 
           diagnostics.actionlint.with {
@@ -291,7 +289,6 @@ return {
             diagnostic_config = quiet_diagnostics,
           },
 
-          diagnostics.proselint.with { diagnostic_config = quiet_diagnostics },
           diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
 
           diagnostics.markdownlint.with {
