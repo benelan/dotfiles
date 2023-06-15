@@ -10,7 +10,7 @@ get_default_branch() {
 }
 
 clone_gh_repo() {
-    PARENT_PATH="$HOME/dev/${1:-"personal"}"
+    PARENT_PATH="$HOME/dev/$1"
     mkdir -p "$PARENT_PATH"
     repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
 
@@ -88,15 +88,17 @@ clone_gh_repo "work" "benelan/milestone-action"
 clone_gh_repo "work" "benelan/need-info-action"
 clone_gh_repo "work" "benelan/test"
 clone_gh_repo "personal" "benelan/git-mux"
-clone_gh_repo "personal" "benelan/notes"
+clone_gh_repo "" "benelan/notes"
 clone_gh_repo "personal" "benelan/choroator"
 
 if [[ "$(os-detect)" =~ "linux" ]]; then
     # install gruvbox gnome theme and icons
     clone_gh_repo "lib" "SylEleuth/gruvbox-plus-icon-pack"
     clone_gh_repo "lib" "Fausto-Korpsvart/Gruvbox-GTK-Theme"
-    cp -r ~/dev/lib/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
-    cp -r ~/dev/lib/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL ~/.themes
+    mkdir -p ~/.icons/Gruvbox-Plus-Dark
+    mkdir -p ~/.themes/Gruvbox-Dark-BL
+    cp -r ~/dev/lib/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark
+    cp -r ~/dev/lib/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL
     # remove the repos because they are yuuge
     rm -rf ~/dev/lib/gruvbox-plus-icon-pack
     rm -rf ~/dev/lib/Gruvbox-GTK-Theme
@@ -105,7 +107,8 @@ if [[ "$(os-detect)" =~ "linux" ]]; then
     cd ~/dev/lib
     curl -sSLO https://limitland.gitlab.io/flatbedcursors/FlatbedCursors-0.5.2.tar.bz2
     extract FlatbedCursors-0.5.2.tar.bz2
-    cp -r FlatbedCursors-Orange ~/.icons
+    mkdir -p ~/.icons/FlatbedCursors-Orange/
+    cp -r FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
     rm -rf FlatbedCursors*
 fi
 
