@@ -248,7 +248,7 @@ return {
               ["conf"] = os.getenv "HOME" .. "/.config",
               ["nvim"] = os.getenv "HOME" .. "/.config/nvim",
               ["personal"] = os.getenv "HOME" .. "/dev/personal",
-              ["notes"] = os.getenv "HOME" .. "/dev/personal/notes",
+              ["notes"] = os.getenv "HOME" .. "/dev/notes",
               ["work"] = os.getenv "HOME" .. "/dev/work",
               ["cc"] = os.getenv "HOME" .. "/dev/work/calcite-components",
             },
