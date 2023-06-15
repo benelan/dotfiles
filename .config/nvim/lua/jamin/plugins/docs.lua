@@ -34,6 +34,8 @@ return {
         MkdnMoveSource = { "n", "<leader>zR" },
         MkdnTab = { "i", "<Tab>" },
         MkdnSTab = { "i", "<S-Tab>" },
+        MkdnIncreaseHeading = { "n", "<" },
+        MkdnDecreaseHeading = { "n", ">" },
         MkdnTableNextCell = false,
         MkdnTablePrevCell = false,
         MkdnFoldSedtion = false,
