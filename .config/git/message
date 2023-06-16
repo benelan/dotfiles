@@ -1,17 +1,17 @@
 
 
-; ------------------------------------------------------------------------
-; Conventional Commit Types
-;   - fix:      A bug fix
-;   - feat:     A new feature
-;   - refactor: A code change that neither fixes a bug nor adds a feature
-;   - perf:     A code change that improves performance
-;   - test:     Add or fix automated tests (e.g. unit, e2e, integration)
-;   - docs:     Documentation only changes, including code comments
-;   - ci:       Changes to CI configuration files, workflows, and scripts
-;   - chore:    Other changes that don't modify src or test files
-;   - build:    Changes to the build system or external dependencies
-;   - style:    Formatting changes that don't effect meaning/functionality
-;   - revert:   Reverts a previous commit
-; ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# Conventional Commit Types
+#   - fix:      A bug fix
+#   - feat:     A new feature
+#   - refactor: A code change that neither fixes a bug nor adds a feature
+#   - perf:     A code change that improves performance
+#   - test:     Add or fix automated tests (e.g. unit, e2e, integration)
+#   - docs:     Documentation only changes, including code comments
+#   - ci:       Changes to CI configuration files, workflows, and scripts
+#   - chore:    Other changes that don't modify src or test files
+#   - build:    Changes to the build system or external dependencies
+#   - style:    Formatting changes that don't effect meaning/functionality
+#   - revert:   Reverts a previous commit
+# ------------------------------------------------------------------------
 
