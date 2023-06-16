@@ -88,28 +88,7 @@ clone_gh_repo "work" "benelan/milestone-action"
 clone_gh_repo "work" "benelan/need-info-action"
 clone_gh_repo "work" "benelan/test"
 clone_gh_repo "personal" "benelan/git-mux"
-clone_gh_repo "" "benelan/notes"
 clone_gh_repo "personal" "benelan/choroator"
-
-if [[ "$(os-detect)" =~ "linux" ]]; then
-    # install gruvbox gnome theme and icons
-    clone_gh_repo "lib" "SylEleuth/gruvbox-plus-icon-pack"
-    clone_gh_repo "lib" "Fausto-Korpsvart/Gruvbox-GTK-Theme"
-    mkdir -p ~/.icons/Gruvbox-Plus-Dark
-    mkdir -p ~/.themes/Gruvbox-Dark-BL
-    cp -r ~/dev/lib/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark
-    cp -r ~/dev/lib/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL
-    # remove the repos because they are yuuge
-    rm -rf ~/dev/lib/gruvbox-plus-icon-pack
-    rm -rf ~/dev/lib/Gruvbox-GTK-Theme
-
-    # while we're doing theming stuff, might as well ad a cursor
-    cd ~/dev/lib
-    curl -sSLO https://limitland.gitlab.io/flatbedcursors/FlatbedCursors-0.5.2.tar.bz2
-    extract FlatbedCursors-0.5.2.tar.bz2
-    mkdir -p ~/.icons/FlatbedCursors-Orange/
-    cp -r FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
-    rm -rf FlatbedCursors*
-fi
+clone_gh_repo "" "benelan/notes"
 
 unset WORK_PATH PERSONAL_PATH OVERWRITE_REPOS
