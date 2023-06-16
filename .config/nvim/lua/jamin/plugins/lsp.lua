@@ -149,16 +149,16 @@ return {
           })
         end
 
-        bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
         bufmap("n", "K", vim.lsp.buf.hover, "Hover")
-        bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-        bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
+        bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
         bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-        bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
+        bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
+        bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
+        bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
         bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-        bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
         bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostic")
         bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
+        bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
         bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
         bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
       end
@@ -185,7 +185,7 @@ return {
       -- from https://github.com/nvim-lua/kickstart.nvim
 
       -- Command for toggling autoformatting
-      local format_is_enabled = true
+      local format_is_enabled = false
       vim.api.nvim_create_user_command("AutoFormatToggle", function()
         format_is_enabled = not format_is_enabled
         print("Setting autoformatting to: " .. tostring(format_is_enabled))

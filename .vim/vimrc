@@ -113,14 +113,12 @@ let mapleader = " "
 if isdirectory(expand("$HOME/dev/lib/fzf"))
     set runtimepath+=~/dev/lib/fzf
     nnoremap <leader>ff :FZF<CR>
-    vnoremap <leader>ff :FZF<CR>
     nnoremap <leader>fg :GFiles<CR>
-    vnoremap <leader>fg :GFiles<CR>
     nnoremap <leader>fb :Buffers<CR>
-    vnoremap <leader>fb :Buffers<CR>
 endif
 
 nnoremap Y y$
+vnoremap Y y
 
 nnoremap n nzzzv
 nnoremap N Nzzzv
@@ -144,6 +142,16 @@ endif
 if empty(mapcheck("<C-W>", "i"))
   inoremap <C-W> <C-G>u<C-W>
 endif
+
+"" https://vi.stackexchange.com/a/213
+" move down jumping over blank lines and indents
+nnoremap <silent> gJ :let _=&lazyredraw<CR>
+            \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
+            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+" move up jumping over blank lines and indents
+nnoremap <silent> gK :let _=&lazyredraw<CR>
+            \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
+            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 "" :W sudo saves the file
 command! W execute "w !sudo tee % > /dev/null" <bar> edit!
@@ -296,8 +304,13 @@ if has("autocmd")
         " autocmd BufWritePost *.py silent make! <afile> | silent redraw!
         autocmd FileType bash,sh compiler shellcheck
         " autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
-        autocmd FileType javascript,typescript,javascriptreact,typescriptreact
-              \ compiler eslint | set formatprg=npx\ prettier\ --\ --stdin-filepath\ %
+        autocmd FileType javascript,typescript,javascriptreact,typescriptreact,vue,svelte compiler eslint
+
+        autocmd Filetype lua setlocal formatprg=stylua\ --indent-type="Spaces"\ --stdin-filepath\ %\2>\ /dev/null
+        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,javascript,typescript,javascriptreact,typescriptreact
+              \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\2>\ /dev/null
+              \| setlocal equalprg=npx\ prettier\ --\ --stdin-filepath\ %\2>\ /dev/null
+
         " autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
 
         autocmd QuickFixCmdPost [^l]* cwindow
@@ -322,7 +335,7 @@ endif
 " ----------------------------------------------------------------------
 
 let s:term_buf_nr = -1
-function! s:ToggleTerminal() abort
+function! s:TerminalToggle() abort
     if s:term_buf_nr == -1
         execute "botright terminal"
         let s:term_buf_nr = bufnr("$")
@@ -331,15 +344,16 @@ function! s:ToggleTerminal() abort
             execute "bdelete! " . s:term_buf_nr
         catch
             let s:term_buf_nr = -1
-            call <SID>ToggleTerminal()
+            call <SID>TerminalToggle()
             return
         endtry
         let s:term_buf_nr = -1
     endif
 endfunction
 
-nnoremap <silent> <leader>T :call <SID>ToggleTerminal()<CR>
-tnoremap <silent> <leader>T <C-w>N:call <SID>ToggleTerminal()<CR>
+command! TerminalToggle call <sid>TerminalToggle()
+nnoremap <silent> <leader>T <cmd>TerminalToggle<cr>
+tnoremap <silent> <leader>T <C-w>N:TerminalToggle<cr>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

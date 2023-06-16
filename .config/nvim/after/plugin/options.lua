@@ -24,8 +24,14 @@ vim.opt.foldlevelstart = 99
 
 if vim.fn.executable "rg" == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --glob '!{.git,node_modules}'"
+  vim.opt.grepformat = {
+    "%f:%l:%c:%m",
+    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.",
+    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect.",
+    "%-GRunning with --debug will show why files are being skipped.",
+  }
 end
-vim.opt.grepformat:prepend "%f:%l:%c:%m"
+
 vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true

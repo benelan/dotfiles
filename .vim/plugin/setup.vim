@@ -91,16 +91,6 @@ inoremap <C-Up> <C-O>O
 cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
 cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
-"" https://vi.stackexchange.com/a/213
-" move down jumping over blank lines and indents
-nnoremap <silent> gJ :let _=&lazyredraw<CR>
-            \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
-            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-" move up jumping over blank lines and indents
-nnoremap <silent> gK :let _=&lazyredraw<CR>
-            \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
-            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
 " use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
 " use entire buffer as an object
@@ -419,11 +409,8 @@ if has("autocmd")
 
     augroup jamin_toggle_options
         autocmd!
-        " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-        "  autocmd BufEnter,FocusGained,WinEnter *
-        "                 \ if &number && mode() != "i" | set relativenumber | endif
-        "  autocmd BufLeave,FocusLost,WinLeave   *
-        "                 \ if &number | set norelativenumber | endif
+        "  autocmd BufEnter,FocusGained,WinEnter * if &number | set relativenumber | endif
+        "  autocmd BufLeave,FocusLost,WinLeave * if &number | set norelativenumber | endif
 
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
@@ -444,8 +431,8 @@ if has("autocmd")
 
    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    " Use templates when creating specific new files
-    augroup jamin_templates
+    " Use skeletons when creating specific new files
+    augroup jamin_skeletons
         autocmd!
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
         autocmd BufNewFile .gitignore 0r ~/.dotfiles/assets/templates/.gitignore
