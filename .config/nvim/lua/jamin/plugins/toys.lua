@@ -147,7 +147,7 @@ return {
     -- enabled = false,
     tag = "legacy",
     event = "LspAttach",
-    config = {
+    opts = {
       text = { spinner = "circle" },
       window = { blend = 0 },
       sources = { ["null-ls"] = { ignore = true } },

@@ -74,6 +74,11 @@ install_rust() {
     pathappend "$HOME/.cargo/bin"
 }
 
+install_nim() {
+    curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+    pathappend "$HOME/.nimble/bin"
+}
+
 # Install the Go language
 # https://go.dev/doc/install
 install_golang() {
@@ -124,14 +129,10 @@ install_cargo_packages() {
 # https://www.npmjs.com
 install_node_packages() {
     if [ -f "$DEPS_DIR/node" ]; then
-        if is-supported volta; then
-            volta install $(cat "$DEPS_DIR/node")
-        else
-            if ! is-supported node; then
-                install_volta # only works on x86_64 architectures for now
-            fi
-            npm install -g $(cat "$DEPS_DIR/node")
+        if ! is-supported volta; then
+            install_volta # only works on x86_64 architectures for now
         fi
+            npm install -g $(cat "$DEPS_DIR/node")
     fi
 }
 
@@ -153,16 +154,10 @@ install_go_packages() {
 # https://pypi.org/project/pipx
 install_pip_packages() {
     if [ -f "$DEPS_DIR/pip" ]; then
-        is-supported pipx && pipx="pipx install"
-
         while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            ${pipx:-pip install --user} "$pkg"
+            pip3 install --user "$pkg"
         done <"$DEPS_DIR/pip"
-
-        if [ -z "$pipx" ]; then
-            pipx upgrade-all
-        fi
-        unset pkg pipx
+        unset pkg
     fi
 }
 
@@ -180,12 +175,15 @@ install_git_extras() {
     curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh | sudo bash /dev/stdin
 }
 
+# install_rust
+# install_nim
+# install_go
 # install_git_extras
 # install_fonts_full
 install_fonts_minimal
 install_gnome_theme
 install_starship
 install_node_packages
+install_pip_packages
 install_cargo_packages
 # install_go_packages
-# install_pip_packages

@@ -232,7 +232,7 @@ fgco() {
         PICK_BRANCH_CMD="fzf"
         [ "$#" -gt 0 ] && shift
     else
-        # Choose the first branch if fzf isn't isntalled
+        # Choose the first branch if fzf isn't installed
         # The branches are sorted by commit date,
         # so this is usually what I want
         PICK_BRANCH_CMD="head -n 1"

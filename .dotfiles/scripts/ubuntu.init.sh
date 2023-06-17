@@ -5,15 +5,25 @@ sudo -v
 
 # Install scripts specific to Ubuntu/Debian based operating systems
 
+DEPS_DIR="$HOME/.dotfiles/deps"
+
 # Install packages for Ubuntu/Debian
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 install_apt_packages() {
-    # shellcheck disable=2046
-    sudo apt install $(cat "$HOME/.dotfiles/deps/apt")
+    if [ -f "$DEPS_DIR/apt" ]; then
+        while IFS="" read -r pkg || [ -n "$pkg" ]; do
+            sudo apt install "$pkg"
+        done <"$DEPS_DIR/apt"
+        unset pkg
+    fi
 }
 install_apt_gui_packages() {
-    # shellcheck disable=2046
-    sudo apt install $(cat "$HOME/.dotfiles/deps/apt-gui")
+    if [ -f "$DEPS_DIR/apt-gui" ]; then
+        while IFS="" read -r pkg || [ -n "$pkg" ]; do
+            sudo apt install "$pkg"
+        done <"$DEPS_DIR/apt-gui"
+        unset pkg
+    fi
 }
 
 # Install VS Code

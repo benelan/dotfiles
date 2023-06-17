@@ -26,7 +26,6 @@ return {
   {
     "petertriho/cmp-git", -- issue/pr/mentions/commit in git_commit/octo buffers
     ft = writing_filetypes,
-    filetypes = writing_filetypes,
   },
   {
     "uga-rosa/cmp-dictionary",
