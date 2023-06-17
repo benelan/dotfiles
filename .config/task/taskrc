@@ -1,2 +1,3 @@
 data.location=~/dev/notes/.task
-hooks.location=~/.config/task/hooks
+hooks.location=~/dev/notes/.task/hooks
+uda.priority.values=H,M,,L

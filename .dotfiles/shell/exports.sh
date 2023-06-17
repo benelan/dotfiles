@@ -3,7 +3,7 @@
 export DEV="$HOME/dev"
 export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
-export NOTES="$PERSONAL/notes"
+export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
 
 export LESS="-diwMJRQ"

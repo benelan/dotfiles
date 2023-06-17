@@ -256,6 +256,12 @@ is-supported gnome-screensaver-command &&
     alias afk='gnome-screensaver-command --lock'
 
 # -----------------------------------------------------------------------------
+# Taskwarrior
+# -----------------------------------------------------------------------------
+
+alias t="task"
+
+# -----------------------------------------------------------------------------
 # Git
 # -----------------------------------------------------------------------------
 
@@ -266,6 +272,9 @@ alias glz="lazygit"
 # deletes local branches already squash merged into the default branch
 # shellcheck disable=2016,2034,2154
 alias gbprune='TARGET_BRANCH="$(git bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
+
+# shellcheck disable=2154
+alias sync_notes='_notegit="git --git-dir=$NOTES/.git/ --work-tree=$NOTES"; $_notegit commit -am "chore: autosync"; $_notegit pull; $_notegit push; unset _notegit'
 
 # -----------------------------------------------------------------------------
 # Dotfiles
@@ -313,7 +322,6 @@ alias ghd="gh dash"
 # Open Octo with my issues/prs
 alias eghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
-
 
 # -----------------------------------------------------------------------------
 # Work

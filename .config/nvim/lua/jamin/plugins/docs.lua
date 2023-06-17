@@ -60,4 +60,34 @@ return {
       require("zk").setup { picker = "telescope" }
     end,
   },
+  {
+    "vimwiki/vimwiki",
+    dependencies = {
+      {
+        "tools-life/taskwiki",
+        init = function()
+          vim.g.taskwiki_taskrc_location = os.getenv "HOME" .. "/.config/task/taskrc"
+          vim.g.taskwiki_data_location = os.getenv "NOTES" .. "/.task"
+          vim.g.taskwiki_disable_concealcursor = "yeuh"
+        end,
+      },
+    },
+    init = function()
+      vim.g.vimwiki_global_ext = 0
+      vim.g.vimwiki_url_maxsave = 0
+      vim.g.vimwiki_auto_header = 1
+      vim.g.vimwiki_hl_cb_checked = 2
+      vim.g.vimwiki_list = {
+        {
+          path = os.getenv "NOTES",
+          syntax = "markdown",
+          ext = ".md",
+          links_space_char = "-",
+          auto_diary_index = 1,
+          diary_rel_path = "daily/",
+          diary_header = "Daily notes",
+        },
+      }
+    end,
+  },
 }
