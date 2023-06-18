@@ -18,6 +18,7 @@ return {
   },
   {
     "jakewvincent/mkdnflow.nvim",
+    enabled = false,
     ft = "markdown",
     opts = {
       filetypes = { mdx = true },
@@ -34,8 +35,8 @@ return {
         MkdnMoveSource = { "n", "<leader>zR" },
         MkdnTab = { "i", "<Tab>" },
         MkdnSTab = { "i", "<S-Tab>" },
-        MkdnIncreaseHeading = { "n", "<" },
-        MkdnDecreaseHeading = { "n", ">" },
+        MkdnIncreaseHeading = { "n", "[<Tab>" },
+        MkdnDecreaseHeading = { "n", "]<Tab>" },
         MkdnTableNextCell = false,
         MkdnTablePrevCell = false,
         MkdnFoldSedtion = false,
@@ -69,6 +70,7 @@ return {
           vim.g.taskwiki_taskrc_location = os.getenv "HOME" .. "/.config/task/taskrc"
           vim.g.taskwiki_data_location = os.getenv "NOTES" .. "/.task"
           vim.g.taskwiki_disable_concealcursor = "yeuh"
+          vim.g.taskwiki_maplocalleader = "\\"
         end,
       },
     },
@@ -76,17 +78,25 @@ return {
       vim.g.vimwiki_global_ext = 0
       vim.g.vimwiki_url_maxsave = 0
       vim.g.vimwiki_auto_header = 1
+      vim.g.vimwiki_markdown_link_ext = 1
       vim.g.vimwiki_hl_cb_checked = 2
       vim.g.vimwiki_list = {
         {
+          name = "Notes",
           path = os.getenv "NOTES",
           syntax = "markdown",
+          index = "readme",
           ext = ".md",
           links_space_char = "-",
           auto_diary_index = 1,
-          diary_rel_path = "daily/",
           diary_header = "Daily notes",
+          diary_index = "readme",
+          diary_rel_path = "daily/",
         },
+      }
+      vim.g.vimwiki_key_mappings = {
+        headers = 0,
+        html = 0
       }
     end,
   },

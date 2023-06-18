@@ -1,7 +1,3 @@
----
-date: {{format-date now "%F"}}
----
-
-# {{format-date now 'full'}}
+# {{format-date now "%F"}}
 
 {{content}}

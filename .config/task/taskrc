@@ -1,3 +1,20 @@
 data.location=~/dev/notes/.task
-hooks.location=~/dev/notes/.task/hooks
+hooks.location=~/.config/task/hooks
+
+calendar.details=full
+calendar.holidays=sparse
+
+context.work.read=project:work
+context.work.write=project:work
+context.home.read=project:home
+context.home.write=project:home
+
 uda.priority.values=H,M,,L
+color.tagged=
+color.deleted=on color88
+color.completed=on color22
+
+uda.taskwarrior-tui.keyconfig.delete=D
+uda.taskwarrior-tui.task-report.prompt-on-delete=true
+uda.taskwarrior-tui.task-report.prompt-on-done=true
+uda.taskwarrior-tui.task-report.next.filter=+READY

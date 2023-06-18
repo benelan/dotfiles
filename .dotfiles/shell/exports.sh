@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 export DEV="$HOME/dev"
 export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
@@ -50,10 +55,11 @@ export PAGER='less'
 export MANPAGER=$PAGER
 
 is-supported w3m && export BROWSER='w3m'
-is-supported volta && export VOLTA_HOME=~/.volta
-is-supported bun && export BUN_INSTALL="$HOME/.bun"
 is-supported bat && export BAT_THEME="gruvbox-dark"
+is-supported volta && export VOLTA_HOME="$HOME/.volta"
+is-supported bun && export BUN_INSTALL="$HOME/.bun"
 is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
+is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 if is-supported node; then
     # Enable persistent REPL history for `node`.
@@ -74,14 +80,14 @@ if is-supported fff; then
     export FFF_KEY_RENAME="c"
     export FFF_KEY_BULK_RENAME="r"
     export FFF_KEY_BULK_RENAME_ALL="R"
-    export FFF_TRASH=~/.local/share/Trash
-    export FFF_FAV1=~/dev/work/calcite-components
-    export FFF_FAV2=~/dev/work/calcite-components.wiki
-    export FFF_FAV3=~/dev/work/calcite-samples
-    export FFF_FAV4=~/dev/work/arcgis-esm-samples/
-    export FFF_FAV5=~/.dotfiles/scripts
-    export FFF_FAV6=~/.dotfiles/shell
-    export FFF_FAV7=~/.dotfiles/bin
-    export FFF_FAV8=~/.vim
-    export FFF_FAV9=~/.config/nvim
+    export FFF_TRASH="$XDG_DATA_HOME/Trash"
+    export FFF_FAV1="$WORK/calcite-components"
+    export FFF_FAV2="$WORK/calcite-components.wiki"
+    export FFF_FAV3="$WORK/calcite-samples"
+    export FFF_FAV4="$WORK/arcgis-esm-samples/"
+    export FFF_FAV5="$DOTFILES/scripts"
+    export FFF_FAV6="$DOTFILES/shell"
+    export FFF_FAV7="$DOTFILES/bin"
+    export FFF_FAV8="$HOME/.vim"
+    export FFF_FAV9="$XDG_CONFIG_HOME/nvim"
 fi

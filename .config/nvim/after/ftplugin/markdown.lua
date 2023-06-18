@@ -75,4 +75,16 @@ if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
     ":'<,'>lua vim.lsp.buf.range_code_action()<CR>",
     { buffer = true, silent = true, noremap = true, desc = "Code action" }
   )
+  vim.keymap.set(
+    "v",
+    "<leader>z<CR>",
+    "'<,'>ZkInsertLinkAtSelection {matchSelected = true}<CR>",
+    { buffer = true, silent = true, noremap = true, desc = "Insert link" }
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>z<CR>",
+    "<cmd>ZkInsertLink<CR>",
+    { buffer = true, silent = true, noremap = true, desc = "Insert link" }
+  )
 end

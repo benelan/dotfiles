@@ -1,7 +1,3 @@
----
-date: {{format-date now "%F"}}
----
-
 # Review Week {{week}} / {{year}}
 
 ---

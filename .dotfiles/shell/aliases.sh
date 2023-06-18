@@ -206,7 +206,7 @@ fi
 if is-supported docker; then
     # display names of running containers
     alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
-    # delete every containers / images
+    # delete all containers / images
     alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
     # stats on images
     alias dockstats='docker stats $(docker ps -q)'
@@ -258,8 +258,28 @@ is-supported gnome-screensaver-command &&
 # -----------------------------------------------------------------------------
 # Taskwarrior
 # -----------------------------------------------------------------------------
+if is-supported task; then
+    alias t="task"
+    alias ta="task add"
+    alias tw="task context work"
+    alias th="task context home"
 
-alias t="task"
+    alias te="nvim +VimwikiMakeDiaryNote"
+    alias tey="nvim +VimwikiMakeYesterdayDiaryNote"
+    alias tet="nvim +VimwikiMakeTomorrowDiaryNote"
+    alias tei="nvim +VimwikiDiaryIndex"
+
+    if is-supported taskopen; then
+        alias to="taskopen"
+        alias toa='$XDG_DATA_HOME/taskopen/scripts/users/artur-shaik/attach_vifm'
+    fi
+
+    is-supported taskwarrior-tui && alias tui="taskwarrior-tui"
+    is-supported tasksh && alias tsh="tasksh"
+
+    # shellcheck disable=2154
+    [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task && git -C "$NOTES" commit -m "chore(task): sync" && git -C "$NOTES" pull && git -C "$NOTES" push'
+fi
 
 # -----------------------------------------------------------------------------
 # Git
@@ -272,9 +292,6 @@ alias glz="lazygit"
 # deletes local branches already squash merged into the default branch
 # shellcheck disable=2016,2034,2154
 alias gbprune='TARGET_BRANCH="$(git bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
-
-# shellcheck disable=2154
-alias sync_notes='_notegit="git --git-dir=$NOTES/.git/ --work-tree=$NOTES"; $_notegit commit -am "chore: autosync"; $_notegit pull; $_notegit push; unset _notegit'
 
 # -----------------------------------------------------------------------------
 # Dotfiles

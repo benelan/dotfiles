@@ -2,7 +2,7 @@
 ----> Settings
 -------------------------------------------------------------------------------
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = "\\"
 
 if vim.fn.executable "/usr/bin/python3" then
   vim.g.python3_host_prog = "/usr/bin/python3"
@@ -22,6 +22,7 @@ end
 -- aren't required. OG_TERM env var is set when attaching to tmux.
 vim.g.use_devicons = os.getenv "TERM" == "wezterm"
   or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
+  or true
 
 -------------------------------------------------------------------------------
 ----> Autocommands
