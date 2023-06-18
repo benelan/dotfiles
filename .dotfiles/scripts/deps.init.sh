@@ -47,26 +47,6 @@ install_fonts_full() {
     unset f font_families
 }
 
-install_gnome_theme() {
-    if [[ "$(os-detect)" =~ "linux_pop" ]]; then
-        cd ~/dev/lib
-        # download gruvbox gnome theme and icons
-        git clone --depth=1 https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
-        git clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
-        curl -sSLO https://limitland.gitlab.io/flatbedcursors/FlatbedCursors-0.5.2.tar.bz2
-        extract FlatbedCursors-0.5.2.tar.bz2
-
-        # move icons and themes to the proper locations
-        mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons/Gruvbox-Plus-Dark ~/.themes/Gruvbox-Dark-BL
-        cp -r ~/dev/lib/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark
-        cp -r ~/dev/lib/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL
-        cp -r FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
-
-        # remove the repos because they are yuuge
-        rm -rf gruvbox-plus-icon-pack Gruvbox-GTK-Theme FlatbedCursors*
-    fi
-}
-
 # Install the Rust language
 # https://www.rust-lang.org/tools/install
 install_rust() {
@@ -129,10 +109,10 @@ install_cargo_packages() {
 # https://www.npmjs.com
 install_node_packages() {
     if [ -f "$DEPS_DIR/node" ]; then
-        if ! is-supported volta; then
+        if ! is-supported volta && ! is-supported node; then
             install_volta # only works on x86_64 architectures for now
         fi
-            npm install -g $(cat "$DEPS_DIR/node")
+        npm install -g $(cat "$DEPS_DIR/node")
     fi
 }
 
@@ -178,12 +158,14 @@ install_git_extras() {
 # install_rust
 # install_nim
 # install_go
-# install_git_extras
-# install_fonts_full
-install_fonts_minimal
-install_gnome_theme
-install_starship
+# install_volta
+
 install_node_packages
 install_pip_packages
 install_cargo_packages
-# install_go_packages
+install_go_packages
+
+install_starship
+install_fonts_minimal
+# install_fonts_full
+# install_git_extras

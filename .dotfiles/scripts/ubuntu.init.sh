@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+# shellcheck disable=2015
 set -e
 
 sudo -v
@@ -6,13 +7,14 @@ sudo -v
 # Install scripts specific to Ubuntu/Debian based operating systems
 
 DEPS_DIR="$HOME/.dotfiles/deps"
+CACHE_DIR="$HOME/.dotfiles/cache"
 
 # Install packages for Ubuntu/Debian
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 install_apt_packages() {
     if [ -f "$DEPS_DIR/apt" ]; then
         while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            sudo apt install "$pkg"
+            sudo apt install "$pkg" || true
         done <"$DEPS_DIR/apt"
         unset pkg
     fi
@@ -20,7 +22,7 @@ install_apt_packages() {
 install_apt_gui_packages() {
     if [ -f "$DEPS_DIR/apt-gui" ]; then
         while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            sudo apt install "$pkg"
+            sudo apt install "$pkg" || true
         done <"$DEPS_DIR/apt-gui"
         unset pkg
     fi
@@ -29,42 +31,72 @@ install_apt_gui_packages() {
 # Install VS Code
 # https://code.visualstudio.com/docs/setup/linux
 install_vscode() {
-    curl -ssLo ~/.dotfiles/cache/vscode.deb \
+    deb="$CACHE_DIR/vscode.deb"
+    curl -ssLo "$deb" \
         "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-    sudo apt install ~/.dotfiles/cache/vscode.deb
+    sudo apt install -y "$deb" || true
+    unset deb
 }
 
 # Install ProtonVPN CLI
 # https://protonvpn.com/support/linux-vpn-tool/#debian
 install_protonvpn_cli() {
-    curl -sSLo ~/.dotfiles/cache/protonvpn_1.0.3.deb \
-        https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.3_all.deb
-    sudo apt install protonvpn_1.03.deb
-    sudo apt update
-    sudo apt install protonvpn-cli
+    checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
+    deb="protonvpn-stable-release_1.0.3_all.deb"
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
+    echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 # Install Discord
 # https://discord.com/download
 install_discord() {
-    curl -sSLo ~/.dotfiles/cache/discord.deb \
+    deb="$CACHE_DIR/discord.deb"
+    curl -sSLo "$deb" \
         https://discord.com/api/download?platform=linux\&format=deb
-    sudo apt install ~/.dotfiles/cache/discord.deb
-    sudo apt-get update
+    sudo apt install -y "$deb"
+    unset deb
+}
+
+# Install WezTerm
+# https://wezfurlong.org/wezterm/install/linux.html
+install_wezterm() {
+    deb="wezterm-nightly.Ubuntu22.04.deb"
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://github.com/wez/wezterm/releases/download/nightly/$deb"
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
+
+    # https://wezfurlong.org/wezterm/config/lua/config/term.html
+    tempfile=$(mktemp) &&
+        curl -o "$tempfile" \
+            https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
+        tic -x -o ~/.terminfo "$tempfile" &&
+        rm "$tempfile"
+}
+
+# Install Taskwarrior TUI
+# https://github.com/kdheepak/taskwarrior-tui
+install_taskwarrior_tui() {
+    deb="taskwarrior-tui.deb"
+    curl -sSLo "$CACHE_DIR/$deb" "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
+    sudo apt install -y "$CACHE_DIR/$deb" || true
 }
 
 # Install Docker Desktop
 # https://docs.docker.com/desktop/install/ubuntu/
 install_docker_desktop() {
-    filename="docker-desktop-4.16.2-amd64.deb"
+    deb="docker-desktop-4.16.2-amd64.deb"
     # rm -r ~/.docker/desktop
     # sudo rm /usr/local/bin/com.docker.cli
     # sudo apt remove docker-desktop
     # sudo apt purge docker-desktop
-    curl -sSLo ~/.dotfiles/cache/$filename \
-        https://desktop.docker.com/linux/main/amd64/$filename
-    sudo apt install ~/.dotfiles/cache/$filename
-    sudo apt-get update
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://desktop.docker.com/linux/main/amd64/$deb"
+    sudo apt install "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 # Install Docker Engine
@@ -82,7 +114,7 @@ install_docker_engine() {
         sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
     sudo apt update
-    sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin || true
 }
 
 # Install GitHub CLI
@@ -96,7 +128,7 @@ install_gh_cli() {
           https://cli.github.com/packages stable main" |
         sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null &&
         sudo apt update &&
-        sudo apt install gh -y
+        sudo apt install -y gh || true
 }
 
 # Install Brave Browser
@@ -108,33 +140,45 @@ install_brave_browser() {
          https://brave-browser-apt-release.s3.brave.com/ stable main" |
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
     sudo apt update
-    sudo apt install brave-browser
+    sudo apt install -y brave-browser || true
 }
 
-# Install WezTerm
-# https://wezfurlong.org/wezterm/install/linux.html
-install_wezterm() {
-    curl -sSLo ~/.dotfiles/cache/wezterm-nightly.deb \
-        https://github.com/wez/wezterm/releases/download/nightly/wezterm-nightly.Ubuntu22.04.deb
-    sudo apt install -y ~/.dotfiles/cache/wezterm-nightly.deb
-    # https://wezfurlong.org/wezterm/config/lua/config/term.html
-    tempfile=$(mktemp) &&
-        curl -o "$tempfile" \
-            https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
-        tic -x -o ~/.terminfo "$tempfile" &&
-        rm "$tempfile"
+install_gnome_gruvbox_theme() {
+    if [[ "$(os-detect)" =~ "linux_pop" ]]; then
+        # download gruvbox gnome theme and icons
+        git -C "$CACHE_DIR" clone --depth=1 https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+        git -C "$CACHE_DIR" clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+
+        cursors="FlatbedCursors-0.5.2.tar.bz2"
+        curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
+        extract "$cursors"
+        unset cursors
+
+        # move icons and themes to the proper locations
+        mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons/Gruvbox-Plus-Dark ~/.themes/Gruvbox-Dark-BL
+        cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark/
+        cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL/
+        cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
+
+        # remove the repos because they are yuuge
+        rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack" "$CACHE_DIR/Gruvbox-GTK-Theme" ./FlatbedCursors*
+    fi
 }
 
 # CLI install scripts (suitable for servers)
 install_apt_packages
 install_gh_cli
 install_protonvpn_cli
+install_taskwarrior_tui
 install_docker_engine
 
 # GUI install scripts
 install_apt_gui_packages
+install_gnome_gruvbox_theme
 install_discord
 install_vscode
 install_brave_browser
 install_wezterm
 # install_docker_desktop
+
+sudo apt -y update && sudo apt -y upgrade
