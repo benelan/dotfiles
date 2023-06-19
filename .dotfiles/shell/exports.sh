@@ -11,7 +11,7 @@ export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
 
-export LESS="-diwMJRQ"
+export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
 # Keep around 16K lines of history in memory
