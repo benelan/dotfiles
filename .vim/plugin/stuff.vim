@@ -33,15 +33,19 @@ let g:netrw_dirhistmax=0
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-" I always accidentally opened the Ex command history, and you can't Nop q:
-" so now I record macros with Q
-nnoremap Q q
-nnoremap q <Nop>
-vnoremap Q q
-vnoremap q <Nop>
+nnoremap q: :qa<cr>
+nnoremap Q <cmd>QfToggle<cr>
 
 vnoremap p "_dP
 nnoremap x "_x
+nnoremap gy <cmd>let @+=@*<cr>
+
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+Y
+vnoremap <leader>d "_d
+nnoremap <leader>p "+p
+vnoremap <leader>p "+p
 
 nnoremap <Backspace> <C-^>
 
@@ -52,9 +56,6 @@ vnoremap > >gv
 
 nnoremap & :&&<CR>
 vnoremap & :&&<CR>
-
-nnoremap <leader>y <cmd>let @+=@*<cr>
-nnoremap <leader>p "+p
 
 " Use the repeat operator with a visual selection
 " This is useful for performing an edit on a single line, then highlighting a

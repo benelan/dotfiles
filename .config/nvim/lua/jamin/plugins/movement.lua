@@ -15,6 +15,8 @@ return {
     keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()
       keymap("n", "-", "<cmd>Vifm<cr>")
+      -- vim.g.vifm_replace_netrw = true
+      vim.g.vifm_term = "x-terminal-emulator"
     end,
   },
   -----------------------------------------------------------------------------

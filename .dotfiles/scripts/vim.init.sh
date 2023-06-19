@@ -59,7 +59,7 @@ install_rsi() {
         https://raw.githubusercontent.com/tpope/vim-rsi/master/doc/rsi.txt
 }
 
-install_obession() {
+install_obsession() {
     $INSTALL_CMD $VIM_PLUGIN \
         https://raw.githubusercontent.com/tpope/vim-obsession/master/plugin/obsession.vim
     $INSTALL_CMD $VIM_DOC \
@@ -164,7 +164,7 @@ install_undotree() {
 install_commentary
 install_eunuch
 # install_fugitive
-# install_obession
+# install_obsession
 install_repeat
 # install_rsi
 install_surround

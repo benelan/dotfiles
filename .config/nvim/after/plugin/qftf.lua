@@ -46,7 +46,7 @@ function _G.qftf(info)
       end
 
       local cols
-      if (e.col > 999 or e.end_col > 999) or e.col == e.end_col then
+      if (e.col > 999 or e.end_col > 999) or e.col == e.end_col or e.end_col == 0 then
         cols = e.col > 999999 and -1 or e.col
       else
         cols = string.format("%s-%s", e.col, e.end_col)

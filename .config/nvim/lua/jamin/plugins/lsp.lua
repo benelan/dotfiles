@@ -261,7 +261,7 @@ return {
       -- :MasonInstall shellcheck stylelint prettier markdownlint ...
       return {
         debug = false,
-        fallback_severity = vim.diagnostic.severity.WARN,
+        fallback_severity = vim.diagnostic.severity.HINT,
         sources = {
           hover.dictionary,
           hover.printenv,
@@ -269,6 +269,9 @@ return {
           code_actions.gitrebase,
           code_actions.refactoring,
           code_actions.shellcheck,
+          code_actions.cspell.with {
+            prefer_local = "./node_modules/.bin",
+          },
 
           diagnostics.actionlint.with {
             runtime_condition = function()
@@ -286,8 +289,13 @@ return {
               "--ignore-words",
               os.getenv "HOME" .. "/.dotfiles/assets/codespell_ignore.txt",
             },
-            extra_filetypes = { "vimwiki" },
             diagnostic_config = quiet_diagnostics,
+          },
+
+          diagnostics.cspell.with {
+            -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+            diagnostic_config = quiet_diagnostics,
+            prefer_local = "./node_modules/.bin",
           },
 
           diagnostics.write_good.with {

@@ -47,3 +47,5 @@ typings
 ui
 vimscript
 zettelkasten
+vifm
+netrw
