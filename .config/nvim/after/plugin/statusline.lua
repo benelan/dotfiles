@@ -29,7 +29,7 @@ local function format_numeric_data(d)
       table.insert(output, item.highlight)
       table.insert(output, item.icon)
       table.insert(output, item.count)
-      template = template .. "%%#%s# %s %d "
+      template = template .. "%%#%s# %s%d "
     end
   end
   return #template > 0 and string.format(template, (unpack or table.unpack)(output)) or ""
