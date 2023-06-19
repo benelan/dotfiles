@@ -286,13 +286,18 @@ return {
               "--ignore-words",
               os.getenv "HOME" .. "/.dotfiles/assets/codespell_ignore.txt",
             },
+            extra_filetypes = { "vimwiki" },
             diagnostic_config = quiet_diagnostics,
           },
 
-          diagnostics.write_good.with { diagnostic_config = quiet_diagnostics },
+          diagnostics.write_good.with {
+            diagnostic_config = quiet_diagnostics,
+            extra_filetypes = { "vimwiki" },
+          },
 
           diagnostics.markdownlint.with {
             extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
+            extra_filetypes = { "vimwiki" },
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
           },
