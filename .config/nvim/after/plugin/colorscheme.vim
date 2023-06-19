@@ -91,7 +91,7 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
     " let g:gruvbox_material_visual = "reverse"
 
     let g:gruvbox_material_better_performance = 1
-    let g:gruvbox_material_diagnostic_text_highlight = 1
+    let g:gruvbox_material_diagnostic_text_highlight = 0
     let g:gruvbox_material_enable_italic = 1
     " let g:gruvbox_material_enable_bold = 1
     " let g:gruvbox_material_disable_italic_comment = 1

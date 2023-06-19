@@ -1,5 +1,3 @@
-vim.wo.conceallevel = 2
-
 vim.keymap.set("n", "<M-z>", "[s1z=", {
   buffer = true,
   silent = true,
