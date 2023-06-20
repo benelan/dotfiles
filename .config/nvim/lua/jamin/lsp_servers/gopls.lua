@@ -33,7 +33,6 @@ return {
     end
   end,
   flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-  buildFlags = { "-tags", "integration" },
   settings = {
     gopls = {
       semanticTokens = true,

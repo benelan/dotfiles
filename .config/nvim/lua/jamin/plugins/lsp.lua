@@ -25,6 +25,23 @@ local lsp_servers = {
 
 return {
   {
+    "ray-x/go.nvim",
+    ft = { "go", "gomod", "gosum" },
+    opts = {
+      icons = false,
+      gofmt = "gopls",
+      lsp_cfg = require "jamin.lsp_servers.gopls",
+      dap_debug_keymap = false,
+      lsp_keymaps = false,
+      textobjects = false,
+      luasnip = true,
+      lsp_inlay_hints = {
+        max_len_align = true,
+        parameter_hints_prefix = require("jamin.resources").icons.ui.CaretDoubleRight,
+      },
+    },
+  },
+  {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     dependencies = {
       -----------------------------------------------------------------------------
@@ -131,54 +148,64 @@ return {
       -------------------------------------------------------------------------------
       ----> Keymaps and local settings
 
-      local on_attach = function(client, bufnr)
-        if client.name == "tsserver" or client.name == "lua_ls" then
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
-          client.server_capabilities.documentHighlightProvider = false
-        end
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("ben_lsp_server_setup", {
+          clear = true,
+        }),
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-        vim.api.nvim_buf_set_option(bufnr, "formatexpr", "v:lua.vim.lsp.formatexpr()")
-        vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-        vim.api.nvim_buf_set_option(bufnr, "tagfunc", "v:lua.vim.lsp.tagfunc")
+          if client.name == "tsserver" or client.name == "lua_ls" then
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+            client.server_capabilities.documentHighlightProvider = false
+          end
 
-        local bufmap = function(mode, lhs, rhs, desc)
-          vim.keymap.set(mode, lhs, rhs, {
-            buffer = bufnr,
-            silent = true,
-            noremap = true,
-            desc = desc,
-          })
-        end
+          vim.api.nvim_buf_set_option(args.buf, "formatexpr", "v:lua.vim.lsp.formatexpr()")
+          vim.api.nvim_buf_set_option(args.buf, "omnifunc", "v:lua.vim.lsp.omnifunc")
+          vim.api.nvim_buf_set_option(args.buf, "tagfunc", "v:lua.vim.lsp.tagfunc")
 
-        bufmap("n", "K", vim.lsp.buf.hover, "Hover")
-        bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
-        bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-        bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
-        bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
-        bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-        bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-        bufmap("n", "g ", vim.diagnostic.open_float, "Line diagnostic")
-        bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
-        bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
-        bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-        bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
-      end
+          local bufmap = function(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, {
+              buffer = args.buf,
+              silent = true,
+              noremap = true,
+              desc = desc,
+            })
+          end
+
+          bufmap("n", "K", vim.lsp.buf.hover, "Hover")
+          bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
+          bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
+          bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
+          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
+          bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+          bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
+          bufmap("n", "g ", vim.diagnostic.open_float, "Line diagnostic")
+          bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
+          bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
+          bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+          bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
+        end,
+      })
 
       -------------------------------------------------------------------------------
       ----> Server setup
 
+      local lspconfig = require "lspconfig"
+
       for _, server in pairs(lsp_servers) do
-        if server ~= "zk" then -- https://github.com/mickael-menu/zk-nvim#setup
+        -- zk and go plugins setup their own lsp server
+        if server ~= "zk" and server ~= "gopls" then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
 
           local server_opts = vim.tbl_deep_extend(
             "force",
-            { capabilities = capabilities, on_attach = on_attach },
+            { capabilities = capabilities },
             has_user_opts and user_opts or {}
           )
 
-          require("lspconfig")[server].setup(server_opts)
+          lspconfig[server].setup(server_opts)
         end
       end
 

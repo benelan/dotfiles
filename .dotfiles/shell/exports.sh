@@ -62,6 +62,8 @@ is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 if is-supported go; then
+    export GOROOT="/usr/local/go"
+    export GOPATH="$HOME/go"
     export GOFLAGS='-buildvcs=false -trimpath'
 fi
 
