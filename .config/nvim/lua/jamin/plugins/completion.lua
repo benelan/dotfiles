@@ -59,8 +59,70 @@ return {
         version = "v1.*",
         dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
         config = function()
+          local ls = require "luasnip"
+          local types = require "luasnip.util.types"
+
+          ls.config.set_config {
+            history = false,
+            region_check_events = "CursorMoved,CursorHold,InsertEnter",
+            delete_check_events = "InsertLeave",
+            ext_opts = {
+              [types.choiceNode] = {
+                active = {
+                  hl_mode = "combine",
+                  virt_text = { { "●", "Operator" } },
+                },
+              },
+              [types.insertNode] = {
+                active = {
+                  hl_mode = "combine",
+                  virt_text = { { "●", "Type" } },
+                },
+              },
+            },
+            enable_autosnippets = true,
+          }
+
+          vim.api.nvim_create_user_command("LuaSnipEdit", function()
+            require("luasnip.loaders.from_lua").edit_snippet_files()
+          end, {})
+
+          keymap({ "i", "s" }, "<C-l>", function()
+            if ls.expand_or_jumpable() then
+              ls.expand_or_jump()
+            elseif ls.jumpable(1) then
+              ls.jump(1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Accept"]()
+            else
+              return "<Tab>"
+            end
+          end)
+
+          keymap({ "i", "s" }, "<C-h>", function()
+            if ls.jumpable(-1) then
+              ls.jump(-1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Clear"]()
+            else
+              return "<S-Tab>"
+            end
+          end)
+
+          keymap({ "i" }, "<C-;>", function()
+            if ls.choice_active() then
+              ls.change_choice(1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Complete"]()
+            end
+          end)
+
           require("luasnip/loaders/from_vscode").lazy_load()
           require("luasnip/loaders/from_vscode").lazy_load { paths = { "~/.config/Code/User" } }
+          require("luasnip.loaders.from_lua").lazy_load()
+
+          ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
+          ls.filetype_extend("javascriptreact", { "javascript" })
         end,
       },
     },
@@ -263,32 +325,6 @@ return {
           { { name = "dictionary", keyword_length = 4 } }
         ),
       })
-
-      keymap({ "i", "s" }, "<C-l>", function()
-        if ls.expand_or_jumpable() then
-          ls.expand_or_jump()
-        elseif ls.jumpable(1) then
-          ls.jump(1)
-        elseif vim.g.codeium_enabled then
-          return vim.fn["codeium#Accept"]()
-        end
-      end)
-
-      keymap({ "i", "s" }, "<C-h>", function()
-        if ls.jumpable(-1) then
-          ls.jump(-1)
-        elseif vim.g.codeium_enabled then
-          return vim.fn["codeium#Clear"]()
-        end
-      end)
-
-      keymap({ "i" }, "<C-;>", function()
-        if ls.choice_active() then
-          ls.change_choice(1)
-        elseif vim.g.codeium_enabled then
-          return vim.fn["codeium#Complete"]()
-        end
-      end)
     end,
   },
 }
