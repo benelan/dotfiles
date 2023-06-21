@@ -261,8 +261,9 @@ is-supported gnome-screensaver-command &&
 if is-supported task; then
     alias t="task"
     alias ta="task add"
-    alias tw="task context work"
-    alias th="task context home"
+    alias tcw="task context work"
+    alias tch="task context home"
+    alias tcn="task context none"
 
     alias te="nvim +VimwikiMakeDiaryNote"
     alias tey="nvim +VimwikiMakeYesterdayDiaryNote"

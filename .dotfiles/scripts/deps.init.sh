@@ -63,9 +63,9 @@ install_nim() {
 # https://go.dev/doc/install
 install_golang() {
     # checksum will need to be updated when using a new go version
-    checksum="c9c08f783325c4cf840a94333159cc937f05f75d36a8b307951d5bd959cf2ab8"
-    outfile="go1.19.4.linux-amd64.tar.gz"
-    curl -L "https://go.dev/dl/$outfile" -o "$outfile"
+    checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
+    outfile="go1.20.5.linux-amd64.tar.gz"
+    curl -sSLo "$outfile" "https://go.dev/dl/$outfile"
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
         sudo rm -rf /usr/local/go
         sudo tar -C /usr/local -xzf "$outfile"
@@ -157,7 +157,7 @@ install_git_extras() {
 
 # install_rust
 # install_nim
-# install_go
+# install_golang
 # install_volta
 
 install_node_packages

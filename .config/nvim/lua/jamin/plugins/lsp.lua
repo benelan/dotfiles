@@ -33,14 +33,16 @@ return {
         build = ":MasonUpdate",
         opts = {
           ensure_installed = {
-            "actionlint",
-            "codespell",
-            "markdown-toc",
-            "markdownlint",
-            "shellcheck",
-            "shfmt",
-            "stylua",
-            "write-good",
+            "actionlint", -- github action linter
+            "codespell", -- commonly misspelled english words linter
+            "cspell", -- code spell checker
+            "delve", -- golang debug adapter
+            "markdown-toc", -- markdown table of contents generator
+            "markdownlint", -- markdown linter and formatter
+            "shellcheck", -- shell linter
+            "shfmt", -- shell formatter
+            "stylua", -- lua formatter
+            "write-good", -- english grammar linter
           },
         },
         config = function(_, opts)

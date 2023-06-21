@@ -12,13 +12,13 @@ pathremove() {
     IFS=':'
     var=${2:-PATH}
     # Bash has ${!var}, but this is not portable.
-    for dir in $(indirect_expand "$var"); do
+    for dir in $(indirect_expand "${var}"); do
         IFS=''
-        if [ "$dir" != "$1" ]; then
-            newpath=$newpath:$dir
+        if [ "${dir}" != "${1}" ]; then
+            newpath=${newpath}:${dir}
         fi
     done
-    export "$var"="${newpath#:}"
+    export "${var}"="${newpath#:}"
     unset newpath dir var IFS
 }
 
@@ -28,7 +28,7 @@ pathremove() {
 pathprepend() {
     # if the path is already in the variable,
     # remove it so we can move it to the front
-    pathremove "$1" "$2"
+    pathremove "${1}" "${2}"
     [ -d "${1}" ] || return
     var="${2:-PATH}"
     value=$(indirect_expand "$var")

@@ -90,7 +90,7 @@ return {
           links_space_char = "-",
           auto_diary_index = 1,
           diary_header = "Daily notes",
-          diary_index = "readme",
+          diary_index = "index",
           diary_rel_path = "daily/",
         },
       }

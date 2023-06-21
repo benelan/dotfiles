@@ -10,9 +10,13 @@ context.home.read=project:home
 context.home.write=project:home
 
 uda.priority.values=H,M,,L
+urgency.tags.coefficient=0
+urgency.project.coefficient=0.5
+
 color.tagged=
 color.deleted=on color88
 color.completed=on color22
+color.error=black on color124
 
 uda.taskwarrior-tui.keyconfig.delete=D
 uda.taskwarrior-tui.task-report.prompt-on-delete=true
