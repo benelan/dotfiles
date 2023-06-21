@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 set -e
-
 sudo -v
 
 LIB_PATH="$HOME/dev/lib"
@@ -23,21 +22,34 @@ build_neovim() {
 }
 
 build_fzf() {
+    FZF_PATH="$LIB_PATH/fzf"
     if [ -d "$FZF_PATH" ]; then
-        FZF_PATH="$LIB_PATH/fzf"
         cd "$FZF_PATH" || exit 1
         git fetch --tags --all
-        git checkout master
-        git pull
         # latestTag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+        git checkout master # "$latestTag"
+        git pull
         make
         make install
         chmod +x "$FZF_PATH/bin/fzf"
     fi
 }
 
+build_taskopen() {
+    TASKOPEN_PATH="$LIB_PATH/taskopen"
+    if [ -d "$TASKOPEN_PATH" ] && is-supported task && is-supported nim; then
+        cd "$TASKOPEN_PATH" || exit 1
+        git fetch --all
+        git pull origin master
+        git checkout master
+        make PREFIX=/usr
+        sudo make PREFIX=/usr install
+    fi
+}
+
 sync_git_modules
 build_neovim
 build_fzf
+build_taskopen
 
-unset LIB_PATH FZF_PATH NEOVIM_PATH
+unset LIB_PATH FZF_PATH NEOVIM_PATH TASKOPEN_PATH

@@ -61,6 +61,10 @@ is-supported bun && export BUN_INSTALL="$HOME/.bun"
 is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
+if is-supported go; then
+    export GOFLAGS='-buildvcs=false -trimpath'
+fi
+
 if is-supported node; then
     # Enable persistent REPL history for `node`.
     export NODE_REPL_HISTORY=~/.node_history

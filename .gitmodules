@@ -4,3 +4,6 @@
 [submodule "dev/lib/fzf"]
 	path = dev/lib/fzf
 	url = git@github.com:junegunn/fzf.git
+[submodule "dev/lib/taskopen"]
+	path = dev/lib/taskopen
+	url = https://github.com/jschlatow/taskopen
