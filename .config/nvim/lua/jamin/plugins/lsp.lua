@@ -4,7 +4,7 @@ local lsp_servers = {
   -- "docker_compose_language_service",
   "dockerls",
   "eslint",
-  -- "gopls",
+  "gopls",
   -- "graphql",
   "html",
   "jsonls",
