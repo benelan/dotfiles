@@ -95,7 +95,7 @@ return {
           "go", "gomod", "graphql", "html", "http",
           "javascript", "jsdoc", "json", "jsonc",
           "latex", "lua", "luadoc", "luap",
-          "markdown", "markdown_inline", "perl", "php", "python",
+          "markdown", "markdown_inline", "perl", "python",
           "query", "regex", "rust", "scss", "sql", "svelte",
           "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "yaml",
         },
