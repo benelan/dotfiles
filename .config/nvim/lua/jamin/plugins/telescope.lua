@@ -35,6 +35,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "nvim-telescope/telescope-frecency.nvim",
+    enabled = false,
     dependencies = "kkharji/sqlite.lua",
     config = function()
       require("telescope").load_extension "frecency"
@@ -135,6 +136,7 @@ return {
 
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
+        { "<C-p>", function() telescope_cwd "git_files" end, desc = "Find git files" },
         { "<leader>fg", function() telescope_cwd "git_files" end, desc = "Find git files" },
         { "<leader>gfb", "<cmd>Telescope git_branches<cr>", { "n", "x" }, desc = "Checkout branch" },
         { "<leader>gfc", "<cmd>Telescope git_bcommits<cr>", { "n", "x" }, desc = "Checkout buffer commit" },

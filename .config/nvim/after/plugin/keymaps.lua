@@ -211,7 +211,7 @@ vim.cmd [[
 
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
-keymap({ "n", "x" }, "<M-f>", "<cmd>GotoFirstFloat<cr>", "Focus first floating window")
+keymap({ "n", "x" }, "g<M-f>", "<cmd>GotoFirstFloat<cr>", "Focus first floating window")
 
 -- resize
 keymap("n", "<C-Up>", "<cmd>resize +5<cr>", "Decrease horizontal window size")

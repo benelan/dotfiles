@@ -29,10 +29,10 @@ return {
     config = true,
     -- stylua: ignore
     keys = {
-      { "<M-1>", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", desc = "Harpoon mark 1" },
-      { "<M-2>", "<cmd>lua require('harpoon.ui').nav_file(2)<cr>", desc = "Harpoon mark 2" },
-      { "<M-3>", "<cmd>lua require('harpoon.ui').nav_file(3)<cr>", desc = "Harpoon mark 3" },
-      { "<M-4>", "<cmd>lua require('harpoon.ui').nav_file(4)<cr>", desc = "Harpoon mark 4" },
+      { "<M-a>", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", desc = "Harpoon mark 1" },
+      { "<M-s>", "<cmd>lua require('harpoon.ui').nav_file(2)<cr>", desc = "Harpoon mark 2" },
+      { "<M-d>", "<cmd>lua require('harpoon.ui').nav_file(3)<cr>", desc = "Harpoon mark 3" },
+      { "<M-f>", "<cmd>lua require('harpoon.ui').nav_file(4)<cr>", desc = "Harpoon mark 4" },
       { "<M-h>", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", desc = "Harpoon ui menu" },
       { "<M-m>", "<cmd>lua require('harpoon.mark').add_file()<cr>", desc = "Harpoon add file" },
     },

@@ -26,6 +26,7 @@ local lsp_servers = {
 return {
   {
     "ray-x/go.nvim",
+    enabled = false,
     ft = { "go", "gomod", "gosum" },
     opts = {
       icons = false,
@@ -35,10 +36,7 @@ return {
       lsp_keymaps = false,
       textobjects = false,
       luasnip = true,
-      lsp_inlay_hints = {
-        max_len_align = true,
-        parameter_hints_prefix = require("jamin.resources").icons.ui.CaretDoubleRight,
-      },
+      lsp_inlay_hints = { show_parameter_hints = false },
     },
   },
   {
@@ -196,7 +194,7 @@ return {
 
       for _, server in pairs(lsp_servers) do
         -- zk and go plugins setup their own lsp server
-        if server ~= "zk" and server ~= "gopls" then
+        if server ~= "zk" then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
 
           local server_opts = vim.tbl_deep_extend(

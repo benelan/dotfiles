@@ -155,13 +155,15 @@ return {
   },
   {
     "lvimuser/lsp-inlayhints.nvim",
-    enabled = false,
+    -- enabled = false,
     event = "LspAttach",
     opts = {
       inlay_hints = {
-        -- only_current_line = true,
-        max_len_align = true,
         highlight = "Comment",
+        parameter_hints = { show = false },
+        type_hints = {
+          prefix = string.format(" %s ", require("jamin.resources").icons.ui.CaretDoubleLeft),
+        },
       },
     },
     config = function(_, opts)

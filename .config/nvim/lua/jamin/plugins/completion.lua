@@ -257,10 +257,10 @@ return {
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
           { name = "git" },
-          { name = "tmux" },
-          { name = "path" },
-          { name = "treesitter", keyword_length = 4 },
-          { name = "buffer" },
+          { name = "tmux", keyword_length = 2 },
+          { name = "path", keyword_length = 2 },
+          { name = "treesitter", keyword_length = 3 },
+          { name = "buffer", keyword_length = 3 },
           {
             name = "spell",
             option = {
