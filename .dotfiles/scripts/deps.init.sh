@@ -51,12 +51,12 @@ install_fonts_full() {
 # https://www.rust-lang.org/tools/install
 install_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    pathappend "$HOME/.cargo/bin"
+    export PATH="${PATH}:${HOME}/.cargo/bin"
 }
 
 install_nim() {
     curl https://nim-lang.org/choosenim/init.sh -sSf | sh
-    pathappend "$HOME/.nimble/bin"
+    export PATH="${PATH}:${HOME}/.nimble/bin"
 }
 
 # Install the Go language
@@ -70,7 +70,7 @@ install_golang() {
         sudo rm -rf /usr/local/go
         sudo tar -C /usr/local -xzf "$outfile"
         rm "$outfile"
-        pathappend /usr/local/go/bin
+        export PATH="${PATH}:/usr/local/go/bin"
     else
         printf "\nchecksum does not match, please install golang manually:\nhttps://go.dev/doc/install"
     fi
@@ -81,7 +81,7 @@ install_golang() {
 install_volta() {
     curl https://get.volta.sh | bash -s -- --skip-setup
     export VOLTA_HOME=~/.volta
-    pathappend "$VOLTA_HOME/bin"
+    export PATH="${PATH}:${VOLTA_HOME}/bin"
     volta install node@16
 }
 
@@ -118,10 +118,10 @@ install_node_packages() {
 
 # Install Go CLI tools
 # https://pkg.go.dev
-install_go_packages() {
+install_golang_packages() {
     if [ -f "$DEPS_DIR/golang" ]; then
         if ! is-supported go; then
-            install_go
+            install_golang
         fi
         while IFS="" read -r pkg || [ -n "$pkg" ]; do
             go install "$pkg"
@@ -163,7 +163,7 @@ install_git_extras() {
 install_node_packages
 install_pip_packages
 install_cargo_packages
-install_go_packages
+install_golang_packages
 
 install_starship
 install_fonts_minimal
