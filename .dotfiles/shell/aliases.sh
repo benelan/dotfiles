@@ -350,11 +350,13 @@ alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
 # Uses a bind mount so works for local development
 cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
 # shellcheck disable=2139
-alias cc_docker_start="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components"
+alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components npm --workspace=@esri/calcite-components start"
 # shellcheck disable=2139
-alias cc_docker="$cc_docker_cmd --name calcite-components calcite-components"
+alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watch"
+# shellcheck disable=2139
+alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
 
-alias cc_build_docker="docker build --tag calcite-components ."
+alias cc_build_docker_image="docker build --tag calcite-components ."
 # I need to link the Dockerfile to the current git worktree
 alias cc_link_dockerfile="ln -f ~/dev/work/calcite-components/Dockerfile"
 
