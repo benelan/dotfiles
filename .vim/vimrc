@@ -300,18 +300,44 @@ if has("autocmd")
     " Set up linting
     augroup linting
         autocmd!
+        " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler
         autocmd FileType python compiler pylint
-        " autocmd BufWritePost *.py silent make! <afile> | silent redraw!
+        autocmd FileType rust compiler cargo
         autocmd FileType bash,sh compiler shellcheck
-        " autocmd BufWritePost *.bash,*.sh silent make! <afile> | silent redraw!
-        autocmd FileType javascript,typescript,javascriptreact,typescriptreact,vue,svelte compiler eslint
+        autocmd FileType yaml compiler yamllint
+        autocmd FileType css,scss,sass compiler stylelint
+        autocmd FileType javascript,javascriptreact,vue,svelte compiler eslint
 
-        autocmd Filetype lua setlocal formatprg=stylua\ --indent-type="Spaces"\ --stdin-filepath\ %\2>\ /dev/null
-        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,javascript,typescript,javascriptreact,typescriptreact
-              \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\2>\ /dev/null
-              \| setlocal equalprg=npx\ prettier\ --\ --stdin-filepath\ %\2>\ /dev/null
+        " There are builtin tsc and go compilers but a few tweaks are needed
+        " https://github.com/leafgarland/typescript-vim/blob/master/compiler/typescript.vim
+        autocmd FileType typescript,typescriptreact
+              \ setlocal makeprg=tsc\ $*\ %
+              \ | setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 
-        " autocmd BufWritePost *.js,*.ts,*.tsx,*.jsx silent make! <afile> | silent redraw!
+        " https://github.com/fatih/vim-go/blob/master/compiler/go.vim
+        autocmd FileType go
+              \ if filereadable("makefile") || filereadable("Makefile")
+              \     | setlocal makeprg=make
+              \ | else
+              \     | setlocal makeprg=go\ build
+              \ | endif
+              \ | setlocal errorformat=%-G#\ %.%#
+              \ | setlocal errorformat+=%-G%.%#panic:\ %m
+              \ | setlocal errorformat+=%Ecan\'t\ load\ package:\ %m
+              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:%c:\ %m
+              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
+              \ | setlocal errorformat+=%C%*\\s%m
+              \ | setlocal errorformat+=%-G%.%#
+
+
+        " Set up formatters
+        autocmd Filetype lua setlocal formatprg=
+              \ stylua\ --indent-type="Spaces"\ --stdin-filepath\ %\ 2>\ /dev/null
+
+        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,
+              \javascript,typescript,javascriptreact,typescriptreact
+              \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\ 2>\ /dev/null
+              \| setlocal equalprg=npx\ prettier\ --\ --stdin-filepath\ %\ 2>\ /dev/null
 
         autocmd QuickFixCmdPost [^l]* cwindow
     augroup END
