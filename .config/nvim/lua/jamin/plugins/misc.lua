@@ -10,12 +10,6 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "dmmulroy/tsc.nvim",
-    cmd = "TSC",
-    opts = { auto_close_qflist = true },
-  },
-  -----------------------------------------------------------------------------
-  {
     "andymass/vim-matchup",
     -- enabled = false,
     init = function()
