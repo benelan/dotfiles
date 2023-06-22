@@ -35,6 +35,7 @@ return {
   flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
   settings = {
     gopls = {
+      codelenses = { gc_details = true },
       semanticTokens = true,
       analyses = {
         fieldalignment = false,

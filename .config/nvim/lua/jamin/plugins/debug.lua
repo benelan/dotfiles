@@ -43,6 +43,10 @@ return {
       },
     },
     {
+      "leoluz/nvim-dap-go",
+      opts = {},
+    },
+    {
       "rcarriga/nvim-dap-ui",
       keys = { { "<leader>Du", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" } },
       opts = {

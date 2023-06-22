@@ -25,21 +25,6 @@ local lsp_servers = {
 
 return {
   {
-    "ray-x/go.nvim",
-    enabled = false,
-    ft = { "go", "gomod", "gosum" },
-    opts = {
-      icons = false,
-      gofmt = "gopls",
-      lsp_cfg = require "jamin.lsp_servers.gopls",
-      dap_debug_keymap = false,
-      lsp_keymaps = false,
-      textobjects = false,
-      luasnip = true,
-      lsp_inlay_hints = { show_parameter_hints = false },
-    },
-  },
-  {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     dependencies = {
       -----------------------------------------------------------------------------
@@ -87,7 +72,11 @@ return {
         opts = { ensure_installed = lsp_servers, automatic_installation = true },
       },
       -----------------------------------------------------------------------------
-      { "folke/neodev.nvim", config = true },
+      {
+        "folke/neodev.nvim",
+        enabled = true,
+        opts = {},
+      },
       -----------------------------------------------------------------------------
     },
     opts = {
@@ -108,6 +97,7 @@ return {
       },
       capabilities = {
         textDocument = {
+          codeLens = { dynamicRegistration = false },
           completion = {
             completionItem = {
               snippetSupport = true,
@@ -179,11 +169,22 @@ return {
           bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
           bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-          bufmap("n", "g ", vim.diagnostic.open_float, "Line diagnostic")
+          bufmap("n", "g ", vim.diagnostic.open_float, "Diagnostics")
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
+
+          if client.server_capabilities.codeLensProvider then
+            bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
+            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "BufWritePost" }, {
+              group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
+              buffer = args.buf,
+              callback = function()
+                vim.lsp.codelens.refresh()
+              end,
+            })
+          end
         end,
       })
 
