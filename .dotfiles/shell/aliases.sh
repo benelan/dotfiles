@@ -279,7 +279,7 @@ if is-supported task; then
     is-supported tasksh && alias tsh="tasksh"
 
     # shellcheck disable=2154
-    [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task && git -C "$NOTES" commit -m "chore(task): sync" && git -C "$NOTES" pull && git -C "$NOTES" push'
+    [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task && git -C "$NOTES" commit -m "chore(task): sync" || true && git -C "$NOTES" pull && git -C "$NOTES" push'
 fi
 
 # -----------------------------------------------------------------------------

@@ -68,7 +68,6 @@ return {
         "tools-life/taskwiki",
         init = function()
           vim.g.taskwiki_taskrc_location = os.getenv "HOME" .. "/.config/task/taskrc"
-          vim.g.taskwiki_data_location = os.getenv "NOTES" .. "/.task"
           vim.g.taskwiki_disable_concealcursor = "yeuh"
           vim.g.taskwiki_maplocalleader = "\\"
         end,
