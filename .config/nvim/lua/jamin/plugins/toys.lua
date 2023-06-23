@@ -162,7 +162,7 @@ return {
         highlight = "Comment",
         parameter_hints = { show = false },
         type_hints = {
-          prefix = string.format(" %s ", require("jamin.resources").icons.ui.CaretDoubleLeft),
+          prefix = string.format("   %s ", require("jamin.resources").icons.ui.CaretDoubleLeft),
         },
       },
     },
@@ -179,18 +179,6 @@ return {
         end,
       })
     end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    enabled = false,
-    event = "BufWinEnter",
-    opts = {
-      char = require("jamin.resources").icons.ui.Separator,
-      indent_blankline_filetype_exclude = require("jamin.resources").exclude_filetypes,
-      use_treesitter = true,
-      show_current_context = true,
-    },
   },
   -----------------------------------------------------------------------------
   -- Presentation plugins

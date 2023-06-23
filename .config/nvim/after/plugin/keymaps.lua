@@ -80,7 +80,7 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 })
 
 -------------------------------------------------------------------------------
-----> Lists (next/previous)
+----> Lists
 -------------------------------------------------------------------------------
 
 -- tab
@@ -162,22 +162,22 @@ keymap(
   "Previous warning"
 )
 
+-- run makeprg and populate quickfix list
+vim.api.nvim_create_user_command("Make", function()
+  require("jamin.utils").async_make()
+end, { desc = "Run make asynchronously" })
+keymap("n", "gm", "<cmd>Make<cr>", "Async make")
+
 -------------------------------------------------------------------------------
 ----> Git Mergetool
 -------------------------------------------------------------------------------
 
 keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update merge diff")
-
 keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose hunk from remote")
-
 keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose all from remote")
-
 keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose hunk from base")
-
 keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose all from base")
-
 keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose hunk from local")
-
 keymap({ "n", "v" }, "<leader>gmL", "<cmd>%diffget LO<cr>", "Choose all from local")
 
 -------------------------------------------------------------------------------
@@ -208,10 +208,17 @@ vim.cmd [[
       endif
     endfor
   endfunction
-
   command! GotoFirstFloat call <sid>GotoFirstFloat()
 ]]
 keymap({ "n", "x" }, "g<M-f>", "<cmd>GotoFirstFloat<cr>", "Focus first floating window")
+
+-- toggle floating terminal window
+keymap("n", "<M-t>", function()
+  require("jamin.utils").floating_term()
+end, "Open floating terminal")
+keymap("t", "<M-t>", function()
+  require("jamin.utils").floating_term()
+end, "Close floating terminal")
 
 -- resize
 keymap("n", "<C-Up>", "<cmd>resize +5<cr>", "Decrease horizontal window size")
@@ -249,106 +256,68 @@ keymap({ "n", "i" }, "<M-w>", "<cmd>w<cr>", "Write")
 ----> Toggle options
 -------------------------------------------------------------------------------
 
-local toggle_option = function(option, x, y)
-  local on = x or true
-  local off = y or false
-
-  local has_win_opt, win_opt_value = pcall(vim.api.nvim_win_get_option, 0, option)
-
-  local has_buf_opt, buf_opt_value = pcall(vim.api.nvim_buf_get_option, 0, option)
-
-  if has_win_opt then
-    local toggled = win_opt_value == off and on or off
-    vim.api.nvim_win_set_option(0, option, toggled)
-  elseif has_buf_opt then
-    local toggled = buf_opt_value == off and on or off
-    vim.api.nvim_buf_set_option(0, option, toggled)
-  else
-    local opt_value = vim.api.nvim_get_option(option)
-    local toggled = opt_value == off and on or off
-    vim.api.nvim_set_option(option, toggled)
-  end
-  vim.cmd.set(option .. "?")
-end
-
-local diagnostic_toggle = function(global)
-  local vars = global and vim.g or vim.b
-  vars.diagnostics_disabled = not vars.diagnostics_disabled
-  local cmd = vars.diagnostics_disabled and "disable" or "enable"
-
-  vim.api.nvim_echo({
-    {
-      string.format("%s diagnostics %sd", global and "Global" or "Buffer", cmd),
-    },
-  }, false, {})
-
-  vim.schedule(function()
-    vim.diagnostic[cmd](global and nil or 0)
-  end)
-end
-
 keymap("n", "<leader>sd", function()
-  diagnostic_toggle()
+  require("jamin.utils").diagnostic_toggle()
 end, "Toggle buffer diagnostics")
 
 keymap("n", "<leader>sD", function()
-  diagnostic_toggle(true)
+  require("jamin.utils").diagnostic_toggle(true)
 end, "Toggle global diagnostics")
 
 keymap("n", "<leader>sn", function()
-  toggle_option "relativenumber"
+  require("jamin.utils").toggle_option "relativenumber"
 end, "Toggle relative line number")
 
 keymap("n", "<leader>sw", function()
-  toggle_option "wrap"
+  require("jamin.utils").toggle_option "wrap"
 end, "Toggle wrap")
 
 keymap("n", "<leader>ss", function()
-  toggle_option "spell"
+  require("jamin.utils").toggle_option "spell"
 end, "Toggle spell")
 
 keymap("n", "<leader>sp", function()
-  toggle_option "paste"
+  require("jamin.utils").toggle_option "paste"
 end, "Toggle paste")
 
 keymap("n", "<leader>sh", function()
-  toggle_option "hlsearch"
+  require("jamin.utils").toggle_option "hlsearch"
 end, "Toggle hlsearch")
 
 keymap("n", "<leader>si", function()
-  toggle_option "incsearch"
+  require("jamin.utils").toggle_option "incsearch"
 end, "Toggle incsearch")
 
 keymap("n", "<leader>sl", function()
-  toggle_option "list"
+  require("jamin.utils").toggle_option "list"
 end, "Toggle list")
 
 keymap("n", "<leader>sx", function()
-  toggle_option "cursorline"
+  require("jamin.utils").toggle_option "cursorline"
 end, "Toggle cursorline")
 
 keymap("n", "<leader>sy", function()
-  toggle_option "cursorcolumn"
+  require("jamin.utils").toggle_option "cursorcolumn"
 end, "Toggle cursorcolumn")
 
 keymap("n", "<leader>s<Tab>", function()
-  toggle_option "autoindent"
+  require("jamin.utils").toggle_option "autoindent"
 end, "Toggle autoindent")
 
 keymap("n", "<leader>sf", function()
-  toggle_option("foldcolumn", "0", "1")
+  require("jamin.utils").toggle_option("foldcolumn", "0", "1")
 end, "Toggle foldcolumn")
 
 keymap("n", "<leader>sM", function()
-  toggle_option "modifiable"
+  require("jamin.utils").toggle_option "modifiable"
 end, "Toggle modifiable")
 
 keymap("n", "<leader>s|", function()
-  toggle_option("colorcolumn", "0", "80")
+  require("jamin.utils").toggle_option("colorcolumn", "0", "80")
 end, "Toggle colorcolumn")
 
 keymap("n", "<leader>sc", function()
-  toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")
+  require("jamin.utils").toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")
 end, "Toggle clipboard")
 
 local prezMode = false

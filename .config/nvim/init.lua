@@ -104,6 +104,10 @@ _G.keymap = function(mode, lhs, rhs, desc)
   vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
 end
 
+R = function(name)
+  require("plenary.reload").reload_module(name)
+end
+
 -------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------

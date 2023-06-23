@@ -26,7 +26,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "ThePrimeagen/harpoon", -- file marks on steroids
-    config = true,
+    opts = {},
     -- stylua: ignore
     keys = {
       { "<M-a>", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", desc = "Harpoon mark 1" },
@@ -40,7 +40,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "rmagatti/goto-preview", -- open lsp previews in floating window
-    config = true,
+    opts = {},
     -- stylua: ignore
     keys = {
       { "gpI", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", desc = "Preview implementation" },
@@ -71,7 +71,7 @@ return {
     dependencies = {
       {
         "ggandor/leap-spooky.nvim",
-        config = true,
+        opts = {},
         keys = {
           { "am", mode = { "o" }, desc = "Leap magnet" },
           { "im", mode = { "o" }, desc = "Leap magnet" },

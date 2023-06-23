@@ -33,7 +33,7 @@ let g:netrw_dirhistmax=0
 " | Keymaps                                                                 |
 " ---------------------------------------------------------------------------
 
-nnoremap q: :qa<cr>
+nnoremap q: :q<cr>
 nnoremap Q <cmd>QfToggle<cr>
 
 vnoremap p "_dP
@@ -441,6 +441,52 @@ if has("autocmd")
         autocmd BufNewFile .prettierrc.json 0r ~/.dotfiles/assets/templates/.prettierrc.json
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
     augroup END
+
+   " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    augroup jamin_compilers
+        autocmd!
+        " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler
+        autocmd FileType python compiler pylint
+        autocmd FileType rust compiler cargo
+        autocmd FileType bash,sh compiler shellcheck
+        autocmd FileType yaml compiler yamllint
+        autocmd FileType css,scss,sass compiler stylelint
+        autocmd FileType javascript,javascriptreact,vue,svelte compiler eslint
+
+        " There are builtin tsc and go compilers but a few tweaks are needed
+        " https://github.com/fatih/vim-go/blob/master/compiler/go.vim
+        autocmd FileType go
+              \ if filereadable("makefile") || filereadable("Makefile")
+              \ | setlocal makeprg=make
+              \ | else
+              \ | setlocal makeprg=go\ build
+              \ | endif
+              \ | setlocal errorformat=%-G#\ %.%#
+              \ | setlocal errorformat+=%-G%.%#panic:\ %m
+              \ | setlocal errorformat+=%Ecan\'t\ load\ package:\ %m
+              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:%c:\ %m
+              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
+              \ | setlocal errorformat+=%C%*\\s%m
+              \ | setlocal errorformat+=%-G%.%#
+
+        " https://github.com/leafgarland/typescript-vim/blob/master/compiler/typescript.vim
+        autocmd FileType typescript,typescriptreact compiler tsc
+              " \ setlocal makeprg=tsc\ $*\ %
+              " \ | setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
+
+        " Set up formatters
+        autocmd Filetype lua
+              \ setlocal formatprg=stylua\ --indent-type="Spaces"\ --stdin-filepath\ %\ 2>\ /dev/null
+
+        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,
+              \javascript,typescript,javascriptreact,typescriptreact
+              \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\ 2>\ /dev/null
+
+        autocmd QuickFixCmdPost [^l]* cwindow
+    augroup END
+
+    command! Lint silent make % | silent redraw!
 endif
 
 

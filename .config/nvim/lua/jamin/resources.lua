@@ -83,6 +83,7 @@ M.icons = {
     FillSlash = "╱",
     FillDot = "·",
     Space = "␣",
+    Return = "⮠", -- 󰌑 ⤶  ↵  ⮠
     CaretDown = "⌄",
     CaretDoubleRight = "»",
     CaretDoubleLeft = "«",

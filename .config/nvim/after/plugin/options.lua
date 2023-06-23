@@ -1,16 +1,3 @@
-local has_res, res = pcall(require, "jamin.resources")
-if has_res then
-  vim.opt.fillchars = { diff = res.icons.ui.FillSlash }
-  vim.opt.listchars = {
-    extends = res.icons.ui.CaretDoubleRight,
-    precedes = res.icons.ui.CaretDoubleLeft,
-    trail = res.icons.ui.FillDot,
-    multispace = res.icons.ui.FillDot .. " ",
-    nbsp = res.icons.ui.Space,
-    eol = res.icons.ui.CaretDown,
-  }
-end
-
 vim.opt.clipboard = "unnamed"
 vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 200
@@ -83,3 +70,18 @@ vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
+
+local has_res, res = pcall(require, "jamin.resources")
+if has_res then
+  vim.opt.fillchars = { diff = res.icons.ui.FillSlash }
+  vim.opt.listchars = {
+    extends = res.icons.ui.CaretDoubleRight,
+    precedes = res.icons.ui.CaretDoubleLeft,
+    trail = res.icons.ui.FillDot,
+    lead = res.icons.ui.FillDot,
+    leadmultispace = res.icons.ui.Separator
+      .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", {}) / 2),
+    nbsp = res.icons.ui.Space,
+    eol = res.icons.ui.Return,
+  }
+end
