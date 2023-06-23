@@ -18,7 +18,10 @@ color.deleted=on color88
 color.completed=on color22
 color.error=black on color124
 
+uda.taskwarrior-tui.keyconfig.log=L
 uda.taskwarrior-tui.keyconfig.delete=D
-uda.taskwarrior-tui.task-report.prompt-on-delete=true
-uda.taskwarrior-tui.task-report.prompt-on-done=true
+uda.taskwarrior-tui.keyconfig.next-tab=l
+uda.taskwarrior-tui.keyconfig.previous-tab=h
 uda.taskwarrior-tui.task-report.next.filter=+READY
+uda.taskwarrior-tui.task-report.prompt-on-done=true
+uda.taskwarrior-tui.task-report.prompt-on-delete=true

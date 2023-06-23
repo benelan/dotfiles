@@ -265,7 +265,7 @@ if is-supported task; then
     alias tch="task context home"
     alias tcn="task context none"
 
-    alias te="nvim +VimwikiMakeDiaryNote"
+    alias te="zk daily"
     alias tey="nvim +VimwikiMakeYesterdayDiaryNote"
     alias tet="nvim +VimwikiMakeTomorrowDiaryNote"
     alias tei="nvim +VimwikiDiaryIndex"
