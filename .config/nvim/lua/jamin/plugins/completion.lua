@@ -301,6 +301,7 @@ return {
               end
             end,
 
+            ---@diagnostic disable-next-line
             cmp.config.compare.recently_used,
             cmp.config.compare.kind,
             cmp.config.compare.length,

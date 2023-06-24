@@ -476,9 +476,6 @@ if has("autocmd")
               " \ | setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 
         " Set up formatters
-        autocmd Filetype lua
-              \ setlocal formatprg=stylua\ --indent-type="Spaces"\ --stdin-filepath\ %\ 2>\ /dev/null
-
         autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,
               \javascript,typescript,javascriptreact,typescriptreact
               \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\ 2>\ /dev/null

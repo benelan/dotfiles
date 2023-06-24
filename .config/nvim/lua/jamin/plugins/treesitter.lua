@@ -3,7 +3,7 @@ return {
     "nvim-treesitter/playground", -- for creating syntax queries
     enabled = false,
     dependencies = "nvim-treesitter/nvim-treesitter",
-    cmd = "TSPlaygroundToggle",
+    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor", "TSNodeUnderCursor" },
   },
   -----------------------------------------------------------------------------
   {
@@ -104,6 +104,11 @@ return {
         autotag = { enable = true },
         matchup = { enable = true },
         playground = { enable = true },
+        query_linter = {
+          enable = true,
+          use_virtual_text = true,
+          lint_events = { "BufWrite", "CursorHold" },
+        },
         rainbow = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
         textsubjects = {
