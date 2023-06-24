@@ -29,26 +29,52 @@ return {
     opts = {},
     -- stylua: ignore
     keys = {
-      { "<M-a>", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", desc = "Harpoon mark 1" },
-      { "<M-s>", "<cmd>lua require('harpoon.ui').nav_file(2)<cr>", desc = "Harpoon mark 2" },
-      { "<M-d>", "<cmd>lua require('harpoon.ui').nav_file(3)<cr>", desc = "Harpoon mark 3" },
-      { "<M-f>", "<cmd>lua require('harpoon.ui').nav_file(4)<cr>", desc = "Harpoon mark 4" },
-      { "<M-h>", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", desc = "Harpoon ui menu" },
-      { "<M-m>", "<cmd>lua require('harpoon.mark').add_file()<cr>", desc = "Harpoon add file" },
+      { "<M-m>", function() require("harpoon.mark").add_file() end, desc = "Harpoon add file" },
+      { "<M-h>", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon ui menu" },
+      { "<M-a>", function() require("harpoon.ui").nav_file(1) end, desc = "Harpoon mark 1" },
+      { "<M-s>", function() require("harpoon.ui").nav_file(2) end, desc = "Harpoon mark 2" },
+      { "<M-d>", function() require("harpoon.ui").nav_file(3) end, desc = "Harpoon mark 3" },
+      { "<M-f>", function() require("harpoon.ui").nav_file(4) end, desc = "Harpoon mark 4" },
     },
   },
   -----------------------------------------------------------------------------
   {
     "rmagatti/goto-preview", -- open lsp previews in floating window
-    opts = {},
-    -- stylua: ignore
-    keys = {
-      { "gpI", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", desc = "Preview implementation" },
-      { "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", desc = "Preview definition" },
-      { "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", desc = "Preview type definition" },
-      { "gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", desc = "Preview references" },
-      { "gpq", "<cmd>lua require('goto-preview').close_all_win()<CR>", desc = "Close previews" },
-    },
+    opts = function()
+      local ui = vim.api.nvim_list_uis()
+      return {
+        height = #ui > 0 and math.floor(ui[1].height / 3) or 20,
+        width = #ui > 0 and math.floor(ui[1].width / 2) or 120,
+        post_open_hook = function(_, winnr)
+          vim.api.nvim_set_option_value("cursorline", false, { win = winnr })
+          local has_ts_context, ts_context = pcall(require, "treesitter-context")
+          if has_ts_context then
+            ts_context.disable()
+          end
+        end,
+        resizing_mappings = true,
+      }
+    end,
+    keys = function()
+      local gtp = require "goto-preview"
+      return {
+        { "gpI", gtp.goto_preview_implementation, desc = "Preview implementation" },
+        { "gpd", gtp.goto_preview_definition, desc = "Preview definition" },
+        { "gpt", gtp.goto_preview_type_definition, desc = "Preview type definition" },
+        { "gpr", gtp.goto_preview_references, desc = "Preview references" },
+        {
+          "gpq",
+          function()
+            gtp.close_all_win()
+            local has_ts_context, ts_context = pcall(require, "treesitter-context")
+            if has_ts_context then
+              ts_context.enable()
+            end
+          end,
+          desc = "Close previews",
+        },
+      }
+    end,
   },
   -----------------------------------------------------------------------------
   {

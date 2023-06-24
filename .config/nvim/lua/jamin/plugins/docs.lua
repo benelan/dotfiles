@@ -4,11 +4,12 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     opts = { snippet_engine = "luasnip" },
     cmd = "Neogen",
+    -- stylua: ignore
     keys = {
-      { "<leader>df", "<cmd>Neogen func<cr>", desc = "Annotate function" },
-      { "<leader>dc", "<cmd>Neogen class<cr>", desc = "Annotate class" },
-      { "<leader>dt", "<cmd>Neogen type<cr>", desc = "Annotate type" },
-      { "<leader>db", "<cmd>Neogen file<cr>", desc = "Annotate buffer" },
+      { "<leader>df", function() require("neogen").generate { type = "func" } end, desc = "Annotate function" },
+      { "<leader>dc", function() require("neogen").generate { type = "class" } end, desc = "Annotate class" },
+      { "<leader>dt", function() require("neogen").generate { type = "type" } end, desc = "Annotate type" },
+      { "<leader>db", function() require("neogen").generate { type = "file" } end, desc = "Annotate buffer" },
     },
   },
   {
@@ -50,11 +51,11 @@ return {
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
     -- stylua: ignore
     keys = {
-      { "<leader>zn", "<cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", desc = "New note" },
-      { "<leader>zo", "<cmd>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes" },
-      { "<leader>zt", "<cmd>ZkTags<CR>", desc = "Tags" },
-      { "<leader>zf", "<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>", desc = "Find notes", mode = "n" },
-        -- Search for the notes matching the current visual selection.
+      { "<leader>zn", function() require("zk.commands").get "ZkNew" { title = vim.fn.input "Title: " } end, desc = "New note" },
+      { "<leader>zo", function() require("zk.commands").get "ZkNotes" { sort = { "modified" } } end, desc = "Open notes" },
+      { "<leader>zt", function() require("zk.commands").get "ZkTags" { } end, desc = "Tags" },
+      { "<leader>zf", function() require("zk.commands").get "ZkNotes" { sort = { "modified" }, match = { vim.fn.input "Search: " } } end, desc = "Find notes", mode = "n" },
+      -- Search for the notes matching the current visual selection.
       { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
     },
     config = function()
@@ -95,7 +96,7 @@ return {
       }
       vim.g.vimwiki_key_mappings = {
         headers = 0,
-        html = 0
+        html = 0,
       }
     end,
   },

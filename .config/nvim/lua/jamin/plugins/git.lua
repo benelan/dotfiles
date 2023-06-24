@@ -42,37 +42,33 @@ return {
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
-      { "]h", "<cmd>Gitsigns next_hunk<CR>", desc = "Next hunk" },
-      { "[h", "<cmd>Gitsigns prev_hunk<CR>", desc = "Previous hunk" },
-      { "<leader>gp", "<cmd>Gitsigns preview_hunk<cr>", desc = "Preview hunk" },
-      { "<leader>gr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset hunk" },
-      { "<leader>gs", "<cmd>Gitsigns stage_hunk<cr>", desc = "Stage hunk" },
-      { "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "Unstage hunk" },
-      { "<leader>gS", "<cmd>Gitsigns stage_buffer<cr>", desc = "Stage buffer" },
-      { "<leader>gR", "<cmd>Gitsigns reset_buffer<cr>", desc = "Reset buffer" },
-      { "<leader>gtl", "<cmd>Gitsigns toggle_current_line_blame<CR>", desc = "Toggle current line blame" },
-      { "<leader>gts", "<cmd>Gitsigns toggle_signs<CR>", desc = "Toggle signs" },
-      { "<leader>gtd", "<cmd>Gitsigns toggle_deleted<CR>", desc = "Toggle deleted line display" },
-      { "<leader>gtw", "<cmd>Gitsigns toggle_word_diff<CR>", desc = "Toggle word diff" },
-      { "<leader>gth", "<cmd>Gitsigns toggle_linehl<CR>", desc = "Toggle line highlight" },
-      { "<leader>gtn", "<cmd>Gitsigns toggle_numhl<CR>", desc = "Toggle number highlight" },
-      { "<leader>gl", "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", desc = "Blame line" },
+      { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk" },
+      { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk" },
+      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk", mode = { "o", "x" } },
+      { "<leader>gs", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk", mode = "v" },
+      { "<leader>gr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
+      { "<leader>gp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
+      { "<leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
+      { "<leader>gs", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
+      { "<leader>gu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
+      { "<leader>gS", function() require("gitsigns").stage_buffer() end, desc = "Stage buffer" },
+      { "<leader>gR", function() require("gitsigns").reset_buffer() end, desc = "Reset buffer" },
+      { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle git blame" },
+      { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle git signs" },
+      { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display" },
+      { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff" },
+      { "<leader>gth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle git line highlight" },
+      { "<leader>gtn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle git number highlight" },
+      { "<leader>gb", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame" },
     },
     opts = {
+      current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "right_align", -- 'eol' | 'overlay' | 'right_align'
         delay = 1000,
         ignore_whitespace = true,
       },
-      current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
-    -- stylua: ignore
-      on_attach = function()
-        local gs = package.loaded.gitsigns
-        keymap("v", "<leader>gs", function() gs.stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, "Stage hunk")
-        keymap("v", "<leader>gr", function() gs.reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, "Reset hunk")
-        keymap({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "inner git hunk")
-      end,
     },
   },
 }

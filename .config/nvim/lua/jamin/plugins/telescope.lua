@@ -28,8 +28,8 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>fy", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>", desc = "Clipboard history" },
-      { "<leader>fm", "<cmd>lua require('telescope').extensions.macroscope.default()<cr>", desc = "Macro history" },
+      { "<leader>fy", function() require("telescope").extensions.neoclip.default() end, desc = "Clipboard history" },
+      { "<leader>fm", function() require("telescope").extensions.macroscope.default() end, desc = "Macro history" },
     },
   },
   -----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return {
     end,
     -- stylua: ignore
     keys = {
-      { "<C-p>", "<cmd>lua require('telescope').extensions.frecency.frecency()<cr>", desc = "Frecent files" },
+      { "<C-p>", function() require("telescope").extensions.frecency.frecency() end, desc = "Frecent files" },
     },
   },
   -----------------------------------------------------------------------------
@@ -52,17 +52,10 @@ return {
     config = function()
       require("telescope").load_extension "git_worktree"
     end,
+    -- stylua: ignore
     keys = {
-      {
-        "<leader>gwl",
-        "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
-        desc = "List git wortrees",
-      },
-      {
-        "<leader>gwa",
-        "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
-        desc = "Add git wortree",
-      },
+      { "<leader>gwl", function() require("telescope").extensions.git_worktree.git_worktrees() end, desc = "List git wortrees" },
+      { "<leader>gwa", function() require("telescope").extensions.git_worktree.create_git_worktree() end, desc = "Add git wortree" },
     },
   },
   -----------------------------------------------------------------------------
@@ -87,62 +80,50 @@ return {
       },
     },
     keys = function()
+      local builtin = require "telescope.builtin"
+      local themes = require "telescope.themes"
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
       local function telescope_cwd(picker, args)
-        require("telescope.builtin")[picker](
+        builtin[picker](
           vim.tbl_extend("error", args or {}, { cwd = ("../"):rep(vim.v.count) .. "." })
         )
       end
+
       -- stylua: ignore
       return {
-        { "<leader>f", "<cmd>Telescope<cr>", desc = "Fuzzy find" },
-        { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Find recent file" },
-        { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffer" },
-        { "<leader>f.", "<cmd>Telescope resume<cr>", desc = "Resume previous fuzzying" },
-        { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Find registers" },
-        {
-          "<leader>/",
-          function()
-            require("telescope.builtin").current_buffer_fuzzy_find(
-              require("telescope.themes").get_dropdown { winblend = 10, previewer = false }
-            )
-          end,
-          desc = "Fuzzy find in buffer",
-        },
+        { "<leader>f", function() builtin.pickers() end, desc = "Fuzzy find" },
+        { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent file" },
+        { "<leader>fb", function() builtin.buffers() end, desc = "Find buffer" },
+        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzying" },
+        { "<leader>fr", function() builtin.registers() end, desc = "Find registers" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find file" },
         { "<leader>ft", function() telescope_cwd "live_grep" end, desc = "Find text" },
-        {
-          "<leader>fv",
-          function() require("telescope.builtin")["find_files"] { search_dirs = { "~/.vim", "~/.config/nvim" } } end,
-          desc = "Find (n)vim files",
-        },
-        {
-          "<leader>fd",
-          function() require("telescope.builtin")["find_files"] { search_dirs = { "~/.dotfiles" } } end,
-          desc = "Find dotfiles",
-        },
+        { "<leader>fv", function() builtin.find_files { search_dirs = { "~/.vim", "~/.config/nvim" } } end, desc = "Find (n)vim files" },
+        { "<leader>fd", function() builtin.find_files { search_dirs = { "~/.dotfiles" } } end, desc = "Find dotfiles" },
+        { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Fuzzy find in buffer" },
+
         -- LSP keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
-        { "<leader>lq", "<cmd>Telescope quickfix<cr>", desc = "Telescope quickfix" },
-        { "<leader>lQ", "<cmd>Telescope quickfixhistory<cr>", desc = "Telescope quickfix history" },
-        { "<leader>lt", "<cmd>Telescope lsp_type_definitions<cr>", desc = "Type definitions" },
-        { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer diagnostics" },
-        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
-        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document symbols" },
-        { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace symbols" },
-        { "<leader>li", "<cmd>Telescope lsp_implementations<cr>", desc = "Implementations" },
+        { "<leader>lr", function() builtin.lsp_references() end, desc = "References" },
+        { "<leader>lq", function() builtin.quickfix() end, desc = "Telescope quickfix" },
+        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Telescope quickfix history" },
+        { "<leader>lt", function() builtin.lsp_type_definitions() end, desc = "Type definitions" },
+        { "<leader>lD", function() builtin.diagnostics() end, desc = "Workspace diagnostics" },
+        { "<leader>ls", function() builtin.lsp_document_symbols() end, desc = "Document symbols" },
+        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols() end, desc = "Workspace symbols" },
+        { "<leader>li", function() builtin.lsp_implementations() end, desc = "Implementations" },
+        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "Buffer diagnostics" },
 
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
         { "<C-p>", function() telescope_cwd "git_files" end, desc = "Find git files" },
         { "<leader>fg", function() telescope_cwd "git_files" end, desc = "Find git files" },
-        { "<leader>gfb", "<cmd>Telescope git_branches<cr>", { "n", "x" }, desc = "Checkout branch" },
-        { "<leader>gfc", "<cmd>Telescope git_bcommits<cr>", { "n", "x" }, desc = "Checkout buffer commit" },
-        { "<leader>gfC", "<cmd>Telescope git_commits<cr>", { "n", "x" }, desc = "Checkout commit" },
-        { "<leader>gfs", "<cmd>Telescope git_status<cr>", { "n", "x" }, desc = "View status" },
-        { "<leader>gfS", "<cmd>Telescope git_stash<cr>", { "n", "x" }, desc = "View stash" },
+        { "<leader>gfb", function() builtin.git_branches() end, desc = "Checkout branch" },
+        { "<leader>gfc", function() builtin.git_bcommits() end, desc = "Checkout buffer commit" },
+        { "<leader>gfC", function() builtin.git_commits() end, desc = "Checkout commit" },
+        { "<leader>gfs", function() builtin.git_status() end, desc = "View status" },
+        { "<leader>gfS", function() builtin.git_stash() end, desc = "View stash" },
       }
     end,
     opts = function()

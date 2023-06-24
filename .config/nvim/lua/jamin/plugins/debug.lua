@@ -48,7 +48,8 @@ return {
     },
     {
       "rcarriga/nvim-dap-ui",
-      keys = { { "<leader>Du", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" } },
+      -- stylua: ignore
+      keys = { { "<leader>Du", function() require("dapui").toggle() end, desc = "Toggle UI" } },
       opts = {
         layouts = {
           {

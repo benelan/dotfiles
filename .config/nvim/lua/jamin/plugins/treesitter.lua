@@ -24,18 +24,18 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     --stylua: ignore
     keys = {
-      { "<leader>Rf", " <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>", desc = "Extract function", mode = "v" },
-      { "<leader>RF", " <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>", desc = "Extract function to file", mode = "v" },
-      { "<leader>Rv", " <Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>", desc = "Extract variable", mode = "v" },
-      { "<leader>Ri", " <Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>", desc = "Inline variable", mode = "v" },
-      { "<leader>Rb", " <Cmd>lua require('refactoring').refactor('Extract Block')<CR>", desc = "Extract block" },
-      { "<leader>RB", " <Cmd>lua require('refactoring').refactor('Extract Block To File')<CR>", desc = "Extract block to file" },
-      { "<leader>Ri", " <Cmd>lua require('refactoring').refactor('Inline Variable')<CR>", desc = "Inline variable" },
-      { "<leader>Rr", ":lua require('refactoring').select_refactor()<CR>", desc = "Select refactor", mode = "v" },
-      { "<leader>DP", ":lua require('refactoring').debug.printf({below = false})<CR>", desc = "Print scope" },
-      { "<leader>Dp", ":lua require('refactoring').debug.print_var({ normal = true })<CR>", desc = "Print variable" },
-      { "<leader>Dp", ":lua require('refactoring').debug.print_var({})<CR>", desc = "Print variable", mode = "v" },
-      { "<leader>Dc", ":lua require('refactoring').debug.cleanup({})<CR>", desc = "Cleanup prints" },
+      { "<leader>Rf", "<Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>", desc = "Extract function", mode = "v" },
+      { "<leader>RF", "<Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>", desc = "Extract function to file", mode = "v" },
+      { "<leader>Rv", "<Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>", desc = "Extract variable", mode = "v" },
+      { "<leader>Ri", "<Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>", desc = "Inline variable", mode = "v" },
+      { "<leader>Rb", function() require('refactoring').refactor('Extract Block') end, desc = "Extract block" },
+      { "<leader>RB", function() require('refactoring').refactor('Extract Block To File') end, desc = "Extract block to file" },
+      { "<leader>Ri", function() require('refactoring').refactor('Inline Variable') end, desc = "Inline variable" },
+      { "<leader>Rr", function() require('refactoring').select_refactor() end, desc = "Select refactor", mode = "v" },
+      { "<leader>DP", function() require('refactoring').debug.printf({below = false}) end, desc = "Print scope" },
+      { "<leader>Dp", function() require('refactoring').debug.print_var({ normal = true }) end, desc = "Print variable" },
+      { "<leader>Dp", function() require('refactoring').debug.print_var({}) end, desc = "Print variable", mode = "v" },
+      { "<leader>Dc", function() require('refactoring').debug.cleanup({}) end, desc = "Cleanup prints" },
     },
     opts = {
       prompt_func_return_type = { go = true },
@@ -59,14 +59,9 @@ return {
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        -- stylua: ignore
         keys = {
-          {
-            "[C",
-            function()
-              require("treesitter-context").go_to_context()
-            end,
-            desc = "Treesitter context",
-          },
+          { "[C", function() require("treesitter-context").go_to_context() end, desc = "Treesitter context" },
         },
       },
       { "JoosepAlviste/nvim-ts-context-commentstring" },
