@@ -74,6 +74,7 @@ return {
       -----------------------------------------------------------------------------
       {
         "folke/neodev.nvim",
+        ft = "lua",
         enabled = true,
         opts = {},
       },
@@ -143,15 +144,16 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
+          -- disable formatting and use eslint and stylua instead via null-ls below
           if client.name == "tsserver" or client.name == "lua_ls" then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
           end
 
-          vim.api.nvim_buf_set_option(args.buf, "formatexpr", "v:lua.vim.lsp.formatexpr()")
-          vim.api.nvim_buf_set_option(args.buf, "omnifunc", "v:lua.vim.lsp.omnifunc")
-          vim.api.nvim_buf_set_option(args.buf, "tagfunc", "v:lua.vim.lsp.tagfunc")
+          -- vim.api.nvim_set_option_value("formatexpr", "v:lua.vim.lsp.formatexpr()", {buf = args.buf})
+          -- vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", {buf = args.buf})
+          -- vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", {buf = args.buf})
 
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
@@ -160,6 +162,13 @@ return {
               noremap = true,
               desc = desc,
             })
+          end
+
+          if vim.lsp.buf.inlay_hint and client.server_capabilities.inlayHintProvider then
+            vim.lsp.buf.inlay_hint(args.buf, true)
+            bufmap("n", "gh", function()
+              vim.lsp.buf.inlay_hint(0, nil)
+            end, "Toggle inlay hints")
           end
 
           bufmap("n", "K", vim.lsp.buf.hover, "Hover")
@@ -313,7 +322,7 @@ return {
             -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
             extra_args = {
               "--builtin",
-              "clear,rare,informal,usage,code,names,en-GB_to_en-US",
+              "clear,rare,informal,code,names,en-GB_to_en-US",
               "--ignore-words",
               os.getenv "HOME" .. "/.dotfiles/assets/codespell_ignore.txt",
             },
@@ -353,6 +362,7 @@ return {
           formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
           formatting.stylua,
           formatting.trim_whitespace,
+
           -- Reminder: be careful with shellharden if you (ab)use expansion
           -- it can break your code w/o warning when you format()
           -- formatting.shellharden,

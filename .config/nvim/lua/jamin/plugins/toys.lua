@@ -155,7 +155,7 @@ return {
   },
   {
     "lvimuser/lsp-inlayhints.nvim",
-    -- enabled = false,
+    enabled = false,
     event = "LspAttach",
     opts = {
       inlay_hints = {
