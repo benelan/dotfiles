@@ -64,22 +64,44 @@ return {
   },
   {
     "vimwiki/vimwiki",
+    cmd = {
+      "VimwikiIndex",
+      "VimwikiTabIndex",
+      "VimwikiDiaryIndex",
+      "VimwikiMakeDiaryNote",
+      "VimwikiTabMakeDiaryNote",
+      "VimwikiMakeYesterdayDiaryNote",
+      "VimwikiMakeTomorrowDiaryNote",
+    },
+    keys = {
+      { "<leader>ww", "<cmd>VimwikiIndex<cr>", "Open vimwiki index" },
+      { "<leader>wW", "<cmd>VimwikiTabIndex<cr>", "Open vimwiki index in new tab" },
+      { "<leader>wi", "<cmd>VimwikiDiaryIndex<cr>", "Open vimwiki daily index" },
+      { "<leader>we", "<cmd>VimwikiMakeDiaryNote<cr>", "Open yesterday's note" },
+      { "<leader>wE", "<cmd>VimwikiTabMakeDiaryNote<cr>", "Open yesterday's note" },
+      { "<leader>wy", "<cmd>VimwikiMakeYesterdayDiaryNote<cr>", "Open yesterday's note" },
+      { "<leader>wt", "<cmd>VimwikiMakeTomorrowDiaryNote<cr>", "Open tomorrow's note" },
+    },
+    ft = { "md", "markdown" },
     dependencies = {
       {
         "tools-life/taskwiki",
         init = function()
-          vim.g.taskwiki_taskrc_location = os.getenv "HOME" .. "/.config/task/taskrc"
+          vim.g.taskwiki_taskrc_location = vim.fn.expand "~/.config/task/taskrc"
           vim.g.taskwiki_disable_concealcursor = "yeuh"
           vim.g.taskwiki_maplocalleader = "\\"
         end,
       },
     },
     init = function()
+      vim.g.vimwiki_key_mappings = { global = 0, headers = 0, html = 0 }
       vim.g.vimwiki_global_ext = 0
       vim.g.vimwiki_url_maxsave = 0
       vim.g.vimwiki_auto_header = 1
       vim.g.vimwiki_markdown_link_ext = 1
       vim.g.vimwiki_hl_cb_checked = 2
+      vim.g.vimwiki_links_header_level = 3
+      vim.g.vimwiki_tags_header_level = 3
       vim.g.vimwiki_list = {
         {
           name = "Notes",
@@ -89,14 +111,14 @@ return {
           ext = ".md",
           links_space_char = "-",
           auto_diary_index = 1,
+          auto_generate_links = 1,
+          auto_generate_tags = 1,
+          toc_header_level = 3,
+          auto_tags = 1,
           diary_header = "Daily notes",
           diary_index = "index",
           diary_rel_path = "daily/",
         },
-      }
-      vim.g.vimwiki_key_mappings = {
-        headers = 0,
-        html = 0,
       }
     end,
   },
