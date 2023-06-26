@@ -96,6 +96,9 @@ return {
           prefix = "",
         },
       },
+      inlay_hints = {
+        enabled = false,
+      },
       capabilities = {
         textDocument = {
           codeLens = { dynamicRegistration = false },
@@ -165,12 +168,10 @@ return {
           end
 
           if vim.lsp.buf.inlay_hint and client.server_capabilities.inlayHintProvider then
-            vim.lsp.buf.inlay_hint(args.buf, true)
-            bufmap("n", "gh", function()
-              vim.lsp.buf.inlay_hint(0, nil)
-            end, "Toggle inlay hints")
+            vim.lsp.buf.inlay_hint(args.buf, opts.inlay_hints.enabled)
           end
 
+          -- stylua: ignore start
           bufmap("n", "K", vim.lsp.buf.hover, "Hover")
           bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
           bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
@@ -182,7 +183,9 @@ return {
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-          bufmap({ "n", "v" }, "gF", vim.lsp.buf.format, "Format")
+          bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
+          bufmap("n", "gh", function() vim.lsp.buf.inlay_hint(0, nil) end, "Toggle inlay hints")
+          -- stylua: ignore end
 
           if client.server_capabilities.codeLensProvider then
             bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")

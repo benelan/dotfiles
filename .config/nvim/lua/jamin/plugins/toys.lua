@@ -153,33 +153,6 @@ return {
       sources = { ["null-ls"] = { ignore = true } },
     },
   },
-  {
-    "lvimuser/lsp-inlayhints.nvim",
-    enabled = false,
-    event = "LspAttach",
-    opts = {
-      inlay_hints = {
-        highlight = "Comment",
-        parameter_hints = { show = false },
-        type_hints = {
-          prefix = string.format("   %s ", require("jamin.resources").icons.ui.CaretDoubleLeft),
-        },
-      },
-    },
-    config = function(_, opts)
-      require("lsp-inlayhints").setup(opts)
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_attach_inlayhints", {}),
-        callback = function(args)
-          if not (args.data and args.data.client_id) then
-            return
-          end
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          require("lsp-inlayhints").on_attach(client, args.buf)
-        end,
-      })
-    end,
-  },
   -----------------------------------------------------------------------------
   -- Presentation plugins
   {
