@@ -78,40 +78,59 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "ggandor/leap.nvim",
+    "folke/flash.nvim",
     -- enabled = false,
-    keys = {
-      { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
-      { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
-      { "gs", mode = { "n", "x", "o" }, desc = "Leap from windows" },
+    opts = {
+      exclude = require("jamin.resources").exclude_filetypes,
+      modes = { char = { enabled = false } },
     },
-    config = function(_, opts)
-      local leap = require "leap"
-      for k, v in pairs(opts) do
-        leap.opts[k] = v
-      end
-      leap.add_default_mappings(true)
-      vim.keymap.del({ "x", "o" }, "x")
-      vim.keymap.del({ "x", "o" }, "X")
-    end,
-    dependencies = {
+    keys = {
       {
-        "ggandor/leap-spooky.nvim",
-        opts = {},
-        keys = {
-          { "am", mode = { "o" }, desc = "Leap magnet" },
-          { "im", mode = { "o" }, desc = "Leap magnet" },
-          { "mm", mode = { "o" }, desc = "Leap magnet line" },
-          { "aM", mode = { "o" }, desc = "Leap magnet (windows)" },
-          { "iM", mode = { "o" }, desc = "Leap magnet (windows)" },
-          { "MM", mode = { "o" }, desc = "Leap magnet line (windows)" },
-          { "ar", mode = { "o" }, desc = "Leap remote" },
-          { "ir", mode = { "o" }, desc = "Leap remote" },
-          { "rr", mode = { "o" }, desc = "Leap remote line" },
-          { "aR", mode = { "o" }, desc = "Leap remote (windows)" },
-          { "iR", mode = { "o" }, desc = "Leap remote (windows)" },
-          { "RR", mode = { "o" }, desc = "Leap remote line (windows)" },
-        },
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          -- default options: exact mode, multi window, all directions, with a backdrop
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash treesitter parents",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Flash remote",
+      },
+      {
+        "R",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump {
+            matcher = function(win, state, opts)
+              local search = require("flash.search").new(win, state)
+              local matches = {}
+              for _, m in ipairs(search:get(opts)) do
+                vim.list_extend(matches, require("flash.plugins.treesitter").get_nodes(win, m.pos))
+              end
+              return matches
+            end,
+            jump = { pos = "range" },
+            highlight = {
+              label = { before = true, after = true, style = "inline" },
+              matches = false,
+            },
+          }
+        end,
+        desc = "Flash treesitter nodes",
       },
     },
   },

@@ -127,10 +127,32 @@ return {
       }
     end,
     opts = function()
+      local function flash_action(prompt_bufnr)
+        local has_flash, flash = pcall(require, "flash")
+        if has_flash then
+          flash.jump {
+            pattern = "^",
+            highlight = { label = { after = { 0, 0 } } },
+            search = {
+              mode = "search",
+              exclude = {
+                function(win)
+                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+                end,
+              },
+            },
+            action = function(match)
+              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+              picker:set_selection(match.pos[1] - 1)
+            end,
+          }
+        end
+      end
+
       local default_mappings = {
+        ["<C-s>"] = flash_action,
         ["<C-c>"] = "close",
         ["<C-x>"] = false,
-        ["<C-s>"] = "select_horizontal",
         ["<C-d>"] = "results_scrolling_down",
         ["<C-u>"] = "results_scrolling_up",
         ["<C-f>"] = "preview_scrolling_down",
@@ -150,6 +172,7 @@ return {
           require("telescope.actions").open_qflist(...)
         end,
       }
+
       return {
         defaults = {
           -- path_display = { "smart" },
