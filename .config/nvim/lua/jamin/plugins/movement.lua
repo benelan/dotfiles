@@ -11,6 +11,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "vifm/vifm.vim",
+    ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm" },
     keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()

@@ -6,12 +6,15 @@ set classify='  :dir:/,  :exe:,  :reg:,  :link:,  :?:,󱞨  ::../
 
 " Dirs
 set classify+='  ::.github/::/,
-             \   ::.git/::/,
+             \ 󰉐  ::*lock*/::,
+             \ 󰊢  ::.git/::/,
              \   ::Dropbox/::/,
              \   ::GDrive/::/'
 
 " Files
-set classify+='  ::.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bashprofile,,.bash_profile,,.bash_logout,,.bash_history,,.bashrc,,.dmrc,,.DS_Store,,.fasd,,.inputrc,,.jack-settings,,.mime.types,,.nvidia-settings-rc,,.pam_environment,,.profile,,.recently-used,,.selected_editor,,.tmux.conf,,.xinitrc,,.xinputrc,,config,,bspwmrc,,sxhkdrc,,mimeapps.list,,.zshenv,,.zprofile,,.zshrc,,.zlogin,,.zlogout,,yabairc,,skhdrc,,ini,,user-dirs.dirs,,.wgetrc,,.taskrc,,.nbrc,,.editorconfig,,.curlrc,,.actrc,,.cspell.json::,
+set classify+='  ::.*rc,,.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bashprofile,,.bash_profile,,.bash_logout,,.bash_history,,
+             \      .DS_Store,,.fasd,,.jack-settings,,.mime.types,,.pam_environment,,.profile,,.recently-used,,.selected_editor,,.tmux.conf,,
+             \      config,,mimeapps.list,,.zshenv,,.zprofile,,.zlogin,,.zlogout,,ini,,user-dirs.dirs,,.editorconfig,,.cspell.json::,
              \   ::.dir_colors,,.dircolors::,
              \   ::.fehbg::,
              \ 󰡨  ::Dockerfile,,docker-compose.yml::,
@@ -28,8 +31,8 @@ set classify+='  ::.Xauthority,,.Xdefaults,,.Xresources,,.bash_aliases,,.bash
              \   ::known_hosts,,authorized_keys,,license,,LICENSE.md,,LICENSE,,LICENSE.txt::,
              \   ::procfile::,
              \   ::.ocamlformat,,dune,,den-project,,esy.json,,esy-lock.json,,reason.json::,
-             \ 󰊢  ::.gitconfig,,git/config,,.gitattributes,,.gitmodules::.
-             \ 󰱺  ::.eslint*::
+             \ 󰊢  ::.gitconfig,,.gitattributes,,.gitmodules,,.gitignore::,
+             \ 󰱺  ::.eslint*::,
              \   ::README::'
 
 " Extensions
@@ -44,7 +47,10 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \   ::*.doc,,*.docx::,
              \   ::*.xls,,*.xlsx::,
              \ 󱏈  ::*.csv,,*.ods::,
-             \ 󱁤  ::*.bat,,*.conf,,*.cvs,,*.htaccess,,*.htpasswd,,*.ini,,*.rc,,*.yaml,,*.yml,,*.toml::,
+             \ 󰙰  ::*.bak,,*.orig,,*.old,,*.hist,,*.history,,*.cache::,
+             \ 󰈡  ::*.lock,,.*lock::,
+             \ 󱁤  ::*.bat,,*.conf,,*.cfg,,*.cvs,,*.htaccess,,*.htpasswd,,*.service,,*.ini,,*rc,,*.yaml,,.*.yaml,,*.yml,,.*.yml,,*.toml,,.*.toml::,
+             \ 󰓆  ::*.spl,,*.dic,,*.dict,,*.exc::,
              \   ::*.a,,*.cmake,,*.jl,,*.o,,*.so::,
              \   ::*.ai::,
              \   ::*.asm,,*.s,,*.sh,,*.bash,,*.zsh::,
@@ -57,7 +63,7 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \ 󰙲  ::*.cxx,,*.c++,,*.cc,,*.cp,,*.cpp::,
              \   ::*.d::,
              \   ::*.dart::,
-             \   ::*.db,,*.dbu,,*.dump,,*.img,,*.iso,,*.sql,,*.sqlite*::,
+             \   ::*.db,,*.dbu,,*.tbd,,*.db-journal,,*.db-crypt,,*.db-shm,,*.db3,,*.dbf,,*.dat,,*.dump,,*.img,,*.iso,,*.sql,,*.sqlite*::,
              \   ::*.diff::,
              \   ::*.dll,,*.exe,,*.msi::,
              \   ::*.epub::,
@@ -67,8 +73,8 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \ 󰟓  ::*.go::,
              \ 󱗞  ::*.hbs,,*.mustache::,
              \   ::*.hs,,*.lhs::,
-             \ 󰌞  ::*.js::,
-             \   ::*.json::,
+             \ 󰌞  ::*.js,,.*.js::,
+             \   ::*.json,,.*.json,,*.hjson,,*.jsonc,,*.json5::,
              \ 󰜈  ::*.jsx::,
              \   ::*.key,,*.pub,,*.gpg::,
              \   ::*.lua::,
@@ -87,12 +93,13 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \ 󰘐  ::*.sln,,*.suo::,
              \   ::*.styl::,
              \ 󰛦  ::*.ts,,*.tsx::,
-             \   ::*.vim,,.vimrc,,.viminfo::,
+             \   ::*.vim,,.viminfo,,*.vifm::,
              \   ::*.xul::'
 
 " Wezterm ships with nerd fonts, which are required for the glyphs below
 if expand($TERM) == "wezterm" || expand($OG_TERM) == "wezterm"
   set classify+='  ::.npm/::,
+               \   ::.git/::,
                \   ::.cache/,,.config/,,.local/,,.var/::,
                \   ::gruntfile.coffee,,gruntfile.js,,gruntfile.ls::,
                \   ::*.coffee::,
@@ -103,3 +110,4 @@ if expand($TERM) == "wezterm" || expand($OG_TERM) == "wezterm"
                \   ::*.scala::,
                \   ::*.twig::'
 endif
+
