@@ -61,7 +61,7 @@ local function set_root(args)
     return
   end
   root_cache[path] = root
-  if root == vim.fn.getcwd() or root == os.getenv "HOME" then
+  if root == vim.fn.getcwd() or root == vim.env.HOME then
     return
   end
 

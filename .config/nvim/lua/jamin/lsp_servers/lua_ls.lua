@@ -12,7 +12,7 @@ return {
         -- library = {
         --   [vim.fn.expand "$VIMRUNTIME/lua"] = true,
         --   [vim.fn.stdpath "config" .. "/lua"] = true,
-        --   [os.getenv "HOME" .. "/.config/wezterm"] = true,
+        --   [vim.fn.expand "~/.config/wezterm"] = true,
         -- },
       },
       telemetry = { enable = false },

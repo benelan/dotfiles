@@ -23,7 +23,7 @@ if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   vim.keymap.set(
     "n",
     "<leader>zn",
-    "<Cmd>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
+    "<cmd>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
     { buffer = true, silent = true, noremap = true, desc = "New note" }
   )
   -- Create a new note in the same directory as the current buffer, using the current selection for title.
@@ -54,16 +54,16 @@ if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   vim.keymap.set(
     "n",
     "<leader>zb",
-    "<Cmd>ZkBacklinks<CR>",
+    "<cmd>ZkBacklinks<CR>",
     { buffer = true, silent = true, noremap = true, desc = "Backlinks" }
   )
   -- Alternative for backlinks using pure LSP and showing the source context.
-  -- vim.keymap.set('n', '<leader>zb', '<Cmd>lua vim.lsp.buf.references()<CR>', opts)
+  -- vim.keymap.set('n', '<leader>zb', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   -- Open notes linked by the current buffer.
   vim.keymap.set(
     "n",
     "<leader>zl",
-    "<Cmd>ZkLinks<CR>",
+    "<cmd>ZkLinks<CR>",
     { buffer = true, silent = true, noremap = true, desc = "Links" }
   )
   -- Open the code actions for a visual selection.

@@ -120,7 +120,7 @@ end
 -----------------------------------------------------------------------------
 
 --- Toggles diagnostics for the current buffer
----@param global boolean if true, the diagnostics are toggled globably
+---@param global boolean if true, the diagnostics are toggled globally
 function M.diagnostic_toggle(global)
   local vars = global and vim.g or vim.b
   vars.diagnostics_disabled = not vars.diagnostics_disabled

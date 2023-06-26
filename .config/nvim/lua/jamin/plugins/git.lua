@@ -34,6 +34,10 @@ return {
     opts = {
       enhanced_diff_hl = true,
       use_icons = vim.g.use_devicons,
+      icons = {
+        folder_closed = require("jamin.resources").icons.ui.FolderClosed,
+        folder_open = require("jamin.resources").icons.ui.FolderOpen,
+      },
       signs = {
         fold_closed = require("jamin.resources").icons.ui.Collapsed,
         fold_open = require("jamin.resources").icons.ui.Expanded,

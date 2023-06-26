@@ -70,6 +70,8 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
         call gruvbox_material#highlight("DapStatusLineInfo", s:palette.aqua, s:palette.bg2)
         highlight! link CursorLineNr Purple
         highlight! link TreesitterContext Normal
+        highlight! link EyelinerPrimary Purple
+        highlight! link EyelinerSecondary Orange
         " highlight EyelinerSecondary guifg=#c92920 "gui=underline
         " highlight EyelinerPrimary guifg=#4c7bd7 "gui=underine
     endfunction

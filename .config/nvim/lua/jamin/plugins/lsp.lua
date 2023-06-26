@@ -34,7 +34,7 @@ return {
         opts = {
           ensure_installed = {
             "actionlint", -- github action linter
-            "codespell", -- commonly misspelled english words linter
+            "codespell", -- commonly misspelled English words linter
             "cspell", -- code spell checker
             "delve", -- golang debug adapter
             "markdown-toc", -- markdown table of contents generator
@@ -42,7 +42,7 @@ return {
             "shellcheck", -- shell linter
             "shfmt", -- shell formatter
             "stylua", -- lua formatter
-            "write-good", -- english grammar linter
+            "write-good", -- English grammar linter
           },
         },
         config = function(_, opts)
@@ -327,7 +327,7 @@ return {
               "--builtin",
               "clear,rare,informal,code,names,en-GB_to_en-US",
               "--ignore-words",
-              os.getenv "HOME" .. "/.dotfiles/assets/codespell_ignore.txt",
+              vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
             },
             diagnostic_config = quiet_diagnostics,
           },
