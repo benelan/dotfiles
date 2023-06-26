@@ -38,7 +38,6 @@ return {
     end,
   },
   { "f3fora/cmp-spell", ft = writing_filetypes, enabled = false }, -- vim's spellsuggest
-  { "hrsh7th/cmp-nvim-lua", ft = "lua" }, -- lua language and nvim API
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
@@ -230,7 +229,6 @@ return {
               nvim_lsp = " [LSP] ",
               nvim_lsp_document_symbol = "[SYMB] ",
               nvim_lsp_signature_help = " [SIG] ",
-              nvim_lua = " [API] ",
               path = "[PATH] ",
               rg = "  [RG] ",
               spell = " [SPL] ",
@@ -255,7 +253,6 @@ return {
           { name = "nvim_lsp_signature_help" },
           { name = "luasnip" },
           { name = "nvim_lsp" },
-          { name = "nvim_lua" },
           { name = "git" },
           { name = "tmux", keyword_length = 2 },
           { name = "path", keyword_length = 2 },
