@@ -1,4 +1,4 @@
-local writing_filetypes = { "markdown", "text", "gitcommit", "octo" }
+local writing_filetypes = { "gitcommit", "markdown", "octo", "text", "vimwiki" }
 return {
   {
     "Exafunction/codeium.vim", -- AI completion

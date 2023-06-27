@@ -360,9 +360,13 @@ return {
             condition = has_stylelint_configfile,
           },
 
-          formatting.markdown_toc,
-          formatting.prettier.with { prefer_local = "node_modules/.bin" },
+          formatting.prettier.with {
+            prefer_local = "node_modules/.bin",
+            extra_filetypes = { "vimwiki" },
+          },
+
           formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+          formatting.markdown_toc,
           formatting.stylua,
           formatting.trim_whitespace,
 
