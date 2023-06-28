@@ -34,7 +34,7 @@ let g:netrw_dirhistmax=0
 " ---------------------------------------------------------------------------
 
 nnoremap q: :q<cr>
-nnoremap Q <cmd>QfToggle<cr>
+nnoremap <leader>q :q<cr>
 
 vnoremap p "_dP
 nnoremap x "_x
@@ -42,7 +42,7 @@ nnoremap gy <cmd>let @+=@*<cr>
 
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
-nnoremap <leader>Y "+Y
+nnoremap <leader>Y "+y$
 vnoremap <leader>d "_d
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
@@ -117,8 +117,8 @@ vnoremap <leader>r <Plug>(ReplaceOperator)
 " ---------------------------------------------------------------------------
 
 command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
-nnoremap <silent> <C-q> :QfToggle<CR>
-nnoremap <silent> <leader>q :QfToggle<CR>
+nnoremap <C-q> <cmd>QfToggle<cr>
+nnoremap Q <cmd>QfToggle<cr>
 
 " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -394,7 +394,7 @@ if has("autocmd")
                     \ set nobuflisted
                     \| nnoremap <silent> <buffer> q :q<CR>
 
-        autocmd FileType markdown,mdx,gitcommit,text
+        autocmd FileType markdown,mdx,gitcommit,text,vimwiki,octo
                     \ setlocal wrap spell nocursorline
                     \| nnoremap <buffer> <silent> ^ g^
                     \| nnoremap <buffer> <silent> $ g$
