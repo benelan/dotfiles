@@ -82,7 +82,7 @@ return {
     "folke/flash.nvim",
     -- enabled = false,
     opts = {
-      exclude = require("jamin.resources").exclude_filetypes,
+      exclude = require("jamin.resources").filetypes.excluded,
       modes = { char = { enabled = false } },
     },
     keys = {

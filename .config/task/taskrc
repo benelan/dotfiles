@@ -1,6 +1,12 @@
 data.location=~/dev/notes/.task
 hooks.location=~/.config/task/hooks
 
+nag=
+search.case.sensitive=0
+
+list.all.projects=1
+list.all.tags=1
+
 calendar.details=full
 calendar.holidays=sparse
 
@@ -14,9 +20,24 @@ urgency.tags.coefficient=0
 urgency.project.coefficient=0.5
 
 color.tagged=
+color.active=color2
+color.next=color6
+color.blocked=color15 on color8
+color.blocking=color11
+color.recurring=color4
+color.scheduled=color12
+
+color.calendar.weekend=color8
+color.calendar.weeknumber=color5
+color.calendar.scheduled=black on color12
+color.calendar.due.today=black on color1
+color.calendar.due=black on color3
+color.calendar.holiday=black on color6
+
 color.deleted=on color88
 color.completed=on color22
 color.error=black on color124
+color.label=bold white
 
 uda.taskwarrior-tui.keyconfig.log=L
 uda.taskwarrior-tui.keyconfig.delete=D

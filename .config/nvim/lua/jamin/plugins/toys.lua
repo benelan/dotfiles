@@ -122,7 +122,7 @@ return {
       handle = { highlight = "TabLine" },
       marks = { Misc = { highlight = "Purple" } },
       handlers = { gitsigns = true },
-      excluded_filetypes = require("jamin.resources").exclude_filetypes,
+      excluded_filetypes = require("jamin.resources").filetypes.excluded,
     },
     config = function(_, opts)
       require("scrollbar").setup(opts)

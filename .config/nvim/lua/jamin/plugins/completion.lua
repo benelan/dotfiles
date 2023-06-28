@@ -1,4 +1,3 @@
-local writing_filetypes = { "gitcommit", "markdown", "octo", "text", "vimwiki" }
 return {
   {
     "Exafunction/codeium.vim", -- AI completion
@@ -25,19 +24,19 @@ return {
   },
   {
     "petertriho/cmp-git", -- issue/pr/mentions/commit in git_commit/octo buffers
-    ft = writing_filetypes,
+    ft = require("jamin.resources").filetypes.writing,
   },
   {
     "uga-rosa/cmp-dictionary",
     cond = vim.fn.filereadable(vim.fn.stdpath "config" .. "/spell/en.dict") == 1,
-    ft = writing_filetypes,
+    ft = require("jamin.resources").filetypes.writing,
     config = function()
       require("cmp_dictionary").switcher {
         spelllang = { en = vim.fn.stdpath "config" .. "/spell/en.dict" },
       }
     end,
   },
-  { "f3fora/cmp-spell", ft = writing_filetypes, enabled = false }, -- vim's spellsuggest
+  { "f3fora/cmp-spell", ft = require("jamin.resources").filetypes.writing, enabled = false }, -- vim's spellsuggest
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
@@ -270,7 +269,7 @@ return {
             name = "dictionary",
             keyword_length = 3,
             entry_filter = function(_, ctx)
-              for _, ft in ipairs(writing_filetypes) do
+              for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
                 if ft == ctx.filetype then
                   return true
                 end
