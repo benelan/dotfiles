@@ -100,7 +100,7 @@ return {
         mode = { "n", "o", "x" },
         function()
           require("flash").treesitter {
-            highlight = { label = { rainbow = { enabled = true } } },
+            label = { rainbow = { enabled = true } },
           }
         end,
         desc = "Flash treesitter parents",
@@ -119,7 +119,7 @@ return {
         function()
           -- show labeled treesitter nodes around the search matches
           require("flash").treesitter_search {
-            highlight = { label = { rainbow = { enabled = true } } },
+            label = { rainbow = { enabled = true } },
           }
         end,
         desc = "Flash treesitter search",
