@@ -99,7 +99,9 @@ return {
         "S",
         mode = { "n", "o", "x" },
         function()
-          require("flash").treesitter()
+          require("flash").treesitter {
+            highlight = { label = { rainbow = { enabled = true } } },
+          }
         end,
         desc = "Flash treesitter parents",
       },
@@ -113,25 +115,14 @@ return {
       },
       {
         "R",
-        mode = { "n", "x", "o" },
+        mode = { "n", "o", "x" },
         function()
-          require("flash").jump {
-            matcher = function(win, state, opts)
-              local search = require("flash.search").new(win, state)
-              local matches = {}
-              for _, m in ipairs(search:get(opts)) do
-                vim.list_extend(matches, require("flash.plugins.treesitter").get_nodes(win, m.pos))
-              end
-              return matches
-            end,
-            jump = { pos = "range" },
-            highlight = {
-              label = { before = true, after = true, style = "inline" },
-              matches = false,
-            },
+          -- show labeled treesitter nodes around the search matches
+          require("flash").treesitter_search {
+            highlight = { label = { rainbow = { enabled = true } } },
           }
         end,
-        desc = "Flash treesitter nodes",
+        desc = "Flash treesitter search",
       },
     },
   },
