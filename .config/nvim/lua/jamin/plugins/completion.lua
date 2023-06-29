@@ -21,6 +21,8 @@ return {
     "David-Kunz/cmp-npm", -- package.json buffers
     event = "BufEnter package.json",
     cond = vim.fn.executable "npm" == 1,
+    dependencies = "nvim-lua/plenary.nvim",
+    opts = {}
   },
   {
     "petertriho/cmp-git", -- issue/pr/mentions/commit in git_commit/octo buffers
@@ -231,6 +233,7 @@ return {
               path = "[PATH] ",
               rg = "  [RG] ",
               spell = " [SPL] ",
+              npm = " [NPM] ",
               tmux = "[TMUX] ",
               treesitter = "[TREE] ",
               dictionary = "[DICT] ",
@@ -253,6 +256,7 @@ return {
           { name = "luasnip" },
           { name = "nvim_lsp" },
           { name = "git" },
+          { name = "npm", keyword_length = 4 },
           { name = "tmux", keyword_length = 2 },
           { name = "path", keyword_length = 2 },
           { name = "treesitter", keyword_length = 3 },
