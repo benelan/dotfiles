@@ -46,7 +46,7 @@ is-supported nvim && EDITOR='nvim' ||
     }
 
 TERMINAL="gnome-terminal"
-is-supported wezterm && TERMINAL='wezterm'
+# is-supported wezterm && TERMINAL='wezterm'
 
 export EDITOR TERMINAL
 
@@ -54,11 +54,13 @@ export VISUAL=$EDITOR
 export PAGER='less'
 export MANPAGER=$PAGER
 
-is-supported w3m && export BROWSER='w3m'
+[ -n "$DISPLAY" ] && export BROWSER="firefox" || export BROWSER="w3m"
+
 is-supported bat && export BAT_THEME="gruvbox-dark"
 is-supported volta && export VOLTA_HOME="$HOME/.volta"
 is-supported bun && export BUN_INSTALL="$HOME/.bun"
 is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
+is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 if is-supported go; then

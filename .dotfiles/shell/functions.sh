@@ -69,14 +69,16 @@ if is-supported pandoc; then
         pandoc -s -f markdown -t man "$@" | man -l -
         # use groff on mac: . . . . . . . | groff -T utf8 -man | less
     }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    md2html() {
+        pandoc "$1.md" --output="$1.html" --standalone \
+            --css="$HOME/.dotfiles/assets/pandoc.css" --from=gfm --to=html5
+    }
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-md2html() {
-    pandoc "$1.md" --output="$1.html" --standalone \
-        --css="$HOME/.dotfiles/assets/pandoc.css" --from=gfm --to=html5
-}
 
 if is-supported inotifywait; then
     # runs a command when a target file is modified
@@ -120,22 +122,21 @@ dataurl() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Recursively search parent directory for file
+# param 1: name of file or directory to find
+# param 2: directory to start from (defaults to PWD)
+# example: $ parent-find .git
 parent_find() {
-    # param 1: name of file or directory to find
-    # param 2: directory to start from (defaults to PWD)
-    # example: $ parent-find .git
-
     test -e "${2:-$PWD}/$1" && echo "${2:-$PWD}" && return 0
     [ '/' = "${2:-$PWD}" ] && return 1
     parent-find "$1" "$(dirname "${2:-$PWD}")"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # removes duplicate lines from a file
-dedup_lines() {
-    # param: file to dedup
-    # example: $ dedup-lines deps.txt > unique_deps.txt
-    awk '!visited[$0]++' "$@"
-}
+# param: file to dedup
+# example: $ dedup-lines deps.txt > unique_deps.txt
+dedup_lines() { awk '!visited[$0]++' "$@"; }
 
 # -----------------------------------------------------------------------------
 # Networking
@@ -163,9 +164,12 @@ killport() { wtfport "$1" | xargs kill -9; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Find real from shortened url
-unshorten() {
-    curl -sIL "$1" | sed -n 's/Location: *//p'
-}
+unshorten() { curl -sIL "$1" | sed -n 's/Location: *//p'; }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# check if a website is down
+down4me() { curl -s "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -181,34 +185,44 @@ add_ssh() {
     [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
     [ ! -d ~/.ssh ] && mkdir -m 700 ~/.ssh
     [ ! -e ~/.ssh/config ] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
-    printf "%s" "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" >>~/.ssh/config
+    printf "%s" "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" \
+        >>~/.ssh/config
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # list hosts defined in ssh config
-ssh_list() {
-    awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
-}
+ssh_list() { awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # add all ssh private keys to agent
-ssh_add_all() {
-    grep -slR "PRIVATE" ~/.ssh | xargs ssh-add
-}
+ssh_add_all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # display all ip addresses for this host
 ips() {
-    if is-supported ifconfig; then
-        ifconfig | awk '/inet /{ gsub(/addr:/, ""); print $2 }'
-    elif is-supported ip; then
-        ip addr | grep -oP 'inet \K[\d.]+'
-    else
-        echo "Install ifconfig or ip"
-    fi
+    printf "%s\n" "Router IP (Gateway): $(
+        netstat -rn | awk 'FNR == 3 {print $2}' ||
+            route -n | awk 'FNR == 3 {print $2}' ||
+            ip route | awk '/via/ {print $3}'
+    )"
+
+    printf "%s\n" "Local IP (Private IP): $(
+        ip addr | awk '/global/ {print $2}' | cut -d'/' -f1 | head -n1 ||
+            ifconfig | awk '/inet/ {print $2}' | head -n1
+    )"
+
+    printf "%s\n" "External IP (Public IP): $(
+        curl -s ifconfig.co ||
+            curl -s checkip.amazonaws.com ||
+            curl -s ipinfo.io/ip ||
+            curl -s icanhazip.com ||
+            curl -s smart-ip.net/myip ||
+            (curl -s pasteip.me/api/cli/ && echo) ||
+            curl -s http://checkip.dyndns.org | grep -o '[[:digit:].]\+'
+    )"
 }
 
 # -----------------------------------------------------------------------------
@@ -492,8 +506,8 @@ fi
 #---------------------------------------------------------------------------------
 
 # Toggles a label we use for running visual snapshots on a pull request
-if type -P gh >/dev/null 2>&1; then
-    cc_snapshot() {
+if is-supported gh; then
+    cc_visual_snapshots() {
         if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
             current_branch="$(git symbolic-ref --short HEAD)"
             gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
@@ -510,4 +524,4 @@ fi
 # use vifm to cd
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 # make one or more directories and cd into the last one
-mcd() { mkdir -p -- "$@" && cd -- "${!#}" || return 1; }
+mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
