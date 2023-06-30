@@ -1,16 +1,3 @@
-vim.keymap.set("n", "<M-z>", "[s1z=", {
-  buffer = true,
-  silent = true,
-  noremap = true,
-  desc = "Correct latest misspelled word",
-})
-vim.keymap.set("i", "<M-z>", "<C-g>u<Esc>[s1z=`]a<C-g>u", {
-  buffer = true,
-  silent = true,
-  noremap = true,
-  desc = "Correct latest misspelled word",
-})
-
 local status_ok, zk = pcall(require, "zk.util")
 if not status_ok then
   return

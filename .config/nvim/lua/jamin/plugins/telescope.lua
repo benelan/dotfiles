@@ -92,7 +92,6 @@ return {
 
       -- stylua: ignore
       return {
-        { "<leader>f", function() builtin.pickers() end, desc = "Fuzzy find" },
         { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent file" },
         { "<leader>fb", function() builtin.buffers() end, desc = "Find buffer" },
         { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzying" },

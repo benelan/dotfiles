@@ -55,25 +55,20 @@ if exists("g:colors_name") && g:colors_name == "gruvbox-material"
                     \"bg_orange": ["#5A3B0A", "130"],
                     \ "bg_visual_yellow": ["#7a380b", "208"]
                     \ })
-        call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
-        call gruvbox_material#highlight("GitSignsChange", s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight("GitSignsChangeNr", s:palette.orange, s:palette.none)
-        call gruvbox_material#highlight("GitSignsChangeLn", s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
         call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
-
+        call gruvbox_material#highlight("GitSignsChange", s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight("GitSignsChangeNr", s:palette.orange, s:palette.none)
+        call gruvbox_material#highlight("GitSignsChangeLn", s:palette.none, s:palette.bg_orange)
         call gruvbox_material#highlight("GitStatusLineChange", s:palette.orange, s:palette.bg3)
         call gruvbox_material#highlight("GitStatusLineAdd", s:palette.green, s:palette.bg3)
         call gruvbox_material#highlight("GitStatusLineDelete", s:palette.red, s:palette.bg3)
         call gruvbox_material#highlight("LazyStatusLineUpdates", s:palette.purple, s:palette.bg2)
         call gruvbox_material#highlight("DapStatusLineInfo", s:palette.aqua, s:palette.bg2)
+        call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
         highlight! link CursorLineNr Purple
         highlight! link TreesitterContext Normal
-        highlight! link EyelinerPrimary Purple
-        highlight! link EyelinerSecondary Orange
-        " highlight EyelinerSecondary guifg=#c92920 "gui=underline
-        " highlight EyelinerPrimary guifg=#4c7bd7 "gui=underine
     endfunction
 
     augroup GruvboxMaterialCustom

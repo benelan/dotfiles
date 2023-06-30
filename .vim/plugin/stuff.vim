@@ -35,6 +35,7 @@ let g:netrw_dirhistmax=0
 
 nnoremap q: :q<cr>
 nnoremap <leader>q :q<cr>
+nnoremap <leader>w :w<cr>
 
 vnoremap p "_dP
 nnoremap x "_x
@@ -56,6 +57,11 @@ vnoremap > >gv
 
 nnoremap & :&&<CR>
 vnoremap & :&&<CR>
+
+nnoremap [z [s1z=
+nnoremap ]z ]s1z=
+nnoremap <M-z> 1z=
+inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
 " Use the repeat operator with a visual selection
 " This is useful for performing an edit on a single line, then highlighting a

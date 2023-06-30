@@ -75,7 +75,6 @@ return {
       {
         "folke/neodev.nvim",
         ft = "lua",
-        enabled = true,
         opts = {},
       },
       -----------------------------------------------------------------------------
@@ -138,6 +137,25 @@ return {
       )
 
       -------------------------------------------------------------------------------
+      ----> Server setup
+
+      local lspconfig = require "lspconfig"
+
+      for _, server in pairs(lsp_servers) do
+        -- zk plugin sets up its own lsp server
+        if server ~= "zk" then
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
+          local server_opts = vim.tbl_deep_extend(
+            "force",
+            { capabilities = capabilities },
+            has_user_opts and user_opts or {}
+          )
+
+          lspconfig[server].setup(server_opts)
+        end
+      end
+
+      -------------------------------------------------------------------------------
       ----> Keymaps and local settings
 
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -185,6 +203,7 @@ return {
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
           bufmap("n", "gh", function() vim.lsp.buf.inlay_hint(0, nil) end, "Toggle inlay hints")
+          bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
           -- stylua: ignore end
 
           if client.server_capabilities.codeLensProvider then
@@ -199,26 +218,6 @@ return {
           end
         end,
       })
-
-      -------------------------------------------------------------------------------
-      ----> Server setup
-
-      local lspconfig = require "lspconfig"
-
-      for _, server in pairs(lsp_servers) do
-        -- zk and go plugins setup their own lsp server
-        if server ~= "zk" then
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
-
-          local server_opts = vim.tbl_deep_extend(
-            "force",
-            { capabilities = capabilities },
-            has_user_opts and user_opts or {}
-          )
-
-          lspconfig[server].setup(server_opts)
-        end
-      end
 
       -------------------------------------------------------------------------------
       ----> Format on Save
@@ -309,9 +308,7 @@ return {
           code_actions.gitrebase,
           code_actions.refactoring,
           code_actions.shellcheck,
-          code_actions.cspell.with {
-            prefer_local = "./node_modules/.bin",
-          },
+          code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
 
           diagnostics.actionlint.with {
             runtime_condition = function()

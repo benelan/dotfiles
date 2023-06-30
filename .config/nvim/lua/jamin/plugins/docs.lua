@@ -74,13 +74,13 @@ return {
       "VimwikiMakeTomorrowDiaryNote",
     },
     keys = {
-      { "<leader>ww", "<cmd>VimwikiIndex<cr>", "Open vimwiki index" },
-      { "<leader>wW", "<cmd>VimwikiTabIndex<cr>", "Open vimwiki index in new tab" },
-      { "<leader>wi", "<cmd>VimwikiDiaryIndex<cr>", "Open vimwiki daily index" },
-      { "<leader>we", "<cmd>VimwikiMakeDiaryNote<cr>", "Open yesterday's note" },
-      { "<leader>wE", "<cmd>VimwikiTabMakeDiaryNote<cr>", "Open yesterday's note" },
-      { "<leader>wy", "<cmd>VimwikiMakeYesterdayDiaryNote<cr>", "Open yesterday's note" },
-      { "<leader>wt", "<cmd>VimwikiMakeTomorrowDiaryNote<cr>", "Open tomorrow's note" },
+      { "<leader>Ww", "<cmd>VimwikiIndex<cr>", desc = "Open vimwiki index" },
+      { "<leader>WW", "<cmd>VimwikiTabIndex<cr>", desc = "Open vimwiki index in new tab" },
+      { "<leader>Wi", "<cmd>VimwikiDiaryIndex<cr>", desc = "Open vimwiki daily index" },
+      { "<leader>We", "<cmd>VimwikiMakeDiaryNote<cr>", desc = "Open yesterday's note" },
+      { "<leader>WE", "<cmd>VimwikiTabMakeDiaryNote<cr>", desc = "Open yesterday's note" },
+      { "<leader>Wy", "<cmd>VimwikiMakeYesterdayDiaryNote<cr>", desc = "Open yesterday's note" },
+      { "<leader>Wt", "<cmd>VimwikiMakeTomorrowDiaryNote<cr>", desc = "Open tomorrow's note" },
     },
     ft = { "md", "markdown" },
     dependencies = {
@@ -102,6 +102,7 @@ return {
       vim.g.vimwiki_hl_cb_checked = 2
       vim.g.vimwiki_links_header_level = 3
       vim.g.vimwiki_tags_header_level = 3
+      vim.g.vimwiki_map_prefix = "<leader>W"
       vim.g.vimwiki_list = {
         {
           name = "Notes",

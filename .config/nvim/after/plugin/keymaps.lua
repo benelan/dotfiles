@@ -351,7 +351,10 @@ keymap("n", "<leader>sP", function()
     vim.cmd "TSContextToggle"
   end
 
+  -- toggle eyeliner.nvim highlighting
+  if not vim.tbl_isempty(vim.api.nvim_get_hl(0, { name = "EyelinerPrimary" })) then
+    vim.cmd(prezMode and "EyelinerEnable" or "EyelinerDisable")
+  end
+
   prezMode = not prezMode
 end, "Toggle Present mode")
-
-keymap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")

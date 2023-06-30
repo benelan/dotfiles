@@ -50,6 +50,10 @@ return {
     -- enabled = false,
     event = "CursorHold",
     opts = { highlight_on_key = false, dim = true },
+    config = function(_, opts)
+      require("eyeliner").setup(opts)
+      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Type" })
+    end,
   },
   -----------------------------------------------------------------------------
   {
@@ -196,12 +200,20 @@ return {
       require("which-key").register {
         ["g:"] = "External program operator",
         ["gp"] = { name = "preview" },
+        ["]z"] = "Fix next misspelled word",
+        ["[z"] = "Fix previous misspelled word",
+        ["<M-z>"] = "Fix misspelled word",
         ["<leader>"] = {
           ["<C-l>"] = "Redraw",
           ["<Del>"] = "Delete buffer",
           ["bd"] = "Delete buffer and window",
           ["\\"] = "Vertical split",
           ["-"] = "Horizontal split",
+          p = "Paste to clipboard",
+          y = "Copy to clipboard",
+          Y = "Copy eol to clipboard",
+          q = "Quit",
+          w = "Write",
           r = "Replace operator",
           u = "Undotree",
           C = { name = "color" },
@@ -228,7 +240,7 @@ return {
           l = { name = "lsp" },
           s = { name = "settings" },
           t = { name = "tabs" },
-          w = { name = "wiki" },
+          W = { name = "wiki" },
           z = { name = "zk" },
           g = {
             name = "git",
@@ -257,6 +269,9 @@ return {
           ["<C-l>"] = "Redraw",
           D = { name = "debug" },
           R = { name = "refactor" },
+          y = "Copy to clipboard",
+          p = "Paste to clipboard",
+          d = "Delete to clipboard",
           r = "Replace operator",
           z = { name = "zk" },
           g = { name = "git", m = { name = "mergetool" } },

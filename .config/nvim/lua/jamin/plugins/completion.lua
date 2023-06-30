@@ -18,14 +18,14 @@ return {
     },
   },
   {
-    "David-Kunz/cmp-npm", -- package.json buffers
+    "David-Kunz/cmp-npm", -- completes npm packages and their versions in package.json buffers
     event = "BufEnter package.json",
     cond = vim.fn.executable "npm" == 1,
     dependencies = "nvim-lua/plenary.nvim",
-    opts = {}
+    opts = {},
   },
   {
-    "petertriho/cmp-git", -- issue/pr/mentions/commit in git_commit/octo buffers
+    "petertriho/cmp-git", -- issues/prs/mentions/commits in git_commit/octo buffers
     ft = require("jamin.resources").filetypes.writing,
   },
   {
@@ -38,7 +38,11 @@ return {
       }
     end,
   },
-  { "f3fora/cmp-spell", ft = require("jamin.resources").filetypes.writing, enabled = false }, -- vim's spellsuggest
+  {
+    "f3fora/cmp-spell", -- vim's spellsuggest
+    enabled = false,
+    ft = require("jamin.resources").filetypes.writing,
+  },
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
@@ -121,8 +125,9 @@ return {
           require("luasnip/loaders/from_vscode").lazy_load { paths = { "~/.config/Code/User" } }
           require("luasnip.loaders.from_lua").lazy_load()
 
-          ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
+          ls.filetype_extend("typescript", { "javascript" })
           ls.filetype_extend("javascriptreact", { "javascript" })
+          ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
         end,
       },
     },
