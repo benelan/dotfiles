@@ -158,37 +158,6 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  -- Presentation plugins
-  {
-    "folke/zen-mode.nvim",
-    enabled = false,
-    cmd = "ZenMode",
-    keys = { { "<leader>sZ", "<cmd>ZenMode<cr>", desc = "ZenMode" } },
-    opts = {
-      window = {
-        options = {
-          signcolumn = "no",
-          number = false,
-          relativenumber = false,
-          cursorline = false,
-        },
-      },
-      plugins = {
-        twilight = { enabled = false },
-        tmux = { enabled = true },
-        wezterm = { enabled = true, font = "+6" },
-        gitsigns = { enabled = true },
-      },
-    },
-  },
-  {
-    "folke/twilight.nvim",
-    enabled = false,
-    cmd = "Twilight",
-    keys = { { "<leader>sT", "<cmd>Twilight<cr>", desc = "Twilight" } },
-    opts = { context = 13 },
-  },
-  -----------------------------------------------------------------------------
   {
     "folke/which-key.nvim", -- keymap helper for the memory deficient
     -- enabled = false,
