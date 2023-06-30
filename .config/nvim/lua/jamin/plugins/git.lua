@@ -21,7 +21,6 @@ return {
   },
   {
     "sindrets/diffview.nvim", -- diff and history viewer
-    pin = true,
     dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     -- stylua: ignore
