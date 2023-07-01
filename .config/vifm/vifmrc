@@ -118,13 +118,14 @@ set statusline="  Hint: %z%= %f %20d %15A %10E (%a) "
 
 " :mark mark /full/directory/path [filename]
 
-mark c ~/dev/work/calcite-components/
-mark d ~/.dotfiles/
 mark h ~/
-mark n ~/.config/nvim/
-mark p ~/dev/personal/
+mark v ~/.config/nvim/
+mark d ~/.dotfiles/
 mark s ~/.dotfiles/shell/
+mark n ~/dev/notes
+mark p ~/dev/personal/
 mark w ~/dev/work/
+mark c ~/dev/work/calcite-design-system/
 
 " ------------------------------------------------------------------------------
 

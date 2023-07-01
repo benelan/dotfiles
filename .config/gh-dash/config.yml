@@ -12,8 +12,8 @@ issuesSections:
     filters: is:open assignee:@me
   - title: Involved
     filters: is:open involves:@me -author:@me
-  - title: Calcite Components
-    filters: is:open repo:Esri/calcite-components
+  - title: Calcite Design System
+    filters: is:open repo:Esri/calcite-design-system
 defaults:
   preview:
     open: true

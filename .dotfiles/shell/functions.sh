@@ -508,7 +508,7 @@ fi
 # Toggles a label we use for running visual snapshots on a pull request
 if is-supported gh; then
     cc_visual_snapshots() {
-        if [[ "$(gh repo view --json name -q ".name")" = "calcite-components" ]]; then
+        if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
             current_branch="$(git symbolic-ref --short HEAD)"
             gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
             gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"

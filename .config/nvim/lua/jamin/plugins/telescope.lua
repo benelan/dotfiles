@@ -255,7 +255,7 @@ return {
               ["personal"] = vim.fn.expand "~/dev/personal",
               ["notes"] = vim.fn.expand "~/dev/notes",
               ["work"] = vim.fn.expand "~/dev/work",
-              ["cc"] = vim.fn.expand "~/dev/work/calcite-components",
+              ["cc"] = vim.fn.expand "~/dev/work/calcite-design-system",
             },
           },
         },

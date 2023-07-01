@@ -77,7 +77,7 @@ clone_gh_repo_bare() {
     unset default_branch repo_dir worktree_name
 }
 
-clone_gh_repo_bare "work" "Esri/calcite-components"
+clone_gh_repo_bare "work" "Esri/calcite-design-system"
 clone_gh_repo_bare "work" "Esri/calcite-components-examples"
 clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
 clone_gh_repo "work" "Esri/jsapi-resources"

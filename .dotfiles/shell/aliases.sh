@@ -358,6 +358,6 @@ alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-com
 
 alias cc_build_docker_image="docker build --tag calcite-components ."
 # I need to link the Dockerfile to the current git worktree
-alias cc_link_dockerfile='ln -f $WORK/calcite-components/Dockerfile'
+alias cc_link_dockerfile='ln -f $WORK/calcite-design-system/Dockerfile'
 
 unset cc_docker_cmd

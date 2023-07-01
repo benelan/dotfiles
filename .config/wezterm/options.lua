@@ -76,8 +76,8 @@ return {
       },
     },
     {
-      label = "edit CC",
-      cwd = wezterm.home_dir .. "/dev/work/calcite-components",
+      label = "edit Calcite",
+      cwd = wezterm.home_dir .. "/dev/work/calcite-design-system",
       args = { "nvim", ".", "-c", ":Telescope git_files" },
     },
   },
