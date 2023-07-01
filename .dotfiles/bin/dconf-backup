@@ -28,7 +28,7 @@ DCONF_CONFIG_DIR="$HOME/.config/dconf"
 mkdir -p "$DCONF_CONFIG_DIR"
 
 sanitize_filename() {
-    echo "$DCONF_CONFIG_DIR/$(echo "$1" | tr '/' '_').conf"
+    echo "$DCONF_CONFIG_DIR/$(echo "$1" | tr '/' '_').ini"
 }
 
 dump() {
