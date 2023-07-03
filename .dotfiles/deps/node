@@ -4,6 +4,7 @@ eslint
 neovim
 pm2
 prettier
+readability-cli
 stylelint
 ts-node
 typescript

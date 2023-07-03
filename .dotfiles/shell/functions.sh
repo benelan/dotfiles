@@ -353,7 +353,11 @@ if is-supported fzf; then
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
     fi
 
-    # cd into the directory of the selected file
+    fsrb() {
+        surfraw "$(cat ~/.config/surfraw/bookmarks | sed '/^$/d' | sort -n | fzf -e)"
+    }
+
+    ## cd into the directory of the selected file             {{{
     fzfile() {
         cd "$(
             fzf +m -q "$*" \

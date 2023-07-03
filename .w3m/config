@@ -1,0 +1,55 @@
+target_self 0
+open_tab_blank 0
+open_tab_dl_list 1
+display_link 1
+display_link_number 1
+decode_url 1
+display_lineinfo 1
+display_borders 1
+fold_textarea 0
+display_ins_del 1
+view_unseenobject 0
+pseudo_inlines 1
+fold_line 1
+#show_lnum 1
+show_srch_str 1
+
+display_image 0
+auto_image 1
+max_load_image 4
+ext_image_viewer 0
+image_scale 100
+ignore_null_img_alt 1
+imgdisplay w3mimgdisplay
+image_map_list 1
+
+color 1
+basic_color terminal
+bg_color terminal
+anchor_color blue
+image_color green
+form_color white
+mark_color yellow
+active_style 1
+active_color cyan
+visited_anchor 1
+visited_color magenta
+
+use_history 1
+history 1000
+save_hist 1
+confirm_qq 1
+mark 1
+mark_all_pages 0
+wrap_search 0
+ignorecase_search 1
+keymap_file keymap
+bgextviewer 1
+
+extbrowser8 url=%s && printf %s "$url" | xargs tmux set-buffer
+extbrowser9 url=%s && printf %s "$url" | cb
+
+editor vim -c "set filetype=html"
+
+urimethodmap ~/.w3m/urimethodmap, /usr/etc/w3m/urimethodmap
+cgi_bin /usr/lib/w3m/cgi-bin:/home/ben/.w3m/cgi-bin

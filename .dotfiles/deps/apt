@@ -14,6 +14,7 @@ curl
 datamash
 ddgr
 diffutils
+colordiff
 doxygen
 feh
 ffmpeg
@@ -45,7 +46,6 @@ net-tools
 ninja-build
 nmap
 openssh-client
-openssh-server
 openssl
 pandoc
 perl
@@ -61,6 +61,7 @@ ruby
 shellcheck
 socat
 sqlite3
+surfraw-extras
 taskwarrior
 tcpdump
 telnet
@@ -74,5 +75,7 @@ urlview
 vifm
 vim
 vim-gui-common
+w3m
+w3m-img
 wget
 xclip

@@ -16,6 +16,8 @@
 .vim/doc/tags
 .viminfo
 .luarc.json
+.w3m/cookies
+.w3m/history
 # unrelated home directories
 .bun
 .cache
@@ -34,7 +36,6 @@
 .var
 .volta
 .vscode
-.w3m
 .yarn
 Documents
 Downloads
