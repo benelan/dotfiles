@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
-# -----------------------------------------------------------------------------
-# General
-# -----------------------------------------------------------------------------
+# General                                                               {{{
+# --------------------------------------------------------------------- {|}
 
 alias c='clear'
 alias q='exit'
@@ -70,9 +69,9 @@ alias map="xargs -n1"
 # shellcheck disable=2154
 alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput setaf "$i"; tput setab "$i")$(printf %$((COLUMNS - 6))s | tr " " "=")$(tput op)" && i=$((i+1)); done'
 
-# -----------------------------------------------------------------------------
-# Navigation
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Navigation                                                            {{{
+# --------------------------------------------------------------------- {|}
 
 alias -- --="cd -"
 alias ..="cd .."
@@ -107,9 +106,9 @@ if is-supported fasd; then
     }
 fi
 
-# -----------------------------------------------------------------------------
-# Time
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Time                                                                  {{{
+# --------------------------------------------------------------------- {|}
 
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
 if is-supported date; then
@@ -117,9 +116,9 @@ if is-supported date; then
     alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
 fi
 
-# -----------------------------------------------------------------------------
-# Weather
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Weather                                                               {{{
+# --------------------------------------------------------------------- {|}
 
 # Displays detailed weather and forecast.
 if is-supported curl; then
@@ -131,9 +130,9 @@ elif is-supported wget; then
     alias forecast='wget -qO- --compression=auto --timeout=10 "https://wttr.in?F"'
 fi
 
-# -----------------------------------------------------------------------------
-# Networking
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Networking                                                            {{{
+# --------------------------------------------------------------------- {|}
 
 alias hosts='sudo $EDITOR /etc/hosts'
 
@@ -200,23 +199,6 @@ if is-supported lwp-request; then
 fi
 
 # -----------------------------------------------------------------------------
-# Docker
-# -----------------------------------------------------------------------------
-
-if is-supported docker; then
-    # display names of running containers
-    alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
-    # delete all containers / images
-    alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
-    # stats on images
-    alias dockstats='docker stats $(docker ps -q)'
-    # list images installed
-    alias dockimg='docker images'
-    # prune everything
-    alias dockprune='docker system prune -a'
-fi
-
-# -----------------------------------------------------------------------------
 # Web Development
 # -----------------------------------------------------------------------------
 
@@ -242,9 +224,9 @@ if is-supported npm; then
     fi
 fi
 
-# -----------------------------------------------------------------------------
-# Ubuntu/GNOME
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Ubuntu/GNOME                                                          {{{
+# --------------------------------------------------------------------- {|}
 
 if is-supported apt; then
     alias apti='sudo apt install'
@@ -255,9 +237,10 @@ fi
 is-supported gnome-screensaver-command &&
     alias afk='gnome-screensaver-command --lock'
 
-# -----------------------------------------------------------------------------
-# Taskwarrior
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Taskwarrior                                                           {{{
+# --------------------------------------------------------------------- {|}
+
 if is-supported task; then
     alias t="task"
     alias ta="task add"
@@ -282,9 +265,9 @@ if is-supported task; then
     [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task && git -C "$NOTES" commit -m "chore(task): sync" || true && git -C "$NOTES" pull && git -C "$NOTES" push'
 fi
 
-# -----------------------------------------------------------------------------
-# Git
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Git                                                                   {{{
+# --------------------------------------------------------------------- {|}
 
 alias g='git'
 alias x="git mux"
@@ -294,9 +277,9 @@ alias glz="lazygit"
 # shellcheck disable=2016,2034,2154
 alias gbprune='TARGET_BRANCH="$(git bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
 
-# -----------------------------------------------------------------------------
-# Dotfiles
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Dotfiles                                                              {{{
+# --------------------------------------------------------------------- {|}
 
 # setup the alias for managing dotfiles
 # It behaves like git, and can be called from any directory, e.g.
@@ -330,9 +313,9 @@ edit_dotfiles() {
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias G="edit_dotfiles +G +'wincmd o'"
 
-# -----------------------------------------------------------------------------
-# GitHub
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# GitHub                                                                {{{
+# --------------------------------------------------------------------- {|}
 
 # https://cli.github.com/
 # https://github.com/dlvhdr/gh-dash
@@ -341,23 +324,48 @@ alias ghd="gh dash"
 alias eghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
 
-# -----------------------------------------------------------------------------
-# Work
-# -----------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Docker                                                                {{{
+# --------------------------------------------------------------------- {|}
 
-# For running npm scripts in a docker container due to a Stencil bug
-# https://github.com/ionic-team/stencil/issues/3853
-# Uses a bind mount so works for local development
-cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
-# shellcheck disable=2139
-alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components npm --workspace=@esri/calcite-components start"
-# shellcheck disable=2139
-alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watch"
-# shellcheck disable=2139
-alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
+if is-supported docker; then
+    ## general docker aliases                                 {{{
+    # display names of running containers
+    alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
+    # delete all containers / images
+    alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+    # stats on images
+    alias dockstats='docker stats $(docker ps -q)'
+    # list images installed
+    alias dockimg='docker images'
+    # prune everything
+    alias dockprune='docker system prune -a'
 
-alias cc_build_docker_image="docker build --tag calcite-components ."
-# I need to link the Dockerfile to the current git worktree
-alias cc_link_dockerfile='ln -f $WORK/calcite-design-system/Dockerfile'
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-unset cc_docker_cmd
+    ## work docker aliases for calcite-components             {{{
+    # workaround to run e2e tests on ubuntu due to a Stencil bug
+    # https://github.com/ionic-team/stencil/issues/3853
+    # Uses a bind mount so works for local development
+    cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
+
+    # shellcheck disable=2139
+    alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components npm --workspace=@esri/calcite-components start"
+
+    # shellcheck disable=2139
+    alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watch"
+
+    # shellcheck disable=2139
+    alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
+
+    alias cc_build_docker_image="docker build --tag calcite-components ."
+
+    # I need to link the Dockerfile to the current git worktree
+    alias cc_link_dockerfile='ln -f $WORK/calcite-design-system/Dockerfile'
+
+    unset cc_docker_cmd
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+fi
+
+# --------------------------------------------------------------------- }}}

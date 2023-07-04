@@ -1,7 +1,5 @@
-" Ben Elan's VIMRC
-" ----------------------------------------------------------------------
-" | General Settings                                                   |
-" ----------------------------------------------------------------------
+" Settings                                                              {{{
+" --------------------------------------------------------------------- {|}
 
 set nocompatible
 if has("autocmd")
@@ -104,12 +102,14 @@ if has("persistent_undo")
     set undofile
 endif
 
-" ----------------------------------------------------------------------
-" | Key Mappings                                                       |
-" ----------------------------------------------------------------------
+
+" --------------------------------------------------------------------- }}}
+" Keymaps                                                               {{{
+" --------------------------------------------------------------------- {|}
 
 let mapleader = " "
 
+"" general keymaps                                            {{{
 if isdirectory(expand("$HOME/dev/lib/fzf"))
     set runtimepath+=~/dev/lib/fzf
     nnoremap <leader>ff :FZF<CR>
@@ -125,11 +125,6 @@ nnoremap N Nzzzv
 
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
-
-inoremap , ,<C-g>u
-inoremap ? ?<C-g>u
-inoremap . .<C-g>u
-inoremap ; ;<C-g>u
 
 xnoremap g/ <esc>/\\%V
 nnoremap go <cmd>call append(line('.'), repeat([''], v:count1))<cr>
@@ -156,6 +151,32 @@ nnoremap <silent> gK :let _=&lazyredraw<CR>
 "" :W sudo saves the file
 command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 
+nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" misc input and terminal mode keymaps                       {{{
+inoremap , ,<C-g>u
+inoremap ? ?<C-g>u
+inoremap . .<C-g>u
+inoremap ; ;<C-g>u
+
+tnoremap <leader><Esc> <C-\><C-n>
+tnoremap <Esc><Esc> <C-\><C-n>
+tnoremap <S-Space> <Space>
+tnoremap <C-Space> <Space>
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" git mergetool keymaps for selecting hunks                  {{{
+nnoremap <leader>gmU :diffupdate<cr>
+nnoremap <leader>gmr :diffget RE<cr>
+nnoremap <leader>gmR :%diffget RE<cr
+nnoremap <leader>gmb :diffget BA<cr>
+nnoremap <leader>gmB :%diffget BA<cr
+nnoremap <leader>gml :diffget LO<cr>
+nnoremap <leader>gmL :diffget LO<cr>
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" lists - next/prev                                          {{{
 "" Argument list
 nnoremap [a :previous<CR>
 nnoremap ]a :next<CR>
@@ -182,16 +203,8 @@ nnoremap ]t :tabnext<CR>
 nnoremap [T :tlast<CR>
 nnoremap ]T :tfirst<CR>
 
-nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
-
-"" Selecting hunks when using vimdiff as mergetool
-nnoremap <leader>gmU :diffupdate<cr>
-nnoremap <leader>gmr :diffget RE<cr>
-nnoremap <leader>gmR :%diffget RE<cr
-nnoremap <leader>gmb :diffget BA<cr>
-nnoremap <leader>gmB :%diffget BA<cr
-nnoremap <leader>gml :diffget LO<cr>
-nnoremap <leader>gmL :diffget LO<cr>
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" buffers, tabs, and windows                                 {{{
 
 "" close all the buffers
 nnoremap <leader>bda :bufdo bd<cr>
@@ -213,9 +226,6 @@ let s:last_tab = 1
 nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let s:last_tab = tabpagenr()
 
-" Save buffers
-nnoremap <leader>w :w<cr>
-
 " Navigate splits
 nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
@@ -228,6 +238,8 @@ nnoremap <leader><Down> :resize -5<CR>
 nnoremap <leader><Up> :resize +5<CR>
 nnoremap <leader><Right> :vertical resize +5<CR>
 
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" toggle options                                             {{{
 "" toggles automatic indentation based on the previous line
 nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
@@ -262,19 +274,14 @@ nnoremap <silent> <leader>sf :execute "set foldcolumn="
 nnoremap <silent> <leader>sc :execute "set clipboard="
                   \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
 
-tnoremap <leader><Esc> <C-\><C-n>
-tnoremap <Esc><Esc> <C-\><C-n>
-tnoremap <S-Space> <Space>
-tnoremap <C-Space> <Space>
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-" ----------------------------------------------------------------------
-" | Autocommands                                                       |
-" ----------------------------------------------------------------------
+" --------------------------------------------------------------------- }}}
+" Autocommands                                                          {{{
+" --------------------------------------------------------------------- {|}
 
 if has("autocmd")
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    " Misc autocmds
+    "" miscellaneous                                          {{{
     augroup vimrc
         autocmd!
         " Automatically reload .vimrc
@@ -295,22 +302,22 @@ if has("autocmd")
 
     command! Src :source $MYVIMRC
 
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    " Automatically strip whitespaces when files are saved.
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" automatically strip whitespaces when files are saved   {{{
     augroup strip_whitespaces
         let excludedFileTypes = []
         autocmd!
         autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 | :call StripTrailingWhitespace() | endif
     augroup END
 
-    " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
-" ----------------------------------------------------------------------
-" | Helper Functions                                                   |
-" ----------------------------------------------------------------------
+" --------------------------------------------------------------------- }}}
+" Functions and user commands                                           {{{
+" --------------------------------------------------------------------- {|}
 
+"" toggle the display of a terminal buffer                    {{{
 let s:term_buf_nr = -1
 function! s:TerminalToggle() abort
     if s:term_buf_nr == -1
@@ -332,8 +339,8 @@ command! TerminalToggle call <sid>TerminalToggle()
 nnoremap <silent> <leader>T <cmd>TerminalToggle<cr>
 tnoremap <silent> <leader>T <C-w>N:TerminalToggle<cr>
 
-" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" strip trailing white space from the end of lines           {{{
 function! StripTrailingWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg("/")
@@ -342,9 +349,11 @@ function! StripTrailingWhitespace()
     call setreg("/", old_query)
 endfunction
 
-" ----------------------------------------------------------------------
-" | Statusline                                                         |
-" ----------------------------------------------------------------------
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
+" --------------------------------------------------------------------- }}}
+" Statusline                                                            {{{
+" --------------------------------------------------------------------- {|}
 
 let g:git_branch="" " gets set in an autocmd above
 function! DisplayGitBranch()

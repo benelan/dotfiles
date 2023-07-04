@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 # shellcheck disable=1090
 
-# -----------------------------------------------------------------------------
-# cargo - https://github.com/rust-lang/cargo
-# -----------------------------------------------------------------------------
+# cargo - https://github.com/rust-lang/cargo                  {{{
 [ -r ~/.cargo/env ] && [ -f ~/.cargo/env ] && source ~/.cargo/env
 
-# -----------------------------------------------------------------------------
-# broot - https://github.com/Canop/broot
-# -----------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# broot - https://github.com/Canop/broot                      {{{
 is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
     source ~/.config/broot/launcher/bash/br
 
-# -----------------------------------------------------------------------------
-# thefuck - https://github.com/nvbn/thefuck
-# -----------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# thefuck - https://github.com/nvbn/thefuck                   {{{
 is-supported thefuck && eval "$(thefuck --alias)"
 
-# -----------------------------------------------------------------------------
-# navi - https://github.com/denisidoro/navi
-# -----------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# navi - https://github.com/denisidoro/navi                   {{{
 is-supported navi && eval "$(navi widget bash)"
 
-# -----------------------------------------------------------------------------
-# fzf - https://github.com/junegunn/fzf
-# -----------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# fzf - https://github.com/junegunn/fzf                       {{{
 if is-supported fzf; then
     # Auto-completion
     [ -f ~/dev/lib/fzf/shell/key-bindings.bash ] &&
@@ -62,3 +60,5 @@ if is-supported fzf; then
     export FZF_DEFAULT_OPTS
     export FZF_COMPLETION_TRIGGER='~~'
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

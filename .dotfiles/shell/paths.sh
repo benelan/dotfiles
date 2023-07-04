@@ -1,10 +1,17 @@
 #!/bin/sh
 
+# Util functions                                                        {{{
+# --------------------------------------------------------------------- {|}
+
+# expand arg1 to an environment variable                      {{{
 # Usage: indirect_expand PATH -> $PATH
 indirect_expand() {
     env | sed -n "s/^$1=//p"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# remove an entry from PATH                                   {{{
 # Usage: pathremove /path/to/bin [PATH]
 # Eg, to remove ~/bin from $PATH
 #     pathremove ~/bin PATH
@@ -22,6 +29,9 @@ pathremove() {
     unset newpath dir var IFS
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# prepend an entry to PATH                                    {{{
 # Usage: pathprepend /path/to/bin [PATH]
 # Eg, to prepend ~/bin to $PATH
 #     pathprepend ~/bin PATH
@@ -37,6 +47,9 @@ pathprepend() {
     unset var value
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# append an entry to PATH                                     {{{
 # Usage: pathappend /path/to/bin [PATH]
 # Eg, to append ~/bin to $PATH
 #     pathappend ~/bin PATH
@@ -49,6 +62,12 @@ pathappend() {
     export "${var}"="${value:+${value}:}${1}"
     unset var value
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Set path                                                              {{{
+# --------------------------------------------------------------------- {|}
 
 pathprepend "$HOME/.dotfiles/bin"
 pathprepend "$HOME/.local/share/nvim/mason/bin"
@@ -71,3 +90,5 @@ pathappend "/usr/sbin"
 pathappend "/usr/bin"
 pathappend "/sbin"
 pathappend "/bin"
+
+# --------------------------------------------------------------------- }}}

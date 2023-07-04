@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
-# -----------------------------------------------------------------------------
-# Utilities
-#---------------------------------------------------------------------------------
+# Utilities                                                             {{{
+# --------------------------------------------------------------------- {|}
 
-# Search history.
+## search history                                             {{{
 hist() {
     grep --color=always "$*" "$HISTFILE" |
         less --no-init --raw-control-chars --quiet
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# Search for text within the current directory.
+## search for text within the current directory               {{{
 s() {
     grep --color=always "$*" --ignore-case --recursive \
         --exclude-dir=".git" --exclude-dir="node_modules" . |
         less --no-init --raw-control-chars --quiet
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## google from the command line                               {{{
 # https://leahneukirchen.org/dotfiles/bin/goog
 goog() {
     curl -A Mozilla/4.0 -skLm 10 \
@@ -29,12 +29,12 @@ goog() {
         sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## use $EDITOR to edit text inside a pipeline                 {{{
+# Write all data to a temporary file, edit that file, then
+# print it again.
 # https://www.uninformativ.de/git/bin-pub/file/vipe.html
-# Use $EDITOR to edit text inside a pipeline
-# Write all data to a temporary file, edit that file, then print it
-# again.
 vipe() {
     tmp=$(mktemp)
     trap 'rm -f "$tmp"' 0
@@ -43,10 +43,23 @@ vipe() {
     cat "$tmp"
 }
 
-# -----------------------------------------------------------------------------
-# Filesystem
-#---------------------------------------------------------------------------------
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## use vifm to cd                                             {{{
+vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## make one or more directories and cd into the last one      {{{
+mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Filesystem                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+## fff wrapper that changes to directory on exit              {{{
 if is-supported fff; then
     ff() {
         fff "$@"
@@ -54,7 +67,9 @@ if is-supported fff; then
     }
 fi
 
-# Format JSON and sort fields
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## format JSON and sort fields                                {{{
 # arg1: input file
 # arg2: output file, defaults to input file
 fmtjson() {
@@ -64,25 +79,28 @@ fmtjson() {
 
 }
 
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## pandoc functions for converting between text filetypes     {{{
 if is-supported pandoc; then
+    # Open a markdown file in the less pager
     mdless() {
         pandoc -s -f markdown -t man "$@" | man -l -
         # use groff on mac: . . . . . . . | groff -T utf8 -man | less
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Convert markdown to HTML
     md2html() {
         pandoc "$1.md" --output="$1.html" --standalone \
             --css="$HOME/.dotfiles/assets/pandoc.css" --from=gfm --to=html5
     }
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## run a command when a target file is modified               {{{
+# $ onmodify note.md md2html note
 if is-supported inotifywait; then
-    # runs a command when a target file is modified
-    # $ onmodify note.md md2html note
     onmodify() {
         TARGET=${1:-.}
         shift
@@ -95,21 +113,22 @@ if is-supported inotifywait; then
     }
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# Get gzipped file size
+## get gzipped file size                                      {{{
 gz() {
     ORIGSIZE=$(wc -c <"$1")
     GZIPSIZE=$(gzip -c "$1" | wc -c)
     RATIO=$(echo "$GZIPSIZE * 100/ $ORIGSIZE" | bc -l)
     SAVED=$(echo "($ORIGSIZE - $GZIPSIZE) * 100/ $ORIGSIZE" | bc -l)
-    printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
+    printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" \
+        "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
     unset ORIGSIZE GZIPSIZE RATIO SAVED
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# Create a data URL from a file
+## create a data URL from a file                              {{{
 dataurl() {
     MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
     if [ "$MIMETYPE" = "text/*" ]; then
@@ -119,9 +138,9 @@ dataurl() {
     unset MIMETYPE
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# Recursively search parent directory for file
+## recursively search parent directory for file               {{{
 # param 1: name of file or directory to find
 # param 2: directory to start from (defaults to PWD)
 # example: $ parent-find .git
@@ -131,18 +150,20 @@ parent_find() {
     parent-find "$1" "$(dirname "${2:-$PWD}")"
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# removes duplicate lines from a file
+## remove duplicate lines from a file                         {{{
 # param: file to dedup
 # example: $ dedup-lines deps.txt > unique_deps.txt
 dedup_lines() { awk '!visited[$0]++' "$@"; }
 
-# -----------------------------------------------------------------------------
-# Networking
-#---------------------------------------------------------------------------------
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# List out the pid for the process that is currently listening on the provided port
+# --------------------------------------------------------------------- }}}
+# Networking                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+## get the pid of the prccess listening on the provided port  {{{
 wtfport() {
     line="$(lsof -i -P -n | grep LISTEN | grep ":$1")"
     pid=$(echo "$line" | awk '{print $2}')
@@ -158,29 +179,32 @@ wtfport() {
     echo -e "$pid"
 }
 
-# Kill the process that is currently listening on the provided port
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## kill the process listening on the provided port            {{{
 killport() { wtfport "$1" | xargs kill -9; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# Find real from shortened url
+## find real from shortened url                               {{{
 unshorten() { curl -sIL "$1" | sed -n 's/Location: *//p'; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# check if a website is down
+## check if a website is down                                 {{{
 down4me() { curl -s "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## generate a certificate and key for local testing           {{{
 crt() {
     openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
         -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# add entry to ssh config
+## add entry to ssh config                                    {{{
 add_ssh() {
     [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
     [ ! -d ~/.ssh ] && mkdir -m 700 ~/.ssh
@@ -189,19 +213,19 @@ add_ssh() {
         >>~/.ssh/config
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# list hosts defined in ssh config
+## list hosts defined in ssh config                           {{{
 ssh_list() { awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# add all ssh private keys to agent
+## add all ssh private keys to agent                          {{{
 ssh_add_all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# display all ip addresses for this host
+## display all ip addresses for this host                     {{{
 ips() {
     printf "%s\n" "Router IP (Gateway): $(
         netstat -rn | awk 'FNR == 3 {print $2}' ||
@@ -225,14 +249,16 @@ ips() {
     )"
 }
 
-# -----------------------------------------------------------------------------
-# Git
-#---------------------------------------------------------------------------------
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# git (find|fuzzy) checkout
-# Checkout a branch based on search term.
+# --------------------------------------------------------------------- }}}
+# Git                                                                   {{{
+# --------------------------------------------------------------------- {|}
+
+## checkout a branch based on fuzzy search term               {{{
 # If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
 # Otherwise, checkout the most recently committed branch that matches the query
+# git (find|fuzzy) checkout
 fgco() {
     # [arg1] search term
     # [arg2..n] options to pass fzf
@@ -264,13 +290,14 @@ fgco() {
     unset PICK_BRANCH_CMD SEARCH_TERM
 }
 
-# -----------------------------------------------------------------------------
-# Arrays
-#---------------------------------------------------------------------------------
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# This searches an array for an exact match against the term passed
-# as the first argument to the function. This exits as soon as
-# a match is found.
+# --------------------------------------------------------------------- }}}
+# Arrays                                                                {{{
+# --------------------------------------------------------------------- {|}
+
+## searches an array for an exact match against arg1          {{{
+# exits as soon as a match is found
 #
 # Returns:
 #   0 when a match is found, otherwise 1.
@@ -297,25 +324,34 @@ _array_contains_element() {
     return 1
 }
 
-# Dedupe an array (without embedded newlines).
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## dedupe an array (without embedded newlines)                {{{
 array_dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
-# -----------------------------------------------------------------------------
-# Cheatsheets
-# -----------------------------------------------------------------------------
-# https://github.com/chubin/cheat.sh
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Cheatsheets                                                           {{{
+# --------------------------------------------------------------------- {|}
+
+## search https://github.com/chubin/cheat.sh                  {{{
 # $ cht :help
 
 # cheatsheet
 cht() { curl "https://cheat.sh/$1"; }
+
 # cheatsheet: javascript
 chtjs() { curl "https://cheat.sh/javascript/""$(echo "$*" | tr ' ' '+')"; }
+
 # cheatsheet: typescript
 chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 
-# search commandlinefu.com
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+## search https://www.commandlinefu.com                       {{{
 cmdfu() {
     query=$(echo "$*" | tr " " "-")
     curl -sL "https://www.commandlinefu.com/commands/matching/$query/$(
@@ -335,10 +371,13 @@ cmdfu_random() {
     # )\n"
 }
 
-# -----------------------------------------------------------------------------
-# FZF
-# -----------------------------------------------------------------------------
-# Functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
+# --------------------------------------------------------------------- }}}
+# FZF                                                                   {{{
+# --------------------------------------------------------------------- {|}
+
+# functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples
 
 if is-supported fzf; then
     # fzf --preview command for file and directory
@@ -356,7 +395,6 @@ if is-supported fzf; then
     fsrb() {
         surfraw "$(cat ~/.config/surfraw/bookmarks | sed '/^$/d' | sort -n | fzf -e)"
     }
-
     ## cd into the directory of the selected file             {{{
     fzfile() {
         cd "$(
@@ -370,7 +408,9 @@ if is-supported fzf; then
         )" || return
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
+    ## fasd fzf integration functions                         {{{
     if is-supported fasd; then
         # selectable cd to frecency directory using fasd
         fz() {
@@ -393,10 +433,8 @@ if is-supported fzf; then
             )" || return
         }
 
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        # open best matched file using `fasd` if given argument
-        # otherwise filter output of `fasd` using `fzf`
+        # open best matched file using fasd
+        # filter output of fasd using fzf when no arg is provided
         fze() {
             [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
             file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" &&
@@ -405,9 +443,9 @@ if is-supported fzf; then
         }
     fi
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-    # Open the selected file in the default editor
+    ## open the selected file in the default editor           {{{
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
@@ -425,8 +463,9 @@ if is-supported fzf; then
         fi
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
+    ## uses rg to find text in a file                         {{{
     fif() {
         if [ ! "$#" -gt 0 ]; then
             echo "Need a string to search for!"
@@ -436,13 +475,15 @@ if is-supported fzf; then
             fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-    # Select multiple files to run a command on, e.g. $ fmr vlc
+    ## Select multiple files to run a command on              {{{
+    # e.g. $ fmr vlc
     fmr() { fzf -m -x | xargs -d'\n' -r "$@"; }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
+    ## finds and kills a process pid                          {{{
     fkill() {
         if [ "$UID" != "0" ]; then
             kill_pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
@@ -455,9 +496,9 @@ if is-supported fzf; then
         unset kill_pid
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-    # fgshow - git commit browser
+    ## fgshow - git commit browser                            {{{
     fgshow() {
         git log --graph --color=always \
             --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
@@ -469,11 +510,11 @@ if is-supported fzf; then
                 FZF-EOF"
     }
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
+    ## find an emoji                                          {{{
+    # usage: $ find_emoji | cb
     if is-supported jq; then
-        # find an emoji
-        # usage: $ find_emoji | cb
         function femoji() {
             emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
             if [ ! -r "$emoji_cache" ]; then
@@ -489,9 +530,9 @@ if is-supported fzf; then
         }
     fi
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-    # Gets a gsetting value using fzf
+    ## gets a gsetting value using fzf                        {{{
     fgsget() {
         gsettings list-schemas | fzf |
             while read -r _GS_SCHEMA; do
@@ -503,13 +544,15 @@ if is-supported fzf; then
                     done
             done
     }
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 fi
 
-#---------------------------------------------------------------------------------
-# Work
-#---------------------------------------------------------------------------------
+# --------------------------------------------------------------------- }}}
+# Work                                                                  {{{
+# --------------------------------------------------------------------- {|}
 
-# Toggles a label we use for running visual snapshots on a pull request
+## toggles a label used for running visual snapshots on PRs   {{{
 if is-supported gh; then
     cc_visual_snapshots() {
         if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
@@ -521,11 +564,6 @@ if is-supported gh; then
     }
 fi
 
-#---------------------------------------------------------------------------------
-# Misc
-#---------------------------------------------------------------------------------
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-# use vifm to cd
-vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
-# make one or more directories and cd into the last one
-mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
+# --------------------------------------------------------------------- }}}

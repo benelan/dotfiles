@@ -1,13 +1,12 @@
-" System Open Handler
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" System Open Handler                                                   {|}
+" --------------------------------------------------------------------- {|}
 " The regex can be vastly improved, but it works for the most part.
 
 if exists('g:loaded_jamin_system_open_handler') || &cp | finish | endif
 let g:loaded_jamin_system_open_handler = 1
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Determines the system's `open` command
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Determine the system's `open` command                                 {{{
+" --------------------------------------------------------------------- {|}
 if has('wsl')
     let g:opencmd = 'wslview'
 elseif (has('win32') || has('win64'))
@@ -20,7 +19,9 @@ else
     let g:opencmd = 'gx'
 endif
 
-
+" --------------------------------------------------------------------- }}}
+" Execute the open command                                              {{{
+" --------------------------------------------------------------------- {|}
 function! s:ExecuteOpen(text)
     if g:opencmd == 'gx'
         call netrw#BrowseX(a:text, 0)
@@ -30,9 +31,9 @@ function! s:ExecuteOpen(text)
     endif
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => URI using the default system application (browser, email client, etc.)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" --------------------------------------------------------------------- }}}
+" Open URI using the default system app (browser, email client, etc)    {{{
+" --------------------------------------------------------------------- {|}
 function! s:OpenURI(text)
     " This pattern can be improved,
     " but at least it works with hashes/params
@@ -46,9 +47,10 @@ function! s:OpenURI(text)
         return 1
     endif
 endfunction
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => File or path using the default system application
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" --------------------------------------------------------------------- }}}
+" Open file or path using the default system app                        {{{
+" --------------------------------------------------------------------- {|}
 function! s:OpenPath(text)
     " use Vim's builtin file handler
     if isdirectory(a:text) || filereadable(a:text)
@@ -59,10 +61,9 @@ function! s:OpenPath(text)
     endif
 endfunction
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => NPM dependency in the browser if the file is package.json
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" --------------------------------------------------------------------- }}}
+" Open NPM dependency in the browser if the file is package.json        {{{
+" --------------------------------------------------------------------- {|}
 function! s:OpenDepNPM(text)
   " the regex is pretty simple, so only
   " attempt to match in package.json files
@@ -80,9 +81,9 @@ function! s:OpenDepNPM(text)
 endfunction
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => GitHub issue/PR number for current repo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" --------------------------------------------------------------------- }}}
+" GitHub issue/PR number for current repo                               {{{
+" --------------------------------------------------------------------- {|}
 function! s:OpenGitHubIssue(text)
     if executable('gh') " requires github-cli
         " get the workspace's current repo
@@ -104,9 +105,9 @@ function! s:OpenGitHubIssue(text)
 endfunction
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Plug function
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" --------------------------------------------------------------------- }}}
+" Plug function                                                         {{{
+" --------------------------------------------------------------------- {|}
 " equivalent to NeoVim's `vim.startswith`
 function! s:StartsWith(longer, shorter) abort
     return a:longer[0:len(a:shorter)-1] ==# a:shorter
@@ -137,6 +138,7 @@ function! s:HandleSystemOpen()
     if s:OpenGitHubIssue(l:line)      | return | endif
     echom "No openable text found"
 endfunction
+" --------------------------------------------------------------------- }}}
 
 nnoremap <Plug>SystemOpen <CMD>call <SID>HandleSystemOpen()<CR>
 nnoremap <Plug>SystemOpenCWD <CMD>execute <SID>ExecuteOpen(shellescape(expand('%:h'))<CR>

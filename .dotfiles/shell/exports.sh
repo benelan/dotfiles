@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+# directories                                                 {{{
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -10,7 +11,8 @@ export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
-
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# system settings                                             {{{
 export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
@@ -36,6 +38,8 @@ fi
 # Don't warn me about new mail
 unset -v MAILCHECK
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# default applications                                        {{{
 EDITOR='nano'
 is-supported nvim && EDITOR='nvim' ||
     {
@@ -62,19 +66,53 @@ export VISUAL=$EDITOR
 export PAGER='less'
 export MANPAGER=$PAGER
 
-is-supported bat && export BAT_THEME="gruvbox-dark"
-is-supported volta && export VOLTA_HOME="$HOME/.volta"
-is-supported bun && export BUN_INSTALL="$HOME/.bun"
-is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
-is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
-is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# define terminal colors                                      {{{
+{
+    if tput setaf 1 >/dev/null 2>&1; then
+        RESET=$(tput sgr0)
+        BOLD=$(tput bold)
+        UNDERLINE=$(tput smul)
+        # Gruvbox colors from: https://github.com/morhetz/gruvbox
+        BLACK=$(tput setaf 235)
+        BLUE=$(tput setaf 66)
+        AQUA=$(tput setaf 72)
+        GREEN=$(tput setaf 106)
+        ORANGE=$(tput setaf 166)
+        PURPLE=$(tput setaf 132)
+        RED=$(tput setaf 124)
+        WHITE=$(tput setaf 230)
+        YELLOW=$(tput setaf 172)
+    else
+        RESET="\e[0m"
+        BOLD='\e[1m'
+        UNDERLINE='e[4m'
+        BLACK="\e[1;30m"
+        BLUE="\e[1;34m"
+        AQUA="\e[1;36m"
+        GREEN="\e[1;32m"
+        ORANGE="\e[1;33m"
+        PURPLE="\e[1;35m"
+        RED="\e[1;31m"
+        WHITE="\e[1;37m"
+        YELLOW="\e[1;33m"
+    fi
+} >/dev/null 2>&1
 
+export BOLD UNDERLINE RESET BLACK BLUE AQUA \
+    GREEN ORANGE PURPLE RED WHITE YELLOW
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# golang                                                      {{{
 if is-supported go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/go"
     export GOFLAGS='-buildvcs=false -trimpath'
 fi
-
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# node                                                        {{{
+is-supported volta && export VOLTA_HOME="$HOME/.volta"
+is-supported bun && export BUN_INSTALL="$HOME/.bun"
 if is-supported node; then
     # Enable persistent REPL history for `node`.
     export NODE_REPL_HISTORY=~/.node_history
@@ -86,7 +124,14 @@ if is-supported node; then
     export NODE_OPTIONS="--max-old-space-size=8192"
 fi
 
-# fff - https://github.com/dylanaraps/fff
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# misc tools                                                  {{{
+is-supported bat && export BAT_THEME="gruvbox-dark"
+is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
+is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
+is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# fff - https://github.com/dylanaraps/fff                     {{{
 if is-supported fff; then
     export FFF_COL2=7
     export FFF_COL5=0
@@ -105,3 +150,5 @@ if is-supported fff; then
     export FFF_FAV8="$HOME/.vim"
     export FFF_FAV9="$XDG_CONFIG_HOME/nvim"
 fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
