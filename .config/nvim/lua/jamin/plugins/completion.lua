@@ -1,33 +1,17 @@
 return {
   {
-    "Exafunction/codeium.vim", -- AI completion
-    enabled = false,
-    event = "InsertEnter",
-    init = function()
-      -- vim.g.codeium_manual = true
-      vim.g.codeium_disable_bindings = true
-      vim.g.codeium_filetypes = { bash = false }
-    end,
-    -- stylua: ignore
-    keys = {
-      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, "i", desc = "Codeium accept" },
-      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, "i", desc = "Codeium complete" },
-      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, "i", desc = "Codeium next" },
-      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, "i", desc = "Codeium previous" },
-      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, "i", desc = "Codeium clear" },
-    },
-  },
-  {
     "David-Kunz/cmp-npm", -- completes npm packages and their versions in package.json buffers
     event = "BufEnter package.json",
     cond = vim.fn.executable "npm" == 1,
     dependencies = "nvim-lua/plenary.nvim",
     opts = {},
   },
+  -----------------------------------------------------------------------------
   {
     "petertriho/cmp-git", -- issues/prs/mentions/commits in git_commit/octo buffers
     ft = require("jamin.resources").filetypes.writing,
   },
+  -----------------------------------------------------------------------------
   {
     "uga-rosa/cmp-dictionary",
     cond = vim.fn.filereadable(vim.fn.stdpath "config" .. "/spell/en.dict") == 1,
@@ -38,98 +22,39 @@ return {
       }
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "f3fora/cmp-spell", -- vim's spellsuggest
     enabled = false,
     ft = require("jamin.resources").filetypes.writing,
   },
+  -----------------------------------------------------------------------------
+  {
+    "ray-x/cmp-treesitter", -- treesitter nodes
+    enabled = true,
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    cond = vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] ~= nil,
+  },
+  -----------------------------------------------------------------------------
+  { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" }, -- lsp document symbol
+  -----------------------------------------------------------------------------
+  { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" }, -- lsp
+  -----------------------------------------------------------------------------
+  { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" }, -- function signature
+  -----------------------------------------------------------------------------
+  { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" }, -- commandline
+  -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       { "hrsh7th/cmp-buffer" }, -- buffers
-      { "hrsh7th/cmp-cmdline" }, -- commandline
-      { "hrsh7th/cmp-nvim-lsp" }, -- lsp
-      { "hrsh7th/cmp-nvim-lsp-document-symbol" }, -- lsp document symbol
-      { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- function signature
+      -----------------------------------------------------------------------------
       { "hrsh7th/cmp-path" }, -- relative paths
-      { "hrsh7th/cmp-cmdline" }, -- commandline
-      { "ray-x/cmp-treesitter" }, -- treesitter nodes
+      -----------------------------------------------------------------------------
       { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= nil }, -- visible text in other tmux panes
+      -----------------------------------------------------------------------------
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
-      {
-        "L3MON4D3/LuaSnip", -- snippet engine
-        build = "make install_jsregexp",
-        version = "v1.*",
-        dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
-        config = function()
-          local ls = require "luasnip"
-          local types = require "luasnip.util.types"
-
-          ls.config.set_config {
-            history = false,
-            region_check_events = "CursorMoved,CursorHold,InsertEnter",
-            delete_check_events = "InsertLeave",
-            ext_opts = {
-              [types.choiceNode] = {
-                active = {
-                  hl_mode = "combine",
-                  virt_text = { { "●", "Operator" } },
-                },
-              },
-              [types.insertNode] = {
-                active = {
-                  hl_mode = "combine",
-                  virt_text = { { "●", "Type" } },
-                },
-              },
-            },
-            enable_autosnippets = true,
-          }
-
-          vim.api.nvim_create_user_command("LuaSnipEdit", function()
-            require("luasnip.loaders.from_lua").edit_snippet_files()
-          end, {})
-
-          keymap({ "i", "s" }, "<C-l>", function()
-            if ls.expand_or_jumpable() then
-              ls.expand_or_jump()
-            elseif ls.jumpable(1) then
-              ls.jump(1)
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Accept"]()
-            else
-              return "<Tab>"
-            end
-          end)
-
-          keymap({ "i", "s" }, "<C-h>", function()
-            if ls.jumpable(-1) then
-              ls.jump(-1)
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Clear"]()
-            else
-              return "<S-Tab>"
-            end
-          end)
-
-          keymap({ "i" }, "<C-;>", function()
-            if ls.choice_active() then
-              ls.change_choice(1)
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Complete"]()
-            end
-          end)
-
-          require("luasnip/loaders/from_vscode").lazy_load()
-          require("luasnip/loaders/from_vscode").lazy_load { paths = { "~/.config/Code/User" } }
-          require("luasnip.loaders.from_lua").lazy_load()
-
-          ls.filetype_extend("typescript", { "javascript" })
-          ls.filetype_extend("javascriptreact", { "javascript" })
-          ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
-        end,
-      },
     },
     config = function()
       local cmp = require "cmp"
@@ -246,8 +171,14 @@ return {
             if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
               if icon then
-                vim_item.kind = string.format(" %s  %s  ", icon, vim_item.kind)
+                vim_item.kind = string.format(" %s   %s  ", icon, vim_item.kind)
                 vim_item.kind_hl_group = hl_group
+              else
+                vim_item.kind = string.format(
+                  " %s  %s ",
+                  vim_item.kind == "Folder" and icons.kind.Folder or icons.kind.File,
+                  vim_item.kind
+                )
               end
             else
               vim_item.kind =
@@ -256,7 +187,7 @@ return {
             return vim_item
           end,
         },
-        sources = {
+        sources = cmp.config.sources({
           { name = "nvim_lsp_signature_help" },
           { name = "luasnip" },
           { name = "nvim_lsp" },
@@ -264,8 +195,9 @@ return {
           { name = "npm", keyword_length = 4 },
           { name = "tmux", keyword_length = 2 },
           { name = "path", keyword_length = 2 },
-          { name = "treesitter", keyword_length = 3 },
           { name = "buffer", keyword_length = 3 },
+          { name = "treesitter", keyword_length = 3 },
+        }, {
           {
             name = "spell",
             option = {
@@ -286,7 +218,7 @@ return {
               return false
             end,
           },
-        },
+        }),
         sorting = {
           comparators = {
             cmp.config.compare.offset,
@@ -327,10 +259,125 @@ return {
       cmp.setup.cmdline(":", {
         sources = cmp.config.sources(
           { { name = "cmdline" } },
-          { { name = "path" }, { name = "rg", keyword_length = 4 } },
+          { { name = "path" }, { name = "buffer" }, { name = "rg", keyword_length = 4 } },
           { { name = "dictionary", keyword_length = 4 } }
         ),
       })
     end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "L3MON4D3/LuaSnip", -- snippet engine
+    build = "make install_jsregexp",
+    version = "v1.*",
+    dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
+    keys = function()
+      local ls = require "luasnip"
+      return {
+        {
+          "<C-h>",
+          function()
+            if ls.jumpable(-1) then
+              ls.jump(-1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Clear"]()
+            else
+              return "<S-Tab>"
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip jump back or codeium clear",
+        },
+        {
+          "<C-l>",
+          function()
+            if ls.expand_or_jumpable() then
+              ls.expand_or_jump()
+            elseif ls.jumpable(1) then
+              ls.jump(1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Accept"]()
+            else
+              return "<Tab>"
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip jump forward or codeium accept",
+        },
+        {
+          "<C-;>",
+          function()
+            if ls.choice_active() then
+              ls.change_choice(1)
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Complete"]()
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip choice or codeium complete",
+        },
+      }
+    end,
+    opts = function()
+      local types = require "luasnip.util.types"
+      return {
+        history = false,
+        region_check_events = "CursorMoved,CursorHold,InsertEnter",
+        delete_check_events = "InsertLeave",
+        ext_opts = {
+          [types.choiceNode] = {
+            active = {
+              hl_mode = "combine",
+              virt_text = { { "●", "Operator" } },
+            },
+          },
+          [types.insertNode] = {
+            active = {
+              hl_mode = "combine",
+              virt_text = { { "●", "Type" } },
+            },
+          },
+        },
+        enable_autosnippets = true,
+      }
+    end,
+    config = function(_, opts)
+      local ls = require "luasnip"
+      local lua_loader = require "luasnip.loaders.from_lua"
+      local vscode_loader = require "luasnip.loaders.from_vscode"
+
+      ls.config.set_config(opts)
+
+      vscode_loader.lazy_load()
+      vscode_loader.lazy_load { paths = { "~/.config/Code/User" } }
+      lua_loader.lazy_load()
+
+      vim.api.nvim_create_user_command("LuaSnipEdit", function()
+        lua_loader.edit_snippet_files()
+      end, {})
+
+      ls.filetype_extend("typescript", { "javascript" })
+      ls.filetype_extend("javascriptreact", { "javascript" })
+      ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "Exafunction/codeium.vim", -- AI completion
+    enabled = false,
+    event = "InsertEnter",
+    init = function()
+      -- vim.g.codeium_manual = true
+      vim.g.codeium_disable_bindings = true
+      vim.g.codeium_filetypes = { bash = false }
+    end,
+    -- stylua: ignore
+    keys = {
+      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, "i", desc = "Codeium accept" },
+      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, "i", desc = "Codeium complete" },
+      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, "i", desc = "Codeium next" },
+      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, "i", desc = "Codeium previous" },
+      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, "i", desc = "Codeium clear" },
+    },
   },
 }
