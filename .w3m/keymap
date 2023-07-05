@@ -491,19 +491,19 @@ keymap  :t       SHELL "$EDITOR ~/.w3m/RestoreTab.txt"
 # EXTERN      = current page
 
 # yank url to clipboard
-keymap  yy      EXTERN_LINK   '(printf %s | cb)'
-keymap  yY      EXTERN        '(printf %s | cb)'
+keymap  yy      EXTERN_LINK   "(printf %s | xclip -selection clipboard)"
+keymap  yY      EXTERN        "(printf %s | xclip -selection clipboard)"
 # yank url to tmux clipboard
-keymap  yt      EXTERN_LINK   'tmux set-buffer'
-keymap  yT      EXTERN        'tmux set-buffer'
+keymap  yt      EXTERN_LINK   "tmux set-buffer"
+keymap  yT      EXTERN        "tmux set-buffer"
 
 # open gui browser
-keymap  gx      EXTERN_LINK   'firefox'
-keymap  gX      EXTERN        'firefox'
+keymap  gx      EXTERN_LINK   "firefox"
+keymap  gX      EXTERN        "firefox"
 
-keymap  xv      SHELL         'vim $W3M_CURRENT_FORM'
+keymap  xv      SHELL         "vim $W3M_CURRENT_FORM"
 
-keymap  xr      COMMAND "READ_SHELL 'readable $W3M_URL -p html-title,html-content > /tmp/readable.html' ; LOAD /tmp/readable.html; DELETE_PREVBUF"
+keymap  xr      COMMAND       "READ_SHELL 'readable $W3M_URL -p html-title,html-content > /tmp/readable.html' ; LOAD /tmp/readable.html; DELETE_PREVBUF"
 
 # --------------------------------------------------------------------- }}}
 # Other commands                                                        {{{
@@ -525,29 +525,25 @@ keymap  \\\?    COMMAND       "HELP; SEARCH User-Defined; CENTER_V"
 # CGI-BIN                                                               {{{
 # --------------------------------------------------------------------- {|}
 # paste and go
-keymap  pp       GOTO          ~/.w3m/cgi-bin/goto_clipboard.cgi
-keymap  pP       TAB_GOTO      ~/.w3m/cgi-bin/goto_clipboard.cgi
-keymap  pt       GOTO          ~/.w3m/cgi-bin/goto_tmux_clipboard.cgi
-keymap  pT       TAB_GOTO      ~/.w3m/cgi-bin/goto_tmux_clipboard.cgi
+keymap  pp      GOTO           file:/cgi-bin/goto_clipboard.cgi
+keymap  pP      TAB_GOTO       file:/cgi-bin/goto_clipboard.cgi
+keymap  pt      GOTO           file:/cgi-bin/goto_clipboard_tmux.cgi
+keymap  pT      TAB_GOTO       file:/cgi-bin/goto_clipboard_tmux.cgi
 # restore closed tabs
 keymap  u       TAB_GOTO       ~/.w3m/cgi-bin/restore_tab.cgi
-keymap  C-T     TAB_GOTO       ~/.w3m/cgi-bin/restore_tab.cgi
 # close tabs and save url link to file
-keymap  qq      COMMAND       "EXTERN 'echo %s >> ~/.w3m/RestoreTab.txt' ; CLOSE_TAB"
-# keymap  C-w     COMMAND       "EXTERN 'echo %s >> ~/.w3m/RestoreTab.txt' ; CLOSE_TAB"
+keymap  qq      COMMAND        "EXTERN 'echo %s >> ~/.w3m/RestoreTab.txt' ; CLOSE_TAB"
 
 # open bookmarks (surfraw) using fzf
-keymap  xb      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; GOTO ~/.w3m/cgi-bin/goto_clipboard.cgi"
-keymap  xB      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; TAB_GOTO /usr/lib/w3m/cgi-bin/goto_clipboard_primary.cgi"
+keymap  xb      COMMAND        "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
+keymap  xB      COMMAND        "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; TAB_GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
 
 # save bookmarks (surfraw)
-# keymap  xa      COMMAND       "SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
-keymap  xa      COMMAND       "EXTERN_LINK '(echo -n %s | cb)' ; SHELL ~/.w3m/cgi-bin/save_bookmark.cgi"
-keymap  xA      COMMAND       "EXTERN '(echo -n %s | cb)' ; SHELL ~/.w3m/cgi-bin/save_bookmark.cgi"
+keymap  xa      COMMAND         "EXTERN_LINK '(echo -n %s | xclip -selection clipboard)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
+keymap  xA      COMMAND         "EXTERN '(echo -n %s | xclip -selection clipboard)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
 
 # go to clipboard hyperlink
-keymap  xs      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; GOTO ~/.w3m/cgi-bin/goto_clipboard.cgi"
-keymap  xS      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; TAB_GOTO ~/.w3m/cgi-bin/goto_clipboard.cgi"
-keymap  xt      COMMAND       "TAB_GOTO /usr/lib/w3m/cgi-bin/goto_tmux_clipboard.cgi"
+keymap  xs      COMMAND         "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
+keymap  xS      COMMAND         "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; TAB_GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
 
 # --------------------------------------------------------------------- }}}

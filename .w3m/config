@@ -52,4 +52,4 @@ extbrowser9 url=%s && printf %s "$url" | cb
 editor vim -c "set filetype=html"
 
 urimethodmap ~/.w3m/urimethodmap, /usr/etc/w3m/urimethodmap
-cgi_bin /usr/lib/w3m/cgi-bin:/home/ben/.w3m/cgi-bin
+cgi_bin ~/.w3m/cgi-bin:/usr/lib/w3m/cgi-bin:/usr/local/libexec/w3m/cgi-bin
