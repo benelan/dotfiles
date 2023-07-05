@@ -51,6 +51,9 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
   group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", { clear = true }),
   callback = function()
+    if vim.wo.diff then
+      return
+    end
     if vim.tbl_contains({ "", "conf", "text", "sh", "tmux", "vim" }, vim.bo.filetype) then
       vim.wo.foldmethod = "marker"
     elseif vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
