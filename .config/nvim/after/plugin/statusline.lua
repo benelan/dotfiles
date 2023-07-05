@@ -68,6 +68,7 @@ end
 
 -- branch name and added/deleted/changed line count
 local function gitsigns_info()
+---@diagnostic disable-next-line: undefined-field
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
     return string.format(
