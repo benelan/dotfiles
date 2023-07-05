@@ -1,2 +1,5 @@
-cli_guidelines https://clig.dev/ :: cli dev
-typescript-playground https://www.typescriptlang.org/play :: dev interactive frontend
+gcli https://clig.dev/ :dev:cli:guide:
+tsplay https://www.typescriptlang.org/play :dev:interactive:frontend:sample: -g
+codepen https://codepen.io/ :interactive:dev:frontend:sample: -g
+gh https://github.com/ :dev:work:code:
+codesandbox https://codesandbox.io/dashboard :dev:frontend:interactive:sample: -g

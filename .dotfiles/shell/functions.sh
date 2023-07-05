@@ -392,9 +392,14 @@ if is-supported fzf; then
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
     fi
 
-    fsrb() {
-        surfraw "$(cat ~/.config/surfraw/bookmarks | sed '/^$/d' | sort -n | fzf -e)"
+    fob() {
+        bookmark="$(awk NF "$XDG_CONFIG_HOME/surfraw/bookmarks" | fzf -e)"
+        bookmark_name="$(awk '{print $1;}' <<<"$bookmark")"
+        bookmark_gui_flag="$(awk '{print $4;}' <<<"$bookmark")"
+        surfraw "$bookmark_name" "$bookmark_gui_flag"
+        unset bookmark bookmark_name bookmark_gui_flag
     }
+
     ## cd into the directory of the selected file             {{{
     fzfile() {
         cd "$(

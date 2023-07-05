@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# info: save w3m bookmarks to surfraw
-# requirements: w3m surfraw
-# source: https://github.com/gotbletu/dotfiles_v2/blob/master/normal_user/w3m/.w3m/cgi-bin/save_bookmark_surfraw.cgi
+# Save w3m bookmarks to surfraw
+# https://github.com/gotbletu/dotfiles_v2/blob/master/normal_user/w3m/.w3m/cgi-bin/save_bookmark_surfraw.cgi
 
-URL="$(xclip -o)"
-# URL="$W3M_URL"
+bookmark_url="$(xclip -o)"
+# alternatively use the w3m env var:
+# bookmark_url="$W3M_URL"
 
 clear
 echo "
@@ -15,23 +15,43 @@ echo "
  ___) | |_| |  _ <|  _| |  _ <  / ___ \ V  V /
 |____/ \___/|_| \_\_|   |_| \_\/_/   \_\_/\_/
 
-SAVE BOOKMARKS TO: ~/.config/surfraw/bookmarks
+SAVE BOOKMARK TO: ~/.config/surfraw/bookmarks
 
 "
 # show current url and display save location
-echo -e "${blue}>>> URL: $URL ${reset}"
+echo -e "${BLUE}>>> URL: $bookmark_url ${RESET}"
 
 # ask user for bookmark name
-echo -e "${green}----------------------------------------------------------${reset}"
-echo -e "${green}>>> 1) Enter Name for Bookmark. ${red}(No Spaces)${reset}"
-read -rp "Name: " NAME
-NAME=$(echo "$NAME" | awk '{print $1}')
+echo -e "${AQUA}----------------------------------------------------------${RESET}"
+echo -e "${GREEN}>>> 1) Enter name for bookmark. ${ORANGE}(no spaces or special chars except '-')${RESET}"
+read -rp "Name: " bookmark_name
+bookmark_name=$(awk '{print $1}' <<<"$bookmark_name")
 echo
 
+# ask for description
+# echo -e "${green}>>> 2) Enter description for bookmark. ${orange}(no special characters except '-')${reset}"
+# read -rp "Description: " DESCRIPTION
+
 # ask user for keywords
-echo -e "${green}>>> 2) Enter Keyword(s) for Bookmark. ${red}(Separate Each Keyword With A Space)${reset}"
-read -rp "Keywords: " KEYWORDS
+echo -e "${GREEN}>>> 2) Enter tag(s) for bookmark. ${ORANGE}(no special chars except '-', space separates tags)${RESET}"
+read -rp "Tags: " bookmark_tags
+
+# does the bookmark require javascript
+echo -e "${GREEN}>>> 3) Should this bookmark be opened with a GUI browser? ${ORANGE}(e.g. does it require javascript)${RESET}"
+read -rp "y/N: " bookmark_needs_gui
+case "$bookmark_needs_gui" in
+    [yY][eE][sS] | [yY])
+        bookmark_needs_gui=" -g"
+        ;;
+    *)
+        bookmark_needs_gui=""
+        ;;
+esac
 
 # append bookmarks to surfraw file
-echo -e "${NAME} ${URL} :: ${KEYWORDS}" >> ~/.config/surfraw/bookmarks
+echo -e "${bookmark_name} ${bookmark_url} :$(
+    tr ' ' ':' <<<"${bookmark_tags}"
+):$bookmark_needs_gui" \
+    >>~/.config/surfraw/bookmarks
+
 clear

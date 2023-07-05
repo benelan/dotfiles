@@ -11,6 +11,7 @@ export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # system settings                                             {{{
 export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
@@ -52,7 +53,7 @@ is-supported nvim && EDITOR='nvim' ||
 TERMINAL="gnome-terminal"
 # is-supported wezterm && TERMINAL='wezterm'
 
-BROWSER='www-browser'
+BROWSER='sensible-browser'
 is-supported w3m && BROWSER='w3m' ||
     {
         is-supported links2 && BROWSER='links2'
@@ -61,7 +62,16 @@ is-supported w3m && BROWSER='w3m' ||
         is-supported lynx && BROWSER='lynx'
     }
 
-export EDITOR TERMINAL BROWSER
+GUIBROWSER='sensible-browser'
+is-supported firefox && GUIBROWSER='firefox' ||
+    {
+        is-supported brave-browser && GUIBROWSER='brave-browser'
+    } ||
+    {
+        is-supported google-chrome && GUIBROWSER='google-chrome'
+    }
+
+export EDITOR TERMINAL BROWSER GUIBROWSER
 export VISUAL=$EDITOR
 export PAGER='less'
 export MANPAGER=$PAGER
@@ -109,6 +119,7 @@ if is-supported go; then
     export GOPATH="$HOME/go"
     export GOFLAGS='-buildvcs=false -trimpath'
 fi
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # node                                                        {{{
 is-supported volta && export VOLTA_HOME="$HOME/.volta"
@@ -130,6 +141,7 @@ is-supported bat && export BAT_THEME="gruvbox-dark"
 is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # fff - https://github.com/dylanaraps/fff                     {{{
 if is-supported fff; then

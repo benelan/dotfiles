@@ -118,7 +118,8 @@ inoremap <M-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromsta
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" ex commands (vimgrep, search/replace, etc)                 {{{
 " Edit contents of register
-nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
+            \ .' = '. string(getreg(v:register))<cr><c-f><left>
 " start ex command for vimgrep
 nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
 "" start ex command for lhelpgrep
@@ -130,8 +131,18 @@ nnoremap <leader>E! :<Up><Home><S-Right>!<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" external shell commands                                    {{{
-nnoremap <leader>Sg :exec '!surfraw google "$(echo ' . shellescape(getline('.'), 1) . ' \| cut -d\  -f2- )"'<CR><CR>
-nnoremap <leader>Sb :exec '!surfraw -browser=$BROWSER "$(echo ' . shellescape(getline('.'), 1) . ' \| cut -d" " -f1)"'<CR><CR>
+nnoremap <leader>Sm <cmd>execute "!surfraw mdn "
+             \ . shellescape(input("search mdn: "))<CR>
+nnoremap <leader>Sg <cmd>execute "!surfraw google "
+             \ . shellescape(input("search google: "))<CR>
+nnoremap <leader>Sw <cmd>execute "!surfraw wikipedia "
+             \ . shellescape(input("search wikipedia: "))<CR>
+nnoremap <leader>Sd <cmd>execute "!surfraw duckduckgo "
+             \ . shellescape(input("search duckduckgo: "))<CR>
+nnoremap <leader>SS <cmd>execute "!surfraw -g "
+             \ . shellescape(input("elvi/bookmark: ")) . " "
+             \ . shellescape(input("search: "))<CR>
+
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" plug keymaps                                               {{{
