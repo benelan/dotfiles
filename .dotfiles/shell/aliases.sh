@@ -149,6 +149,14 @@ alias fastping='ping -c 30 -i.2'
 # resume by default
 alias wget='wget -c'
 
+# systemd shortcuts (Linux)
+alias sctl='systemctl'
+
+# display iptables rules
+alias ipt='sudo /sbin/iptables'
+alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
+
+
 # Output all matched Git SHAs
 alias match-git-sha="grep -oE '\b[0-9a-f]{5,40}\b'"
 
@@ -161,10 +169,6 @@ alias match-ip="grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'"
 # Output all matched URIs
 alias match-uri="grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'"
 
-# display iptables rules
-alias ipt='sudo /sbin/iptables'
-alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
-
 if is-supported ps; then
     # searchable process list
     alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
@@ -172,21 +176,6 @@ if is-supported ps; then
     alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
     # get top processes eating cpu
     alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
-fi
-
-# systemd shortcuts (Linux)
-if is-supported systemctl; then
-    alias sc='systemctl'
-    alias sclt='systemctl list-units --type target --all'
-fi
-
-# Gets external IP address
-if is-supported dig; then
-    alias publicip='dig +short myip.opendns.com @resolver1.opendns.com'
-elif is-supported curl; then
-    alias publicip='curl --silent --compressed --max-time 5 --url "https://ipinfo.io/ip"'
-elif is-supported wget; then
-    alias publicip='wget -qO- --compression=auto --timeout=5 "https://ipinfo.io/ip"'
 fi
 
 # Sends HTTP requests
@@ -321,8 +310,8 @@ alias G="edit_dotfiles +G +'wincmd o'"
 # https://github.com/dlvhdr/gh-dash
 alias ghd="gh dash"
 # Open Octo with my issues/prs
-alias eghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
-alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
+alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
+alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
 
 # --------------------------------------------------------------------- }}}
 # Docker                                                                {{{
@@ -331,15 +320,15 @@ alias eghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
 if is-supported docker; then
     ## general docker aliases                                 {{{
     # display names of running containers
-    alias dockls="docker container ls | awk 'NR > 1 {print \$NF}'"
+    alias dkrls="docker container ls | awk 'NR > 1 {print \$NF}'"
     # delete all containers / images
-    alias dockR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+    alias dkrR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
     # stats on images
-    alias dockstats='docker stats $(docker ps -q)'
+    alias dkrstats='docker stats $(docker ps -q)'
     # list images installed
-    alias dockimg='docker images'
+    alias dkrimg='docker images'
     # prune everything
-    alias dockprune='docker system prune -a'
+    alias dkrprune='docker system prune -a'
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 

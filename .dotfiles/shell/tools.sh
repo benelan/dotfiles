@@ -2,7 +2,7 @@
 # shellcheck disable=1090
 
 # cargo - https://github.com/rust-lang/cargo                  {{{
-[ -r ~/.cargo/env ] && [ -f ~/.cargo/env ] && source ~/.cargo/env
+# [ -r ~/.cargo/env ] && [ -f ~/.cargo/env ] && source ~/.cargo/env
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
@@ -13,12 +13,12 @@ is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # thefuck - https://github.com/nvbn/thefuck                   {{{
-is-supported thefuck && eval "$(thefuck --alias)"
+# is-supported thefuck && eval "$(thefuck --alias)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # navi - https://github.com/denisidoro/navi                   {{{
-is-supported navi && eval "$(navi widget bash)"
+# is-supported navi && eval "$(navi widget bash)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 

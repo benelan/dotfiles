@@ -239,7 +239,8 @@ ips() {
     )"
 
     printf "%s\n" "External IP (Public IP): $(
-        curl -s ifconfig.co ||
+        dig +short myip.opendns.com @resolver1.opendns.com ||
+            curl -s ifconfig.co ||
             curl -s checkip.amazonaws.com ||
             curl -s ipinfo.io/ip ||
             curl -s icanhazip.com ||
