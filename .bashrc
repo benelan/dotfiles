@@ -17,7 +17,6 @@ esac
 # --------------------------------------------------------------------- }}}
 
 # Then start sourcing startup scripts from ~/.dotfiles/shell
-# Append an underscore to file names to skip them
 
 # SHELL - ALIASES/FUNCTIONS                                             {{{
 # --------------------------------------------------------------------- {|}
@@ -43,9 +42,13 @@ unset stuffs
 # BASH - COMPLETIONS                                                    {{{
 # --------------------------------------------------------------------- {|}
 
+# the completions are sourced alphabetically so a number
+# from 1-9 can be appended to filenames to ensure an order.
+# append 0_ to file names to skip them
+
 # completions go last because some require
 # their tools/plugins to have already loaded
-for completions in ~/.dotfiles/shell/completions/[!_]*; do
+for completions in ~/.dotfiles/shell/completions/[!\0]*.sh; do
     [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
 unset completions
