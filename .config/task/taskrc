@@ -3,6 +3,7 @@ hooks.location=~/.config/task/hooks
 
 nag=
 search.case.sensitive=0
+verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
 
 list.all.projects=1
 list.all.tags=1
@@ -15,7 +16,7 @@ context.work.write=project:work
 context.home.read=project:home
 context.home.write=project:home
 
-uda.priority.values=H,M,,L
+uda.priority.values=H,,L
 urgency.tags.coefficient=0
 urgency.project.coefficient=0.5
 
@@ -27,17 +28,17 @@ color.blocking=color11
 color.recurring=color4
 color.scheduled=color12
 
+color.deleted=on color88
+color.completed=on color22
+color.error=black on color124
+color.label=bold white
+
 color.calendar.weekend=color8
 color.calendar.weeknumber=color5
 color.calendar.scheduled=black on color12
 color.calendar.due.today=black on color1
 color.calendar.due=black on color3
 color.calendar.holiday=black on color6
-
-color.deleted=on color88
-color.completed=on color22
-color.error=black on color124
-color.label=bold white
 
 uda.taskwarrior-tui.keyconfig.log=L
 uda.taskwarrior-tui.keyconfig.delete=D
@@ -46,3 +47,11 @@ uda.taskwarrior-tui.keyconfig.previous-tab=h
 uda.taskwarrior-tui.task-report.next.filter=+READY
 uda.taskwarrior-tui.task-report.prompt-on-done=true
 uda.taskwarrior-tui.task-report.prompt-on-delete=true
+
+# estimate value explanations
+# https://github.com/Esri/calcite-design-system/blob/main/CONTRIBUTING.md#estimates
+uda.estimate.label=Estimate
+uda.estimate.values=34,21,13,8,5,3,2,1
+uda.estimate.type=string
+
+context=home
