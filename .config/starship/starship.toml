@@ -43,19 +43,18 @@ charging_symbol = "🗲 "
 discharging_symbol = "🕱 "
 
 [[battery.display]]
-# "bold red" style when capacity is between 0% and 20%
+# "bold red" style when capacity is between 0% and 15%
 threshold = 15
 style = "bold red"
 
 [[battery.display]]
-# "bold orange" style when capacity is between 20% and 30%
 threshold = 25
 style = "bold orange"
 
 [[battery.display]]
-# "bold orange" style when capacity is between 20% and 30%
+# don't display batter when the capacity is above this threshold
 threshold = 35
-style = "bold orange"
+style = "bold yellow"
 
 [character]
 success_symbol = "[❯](bold green-light) "
@@ -91,12 +90,12 @@ disabled = true
 
 [git_status]
 style = "bold blue"
-ahead = "[🠕$count](aqua-light)"
-diverged = "[🠕$ahead_count](aqua-light)[🠗$behind_count](orange-light)"
-behind = "[🠗$count](orange-light)"
+ahead = "[>$count](aqua-light)"
+diverged = "[$behind_count<](orange-light)[>$ahead_count](aqua-light)"
+behind = "[<$count](orange-light)"
 staged = "[+$count](green)"
 deleted = "[-$count](red)"
-untracked = "[?$count](purple)"
+untracked = "[%$count](purple)"
 modified = "[*$count](yellow)"
 stashed = "[\\$$count](orange)"
 renamed = "[~$count](aqua)"

@@ -12,13 +12,12 @@ bind "set vi-ins-mode-string \"I \""
 # use starship for the prompt if installed                    {{{
 if is-supported starship; then
     # Only use Nerd Font symbols if they are available
-    # if [ "$TERM" == "wezterm" ] ||
-    #     # [ -n "$(find "$HOME/.local/share/fonts" -iname '*Nerd Font*')" ] ||
-    #     tmux showenv | grep -q 'TERM=wezterm'; then
-    #     export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
-    # else
-    export STARSHIP_CONFIG=~/.config/starship/starship.toml
-    # fi
+    if ! [ "$USE_DEVICONS" = "0" ] && ([ "$USE_DEVICONS" = "1" ] ||
+        [ "$TERM" == "wezterm" ] || tmux showenv | grep -q 'TERM=wezterm'); then
+        export STARSHIP_CONFIG=~/.config/starship/nerdfont.starship.toml
+    else
+        export STARSHIP_CONFIG=~/.config/starship/starship.toml
+    fi
     eval "$(starship init bash)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -49,9 +48,12 @@ else
     export GIT_PS1_SHOWDIRTYSTATE="yes"
     export GIT_PS1_SHOWSTASHSTATE="yes"
     export GIT_PS1_SHOWUNTRACKEDFILES="yes"
-    export GIT_PS1_SHOWUPSTREAM="verbose"
     export GIT_PS1_SHOWCONFLICTSTATE="yes"
     export GIT_PS1_SHOWCOLORHINTS="yes"
+    export GIT_PS1_COMPRESSSPARSESTATE="yes"
+    export GIT_PS1_HIDE_IF_PWD_IGNORED="yes"
+    export GIT_PS1_SHOWUPSTREAM="verbose"
+    export GIT_PS1_DESCRIBE_STYLE="contains"
 
     pre_prompt="\[${RESET}\]\n"
     pre_prompt+="\[${BOLD}\]\[${userStyle}\]\u" # username
