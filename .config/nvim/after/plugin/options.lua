@@ -73,15 +73,15 @@ vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
 
 local has_res, res = pcall(require, "jamin.resources")
 if has_res then
-  vim.opt.fillchars = { diff = res.icons.ui.FillSlash }
+  vim.opt.fillchars = { diff = res.icons.ui.fill_slash }
   vim.opt.listchars = {
-    extends = res.icons.ui.CaretDoubleRight,
-    precedes = res.icons.ui.CaretDoubleLeft,
-    trail = res.icons.ui.FillDot,
-    lead = res.icons.ui.FillDot,
-    leadmultispace = res.icons.ui.Separator
+    extends = res.icons.ui.extends,
+    precedes = res.icons.ui.precedes,
+    trail = res.icons.ui.fill_dot,
+    lead = res.icons.ui.fill_dot,
+    leadmultispace = res.icons.ui.separator
       .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", {}) / 2),
-    nbsp = res.icons.ui.Space,
-    eol = res.icons.ui.Return,
+    nbsp = res.icons.ui.nbsp,
+    eol = res.icons.ui.eol,
   }
 end

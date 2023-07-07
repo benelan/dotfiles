@@ -74,16 +74,7 @@ return {
         controls = {
           element = "repl",
           enabled = true,
-          icons = {
-            pause = require("jamin.resources").icons.ui.Pause,
-            play = require("jamin.resources").icons.ui.Play,
-            run_last = require("jamin.resources").icons.ui.Repeat,
-            step_back = require("jamin.resources").icons.ui.ArrowBack,
-            step_into = require("jamin.resources").icons.ui.ArrowInto,
-            step_out = require("jamin.resources").icons.ui.ArrowOut,
-            step_over = require("jamin.resources").icons.ui.ArrowOver,
-            terminate = require("jamin.resources").icons.ui.X,
-          },
+          icons = require("jamin.resources").icons.debug,
         },
       },
     },
@@ -209,31 +200,31 @@ return {
     end
 
     vim.fn.sign_define("DapBreakpoint", {
-      text = require("jamin.resources").icons.ui.Bug,
+      text = require("jamin.resources").icons.debug.bug,
       texthl = "AquaSign",
       linehl = "",
       numhl = "",
     })
     vim.fn.sign_define("DapBreakpointCondition", {
-      text = require("jamin.resources").icons.ui.BugOutline,
+      text = require("jamin.resources").icons.debug.bug_outline,
       texthl = "YellowSign",
       linehl = "",
       numhl = "",
     })
     vim.fn.sign_define("DapBreakpointRejected", {
-      text = require("jamin.resources").icons.ui.Cancel,
+      text = require("jamin.resources").icons.debug.cancel,
       texthl = "RedSign",
       linehl = "",
       numhl = "",
     })
     vim.fn.sign_define("DapStopped", {
-      text = require("jamin.resources").icons.ui.Exit,
+      text = require("jamin.resources").icons.debug.exit,
       texthl = "PurpleSign",
       linehl = "Visual",
       numhl = "PurpleSign",
     })
     vim.fn.sign_define("DapLogPoint", {
-      text = require("jamin.resources").icons.ui.Robot,
+      text = require("jamin.resources").icons.debug.robot,
       texthl = "BlueSign",
       linehl = "",
       numhl = "",

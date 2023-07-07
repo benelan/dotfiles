@@ -63,7 +63,7 @@ return {
     opts = { autocmd = { enabled = true } },
     init = function()
       vim.fn.sign_define("LightBulbSign", {
-        text = require("jamin.resources").icons.ui.Light,
+        text = require("jamin.resources").icons.ui.light,
         texthl = "Yellow",
       })
     end,
@@ -79,39 +79,39 @@ return {
     opts = {
       keymaps = { hover_symbol = "K", toggle_preview = "p" },
       fold_markers = {
-        require("jamin.resources").icons.ui.Collapsed,
-        require("jamin.resources").icons.ui.Expanded,
+        require("jamin.resources").icons.ui.collapsed,
+        require("jamin.resources").icons.ui.expanded,
       },
       --stylua: ignore
       symbols = {
-        File = { icon = require("jamin.resources").icons.kind.File, hl = "@text.uri" },
-        Module = { icon = require("jamin.resources").icons.kind.Module, hl = "@namespace" },
-        Namespace = { icon = require("jamin.resources").icons.kind.Namespace, hl = "@namespace" },
-        Package = { icon = require("jamin.resources").icons.kind.Package, hl = "@namespace" },
-        Class = { icon = require("jamin.resources").icons.kind.Class, hl = "@type" },
-        Method = { icon = require("jamin.resources").icons.kind.Method, hl = "@method" },
-        Property = { icon = require("jamin.resources").icons.kind.Property, hl = "@method" },
-        Field = { icon = require("jamin.resources").icons.kind.Field, hl = "@field" },
-        Constructor = { icon = require("jamin.resources").icons.kind.Constructor, hl = "@constructor" },
-        Enum = { icon = require("jamin.resources").icons.kind.Enum, hl = "@type" },
-        Interface = { icon = require("jamin.resources").icons.kind.Interface, hl = "@type" },
-        Function = { icon = require("jamin.resources").icons.kind.Function, hl = "@function" },
-        Variable = { icon = require("jamin.resources").icons.kind.Variable, hl = "@constant" },
-        Constant = { icon = require("jamin.resources").icons.kind.Constant, hl = "@constant" },
-        String = { icon = require("jamin.resources").icons.kind.String, hl = "@string" },
-        Number = { icon = require("jamin.resources").icons.kind.Number, hl = "@number" },
-        Boolean = { icon = require("jamin.resources").icons.kind.Boolean, hl = "@boolean" },
-        Array = { icon = require("jamin.resources").icons.kind.Array, hl = "@constant" },
-        Object = { icon = require("jamin.resources").icons.kind.Object, hl = "@type" },
-        Key = { icon = require("jamin.resources").icons.kind.Key, hl = "@type" },
-        Null = { icon = require("jamin.resources").icons.kind.Null, hl = "@type" },
-        EnumMember = { icon = require("jamin.resources").icons.kind.EnumMember, hl = "@field" },
-        Struct = { icon = require("jamin.resources").icons.kind.Struct, hl = "@type" },
-        Event = { icon = require("jamin.resources").icons.kind.Event, hl = "@type" },
-        Operator = { icon = require("jamin.resources").icons.kind.Operator, hl = "@operator" },
-        TypeParameter = { icon = require("jamin.resources").icons.kind.TypeParameter, hl = "@parameter" },
-        Component = { icon = require("jamin.resources").icons.kind.Component, hl = "@function" },
-        Fragment = { icon = require("jamin.resources").icons.kind.Fragment, hl = "@constant" },
+        File = { icon = require("jamin.resources").icons.lsp_kind.File, hl = "@text.uri" },
+        Module = { icon = require("jamin.resources").icons.lsp_kind.Module, hl = "@namespace" },
+        Namespace = { icon = require("jamin.resources").icons.lsp_kind.Namespace, hl = "@namespace" },
+        Package = { icon = require("jamin.resources").icons.lsp_kind.Package, hl = "@namespace" },
+        Class = { icon = require("jamin.resources").icons.lsp_kind.Class, hl = "@type" },
+        Method = { icon = require("jamin.resources").icons.lsp_kind.Method, hl = "@method" },
+        Property = { icon = require("jamin.resources").icons.lsp_kind.Property, hl = "@method" },
+        Field = { icon = require("jamin.resources").icons.lsp_kind.Field, hl = "@field" },
+        Constructor = { icon = require("jamin.resources").icons.lsp_kind.Constructor, hl = "@constructor" },
+        Enum = { icon = require("jamin.resources").icons.lsp_kind.Enum, hl = "@type" },
+        Interface = { icon = require("jamin.resources").icons.lsp_kind.Interface, hl = "@type" },
+        Function = { icon = require("jamin.resources").icons.lsp_kind.Function, hl = "@function" },
+        Variable = { icon = require("jamin.resources").icons.lsp_kind.Variable, hl = "@constant" },
+        Constant = { icon = require("jamin.resources").icons.lsp_kind.Constant, hl = "@constant" },
+        String = { icon = require("jamin.resources").icons.lsp_kind.String, hl = "@string" },
+        Number = { icon = require("jamin.resources").icons.lsp_kind.Number, hl = "@number" },
+        Boolean = { icon = require("jamin.resources").icons.lsp_kind.Boolean, hl = "@boolean" },
+        Array = { icon = require("jamin.resources").icons.lsp_kind.Array, hl = "@constant" },
+        Object = { icon = require("jamin.resources").icons.lsp_kind.Object, hl = "@type" },
+        Key = { icon = require("jamin.resources").icons.lsp_kind.Key, hl = "@type" },
+        Null = { icon = require("jamin.resources").icons.lsp_kind.Null, hl = "@type" },
+        EnumMember = { icon = require("jamin.resources").icons.lsp_kind.EnumMember, hl = "@field" },
+        Struct = { icon = require("jamin.resources").icons.lsp_kind.Struct, hl = "@type" },
+        Event = { icon = require("jamin.resources").icons.lsp_kind.Event, hl = "@type" },
+        Operator = { icon = require("jamin.resources").icons.lsp_kind.Operator, hl = "@operator" },
+        TypeParameter = { icon = require("jamin.resources").icons.lsp_kind.TypeParameter, hl = "@parameter" },
+        Component = { icon = require("jamin.resources").icons.lsp_kind.Component, hl = "@function" },
+        Fragment = { icon = require("jamin.resources").icons.lsp_kind.Fragment, hl = "@constant" },
       },
     },
   },
@@ -139,7 +139,7 @@ return {
     -- enabled = false,
     event = "LspAttach",
     opts = {
-      icons = require("jamin.resources").icons.kind,
+      icons = require("jamin.resources").icons.lsp_kind,
       separator = "  >  ",
       lsp = { auto_attach = true },
       -- highlight = true,
@@ -163,7 +163,9 @@ return {
     -- enabled = false,
     event = "CursorHold",
     config = function()
-      require("which-key").setup { icons = { separator = "⮞" } }
+      require("which-key").setup {
+        icons = { separator = require("jamin.resources").icons.ui.prompt },
+      }
 
       -- Normal mode
       require("which-key").register {

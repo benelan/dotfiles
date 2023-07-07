@@ -18,11 +18,12 @@ if vim.g.neovide then
   vim.g.neovide_cursor_trail_size = 0
 end
 
--- nerd font glyphs are shipped with wezterm so patched fonts
--- aren't required. OG_TERM env var is set when attaching to tmux.
-vim.g.use_devicons = os.getenv "TERM" == "wezterm"
-  or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
-  or true
+-- icons can be turned on/off per machine using the environment variable
+vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0" and (vim.env.USE_DEVICONS == "1"
+  -- nerd font glyphs are shipped with wezterm so patched fonts
+  -- aren't required. OG_TERM env var is set when attaching to tmux.
+  or vim.env.TERM == "wezterm"
+  or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil)
 
 -------------------------------------------------------------------------------
 ----> Autocommands
@@ -164,8 +165,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local icons = require("jamin.resources").icons
-
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "habamax" } },
@@ -173,10 +172,19 @@ require("lazy").setup("jamin.plugins", {
   checker = { enabled = true, notify = false },
   ui = {
     icons = {
-      cmd = icons.ui.Command,
-      import = icons.kind.Module,
-      plugin = icons.kind.Package,
-      start = icons.ui.Play,
+      plugin = "",
+      cmd = "",
+      config = "",
+      event = "",
+      ft = "",
+      import = "",
+      init = "",
+      keys = "",
+      lazy = "",
+      runtime = "",
+      source = "",
+      start = "",
+      task = "",
     },
   },
 })

@@ -176,13 +176,13 @@ return {
               else
                 vim_item.kind = string.format(
                   " %s  %s ",
-                  vim_item.kind == "Folder" and icons.kind.Folder or icons.kind.File,
+                  vim_item.kind == "Folder" and icons.lsp_kind.Folder or icons.lsp_kind.File,
                   vim_item.kind
                 )
               end
             else
               vim_item.kind =
-                string.format(" %s  %s ", icons.kind[vim_item.kind] or icons.ui.Text, vim_item.kind)
+                string.format(" %s  %s ", icons.lsp_kind[vim_item.kind] or icons.lsp_kind.Text, vim_item.kind)
             end
             return vim_item
           end,

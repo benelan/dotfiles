@@ -175,9 +175,9 @@ return {
       return {
         defaults = {
           -- path_display = { "smart" },
-          prompt_prefix = string.format(" %s ", require("jamin.resources").icons.ui.Prompt),
-          selection_caret = require("jamin.resources").icons.ui.Select,
-          multi_icon = require("jamin.resources").icons.ui.CheckMark,
+          prompt_prefix = string.format(" %s ", require("jamin.resources").icons.ui.prompt),
+          selection_caret = require("jamin.resources").icons.ui.select,
+          multi_icon = require("jamin.resources").icons.ui.checkmark,
           entry_prefix = "   ",
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",

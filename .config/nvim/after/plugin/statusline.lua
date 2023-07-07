@@ -57,7 +57,7 @@ end
 -- number of updatable plugins
 local has_lazy, lazy = pcall(require, "lazy.status")
 local function lazy_updates()
-  return has_lazy and lazy.has_updates() and "  %#LazyStatusLineUpdates#" .. lazy.updates() or ""
+  return has_lazy and lazy.has_updates() and "  %#LazyStatusLineUpdates# ⧠ " .. lazy.updates() or ""
 end
 
 -- debug info
@@ -73,22 +73,22 @@ local function gitsigns_info()
   if gs and gs.head ~= "" then
     return string.format(
       "%%#NormalFloat#  %s%s %s ",
-      icons.ui.Branch,
+      icons.git.branch,
       gs.head,
       format_numeric_data {
         {
           highlight = "GitStatusLineAdd", -- "GitSignsAdd",
-          icon = icons.ui.Add,
+          icon = icons.git.add,
           count = gs.added,
         },
         {
           highlight = "GitStatusLineChange", -- "GitSignsChange",
-          icon = icons.ui.Edit,
+          icon = icons.git.edit,
           count = gs.changed,
         },
         {
           highlight = "GitStatusLineDelete", -- "GitSignsDelete",
-          icon = icons.ui.Delete,
+          icon = icons.git.delete,
           count = gs.removed,
         },
       }
@@ -105,7 +105,7 @@ end
 --   then
 --     local head = vim.fn["fugitive#Head"]()
 --     if head ~= "" then
---       return string.format("%%#NormalFloat#  %s%s  ", icons.ui.Branch, head)
+--       return string.format("%%#NormalFloat#  %s%s  ", icons.git.branch, head)
 --     end
 --   end
 --   return ""
