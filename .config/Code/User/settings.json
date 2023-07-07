@@ -91,23 +91,28 @@
     "esbenp"
   ],
   "vim.easymotion": false,
-  "vim.incsearch": true,
-  "vim.useSystemClipboard": true,
-  "vim.useCtrlKeys": true,
+  "vim.enableNeovim": true,
+  "vim.highlightedyank.enable": true,
   "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.showMarksInGutter": true,
+  "vim.smartRelativeLine": true,
+  "vim.surround": true,
+  "vim.targets.bracketObjects.enable": true,
+  "vim.targets.enable": true,
+  "vim.targets.smartQuotes.enable": true,
+  "vim.useCtrlKeys": true,
+  "vim.useSystemClipboard": true,
+  "vim.visualstar": true,
   "vim.leader": "<space>",
   "vim.normalModeKeyBindings": [
     {
-      "before": ["<C-j>"],
-      "after": ["<leader>", "<leader>", "j"]
-    },
-    {
-      "before": ["<C-k>"],
-      "after": ["<leader>", "<leader>", "k"]
-    },
-    {
-      "before": ["<C-l>"],
+      "before": ["<leader>", "<C-l>"],
       "commands": [":nohl"]
+    },
+    {
+      "before": ["<leader>", "e"],
+      "commands": ["workbench.explorer.fileView.focus"]
     },
     {
       "before": ["leader", "w"],
@@ -130,24 +135,9 @@
   ],
   "vim.insertModeKeyBindings": [
     {
-      "before": ["j", "k"],
-      "after": ["<Esc>"]
-    },
-    {
-      "before": ["<C-a>"],
-      "commands": ["editor.action.selectAll"]
-    },
-    {
-      "before": ["<C-c>"],
-      "commands": ["editor.action.clipboardCopyAction"]
-    },
-    {
-      "before": ["<C-v>"],
+      "before": ["<C-V>"],
       "commands": ["editor.action.clipboardPasteAction"]
-    },
-    {
-      "before": ["<C-x>"],
-      "commands": ["editor.action.clipboardCutAction"]
     }
-  ]
+  ],
+  "window.zoomLevel": 1
 }

@@ -48,19 +48,19 @@
     "command": "workbench.action.splitEditorDown"
   },
   {
-    "key": "alt+h",
+    "key": "ctrl+h",
     "command": "workbench.action.focusLeftGroup"
   },
   {
-    "key": "alt+l",
+    "key": "ctrl+l",
     "command": "workbench.action.focusRightGroup"
   },
   {
-    "key": "alt+k",
+    "key": "ctrl+k",
     "command": "workbench.action.focusAboveGroup"
   },
   {
-    "key": "alt+j",
+    "key": "ctrl+j",
     "command": "workbench.action.focusBelowGroup"
   },
   {
