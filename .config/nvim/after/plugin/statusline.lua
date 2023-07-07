@@ -40,7 +40,7 @@ local function buffer_diagnostics()
   local data = {}
   for _, diagnostic in ipairs(icons.diagnostics) do
     table.insert(data, {
-      icon = diagnostic.text,
+      icon = diagnostic.text .. ":",
       count = table_length(vim.diagnostic.get(0, { severity = diagnostic.severity })),
       highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name) .. "Float",
     })
