@@ -1,7 +1,101 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
 add_newline = true
 format = "$all$time$cmd_duration$line_break$battery$status$container$shell$character"
 palette = "gruvbox"
 continuation_prompt = "…  "
+
+# https://starship.rs/presets/no-nerd-font.html
+[battery]
+full_symbol = "• "
+charging_symbol = "⇡ "
+discharging_symbol = "⇣ "
+unknown_symbol = "❓ "
+empty_symbol = "❗ "
+
+[erlang]
+symbol = ""
+
+[pulumi]
+symbol = ""
+
+[nodejs]
+symbol = "[⬡](bold green) "
+format = "[via](fg) [$symbol($version )]($style)"
+
+[[battery.display]]
+# "bold red" style when capacity is between 0% and 15%
+threshold = 15
+style = "bold red"
+
+[[battery.display]]
+threshold = 25
+style = "bold orange"
+
+[[battery.display]]
+# don't display batter when the capacity is above this threshold
+threshold = 35
+style = "bold yellow"
+
+[character]
+success_symbol = "[❱](bold green-light) "
+error_symbol = "[✘](bold red-light) "
+
+[cmd_duration]
+format = "[took](fg) [$duration]($style) "
+show_notifications = false
+min_time = 3000
+style = "bold yellow"
+
+[directory]
+style = "bold aqua"
+truncation_length = 0
+
+[hg_branch]
+symbol = ""
+
+[git_branch]
+format = "[on](fg) [$symbol $branch(:$remote_branch)]($style) "
+style = "bold blue"
+symbol = ""
+
+[git_metrics]
+disabled = true
+
+[git_status]
+style = "bold blue"
+ahead = "[>$count](aqua-light)"
+diverged = "[$behind_count<](orange-light)[>$ahead_count](aqua-light)"
+behind = "[$count<](orange-light)"
+staged = "[+$count](green)"
+deleted = "[-$count](red)"
+untracked = "[%$count](purple)"
+modified = "[*$count](yellow)"
+stashed = "[\\$$count](orange)"
+renamed = "[~$count](aqua)"
+conflicted = "[!$count](red-light)"
+
+[package]
+format = "[is](fg) [$symbol $version]($style) "
+style = "bold orange"
+symbol = " " # 🙭 
+
+[sudo]
+disabled = false
+symbol = "🗝"
+format = "[[as](fg) $symbol]($style)"
+
+[time]
+disabled = false
+format = "[at](fg) [$time]($style) "
+style = "yellow bold"
+time_format = "%T"
+
+[username]
+format = "[$user]($style) [in](fg) "
+
+[jobs]
+disabled = true
 
 # from https://github.com/morhetz/gruvbox
 [palettes.gruvbox]
@@ -34,96 +128,3 @@ bg1 = "#3c3836"
 bg2 = "#504945"
 bg3 = "#665c54"
 bg4 = "#7c6f64"
-
-
-[battery]
-full_symbol = "🔋 "
-empty_symbol = "🪫 "
-charging_symbol = "🗲 "
-discharging_symbol = "🕱 "
-
-[[battery.display]]
-# "bold red" style when capacity is between 0% and 15%
-threshold = 15
-style = "bold red"
-
-[[battery.display]]
-threshold = 25
-style = "bold orange"
-
-[[battery.display]]
-# don't display batter when the capacity is above this threshold
-threshold = 35
-style = "bold yellow"
-
-[character]
-success_symbol = "[❯](bold green-light) "
-error_symbol = "[✘](bold red-light) "
-vimcmd_symbol = "[ ](bold green-light) "
-vimcmd_replace_one_symbol = "[ ](bold yellow-light) "
-vimcmd_replace_symbol = "[ ](bold yellow-light) "
-vimcmd_visual_symbol = "[ ](bold purple-light) "
-
-[cmd_duration]
-format = "[took](fg) [$duration]($style) "
-show_notifications = false
-min_time = 3000
-style = "bold yellow"
-
-[directory]
-style = "bold aqua"
-truncation_length = 0
-
-[erlang]
-symbol = ""
-
-[hg_branch]
-symbol = ""
-
-[git_branch]
-format = "[on](fg) [$symbol $branch(:$remote_branch)]($style) "
-style = "bold blue"
-symbol = ""
-
-[git_metrics]
-disabled = true
-
-[git_status]
-style = "bold blue"
-ahead = "[>$count](aqua-light)"
-diverged = "[$behind_count<](orange-light)[>$ahead_count](aqua-light)"
-behind = "[<$count](orange-light)"
-staged = "[+$count](green)"
-deleted = "[-$count](red)"
-untracked = "[%$count](purple)"
-modified = "[*$count](yellow)"
-stashed = "[\\$$count](orange)"
-renamed = "[~$count](aqua)"
-conflicted = "[!$count](red-light)"
-
-[package]
-format = "[is](fg) [$symbol $version]($style) "
-style = "bold orange"
-symbol = " " # 🙭
-
-[nodejs]
-format = "[via](fg) [$symbol($version )]($style)"
-symbol = ""
-
-[sudo]
-format = "[[as](fg) $symbol]($style)"
-
-[time]
-disabled = false
-format = "[at](fg) [$time]($style) "
-style = "yellow bold"
-time_format = "%T"
-
-[username]
-format = "[$user]($style) [in](fg) "
-
-[pulumi]
-disabled = true
-
-[jobs]
-disabled = true
