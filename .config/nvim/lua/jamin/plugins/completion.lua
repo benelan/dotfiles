@@ -48,12 +48,10 @@ return {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
-      { "hrsh7th/cmp-buffer" }, -- buffers
-      -----------------------------------------------------------------------------
-      { "hrsh7th/cmp-path" }, -- relative paths
-      -----------------------------------------------------------------------------
+      "L3MON4D3/LuaSnip", -- snippet engine
+      "hrsh7th/cmp-buffer", -- buffers
+      "hrsh7th/cmp-path", -- relative paths
       { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= nil }, -- visible text in other tmux panes
-      -----------------------------------------------------------------------------
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
     },
     config = function()
@@ -181,8 +179,11 @@ return {
                 )
               end
             else
-              vim_item.kind =
-                string.format(" %s  %s ", icons.lsp_kind[vim_item.kind] or icons.lsp_kind.Text, vim_item.kind)
+              vim_item.kind = string.format(
+                " %s  %s ",
+                icons.lsp_kind[vim_item.kind] or icons.lsp_kind.Text,
+                vim_item.kind
+              )
             end
             return vim_item
           end,

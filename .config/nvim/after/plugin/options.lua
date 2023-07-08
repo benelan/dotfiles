@@ -1,5 +1,4 @@
 vim.opt.clipboard = "unnamed"
-vim.opt.guifont = "Iosevka,Ubuntu_Mono,monospace:h12"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
 vim.opt.modeline = false
@@ -52,12 +51,12 @@ vim.opt.linebreak = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 
-vim.opt.expandtab = true
-vim.opt.smartindent = true
-vim.opt.shiftwidth = 2
-vim.opt.shiftround = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = -1
+vim.opt.shiftwidth = 0
+vim.opt.shiftround = true
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 
 vim.opt.spelloptions:append "camel"
 vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")

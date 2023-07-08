@@ -14,13 +14,13 @@ set mouse=a ttymouse=sgr mousehide clipboard^=unnamed
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal cryptmethod=blowfish2
-set tabstop=4 softtabstop=-1 shiftwidth=4 shiftround smarttab expandtab
-set complete-=i wildmenu wildmode=list:longest,full completeopt=longest,menuone,preview
+set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
+set complete-=i wildmenu wildmode=list:longest,full completeopt=noselect,menuone,menuone
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
 set backupdir=$HOME/.vim/backups noswapfile
 set sessionoptions-=options viewoptions-=options
-set path-=/usr/include define= include=
+set path-=/usr/include path+=src/** define= include=
 set foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,
@@ -30,7 +30,7 @@ set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,*.rm
     \,*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,
     \*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,
-    \*/node_modules/*,*/dist/*,*/build/*,*/public/*
+    \*/node_modules/*,*/dist/*,*/build/*
 
 " don't backup some system files for security
 if v:version > 801 || v:version == 801 && has("patch1519")
@@ -47,8 +47,10 @@ if has("extra_search")
 endif
 
 if has("multi_byte_encoding")
-    set listchars+=extends:»,precedes:«
+    set listchars+=extends:»,precedes:«,nbsp:␣,eol:⮠
+    set listchars+=leadmultispaces:┊  ,trail:·,lead:·
     let &showbreak= "…  "
+    set fillchars+=diff:╱
 else
     let &showbreak= "... "
     set listchars+=extends:>,precedes:<

@@ -31,12 +31,12 @@ keymap("n", "N", "Nzzzv", "Previous search result")
 keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
 
 -- Add undo break points
-local undo_before_chars = { "[", "(", "{", "<" }
+local undo_before_chars = { "[", "(", "{", "<", "," }
 for _, char in ipairs(undo_before_chars) do
   keymap("i", char, "<C-g>u" .. char)
 end
 
-local undo_after_chars = { ",", "?", ".", "!", ";", "]", ")", "}", ">" }
+local undo_after_chars = { "?", ".", "!", ";", "]", ")", "}", ">" }
 for _, char in ipairs(undo_after_chars) do
   keymap("i", char, char .. "<C-g>u")
 end
@@ -78,6 +78,12 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
   noremap = true,
   desc = "Visually select changed text",
 })
+
+-- run makeprg and populate quickfix list
+vim.api.nvim_create_user_command("Make", function()
+  require("jamin.utils").async_make()
+end, { desc = "Run make asynchronously" })
+keymap("n", "gm", "<cmd>Make<cr>", "Async make")
 
 -------------------------------------------------------------------------------
 ----> Lists
@@ -162,23 +168,17 @@ keymap(
   "Previous warning"
 )
 
--- run makeprg and populate quickfix list
-vim.api.nvim_create_user_command("Make", function()
-  require("jamin.utils").async_make()
-end, { desc = "Run make asynchronously" })
-keymap("n", "gm", "<cmd>Make<cr>", "Async make")
-
 -------------------------------------------------------------------------------
 ----> Git Mergetool
 -------------------------------------------------------------------------------
 
-keymap({ "n", "v" }, "<leader>gmU", "<cmd>diffupdate<cr>", "Update merge diff")
-keymap({ "n", "v" }, "<leader>gmr", "<cmd>diffget RE<cr>", "Choose hunk from remote")
-keymap({ "n", "v" }, "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose all from remote")
-keymap({ "n", "v" }, "<leader>gmb", "<cmd>diffget BA<cr>", "Choose hunk from base")
-keymap({ "n", "v" }, "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose all from base")
-keymap({ "n", "v" }, "<leader>gml", "<cmd>diffget LO<cr>", "Choose hunk from local")
-keymap({ "n", "v" }, "<leader>gmL", "<cmd>%diffget LO<cr>", "Choose all from local")
+keymap("n", "<leader>gmU", "<cmd>diffupdate<cr>", "Update merge diff")
+keymap("n", "<leader>gmr", "<cmd>diffget RE<cr>", "Choose hunk from remote")
+keymap("n", "<leader>gmR", "<cmd>%diffget RE<cr>", "Choose all from remote")
+keymap("n", "<leader>gmb", "<cmd>diffget BA<cr>", "Choose hunk from base")
+keymap("n", "<leader>gmB", "<cmd>%diffget BA<cr>", "Choose all from base")
+keymap("n", "<leader>gml", "<cmd>diffget LO<cr>", "Choose hunk from local")
+keymap("n", "<leader>gmL", "<cmd>%diffget LO<cr>", "Choose all from local")
 
 -------------------------------------------------------------------------------
 ----> Windows

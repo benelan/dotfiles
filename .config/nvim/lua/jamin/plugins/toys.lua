@@ -60,6 +60,7 @@ return {
     "kosayoda/nvim-lightbulb",
     enabled = false,
     event = "VeryLazy",
+    cond = vim.g.use_devicons,
     opts = { autocmd = { enabled = true } },
     init = function()
       vim.fn.sign_define("LightBulbSign", {
@@ -187,9 +188,11 @@ return {
           w = "Write",
           r = "Replace operator",
           u = "Undotree",
+          Z = "Zoom buffer",
           C = { name = "color" },
           D = { name = "debug" },
           R = { name = "refactor" },
+          S = { name = "system" },
           E = {
             name = "ex",
             ["!"] = "Bang repeat",
@@ -245,7 +248,7 @@ return {
           d = "Delete to clipboard",
           r = "Replace operator",
           z = { name = "zk" },
-          g = { name = "git", m = { name = "mergetool" } },
+          g = { name = "git" },
           c = {
             name = "cheat",
             q = { name = "questions" },
