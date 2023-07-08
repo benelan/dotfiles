@@ -550,7 +550,7 @@ nnoremap L :tabnext<cr>:view!<cr>
 
 nnoremap - :qa<cr>
 
-" Devicons require patched font (or Wezterm)
-" if expand($OG_TERM) == "wezterm"
+" Devicons require a patched font (or wezterm which ships with them)
+if expand($USE_DEVICONS) != "0" && expand($USE_DEVICONS) == "1" || expand($TERM) == "wezterm"
   source ~/.config/vifm/scripts/icons.vifm
-" endif
+endif
