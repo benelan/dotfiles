@@ -36,7 +36,7 @@ vim.opt.wildignore:append(
 vim.opt.path = ".,./src/**,./api/**,./lua/**,./utils/**,./static,./config,,"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
-local ui = vim.api.nvim_list_uis()
+local ui = vim.api.nvim_list_uis() or {}
 vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
 
 vim.opt.showtabline = 2
@@ -79,7 +79,7 @@ if has_res then
     trail = res.icons.ui.fill_dot,
     lead = res.icons.ui.fill_dot,
     leadmultispace = res.icons.ui.separator
-      .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", {}) / 2),
+      .. string.rep(" ", vim.api.nvim_get_option_value("tabstop", {}) / 2),
     nbsp = res.icons.ui.nbsp,
     eol = res.icons.ui.eol,
   }

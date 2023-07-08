@@ -47,8 +47,8 @@ if has("extra_search")
 endif
 
 if has("multi_byte_encoding")
-    set listchars+=extends:»,precedes:«,nbsp:␣,eol:⮠
-    set listchars+=leadmultispaces:┊  ,trail:·,lead:·
+    set listchars+=extends:»,precedes:«,trail:·,eol:⮠
+    set listchars+=multispace:┊\ ,nbsp:␣
     let &showbreak= "…  "
     set fillchars+=diff:╱
 else

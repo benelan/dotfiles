@@ -40,7 +40,7 @@ local function buffer_diagnostics()
   local data = {}
   for _, diagnostic in ipairs(icons.diagnostics) do
     table.insert(data, {
-      icon = diagnostic.text .. ":",
+      icon = diagnostic.text .. (vim.g.use_devicons and "" or ":"),
       count = table_length(vim.diagnostic.get(0, { severity = diagnostic.severity })),
       highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name) .. "Float",
     })
@@ -57,7 +57,7 @@ end
 -- number of updatable plugins
 local has_lazy, lazy = pcall(require, "lazy.status")
 local function lazy_updates()
-  return has_lazy and lazy.has_updates() and "  %#LazyStatusLineUpdates# ⧠ " .. lazy.updates() or ""
+  return has_lazy and lazy.has_updates() and "  %#LazyStatusLineUpdates# " .. lazy.updates() or ""
 end
 
 -- debug info
@@ -68,7 +68,7 @@ end
 
 -- branch name and added/deleted/changed line count
 local function gitsigns_info()
----@diagnostic disable-next-line: undefined-field
+  ---@diagnostic disable-next-line: undefined-field
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
     return string.format(

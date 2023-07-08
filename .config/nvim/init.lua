@@ -1,29 +1,48 @@
 -------------------------------------------------------------------------------
-----> Settings
+----> Options
 -------------------------------------------------------------------------------
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
-
 if vim.fn.executable "/usr/bin/python3" then
   vim.g.python3_host_prog = "/usr/bin/python3"
 elseif vim.fn.executable "/bin/python3" then
   vim.g.python3_host_prog = "/bin/python3"
 end
 
--- neovide options
 if vim.g.neovide then
   vim.g.neovide_transparency = 0.9
+  vim.g.neovide_cursor_trail_size = 0
   vim.g.neovide_scroll_animation_length = 0
   vim.g.neovide_cursor_animation_length = 0
-  vim.g.neovide_cursor_trail_size = 0
 end
 
 -- icons can be turned on/off per machine using the environment variable
-vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0" and (vim.env.USE_DEVICONS == "1"
-  -- nerd font glyphs are shipped with wezterm so patched fonts
-  -- aren't required. OG_TERM env var is set when attaching to tmux.
-  or vim.env.TERM == "wezterm"
-  or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil)
+vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
+  and (
+    vim.env.USE_DEVICONS == "1"
+    -- nerd font glyphs are shipped with wezterm so patched fonts aren't required.
+    -- the OG_TERM env var is set in ~/.bashrc right before attaching to tmux.
+    or vim.env.TERM == "wezterm"
+    or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
+  )
+
+require "jamin.options"
+
+-------------------------------------------------------------------------------
+----> Global functions
+-------------------------------------------------------------------------------
+R = function(name)
+  require("plenary.reload").reload_module(name)
+end
+
+_G.keymap = function(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
+end
+
+-------------------------------------------------------------------------------
+----> Keymaps
+-------------------------------------------------------------------------------
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+require "jamin.keymaps"
 
 -------------------------------------------------------------------------------
 ----> Autocommands
@@ -111,17 +130,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 -------------------------------------------------------------------------------
-----> Global Functions
--------------------------------------------------------------------------------
-_G.keymap = function(mode, lhs, rhs, desc)
-  vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
-end
-
-R = function(name)
-  require("plenary.reload").reload_module(name)
-end
-
--------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------
 -- prevent unused builtin plugins from loading
@@ -170,21 +178,5 @@ require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "habamax" } },
   change_detection = { notify = false },
   checker = { enabled = true, notify = false },
-  ui = {
-    icons = {
-      plugin = "",
-      cmd = "",
-      config = "",
-      event = "",
-      ft = "",
-      import = "",
-      init = "",
-      keys = "",
-      lazy = "",
-      runtime = "",
-      source = "",
-      start = "",
-      task = "",
-    },
-  },
+  ui = { icons = require("jamin.resources").icons.lazy },
 })
