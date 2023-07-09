@@ -44,7 +44,9 @@ vim.opt.laststatus = 3
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.signcolumn = "yes"
+vim.opt.background = "dark"
 vim.opt.cursorline = true
+vim.opt.termguicolors = true
 
 vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
 vim.opt.linebreak = true

@@ -87,14 +87,6 @@ if has("virtualedit")
     set virtualedit+=block
 endif
 
-if !exists("loaded_matchit")
-  if findfile("plugin/matchit.vim", &rtp) ==# ""
-    runtime! macros/matchit.vim
-  elseif finddir("pack/dist/opt/matchit", &rtp) != ""
-    packadd matchit
-  endif
-endif
-
 if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
@@ -104,6 +96,7 @@ if has("persistent_undo")
     set undofile
 endif
 
+packloadall
 
 " --------------------------------------------------------------------- }}}
 " Keymaps                                                               {{{
@@ -387,10 +380,51 @@ set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
 set statusline+=\ \                             " Whitespace
 
 " --------------------------------------------------------------------- }}}
-" Cursor                                                                {{{
+" Colorscheme                                                           {{{
 " --------------------------------------------------------------------- {|}
 
-" change insert mode cursor from block to blinking line
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
+set background=dark
+set t_Co=256
+if exists("+termguicolors")
+    set termguicolors
+endif
+
+function! s:gruvbox_material_custom() abort
+    let s:palette = gruvbox_material#get_palette("soft", "material", {
+                \"bg_orange": ["#5A3B0A", "130"],
+                \ "bg_visual_yellow": ["#7a380b", "208"]
+                \ })
+
+    call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
+    call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
+    call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
+    highlight! link CursorLineNr Purple
+endfunction
+
+augroup GruvboxMaterialCustom
+    autocmd!
+    autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
+augroup END
+
+let g:gruvbox_material_background = "soft"
+let g:gruvbox_material_foreground = "original"
+let g:gruvbox_material_ui_contrast = "high"
+let g:gruvbox_material_statusline_style = "material"
+let g:gruvbox_material_diagnostic_virtual_text = "colored"
+" let g:gruvbox_material_spell_foreground = "colored"
+" let g:gruvbox_material_sign_column_background = "grey"
+" let g:gruvbox_material_menu_selection_background = "orange"
+" let g:gruvbox_material_current_word = "bold"
+" let g:gruvbox_material_visual = "reverse"
+
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_diagnostic_text_highlight = 0
+let g:gruvbox_material_transparent_background = 1
+let g:gruvbox_material_disable_italic_comment = 1
+" let g:gruvbox_material_enable_italic = 1
+" let g:gruvbox_material_enable_bold = 1
+" let g:gruvbox_material_disable_terminal_colors = 1
+" let g:gruvbox_material_dim_inactive_windows = 1
+
+
+colorscheme gruvbox-material

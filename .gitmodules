@@ -7,3 +7,30 @@
 [submodule "dev/lib/taskopen"]
 	path = dev/lib/taskopen
 	url = https://github.com/jschlatow/taskopen
+[submodule ".vim/pack/base/start/vim-repeat"]
+	path = .vim/pack/base/start/vim-repeat
+	url = https://github.com/tpope/vim-repeat
+[submodule ".vim/pack/base/start/vim-closer"]
+	path = .vim/pack/base/start/vim-closer
+	url = https://github.com/rstacruz/vim-closer
+[submodule ".vim/pack/base/start/vim-eunuch"]
+	path = .vim/pack/base/start/vim-eunuch
+	url = https://github.com/tpope/vim-eunuch
+[submodule ".vim/pack/base/start/vim-commentary"]
+	path = .vim/pack/base/start/vim-commentary
+	url = https://github.com/tpope/vim-commentary
+[submodule ".vim/pack/base/start/vim-surround"]
+	path = .vim/pack/base/start/vim-surround
+	url = https://github.com/tpope/vim-surround
+[submodule ".vim/pack/base/start/gruvbox-material"]
+	path = .vim/pack/base/start/gruvbox-material
+	url = https://github.com/sainnhe/gruvbox-material
+[submodule "dev/lib/fasd"]
+	path = dev/lib/fasd
+	url = https://github.com/clvv/fasd
+[submodule "dev/lib/fff"]
+	path = dev/lib/fff
+	url = https://github.com/dylanaraps/fff
+[submodule "dev/lib/git-open"]
+	path = dev/lib/git-open
+	url = https://github.com/paulirish/git-open
