@@ -1,13 +1,13 @@
 return {
   -- stuff shared with the vim config
   { dir = "~/.vim", lazy = false },
-  { dir = "~/.vim/pack/base/start/vim-eunuch" },
-  { dir = "~/.vim/pack/base/start/vim-repeat", event = "CursorHold" },
-  { dir = "~/.vim/pack/base/start/vim-closer", event = "CursorHold" },
-  { dir = "~/.vim/pack/base/start/vim-commentary", event = "CursorHold" },
-  { dir = "~/.vim/pack/base/start/vim-surround", keys = { "cs", "ds", "ys" } },
+  { dir = "~/.vim/pack/foo/start/vim-eunuch" },
+  { dir = "~/.vim/pack/foo/start/vim-repeat", event = "CursorHold" },
+  { dir = "~/.vim/pack/foo/start/vim-closer", event = "CursorHold" },
+  { dir = "~/.vim/pack/foo/start/vim-commentary", event = "CursorHold" },
+  { dir = "~/.vim/pack/foo/start/vim-surround", keys = { "cs", "ds", "ys" } },
   {
-    dir = "~/.vim/pack/base/start/gruvbox-material",
+    dir = "~/.vim/pack/foo/start/gruvbox-material",
     lazy = false,
     priority = 99999,
     config = function()
