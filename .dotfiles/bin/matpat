@@ -1,13 +1,22 @@
 #!/usr/bin/env sh
+set -o errexit
+
+COPY_CMD="${COPY_CMD:-cb}"
+OPEN_CMD="${OPEN_CMD:-o}"
+
 #
 # Outputs text matching a specified pattern.
-# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/matpat
 #
 # The -y flag requires the following scripts:
 #   - `cb` to access the clipboard:
 #      https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/cb
 #   - `o` to open with the default system application:
 #      https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/o
+#   - `os-detect` to determine the commands to use in `cb` and `o`
+#      https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
+#
+# Alternatively set COPY_CMD and OPEN_CMD env vars for your operating system.
 #
 # The MIT License (MIT)
 # Copyright (c) 2023-present Ben Elan
@@ -33,6 +42,7 @@
 # --------------------------------------------------------------------- }}}
 # Usage info                                                            {{{
 # --------------------------------------------------------------------- {|}
+
 usage() {
     if [ -n "$1" ]; then
         echo "$1"
@@ -40,26 +50,25 @@ usage() {
     echo '
 Matches input text against the specified pattern.
 
-Usage:             matpat <arguments> <pattern>
+Usage:    matpat <arguments>
 
 Arguments:
-  t                Get the text to match from tmux panes instead of stdin.
-  y                Select a match with fzf and yank it to the clipboard
-                   instead of sending all matches to stdout.
-  p                The pattern to match against (options specified below).
-                   fzf is used to choose a pattern if the arg is omitted.
-
+    t                      Get the text to match from tmux panes instead of stdin.
+    y                      Select a match with fzf and yank it to the clipboard
+                             instead of sending all matches to stdout.
+    p                      The pattern to match against (options specified below).
+                             fzf is used to choose a pattern if the flag is omitted.
 Patterns:
-  u,  uri          Output all matched URIs (e.g. https://esri.com or file://...)
-  i,  ip           Output all matched IP addresses (e.g. 192.168.1.1)
-  s,  git-sha      Output all matched Git SHAs (e.g. 64945dd)
-  r,  git-range    Output all matched Git SHA ranges (e.g. 123456..654321)
+  u,  uri,    url          Output all matched URIs (https://cht.sh or file://...)
+  i,  ip,     ip_address   Output all matched IP addresses (192.168.1.1)
+  s,  sha,    git_sha      Output all matched short or long Git SHAs (64945dd)
+  r,  range,  git_range    Output all matched Git SHA ranges (123456..654321)
 
 Examples:
-  # get all IP addresses from a log file
-  cat logs/access.log | matpat -p ip
+  # get all IP addresses from a log file (omit the arg to pick a pattern interactively)
+      cat logs/access.log | matpat -p ip
   # get URIs from tmux panes and select one using fzf to open or copy to clipboard
-  matpat -ytp u
+      matpat -ytp u
 '
     exit 1
 }
@@ -67,13 +76,17 @@ Examples:
 # --------------------------------------------------------------------- }}}
 # Patterns                                                              {{{
 # --------------------------------------------------------------------- {|}
+
 uri() {
+    # https://en.wikipedia.org/wiki/List_of_URI_schemes
+    _uri_schemes='(?:https?://|s?ftp://|news://|payto://|mailto:|callto:|tel:|data:|magnet:|maps:|geo:|wss?:|ssh://|udp://|vnc://|s3://|slack://|msteams://|nfs://|dns://|git://|svn://|ldaps?://|rediss?://|steam://|cvs://|file://|\bwww\.)'
+
     # shellcheck disable=2016
-    grep -oP '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'
+    grep -oP "$_uri_schemes"'[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'
 
 }
 
-ip() {
+ip_address() {
     grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
 
 }
@@ -83,64 +96,87 @@ git_sha() {
 
 }
 
-git_range() {
+git_sha_range() {
     grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'
 }
 
 # --------------------------------------------------------------------- }}}
-# Find matches                                                          {{{
+# Find and select or print matches                                      {{{
 # --------------------------------------------------------------------- {|}
+
+select_match() {
+    echo "$1" |
+        uniq |
+        fzf --no-multi --no-exit-0 --no-select-1 \
+            --header='(copy:enter) (open:ctrl-o)' \
+            --bind "ctrl-o:execute($OPEN_CMD {})+accept" |
+        $COPY_CMD
+}
+
+select_pattern() {
+    printf "%s\\n%s\\n%s\\n%s" \
+        'uri' \
+        'ip_address' \
+        'git_sha_range' \
+        'git_sha' |
+        fzf --no-multi --header "select pattern"
+}
+
 match_pattern() {
-    if [ -z "$matpat_tmux" ]; then
-        matches=$(for pane in $(tmux list-pane -a -F "#S:#I.#P"); do tmux capture-pane -t "$pane" -p; done | $1)
+    if [ -n "$_tmux_mode" ]; then
+        _matches=$(for pane in $(tmux list-pane -a -F "#S:#I.#P"); do
+            tmux capture-pane -t "$pane" -p
+        done | $1)
     else
         # shellcheck disable=2086
-        matches=$(eval $1)
+        _matches=$(eval $1)
     fi
 
-    if [ -z "$matpat_yank" ]; then
-        echo "$matches" |
-            sort -u |
-            fzf --cycle --no-multi \
-                --header='(copy:enter) (open:ctrl-o)' \
-                --bind "ctrl-o:execute(o {})+accept" |
-            cb
+    if [ -n "$_yank_mode" ]; then
+        select_match "$_matches"
     else
-        echo "$matches"
+        echo "$_matches"
     fi
 
+    unset _yank_mode _tmux_mode _matches
 }
 
 # --------------------------------------------------------------------- }}}
 # Parse args                                                            {{{
 # --------------------------------------------------------------------- {|}
+
+# if stdin is piped or not tty
+stdin_is_pipe_like() { [ -p /dev/stdin ] || ! [ -t 0 ]; }
+
 main() {
-    matpat_yank=1
-    matpat_tmux=1
-    pattern="unspecified"
-    while getopts hp:ty opt; do
+    # Print usage info if `matpat` is called with no args, unless stdin
+    # is piped, in which case prompt the user to select a pattern.
+    ! stdin_is_pipe_like && [ -z "$1" ] && usage
+    _pattern="select"
+
+    # Automatically turn on tmux mode if attached and stdin is
+    # not piped, otherwise it hangs waiting for stdin.
+    ! stdin_is_pipe_like && [ -n "$TMUX" ] && _tmux_mode=1
+
+    while getopts p:thy opt; do
         case $opt in
             h) usage ;;
-            p) pattern="$OPTARG" ;;
-            t) unset matpat_tmux ;;
-            y) unset matpat_yank ;;
-            *) usage "Invalid argument" ;;
+            p) _pattern="$OPTARG" ;;
+            t) _tmux_mode=1 ;;
+            y) _yank_mode=1 ;;
+            *) usage "Invalid argument: $opt" ;;
         esac
     done
 
     shift "$((OPTIND - 1))"
 
-    case $pattern in
-        h | help) usage ;;
-        i | ip) match_pattern ip ;;
-        r | git-range) match_pattern git_range ;;
-        s | git-sha) match_pattern git_sha ;;
-        u | uri) match_pattern uri ;;
-        unspecified)
-            # shellcheck disable=2046
-            match_pattern $(printf "ip\nuri\ngit_range\ngit_sha" | fzf)
-            ;;
-        *) usage "Unknown or unspecified pattern: $pattern" ;;
+    case $_pattern in
+        i | ip | ip_address) match_pattern ip_address ;;
+        r | range | git_range) match_pattern git_sha_range ;;
+        s | sha | git_sha) match_pattern git_sha ;;
+        u | uri | url) match_pattern uri ;;
+        select) match_pattern "$(select_pattern)" ;;
+        *) usage "Unknown pattern: $_pattern" ;;
     esac
 }
 
