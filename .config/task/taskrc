@@ -53,5 +53,3 @@ uda.taskwarrior-tui.task-report.prompt-on-delete=true
 uda.estimate.label=Estimate
 uda.estimate.values=34,21,13,8,5,3,2,1
 uda.estimate.type=string
-
-context=home

@@ -267,7 +267,7 @@ noremap <leader>sw :<C-U>set wrap! wrap?<CR>
 "" toggle modifiable
 nnoremap <leader>sM :<C-U>set modifiable! modifiable?<CR>
 "" toggle colorcolumn
-nnoremap <silent> <leader>sc :execute "set colorcolumn="
+nnoremap <silent> <leader>s\| :execute "set colorcolumn="
                   \ . (&colorcolumn == "" ? "80" : "")<CR>
 "" toggle foldcolumn
 nnoremap <silent> <leader>sf :execute "set foldcolumn="
@@ -385,3 +385,12 @@ set statusline+=%#TabLineSel#                   " TabLineSel highlight
 set statusline+=\ \                             " Whitespace
 set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
 set statusline+=\ \                             " Whitespace
+
+" --------------------------------------------------------------------- }}}
+" Cursor                                                                {{{
+" --------------------------------------------------------------------- {|}
+
+" change insert mode cursor from block to blinking line
+let &t_SI = "\<Esc>[6 q"
+let &t_SR = "\<Esc>[4 q"
+let &t_EI = "\<Esc>[2 q"

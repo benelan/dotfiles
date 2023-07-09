@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Serve a local directory via HTTP (via socat) with or without SSL
 # https://github.com/whiteinge/dotfiles/blob/master/bin/httpdir
