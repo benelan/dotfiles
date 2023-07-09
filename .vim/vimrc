@@ -96,8 +96,6 @@ if has("persistent_undo")
     set undofile
 endif
 
-packloadall
-
 " --------------------------------------------------------------------- }}}
 " Keymaps                                                               {{{
 " --------------------------------------------------------------------- {|}
@@ -111,6 +109,8 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     nnoremap <leader>fg :GFiles<CR>
     nnoremap <leader>fb :Buffers<CR>
 endif
+
+nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
 
 nnoremap Y y$
 vnoremap Y y
@@ -427,4 +427,5 @@ let g:gruvbox_material_disable_italic_comment = 1
 " let g:gruvbox_material_dim_inactive_windows = 1
 
 
+packadd! gruvbox-material
 colorscheme gruvbox-material

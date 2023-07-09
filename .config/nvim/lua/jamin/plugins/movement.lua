@@ -1,15 +1,5 @@
 return {
   {
-    dir = "~/dev/lib/fzf",
-    cmd = { "FZF" },
-    keys = {
-      { "<leader>fzf", "<cmd>FZF<cr>", desc = "FZF Files" },
-      { "<leader>fzg", "<cmd>GFiles<cr>", desc = "FZF Git Files" },
-      { "<leader>fzb", "<cmd>Buffers<cr>", desc = "FZF Buffers" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
     "vifm/vifm.vim",
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm" },

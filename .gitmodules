@@ -1,9 +1,9 @@
 [submodule "dev/lib/neovim"]
 	path = dev/lib/neovim
-	url = git@github.com:neovim/neovim.git
+	url = https://github.com/neovim/neovim
 [submodule "dev/lib/fzf"]
 	path = dev/lib/fzf
-	url = git@github.com:junegunn/fzf.git
+	url = https://github.com/junegunn/fzf
 [submodule "dev/lib/fasd"]
 	path = dev/lib/fasd
 	url = https://github.com/clvv/fasd
@@ -34,3 +34,6 @@
 [submodule ".vim/pack/foo/start/vim-repeat"]
 	path = .vim/pack/foo/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat
+[submodule ".vim/pack/foo/opt/undotree"]
+	path = .vim/pack/foo/opt/undotree
+	url = https://github.com/mbbill/undotree
