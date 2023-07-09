@@ -21,6 +21,10 @@ return {
   },
   {
     "sindrets/diffview.nvim", -- diff and history viewer
+    -- I got an inconsistent issue where the shell freezes after
+    -- staging a file in diffview and I have to kill the tmux window.
+    -- I think it started after this PR: https://github.com/sindrets/diffview.nvim/pull/356
+    commit = "8c1702470fd5186cb401b21f9bf8bdfad6d5cc87", -- commit before the PR above
     dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     -- stylua: ignore
