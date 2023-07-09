@@ -91,7 +91,7 @@
 
 [diff]
   algorithm = patience
-  tool = nvimdiff3
+  tool = nvimdiff
   colorMoved = default
   keepBackup = false
   # Detect copies as well as renames.
@@ -102,6 +102,9 @@
 [diff "bin"]
   # Use `hexdump` to diff binary files.
   textconv = hexdump -v -C
+
+[difftool "nvimdiff"]
+  cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 
 [merge]
   # Include summaries of merged commits in newly created merge commit messages.
