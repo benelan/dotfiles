@@ -164,7 +164,7 @@ main() {
             p) _pattern="$OPTARG" ;;
             t) _tmux_mode=1 ;;
             y) _yank_mode=1 ;;
-            *) usage "Invalid argument: $opt" ;;
+            *) usage "Invalid flag: $opt" ;;
         esac
     done
 

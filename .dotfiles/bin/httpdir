@@ -13,6 +13,9 @@ HTTP_METHOD=''
 HTTP_PATH=''
 HTTP_VERSION=''
 
+# shellcheck disable=2254
+fnmatch() { case "$2" in $1) return 0 ;; *) return 1 ;; esac }
+
 rep() {
     local status="${1:?Status is required.}"
     shift 1
@@ -48,8 +51,8 @@ http() {
     fi
 
     local rpath="$PWD$HTTP_PATH"
-    # shellcheck disable=2081
-    if [ "$rpath" = *..* ]; then
+
+    if fnmatch '*..*' "$rpath"; then
         rep 400
         exit
     fi
@@ -137,7 +140,10 @@ main() {
                 ssl=",cert=/tmp/${NAME}.crt,key=/tmp/${NAME}.key,verify=0"
                 listen="OPENSSL-LISTEN"
                 ;;
-            *) echo "Invalid flag" && return ;;
+            *)
+                echo "Invalid flag: $opt"
+                exit 1
+                ;;
         esac
     done
     shift $((OPTIND - 1))

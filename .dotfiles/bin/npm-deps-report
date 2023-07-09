@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-
 # Output how many sub-dependencies each npm dependencies has
 # https://github.com/whiteinge/dotfiles/blob/master/bin/npm-deps-report
 #
@@ -14,7 +13,10 @@ while getopts h opt; do
             awk 'NR == 1 { next } /^$/ { exit } { print substr($0, 3) }' "$0"
             exit
             ;;
-        *) echo "Invalid argument" && return 1 ;;
+        *)
+            echo "Invalid flag: $opt"
+            exit 1
+            ;;
     esac
 done
 shift $((OPTIND - 1))

@@ -16,6 +16,7 @@
 #     git quickfix @{u}..
 #     git quickfix -m modified
 #     git quickfix -m staged
+#     git quickfix abcdef -- path/to/file.foo
 
 NAME=$(basename "$0")
 TEMP="${TMPDIR-/tmp}/${NAME}.${$}.$(awk \
@@ -39,8 +40,8 @@ while getopts hm:x opt; do
             ;;
         x) set -x ;;
         *)
-            echo "Invalid flag"
-            exit
+            echo "Invalid flag: $opt"
+            exit 1
             ;;
     esac
 done
@@ -51,43 +52,27 @@ mkdir -p -m 700 "$TEMP"
 
 {
     if [ "$mode" = 'modified' ]; then
-        git diff -p -U0 --diff-filter=AM
+        git diff -p -U0 --diff-filter=AM "$@"
     elif [ "$mode" = 'staged' ]; then
-        git diff --cached -p -U0 --diff-filter=AM
+        git diff --cached -p -U0 --diff-filter=AM "$@"
     else
         case $1 in
-            *..*) cmd='diff' ;;
-            *) cmd='diff-tree' ;;
+            *..*) git diff -p -U0 --diff-filter=AM -r "${@:-HEAD}" ;;
+            *) git show --first-parent -m -p -U0 --diff-filter=AM "${@:-HEAD}" ;;
         esac
 
-        git "$cmd" -p -U0 --diff-filter=AM -r "${1:-HEAD}"
     fi
-} | awk '/^diff/ {
-          in_hunk=0
-          if (NR != 1 ) { printf("--\n") }
-        }
-
-        /^\+\+\+ / {
-          fname=substr($2, 2)
-        }
-
-        /^@@ / {
-          in_hunk=1
-          nr=substr($3, 2)
-          sub(/,.*/, "", nr)
-          printf(".%s:%s:%s\n", fname, nr, $0)
-          next
-        }
-
-        in_hunk {
-          printf("%s\n", $0)
-        }
-    ' >"$QFLIST"
+} | diff-to-quickfix >"$QFLIST"
 
 if [ ! -s "$QFLIST" ]; then
     printf 'No %s changes.\n' "$mode" 1>&2
     exit 1
 fi
 
-# bd1 deletes the initial "[No Name]" buffer (reqs :set hidden). Better way?
-$EDITOR +bd1 -q "$QFLIST"
+# Open with Vim if outputting to a tty, otherwise just output directly.
+if [ -t 1 ]; then
+    # bd1 deletes the initial "[No Name]" buffer.
+    $EDITOR +bd1 -q "$QFLIST"
+else
+    cat "$QFLIST"
+fi
