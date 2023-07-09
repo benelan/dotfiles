@@ -3,27 +3,25 @@
 
 [ "$(hostname)" != "jamin-os" ] && exit 0
 
-# Configure laptop display
+# configure laptop display
 xrandr --output eDP-1 --mode 2048x1152 --rate 60 --primary --scale 1
 
-# Change touchpad settings
+# change touchpad settings
 touchpad_id=$(xinput list | grep -i "Touchpad" | cut -d '=' -f2 | cut -d '[' -f1)
+
 # natural scrolling
 natural_scrolling_id=$(xinput list-props $touchpad_id |
     grep -i "Natural Scrolling Enabled (" |
     cut -d '(' -f2 | cut -d ')' -f1)
 xinput --set-prop $touchpad_id $natural_scrolling_id 1
+
 # acceleration
 acceleration_id=$(xinput list-props $touchpad_id |
     grep -i "Accel Speed (" |
     cut -d '(' -f2 | cut -d ')' -f1)
 xinput --set-prop $touchpad_id $acceleration_id 0.25
 
-# remap CapsLock to Escape
-command -v setxkbmap >/dev/null 2>/dev/null &&
-    setxkbmap -option -option caps:escape \
-        -option terminate:ctrl_alt_bksp \
-        -option shift:both_capslock_cancel
+remap-keys
 
-# Set wallpaper
+# set wallpaper
 feh --bg-center ~/Pictures/Wallpapers/gruvbox_coffee.png --image-bg "#3c3836"

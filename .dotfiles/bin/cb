@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# a portable clipboard utility that works multiple operating systems
+# A portable clipboard utility that works multiple operating systems.
 # https://gist.github.com/RichardBronosky/56d8f614fab2bacdd8b048fb58d0c0c7
+#
+# Uses `os-detect` to determine the operating system:
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
 
 linux_copy() {
     if is-supported xclip; then

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Use git-sh-setup, similar to git-recommand
+# Use git-sh-setup, similar to git-recommend
 # Copyright (c) 2022 Jason McCreary and contributors `MIT`
 # https://www.kernel.org/pub/software/scm/git/docs/git-sh-setup.html
 

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-# `open` with no arguments opens the current directory,
-# otherwise opens the given location
+# Opens a path/file with the default system application
+# or the current directory when no argument is provided
+#
+# Uses `os-detect` to determine the operating system:
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
+
 case "$(os-detect)" in
     windows_wsl) open_cmd="wslview" ;;
     windows_cygwin) open_cmd="cygstart" ;;
