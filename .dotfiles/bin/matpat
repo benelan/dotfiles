@@ -1,0 +1,147 @@
+#!/usr/bin/env sh
+#
+# Outputs text matching a specified pattern.
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/
+#
+# The -y flag requires the following scripts:
+#   - `cb` to access the clipboard:
+#      https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/cb
+#   - `o` to open with the default system application:
+#      https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/o
+#
+# The MIT License (MIT)
+# Copyright (c) 2023-present Ben Elan
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# --------------------------------------------------------------------- }}}
+# Usage info                                                            {{{
+# --------------------------------------------------------------------- {|}
+usage() {
+    if [ -n "$1" ]; then
+        echo "$1"
+    fi
+    echo '
+Matches input text against the specified pattern.
+
+Usage:             matpat <arguments> <pattern>
+
+Arguments:
+  t                Get the text to match from tmux panes instead of stdin.
+  y                Select a match with fzf and yank it to the clipboard
+                   instead of sending all matches to stdout.
+  p                The pattern to match against (options specified below).
+                   fzf is used to choose a pattern if the arg is omitted.
+
+Patterns:
+  u,  uri          Output all matched URIs (e.g. https://esri.com or file://...)
+  i,  ip           Output all matched IP addresses (e.g. 192.168.1.1)
+  s,  git-sha      Output all matched Git SHAs (e.g. 64945dd)
+  r,  git-range    Output all matched Git SHA ranges (e.g. 123456..654321)
+
+Examples:
+  # get all IP addresses from a log file
+  cat logs/access.log | matpat -p ip
+  # get URIs from tmux panes and select one using fzf to open or copy to clipboard
+  matpat -ytp u
+'
+    exit 1
+}
+
+# --------------------------------------------------------------------- }}}
+# Patterns                                                              {{{
+# --------------------------------------------------------------------- {|}
+uri() {
+    # shellcheck disable=2016
+    grep -oP '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'
+
+}
+
+ip() {
+    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+
+}
+
+git_sha() {
+    grep -oE '\b[0-9a-f]{5,40}\b'
+
+}
+
+git_range() {
+    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'
+}
+
+# --------------------------------------------------------------------- }}}
+# Find matches                                                          {{{
+# --------------------------------------------------------------------- {|}
+match_pattern() {
+    if [ -z "$matpat_tmux" ]; then
+        matches=$(for pane in $(tmux list-pane -a -F "#S:#I.#P"); do tmux capture-pane -t "$pane" -p; done | $1)
+    else
+        # shellcheck disable=2086
+        matches=$(eval $1)
+    fi
+
+    if [ -z "$matpat_yank" ]; then
+        echo "$matches" |
+            sort -u |
+            fzf --cycle --no-multi \
+                --header='(copy:enter) (open:ctrl-o)' \
+                --bind "ctrl-o:execute(o {})+accept" |
+            cb
+    else
+        echo "$matches"
+    fi
+
+}
+
+# --------------------------------------------------------------------- }}}
+# Parse args                                                            {{{
+# --------------------------------------------------------------------- {|}
+main() {
+    matpat_yank=1
+    matpat_tmux=1
+    pattern="unspecified"
+    while getopts hp:ty opt; do
+        case $opt in
+            h) usage ;;
+            p) pattern="$OPTARG" ;;
+            t) unset matpat_tmux ;;
+            y) unset matpat_yank ;;
+            *) usage "Invalid argument" ;;
+        esac
+    done
+
+    shift "$((OPTIND - 1))"
+
+    case $pattern in
+        h | help) usage ;;
+        i | ip) match_pattern ip ;;
+        r | git-range) match_pattern git_range ;;
+        s | git-sha) match_pattern git_sha ;;
+        u | uri) match_pattern uri ;;
+        unspecified)
+            # shellcheck disable=2046
+            match_pattern $(printf "ip\nuri\ngit_range\ngit_sha" | fzf)
+            ;;
+        *) usage "Unknown or unspecified pattern: $pattern" ;;
+    esac
+}
+
+main "$@"

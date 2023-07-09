@@ -107,7 +107,7 @@ if is-supported fasd; then
 fi
 
 # --------------------------------------------------------------------- }}}
-# Time                                                                  {{{
+# Time and weather                                                      {{{
 # --------------------------------------------------------------------- {|}
 
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
@@ -115,10 +115,6 @@ if is-supported date; then
     alias now='date +"%Y-%m-%dT%H:%M:%S"'
     alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
 fi
-
-# --------------------------------------------------------------------- }}}
-# Weather                                                               {{{
-# --------------------------------------------------------------------- {|}
 
 # Displays detailed weather and forecast.
 if is-supported curl; then
@@ -152,22 +148,12 @@ alias wget='wget -c'
 # systemd shortcuts (Linux)
 alias sctl='systemctl'
 
+# view HTTP traffic
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
 # display iptables rules
 alias ipt='sudo /sbin/iptables'
 alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
-
-
-# Output all matched Git SHAs
-alias match-git-sha="grep -oE '\b[0-9a-f]{5,40}\b'"
-
-# Output all matched Git SHA ranges (e.g., 123456..654321)
-alias match-git-range="grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'"
-
-# Output all matched IP addresses
-alias match-ip="grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'"
-
-# Output all matched URIs
-alias match-uri="grep -P -o '(?:https?://|ftp://|news://|mailto:|file://|\bwww\.)[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+'"
 
 if is-supported ps; then
     # searchable process list
