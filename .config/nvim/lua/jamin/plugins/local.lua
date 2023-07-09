@@ -25,6 +25,18 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "~/.vim/pack/foo/opt/vifm.vim",
+    ft = "vifm",
+    cmd = { "Vifm", "TabVifm", "SplitVifm" },
+    keys = { { "-", "<cmd>Vifm<cr>" } },
+    init = function()
+      keymap("n", "-", "<cmd>Vifm<cr>")
+      -- vim.g.vifm_replace_netrw = true
+      vim.g.vifm_term = "x-terminal-emulator"
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
     lazy = false,
     priority = 99999,

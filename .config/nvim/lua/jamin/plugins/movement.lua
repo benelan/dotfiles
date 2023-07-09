@@ -1,15 +1,4 @@
 return {
-  {
-    "vifm/vifm.vim",
-    ft = "vifm",
-    cmd = { "Vifm", "TabVifm", "SplitVifm" },
-    keys = { { "-", "<cmd>Vifm<cr>" } },
-    init = function()
-      keymap("n", "-", "<cmd>Vifm<cr>")
-      -- vim.g.vifm_replace_netrw = true
-      vim.g.vifm_term = "x-terminal-emulator"
-    end,
-  },
   -----------------------------------------------------------------------------
   { "wellle/targets.vim", event = "VeryLazy" },
   -----------------------------------------------------------------------------

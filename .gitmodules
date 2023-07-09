@@ -37,3 +37,6 @@
 [submodule ".vim/pack/foo/opt/undotree"]
 	path = .vim/pack/foo/opt/undotree
 	url = https://github.com/mbbill/undotree
+[submodule ".vim/pack/foo/opt/vifm.vim"]
+	path = .vim/pack/foo/opt/vifm.vim
+	url = https://github.com/vifm/vifm.vim

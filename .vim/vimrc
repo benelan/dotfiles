@@ -111,6 +111,7 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
 endif
 
 nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
+nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
 
 nnoremap Y y$
 vnoremap Y y
