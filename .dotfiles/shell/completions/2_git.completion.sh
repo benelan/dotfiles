@@ -15,6 +15,7 @@ fi
 # Git Alias Completion
 # -----------------------------------------------------------------------------
 
-# enable git completion for "g" and "dot" aliases
+# enable git completion for "g", "d", and "dot", and aliases
 __git_complete g git
+__git_complete d git
 __git_complete dot git
