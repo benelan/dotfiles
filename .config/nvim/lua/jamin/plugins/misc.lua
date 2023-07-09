@@ -1,6 +1,6 @@
 return {
   -- stuff shared with the vim config
-  { dir = "~/.vim", event = "VeryLazy" },
+  { dir = "~/.vim", lazy = false },
   { dir = "~/.vim/pack/base/start/vim-eunuch" },
   { dir = "~/.vim/pack/base/start/vim-repeat", event = "CursorHold" },
   { dir = "~/.vim/pack/base/start/vim-closer", event = "CursorHold" },
