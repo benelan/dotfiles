@@ -39,7 +39,7 @@ let g:netrw_dirhistmax=0
 "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
 
 "" general keymaps                                            {{{
-nnoremap q: :q<cr>
+nnoremap q: :
 nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
 
@@ -104,8 +104,8 @@ vnoremap <leader>p "+p
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
-nnoremap [z [s1z=
-nnoremap ]z ]s1z=
+nnoremap [S [s1z=
+nnoremap ]S ]s1z=
 nnoremap <M-z> 1z=
 inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
@@ -162,7 +162,7 @@ nnoremap <C-q> <cmd>QfToggle<cr>
 nnoremap Q <cmd>QfToggle<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" quckfix list to/from file for later access                 {{{
+"" quickfix list to/from file for later access                 {{{
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
 command! Qfsave call getqflist()
