@@ -12,20 +12,41 @@ return {
   -- stuff shared with the vim config
   { dir = "~/.vim", lazy = false },
   -----------------------------------------------------------------------------
-  { dir = "~/.vim/pack/foo/start/vim-eunuch" },
-  { dir = "~/.vim/pack/foo/start/vim-repeat", event = "CursorHold" },
+  -- adds closing brackets only when pressing enter
   { dir = "~/.vim/pack/foo/start/vim-closer", event = "CursorHold" },
+  -----------------------------------------------------------------------------
+  -- tpope plugins
+  { dir = "~/.vim/pack/foo/start/vim-repeat", event = "CursorHold" },
   { dir = "~/.vim/pack/foo/start/vim-commentary", event = "CursorHold" },
   { dir = "~/.vim/pack/foo/start/vim-surround", keys = { "cs", "ds", "ys" } },
+  {
+    dir = "~/.vim/pack/foo/start/vim-eunuch",
+    ft = "",
+    cmd = {
+      "Remove",
+      "Delete",
+      "Rename",
+      "Move",
+      "Chmod",
+      "Mkdir",
+      "Cfind",
+      "Clocate",
+      "Lfind",
+      "Llocate",
+      "Wall",
+      "SudoWrite",
+      "SudoEdit",
+    },
+  },
   -----------------------------------------------------------------------------
   {
-    "~/.vim/pack/foo/opt/undotree",
+    dir ="~/.vim/pack/foo/opt/undotree",
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
   },
   -----------------------------------------------------------------------------
   {
-    "~/.vim/pack/foo/opt/vifm.vim",
+   dir = "~/.vim/pack/foo/opt/vifm.vim",
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm" },
     keys = { { "-", "<cmd>Vifm<cr>" } },
