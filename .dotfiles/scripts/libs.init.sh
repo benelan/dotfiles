@@ -4,8 +4,9 @@ sudo -v
 
 LIB_PATH="$HOME/dev/lib"
 
-sync_git_modules() {
-    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" submodule update --init --recursive --rebase
+update_modules() {
+    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
+        submodule update --init --recursive --rebase "$@"
 }
 
 build_neovim() {
@@ -13,10 +14,10 @@ build_neovim() {
     if [ -d "$NEOVIM_PATH" ]; then
         cd "$NEOVIM_PATH" || exit 1
         git fetch --all
-        git pull origin master
-        git checkout nightly
+        git checkout master
+        git pull
+        # git checkout nightly
         sudo make CMAKE_BUILD_TYPE=Release
-        sudo make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.dotfiles/cache"
         sudo make install
     fi
 }
@@ -26,9 +27,9 @@ build_fzf() {
     if [ -d "$FZF_PATH" ]; then
         cd "$FZF_PATH" || exit 1
         git fetch --tags --all
-        # latestTag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
-        git checkout master # "$latestTag"
+        git checkout master
         git pull
+        # git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
         make
         make install
         chmod +x "$FZF_PATH/bin/fzf"
@@ -40,14 +41,19 @@ build_taskopen() {
     if [ -d "$TASKOPEN_PATH" ] && is-supported task && is-supported nim; then
         cd "$TASKOPEN_PATH" || exit 1
         git fetch --all
-        git pull origin master
         git checkout master
+        git pull
         make PREFIX=/usr
         sudo make PREFIX=/usr install
     fi
 }
 
-sync_git_modules
+update_vim_plugins() {
+    cd && update_modules .vim && vim +"helptags ALL" +"quit"
+}
+
+# update_modules
+update_vim_plugins
 build_neovim
 build_fzf
 build_taskopen

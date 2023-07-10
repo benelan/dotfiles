@@ -61,7 +61,7 @@ mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
 
 ## fff wrapper that changes to directory on exit              {{{
 if is-supported fff; then
-    ff() {
+    f() {
         fff "$@"
         cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
     }

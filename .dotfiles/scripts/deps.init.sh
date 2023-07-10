@@ -155,6 +155,32 @@ install_git_extras() {
     curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh | sudo bash /dev/stdin
 }
 
+install_git_jump() {
+    # it may already be on in the filesystem
+    if [ -f /usr/local/share/git-core/contrib/git-jump/git-jump ] &&
+        [ -r /usr/local/share/git-core/contrib/git-jump/git-jump ]; then
+        cp /usr/local/share/git-core/contrib/git-jump/git-jump "$BIN_DIR"
+
+    # sometimes it gets put in doc for some reason
+    elif [ -f /usr/share/doc/git/contrib/git-jump/git-jump ] &&
+        [ -r /usr/share/doc/git/contrib/git-jum/git-jumpp ]; then
+        cp /usr/share/doc/git/contrib/git-jump/git-jump "$BIN_DIR"
+
+    # otherwise download it
+    else
+        curl -sSLo ~/.dotfiles/bin/git-jump \
+            https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
+    fi
+
+}
+
+
+install_starship
+install_fonts_minimal
+# install_fonts_full
+install_git_jump
+# install_git_extras
+
 # install_rust
 # install_nim
 # install_golang
@@ -164,8 +190,3 @@ install_node_packages
 install_pip_packages
 install_cargo_packages
 install_golang_packages
-
-install_starship
-install_fonts_minimal
-# install_fonts_full
-# install_git_extras

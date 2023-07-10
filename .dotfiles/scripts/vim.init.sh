@@ -180,6 +180,6 @@ install_gruvbox_material
 # install_undotree
 
 # generate help tags
-vim +"helptags ~/.vim/doc" +"quit"
+vim +"helptags ALL" +"quit"
 
 unset VIM_AUTOLOAD VIM_COLORS VIM_DIR VIM_DOC VIM_PLUGIN VIM_SYNTAX

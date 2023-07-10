@@ -147,20 +147,16 @@ is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 if is-supported fff; then
     export FFF_COL2=7
     export FFF_COL5=0
-    export FFF_KEY_CLEAR="u"
-    export FFF_KEY_RENAME="c"
-    export FFF_KEY_BULK_RENAME="r"
-    export FFF_KEY_BULK_RENAME_ALL="R"
-    export FFF_TRASH="$XDG_DATA_HOME/Trash"
+    export FFF_TRASH="$XDG_DATA_HOME/Trash/files"
     export FFF_FAV1="$WORK/calcite-design-system"
     export FFF_FAV2="$WORK/calcite-design-system.wiki"
     export FFF_FAV3="$WORK/calcite-samples"
     export FFF_FAV4="$WORK/arcgis-esm-samples/"
-    export FFF_FAV5="$DOTFILES/scripts"
-    export FFF_FAV6="$DOTFILES/shell"
-    export FFF_FAV7="$DOTFILES/bin"
-    export FFF_FAV8="$HOME/.vim"
-    export FFF_FAV9="$XDG_CONFIG_HOME/nvim"
+    export FFF_FAV5="$XDG_CONFIG_HOME/nvim"
+    export FFF_FAV6="$WORK"
+    export FFF_FAV7="$PERSONAL"
+    export FFF_FAV8="$DOTFILES"
+    export FFF_FAV9="$NOTES"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
