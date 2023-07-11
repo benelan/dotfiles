@@ -163,15 +163,6 @@ if is-supported ps; then
     alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 fi
 
-# Sends HTTP requests
-if is-supported lwp-request; then
-    for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-        # shellcheck disable=2139
-        alias $method="lwp-request -m '$method'"
-    done
-    unset method
-fi
-
 # -----------------------------------------------------------------------------
 # Web Development
 # -----------------------------------------------------------------------------
@@ -192,7 +183,6 @@ if is-supported npm; then
     alias npxplz='npx $(fc -ln -1)'
 
     if is-supported fzf; then
-        is-supported npm-fuzzy && alias nfz="npm-fuzzy"
         is-supported jq &&
             alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
     fi
@@ -248,7 +238,6 @@ fi
 
 alias g='git'
 alias x="git mux"
-alias glz="lazygit"
 
 # deletes local branches already squash merged into the default branch
 # shellcheck disable=2016,2034,2154
@@ -273,9 +262,6 @@ dot() {
 }
 
 alias d='dot'
-# shellcheck disable=2139
-alias lazydot="lazygit --git-dir='$HOME/.git' --work-tree='$HOME'"
-alias dlz="lazydot"
 
 # creates env vars so git plugins
 # work with the bare dotfiles repo
@@ -295,8 +281,6 @@ alias G="edit_dotfiles +G +'wincmd o'"
 # --------------------------------------------------------------------- {|}
 
 # https://cli.github.com/
-# https://github.com/dlvhdr/gh-dash
-alias ghd="gh dash"
 # Open Octo with my issues/prs
 alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'

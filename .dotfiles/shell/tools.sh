@@ -12,16 +12,6 @@ is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
-# thefuck - https://github.com/nvbn/thefuck                   {{{
-# is-supported thefuck && eval "$(thefuck --alias)"
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
-# navi - https://github.com/denisidoro/navi                   {{{
-# is-supported navi && eval "$(navi widget bash)"
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
 # fzf - https://github.com/junegunn/fzf                       {{{
 if is-supported fzf; then
     # Auto-completion
