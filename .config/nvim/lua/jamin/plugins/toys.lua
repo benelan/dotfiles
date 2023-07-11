@@ -172,9 +172,8 @@ return {
       require("which-key").register {
         ["g:"] = "External program operator",
         ["gp"] = { name = "preview" },
-        ["]z"] = "Fix next misspelled word",
-        ["[z"] = "Fix previous misspelled word",
-        ["<M-z>"] = "Fix misspelled word",
+        ["]S"] = "Fix next misspelled word",
+        ["[S"] = "Fix previous misspelled word",
         ["<leader>"] = {
           ["<C-l>"] = "Redraw",
           ["<Del>"] = "Delete buffer",

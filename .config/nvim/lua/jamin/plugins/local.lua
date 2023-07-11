@@ -32,10 +32,10 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- Git integration
     keys = {
       { "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>g ", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
-      { "<leader>gD", "<cmd>Git diftool -y<cr>", desc = "Diff all changed files" },
-      -- { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
-      -- { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
+      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
+      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
+      { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
+      { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
       { "<leader>gm", "<cmd>Git mergetool -y", desc = "Git mergetool" },
       { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
       { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },

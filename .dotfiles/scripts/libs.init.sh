@@ -14,8 +14,7 @@ build_neovim() {
     if [ -d "$NEOVIM_PATH" ]; then
         cd "$NEOVIM_PATH" || exit 1
         git fetch --all
-        git checkout master
-        git pull
+        git reset --hard origin/master
         # git checkout nightly
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
@@ -27,8 +26,7 @@ build_fzf() {
     if [ -d "$FZF_PATH" ]; then
         cd "$FZF_PATH" || exit 1
         git fetch --tags --all
-        git checkout master
-        git pull
+        git reset --hard origin/master
         # git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
         make
         make install
@@ -41,8 +39,7 @@ build_taskopen() {
     if [ -d "$TASKOPEN_PATH" ] && is-supported task && is-supported nim; then
         cd "$TASKOPEN_PATH" || exit 1
         git fetch --all
-        git checkout master
-        git pull
+        git reset --hard origin/master
         make PREFIX=/usr
         sudo make PREFIX=/usr install
     fi

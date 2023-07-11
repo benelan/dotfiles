@@ -18,10 +18,6 @@ set -e
 # any current, conflicting dotfiles will be moved here
 BACKUP_DIR="$HOME/.dotfiles-backup"
 
-dot() {
-    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
-}
-
 # Don't use SSH to clone if there is no SSH key on the machine
 # This is for when I spin up a new VM and don't want to login to GitHub
 if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
@@ -31,6 +27,13 @@ else
 fi
 
 git clone --bare "$GIT_URL" "$HOME/.git"
+
+
+dot() {
+    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
+}
+
+dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
 if dot checkout >/dev/null 2>&1; then
     printf "\n✔ Checked out dotfiles\n"

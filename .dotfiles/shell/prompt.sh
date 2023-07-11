@@ -8,9 +8,45 @@ bind "set vi-cmd-mode-string \"C \""
 bind "set vi-ins-mode-string \"I \""
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# define terminal colors                                      {{{
+{
+    if [ "$(tput colors)" -gt 255 ]; then
+        RESET=$(tput sgr0)
+        BOLD=$(tput bold)
+        UNDERLINE=$(tput smul)
+        # Gruvbox colors from: https://github.com/morhetz/gruvbox
+        BLACK=$(tput setaf 235)
+        BLUE=$(tput setaf 66)
+        AQUA=$(tput setaf 72)
+        GREEN=$(tput setaf 106)
+        ORANGE=$(tput setaf 166)
+        PURPLE=$(tput setaf 132)
+        RED=$(tput setaf 124)
+        WHITE=$(tput setaf 230)
+        YELLOW=$(tput setaf 172)
+    else
+        RESET="\e[0m"
+        BOLD='\e[1m'
+        UNDERLINE='e[4m'
+        BLACK="\e[1;30m"
+        BLUE="\e[1;34m"
+        AQUA="\e[1;36m"
+        GREEN="\e[1;32m"
+        ORANGE="\e[1;33m"
+        PURPLE="\e[1;35m"
+        RED="\e[1;31m"
+        WHITE="\e[1;37m"
+        YELLOW="\e[1;33m"
+    fi
+} >/dev/null 2>&1
+
+export BOLD UNDERLINE RESET BLACK BLUE AQUA \
+    GREEN ORANGE PURPLE RED WHITE YELLOW
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # use starship for the prompt if installed                    {{{
-if false && is-supported starship; then
+if is-supported starship; then
     eval "$(starship init bash)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

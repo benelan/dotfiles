@@ -7,6 +7,7 @@ local root_names = {
   ".git",
   "package.json",
   ".luarc.json",
+  "lua",
   "go.mod",
   "Cargo.toml",
   "Dockerfile",

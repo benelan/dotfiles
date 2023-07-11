@@ -172,13 +172,12 @@ keymap(
 ----> Git difftool and mergetool
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>ghu", "<cmd>diffupdate<cr>", "Update diff")
-
 -- two way diff for staging/resetting hunks
-keymap({"n", "v" }, "<leader>ghg", ":diffget<bar>diffupdate<cr>", "Get hunk")
-keymap({"n", "v" }, "<leader>ghp", ":diffput<bar>diffupdate<cr>", "Put hunk")
+keymap({"n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<cr>", "Get hunk")
+keymap({"n", "v" }, "<leader>gw", ":diffput<cr>", "Put hunk")
 
 -- three way diff for merge conflict resolution
+keymap("n", "<leader>ghu", "<cmd>diffupdate<cr>", "Update diff")
 keymap("n", "<leader>ghr", "<cmd>diffget RE<bar>diffupdate<cr>", "Choose hunk from remote")
 keymap("n", "<leader>ghR", "<cmd>%diffget RE<bar>diffupdate<cr>", "Choose all from remote")
 keymap("n", "<leader>ghb", "<cmd>diffget BA<bar>diffupdate<cr>", "Choose hunk from base")
