@@ -14,6 +14,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       {
+        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
         -- stylua: ignore
