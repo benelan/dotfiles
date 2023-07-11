@@ -3,22 +3,18 @@
 root = true
 
 [*]
-charset = utf-8
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-quote_type = double
-spaces_around_operators = true
-spaces_around_brackets = false
+    charset = utf-8
+    end_of_line = lf
+    insert_final_newline = true
+    trim_trailing_whitespace = true
+    indent_style = space
+    indent_size = 4
+    quote_type = double
+    spaces_around_operators = true
+    spaces_around_brackets = false
 
 # JavaScript/TypeScript-specific settings
 [*.{js,jsx,ts,tsx,vue,svelte}]
-quote_type = single
-curly_bracket_next_line = false
-spaces_around_brackets = true
-
-[*.vim]
-indent_size = 4
+    indent_size = 2
+    spaces_around_brackets = true
 
