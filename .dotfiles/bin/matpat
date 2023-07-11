@@ -54,8 +54,8 @@ Usage:    matpat <arguments>
 
 Arguments:
     t                      Get the text to match from tmux panes instead of stdin.
-    y                      Select a match with fzf and yank it to the clipboard
-                             instead of sending all matches to stdout.
+    s                      Select a single match with fzf to yank or open instead
+                             of sending all matches to stdout.
     p                      The pattern to match against (options specified below).
                              fzf is used to choose a pattern if the flag is omitted.
 Patterns:
@@ -108,9 +108,9 @@ select_match() {
     echo "$1" |
         uniq |
         fzf --no-multi --no-exit-0 --no-select-1 \
-            --header='(copy:enter) (open:ctrl-o)' \
-            --bind "ctrl-o:execute($OPEN_CMD {})+accept" |
-        $COPY_CMD
+            --header='(copy:ctrl-y) (open:ctrl-o)' \
+            --bind "ctrl-o:execute($OPEN_CMD {})+accept" \
+            --bind "ctrl-y:execute(echo {} | cb)+accept"
 }
 
 select_pattern() {
@@ -132,13 +132,13 @@ match_pattern() {
         _matches=$(eval $1)
     fi
 
-    if [ -n "$_yank_mode" ]; then
+    if [ -n "$_select_mode" ]; then
         select_match "$_matches"
     else
         echo "$_matches"
     fi
 
-    unset _yank_mode _tmux_mode _matches
+    unset _select_mode _tmux_mode _matches
 }
 
 # --------------------------------------------------------------------- }}}
@@ -158,12 +158,12 @@ main() {
     # not piped, otherwise it hangs waiting for stdin.
     ! stdin_is_pipe_like && [ -n "$TMUX" ] && _tmux_mode=1
 
-    while getopts p:thy opt; do
+    while getopts p:ths opt; do
         case $opt in
             h) usage ;;
             p) _pattern="$OPTARG" ;;
             t) _tmux_mode=1 ;;
-            y) _yank_mode=1 ;;
+            s) _select_mode=1 ;;
             *) usage "Invalid flag: $opt" ;;
         esac
     done
