@@ -27,26 +27,6 @@ install_fonts_minimal() {
     fc-cache -rf
 }
 
-# Install the full font families from zip files
-install_fonts_full() {
-    # Add any other zipped fonts to download and install
-    # NerdFont glyphs are used by a lot of tools, e.g. Starship and NeoVim
-    # Find more options here: https://www.nerdfonts.com/font-downloads
-    font_families=(
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/JetBrainsMono.zip
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Iosevka.zip
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/SourceCodePro.zip
-    )
-    for f in "${font_families[@]}"; do
-        curl -sS "$f" >"$FONTS_DIR/font.zip"
-        unzip "$FONTS_DIR/font.zip"
-        rm "$FONTS_DIR/font.zip"
-    done
-    # reload the font cache
-    fc-cache -rf
-    unset f font_families
-}
-
 # Install the Rust language
 # https://www.rust-lang.org/tools/install
 install_rust() {
@@ -141,14 +121,6 @@ install_pip_packages() {
     fi
 }
 
-# Install Starship prompt
-# https://starship.rs/guide
-install_starship() {
-    if ! is-supported starship; then
-        sh <(curl -sS https://starship.rs/install.sh) --yes --bin-dir="$BIN_DIR" >/dev/null
-    fi
-}
-
 # Install helpful bash scripts for git workflows
 # https://github.com/tj/git-extras
 install_git_extras() {
@@ -175,9 +147,7 @@ install_git_jump() {
 }
 
 
-install_starship
 install_fonts_minimal
-# install_fonts_full
 install_git_jump
 # install_git_extras
 

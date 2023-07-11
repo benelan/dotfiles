@@ -186,16 +186,16 @@ install_gnome_gruvbox_theme() {
 install_apt_packages
 install_gh_cli
 install_protonvpn_cli
-install_taskwarrior_tui
+# install_taskwarrior_tui
 install_docker_engine
 
 # GUI install scripts
-install_apt_gui_packages
-install_gnome_gruvbox_theme
-install_discord
-install_vscode
-install_brave_browser
-install_wezterm
+# install_apt_gui_packages
+# install_gnome_gruvbox_theme
+# install_discord
+# install_vscode
+# install_brave_browser
+# install_wezterm
 # install_docker_desktop
 
-sudo apt -y update && sudo apt -y upgrade
+sudo apt -y update && sudo apt -y upgrade && sudo apt autoremove
