@@ -10,16 +10,15 @@ return {
   {
     "petertriho/cmp-git", -- issues/prs/mentions/commits in git_commit/octo buffers
     ft = require("jamin.resources").filetypes.writing,
+    cond = vim.fn.executable "git" == 1,
   },
   -----------------------------------------------------------------------------
   {
     "uga-rosa/cmp-dictionary",
-    cond = vim.fn.filereadable(vim.fn.stdpath "config" .. "/spell/en.dict") == 1,
+    cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
     ft = require("jamin.resources").filetypes.writing,
     config = function()
-      require("cmp_dictionary").switcher {
-        spelllang = { en = vim.fn.stdpath "config" .. "/spell/en.dict" },
-      }
+      require("cmp_dictionary").switcher { spelllang = { en = "/usr/share/dict/words" } }
     end,
   },
   -----------------------------------------------------------------------------
@@ -27,13 +26,6 @@ return {
     "f3fora/cmp-spell", -- vim's spellsuggest
     enabled = false,
     ft = require("jamin.resources").filetypes.writing,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "ray-x/cmp-treesitter", -- treesitter nodes
-    enabled = true,
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    cond = vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] ~= nil,
   },
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" }, -- lsp document symbol
@@ -51,7 +43,8 @@ return {
       "L3MON4D3/LuaSnip", -- snippet engine
       "hrsh7th/cmp-buffer", -- buffers
       "hrsh7th/cmp-path", -- relative paths
-      { "andersevenrud/cmp-tmux", cond = os.getenv "TMUX" ~= nil }, -- visible text in other tmux panes
+      "ray-x/cmp-treesitter", -- treesitter nodes
+      { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil }, -- visible text in other tmux panes
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
     },
     config = function()

@@ -1,28 +1,3 @@
-local lsp_servers = {
-  "bashls",
-  "cssls",
-  -- "docker_compose_language_service",
-  "dockerls",
-  "eslint",
-  "gopls",
-  -- "graphql",
-  "html",
-  "jsonls",
-  "lua_ls",
-  "marksman",
-  -- "pyright",
-  -- "rust_analyzer",
-  -- "sqlls",
-  "svelte",
-  "taplo",
-  "tailwindcss",
-  "tsserver",
-  "vimls",
-  "volar",
-  "yamlls",
-  "zk",
-}
-
 return {
   {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
@@ -69,7 +44,7 @@ return {
       {
         "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
         build = ":MasonUpdate",
-        opts = { ensure_installed = lsp_servers, automatic_installation = true },
+        opts = { ensure_installed = require("jamin.resources").lsp_servers, automatic_installation = true },
       },
       -----------------------------------------------------------------------------
       {
@@ -141,7 +116,7 @@ return {
 
       local lspconfig = require "lspconfig"
 
-      for _, server in pairs(lsp_servers) do
+      for _, server in pairs(require("jamin.resources").lsp_servers) do
         -- zk plugin sets up its own lsp server
         if server ~= "zk" then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
@@ -159,7 +134,7 @@ return {
       ----> Keymaps and local settings
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("ben_lsp_server_setup", {
+        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {
           clear = true,
         }),
         callback = function(args)
