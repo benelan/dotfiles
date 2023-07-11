@@ -1,6 +1,9 @@
-" Plugins using operatorfunc
+" Operatorfunc plugins                                                  {|}
+" --------------------------------------------------------------------- {|}
 "
 " Author: Tom Ryder <tom@sanctum.geek.nz>
+" Source: https://dev.sanctum.geek.nz/cgit/vim-replace-operator.git/about/
+" Source: https://dev.sanctum.geek.nz/cgit/vim-colon-operator.git/about/
 " License: Same as Vim itself
 
 if exists('loaded_jamin_operator') || &compatible || v:version < 700
@@ -8,9 +11,9 @@ if exists('loaded_jamin_operator') || &compatible || v:version < 700
 endif
 let loaded_jamin_operator = 1
 
-" ---------------------------------------------------------------------------
-" | Replace Operator                                                        \
-" ---------------------------------------------------------------------------
+" --------------------------------------------------------------------- }}}
+" Replace operator                                                      {{{
+" --------------------------------------------------------------------- {|}
 "
 "Replace text selected with a motion with the contents
 " of a register in a repeatable way.
@@ -70,9 +73,9 @@ endfunction
 nnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
 xnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
 
-" ---------------------------------------------------------------------------
-" | Colon Operator                                                          \
-" ---------------------------------------------------------------------------
+" --------------------------------------------------------------------- }}}
+" Colon operator                                                        {{{
+" --------------------------------------------------------------------- {|}
 
 function! ColonOperator(type) abort
   if !exists('s:command')
@@ -90,3 +93,5 @@ function! operators#colon() abort
 endfunction
 
 nnoremap <expr> <Plug>(ColonOperator) operators#colon()
+
+" --------------------------------------------------------------------- }}}
