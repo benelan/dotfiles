@@ -12,7 +12,7 @@ return {
       -- { "<leader>gr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
       -- { "<leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
       -- { "<leader>gw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
-      { "<leader>gu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
+      -- { "<leader>gu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
       { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle git blame" },
       { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle git signs" },
       { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display" },
