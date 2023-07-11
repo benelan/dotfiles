@@ -111,6 +111,18 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
 endif
 
 nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
+
+nnoremap <leader>gg <cmd>packadd vim-fugitive<cr><cmd>G<cr>
+nnoremap <leader>gc <cmd>packadd vim-fugitive<cr><cmd>G commit<cr>
+nnoremap <leader>gb <cmd>packadd vim-fugitive<cr><cmd>G blame<cr>
+nnoremap <leader>gD <cmd>packadd vim-fugitive<cr><cmd>G difftool -y<cr>
+nnoremap <leader>gM <cmd>packadd vim-fugitive<cr><cmd>G mergetool -y<cr>
+nnoremap <leader>gd <cmd>packadd vim-fugitive<cr><cmd>Gdiffsplit<cr>
+nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite %<cr>
+nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread %<cr>
+nnoremap <leader>gl <cmd>packadd vim-fugitive<cr><cmd>0Gclog --follow<cr>
+xnoremap <leader>gl :Gclog --follow<cr>
+
 nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
 
 nnoremap Y y$

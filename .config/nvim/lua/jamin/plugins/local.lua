@@ -22,31 +22,66 @@ return {
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
     ft = "",
+    -- stylua: ignore
     cmd = {
-      "Remove",
-      "Delete",
-      "Rename",
-      "Move",
-      "Chmod",
-      "Mkdir",
-      "Cfind",
-      "Clocate",
-      "Lfind",
-      "Llocate",
-      "Wall",
-      "SudoWrite",
-      "SudoEdit",
+      "Cfind", "Chmod", "Clocate", "Delete", "Lfind", "Llocate",
+      "Mkdir", "Move", "Remove", "Rename", "SudoEdit", "SudoWrite", "Wall"
+    },
+  },
+  {
+    dir = "~/.vim/pack/foo/opt/vim-fugitive", -- Git integration
+    keys = {
+      { "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
+      { "<leader>g ", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
+      { "<leader>gD", "<cmd>Git diftool -y<cr>", desc = "Diff all changed files" },
+      -- { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
+      -- { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
+      { "<leader>gm", "<cmd>Git mergetool -y", desc = "Git mergetool" },
+      { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
+      { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
+      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
+      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+    },
+    -- stylua: ignore
+    cmd = {
+      "G", "Git", "GDelete", "GMove", "GRename", "Gdrop", "Gcd", "Glcd", "Gclog", "Gllog",
+      "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep", "Gread", "Gwrite", "Gwq",
+      "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit", "Gsplit", "Gvsplit",
+    },
+    config = function()
+      vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+        pattern = "fugitive://*",
+        group = vim.api.nvim_create_augroup("jamin_clean_fugitive_buffers", { clear = true }),
+        -- http://vimcasts.org/episodes/fugitive-vim-browsing-the-git-object-database/
+        command = [[
+          set bufhidden="delete"
+          \ | if fugitive#buffer().type() =~# '^\%(tree\|blob\)$'
+          \ | nnoremap <buffer> .. :edit %:h<CR>
+          \ | endif
+        ]],
+      })
+    end,
+  },
+  {
+    dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
+    dependencies = "tpope/vim-fugitive",
+    -- stylua: ignore
+    keys = {
+      { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in Browser", mode = "n" },
+      { "<leader>go", ":'<,'>GBrowse<cr>", desc = "Open in Browser", mode = "v" },
+      { "<leader>gy", "<cmd>GBrowse!<cr>", desc = "Yank URL", mode = "n" },
+      { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL", mode = "v" },
     },
   },
   -----------------------------------------------------------------------------
   {
-    dir ="~/.vim/pack/foo/opt/undotree",
+    dir = "~/.vim/pack/foo/opt/undotree",
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
   },
   -----------------------------------------------------------------------------
   {
-   dir = "~/.vim/pack/foo/opt/vifm.vim",
+    dir = "~/.vim/pack/foo/opt/vifm.vim",
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm" },
     keys = { { "-", "<cmd>Vifm<cr>" } },
@@ -76,7 +111,7 @@ return {
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_diagnostic_text_highlight = 0
-      vim.g.gruvbox_material_enable_bold = 1
+      -- vim.g.gruvbox_material_enable_bold = 1
       -- vim.g.gruvbox_material_disable_terminal_colors = 1
       -- vim.g.gruvbox_material_dim_inactive_windows = 1
 

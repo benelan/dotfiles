@@ -91,16 +91,14 @@ onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
-vnoremap p "_dP
 nnoremap x "_x
-nnoremap gy <cmd>let @+=@*<cr>
-
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 vnoremap <leader>d "_d
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
+nnoremap gy <cmd>let @+=@*<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
@@ -313,13 +311,6 @@ command! -bang -complete=buffer -nargs=? Bwipeout
 nnoremap <silent> <leader><Delete> :Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" get git branch and root directory                          {{{
-function! g:GitRootDirectory()
-  let root = systemlist("git -C " . shellescape(expand("%:p:h"),) . " rev-parse --show-toplevel")[0]
-  return v:shell_error ? "" : root
-endfunction
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fzf user commands                                          {{{
 if isdirectory(expand("$HOME/dev/lib/fzf"))
     " Enable per-command history
@@ -392,9 +383,11 @@ if has("autocmd")
 
         " open files to their previous location
         autocmd BufReadPost *
-                    \ if line("'\"") > 1 && line("'\"") <= line("$")
-                    \|   execute "normal! g'\""
-                    \| endif
+                    \ if line("'\"") > 1
+                    \ && line("'\"") <= line("$")
+                    \ && &ft != "gitcommit"
+                    \ | execute "normal! g'\""
+                    \ | endif
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

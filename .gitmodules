@@ -40,3 +40,9 @@
 [submodule ".vim/pack/foo/opt/vifm.vim"]
 	path = .vim/pack/foo/opt/vifm.vim
 	url = https://github.com/vifm/vifm.vim
+[submodule ".vim/pack/foo/opt/vim-fugitive"]
+	path = .vim/pack/foo/opt/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+[submodule ".vim/pack/foo/opt/vim-rhubarb"]
+	path = .vim/pack/foo/opt/vim-rhubarb
+	url = https://github.com/tpope/vim-rhubarb
