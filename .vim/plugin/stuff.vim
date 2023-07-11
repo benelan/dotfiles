@@ -319,11 +319,6 @@ function! g:GitRootDirectory()
   return v:shell_error ? "" : root
 endfunction
 
-function! GitBranch()
-  let branch = systemlist("git -C " . shellescape(expand("%:p:h"),) . " branch --show-current")[0]
-  return v:shell_error ? "" : branch
-endfunction
-
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fzf user commands                                          {{{
 if isdirectory(expand("$HOME/dev/lib/fzf"))
