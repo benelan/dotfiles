@@ -82,7 +82,7 @@ symbol = " " # 🙭 
 
 [sudo]
 disabled = false
-symbol = "🗝"
+symbol = "√ "
 format = "[[as](fg) $symbol]($style)"
 
 [time]
