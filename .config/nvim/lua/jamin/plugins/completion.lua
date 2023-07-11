@@ -24,7 +24,6 @@ return {
   -----------------------------------------------------------------------------
   {
     "f3fora/cmp-spell", -- vim's spellsuggest
-    enabled = false,
     ft = require("jamin.resources").filetypes.writing,
   },
   -----------------------------------------------------------------------------
@@ -193,24 +192,36 @@ return {
           { name = "treesitter", keyword_length = 3 },
         }, {
           {
+            {
+              name = "dictionary",
+              keyword_length = 3,
+              entry_filter = function(_, ctx)
+                for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
+                  if ft == ctx.filetype then
+                    return true
+                  end
+                end
+                return false
+              end,
+            },
+            name = "rg",
+            keyword_length = 4,
+          },
+          {
             name = "spell",
             option = {
               enable_in_context = function()
-                return vim.o.spell == true
+                return vim.wo.spell == true
+              end,
+              entry_filter = function(_, ctx)
+                for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
+                  if ft == ctx.filetype then
+                    return true
+                  end
+                end
+                return false
               end,
             },
-          },
-          {
-            name = "dictionary",
-            keyword_length = 3,
-            entry_filter = function(_, ctx)
-              for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
-                if ft == ctx.filetype then
-                  return true
-                end
-              end
-              return false
-            end,
           },
         }),
         sorting = {
@@ -313,25 +324,10 @@ return {
       }
     end,
     opts = function()
-      local types = require "luasnip.util.types"
       return {
         history = false,
         region_check_events = "CursorMoved,CursorHold,InsertEnter",
         delete_check_events = "InsertLeave",
-        ext_opts = {
-          [types.choiceNode] = {
-            active = {
-              hl_mode = "combine",
-              virt_text = { { "●", "Operator" } },
-            },
-          },
-          [types.insertNode] = {
-            active = {
-              hl_mode = "combine",
-              virt_text = { { "●", "Type" } },
-            },
-          },
-        },
         enable_autosnippets = true,
       }
     end,
@@ -353,6 +349,8 @@ return {
       ls.filetype_extend("typescript", { "javascript" })
       ls.filetype_extend("javascriptreact", { "javascript" })
       ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
+      ls.filetype_extend("vue", { "javascript", "typescript" })
+      ls.filetype_extend("svelte", { "javascript", "typescript" })
     end,
   },
   -----------------------------------------------------------------------------

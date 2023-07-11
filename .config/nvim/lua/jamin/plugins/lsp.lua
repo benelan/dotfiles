@@ -147,10 +147,6 @@ return {
             client.server_capabilities.documentHighlightProvider = false
           end
 
-          -- vim.api.nvim_set_option_value("formatexpr", "v:lua.vim.lsp.formatexpr()", {buf = args.buf})
-          -- vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", {buf = args.buf})
-          -- vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", {buf = args.buf})
-
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
               buffer = args.buf,

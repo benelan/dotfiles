@@ -76,9 +76,6 @@ M.icons = {
     branch = i " ",
   },
   ui = {
-    light = i " ",
-    folder_open = i " ",
-    folder_closed = i " ",
     checkmark = "🗸 ",
     prompt = "❱ ", -- ❯ ❱ ⧽
     select = "  ", -- ➜  ⮞    🡺  🡲
@@ -91,22 +88,6 @@ M.icons = {
     fill_dot = "·",
     fill_slash = "╱",
     separator = "┊",
-  },
-  debug = {
-    bug = i " ",
-    bug_outline = i " ",
-    robot = i "󱙺 ",
-    cancel = i "󰜺 ",
-    exit = i "󰿅 ",
-    pause = "󰏦 ",
-    play = i "󰐍 ",
-    skip = i "󱧧 ",
-    run_last = i "🗘 ",
-    step_back = i "󰌍 ",
-    step_into = i "󰆹 ",
-    step_out = i " ",
-    step_over = i "󰆷 ",
-    terminate = "🗙 ",
   },
   lazy = {
     plugin = i(" ", "⧠ "),
@@ -128,21 +109,12 @@ M.icons = {
 M.filetypes = {
   excluded = {
     "",
-    "DiffviewFiles",
-    "Outline",
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
-    "ccc-ui",
     "checkhealth",
     "cmp_menu",
-    "dap-repl",
-    "dap-terminal",
-    "dapui_console",
-    "dapui_hover",
-    "flash_prompt",
     "fugitive",
-    "harpoon",
     "help",
     "lazy",
     "lspinfo",
@@ -151,7 +123,6 @@ M.filetypes = {
     "netrw",
     "octo",
     "qf",
-    "tsplayground",
     "undotree",
   },
   writing = {

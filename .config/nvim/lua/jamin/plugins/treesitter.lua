@@ -1,54 +1,10 @@
 return {
   {
-    "nvim-treesitter/playground", -- for creating syntax queries
-    enabled = false,
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor", "TSNodeUnderCursor" },
-  },
-  -----------------------------------------------------------------------------
-  {
     "Wansmer/treesj",
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
     opts = { use_default_keymaps = false, max_join_length = 300 },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "svelte" },
-  },
-  {
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
-    --stylua: ignore
-    keys = {
-      { "<leader>Rf", "<Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>", desc = "Extract function", mode = "v" },
-      { "<leader>RF", "<Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>", desc = "Extract function to file", mode = "v" },
-      { "<leader>Rv", "<Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>", desc = "Extract variable", mode = "v" },
-      { "<leader>Ri", "<Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>", desc = "Inline variable", mode = "v" },
-      { "<leader>Rb", function() require('refactoring').refactor('Extract Block') end, desc = "Extract block" },
-      { "<leader>RB", function() require('refactoring').refactor('Extract Block To File') end, desc = "Extract block to file" },
-      { "<leader>Ri", function() require('refactoring').refactor('Inline Variable') end, desc = "Inline variable" },
-      { "<leader>Rr", function() require('refactoring').select_refactor() end, desc = "Select refactor", mode = "v" },
-      { "<leader>DP", function() require('refactoring').debug.printf({below = false}) end, desc = "Print scope" },
-      { "<leader>Dp", function() require('refactoring').debug.print_var({ normal = true }) end, desc = "Print variable" },
-      { "<leader>Dp", function() require('refactoring').debug.print_var({}) end, desc = "Print variable", mode = "v" },
-      { "<leader>Dc", function() require('refactoring').debug.cleanup({}) end, desc = "Cleanup prints" },
-    },
-    opts = {
-      prompt_func_return_type = { go = true },
-      prompt_func_param_type = { go = true },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "RRethy/nvim-treesitter-textsubjects", -- smart text objects
-    "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
-    "HiPhish/nvim-ts-rainbow2",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    event = "VeryLazy",
   },
   -----------------------------------------------------------------------------
   {
@@ -59,12 +15,12 @@ return {
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
         -- stylua: ignore
         keys = {
           { "[C", function() require("treesitter-context").go_to_context() end, desc = "Treesitter context" },
         },
       },
-      { "JoosepAlviste/nvim-ts-context-commentstring" },
     },
     config = function()
       local swap_next, swap_prev = (function()
@@ -100,26 +56,12 @@ return {
           -- disable = { "markdown", },
         },
         indent = { enable = true },
-        autopairs = { enable = true },
-        autotag = { enable = true },
-        matchup = { enable = true },
-        playground = { enable = true },
         query_linter = {
           enable = true,
           use_virtual_text = true,
           lint_events = { "BufWrite", "CursorHold" },
         },
-        rainbow = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
-        textsubjects = {
-          enable = true,
-          prev_selection = ",",
-          keymaps = {
-            [";"] = "textsubjects-smart",
-            ["a;"] = "textsubjects-container-outer",
-            ["i;"] = "textsubjects-container-inner",
-          },
-        },
         incremental_selection = {
           enable = true,
           keymaps = {

@@ -1,50 +1,18 @@
 return {
   {
-    "sindrets/diffview.nvim", -- diff and history viewer
-    -- I got an inconsistent issue where the shell freezes after
-    -- staging a file in diffview and I have to kill the tmux window.
-    -- I think it started after this PR: https://github.com/sindrets/diffview.nvim/pull/356
-    commit = "8c1702470fd5186cb401b21f9bf8bdfad6d5cc87", -- commit before the PR above
-    dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
-    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-    -- stylua: ignore
-    keys = {
-      { "<leader>gd", "<cmd>DiffviewOpen<cr>", { "n", "x" }, desc = "Open Diffview" },
-      { "<leader>gH", "<cmd>DiffviewFileHistory --max-count=1000<cr>", { "n", "x" }, desc = "All files history" },
-      { "<leader>gh", "<cmd>DiffviewFileHistory % --follow --max-count=1000<cr>", desc = "Buffer file history", mode = "n" },
-      { "<leader>gh", ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>", desc = "Selection history", mode = "x" },
-    },
-    opts = {
-      enhanced_diff_hl = true,
-      use_icons = vim.g.use_devicons,
-      icons = {
-        folder_closed = require("jamin.resources").icons.ui.folder_closed,
-        folder_open = require("jamin.resources").icons.ui.folder_open,
-      },
-      signs = {
-        fold_closed = require("jamin.resources").icons.ui.collapsed,
-        fold_open = require("jamin.resources").icons.ui.expanded,
-        done = require("jamin.resources").icons.ui.checkmark,
-      },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
     "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
+      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk", mode = { "o", "x" } },
       { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk" },
       { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk" },
-      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk", mode = { "o", "x" } },
-      { "<leader>gs", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk", mode = "v" },
-      { "<leader>gr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
       { "<leader>gp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
-      { "<leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
-      { "<leader>gs", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
+      -- { "<leader>gw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk", mode = "v" },
+      -- { "<leader>gr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
+      -- { "<leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
+      -- { "<leader>gw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
       { "<leader>gu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
-      { "<leader>gS", function() require("gitsigns").stage_buffer() end, desc = "Stage buffer" },
-      { "<leader>gR", function() require("gitsigns").reset_buffer() end, desc = "Reset buffer" },
       { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle git blame" },
       { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle git signs" },
       { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display" },
@@ -217,7 +185,6 @@ return {
         },
       },
     },
-    -- stylua: ignore
     config = function(_, opts)
       require("octo").setup(opts)
       vim.treesitter.language.register("markdown", "octo")

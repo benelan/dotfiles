@@ -1,63 +1,4 @@
 return {
-  {
-    "AckslD/nvim-neoclip.lua",
-    enabled = false,
-    dependencies = { "kkharji/sqlite.lua" },
-    event = "VeryLazy",
-    opts = {
-      enable_persistent_history = true,
-      content_spec_column = true,
-      continuous_sync = true,
-      on_select = { move_to_front = true },
-      on_paste = { move_to_front = true },
-      on_replay = { move_to_front = true },
-      keys = {
-        telescope = {
-          i = { paste_behind = "<C-h>", paste = "<C-l>" },
-          n = { paste_behind = "h", paste = "l" },
-        },
-      },
-      filter = function(data)
-        for _, entry in ipairs(data.event.regcontents) do
-          if vim.fn.match(entry, [[^\s*$]]) == -1 then
-            return true
-          end
-        end
-        return false
-      end,
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>fy", function() require("telescope").extensions.neoclip.default() end, desc = "Clipboard history" },
-      { "<leader>fm", function() require("telescope").extensions.macroscope.default() end, desc = "Macro history" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "nvim-telescope/telescope-frecency.nvim",
-    enabled = false,
-    dependencies = "kkharji/sqlite.lua",
-    config = function()
-      require("telescope").load_extension "frecency"
-    end,
-    -- stylua: ignore
-    keys = {
-      { "<C-p>", function() require("telescope").extensions.frecency.frecency() end, desc = "Frecent files" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "ThePrimeagen/git-worktree.nvim", -- Git worktree helper for bare repos
-    enabled = false,
-    config = function()
-      require("telescope").load_extension "git_worktree"
-    end,
-    -- stylua: ignore
-    keys = {
-      { "<leader>gwl", function() require("telescope").extensions.git_worktree.git_worktrees() end, desc = "List git worktrees" },
-      { "<leader>gwa", function() require("telescope").extensions.git_worktree.create_git_worktree() end, desc = "Add git worktree" },
-    },
-  },
   -----------------------------------------------------------------------------
   {
     "nvim-telescope/telescope.nvim", -- fuzzy finding tool
@@ -66,13 +7,6 @@ return {
     commit = "057ee0f8783872635bc9bc9249a4448da9f99123",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      {
-        "nvim-telescope/telescope-smart-history.nvim",
-        dependencies = { "kkharji/sqlite.lua" },
-        config = function()
-          require("telescope").load_extension "smart_history"
-        end,
-      },
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
         build = "make",
@@ -128,30 +62,7 @@ return {
       }
     end,
     opts = function()
-      local function flash_action(prompt_bufnr)
-        local has_flash, flash = pcall(require, "flash")
-        if has_flash then
-          flash.jump {
-            pattern = "^",
-            highlight = { label = { after = { 0, 0 } } },
-            search = {
-              mode = "search",
-              exclude = {
-                function(win)
-                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
-                end,
-              },
-            },
-            action = function(match)
-              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-              picker:set_selection(match.pos[1] - 1)
-            end,
-          }
-        end
-      end
-
       local default_mappings = {
-        ["<C-s>"] = flash_action,
         ["<C-c>"] = "close",
         ["<C-x>"] = false,
         ["<C-d>"] = "results_scrolling_down",
@@ -209,10 +120,7 @@ return {
             "--glob=!.git/", "--glob=!node_modules/",
           },
           mappings = { i = default_mappings, n = default_mappings },
-          history = {
-            path = vim.fn.stdpath "data" .. "/databases/telescope_history.sqlite3",
-            history = 1000,
-          },
+          history = { history = 1000 },
         },
         pickers = {
           live_grep = { only_sort_text = true },
@@ -246,26 +154,10 @@ return {
             },
           },
         },
-        extensions = {
-          frecency = {
-            show_scores = true,
-            ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/dist/*", "*/build/*" },
-            workspaces = {
-              ["dots"] = vim.fn.expand "~/.dotfiles",
-              ["conf"] = vim.fn.expand "~/.config",
-              ["nvim"] = vim.fn.expand "~/.config/nvim",
-              ["personal"] = vim.fn.expand "~/dev/personal",
-              ["notes"] = vim.fn.expand "~/dev/notes",
-              ["work"] = vim.fn.expand "~/dev/work",
-              ["cc"] = vim.fn.expand "~/dev/work/calcite-design-system",
-            },
-          },
-        },
       }
     end,
     config = function(_, opts)
       require("telescope").setup(opts)
-      pcall(require("telescope").load_extension, "neoclip")
     end,
   },
 }

@@ -229,8 +229,8 @@
 
   # edit the files changed locally
   e = "!f() { $EDITOR $(git diff --name-only HEAD); }; f"
-  # open Diffview.nvim
-  ed = "!f() { nvim +\"DiffviewOpen $*\"; }; f"
+  # open Fugitive
+  ed = "!f() { $EDITOR +\"Git difftool -y $*\"; }; f"
   # sync origin's default branch and edit the changed files
   eom = "!f() { default_branch=$(git bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
 
