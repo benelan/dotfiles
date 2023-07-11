@@ -1,6 +1,5 @@
 local wezterm = require "wezterm"
 local utils = require "utils"
-local lume = require "utils.lume"
 local M = {}
 
 -- https://wezfurlong.org/wezterm/config/lua/wezterm/format
@@ -9,9 +8,9 @@ M.separator_char = "   "
 M.colors = {
   date_fg = utils.colors.brights[5],
   date_bg = utils.colors.background,
-  battery_charging_fg = utils.colors.brights[7],
-  battery_discharging_fg = utils.colors.brights[4],
-  battery_discharging_empty_fg = utils.colors.brights[2],
+  battery_good = utils.colors.brights[7],
+  battery_medium = utils.colors.brights[4],
+  battery_low = utils.colors.brights[2],
   battery_bg = utils.colors.background,
   key_table_fg = utils.colors.brights[6],
   key_table_bg = utils.colors.background,
@@ -50,29 +49,26 @@ end
 
 M.set_battery = function()
   -- https://wezfurlong.org/wezterm/config/lua/wezterm/battery_info
-  local discharging_icons =
-    { " ", " ", " ", " ", " ", " ", " ", " ", " ", " " }
-  local charging_icons =
-    { " ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", " " }
-
   local charge = ""
   local charge_color = ""
   local icon = ""
 
   for _, b in ipairs(wezterm.battery_info()) do
-    local idx = lume.clamp(lume.round(b.state_of_charge * 10), 1, 10)
-    charge = string.format("%.0f%%", b.state_of_charge * 100)
+    local charge_percentage = b.state_of_charge * 100
+    charge = string.format("%.0f%%", charge_percentage)
 
     if b.state == "Charging" then
-      icon = charging_icons[idx]
-      charge_color = M.colors.battery_charging_fg
+      icon = "󰂄 "
+      charge_color = M.colors.battery_good
+    elseif charge_percentage < 33 then
+      icon = "󱊡 "
+      charge_color = M.colors.battery_low
+    elseif charge_percentage < 66 then
+      icon = "󱊢 "
+      charge_color = M.colors.battery_medium
     else
-      icon = discharging_icons[idx]
-      if idx < 3 then
-        charge_color = M.colors.battery_discharging_empty_fg
-      else
-        charge_color = M.colors.battery_discharging_fg
-      end
+      icon = "󱊣 "
+      charge_color = M.colors.battery_good
     end
   end
 
