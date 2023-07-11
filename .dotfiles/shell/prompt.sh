@@ -55,14 +55,7 @@ pre_prompt+="\[${RESET}\]"             # reset styling
 post_prompt="\n"
 # post_prompt+="\[${PURPLE}\][\!]" # history line number for easy hist expansion
 # shellcheck disable=2181,2016
-post_prompt+='$(
-    _exit_code="$?"
-    if [ $_exit_code -ne 0 ]; then
-        printf "\[%s\]%s✘  " "$RED" "$_exit_code"
-    else
-        printf "\[%s\]❱  " "$GREEN"
-    fi
-    )'
+post_prompt+='$(if [ $? -ne 0 ]; then printf "\[%s\]✘  " "$RED"; else printf "\[%s\]❱  " "$GREEN"; fi;)'
 post_prompt+="\[${RESET}\]" # reset styling
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
