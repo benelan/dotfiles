@@ -71,6 +71,25 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "petertriho/nvim-scrollbar",
+    enabled = false,
+    event = "VeryLazy",
+    dependencies = { "lewis6991/gitsigns.nvim" },
+    opts = {
+      max_lines = 10000,
+      hide_if_all_visible = true,
+      handle = { highlight = "TabLine" },
+      marks = { Misc = { highlight = "Purple" } },
+      handlers = { gitsigns = true },
+      excluded_filetypes = require("jamin.resources").filetypes.excluded,
+    },
+    config = function(_, opts)
+      require("scrollbar").setup(opts)
+      require("scrollbar.handlers.gitsigns").setup()
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "simrat39/symbols-outline.nvim",
     -- enabled = false,
     cmd = "SymbolsOutline",
@@ -115,24 +134,6 @@ return {
         Fragment = { icon = require("jamin.resources").icons.lsp_kind.Fragment, hl = "@constant" },
       },
     },
-  },
-  {
-    "petertriho/nvim-scrollbar",
-    enabled = false,
-    event = "VeryLazy",
-    dependencies = { "lewis6991/gitsigns.nvim" },
-    opts = {
-      max_lines = 10000,
-      hide_if_all_visible = true,
-      handle = { highlight = "TabLine" },
-      marks = { Misc = { highlight = "Purple" } },
-      handlers = { gitsigns = true },
-      excluded_filetypes = require("jamin.resources").filetypes.excluded,
-    },
-    config = function(_, opts)
-      require("scrollbar").setup(opts)
-      require("scrollbar.handlers.gitsigns").setup()
-    end,
   },
   -----------------------------------------------------------------------------
   {

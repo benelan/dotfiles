@@ -33,7 +33,7 @@ return {
     keys = {
       { "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
       { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
-      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
+      -- { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
       { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
       { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
       { "<leader>gm", "<cmd>Git mergetool -y", desc = "Git mergetool" },

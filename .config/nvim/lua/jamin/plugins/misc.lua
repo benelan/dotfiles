@@ -43,7 +43,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "rest-nvim/rest.nvim",
-    enabled = false,
+    -- enabled = false,
     ft = { "http", "rest" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()

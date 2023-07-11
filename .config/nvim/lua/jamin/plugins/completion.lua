@@ -24,7 +24,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "f3fora/cmp-spell", -- vim's spellsuggest
-    enabled = false,
+    -- enabled = false,
     ft = require("jamin.resources").filetypes.writing,
   },
   -----------------------------------------------------------------------------
@@ -192,8 +192,17 @@ return {
           { name = "buffer", keyword_length = 3 },
           { name = "treesitter", keyword_length = 3 },
         }, {
+          { name = "rg", keyword_length = 4 },
           {
             name = "spell",
+            entry_filter = function(_, ctx)
+              for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
+                if ft == ctx.filetype then
+                  return true
+                end
+              end
+              return false
+            end,
             option = {
               enable_in_context = function()
                 return vim.o.spell == true

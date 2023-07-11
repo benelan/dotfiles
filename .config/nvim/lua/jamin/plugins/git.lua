@@ -9,7 +9,7 @@ return {
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     -- stylua: ignore
     keys = {
-      -- { "<leader>gd", "<cmd>DiffviewOpen<cr>", { "n", "x" }, desc = "Open Diffview" },
+      { "<leader>gD", "<cmd>DiffviewOpen<cr>", { "n", "x" }, desc = "Open Diffview" },
       { "<leader>gH", "<cmd>DiffviewFileHistory --max-count=1000<cr>", { "n", "x" }, desc = "All files history" },
       { "<leader>gh", "<cmd>DiffviewFileHistory % --follow --max-count=1000<cr>", desc = "Buffer file history", mode = "n" },
       { "<leader>gh", ":'<,'>DiffviewFileHistory --follow --max-count=1000<cr>", desc = "Selection history", mode = "x" },
