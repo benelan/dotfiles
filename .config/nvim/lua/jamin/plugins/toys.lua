@@ -218,9 +218,9 @@ return {
           z = { name = "zk" },
           g = {
             name = "git",
-            m = { name = "mergetool" },
             t = { name = "toggle options" },
             f = { name = "find" },
+            h = { name = "hunk" },
             -- w = { name = "worktree" },
           },
           o = {
@@ -248,7 +248,7 @@ return {
           d = "Delete to clipboard",
           r = "Replace operator",
           z = { name = "zk" },
-          g = { name = "git" },
+          g = { name = "git", h = { name = "hunk" } },
           c = {
             name = "cheat",
             q = { name = "questions" },

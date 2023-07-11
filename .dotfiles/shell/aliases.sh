@@ -18,9 +18,10 @@ alias rr='rm -rf'
 alias cbf="xclip -se c <"
 
 alias -- -="vifm ."
-alias t="tmux"
 alias e='${EDITOR:-vim}'
 alias se='sudo e'
+# minimum usable vim options
+alias v="vim -u DEFAULTS +'set nocp rnu nu hid ar | nnoremap Y y$'"
 
 # Directory listing/traversal
 COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)
@@ -118,13 +119,11 @@ fi
 
 # Displays detailed weather and forecast.
 if is-supported curl; then
-    alias wttr="curl wttr.in"
-    alias weather='curl --silent --compressed --max-time 10 --url "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
-    alias forecast='curl --silent --compressed --max-time 10 --url "https://wttr.in?F"'
+    wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
 elif is-supported wget; then
-    alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
-    alias forecast='wget -qO- --compression=auto --timeout=10 "https://wttr.in?F"'
+    wttr() { wget -qO- --compression=auto --timeout=10 "https://wttr.in/$*"; }
 fi
+alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 # --------------------------------------------------------------------- }}}
 # Networking                                                            {{{

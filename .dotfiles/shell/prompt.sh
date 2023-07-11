@@ -10,7 +10,7 @@ bind "set vi-ins-mode-string \"I \""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # use starship for the prompt if installed                    {{{
-if is-supported starship; then
+if false && is-supported starship; then
     eval "$(starship init bash)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -24,7 +24,7 @@ else
 
     # - - - - - - - - - - - - - - - - - - - - - - - }}}
     # highlight username when logged in as root     {{{
-    if [[ "${USER}" == "root" ]]; then
+    if [ "$EUID" -eq 0 ]; then
         userStyle="${BOLD}${RED}"
     else
         userStyle="${ORANGE}"
@@ -32,7 +32,7 @@ else
 
     # - - - - - - - - - - - - - - - - - - - - - - - }}}
     # highlight the hostname when connected via SSH {{{
-    if [[ "${SSH_TTY}" ]]; then
+    if [ -n "${SSH_TTY}" ]; then
         hostStyle="${BOLD}${RED}"
     else
         hostStyle="${YELLOW}"
@@ -60,13 +60,19 @@ else
     pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w" # working directory full path
     pre_prompt+="\[${RESET}\]"             # reset styling
 
-
     # - - - - - - - - - - - - - - - - - - - - - - - }}}
     # set the post_prompt                           {{{
     post_prompt="\n"
-    post_prompt+="\[${PURPLE}\][\!]" # history line number for easy hist expansion
+    # post_prompt+="\[${PURPLE}\][\!]" # history line number for easy hist expansion
     # shellcheck disable=2181,2016
-    post_prompt+='$(if [ $? -ne 0 ]; then printf "\[%s\] ✘  " "$red"; else printf "\[%s\] ❱ " "$green"; fi)'
+    post_prompt+='$(
+      _exit_code="$?"
+      if [ $_exit_code -ne 0 ]; then
+        printf "\[%s\]%s✘  " "$RED" "$_exit_code"
+      else
+        printf "\[%s\]❱  " "$GREEN"
+      fi
+    )'
     post_prompt+="\[${RESET}\]" # reset styling
 
     # - - - - - - - - - - - - - - - - - - - - - - - }}}

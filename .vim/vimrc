@@ -111,6 +111,18 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
 endif
 
 nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
+
+nnoremap <leader>gg <cmd>packadd vim-fugitive<cr><cmd>G<cr>
+nnoremap <leader>gc <cmd>packadd vim-fugitive<cr><cmd>G commit<cr>
+nnoremap <leader>gb <cmd>packadd vim-fugitive<cr><cmd>G blame<cr>
+nnoremap <leader>gD <cmd>packadd vim-fugitive<cr><cmd>G difftool -y<cr>
+nnoremap <leader>gM <cmd>packadd vim-fugitive<cr><cmd>G mergetool -y<cr>
+nnoremap <leader>gd <cmd>packadd vim-fugitive<cr><cmd>Gdiffsplit<cr>
+nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite %<cr>
+nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread %<cr>
+nnoremap <leader>gl <cmd>packadd vim-fugitive<cr><cmd>0Gclog --follow<cr>
+xnoremap <leader>gl :Gclog --follow<cr>
+
 nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
 
 nnoremap Y y$
@@ -277,15 +289,9 @@ nnoremap <silent> <leader>sc :execute "set clipboard="
 " --------------------------------------------------------------------- {|}
 
 if has("autocmd")
-    "" miscellaneous                                          {{{
-    augroup vimrc
+    augroup jamin_vimrc
         autocmd!
-        " Automatically reload .vimrc
-        autocmd BufWritePost $MYVIMRC Src
-        if exists("##SourceCmd")
-            autocmd  SourceCmd $MYVIMRC Src
-        endif
-
+        "" setup syntax complete for filetypes that don't have their own
         if exists("+omnifunc")
             autocmd Filetype *
               \	if &omnifunc == "" |
@@ -294,25 +300,26 @@ if has("autocmd")
         endif
 
         autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()
-    augroup END
 
-    command! Src :source $MYVIMRC
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" automatically strip whitespaces when files are saved   {{{
-    augroup strip_whitespaces
+        "" automatically strip whitespaces when files are saved
         let excludedFileTypes = []
-        autocmd!
         autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 | :call StripTrailingWhitespace() | endif
     augroup END
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
 " --------------------------------------------------------------------- }}}
 " Functions and user commands                                           {{{
 " --------------------------------------------------------------------- {|}
 
+command! Src :source $MYVIMRC
+
+"" get the git branch for the current buffer                  {{{
+function! GitBranch()
+  let branch = systemlist("git -C " . shellescape(expand("%:p:h"),) . " branch --show-current")[0]
+  return v:shell_error ? "" : branch
+endfunction
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle the display of a terminal buffer                    {{{
 let s:term_buf_nr = -1
 function! s:TerminalToggle() abort
@@ -426,7 +433,6 @@ let g:gruvbox_material_disable_italic_comment = 1
 " let g:gruvbox_material_enable_bold = 1
 " let g:gruvbox_material_disable_terminal_colors = 1
 " let g:gruvbox_material_dim_inactive_windows = 1
-
 
 packadd! gruvbox-material
 colorscheme gruvbox-material
