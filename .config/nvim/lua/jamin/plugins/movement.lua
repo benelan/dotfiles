@@ -36,24 +36,26 @@ return {
       }
     end,
     keys = function()
-      local gtp = require "goto-preview"
-      return {
-        { "gpI", gtp.goto_preview_implementation, desc = "Preview implementation" },
-        { "gpd", gtp.goto_preview_definition, desc = "Preview definition" },
-        { "gpt", gtp.goto_preview_type_definition, desc = "Preview type definition" },
-        { "gpr", gtp.goto_preview_references, desc = "Preview references" },
-        {
-          "gpq",
-          function()
-            gtp.close_all_win()
-            local has_ts_context, ts_context = pcall(require, "treesitter-context")
-            if has_ts_context then
-              ts_context.enable()
-            end
-          end,
-          desc = "Close previews",
-        },
-      }
+      local has_gtp, gtp = pcall(require, "goto-preview")
+      return has_gtp
+          and {
+            { "gpI", gtp.goto_preview_implementation, desc = "Preview implementation" },
+            { "gpd", gtp.goto_preview_definition, desc = "Preview definition" },
+            { "gpt", gtp.goto_preview_type_definition, desc = "Preview type definition" },
+            { "gpr", gtp.goto_preview_references, desc = "Preview references" },
+            {
+              "gpq",
+              function()
+                gtp.close_all_win()
+                local has_ts_context, ts_context = pcall(require, "treesitter-context")
+                if has_ts_context then
+                  ts_context.enable()
+                end
+              end,
+              desc = "Close previews",
+            },
+          }
+        or {}
     end,
   },
   -----------------------------------------------------------------------------

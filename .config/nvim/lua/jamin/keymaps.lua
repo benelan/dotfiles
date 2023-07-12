@@ -173,8 +173,8 @@ keymap(
 -------------------------------------------------------------------------------
 
 -- two way diff for staging/resetting hunks
-keymap({"n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<cr>", "Get hunk")
-keymap({"n", "v" }, "<leader>gw", ":diffput<cr>", "Put hunk")
+keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<cr>", "Get hunk")
+keymap({ "n", "v" }, "<leader>gw", ":diffput<cr>", "Put hunk")
 
 -- three way diff for merge conflict resolution
 keymap("n", "<leader>ghu", "<cmd>diffupdate<cr>", "Update diff")
@@ -237,6 +237,8 @@ keymap("n", "<M-Down>", "<C-w>J", "Move window down")
 keymap("n", "<M-Up>", "<C-w>K", "Move window up")
 keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
+keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
+
 -------------------------------------------------------------------------------
 ----> Tabs
 -------------------------------------------------------------------------------
@@ -252,10 +254,8 @@ keymap("n", "<leader>tc", "<cmd>tabclose<cr>", "Close tab")
 -- list, pick, and jump to a buffer
 keymap("n", "<leader>bj", ":<C-U>buffers<cr>:buffer<Space>", "Jump to buffer")
 
--- close/write
 keymap("n", "<M-x>", "<cmd>bdelete<cr>", "Close buffer")
 keymap({ "n", "i" }, "<M-q>", "<cmd>q<cr>", "Quit")
-keymap({ "n", "i" }, "<M-w>", "<cmd>w<cr>", "Write")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
