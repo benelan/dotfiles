@@ -8,9 +8,9 @@ To install the dotfiles in your `$HOME` directory, run:
 bash <(curl -s https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh)
 ```
 
-The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. For more info, I found the idea on a [Hacker News thread](https://news.ycombinator.com/item?id=11071754). A common alternative is managing dotfiles with symlinks, but in my experience that gets messy when making frequent improvements.
+The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. For more info, I found the idea on a [Hacker News thread](https://news.ycombinator.com/item?id=11071754). A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
 
-An alias `dot`, which works like `git`, allows you to manage dotfiles from any directory on a machine. It is set up to hide untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
+An [alias](.dotfiles/shell/aliases.sh) `dot`, which works like `git`, allows you to manage dotfiles from any directory on a machine. It hides untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
 
 ```sh
 dot add .config/xyz/config.yml
@@ -18,17 +18,19 @@ dot commit -m "chore(xyz): add config"
 dot push
 ```
 
-A set of aliases for `git` and `dot` are provided in [`.dotfiles/shell/aliases.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/shell/aliases.sh).
+All git aliases defined at the bottom of [`.config/git/config`](.config/git/config) will also work for `dot`. [Git completion](.dotfiles/shell/completions/2_git.completion.sh) works for `dot` as well.
 
-My setup was primarily created for use in Ubuntu/Debian based distros, but it worked in Fedora and should work in other Linux distros and OSX as well. Vanilla Windows won't work, but WSL running Ubuntu does.
+My setup was primarily created for use in Ubuntu/Debian and derivative distros, but it worked in Fedora and should work in other Unix operating systems as well. I try to separate the Ubuntu-only code and make sure executables exist before using them. Vanilla Windows won't work, but WSL running Ubuntu does.
 
-There is also a [`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) script, which installs a lot of the development tools I commonly use, as well as some other stuff like fonts.
+A [`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) (and a few other) scripts install the development tools I commonly use, as well as some other stuff like fonts.
+
+> NOTE: I slimmed down recently, but checkout the `extras` branch for more goodies.
 
 ---
 
 ## MIT License
 
-Copyright (c) Ben Elan
+Copyright 2022-present (c) Ben Elan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,8 +54,8 @@ SOFTWARE.
 
 I learned and stole a lot from the following sources. There are credits/links in specific files as well.
 
-- Copyright (c) 2020-2021 Bash-it `MIT` [[code](https://github.com/Bash-it/bash-it)]
+-   Copyright (c) 2020-2021 Bash-it `MIT` [[code](https://github.com/Bash-it/bash-it)]
 
-- Copyright (c) 2014 "Cowboy" Ben Alman `MIT` [[code](https://github.com/cowboy/dotfiles)]
+-   Copyright (c) 2014 "Cowboy" Ben Alman `MIT` [[code](https://github.com/cowboy/dotfiles)]
 
-- Tom Ryder `UNLICENSE` [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]
+-   Tom Ryder `UNLICENSE` [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]

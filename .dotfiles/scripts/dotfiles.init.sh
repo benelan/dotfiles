@@ -32,6 +32,13 @@ dot() {
 
 git clone --bare "$GIT_URL" "$HOME/.git"
 
+
+dot() {
+    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
+}
+
+dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
 if dot checkout >/dev/null 2>&1; then
     printf "\n✔  Checked out dotfiles\n"
 else
