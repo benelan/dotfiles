@@ -27,6 +27,11 @@ install_fonts_minimal() {
     fc-cache -rf
 }
 
+download_wallpaper() {
+    mkdir -p ~/Pictures
+    curl -sSLo ~/Pictures/gruvbox_coffee.png https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+}
+
 # Install the Rust language
 # https://www.rust-lang.org/tools/install
 install_rust() {
@@ -146,7 +151,7 @@ install_git_jump() {
     chmod +x "$BIN_DIR/git-jump"
 }
 
-
+# download_wallpaper
 install_fonts_minimal
 install_git_jump
 # install_git_extras
