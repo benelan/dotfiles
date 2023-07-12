@@ -352,28 +352,6 @@ chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
-## search https://www.commandlinefu.com                       {{{
-cmdfu() {
-    query=$(echo "$*" | tr " " "-")
-    curl -sL "https://www.commandlinefu.com/commands/matching/$query/$(
-        echo "$query" | base64
-    )/plaintext" | tail -n +2
-}
-
-# display one random command from commandlinefu.com
-cmdfu_random() {
-    curl -sL https://www.commandlinefu.com/commands/random/json |
-        jq -r '.[0] | "\n" + "# " + .summary + "\n" + .command'
-
-    # non-jq version with color
-    # echo -e "$(
-    #     curl -sL https://www.commandlinefu.com/commands/random/json |
-    #         sed -re 's/.*,"command":"(.*)","summary":"([^"]+).*/\\x1b[1;32m\2\\n\\n\\x1b[1;33m\1\\x1b[0m/g'
-    # )\n"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
-
 # --------------------------------------------------------------------- }}}
 # FZF                                                                   {{{
 # --------------------------------------------------------------------- {|}
