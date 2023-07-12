@@ -88,7 +88,7 @@ return {
   },
   -----------------------------------------------------------------------------
   -- adds closing brackets only when pressing enter
-  { dir = "~/.vim/pack/foo/start/vim-closer", event = "InsertEnter" },
+  { dir = "~/.vim/pack/foo/start/vim-closer"},
   -----------------------------------------------------------------------------
   {
     dir = "~/.vim/pack/foo/opt/undotree",
