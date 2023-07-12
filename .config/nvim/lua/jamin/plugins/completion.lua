@@ -248,7 +248,7 @@ return {
             cmp.config.compare.order,
           },
         },
-        experimental = { ghost_text = { hl_group = "Comment" } },
+        experimental = { ghost_text = true },
       }
 
       cmp.setup.cmdline({ "/", "?" }, {
