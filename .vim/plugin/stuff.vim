@@ -146,6 +146,8 @@ nnoremap <leader>SS <cmd>execute "!surfraw -g "
 nnoremap g: <Plug>(ColonOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
+nnoremap cr <Plug>(ReplaceOperator)
+vnoremap cr <Plug>(ReplaceOperator)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -389,19 +391,18 @@ if has("autocmd")
         autocmd!
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave *.css,*.scss,*.sass      normal! mC
-        autocmd BufLeave *.csv,*.json             normal! mD
-        autocmd BufLeave *.go                     normal! mG
+        autocmd BufLeave *.csv,*.json,*.toml      normal! mD
+        autocmd BufLeave *.go,*.rs,*.zig          normal! mM
         autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
         autocmd BufLeave *.js,*.jsx               normal! mJ
         autocmd BufLeave *.lua                    normal! mL
         autocmd BufLeave *.py                     normal! mP
-        autocmd BufLeave *.rs                     normal! mR
         autocmd BufLeave *.sh,*.bash              normal! mS
         autocmd BufLeave *.ts,*.tsx               normal! mT
         autocmd BufLeave *.vim,*vimrc             normal! mV
         autocmd BufLeave *.yml,*.yaml             normal! mY
         " Clear actively used marks to prevent jumping to other projects
-        autocmd VimLeave *                        delmarks AQWZX
+        autocmd VimLeave *                        delmarks REWQAZX
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

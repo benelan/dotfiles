@@ -54,7 +54,7 @@ local function gitsigns_info()
   local gs = vim.b.gitsigns_status_dict
   if gs and gs.head ~= "" then
     return string.format(
-      "%%#NormalFloat#  %s%s %s ",
+      "%%#TabLineFill#  %s%s  %%#NormalFloat# %s",
       icons.git.branch,
       gs.head,
       format_numeric_data {
@@ -99,12 +99,11 @@ function MyStatusLine()
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
     -------------------------------------------
-    .. "%<%#TabLineFill#"
+    .. "  %<%#NormalFloat#"
     .. " %= "
     -------------------------------------------
-    .. "  %#NormalFloat# " -- "%#Normal#"
     .. buffer_diagnostics()
-    .. "%#NormalFloat# " -- "%#Normal#"
+    .. " %#TabLineFill#  " -- "%#Normal#"
     .. "%f  "
     -------------------------------------------
     .. "%#TabLineSel#"
