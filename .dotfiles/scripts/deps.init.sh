@@ -143,7 +143,7 @@ install_git_jump() {
         curl -sSLo ~/.dotfiles/bin/git-jump \
             https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
     fi
-
+    chmod +x "$BIN_DIR/git-jump"
 }
 
 

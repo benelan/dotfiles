@@ -10,17 +10,13 @@ set -e
 # ~/.dotfiles/shell/aliases.sh
 
 [ -d ~/.git ] &&
-    echo "✖ The home directory is already under version control.
-  ➜ Use 'dot pull' to update the dotfiles.
-  ➜ Remove $HOME/.git and run the script again to continue." &&
+    printf "✖  The home directory is already under version control. Either:
+  ➜  Use 'dot pull' to update the dotfiles.
+  ➜  Remove %s/.git and run the script again to continue." "$HOME" &&
     exit 1
 
 # any current, conflicting dotfiles will be moved here
 BACKUP_DIR="$HOME/.dotfiles-backup"
-
-dot() {
-    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
-}
 
 # Don't use SSH to clone if there is no SSH key on the machine
 # This is for when I spin up a new VM and don't want to login to GitHub
@@ -30,12 +26,16 @@ else
     GIT_URL=git@github.com:benelan/dotfiles
 fi
 
+dot() {
+    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
+}
+
 git clone --bare "$GIT_URL" "$HOME/.git"
 
 if dot checkout >/dev/null 2>&1; then
-    printf "\n✔ Checked out dotfiles\n"
+    printf "\n✔  Checked out dotfiles\n"
 else
-    printf "\n➜ Backing up conflicting dotfiles to %s\n" "$BACKUP_DIR"
+    printf "\n➜  Backing up conflicting dotfiles to %s\n" "$BACKUP_DIR"
     # Get the list of files that need to be backed up
     files=$(dot checkout 2>&1 | grep -e "^\s")
     printf "%s\n" "$files"
@@ -60,10 +60,10 @@ else
     # To undo this script, move the files from $BACKUP_DIR to $HOME
     # $ mv ~/.dotfiles-backup/* ~/
     if ! dot checkout; then
-        printf "\n✖ Unable to initialize the dotfiles\n"
+        printf "\n✖  Unable to initialize the dotfiles\n"
         exit 1
     else
-        printf "\n✔ Checked out dotfiles\n"
+        printf "\n✔  Checked out dotfiles\n"
     fi
 fi
 
@@ -72,17 +72,20 @@ fi
 # $ dot add ~/.npmrc
 dot config status.showUntrackedFiles no
 
+# Make sure fetching works correctly for all branches
+dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
 unset files
 unset GIT_URL
 unset BACKUP_DIR
 
 # Make the bins and scripts executable
-printf "\n➜ Making scripts and bins executable\n"
+printf "\n➜  Making scripts and bins executable\n"
 [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
 [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
-# Install libs
-printf "\n➜ Installing git submodules\n\n"
+# Must install libs before they can be pwn'd
+printf "\n➜  Installing git submodules\n\n"
 
 cd && dot submodule update --init --recursive
 
@@ -91,4 +94,5 @@ cd && dot submodule update --init --recursive
     ~/dev/lib/fzf/install \
         --bin --key-bindings --completion --no-update-rc
 
-printf "\n✔ Initialization complete\n"
+printf "\n✔  Initialization complete\n"
+cd -

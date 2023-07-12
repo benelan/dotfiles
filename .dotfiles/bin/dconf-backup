@@ -9,18 +9,14 @@ declare -a backup_settings=(
 )
 
 usage() {
-    printf "%s\n%s\n" "$1" "$(
-        cat <<EOF
-
+    printf "%s
 A script to backup or restore dconf settings.
 Usage: dconf-settings <command>
 
 Commands:
     d,  dump     Backup the dconf settings specified at the top of the script
     l,  load     Restore the dconf settings that were previously backed up
-
-EOF
-    )"
+" "$1"
     exit 1
 }
 
@@ -46,21 +42,12 @@ load() {
 }
 
 main() {
-    if [ -n "$1" ]; then
-        case $1 in
-            d | dump)
-                dump
-                ;;
-            l | load)
-                load
-                ;;
-            *)
-                usage "Unknown command passed: $1"
-                ;;
-        esac
-    else
-        usage
-    fi
+    case $1 in
+        d | dump) dump ;;
+        l | load) load ;;
+        h | help | -h | --help | '') usage ;;
+        *) usage "Unknown command passed: $1" ;;
+    esac
 }
 
 main "$@"

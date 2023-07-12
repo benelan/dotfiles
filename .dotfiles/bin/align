@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
-CHAR=${1:?'Missing character to align on.'}
+# Aligns lines of text on CHAR (useful in vim)
+# For example, align selected text on commas:
+# :'<,'>!align ,
+CHAR=${1:-=}
 shift
 exec column -t -s "$CHAR" -o "$CHAR" "$@"
