@@ -12,13 +12,14 @@ return {
   -- stuff shared with the vim config
   { dir = "~/.vim", lazy = false },
   -----------------------------------------------------------------------------
-  -- adds closing brackets only when pressing enter
-  { dir = "~/.vim/pack/foo/start/vim-closer", event = "CursorHold" },
-  -----------------------------------------------------------------------------
   -- tpope plugins
   { dir = "~/.vim/pack/foo/start/vim-repeat", event = "CursorHold" },
-  { dir = "~/.vim/pack/foo/start/vim-commentary", event = "CursorHold" },
   { dir = "~/.vim/pack/foo/start/vim-surround", keys = { "cs", "ds", "ys" } },
+  {
+    dir = "~/.vim/pack/foo/start/vim-commentary",
+    keys = { mode = { "n", "v", "o" }, "gc" },
+    cmd = "Commentary",
+  },
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
     ft = "",
@@ -32,15 +33,27 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- Git integration
     keys = {
       { "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
-      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
-      { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
-      { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
-      { "<leader>gm", "<cmd>Git mergetool -y", desc = "Git mergetool" },
-      { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
-      { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
       { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
       { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+      { "<leader>gm", "<cmd>Git mergetool -y", desc = "Git mergetool" },
+      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
+      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
+      { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
+      { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
+      {
+        "<M-w>",
+        "<cmd>Gwrite<cr><cmd>if &diff && tabpagenr('$') > 1 | tabclose | endif<cr>",
+        desc = "Write changes and close difftool tab",
+        mode = { "n" },
+      },
+      {
+        "<M-r>",
+        "<cmd>Gread <bar> write <bar> if &diff && tabpagenr('$') > 1 <bar> tabclose <bar> endif<cr>",
+        desc = "Read changes and close difftool tab",
+        mode = { "n" },
+      },
+      { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
+      { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
     },
     -- stylua: ignore
     cmd = {
@@ -64,7 +77,7 @@ return {
   },
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
-    dependencies = "tpope/vim-fugitive",
+    dependencies = "vim-fugitive",
     -- stylua: ignore
     keys = {
       { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in Browser", mode = "n" },
@@ -73,6 +86,9 @@ return {
       { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL", mode = "v" },
     },
   },
+  -----------------------------------------------------------------------------
+  -- adds closing brackets only when pressing enter
+  { dir = "~/.vim/pack/foo/start/vim-closer", event = "InsertEnter" },
   -----------------------------------------------------------------------------
   {
     dir = "~/.vim/pack/foo/opt/undotree",
@@ -86,6 +102,7 @@ return {
     cmd = { "Vifm", "TabVifm", "SplitVifm" },
     keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()
+      -- there is a weird startup error unless I define the keymap in init too
       keymap("n", "-", "<cmd>Vifm<cr>")
       -- vim.g.vifm_replace_netrw = true
       vim.g.vifm_term = "x-terminal-emulator"
