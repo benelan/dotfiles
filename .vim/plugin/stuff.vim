@@ -183,18 +183,6 @@ com! Qf2Ll call getqflist()
     \ ->setloclist(0)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" load git changes into quickfix/location list entries       {{{
-command! QfFromDiff cgetexpr
-    \ system('git quickfix -m modified')
-
-" Load all Git changes to the current file as location list entries.
-command! LlFromDiff lgetexpr
-    \ system('git quickfix -m modified -- '. expand('%:p'))
-
-" Load Git changes for the specified commits.
-command! -nargs=* QfGit cgetexpr system('git quickfix '. expand('<args>'))
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" grep all files in the quickfix, buffer, or argument lists  {{{
 " Maybe return a string if the first arg is not empty.
 function! M(x, y)
