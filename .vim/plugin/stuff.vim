@@ -1,6 +1,5 @@
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Settings                                                           ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"  Settings                                                            {{{
+"----------------------------------------------------------------------{|}
 
 let g:qf_disable_statusline = 1
 
@@ -34,9 +33,9 @@ let g:netrw_dirhistmax=0
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Keymaps                                                            ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Keymaps                                                             {{{
+"----------------------------------------------------------------------{|}
 
 "" general keymaps                                            {{{
 nnoremap q: :
@@ -150,9 +149,9 @@ vnoremap <leader>r <Plug>(ReplaceOperator)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Functions and user commands                                        ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Functions and user commands                                         {{{
+"----------------------------------------------------------------------{|}
 
 "" toggle quickfix list open/close                            {{{
 command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
@@ -160,7 +159,7 @@ nnoremap <C-q> <cmd>QfToggle<cr>
 nnoremap Q <cmd>QfToggle<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" quickfix list to/from file for later access                 {{{
+"" quickfix list to/from file for later access                {{{
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
 command! Qfsave call getqflist()
@@ -326,15 +325,21 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
     endif
 
-    " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
-    " The name is ignored if g:fzf_history_dir is not defined.
-    command! -bang -complete=dir -nargs=? LS
-        \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
+    "" get git branch and root directory
+    function! g:GitRootDirectory()
+    let root = systemlist("git -C " . shellescape(expand("%:p:h"),) . " rev-parse --show-toplevel")[0]
+    return v:shell_error ? "" : root
+    endfunction
 
     command! -bang GFiles
         \ call fzf#run(fzf#wrap("gfiles",
         \ {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()},
         \<bang>0))
+
+    " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
+    " The name is ignored if g:fzf_history_dir is not defined.
+    command! -bang -complete=dir -nargs=? LS
+        \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
 
     command! -bar -bang -nargs=? -complete=buffer Buffers
         \ call fzf#run(fzf#wrap("buffers",
@@ -358,9 +363,9 @@ endif
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Autocommands                                                       ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Autocommands                                                        {{{
+"----------------------------------------------------------------------{|}
 
 if has("autocmd")
     "" miscellaneous autocmds                                 {{{
@@ -503,9 +508,9 @@ if has("autocmd")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Fold text                                                          ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Fold text                                                           {{{
+"----------------------------------------------------------------------{|}
 
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
 set foldtext=MyFoldText()
@@ -533,9 +538,9 @@ function! MyFoldText()
     return line . separator . expansion . foldSize
 endfunction
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ TabLine                                                            ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  TabLine                                                             {{{
+"----------------------------------------------------------------------{|}
 
 set tabline=%!MyTabLine()
 
@@ -605,17 +610,17 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Abbreviations                                                      ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Abbreviations                                                       {{{
+"----------------------------------------------------------------------{|}
 
 inoreabbrev teh the
 inoreabbrev CDS Calcite Design System
 inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┃ Terminal options                                                   ┃{{{
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╚═╝
+"----------------------------------------------------------------------}}}
+"  Terminal options                                                    {{{
+"----------------------------------------------------------------------{|}
 
 " :help terminal-output-codes
 
@@ -667,6 +672,4 @@ let &t_EI = "\<Esc>[2 q"
 " kitty that do not support background color erase.
 let &t_ut=""
 
-"┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓}}}
-"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
+"----------------------------------------------------------------------}}}

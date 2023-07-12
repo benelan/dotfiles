@@ -18,3 +18,5 @@ root = true
     indent_size = 2
     spaces_around_brackets = true
 
+[*.lua]
+    indent_size = 2

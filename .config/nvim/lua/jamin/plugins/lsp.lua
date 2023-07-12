@@ -44,7 +44,10 @@ return {
       {
         "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
         build = ":MasonUpdate",
-        opts = { ensure_installed = require("jamin.resources").lsp_servers, automatic_installation = true },
+        opts = {
+          ensure_installed = require("jamin.resources").lsp_servers,
+          automatic_installation = true,
+        },
       },
       -----------------------------------------------------------------------------
       {
@@ -139,6 +142,9 @@ return {
         }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client == nil then
+            return
+          end
 
           -- disable formatting and use eslint and stylua instead via null-ls below
           if client.name == "tsserver" or client.name == "lua_ls" then
@@ -219,12 +225,11 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if not client.server_capabilities.documentFormattingProvider then
+          if client == nil or not client.server_capabilities.documentFormattingProvider then
             return
           end
 
           -- Autocmd needs to run *before* the buffer saves
-          -- and uses the attached LSP server to format
           vim.api.nvim_create_autocmd("BufWritePre", {
             group = get_augroup(client),
             buffer = args.buf,

@@ -1,18 +1,20 @@
-" Custom text objects
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"  Custom text objects                                                 {|}
+"----------------------------------------------------------------------{|}
 " Shamelessly stolen from:
 " https://vimways.org/2018/transactions-pending/
 
 if exists('g:loaded_jamin_text_objects') || &cp | finish | endif
 let g:loaded_jamin_text_objects = 1
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Number
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" regular expressions that match numbers (order matters .. keep '\d' last!)
+"  Numbers                                                             {{{
+"----------------------------------------------------------------------{|}
+
+" regular expressions that match numbers
+" order matters .. keep '\d' last!
 " note: \+ will be appended to the end of each
 let s:regNums = [ '0b[01]', '0x\x', '\d' ]
 
+"" in numbers                                                 {{{
 function! s:inNumberTextObject()
 	" select the next number on the line
 	" this can handle the following three formats (so long as s:regNums is
@@ -49,6 +51,8 @@ function! s:inNumberTextObject()
 	let &magic = l:magic
 endfunction
 
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" around numbers                                             {{{
 function! s:aroundNumberTextObject()
 	" select the next number on the line and any surrounding white-space;
 	" this can handle the following three formats (so long as s:regNums is
@@ -92,9 +96,13 @@ function! s:aroundNumberTextObject()
 	let &magic = l:magic
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Indentation
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
+"----------------------------------------------------------------------}}}
+"  Indentation                                                         {{{
+"----------------------------------------------------------------------{|}
+
+"" in indentation                                             {{{
 function! s:inIndentationTextObject()
 	" select all text in current indentation level excluding any empty lines
 	" that precede or follow the current indentationt level;
@@ -148,6 +156,8 @@ function! s:inIndentationTextObject()
 endfunction
 
 
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" around indentation                                         {{{
 function! s:aroundIndentationTextObject()
 	" select all text in the current indentation level including any empty
 	" lines that precede or follow the current indentation level;
@@ -215,10 +225,12 @@ function! s:aroundIndentationTextObject()
 	let &magic = l:magic
 endfunction
 
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Keymaps
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"----------------------------------------------------------------------}}}
+"  Keymaps                                                             {{{
+"----------------------------------------------------------------------{|}
+
 " in number (next number after cursor on current line)
 xnoremap <silent> in :<c-u>call <sid>inNumberTextObject()<cr>
 onoremap <silent> in :<c-u>call <sid>inNumberTextObject()<cr>
@@ -232,3 +244,6 @@ onoremap <silent> i<Tab> :<c-u>call <sid>inIndentationTextObject()<cr>
 " around indentation (indentation level and any surrounding empty lines)
 xnoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
 onoremap <silent> a<Tab> :<c-u>call <sid>aroundIndentationTextObject()<cr>
+
+
+"----------------------------------------------------------------------}}}
