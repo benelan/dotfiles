@@ -49,8 +49,13 @@ update_vim_plugins() {
     cd && update_modules .vim && vim +"helptags ALL" +"quit"
 }
 
+update_neovim_plugins() {
+    nvim --headless "+Lazy! sync" +qa
+}
+
 # update_modules
 update_vim_plugins
+update_neovim_plugins
 build_neovim
 build_fzf
 build_taskopen

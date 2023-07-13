@@ -8,6 +8,10 @@ sudo -v
 
 DEPS_DIR="$HOME/.dotfiles/deps"
 CACHE_DIR="$HOME/.dotfiles/cache"
+FONTS_DIR="$HOME/.local/share/fonts"
+WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
+
+mkdir -p "$DEPS_DIR" "$CACHE_DIR" "$FONTS_DIR" "$WALLPAPER_DIR"
 
 # Install CLI apt packages
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
@@ -160,42 +164,70 @@ install_brave_browser() {
     fi
 }
 
-install_gnome_gruvbox_theme() {
-    if [[ "$(os-detect)" =~ "linux_pop" ]]; then
-        # download gruvbox gnome theme and icons
-        git -C "$CACHE_DIR" clone --depth=1 https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
-        git -C "$CACHE_DIR" clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+# Install The four common font weights
+# https://github.com/ryanoasis/nerd-fonts
+install_font() {
+    # Iosevka
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
 
-        cursors="FlatbedCursors-0.5.2.tar.bz2"
-        curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
-        extract "$cursors"
-        unset cursors
-
-        # move icons and themes to the proper locations
-        mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons/Gruvbox-Plus-Dark ~/.themes/Gruvbox-Dark-BL
-        cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark/
-        cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL/
-        cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
-
-        # remove the repos because they are yuuge
-        rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack" "$CACHE_DIR/Gruvbox-GTK-Theme" ./FlatbedCursors*
-    fi
+    # reload the font cache
+    fc-cache -rf
 }
 
-# CLI install scripts (suitable for servers)
+install_gruvbox_wallpaper() {
+    curl -sSLo "$WALLPAPER_DIR/gruvbox_coffee.png" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+    is-installed feh &&
+        feh --bg-center "$WALLPAPER_DIR/gruvbox_coffee.png" --image-bg "#3c3836"
+}
+
+install_gnome_gruvbox_theme() {
+    case "$XDG_CURRENT_DESKTOP" in
+        *gnome* | *GNOME*)
+            # download gruvbox gnome theme and icons
+            git -C "$CACHE_DIR" clone --depth=1 https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+            git -C "$CACHE_DIR" clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+
+            cursors="FlatbedCursors-0.5.2.tar.bz2"
+            curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
+            extract "$cursors"
+            unset cursors
+
+            # move icons and themes to the proper locations
+            mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons/Gruvbox-Plus-Dark ~/.themes/Gruvbox-Dark-BL
+            cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark/
+            cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL/
+            cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
+
+            # remove the repos because they are yuuge
+            rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack" "$CACHE_DIR/Gruvbox-GTK-Theme" ./FlatbedCursors*
+            ;;
+    esac
+}
+
+### CLI install scripts (suitable for servers)
 install_apt_packages
 install_gh_cli
 install_protonvpn_cli
 # install_taskwarrior_tui
 install_docker_engine
 
-# GUI install scripts
+### GUI install scripts
 # install_apt_gui_packages
-# install_gnome_gruvbox_theme
 # install_discord
 # install_vscode
 # install_brave_browser
 # install_wezterm
 # install_docker_desktop
+
+# install_gnome_gruvbox_theme
+# install_gruvbox_wallpaper
+# install_font
 
 sudo apt -y update && sudo apt -y upgrade && sudo apt autoremove

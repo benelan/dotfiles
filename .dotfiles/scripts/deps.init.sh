@@ -5,32 +5,9 @@ set -e
 # This script installs the tools I use.
 # Comment out functions at the bottom to skip sections.
 
-FONTS_DIR="$HOME/.local/share/fonts"
 BIN_DIR="$HOME/.local/bin"
 DEPS_DIR="$HOME/.dotfiles/deps"
-mkdir -p "$FONTS_DIR" "$BIN_DIR"
-
-# Install The four common font weights
-# https://github.com/ryanoasis/nerd-fonts
-install_fonts_minimal() {
-    # Iosevka
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
-
-    # reload the font cache
-    fc-cache -rf
-}
-
-download_wallpaper() {
-    mkdir -p ~/Pictures
-    curl -sSLo ~/Pictures/gruvbox_coffee.png https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
-}
+mkdir -p "$BIN_DIR"
 
 # Install the Rust language
 # https://www.rust-lang.org/tools/install
@@ -151,8 +128,6 @@ install_git_jump() {
     chmod +x "$BIN_DIR/git-jump"
 }
 
-# download_wallpaper
-install_fonts_minimal
 install_git_jump
 # install_git_extras
 
