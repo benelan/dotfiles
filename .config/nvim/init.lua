@@ -148,6 +148,5 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },
   change_detection = { notify = false },
-  checker = { enabled = true, notify = false },
   ui = { icons = require("jamin.resources").icons.lazy },
 })
