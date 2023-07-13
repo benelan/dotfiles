@@ -183,11 +183,11 @@ return {
           { name = "dictionary", keyword_length = 3, entry_filter = filter_ft_writing },
           {
             name = "spell",
+            entry_filter = filter_ft_writing,
             option = {
               enable_in_context = function()
                 return vim.wo.spell == true
               end,
-              entry_filter = filter_ft_writing,
             },
           },
         }),
@@ -255,7 +255,7 @@ return {
             elseif vim.g.loaded_copilot then
               return "<Plug>(copilot-dismiss)"
             else
-              return "<C-h>"
+              return "<S-Tab>"
             end
           end,
           mode = { "i", "s" },
@@ -273,7 +273,7 @@ return {
             elseif vim.g.loaded_copilot then
               return vim.fn["copilot#Accept('\\<CR>')"]()
             else
-              return "<C-l>"
+              return "<Tab>"
             end
           end,
           mode = { "i", "s" },
@@ -288,8 +288,6 @@ return {
               return vim.fn["codeium#Complete"]()
             elseif vim.g.loaded_copilot then
               return "<Plug>(copilot-suggest)"
-            else
-              return "<C-;>"
             end
           end,
           mode = { "i", "s" },
@@ -346,7 +344,7 @@ return {
     },
   },
   {
-    "Exafunction/codeium.vim", -- AI completion
+    "Exafunction/codeium.vim", -- free GitHub Copilot alternative
     enabled = false,
     event = "InsertEnter",
     init = function()
