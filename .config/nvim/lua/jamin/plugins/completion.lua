@@ -28,11 +28,22 @@ return {
     ft = require("jamin.resources").filetypes.writing,
   },
   -----------------------------------------------------------------------------
+  {
+    ---Using this until the cmp signature help works for me again
+    ---@see https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/38
+    "ray-x/lsp_signature.nvim", -- function signature
+    opts = {
+      hi_parameter = "DiffAdd",
+      hint_scheme = "Comment",
+      hint_prefix = require("jamin.resources").icons.ui.replace,
+      toggle_key = "<M-h>",
+      handler_opts = { border = "solid" },
+    },
+  },
+  -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" }, -- lsp document symbol
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" }, -- lsp
-  -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" }, -- function signature
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" }, -- commandline
   -----------------------------------------------------------------------------

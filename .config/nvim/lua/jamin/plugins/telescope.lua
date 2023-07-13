@@ -3,8 +3,6 @@ return {
   {
     "nvim-telescope/telescope.nvim", -- fuzzy finding tool
     cmd = "Telescope",
-    ---@see https://github.com/nvim-telescope/telescope.nvim/issues/2596
-    commit = "057ee0f8783872635bc9bc9249a4448da9f99123",
     dependencies = {
       "nvim-lua/plenary.nvim",
       {
