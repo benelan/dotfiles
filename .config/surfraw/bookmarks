@@ -1,5 +1,30 @@
-gcli https://clig.dev/ :dev:cli:guide:
-tsplay https://www.typescriptlang.org/play :dev:interactive:frontend:sample: -g
-codepen https://codepen.io/ :interactive:dev:frontend:sample: -g
 gh https://github.com/ :dev:work:code:
-codesandbox https://codesandbox.io/dashboard :dev:frontend:interactive:sample: -g
+regex101 https://regex101.com/ :dev:playground:language: -g
+tsplay https://www.typescriptlang.org/play :dev:interactive:playground:frontend:sample:language:typescript: -g
+codepen https://codepen.io/ :dev:interactive:playground:frontend:sample: -g
+codesandbox https://codesandbox.io/dashboard :dev:frontend:interactive:playground:sample: -g
+bundlephobia https://bundlephobia.com/ :frontend:build: -g
+twcheatsheet https://flowbite.com/tools/tailwind-cheat-sheet/ :frontend:cheatsheet:dev:
+webcomponents https://open-wc.org/ :frontend:guide:
+designpatterns https://www.patterns.dev/posts :dev:guide:
+refactorguru https://refactoring.guru/ :dev:guide:
+martinfowler https://martinfowler.com/tags/ :dev:guide:blog:
+learnxy https://learnxinyminutes.com/ :dev:guide:language:tooling:
+rustinteractive https://rust-book.cs.brown.edu/ :dev:guide:interactive:language:rust: -g
+rustbook https://doc.rust-lang.org/stable/book/ :dev:guide:language:rust:
+rustgentle https://stevedonovan.github.io/rust-gentle-intro/ :dev:guide:language:rust:
+rustexample https://doc.rust-lang.org/rust-by-example/ :dev:guide:language:rust:sample:
+gcli https://clig.dev/ :dev:cli:guide:
+makefile https://www.gnu.org/software/make/manual/make.html :dev:guide:ci:build:tooling:
+perfectmediaserver https://perfectmediaserver.com/ :tech:homeserver:guide:backend:networking:blog:
+naspie https://www.howtogeek.com/139433/how-to-turn-a-raspberry-pi-into-a-low-power-network-storage-device/ :tech:guide:backend:homeserver:networking:
+smarthomejourney https://thesmarthomejourney.com/ :tech:smarthome:homeserver:guide:backend:networking:blog:
+homenetworkguy https://homenetworkguy.com/ :tech:homeserver:guide:backend:networking:blog:
+hng-opnsense https://homenetworkguy.com/how-to/set-up-a-fully-functioning-home-network-using-opnsense/ :homeserver:networking:guide:
+ittools https://it-tools.tech/ :interactive:networking: -g
+vireadline https://catonmat.net/ftp/bash-vi-editing-mode-cheat-sheet.pdf :cli:cheatsheet:
+cloudfree https://cloudfree.shop/ :shop:tech:smarthome: -g
+digiblur https://digiblur.com/ :shop:tech:smarthome:guide:
+eff https://www.eff.org/press :news:tech:privacy:
+propublica https://www.propublica.org/ :news:
+
