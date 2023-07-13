@@ -328,7 +328,8 @@ return {
   -----------------------------------------------------------------------------
   {
     "github/copilot.vim", -- AI code completion
-    enabled = false,
+    -- enabled = false,
+    cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
     init = function()
@@ -346,6 +347,7 @@ return {
   {
     "Exafunction/codeium.vim", -- free GitHub Copilot alternative
     enabled = false,
+    cond = vim.env.USE_CODEIUM == "1",
     event = "InsertEnter",
     init = function()
       -- vim.g.codeium_manual = true

@@ -537,7 +537,7 @@ fi
 # --------------------------------------------------------------------- {|}
 
 ## toggles a label used for running visual snapshots on PRs   {{{
-if is-supported gh; then
+if [ "$USE_WORK_STUFF" = "1" ] && is-supported gh; then
     cc_visual_snapshots() {
         if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
             current_branch="$(git symbolic-ref --short HEAD)"
