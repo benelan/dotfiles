@@ -24,7 +24,7 @@ My setup was primarily created for use in Ubuntu/Debian and derivative distros, 
 
 A [`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) (and a few other) scripts install the development tools I commonly use, as well as some other stuff like fonts.
 
-> NOTE: I slimmed down recently, but checkout the `extras` branch for more goodies.
+> NOTE: I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
 
 ---
 
