@@ -17,7 +17,7 @@ return {
   { dir = "~/.vim/pack/foo/start/vim-surround", keys = { "cs", "ds", "ys" } },
   {
     dir = "~/.vim/pack/foo/start/vim-commentary",
-    keys = { mode = { "n", "v", "o" }, "gc" },
+    keys = { { mode = { "n", "v", "o" }, "gc" } },
     cmd = "Commentary",
   },
   {
