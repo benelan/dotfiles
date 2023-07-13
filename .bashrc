@@ -48,6 +48,7 @@ unset stuffs
 
 # completions go last because some require
 # their tools/plugins to have already loaded
+# shellcheck disable=1001
 for completions in ~/.dotfiles/shell/completions/[!\0]*.sh; do
     [ -r "$completions" ] && [ -f "$completions" ] && source "$completions"
 done
@@ -62,6 +63,6 @@ export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
 export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK"
 export OG_TERM="$TERM"
 # ensure tmux is running
-[ -z "$TMUX" ] && git mux startup
+[ -z "$TMUX" ] && git mux project "$PWD"
 
 # --------------------------------------------------------------------- }}}

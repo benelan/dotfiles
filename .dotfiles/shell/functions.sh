@@ -55,6 +55,24 @@ mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## add surfraw bookmark                                       {{{
+# see fob() later in the file for finding/opening a bookmark
+# the following is my personal bookmark convention
+# <name> <url> <:[tag1:tag2:tag...]:> [-g]
+# name - used to open the bookmark, e.g. `sr codepen`
+#        I've been doing no special chars for landing pages
+#        and separating with "-" when it's more specific, e.g.
+#        mf https://martinfowler.com/tags/
+#        mf-flacid https://martinfowler.com/bliki/FlaccidScrum.html
+# url  - the URL to open, can also be a file URI
+# tags - colon-separated list of tags, none is "::"
+#        https://github.com/mickael-menu/zk/blob/main/docs/tags.md
+# -g   - force surfraw to open the bookmark in a GUI browser
+#        only works when using fob(), not surfraw directly
+bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
 # --------------------------------------------------------------------- }}}
 # Filesystem                                                            {{{
 # --------------------------------------------------------------------- {|}
