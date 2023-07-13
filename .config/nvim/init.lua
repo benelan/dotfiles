@@ -100,35 +100,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
--- automatically close certain filetypes if it is the last window
-vim.api.nvim_create_augroup("jamin_filetype_auto_quit", { clear = true })
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = table.concat(require("jamin.resources").filetypes.excluded, ","),
-  group = "jamin_filetype_auto_quit",
-  callback = function()
-    vim.api.nvim_create_autocmd({ "BufEnter" }, {
-      buffer = 0,
-      group = "jamin_filetype_auto_quit",
-      callback = function()
-        local win_count = vim.fn.winnr "$"
-        if win_count == 1 then
-          vim.cmd "quit"
-        else
-          local popup_win_count = 0
-          for winnr = 1, win_count do
-            if vim.fn.win_gettype(winnr) == "popup" then
-              popup_win_count = popup_win_count + 1
-            end
-          end
-          if win_count - 1 <= popup_win_count then
-            vim.cmd "quit"
-          end
-        end
-      end,
-    })
-  end,
-})
-
 -------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------
