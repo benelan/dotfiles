@@ -61,6 +61,15 @@ return {
             == nil
       end
 
+      local filter_ft_writing = function(_, ctx)
+        for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
+          if ft == ctx.filetype then
+            return true
+          end
+        end
+        return false
+      end
+
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -80,6 +89,8 @@ return {
           ["<C-j>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
+            elseif vim.g.loaded_copilot then
+              return "<Plug>(copilot-next)"
             elseif cmp.visible() then
               cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
             else
@@ -89,6 +100,8 @@ return {
           ["<C-k>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
+            elseif vim.g.loaded_copilot then
+              return "<Plug>(copilot-previous)"
             elseif cmp.visible() then
               cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
             else
@@ -113,32 +126,6 @@ return {
               fallback()
             end
           end, { "i", "c" }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif ls.expandable() then
-              ls.expand()
-            elseif ls.expand_or_jumpable() then
-              ls.expand_or_jump()
-            -- elseif has_words_before() then
-            --   cmp.complete()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#CycleCompletions"](1)
-            else
-              fallback()
-            end
-          end, { "i" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif ls.jumpable(-1) then
-              ls.jump(-1)
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#CycleCompletions"](-1)
-            else
-              fallback()
-            end
-          end, { "i" }),
         },
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
         formatting = {
@@ -193,44 +180,14 @@ return {
           { name = "treesitter", keyword_length = 3 },
         }, {
           { name = "rg", keyword_length = 4 },
-          {
-            {
-              name = "dictionary",
-              keyword_length = 3,
-              entry_filter = function(_, ctx)
-                for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
-                  if ft == ctx.filetype then
-                    return true
-                  end
-                end
-                return false
-              end,
-            },
-            name = "rg",
-            keyword_length = 4,
-          },
+          { name = "dictionary", keyword_length = 3, entry_filter = filter_ft_writing },
           {
             name = "spell",
-            entry_filter = function(_, ctx)
-              for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
-                if ft == ctx.filetype then
-                  return true
-                end
-              end
-              return false
-            end,
             option = {
               enable_in_context = function()
                 return vim.wo.spell == true
               end,
-              entry_filter = function(_, ctx)
-                for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
-                  if ft == ctx.filetype then
-                    return true
-                  end
-                end
-                return false
-              end,
+              entry_filter = filter_ft_writing,
             },
           },
         }),
@@ -295,8 +252,10 @@ return {
               ls.jump(-1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Clear"]()
+            elseif vim.g.loaded_copilot then
+              return "<Plug>(copilot-dismiss)"
             else
-              return "<S-Tab>"
+              return "<C-h>"
             end
           end,
           mode = { "i", "s" },
@@ -311,8 +270,10 @@ return {
               ls.jump(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Accept"]()
+            elseif vim.g.loaded_copilot then
+              return vim.fn["copilot#Accept('\\<CR>')"]()
             else
-              return "<Tab>"
+              return "<C-l>"
             end
           end,
           mode = { "i", "s" },
@@ -325,6 +286,10 @@ return {
               ls.change_choice(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Complete"]()
+            elseif vim.g.loaded_copilot then
+              return "<Plug>(copilot-suggest)"
+            else
+              return "<C-;>"
             end
           end,
           mode = { "i", "s" },
@@ -364,6 +329,23 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "github/copilot.vim", -- AI code completion
+    enabled = false,
+    cmd = "Copilot",
+    event = "InsertEnter",
+    init = function()
+      vim.g.copilot_no_tab_map = true
+    end,
+    -- stylua: ignore
+    keys = {
+      { "<M-y>", function() return vim.fn["copilot#Accept('\\<CR>')"]() end, mode = "i", desc = "Codeium accept" },
+      { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Codeium complete" },
+      { "<M-n>", "<Plug>(copilot-next)", mode = "i", desc = "Codeium next" },
+      { "<M-p>", "<Plug>(copilot-previous)", mode = "i", desc = "Codeium previous" },
+      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Codeium clear" },
+    },
+  },
+  {
     "Exafunction/codeium.vim", -- AI completion
     enabled = false,
     event = "InsertEnter",
@@ -374,11 +356,11 @@ return {
     end,
     -- stylua: ignore
     keys = {
-      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, "i", desc = "Codeium accept" },
-      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, "i", desc = "Codeium complete" },
-      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, "i", desc = "Codeium next" },
-      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, "i", desc = "Codeium previous" },
-      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, "i", desc = "Codeium clear" },
+      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, mode = "i", desc = "Codeium accept" },
+      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, mode = "i", desc = "Codeium complete" },
+      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, mode = "i", desc = "Codeium next" },
+      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, mode = "i", desc = "Codeium previous" },
+      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, mode = "i", desc = "Codeium clear" },
     },
   },
 }
