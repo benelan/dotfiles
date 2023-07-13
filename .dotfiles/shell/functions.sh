@@ -515,21 +515,6 @@ if is-supported fzf; then
     fi
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-    ## gets a gsetting value using fzf                        {{{
-    fgsget() {
-        gsettings list-schemas | fzf |
-            while read -r _GS_SCHEMA; do
-                gsettings list-keys "$_GS_SCHEMA" | fzf |
-                    while read -r _GS_KEY; do
-                        echo "Schema: $_GS_SCHEMA"
-                        echo "Key: $_GS_KEY"
-                        echo "Value: $(gsettings get "$_GS_SCHEMA" "$_GS_KEY")"
-                    done
-            done
-    }
-
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 fi
 
 # --------------------------------------------------------------------- }}}
