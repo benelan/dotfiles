@@ -220,8 +220,8 @@ return {
             name = "git",
             t = { name = "toggle options" },
             f = { name = "find" },
-            h = { name = "hunk" },
-            -- w = { name = "worktree" },
+            h = { name = "hunks" },
+            m = { name = "mergetool" },
           },
           o = {
             name = "octo (github)",

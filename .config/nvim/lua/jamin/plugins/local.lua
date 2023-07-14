@@ -80,8 +80,8 @@ return {
     dependencies = "vim-fugitive",
     -- stylua: ignore
     keys = {
-      { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in Browser", mode = "n" },
-      { "<leader>go", ":'<,'>GBrowse<cr>", desc = "Open in Browser", mode = "v" },
+      { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in browser", mode = "n" },
+      { "<leader>go", ":'<,'>GBrowse<cr>", desc = "Open in browser", mode = "v" },
       { "<leader>gy", "<cmd>GBrowse!<cr>", desc = "Yank URL", mode = "n" },
       { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL", mode = "v" },
     },

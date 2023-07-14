@@ -195,18 +195,12 @@ command! -nargs=* QfGit cgetexpr system('git quickfix '. expand('<args>'))
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" grep all files in the quickfix, buffer, or argument lists  {{{
-" Maybe return a string if the first arg is not empty.
-function! M(x, y)
-    return a:x == '' || a:x == v:false ? '' : a:y . a:x
-endfunction
-
 command! -nargs=* GrepQflist call getqflist()
     \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
     \ ->sort() ->uniq() ->join(' ')
     \ ->M('grep <args> ')
     \ ->execute()
 
-" grep across all loaded buffers.
 command! -nargs=* GrepBuflist call range(0, bufnr('$'))
     \ ->filter({i, x -> buflisted(x)})
     \ ->map({i, x -> fnameescape(bufname(x))})
@@ -214,8 +208,13 @@ command! -nargs=* GrepBuflist call range(0, bufnr('$'))
     \ ->M('grep <args> ')
     \ ->execute()
 
-" grep all files in the arglist.
 command! -nargs=* GrepaAglist grep <args> ##
+
+" return a string if the first arg is not empty.
+function! M(x, y)
+    return a:x == '' || a:x == v:false ? '' : a:y . a:x
+endfunction
+
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system grep function and user command                      {{{
@@ -386,14 +385,15 @@ if has("autocmd")
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
 
-        " open files to their previous location
-        autocmd BufReadPost *
-                    \ if line("'\"") > 1
-                    \ && line("'\"") <= line("$")
-                    \ && &ft != "gitcommit"
-                    \ | execute "normal! g'\""
-                    \ | endif
-    augroup END
+      " When editing a file, always jump to the last known cursor position.
+      " Don't do it when the position is invalid, when inside an event handler
+      " (happens when dropping a file on gvim) and for a commit message (it's
+      " likely a different one than last time).
+      autocmd BufReadPost *
+        \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+        \ |   exe "normal! g`\""
+        \ | endif
+      augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" set global marks by filetype when leaving buffers      {{{
