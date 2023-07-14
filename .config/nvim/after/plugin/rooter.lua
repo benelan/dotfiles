@@ -41,11 +41,11 @@ local function get_lsp_root(buf, ignore)
 end
 
 local function set_root(args)
-  local path = vim.api.nvim_buf_get_name(args.buf)
-  if path == "" then
+  if args.file == "" or string.match(args.file, "fugitive://") then
     return
   end
-  path = vim.fs.dirname(path)
+
+  local path = vim.fs.dirname(args.file)
 
   -- Try cache and resort to searching upward for root directory
   local root = root_cache[path]
