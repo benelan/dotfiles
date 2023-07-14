@@ -19,9 +19,8 @@ vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
   and (
     vim.env.USE_DEVICONS == "1"
     -- nerd font glyphs are shipped with wezterm so patched fonts aren't required.
-    -- the OG_TERM env var is set in ~/.bashrc right before attaching to tmux.
     or vim.env.TERM == "wezterm"
-    or string.match(vim.fn.system "tmux showenv", "OG_TERM=wezterm") ~= nil
+    or string.match(vim.fn.system "tmux showenv", "TERM=wezterm") ~= nil
   )
 
 require "jamin.options"

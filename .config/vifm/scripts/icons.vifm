@@ -97,7 +97,7 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \   ::*.xul::'
 
 " Wezterm ships with nerd fonts, which are required for the glyphs below
-if expand($TERM) == "wezterm" || expand($OG_TERM) == "wezterm"
+if expand($TERM) == "wezterm"
   set classify+='  ::.npm/::,
                \   ::.git/::,
                \   ::.cache/,,.config/,,.local/,,.var/::,
