@@ -89,8 +89,8 @@ return {
         },
         mapping = {
           ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
-          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
-          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
+          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "s" }),
+          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "s" }),
           ["<C-e>"] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true },
@@ -266,7 +266,7 @@ return {
             elseif vim.g.loaded_copilot then
               return "<Plug>(copilot-dismiss)"
             else
-              return "<S-Tab>"
+              return vim.lsp.buf.signature_help()
             end
           end,
           mode = { "i", "s" },
@@ -284,7 +284,8 @@ return {
             elseif vim.g.loaded_copilot then
               return vim.fn["copilot#Accept('\\<CR>')"]()
             else
-              return "<Tab>"
+              -- fallback to "redrawing" the buffer like readline's mapping
+              vim.cmd "nohlsearch | diffupdate | syntax sync fromstart"
             end
           end,
           mode = { "i", "s" },

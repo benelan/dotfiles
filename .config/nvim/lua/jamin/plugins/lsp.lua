@@ -168,7 +168,7 @@ return {
 
           -- stylua: ignore start
           bufmap("n", "K", vim.lsp.buf.hover, "Hover")
-          bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
+          bufmap("n", "gH", vim.lsp.buf.signature_help, "LSP signature help")
           bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
           bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
           bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
