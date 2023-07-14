@@ -2,6 +2,8 @@
 
 My personal setup, **don't use the install script unless you're me**. I recommend looking through the files and picking bits and pieces that fit your workflows.
 
+## Setup
+
 To install the dotfiles in your `$HOME` directory, run:
 
 ```sh
@@ -18,13 +20,23 @@ dot commit -m "chore(xyz): add config"
 dot push
 ```
 
-All git aliases defined at the bottom of [`.config/git/config`](.config/git/config) will also work for `dot`. [Git completion](.dotfiles/shell/completions/2_git.completion.sh) works for `dot` as well.
+[Git bash completion](.dotfiles/shell/completions/2_git.completion.sh) and the git aliases defined at the bottom of [`~/.config/git/config`](.config/git/config) will also work for `dot`.
 
 My setup was primarily created for use in Ubuntu/Debian and derivative distros, but it worked in Fedora and should work in other Unix operating systems as well. I try to separate the Ubuntu-only code and make sure executables exist before using them. Vanilla Windows won't work, but WSL running Ubuntu does.
 
-A [`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) (and a few other) scripts install the development tools I commonly use, as well as some other stuff like fonts.
+[`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) and a few other scripts install the development tools I commonly use, as well as some other stuff like fonts.
 
 > NOTE: I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
+
+## Configuration
+
+Put machine-specific stuff in `~/.dotfiles/shell/local.sh`, which gets sourced in [`~/.bashrc`](.bashrc) if it exists. The following environment variables are flags that accept a value of `1` or `0` (default) to turn on/off different tools:
+
+- `USE_GUI_APPS` - install tools that only work on desktop machines
+- `USE_WORK_STUFF` - setups up the environment for work
+- `USE_COPILOT` - use the GitHub Copilot plugin in neovim
+- `USE_CODEIUM` - use the Codeium (free Copilot alternative) plugin in neovim
+- `USE_DEVICONS` - use developer icons in various tools
 
 ---
 
@@ -54,8 +66,8 @@ SOFTWARE.
 
 I learned and stole a lot from the following sources. There are credits/links in specific files as well.
 
--   Copyright (c) 2020-2021 Bash-it `MIT` [[code](https://github.com/Bash-it/bash-it)]
+- Copyright (c) 2020-2021 Bash-it `MIT` [[code](https://github.com/Bash-it/bash-it)]
 
--   Copyright (c) 2014 "Cowboy" Ben Alman `MIT` [[code](https://github.com/cowboy/dotfiles)]
+- Copyright (c) 2014 "Cowboy" Ben Alman `MIT` [[code](https://github.com/cowboy/dotfiles)]
 
--   Tom Ryder `UNLICENSE` [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]
+- Tom Ryder `UNLICENSE` [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]

@@ -11,7 +11,9 @@ CACHE_DIR="$HOME/.dotfiles/cache"
 FONTS_DIR="$HOME/.local/share/fonts"
 WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
 
-mkdir -p "$DEPS_DIR" "$CACHE_DIR" "$FONTS_DIR" "$WALLPAPER_DIR"
+mkdir -p "$DEPS_DIR" "$CACHE_DIR"
+
+[ "$USE_GUI_APPS" = "1" ] && mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
 
 # Install CLI apt packages
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
@@ -215,19 +217,21 @@ install_gnome_gruvbox_theme() {
 install_apt_packages
 install_gh_cli
 install_protonvpn_cli
-# install_taskwarrior_tui
+install_taskwarrior_tui
 install_docker_engine
 
 ### GUI install scripts
-# install_apt_gui_packages
-# install_discord
-# install_vscode
-# install_brave_browser
-# install_wezterm
-# install_docker_desktop
+if [ "$USE_GUI_APPS" = "1" ]; then
+    install_apt_gui_packages
+    install_discord
+    install_vscode
+    install_brave_browser
+    install_wezterm
+    # install_docker_desktop
 
-# install_gnome_gruvbox_theme
-# install_gruvbox_wallpaper
-# install_font
+    install_gnome_gruvbox_theme
+    install_gruvbox_wallpaper
+    install_font
+fi
 
 sudo apt -y update && sudo apt -y upgrade && sudo apt autoremove
