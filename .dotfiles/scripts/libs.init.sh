@@ -15,7 +15,8 @@ build_neovim() {
         cd "$NEOVIM_PATH" || exit 1
         git fetch --all --tags --force
         git reset --hard origin/master
-        git checkout nightly
+        # git checkout nightly
+        git checkout stable
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
     fi
@@ -46,7 +47,12 @@ build_taskopen() {
 }
 
 update_vim_plugins() {
-    cd && update_modules .vim && vim +"helptags ALL" +"quit"
+    cd && update_modules .vim
+    vim +"$(
+        find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
+            -exec basename --multiple {} \; |
+            perl -pe 's/^/packadd /' | tr '\n' '|'
+    ) helptags ALL | quit"
 }
 
 update_neovim_plugins() {
