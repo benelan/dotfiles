@@ -1,6 +1,6 @@
 return {
   {
-    "Wansmer/treesj",
+    "Wansmer/treesj", -- split/join treesitter nodes to multiple/single line(s)
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
@@ -11,15 +11,20 @@ return {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "VimEnter",
     dependencies = {
+      { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
+      { "JoosepAlviste/nvim-ts-context-commentstring" }, -- sets commentstring
       {
-        "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
-        -- stylua: ignore
         keys = {
-          { "[C", function() require("treesitter-context").go_to_context() end, desc = "Treesitter context" },
+          {
+            "[C",
+            function()
+              require("treesitter-context").go_to_context()
+            end,
+            desc = "Treesitter context",
+          },
         },
       },
     },
