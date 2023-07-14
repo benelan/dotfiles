@@ -65,7 +65,8 @@ return {
             name = "git",
             t = { name = "toggle options" },
             f = { name = "find" },
-            h = { name = "hunk" },
+            h = { name = "hunks" },
+            m = { name = "mergetool" },
           },
           o = {
             name = "octo (github)",

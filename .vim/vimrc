@@ -112,18 +112,22 @@ endif
 
 nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
 
+nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
+
 nnoremap <leader>gg <cmd>packadd vim-fugitive<cr><cmd>G<cr>
 nnoremap <leader>gc <cmd>packadd vim-fugitive<cr><cmd>G commit<cr>
 nnoremap <leader>gb <cmd>packadd vim-fugitive<cr><cmd>G blame<cr>
-nnoremap <leader>gD <cmd>packadd vim-fugitive<cr><cmd>G difftool -y<cr>
-nnoremap <leader>gM <cmd>packadd vim-fugitive<cr><cmd>G mergetool -y<cr>
 nnoremap <leader>gd <cmd>packadd vim-fugitive<cr><cmd>Gdiffsplit<cr>
-nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite %<cr>
-nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread %<cr>
 nnoremap <leader>gl <cmd>packadd vim-fugitive<cr><cmd>0Gclog --follow<cr>
 xnoremap <leader>gl :Gclog --follow<cr>
 
-nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
+nnoremap <leader>gD <cmd>packadd vim-fugitive<cr><cmd>G difftool -y<cr>
+nnoremap <leader>gM <cmd>packadd vim-fugitive<cr><cmd>G mergetool -y<cr>
+
+nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite<cr>
+" nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite <bar> if &diff && tabpagenr('$') > 1 <bar> tabclose <bar> endif<cr>",
+nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread<cr>
+" nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread <bar> write <bar> if &diff && tabpagenr('$') > 1 <bar> tabclose <bar> endif<cr>
 
 nnoremap Y y$
 vnoremap Y y
@@ -174,14 +178,19 @@ tnoremap <S-Space> <Space>
 tnoremap <C-Space> <Space>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" git mergetool keymaps for selecting hunks                  {{{
-nnoremap <leader>gmU :diffupdate<cr>
-nnoremap <leader>gmr :diffget RE<cr>
-nnoremap <leader>gmR :%diffget RE<cr
-nnoremap <leader>gmb :diffget BA<cr>
-nnoremap <leader>gmB :%diffget BA<cr
-nnoremap <leader>gml :diffget LO<cr>
-nnoremap <leader>gmL :diffget LO<cr>
+"" git difftool/mergetool keymaps for selecting hunks         {{{
+nnoremap <leader>gw :diffget<bar>diffupdate<cr>
+vnoremap <leader>gw :diffget<bar>diffupdate<cr>
+nnoremap <leader>gr :diffget
+vnoremap <leader>gr :diffget
+
+nnoremap <leader>gmu :diffupdate<cr>
+nnoremap <leader>gmr :diffget RE <bar> diffupdate<cr>
+nnoremap <leader>gmR :%diffget RE <bar> diffupdate<cr
+nnoremap <leader>gmb :diffget BA <bar> diffupdate<cr>
+nnoremap <leader>gmB :%diffget BA <bar> diffupdate<cr
+nnoremap <leader>gml :diffget LO <bar> diffupdate<cr>
+nnoremap <leader>gmL :%diffget LO <bar> diffupdate<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" lists - next/prev                                          {{{
@@ -219,11 +228,6 @@ nnoremap <leader>bda :bufdo bd<cr>
 "" picks buffer
 nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
-"" Quickly open scratch buffers
-nnoremap <leader>bb :e ~/scratch.md<cr>
-nnoremap <leader>bv <C-w>v:e %:h/scratch.%:e<CR>
-nnoremap <leader>bs <C-w>s:e %:h/scratch.%:e<CR>
-
 "" Managing tabs
 nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
@@ -241,10 +245,10 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
 
 " Resize splits
-nnoremap <leader><Left> :vertical resize -5<CR>
-nnoremap <leader><Down> :resize -5<CR>
-nnoremap <leader><Up> :resize +5<CR>
-nnoremap <leader><Right> :vertical resize +5<CR>
+nnoremap <Left> :vertical resize -5<CR>
+nnoremap <Down> :resize -5<CR>
+nnoremap <Up> :resize +5<CR>
+nnoremap <Right> :vertical resize +5<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle options                                             {{{
