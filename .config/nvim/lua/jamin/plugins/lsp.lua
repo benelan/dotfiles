@@ -6,20 +6,7 @@ return {
       {
         "williamboman/mason.nvim", -- language server installer/manager
         build = ":MasonUpdate",
-        opts = {
-          ensure_installed = {
-            "actionlint", -- github action linter
-            "codespell", -- commonly misspelled English words linter
-            "cspell", -- code spell checker
-            "delve", -- golang debug adapter
-            "markdown-toc", -- markdown table of contents generator
-            "markdownlint", -- markdown linter and formatter
-            "shellcheck", -- shell linter
-            "shfmt", -- shell formatter
-            "stylua", -- lua formatter
-            "write-good", -- English grammar linter
-          },
-        },
+        opts = { ensure_installed = require("jamin.resources").mason_packages },
         config = function(_, opts)
           require("mason").setup(opts)
           local mr = require "mason-registry"
@@ -73,10 +60,8 @@ return {
           prefix = "",
         },
       },
-      inlay_hints = {
-        enabled = false,
-      },
-      capabilities = {
+      inlay_hints = { enabled = false },
+      force_capabilities = {
         textDocument = {
           codeLens = { dynamicRegistration = false },
           completion = {
@@ -111,7 +96,7 @@ return {
       local capabilities = vim.tbl_deep_extend(
         "force",
         require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-        opts.capabilities
+        opts.force_capabilities
       )
 
       -------------------------------------------------------------------------------
@@ -146,8 +131,8 @@ return {
             return
           end
 
-          -- disable formatting and use eslint and stylua instead via null-ls below
-          if client.name == "tsserver" or client.name == "lua_ls" then
+          -- disable formatting and use prettier/stylua instead (via null-ls below)
+          if vim.tbl_contains({ "tsserver", "jsonls", "lua_ls" }, client.name) then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
@@ -313,6 +298,7 @@ return {
 
           diagnostics.write_good.with {
             diagnostic_config = quiet_diagnostics,
+            prefer_local = "node_modules/.bin",
             extra_filetypes = { "vimwiki" },
           },
 

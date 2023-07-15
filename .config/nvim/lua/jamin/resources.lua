@@ -169,4 +169,17 @@ M.lsp_servers = {
   "zk",
 }
 
+M.mason_packages = {
+  "actionlint", -- github action linter
+  "codespell", -- commonly misspelled English words linter
+  "cspell", -- code spell checker
+  "delve", -- golang debug adapter
+  "markdown-toc", -- markdown table of contents generator
+  "markdownlint", -- markdown linter and formatter
+  "shellcheck", -- shell linter
+  "shfmt", -- shell formatter
+  "stylua", -- lua formatter
+  "write-good", -- English grammar linter
+}
+
 return M
