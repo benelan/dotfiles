@@ -152,13 +152,9 @@
   date = short-local
 
 [format]
+  # man --pager='less -p "^PRETTY FORMATS"' git-log
+  pretty = format:"%C(green)%h %C(yellow)%ad %C(cyan)%an %C(reset)%s %C(auto)%d%C(reset)"
   # pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
-  pretty = format:"%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)"
-  #                          │            │           │           │           └─ author name
-  #                          │            │           │           └─ message
-  #                          │            │           └─ decorations (branch, heads or tags)
-  #                          │            └─ date
-  #                          └─ hash     (abbreviated)
 
 [init]
   defaultBranch = master

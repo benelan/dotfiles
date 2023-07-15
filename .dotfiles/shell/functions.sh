@@ -45,6 +45,20 @@ vipe() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
+## jump to search pattern in man page(s)                      {{{
+## Example: jump to the examples heading in two git man pages
+## mans ^examples git-log git-checkout
+mans() {
+    if [ -z "$2" ]; then
+        man "$1"
+    else
+        man_pager="less -p \"$1\""
+        shift
+        man --pager="$man_pager" "$@"
+    fi
+}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+
 ## use vifm to cd                                             {{{
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 
