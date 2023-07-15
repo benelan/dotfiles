@@ -8,7 +8,7 @@
 # tHaT's A gOoD iDeA, tOm
 
 usage() {
-    printf "\\nuSaGe:\\nsarc [MESSAGE]\\n\\n"
+    printf '\nuSaGe:\nsarc [MESSAGE]\n\n'
 }
 
 if [ $# -eq 0 ]; then
@@ -20,7 +20,7 @@ character_index=0
 should_uppercase="false"
 
 while [ "$character_index" -lt "${#1}" ]; do
-    char="${1:$character_index:1}"
+    char="${1:character_index:1}"
 
     # only toggle (or not) the character if it's an alphabetical character
     if [[ $char =~ [[:alpha:]] ]]; then

@@ -32,7 +32,6 @@ dot() {
 
 git clone --bare "$GIT_URL" "$HOME/.git"
 
-
 dot() {
     /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
 }

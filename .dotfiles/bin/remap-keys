@@ -6,9 +6,9 @@
 
 if is-supported setxkbmap; then
     setxkbmap -option \
-              -option caps:escape \
-              -option terminate:ctrl_alt_bksp \
-              -option shift:both_capslock_cancel
+        -option caps:escape \
+        -option terminate:ctrl_alt_bksp \
+        -option shift:both_capslock_cancel
 else
     echo "Missing a required dependency: setxkbmap"
     exit 1
