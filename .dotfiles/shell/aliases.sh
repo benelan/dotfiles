@@ -239,10 +239,6 @@ fi
 alias g='git'
 alias x="git mux"
 
-# deletes local branches already squash merged into the default branch
-# shellcheck disable=2016,2034,2154
-alias gbprune='TARGET_BRANCH="$(git bdefault)" && git fetch --prune --all && git checkout -q "$TARGET_BRANCH" && git for-each-ref refs/heads/ "--format=%(refname:short)" | grep -v -e main -e master -e develop -e dev | while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") && [[ "$(git cherry "$TARGET_BRANCH" "$(git commit-tree "$(git rev-parse "$branch"\^{tree})" -p "$mergeBase" -m _)")" == "-"* ]] && git branch -D "$branch"; done; unset TARGET_BRANCH mergeBase branch'
-
 # --------------------------------------------------------------------- }}}
 # Dotfiles                                                              {{{
 # --------------------------------------------------------------------- {|}
@@ -263,11 +259,10 @@ dot() {
 
 alias d='dot'
 
-# creates env vars so git plugins
-# work with the bare dotfiles repo
+# creates env vars so git plugins work with the bare dotfiles repo
 edit_dotfiles() {
     # shellcheck disable=2016
-    "$EDITOR" "${@:-}" \
+    "$EDITOR" "$@" \
         --cmd "if len(argv()) > 0 | cd %:h | endif" \
         --cmd 'let $GIT_WORK_TREE = expand("~")' \
         --cmd 'let $GIT_DIR = expand("~/.git")'

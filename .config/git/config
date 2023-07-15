@@ -225,7 +225,7 @@
 
   # edit the files changed locally
   e = "!f() { $EDITOR $(git diff --name-only HEAD); }; f"
-  # open Fugitive
+  # open Fugitive difftool
   ed = "!f() { $EDITOR +\"Git difftool -y $*\"; }; f"
   # sync origin's default branch and edit the changed files
   eom = "!f() { default_branch=$(git bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
@@ -333,6 +333,9 @@
   bdefault = "!f() { echo $(if [ $(git config --get core.bare) = 'true' ]; then git bdefault-bare; else git bdefault-fast; fi); }; f"
   bdefault-fast = "!f() { basename $(git rev-parse --abbrev-ref origin/HEAD);}; f"
   bdefault-bare = "!f() { git remote show $(git remote | grep -Eo '(upstream|origin)' | tail -1) | grep 'HEAD branch' | cut -d' ' -f5; }; f"
+
+  # from https://github.com/not-an-aardvark/git-delete-squashed
+  bprune = "!f() { local targetBranch=${1:-$(git bdefault)} && git checkout -q $targetBranch && git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d && git for-each-ref refs/heads/ \"--format=%(refname:short)\" | while read branch; do mergeBase=$(git merge-base $targetBranch $branch) && [[ $(git cherry $targetBranch $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == \"-\"* ]] && git branch -D $branch; done; }; f"
 
   # list of local branches and their most recent commit
   blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
