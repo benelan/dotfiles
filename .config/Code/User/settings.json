@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Gruvbox Dark Soft",
+  "window.zoomLevel": 1,
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.wordWrap": "off",
   "editor.wordWrap": "on",
@@ -13,17 +13,17 @@
   "editor.linkedEditing": true,
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
-  "files.associations": {
-    "hjson": "json",
-    "jsonc": "json"
-  },
+  "gruvboxMaterial.darkPalette": "original",
+  "gruvboxMaterial.darkWorkbench": "high-contrast",
+  "gruvboxMaterial.lightWorkbench": "high-contrast",
+  "workbench.colorTheme": "Gruvbox Material Dark",
   "editor.fontLigatures": true,
   "editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.organizeImports": true
   },
-  "editor.fontFamily": "'Iosevka Nerd Font', 'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontFamily": "'Iosevka Nerd Font', 'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Ubuntu Mono', 'Fira Mono', 'monospace', monospace",
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "explorer.fileNesting.enabled": true,
@@ -53,15 +53,17 @@
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
+  "[lua]": {
+    "editor.defaultFormatter": "sumneko.lua"
+  },
   "Lua.diagnostics.globals": ["vim"],
-  "Lua.runtime.version": "LuaJIT",
+  "Lua.format.enable": true,
   "Lua.telemetry.enable": false,
   "Lua.completion.callSnippet": "Both",
   "Lua.completion.keywordSnippet": "Both",
-  "terminal.external.linuxExec": "kitty",
+  "terminal.external.linuxExec": "wezterm",
   "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
-  // "vscode-neovim.neovimExecutablePaths.linux": "~/.dotfiles/vendor/neovim/build/bin/nvim",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "vsintellicode.modify.editor.suggestSelection":"automaticallyOverrodeDefaultValue",
   "liveServer.settings.donotShowInfoMsg": true,
   "search.smartCase": true,
   "search.exclude": {
@@ -72,27 +74,6 @@
     "**/dist": true,
     "*.min.js": true
   },
-  "cSpell.userWords": [
-    "dotfiles",
-    "neovim",
-    "arcgis",
-    "benelan",
-    "browserslist",
-    "lazyload",
-    "outfile",
-    "JSAPI",
-    "transpilation",
-    "transpiled",
-    "transpiling",
-    "vsintellicode",
-    "easymotion",
-    "incsearch",
-    "hlsearch",
-    "autofetch",
-    "hjson",
-    "gruvbox",
-    "esbenp"
-  ],
   "vim.easymotion": false,
   "vim.enableNeovim": true,
   "vim.highlightedyank.enable": true,
@@ -141,6 +122,5 @@
       "before": ["<C-V>"],
       "commands": ["editor.action.clipboardPasteAction"]
     }
-  ],
-  "window.zoomLevel": 1
+  ]
 }

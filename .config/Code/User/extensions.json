@@ -10,7 +10,6 @@
     "esbenp.prettier-vscode",
     "foam.foam-vscode",
     "formulahendry.auto-close-tag",
-    "foxundermoon.shell-format",
     "humao.rest-client",
     "mechatroner.rainbow-csv",
     "ms-azuretools.vscode-docker",
@@ -22,9 +21,7 @@
     "sumneko.lua",
     "svelte.svelte-vscode",
     "timonwong.shellcheck",
-    "visualstudioexptteam.vscodeintellicode",
     "vscodevim.vim",
-    "xabikos.JavaScriptSnippets",
     "yzhang.markdown-all-in-one"
   ]
 }
