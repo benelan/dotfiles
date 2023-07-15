@@ -17,6 +17,17 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "jinh0/eyeliner.nvim",
+    -- enabled = false,
+    event = "CursorHold",
+    opts = { highlight_on_key = false, dim = true },
+    config = function(_, opts)
+      require("eyeliner").setup(opts)
+      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Type" })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "folke/which-key.nvim",
     -- enabled = false,
     event = "CursorHold",
