@@ -22,7 +22,7 @@ return {
   },
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
-    ft = "",
+    event = "BufNewFile",
     -- stylua: ignore
     cmd = {
       "Cfind", "Chmod", "Clocate", "Delete", "Lfind", "Llocate",
@@ -77,6 +77,7 @@ return {
   },
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
+    cmd = "GBrowse",
     dependencies = "vim-fugitive",
     -- stylua: ignore
     keys = {

@@ -44,14 +44,6 @@ nnoremap <leader>w :w<cr>
 
 nnoremap <Backspace> <C-^>
 
-vnoremap . :norm.<CR>
-
-vnoremap < <gv
-vnoremap > >gv
-
-nnoremap & :&&<CR>
-vnoremap & :&&<CR>
-
 nnoremap <silent> <leader>bd :bdelete<CR>
 
 " Create splits
@@ -64,46 +56,57 @@ nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
 " Use the repeat operator with a visual selection
 " This is useful for performing an edit on a single line, then highlighting a
 " visual block on a number of lines to repeat the edit.
-vnoremap <leader>. :normal .<cr>
+vnoremap . :normal .<cr>
 
 " Repeat a macro on a visual selection of lines
 " Same as above but with a macro; complete the command by choosing the register
 " containing the macro.
-vnoremap <leader>@ :normal @
+vnoremap @ :normal @
+
+" Maintain selection while indenting
+vnoremap < <gv
+vnoremap > >gv
+
+" Repeat the previous substitution, maintaining the flags
+vnoremap & :&&<CR>
+nnoremap & :&&<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" insert, command, and operator  keymaps                     {{{
 cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
 cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
-" go to line above/below the cursor, from insert mode
+" Go to line above/below the cursor, from insert mode
 inoremap <C-Down> <C-O>o
 inoremap <C-Up> <C-O>O
 
-" expand the buffer's directory
+" Expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
-" use last changed or yanked text as an object
+" Use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
-" use entire buffer as an object
+" Use entire buffer as an object
 onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
 nnoremap x "_x
+vnoremap <leader>d "_d
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
-vnoremap <leader>d "_d
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
 nnoremap gy <cmd>let @+=@*<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
+" fix the next/previous misspelled word
 nnoremap [S [s1z=
 nnoremap ]S ]s1z=
+" fix the misspelled word under the cursor
 nnoremap <M-z> 1z=
+" fix the previous misspelled word w/o moving cursor
 inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -155,8 +158,21 @@ vnoremap cr <Plug>(ReplaceOperator)
 "  Functions and user commands                                         {{{
 "----------------------------------------------------------------------{|}
 
+
+" Open GitHub PR for branch (current or <arg>) in the browser {{{
+" See $ gh pr view --help
+if executable("gh")
+    let s:gh_pr_cmd = (exists("$TMUX")
+                \   ? "!tmux new-window -n github_pr "
+                \   : "!"
+                \ ) . "gh pr view --web"
+
+    command! -nargs=* PR execute s:gh_pr_cmd '<args>'
+endif
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle quickfix list open/close                            {{{
-command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
+com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif"
 nnoremap <C-q> <cmd>QfToggle<cr>
 nnoremap Q <cmd>QfToggle<cr>
 
@@ -198,7 +214,7 @@ command! -nargs=* GrepBuflist call range(0, bufnr('$'))
     \ ->M('grep <args> ')
     \ ->execute()
 
-command! -nargs=* GrepaAglist grep <args> ##
+command! -nargs=* GrepArglist grep <args> ##
 
 " return a string if the first arg is not empty.
 function! M(x, y)
@@ -282,7 +298,7 @@ xnoremap <silent> # :<C-u>call VisualSelection("")<CR>?<C-R>=@/<CR><CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" delete buffer without closing window                       {{{
-function s:BgoneHeathen(action, bang)
+function s:BGoneHeathen(action, bang)
   let l:cur = bufnr("%")
   let l:alt = bufnr("#")
   if buflisted(l:alt) | buffer # | else | bnext | endif
@@ -291,10 +307,10 @@ function s:BgoneHeathen(action, bang)
 endfunction
 
 command! -bang -complete=buffer -nargs=? Bdelete
-	\ :call s:BgoneHeathen("bdelete", <q-bang>)
+	\ :call s:BGoneHeathen("bdelete", <q-bang>)
 
 command! -bang -complete=buffer -nargs=? Bwipeout
-	\ :call s:BgoneHeathen("bwipeout", <q-bang>)
+	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
 
 nnoremap <silent> <leader><Delete> :Bdelete<CR>
 
@@ -326,7 +342,7 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
     endif
 
-    "" get git branch and root directory
+    "" get git root directory
     function! g:GitRootDirectory()
     let root = systemlist("git -C " . shellescape(expand("%:p:h"),) . " rev-parse --show-toplevel")[0]
     return v:shell_error ? "" : root
@@ -413,18 +429,19 @@ if has("autocmd")
 
         autocmd FileType qf,help,man
                     \ set nobuflisted
-                    \| nnoremap <silent> <buffer> q :q<CR>
+                    \ | nnoremap <silent> <buffer> q :q<CR>
 
         autocmd FileType markdown,mdx,gitcommit,text,vimwiki,octo
                     \ setlocal wrap spell nocursorline
-                    \| nnoremap <buffer> <silent> ^ g^
-                    \| nnoremap <buffer> <silent> $ g$
-                    \| nnoremap <buffer> <silent> j gj
-                    \| nnoremap <buffer> <silent> k gk
-                    \| nnoremap <buffer> <silent> g^ ^
-                    \| nnoremap <buffer> <silent> g$ $
-                    \| nnoremap <buffer> <silent> gj j
-                    \| nnoremap <buffer> <silent> gk k
+                    \ | let b:no_cursorline = 1
+                    \ | nnoremap <buffer> <silent> ^ g^
+                    \ | nnoremap <buffer> <silent> $ g$
+                    \ | nnoremap <buffer> <silent> j gj
+                    \ | nnoremap <buffer> <silent> k gk
+                    \ | nnoremap <buffer> <silent> g^ ^
+                    \ | nnoremap <buffer> <silent> g$ $
+                    \ | nnoremap <buffer> <silent> gj j
+                    \ | nnoremap <buffer> <silent> gk k
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -437,8 +454,11 @@ if has("autocmd")
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
 
-        autocmd InsertLeave,WinEnter * setlocal cursorline
         autocmd InsertEnter,WinLeave * setlocal nocursorline
+        autocmd InsertLeave,WinEnter *
+                    \ if !exists("b:no_cursorline") || !b:no_cursorline
+                    \ |   setlocal cursorline
+                    \ | endif
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
