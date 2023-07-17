@@ -28,20 +28,10 @@ return {
     ft = require("jamin.resources").filetypes.writing,
   },
   -----------------------------------------------------------------------------
-  {
-    ---Using this until the cmp signature help works for me again
-    ---@see https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/38
-    "ray-x/lsp_signature.nvim", -- function signature
-    opts = {
-      hi_parameter = "DiffAdd",
-      hint_scheme = "Comment",
-      hint_prefix = require("jamin.resources").icons.ui.replace,
-      toggle_key = "<M-h>",
-      handler_opts = { border = "solid" },
-    },
-  },
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" }, -- lsp document symbol
+  -----------------------------------------------------------------------------
+  { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" }, -- function signature
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" }, -- lsp
   -----------------------------------------------------------------------------
@@ -179,21 +169,27 @@ return {
             return vim_item
           end,
         },
-        sources = cmp.config.sources({
-          { name = "nvim_lsp_signature_help" },
-          { name = "luasnip" },
-          { name = "nvim_lsp" },
-          { name = "git" },
-          { name = "npm", keyword_length = 4 },
-          { name = "tmux", keyword_length = 2 },
-          { name = "path", keyword_length = 2 },
-          { name = "buffer", keyword_length = 3 },
-          { name = "treesitter", keyword_length = 3 },
-        }, {
-          { name = "rg", keyword_length = 4 },
-          { name = "dictionary", keyword_length = 3, entry_filter = filter_ft_writing },
+        sources = {
+          { name = "nvim_lsp_signature_help", group_index = 1 },
+          { name = "luasnip", group_index = 2 },
+          { name = "nvim_lsp", group_index = 2 },
+          { name = "git", group_index = 2 },
+          { name = "npm", keyword_length = 4, group_index = 2 },
+          { name = "tmux", keyword_length = 3, group_index = 2 },
+          { name = "path", keyword_length = 3, group_index = 2 },
+          { name = "buffer", keyword_length = 3, group_index = 2 },
+          { name = "treesitter", keyword_length = 3, group_index = 2 },
+          { name = "rg", group_index = 4, keyword_length = 4 },
+          {
+            name = "dictionary",
+            group_index = 4,
+            keyword_length = 3,
+            entry_filter = filter_ft_writing,
+          },
           {
             name = "spell",
+            group_index = 4,
+            keyword_length = 3,
             entry_filter = filter_ft_writing,
             option = {
               enable_in_context = function()
@@ -201,7 +197,7 @@ return {
               end,
             },
           },
-        }),
+        },
         sorting = {
           comparators = {
             cmp.config.compare.offset,
@@ -239,11 +235,14 @@ return {
       })
 
       cmp.setup.cmdline(":", {
-        sources = cmp.config.sources(
-          { { name = "cmdline" } },
-          { { name = "path" }, { name = "buffer" }, { name = "rg", keyword_length = 4 } },
-          { { name = "dictionary", keyword_length = 4 } }
-        ),
+        sources = {
+          { name = "cmdline", group_index = 1 },
+          { name = "path", group_index = 2 },
+          { name = "buffer", group_index = 2 },
+          { name = "rg", keyword_length = 4, group_index = 2 },
+          { name = "dictionary", keyword_length = 4, group_index = 3 },
+          { name = "spell", keyword_length = 4, group_index = 3 },
+        },
       })
     end,
   },
