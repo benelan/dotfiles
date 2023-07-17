@@ -96,8 +96,9 @@ set classify+='  ::*.apk,,*.deb,,*.gem,,*.log,,*.rpm,,*.xbps::,
              \   ::*.vim,,.viminfo,,*.vifm::,
              \   ::*.xul::'
 
+
+if (expand($TMUX) != "" && system('tmux showenv | grep "TERM=wezterm"') != "") || expand($TERM) == "wezterm"
 " Wezterm ships with nerd fonts, which are required for the glyphs below
-if expand($TERM) == "wezterm"
   set classify+='  ::.npm/::,
                \   ::.git/::,
                \   ::.cache/,,.config/,,.local/,,.var/::,
