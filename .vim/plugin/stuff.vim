@@ -158,17 +158,60 @@ vnoremap cr <Plug>(ReplaceOperator)
 "  Functions and user commands                                         {{{
 "----------------------------------------------------------------------{|}
 
+function! s:warn(msg)
+  echohl WarningMsg | echom a:msg | echohl None
+endfunction
 
 " Open GitHub PR for branch (current or <arg>) in the browser {{{
 " See $ gh pr view --help
-if executable("gh")
-    let s:gh_pr_cmd = (exists("$TMUX")
-                \   ? "!tmux new-window -n github_pr "
-                \   : "!"
-                \ ) . "gh pr view --web"
+let s:gh_pr_cmd = (exists("$TMUX")
+        \   ? "!tmux new-window -n github_pr "
+        \   : "!"
+        \ ) . "gh pr view --web --"
 
-    command! -nargs=* PR execute s:gh_pr_cmd '<args>'
-endif
+command! -nargs=? PR execute s:gh_pr_cmd <args>
+
+" Same thing only with Fugitive's git object completion
+" and bang to copy
+function! s:browse_github_pr(bang, args) abort
+    if !executable("gh")
+        return s:warn("gh cli required: https://cli.github.com")
+    endif
+
+    let s:url = substitute(
+                \   system("gh pr view --json url --jq '.url' -- " . a:args),
+                \   '\n\+$', '', ''
+                \ )
+    echom s:url
+
+    if a:bang && has('clipboard')
+        let @+ = s:url
+    else
+        if !exists('g:loaded_netrw')
+            runtime! autoload/netrw.vim
+        endif
+
+        if exists('*netrw#BrowseX')
+            call netrw#BrowseX(s:url, 0)
+        else
+            return s:warn("netrw required to open github pull request")
+        endif
+    endif
+endfunction
+
+" function! TwiggyCompleteBranches(A,L,P) abort
+"   let branches = ''
+"   for branch in twiggy#get_branches()
+"     let slicepos = len(split(a:A, '/')) - 1
+"     let branch = join(split(branch.fullname, '/')[0:slicepos], '/')
+"     let branches = branches . branch . "\n"
+"   endfor
+"   return branches
+" endfunction
+
+" command! -bang -nargs=? -complete=custom,TwiggyCompleteBranches
+command! -bang -nargs=? -complete=customlist,fugitive#CompleteObject
+            \ GBrowsePR call s:browse_github_pr(<bang>0, <q-args>)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle quickfix list open/close                            {{{
@@ -405,6 +448,8 @@ if has("autocmd")
     "" set global marks by filetype when leaving buffers      {{{
     augroup jamin_global_marks
         autocmd!
+        " Clear actively used marks to prevent jumping to other projects
+        autocmd VimEnter *  delmarks REWQAZX
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave *.css,*.scss,*.sass      normal! mC
         autocmd BufLeave *.csv,*.json,*.toml      normal! mD
@@ -417,8 +462,6 @@ if has("autocmd")
         autocmd BufLeave *.ts,*.tsx               normal! mT
         autocmd BufLeave *.vim,*vimrc             normal! mV
         autocmd BufLeave *.yml,*.yaml             normal! mY
-        " Clear actively used marks to prevent jumping to other projects
-        autocmd VimLeave *                        delmarks REWQAZX
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

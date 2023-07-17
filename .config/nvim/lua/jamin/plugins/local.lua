@@ -52,8 +52,14 @@ return {
         desc = "Read changes and close difftool tab",
         mode = { "n" },
       },
+      {
+        "<leader>gQ",
+        [[ <cmd>execute 'bdelete '.join(filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^fugitive://.*"'), ' ')<cr> ]],
+        desc = "Delete all fugitive buffers",
+      },
       { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
       { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
+      { "<leader>gP", "<cmd>GBrowsePR", desc = "Open GitHub pull request for a branch" },
     },
     -- stylua: ignore
     cmd = {
@@ -61,35 +67,19 @@ return {
       "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep", "Gread", "Gwrite", "Gwq",
       "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit", "Gsplit", "Gvsplit",
     },
-    config = function()
-      vim.api.nvim_create_autocmd({ "BufReadPost" }, {
-        pattern = "fugitive://*",
-        group = vim.api.nvim_create_augroup("jamin_clean_fugitive_buffers", { clear = true }),
-        -- http://vimcasts.org/episodes/fugitive-vim-browsing-the-git-object-database/
-        command = [[
-          set bufhidden="delete"
-          \ | if fugitive#buffer().type() =~# '^\%(tree\|blob\)$'
-          \ | nnoremap <buffer> .. :edit %:h<CR>
-          \ | endif
-        ]],
-      })
-    end,
   },
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
-    -- stylua: ignore
     keys = {
-      { "<leader>go", "<cmd>GBrowse<cr>", desc = "Open in browser", mode = "n" },
-      { "<leader>go", ":'<,'>GBrowse<cr>", desc = "Open in browser", mode = "v" },
-      { "<leader>gy", "<cmd>GBrowse!<cr>", desc = "Yank URL", mode = "n" },
-      { "<leader>gy", ":'<,'>GBrowse!<cr>", desc = "Yank URL", mode = "v" },
+      { "<leader>go", ":GBrowse<cr>", desc = "Open in browser", mode = { "n", "v" } },
+      { "<leader>gy", ":GBrowse!<cr>", desc = "Yank URL", mode = { "n", "v" } },
     },
   },
   -----------------------------------------------------------------------------
   -- adds closing brackets only when pressing enter
-  { dir = "~/.vim/pack/foo/start/vim-closer"},
+  { dir = "~/.vim/pack/foo/start/vim-closer" },
   -----------------------------------------------------------------------------
   {
     dir = "~/.vim/pack/foo/opt/undotree",
