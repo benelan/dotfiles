@@ -15,7 +15,11 @@ return {
   {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
     build = "cd app && npm install",
+    ft = { "markdown", "vimwiki" },
     keys = { { "<leader>dp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown preview" } },
+    init = function()
+      vim.g.mkdp_filetypes = { "vimwiki", "markdown" }
+    end,
   },
   {
     "jakewvincent/mkdnflow.nvim",
@@ -51,15 +55,23 @@ return {
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
     -- stylua: ignore
     keys = {
+      -- Search for the notes matching the current visual selection.
+      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
       { "<leader>zn", function() require("zk.commands").get "ZkNew" { title = vim.fn.input "Title: " } end, desc = "New note" },
       { "<leader>zo", function() require("zk.commands").get "ZkNotes" { sort = { "modified" } } end, desc = "Open notes" },
       { "<leader>zt", function() require("zk.commands").get "ZkTags" { } end, desc = "Tags" },
-      { "<leader>zf", function() require("zk.commands").get "ZkNotes" { sort = { "modified" }, match = { vim.fn.input "Search: " } } end, desc = "Find notes", mode = "n" },
-      -- Search for the notes matching the current visual selection.
-      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
+      {
+        "<leader>zf",
+        function() require("zk.commands").get "ZkNotes" { sort = { "modified" }, match = { vim.fn.input "Search: " } } end,
+        desc = "Find notes",
+        mode = "n",
+      },
     },
     config = function()
-      require("zk").setup { picker = "telescope" }
+      require("zk").setup {
+        picker = "telescope",
+        auto_attach = { enabled = true, filetypes = { "markdown", "vimwiki" } },
+      }
     end,
   },
   {
