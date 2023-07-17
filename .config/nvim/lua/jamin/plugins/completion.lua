@@ -90,8 +90,6 @@ return {
           ["<C-j>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
-            elseif vim.g.loaded_copilot then
-              return "<Plug>(copilot-next)"
             elseif cmp.visible() then
               cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
             else
@@ -101,8 +99,6 @@ return {
           ["<C-k>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
-            elseif vim.g.loaded_copilot then
-              return "<Plug>(copilot-previous)"
             elseif cmp.visible() then
               cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
             else
@@ -136,6 +132,7 @@ return {
               buffer = " [BUF] ",
               git = " [GIT] ",
               luasnip = "[SNIP] ",
+              copilot = "[SNIP] ",
               nvim_lsp = " [LSP] ",
               nvim_lsp_document_symbol = "[SYMB] ",
               nvim_lsp_signature_help = " [SIG] ",
@@ -263,8 +260,6 @@ return {
               ls.jump(-1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Clear"]()
-            elseif vim.g.loaded_copilot then
-              return "<Plug>(copilot-dismiss)"
             else
               return vim.lsp.buf.signature_help()
             end
@@ -281,8 +276,6 @@ return {
               ls.jump(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Accept"]()
-            elseif vim.g.loaded_copilot then
-              return vim.fn["copilot#Accept('\\<CR>')"]()
             else
               -- fallback to "redrawing" the buffer like readline's mapping
               vim.cmd "nohlsearch | diffupdate | syntax sync fromstart"
@@ -298,8 +291,6 @@ return {
               ls.change_choice(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Complete"]()
-            elseif vim.g.loaded_copilot then
-              return "<Plug>(copilot-suggest)"
             end
           end,
           mode = { "i", "s" },
@@ -357,20 +348,22 @@ return {
   },
   {
     "github/copilot.vim", -- AI code completion
-    -- enabled = false,
+    enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
     init = function()
-      vim.g.copilot_no_tab_map = true
+      -- vim.g.copilot_no_tab_map = true
     end,
-    -- stylua: ignore
+    config = function()
+      -- the accept keymap adds junk characters to the end of the line when created in lua below
+      vim.cmd [[ imap <script><silent><nowait><expr> <M-y> copilot#Accept('<Plug>(copilot-suggest)') ]]
+    end,
     keys = {
-      { "<M-y>", function() return vim.fn["copilot#Accept('\\<CR>')"]() end, mode = "i", desc = "Copilot accept" },
       { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Copilot complete" },
       { "<M-n>", "<Plug>(copilot-next)", mode = "i", desc = "Copilot next" },
       { "<M-p>", "<Plug>(copilot-previous)", mode = "i", desc = "Copilot previous" },
-      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Copilot clear" },
+      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Copilot dismiss" },
     },
   },
   {
@@ -386,10 +379,10 @@ return {
     -- stylua: ignore
     keys = {
       { "<M-y>", function() return vim.fn["codeium#Accept"]() end, mode = "i", desc = "Codeium accept" },
-      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, mode = "i", desc = "Codeium complete" },
+      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, mode = "i", desc = "Codeium suggest" },
       { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, mode = "i", desc = "Codeium next" },
       { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, mode = "i", desc = "Codeium previous" },
-      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, mode = "i", desc = "Codeium clear" },
+      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, mode = "i", desc = "Codeium dismiss" },
     },
   },
 }
