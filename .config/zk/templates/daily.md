@@ -1,3 +1,8 @@
+---
+title: {{format-date now "%F"}}
+tags: []
+---
+
 # {{format-date now "%F"}}
 
 {{content}}

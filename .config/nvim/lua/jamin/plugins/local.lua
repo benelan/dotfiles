@@ -130,8 +130,8 @@ return {
       vim.cmd [[
         function! s:gruvbox_material_custom() abort
           let s:palette = gruvbox_material#get_palette("soft", "material", {
-                      \"bg_orange": ["#5A3B0A", "130"],
-                      \ "bg_visual_yellow": ["#7a380b", "208"]
+                      \     "bg_orange": ["#5A3B0A", "130"],
+                      \     "bg_visual_yellow": ["#7a380b", "208"]
                       \ })
 
           call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
@@ -147,7 +147,6 @@ return {
           call gruvbox_material#highlight("DapStatusLineInfo", s:palette.aqua, s:palette.bg2)
           call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
 
-          highlight! link TreesitterContext Normal
           highlight! link CursorLineNr Purple
         endfunction
 

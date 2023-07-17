@@ -151,7 +151,7 @@ vnoremap <leader>p "+p
 "" clear search highlights and reset syntax                   {{{
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
-inoremap <M-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
+inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" git mergetool keymaps for selecting hunks                  {{{
@@ -217,10 +217,10 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
 
 " Resize splits
-nnoremap <leader><Left> :vertical resize -5<CR>
-nnoremap <leader><Down> :resize -5<CR>
-nnoremap <leader><Up> :resize +5<CR>
-nnoremap <leader><Right> :vertical resize +5<CR>
+nnoremap <Left> :vertical resize -5<CR>
+nnoremap <Down> :resize -5<CR>
+nnoremap <Up> :resize +5<CR>
+nnoremap <Right> :vertical resize +5<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle options                                             {{{

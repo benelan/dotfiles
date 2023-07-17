@@ -477,14 +477,14 @@ if has("autocmd")
         autocmd FileType markdown,mdx,gitcommit,text,vimwiki,octo
                     \ setlocal wrap spell nocursorline
                     \ | let b:no_cursorline = 1
-                    \ | nnoremap <buffer> <silent> ^ g^
-                    \ | nnoremap <buffer> <silent> $ g$
-                    \ | nnoremap <buffer> <silent> j gj
-                    \ | nnoremap <buffer> <silent> k gk
-                    \ | nnoremap <buffer> <silent> g^ ^
-                    \ | nnoremap <buffer> <silent> g$ $
-                    \ | nnoremap <buffer> <silent> gj j
-                    \ | nnoremap <buffer> <silent> gk k
+                    " \ | nnoremap <buffer> ^ g^
+                    " \ | nnoremap <buffer> $ g$
+                    " \ | nnoremap <buffer> j gj
+                    " \ | nnoremap <buffer> k gk
+                    " \ | nnoremap <buffer> g^ ^
+                    " \ | nnoremap <buffer> g$ $
+                    " \ | nnoremap <buffer> gj j
+                    " \ | nnoremap <buffer> gk k
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -681,59 +681,5 @@ endfunction
 inoreabbrev teh the
 inoreabbrev CDS Calcite Design System
 inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
-
-"----------------------------------------------------------------------}}}
-"  Terminal options                                                    {{{
-"----------------------------------------------------------------------{|}
-
-" :help terminal-output-codes
-
-" Fix modern terminal features
-" https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-" Styled and colored underline support
-let &t_AU = "\e[58:5:%dm"
-let &t_8u = "\e[58:2:%lu:%lu:%lum"
-let &t_Us = "\e[4:2m"
-let &t_Cs = "\e[4:3m"
-let &t_ds = "\e[4:4m"
-let &t_Ds = "\e[4:5m"
-let &t_Ce = "\e[4:0m"
-" Strikethrough
-let &t_Ts = "\e[9m"
-let &t_Te = "\e[29m"
-" Truecolor support
-let &t_8f = "\e[38:2:%lu:%lu:%lum"
-let &t_8b = "\e[48:2:%lu:%lu:%lum"
-let &t_RF = "\e]10;?\e\\"
-let &t_RB = "\e]11;?\e\\"
-" Bracketed paste
-let &t_BE = "\e[?2004h"
-let &t_BD = "\e[?2004l"
-let &t_PS = "\e[200~"
-let &t_PE = "\e[201~"
-" Cursor control
-let &t_RC = "\e[?12$p"
-let &t_SH = "\e[%d q"
-let &t_RS = "\eP$q q\e\\"
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-" let &t_EI = "\e[1 q"
-let &t_VS = "\e[?12l"
-" Focus tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-" Window title
-let &t_ST = "\e[22;2t"
-let &t_RT = "\e[23;2t"
-" change insert mode cursor from block to blinking line
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
-
-" vim hardcodes background color erase even if the terminfo file does
-" not contain bce. This causes incorrect background rendering when
-" using a color theme with a background color in terminals such as
-" kitty that do not support background color erase.
-let &t_ut=""
 
 "----------------------------------------------------------------------}}}

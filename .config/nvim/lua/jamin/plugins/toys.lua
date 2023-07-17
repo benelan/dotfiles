@@ -23,7 +23,7 @@ return {
     opts = { highlight_on_key = false, dim = true },
     config = function(_, opts)
       require("eyeliner").setup(opts)
-      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Type" })
+      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
   },
   -----------------------------------------------------------------------------

@@ -17,6 +17,9 @@ return {
       { "JoosepAlviste/nvim-ts-context-commentstring" }, -- sets commentstring
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
+        config = function()
+          vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+        end,
         keys = {
           {
             "[C",
