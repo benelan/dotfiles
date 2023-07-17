@@ -171,6 +171,7 @@ return {
         },
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
+          { name = "copilot", group_index = 2 },
           { name = "luasnip", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "git", group_index = 2 },
@@ -338,6 +339,23 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "zbirenbaum/copilot-cmp",
+    enabled = false,
+    cond = vim.env.USE_COPILOT == "1",
+    event = "InsertEnter",
+    dependencies = {
+      {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        opts = { suggestion = { enabled = false }, panel = { enabled = false } },
+      },
+    },
+    config = function()
+      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+      require("copilot_cmp").setup()
+    end,
+  },
+  {
     "github/copilot.vim", -- AI code completion
     -- enabled = false,
     cond = vim.env.USE_COPILOT == "1",
@@ -348,11 +366,11 @@ return {
     end,
     -- stylua: ignore
     keys = {
-      { "<M-y>", function() return vim.fn["copilot#Accept('\\<CR>')"]() end, mode = "i", desc = "Codeium accept" },
-      { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Codeium complete" },
-      { "<M-n>", "<Plug>(copilot-next)", mode = "i", desc = "Codeium next" },
-      { "<M-p>", "<Plug>(copilot-previous)", mode = "i", desc = "Codeium previous" },
-      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Codeium clear" },
+      { "<M-y>", function() return vim.fn["copilot#Accept('\\<CR>')"]() end, mode = "i", desc = "Copilot accept" },
+      { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Copilot complete" },
+      { "<M-n>", "<Plug>(copilot-next)", mode = "i", desc = "Copilot next" },
+      { "<M-p>", "<Plug>(copilot-previous)", mode = "i", desc = "Copilot previous" },
+      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Copilot clear" },
     },
   },
   {

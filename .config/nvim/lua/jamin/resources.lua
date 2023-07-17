@@ -37,6 +37,7 @@ M.icons = {
     Conditional = i " ",
     Constant = i "󰭸 ",
     Constructor = i " ",
+    Copilot = " ",
     Enum = i " ",
     EnumMember = i " ",
     Error = i "󰛉 ",
