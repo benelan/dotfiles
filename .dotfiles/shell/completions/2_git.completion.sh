@@ -19,3 +19,8 @@ fi
 __git_complete g git
 __git_complete d git
 __git_complete dot git
+
+# https://github.com/benelan/git-mux
+# alias for `git-mux task`
+__git_complete gxt git_checkout
+

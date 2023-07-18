@@ -6,6 +6,8 @@
 alias c='clear'
 alias q='exit'
 
+alias x="tmux"
+
 # rerun last command as sudo
 alias plz='sudo $(fc -ln -1)'
 # Enable aliases to be sudo’ed
@@ -237,7 +239,10 @@ fi
 # --------------------------------------------------------------------- {|}
 
 alias g='git'
-alias x="git mux"
+alias gx="git-mux"
+alias gxt="git-mux task"
+alias gxp="git-mux project"
+alias xs="git-mux project ~"
 
 # --------------------------------------------------------------------- }}}
 # Dotfiles                                                              {{{
