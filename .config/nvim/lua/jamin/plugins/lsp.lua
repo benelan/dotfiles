@@ -147,10 +147,6 @@ return {
             })
           end
 
-          if vim.lsp.buf.inlay_hint and client.server_capabilities.inlayHintProvider then
-            vim.lsp.buf.inlay_hint(args.buf, opts.inlay_hints.enabled)
-          end
-
           -- stylua: ignore start
           bufmap("n", "K", vim.lsp.buf.hover, "Hover")
           bufmap("n", "gH", vim.lsp.buf.signature_help, "LSP signature help")
@@ -164,9 +160,15 @@ return {
           bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
-          bufmap("n", "gh", function() vim.lsp.buf.inlay_hint(0, nil) end, "Toggle inlay hints")
           bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
           -- stylua: ignore end
+
+          if vim.lsp.buf.inlay_hint and client.server_capabilities.inlayHintProvider then
+            vim.lsp.buf.inlay_hint(args.buf, opts.inlay_hints.enabled)
+            bufmap("n", "gh", function()
+              vim.lsp.buf.inlay_hint(0, nil)
+            end, "Toggle inlay hints")
+          end
 
           if client.server_capabilities.codeLensProvider then
             bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
@@ -267,7 +269,6 @@ return {
           hover.printenv,
           -- code_actions.gitsigns,
           code_actions.gitrebase,
-          code_actions.refactoring,
           code_actions.shellcheck,
           code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
 
