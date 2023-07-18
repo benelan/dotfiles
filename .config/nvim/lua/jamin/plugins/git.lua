@@ -1,5 +1,23 @@
 return {
   {
+    "junegunn/gv.vim",
+    dependencies = "vim-fugitive",
+    cmd = "GV",
+    keys = {
+      { "<leader>gv", "<cmd>GV!<cr>", desc = "List commits for current file", mode = "n" },
+      { "<leader>gV", "<cmd>GV<cr>", desc = "List commits", mode = { "v", "n" } },
+    },
+  },
+  {
+    "sodapopcan/vim-twiggy",
+    dependencies = "vim-fugitive",
+    cmd = "Twiggy",
+    keys = { { "<leader>gt", "<cmd>Twiggy<cr>", desc = "View branches" } },
+    config = function()
+      vim.g.twiggy_icons = { "*", "=", "+", "-", "~", "%", "x" }
+    end,
+  },
+  {
     "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
     event = "VeryLazy",
     -- stylua: ignore
