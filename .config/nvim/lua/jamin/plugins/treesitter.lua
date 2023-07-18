@@ -70,7 +70,7 @@ return {
           use_virtual_text = true,
           lint_events = { "BufWrite", "CursorHold" },
         },
-        context_commentstring = { enable = true, enable_autocmd = false },
+        context_commentstring = { enable = true },
         incremental_selection = {
           enable = true,
           keymaps = {

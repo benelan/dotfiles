@@ -79,7 +79,19 @@ return {
   },
   -----------------------------------------------------------------------------
   -- adds closing brackets only when pressing enter
-  { dir = "~/.vim/pack/foo/start/vim-closer" },
+  {
+    dir = "~/.vim/pack/foo/start/vim-closer",
+    init = function()
+      -- add closing to other files that can contain javascript
+      vim.cmd [[
+        au FileType svelte,astro,html
+        \ let b:closer = 1 |
+        \ let b:closer_flags = '([{;' |
+        \ let b:closer_no_semi = '^\s*\(function\|class\|if\|else\)' |
+        \ let b:closer_semi_ctx = ')\s*{$'
+    ]]
+    end,
+  },
   -----------------------------------------------------------------------------
   {
     dir = "~/.vim/pack/foo/opt/undotree",
