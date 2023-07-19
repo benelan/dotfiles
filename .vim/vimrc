@@ -13,9 +13,10 @@ set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard^=unnamed
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
-set nomodeline nostartofline t_vb= nrformats-=octal cryptmethod=blowfish2
+set nomodeline nostartofline t_vb= nrformats-=octal
 set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
-set complete-=i wildmenu wildmode=list:longest,full completeopt=noselect,menuone,menuone
+set wildmenu wildmode=list:longest,full
+set complete-=i completeopt=noselect,menuone,menuone
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
 set backupdir=$HOME/.vim/backups noswapfile
@@ -110,24 +111,22 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     nnoremap <leader>fb :Buffers<CR>
 endif
 
-nnoremap <leader>u <cmd>packadd undotree<cr><cmd>UndotreeToggle<cr>
+nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
 
-nnoremap - <cmd>packadd vifm.vim<cr><cmd>Vifm<cr>
+nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
 
-nnoremap <leader>gg <cmd>packadd vim-fugitive<cr><cmd>G<cr>
-nnoremap <leader>gc <cmd>packadd vim-fugitive<cr><cmd>G commit<cr>
-nnoremap <leader>gb <cmd>packadd vim-fugitive<cr><cmd>G blame<cr>
-nnoremap <leader>gd <cmd>packadd vim-fugitive<cr><cmd>Gdiffsplit<cr>
-nnoremap <leader>gl <cmd>packadd vim-fugitive<cr><cmd>0Gclog --follow<cr>
-xnoremap <leader>gl :Gclog --follow<cr>
+nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
+nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
+nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
+nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
+nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
+xnoremap <leader>gl :Gclog --follow<CR>
 
-nnoremap <leader>gD <cmd>packadd vim-fugitive<cr><cmd>G difftool -y<cr>
-nnoremap <leader>gM <cmd>packadd vim-fugitive<cr><cmd>G mergetool -y<cr>
+nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
+nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
 
-nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite<cr>
-" nnoremap <leader>gW <cmd>packadd vim-fugitive<cr><cmd>Gwrite <bar> if &diff && tabpagenr('$') > 1 <bar> tabclose <bar> endif<cr>",
-nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread<cr>
-" nnoremap <leader>gR <cmd>packadd vim-fugitive<cr><cmd>Gread <bar> write <bar> if &diff && tabpagenr('$') > 1 <bar> tabclose <bar> endif<cr>
+nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
+nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
 
 nnoremap Y y$
 vnoremap Y y
@@ -139,8 +138,8 @@ nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
 xnoremap g/ <esc>/\\%V
-nnoremap go <cmd>call append(line('.'), repeat([''], v:count1))<cr>
-nnoremap gO <cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>
+nnoremap go <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+nnoremap gO <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
 if empty(mapcheck("<C-U>", "i"))
@@ -179,18 +178,18 @@ tnoremap <C-Space> <Space>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" git difftool/mergetool keymaps for selecting hunks         {{{
-nnoremap <leader>gw :diffget<bar>diffupdate<cr>
-vnoremap <leader>gw :diffget<bar>diffupdate<cr>
+nnoremap <leader>gw :diffget<bar>diffupdate<CR>
+vnoremap <leader>gw :diffget<bar>diffupdate<CR>
 nnoremap <leader>gr :diffget
 vnoremap <leader>gr :diffget
 
-nnoremap <leader>gmu :diffupdate<cr>
-nnoremap <leader>gmr :diffget RE <bar> diffupdate<cr>
+nnoremap <leader>gmu :diffupdate<CR>
+nnoremap <leader>gmr :diffget RE <bar> diffupdate<CR>
 nnoremap <leader>gmR :%diffget RE <bar> diffupdate<cr
-nnoremap <leader>gmb :diffget BA <bar> diffupdate<cr>
+nnoremap <leader>gmb :diffget BA <bar> diffupdate<CR>
 nnoremap <leader>gmB :%diffget BA <bar> diffupdate<cr
-nnoremap <leader>gml :diffget LO <bar> diffupdate<cr>
-nnoremap <leader>gmL :%diffget LO <bar> diffupdate<cr>
+nnoremap <leader>gml :diffget LO <bar> diffupdate<CR>
+nnoremap <leader>gmL :%diffget LO <bar> diffupdate<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" lists - next/prev                                          {{{
@@ -224,14 +223,14 @@ nnoremap ]T :tfirst<CR>
 "" buffers, tabs, and windows                                 {{{
 
 "" close all the buffers
-nnoremap <leader>bda :bufdo bd<cr>
+nnoremap <leader>bda :bufdo bd<CR>
 "" picks buffer
 nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
 "" Managing tabs
-nnoremap <leader>tn :tabnew<cr>
-nnoremap <leader>to :tabonly<cr>
-nnoremap <leader>tc :tabclose<cr>
+nnoremap <leader>tn :tabnew<CR>
+nnoremap <leader>to :tabonly<CR>
+nnoremap <leader>tc :tabclose<CR>
 
 "" toggles between this and the last accessed tab
 let s:last_tab = 1
@@ -253,37 +252,37 @@ nnoremap <Right> :vertical resize +5<CR>
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle options                                             {{{
 "" toggles automatic indentation based on the previous line
-nnoremap <leader>s<Tab> :<C-U>set autoindent! autoindent?<CR>
+nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
 "" toggles highlighted cursor row; doesn't work in visual mode
-nnoremap <leader>sx :<C-U>set cursorline! cursorline?<CR>
+nnoremap <leader>sx <CMD>set cursorline!<CR>
 "" toggles highlighted cursor column; works in visual mode
-noremap <leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
+noremap <leader>sy <CMD>set cursorcolumn!<CR>
 "" toggles highlighting search results
-nnoremap <leader>sh :<C-U>set hlsearch! hlsearch?<CR>
+nnoremap <leader>sh <CMD>set hlsearch!<CR>
 "" toggles showing matches as I enter my pattern
-nnoremap <leader>si :<C-U>set incsearch! incsearch?<CR>
+nnoremap <leader>si <CMD>set incsearch!<CR>
 "" toggles spell checking
-nnoremap <leader>ss :<C-U>set spell! spell?<CR>
+nnoremap <leader>ss <CMD>set spell!<CR>
 "" toggles paste
-nnoremap <leader>sp :<C-U>set paste! paste?<CR>
+nnoremap <leader>sp <CMD>set paste!<CR>
 "" toggles showing tab, end-of-line, and trailing white space
-noremap <leader>sl :<C-U>set list! list?<CR>
+noremap <leader>sl <CMD>set list!<CR>
 "" toggles line number display
-noremap <leader>sn :<C-U>set relativenumber! relativenumber?<CR>
+noremap <leader>sn <CMD>set relativenumber!<CR>
 "" toggles position display in bottom right
-noremap <leader>sr :<C-U>set ruler! ruler?<CR>
+noremap <leader>sr <CMD>set ruler!<CR>
 "" toggles soft wrapping
-noremap <leader>sw :<C-U>set wrap! wrap?<CR>
+noremap <leader>sw <CMD>set wrap!<CR>
 "" toggle modifiable
-nnoremap <leader>sM :<C-U>set modifiable! modifiable?<CR>
+nnoremap <leader>sM <CMD>set modifiable!<CR>
 "" toggle colorcolumn
-nnoremap <silent> <leader>s\| :execute "set colorcolumn="
+nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                   \ . (&colorcolumn == "" ? "80" : "")<CR>
 "" toggle foldcolumn
-nnoremap <silent> <leader>sf :execute "set foldcolumn="
+nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                   \ . (&foldcolumn == "0" ? "1" : "0")<CR>
 "" toggle system clipboard
-nnoremap <silent> <leader>sc :execute "set clipboard="
+nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
                   \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -307,7 +306,8 @@ if has("autocmd")
 
         "" automatically strip whitespaces when files are saved
         let excludedFileTypes = []
-        autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0 | :call StripTrailingWhitespace() | endif
+        autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0
+                    \ | :call StripTrailingWhitespace() | endif
     augroup END
 endif
 
@@ -319,8 +319,21 @@ command! Src :source $MYVIMRC
 
 "" get the git branch for the current buffer                  {{{
 function! GitBranch()
-  let branch = systemlist("git -C " . shellescape(expand("%:p:h"),) . " branch --show-current")[0]
-  return v:shell_error ? "" : branch
+    try
+        if exists("*fugitive#Head") && FugitiveGitDir() != expand("~")."/.git"
+            return fugitive#Head()
+        else
+            let branch = systemlist(
+                        \   "git -C " .
+                        \   shellescape(expand("%:p:h")) .
+                        \   " branch --show-current"
+                        \ )[0]
+
+            return v:shell_error ? "" : branch
+        endif
+    catch
+        return ""
+    endtry
 endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -343,8 +356,8 @@ function! s:TerminalToggle() abort
 endfunction
 
 command! TerminalToggle call <sid>TerminalToggle()
-nnoremap <silent> <leader>T <cmd>TerminalToggle<cr>
-tnoremap <silent> <leader>T <C-w>N:TerminalToggle<cr>
+nnoremap <silent> <leader>T <CMD>TerminalToggle<CR>
+tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" strip trailing white space from the end of lines           {{{

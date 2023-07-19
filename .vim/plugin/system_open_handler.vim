@@ -16,15 +16,22 @@ elseif has('mac')
 elseif has('unix')
     let g:opencmd = 'xdg-open'
 else
-    let g:opencmd = 'gx'
+    let g:opencmd = 'netrw'
 endif
 
 " --------------------------------------------------------------------- }}}
 " Execute the open command                                              {{{
 " --------------------------------------------------------------------- {|}
 function! s:ExecuteOpen(text)
-    if g:opencmd == 'gx'
-        call netrw#BrowseX(a:text, 0)
+    if g:opencmd == 'netrw'
+        if !exists('g:loaded_netrw')
+            runtime! autoload/netrw.vim
+        endif
+        if exists('*netrw#BrowseX')
+            call netrw#BrowseX(a:text, 0)
+        else
+            echom "netrw#BrowseX not found"
+        endif
     else
         " use the system open command, and detach the process
         call jobstart(g:opencmd..' '..a:text, {'detach': v:true})
