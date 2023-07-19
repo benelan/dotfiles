@@ -348,7 +348,7 @@ return {
   },
   {
     "github/copilot.vim", -- AI code completion
-    enabled = false,
+    -- enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
