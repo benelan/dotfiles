@@ -7,6 +7,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
 export DEV="$HOME/dev"
+export LIB="$HOME/dev/lib"
 export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"

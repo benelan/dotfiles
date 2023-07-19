@@ -28,7 +28,7 @@ keymap("n", "n", "nzzzv", "Next search result")
 keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- Clear search highlight and escape
-keymap({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Clear hls and escape")
+keymap({ "i", "n" }, "<esc>", "<CMD>noh<CR><esc>", "Clear hls and escape")
 
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<", "," }
@@ -42,22 +42,22 @@ for _, char in ipairs(undo_after_chars) do
 end
 
 -- Move Lines
-keymap("n", "<M-j>", "<cmd>m .+1<cr>==", "Move line down")
-keymap("n", "<M-k>", "<cmd>m .-2<cr>==", "Move line up")
-keymap("i", "<M-j>", "<esc><cmd>m .+1<cr>==gi", "Move line down")
-keymap("i", "<M-k>", "<esc><cmd>m .-2<cr>==gi", "Move line up")
-keymap("v", "<M-j>", ":m '>+1<cr>gv=gv", "Move line down")
-keymap("v", "<M-k>", ":m '<-2<cr>gv=gv", "Move line up")
+keymap("n", "<M-j>", "<CMD>m .+1<CR>==", "Move line down")
+keymap("n", "<M-k>", "<CMD>m .-2<CR>==", "Move line up")
+keymap("i", "<M-j>", "<esc><CMD>m .+1<CR>==gi", "Move line down")
+keymap("i", "<M-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
+keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", "Move line down")
+keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
 
 -- directory navigation
-keymap("n", "cd", "<cmd>cd %:h <bar> pwd<cr>", "Change directory to buffer")
+keymap("n", "cd", "<CMD>cd %:h <bar> pwd<CR>", "Change directory to buffer")
 
 -- Search visually selected text
--- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<cr><cr>]])
--- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<cr><cr>]])
+-- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><cr>]])
+-- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><cr>]])
 
 -- Search inside visually highlighted text
 keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
@@ -66,10 +66,10 @@ keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
 keymap(
   "n",
   "gO",
-  "<cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>",
+  "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
   "Put empty line above"
 )
-keymap("n", "go", "<cmd>call append(line('.'), repeat([''], v:count1))<cr>", "Put empty line below")
+keymap("n", "go", "<CMD>call append(line('.'), repeat([''], v:count1))<CR>", "Put empty line below")
 
 -- Reselect latest changed, put, or yanked text
 vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
@@ -79,45 +79,58 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
   desc = "Visually select changed text",
 })
 
--- run makeprg and populate quickfix list
-vim.api.nvim_create_user_command("Make", function()
-  require("jamin.utils").async_make()
-end, { desc = "Run make asynchronously" })
-keymap("n", "gm", "<cmd>Make<cr>", "Async make")
+-------------------------------------------------------------------------------
+----> User command mappings
+-------------------------------------------------------------------------------
+---@see file* lua/jamin/commands.lua
+
+-- Run :make asynchronously
+keymap("n", "gm", "<CMD>Make<CR>", "Async make")
+
+-- toggle diagnostics for buffer or globally
+keymap("n", "<leader>sd", "<CMD>DiagnosticToggle<CR>", "Toggle buffer diagnostics")
+keymap("n", "<leader>sD", "<CMD>DiagnosticToggle!<CR>", "Toggle global diagnostics")
+
+-- toggle a variety of UI options to reduce noise while presenting
+keymap("n", "<leader>sP", "<CMD>PrezModeToggle<CR>", "Toggle presentation mode")
+
+-- toggle floating terminal window
+keymap("n", "<M-t>", "<CMD>Term<CR>", "Open floating terminal")
+keymap("t", "<M-t>", "<CMD>Term<CR>", "Close floating terminal")
 
 -------------------------------------------------------------------------------
 ----> Lists
 -------------------------------------------------------------------------------
 
 -- tab
-keymap("n", "]t", "<cmd>tabnext<cr>", "Next tab")
-keymap("n", "[t", "<cmd>tabprevious<cr>", "Previous tab")
-keymap("n", "]T", "<cmd>tablast<cr>", "Last tab")
-keymap("n", "[T", "<cmd>tabfirst<cr>", "Previous tab")
+keymap("n", "]t", "<CMD>tabnext<CR>", "Next tab")
+keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous tab")
+keymap("n", "]T", "<CMD>tablast<CR>", "Last tab")
+keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous tab")
 
 -- buffer
-keymap("n", "]b", "<cmd>bnext<cr>", "Next buffer")
-keymap("n", "[b", "<cmd>bprevious<cr>", "Previous buffer")
-keymap("n", "]B", "<cmd>blast<cr>", "Last buffer")
-keymap("n", "[B", "<cmd>bfirst<cr>", "First buffer")
+keymap("n", "]b", "<CMD>bnext<CR>", "Next buffer")
+keymap("n", "[b", "<CMD>bprevious<CR>", "Previous buffer")
+keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
+keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
 
 -- quickfix
-keymap("n", "]q", "<cmd>cnext<cr>", "Next quickfix")
-keymap("n", "[q", "<cmd>cprevious<cr>", "Previous quickfix")
-keymap("n", "]Q", "<cmd>clast<cr>", "Last quickfix")
-keymap("n", "[Q", "<cmd>cfirst<cr>", "First quickfix")
+keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
+keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
+keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
+keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 
 -- -- location
--- keymap("n", "]l", "<cmd>lnext<cr>", "Next location")
--- keymap("n", "[l", "<cmd>lprevious<cr>", "Previous location")
--- keymap("n", "]l", "<cmd>llast<cr>", "Last location")
--- keymap("n", "[l", "<cmd>lfirst<cr>", "First location")
+-- keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
+-- keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
+-- keymap("n", "]l", "<CMD>llast<CR>", "Last location")
+-- keymap("n", "[l", "<CMD>lfirst<CR>", "First location")
 
 -- argument
--- keymap("n", "]a", "<cmd>next<cr>", "Next argument")
--- keymap("n", "[a", "<cmd>previous<cr>", "Previous argument")
--- keymap("n", "]A", "<cmd>last<cr>", "Last argument")
--- keymap("n", "[A", "<cmd>first<cr>", "First argument")
+-- keymap("n", "]a", "<CMD>next<CR>", "Next argument")
+-- keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
+-- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
+-- keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
 -- jump
 -- keymap("n", "]j", "<C-o>", "Next jump")
@@ -155,16 +168,16 @@ keymap("n", "[d", function()
 end, "Previous diagnostic")
 
 -- diagnostic error
-keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Error' })<cr>", "Next error")
+keymap("n", "]e", "<CMD>lua vim.diagnostic.goto_next({ severity = 'Error' })<CR>", "Next error")
 
-keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Error' })<cr>", "Previous error")
+keymap("n", "[e", "<CMD>lua vim.diagnostic.goto_prev({ severity = 'Error' })<CR>", "Previous error")
 -- diagnostic warning
-keymap("n", "]w", "<cmd>lua vim.diagnostic.goto_next({ severity = 'Warn' })<cr>", "Next warning")
+keymap("n", "]w", "<CMD>lua vim.diagnostic.goto_next({ severity = 'Warn' })<CR>", "Next warning")
 
 keymap(
   "n",
   "[w",
-  "<cmd>lua vim.diagnostic.goto_prev({ severity = 'Warn' })<cr>",
+  "<CMD>lua vim.diagnostic.goto_prev({ severity = 'Warn' })<CR>",
   "Previous warning"
 )
 
@@ -173,17 +186,17 @@ keymap(
 -------------------------------------------------------------------------------
 
 -- two way diff for staging/resetting hunks
-keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<cr>", "Get hunk")
-keymap({ "n", "v" }, "<leader>gw", ":diffput<cr>", "Put hunk")
+keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<CR>", "Get hunk")
+keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk")
 
 -- three way diff for merge conflict resolution
-keymap("n", "<leader>gmu", "<cmd>diffupdate<cr>", "Update diff")
-keymap("n", "<leader>gmr", "<cmd>diffget RE<bar>diffupdate<cr>", "Choose hunk from remote")
-keymap("n", "<leader>gmR", "<cmd>%diffget RE<bar>diffupdate<cr>", "Choose all from remote")
-keymap("n", "<leader>gmb", "<cmd>diffget BA<bar>diffupdate<cr>", "Choose hunk from base")
-keymap("n", "<leader>gmB", "<cmd>%diffget BA<bar>diffupdate<cr>", "Choose all from base")
-keymap("n", "<leader>gml", "<cmd>diffget LO<bar>diffupdate<cr>", "Choose hunk from local")
-keymap("n", "<leader>gmL", "<cmd>%diffget LO<bar>diffupdate<cr>", "Choose all from local")
+keymap("n", "<leader>gmu", "<CMD>diffupdate<CR>", "Update diff")
+keymap("n", "<leader>gmr", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote")
+keymap("n", "<leader>gmR", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all from remote")
+keymap("n", "<leader>gmb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base")
+keymap("n", "<leader>gmB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all from base")
+keymap("n", "<leader>gml", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local")
+keymap("n", "<leader>gmL", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all from local")
 
 -------------------------------------------------------------------------------
 ----> Windows
@@ -203,33 +216,11 @@ keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus window below")
 keymap("v", "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus window above")
 keymap("v", "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window right")
 
--- Go to the first floating window
-vim.cmd [[
-  function! s:GotoFirstFloat() abort
-    for w in range(1, winnr('$'))
-      let c = nvim_win_get_config(win_getid(w))
-      if c.focusable && !empty(c.relative)
-        execute w . 'wincmd w'
-      endif
-    endfor
-  endfunction
-  command! GotoFirstFloat call <sid>GotoFirstFloat()
-]]
-keymap({ "n", "x" }, "g<M-f>", "<cmd>GotoFirstFloat<cr>", "Focus first floating window")
-
--- toggle floating terminal window
-keymap("n", "<M-t>", function()
-  require("jamin.utils").floating_term()
-end, "Open floating terminal")
-keymap("t", "<M-t>", function()
-  require("jamin.utils").floating_term()
-end, "Close floating terminal")
-
 -- resize
-keymap("n", "<C-Up>", "<cmd>resize +5<cr>", "Decrease horizontal window size")
-keymap("n", "<C-Down>", "<cmd>resize -5<cr>", "Increase horizontal window size")
-keymap("n", "<C-Left>", "<cmd>vertical resize -5<cr>", "Decrease vertical window size")
-keymap("n", "<C-Right>", "<cmd>vertical resize +5<cr>", "Increase vertical window size")
+keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease horizontal window size")
+keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase horizontal window size")
+keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease vertical window size")
+keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase vertical window size")
 
 --  move
 keymap("n", "<M-Left>", "<C-w>H", "Move window left")
@@ -243,123 +234,51 @@ keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
 ----> Tabs
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>tn", "<cmd>tabnew<cr>", "New tab")
-keymap("n", "<leader>to", "<cmd>tabonly<cr>", "Close other tabs")
-keymap("n", "<leader>tc", "<cmd>tabclose<cr>", "Close tab")
+keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New tab")
+keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close other tabs")
+keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 
 -------------------------------------------------------------------------------
 ----> Buffers
 -------------------------------------------------------------------------------
 
 -- list, pick, and jump to a buffer
-keymap("n", "<leader>bj", ":<C-U>buffers<cr>:buffer<Space>", "Jump to buffer")
+keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to buffer")
 
-keymap("n", "<M-x>", "<cmd>bdelete<cr>", "Close buffer")
-keymap({ "n", "i" }, "<M-q>", "<cmd>q<cr>", "Quit")
+keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
+keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Quit")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>sd", function()
-  require("jamin.utils").diagnostic_toggle()
-end, "Toggle buffer diagnostics")
+keymap("n", "<leader>sn", "<CMD>set relativenumber!<CR>", "Toggle relative line number")
+keymap("n", "<leader>sw", "<CMD>set wrap!<CR>", "Toggle wrap")
+keymap("n", "<leader>ss", "<CMD>set spell!<CR>", "Toggle spell")
+keymap("n", "<leader>sp", "<CMD>set paste!<CR>", "Toggle paste")
+keymap("n", "<leader>sh", "<CMD>set hlsearch!<CR>", "Toggle hlsearch")
+keymap("n", "<leader>si", "<CMD>set incsearch!<CR>", "Toggle incsearch")
+keymap("n", "<leader>sl", "<CMD>set list!<CR>", "Toggle list")
+keymap("n", "<leader>sx", "<CMD>set cursorline!<CR>", "Toggle cursorline")
+keymap("n", "<leader>sy", "<CMD>set cursorcolumn!<CR>", "Toggle cursorcolumn")
+keymap("n", "<leader>s<Tab>", "<CMD>set autoindent!<CR>", "Toggle autoindent")
+keymap("n", "<leader>sM", "<CMD>set modifiable!<CR>", "Toggle modifiable")
+keymap(
+  "n",
+  "<leader>sf",
+  ':execute "set foldcolumn=" . (&foldcolumn == "0" ? "1" : "0")<CR>',
+  "Toggle foldcolumn"
+)
+keymap(
+  "n",
+  "<leader>s|",
+  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR>',
+  "Toggle colorcolumn"
+)
+keymap(
+  "n",
+  "<leader>sc",
+  ':execute "set clipboard=" . (&clipboard == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>',
+  "Toggle clipboard"
+)
 
-keymap("n", "<leader>sD", function()
-  require("jamin.utils").diagnostic_toggle(true)
-end, "Toggle global diagnostics")
-
-keymap("n", "<leader>sn", function()
-  require("jamin.utils").toggle_option "relativenumber"
-end, "Toggle relative line number")
-
-keymap("n", "<leader>sw", function()
-  require("jamin.utils").toggle_option "wrap"
-end, "Toggle wrap")
-
-keymap("n", "<leader>ss", function()
-  require("jamin.utils").toggle_option "spell"
-end, "Toggle spell")
-
-keymap("n", "<leader>sp", function()
-  require("jamin.utils").toggle_option "paste"
-end, "Toggle paste")
-
-keymap("n", "<leader>sh", function()
-  require("jamin.utils").toggle_option "hlsearch"
-end, "Toggle hlsearch")
-
-keymap("n", "<leader>si", function()
-  require("jamin.utils").toggle_option "incsearch"
-end, "Toggle incsearch")
-
-keymap("n", "<leader>sl", function()
-  require("jamin.utils").toggle_option "list"
-end, "Toggle list")
-
-keymap("n", "<leader>sx", function()
-  require("jamin.utils").toggle_option "cursorline"
-end, "Toggle cursorline")
-
-keymap("n", "<leader>sy", function()
-  require("jamin.utils").toggle_option "cursorcolumn"
-end, "Toggle cursorcolumn")
-
-keymap("n", "<leader>s<Tab>", function()
-  require("jamin.utils").toggle_option "autoindent"
-end, "Toggle autoindent")
-
-keymap("n", "<leader>sf", function()
-  require("jamin.utils").toggle_option("foldcolumn", "0", "1")
-end, "Toggle foldcolumn")
-
-keymap("n", "<leader>sM", function()
-  require("jamin.utils").toggle_option "modifiable"
-end, "Toggle modifiable")
-
-keymap("n", "<leader>s|", function()
-  require("jamin.utils").toggle_option("colorcolumn", "0", "80")
-end, "Toggle colorcolumn")
-
-keymap("n", "<leader>sc", function()
-  require("jamin.utils").toggle_option("clipboard", "unnamed,unnamedplus", "unnamed")
-end, "Toggle clipboard")
-
-local prezMode = false
-keymap("n", "<leader>sP", function()
-  -- toggle options
-  vim.bo.modifiable = prezMode
-  vim.opt.relativenumber = prezMode
-  vim.opt.number = prezMode
-  vim.opt.spell = prezMode
-  vim.opt.cursorline = prezMode
-  vim.opt.ruler = prezMode
-  vim.opt.showmode = prezMode
-  vim.opt.signcolumn = prezMode and "yes" or "no"
-  vim.opt.laststatus = prezMode and 3 or 0
-  vim.opt.showtabline = prezMode and 2 or 0
-  vim.opt.fillchars:append("eob:" .. (prezMode and "~" or " "))
-
-  -- toggle lsp diagnostics
-  vim.schedule(function()
-    vim.diagnostic[prezMode and "disable" or "enable"](nil)
-  end)
-
-  -- toggle matchup popup
-  if vim.g.loaded_matchup == 1 then
-    vim.g.matchup_matchparen_offscreen = { method = prezMode and "popup" or "" }
-  end
-
-  -- redraw treesitter context which gets messed up
-  if vim.g.loaded_treesitter == 1 then
-    vim.cmd "TSContextToggle"
-    vim.cmd "TSContextToggle"
-  end
-
-  -- toggle eyeliner.nvim highlighting
-  if not vim.tbl_isempty(vim.api.nvim_get_hl(0, { name = "EyelinerPrimary" })) then
-    vim.cmd(prezMode and "EyelinerEnable" or "EyelinerDisable")
-  end
-
-  prezMode = not prezMode
-end, "Toggle Present mode")

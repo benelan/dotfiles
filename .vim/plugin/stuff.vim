@@ -473,18 +473,6 @@ if has("autocmd")
         autocmd FileType qf,help,man
                     \ set nobuflisted
                     \ | nnoremap <silent> <buffer> q :q<CR>
-
-        autocmd FileType markdown,mdx,gitcommit,text,vimwiki,octo
-                    \ setlocal wrap spell nocursorline
-                    \ | let b:no_cursorline = 1
-                    " \ | nnoremap <buffer> ^ g^
-                    " \ | nnoremap <buffer> $ g$
-                    " \ | nnoremap <buffer> j gj
-                    " \ | nnoremap <buffer> k gk
-                    " \ | nnoremap <buffer> g^ ^
-                    " \ | nnoremap <buffer> g$ $
-                    " \ | nnoremap <buffer> gj j
-                    " \ | nnoremap <buffer> gk k
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

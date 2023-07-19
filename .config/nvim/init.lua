@@ -1,11 +1,14 @@
 -------------------------------------------------------------------------------
-----> Options
+----> Global options
 -------------------------------------------------------------------------------
 if vim.fn.executable "/usr/bin/python3" then
   vim.g.python3_host_prog = "/usr/bin/python3"
 elseif vim.fn.executable "/bin/python3" then
   vim.g.python3_host_prog = "/bin/python3"
 end
+
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 if vim.g.neovide then
   vim.g.neovide_transparency = 0.9
@@ -18,12 +21,10 @@ end
 vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
   and (
     vim.env.USE_DEVICONS == "1"
-    -- nerd font glyphs are shipped with wezterm so patched fonts aren't required.
+    -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
     or vim.env.TERM == "wezterm"
     or string.match(vim.fn.system "tmux showenv", "TERM=wezterm") ~= nil
   )
-
-require "jamin.options"
 
 -------------------------------------------------------------------------------
 ----> Global functions
@@ -37,67 +38,11 @@ _G.keymap = function(mode, lhs, rhs, desc)
 end
 
 -------------------------------------------------------------------------------
-----> Keymaps
+----> Load modules
 -------------------------------------------------------------------------------
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+require "jamin.options"
 require "jamin.keymaps"
-
--------------------------------------------------------------------------------
-----> Autocommands
--------------------------------------------------------------------------------
-vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-  group = vim.api.nvim_create_augroup("jamin_yank_highlight", { clear = true }),
-  callback = function()
-    vim.highlight.on_yank { higroup = "Visual", timeout = 269 }
-  end,
-})
-
--- check if file changed externally
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = vim.api.nvim_create_augroup("jamin_checktime", { clear = true }),
-  command = "checktime",
-})
-
--- set the OSC7 escape code when changing directories
--- https://wezfurlong.org/wezterm/shell-integration.html#osc-7-escape-sequence-to-set-the-working-directory
-vim.api.nvim_create_autocmd({ "DirChanged" }, {
-  group = vim.api.nvim_create_augroup("ben_set_osc7", { clear = true }),
-  command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
-})
-
--- workaround for: https://github.com/nvim-telescope/telescope.nvim/issues/699
-vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
-  group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", { clear = true }),
-  callback = function()
-    if vim.wo.diff then
-      return
-    end
-    if vim.tbl_contains({ "", "conf", "text", "sh", "tmux", "vim" }, vim.bo.filetype) then
-      vim.wo.foldmethod = "marker"
-    elseif vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
-      vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
-    else
-      vim.wo.foldmethod = "indent"
-    end
-  end,
-})
-
--- if necessary, create directories when saving file
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("jamin_auto_create_dir", { clear = true }),
-  callback = function(event)
-    if event.match:match "^%w%w+://" then
-      return
-    end
-    local file = vim.loop.fs_realpath(event.match) or event.match
-    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
-    local backup = vim.fn.fnamemodify(file, ":p:~:h")
-    backup = backup:gsub("[/\\]", "%%")
-    vim.go.backupext = backup
-  end,
-})
+require "jamin.commands"
 
 -------------------------------------------------------------------------------
 ----> Plugins
@@ -145,7 +90,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
-  dev = { path = vim.env.DEV .. "/lib", fallback = true },
+  dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },
   change_detection = { notify = false },
   ui = { icons = require("jamin.resources").icons.lazy },

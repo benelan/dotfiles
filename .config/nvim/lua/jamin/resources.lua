@@ -129,19 +129,30 @@ M.filetypes = {
   },
   writing = {
     "gitcommit",
+    "mail",
     "markdown",
     "octo",
+    "rst",
     "text",
     "vimwiki",
   },
   webdev = {
+    "astro",
+    "html",
     "javascript",
     "javascriptreact",
+    "svelte",
     "typescript",
     "typescriptreact",
-    "html",
     "vue",
-    "svelte",
+  },
+  marker_folds = {
+    "",
+    "conf",
+    "text",
+    "sh",
+    "tmux",
+    "vim",
   },
 }
 
