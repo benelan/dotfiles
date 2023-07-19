@@ -98,6 +98,9 @@ keymap("n", "<leader>sP", "<CMD>PrezModeToggle<CR>", "Toggle presentation mode")
 keymap("n", "<M-t>", "<CMD>Term<CR>", "Open floating terminal")
 keymap("t", "<M-t>", "<CMD>Term<CR>", "Close floating terminal")
 
+-- open the current note in the Obsidian GUI app
+keymap("n", "<leader>zO", "<CMD>ObsidianOpen<CR>", "Open note in Obsidian")
+
 -------------------------------------------------------------------------------
 ----> Lists
 -------------------------------------------------------------------------------

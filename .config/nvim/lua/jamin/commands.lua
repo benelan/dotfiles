@@ -266,4 +266,48 @@ vim.api.nvim_create_user_command(
 
 -----------------------------------------------------------------------------
 
+--- Open a file in the Obsidian GUI app. Accepts an absolute or relative
+--- filepath as an argument, otherwise uses the current buffer.
+---
+--- If the file is not found, $NOTES is prepended to the argument. Setting
+--- $NOTES to a vault directory allows you to open notes from anywhere on your
+--- filesystem without having to specify an absolute path.
+---
+--- @param event table  A user command's callback argument. See :h nvim_create_user_command
+--- @example (assumes ~/work/project/thing.md doesn't exist)
+---   :let $NOTES="~/some/path/to/notes"
+---   :pwd                   -> ~/work/project
+---   :ObsidianOpen thing    -> opens ~/some/path/to/notes/thing.md
+M.obsidian_open = function(event)
+  local absolute_filepath
+
+  if event.args then
+    if vim.fn.filereadable(event.args) == 1 then
+      absolute_filepath = vim.fn.fnamemodify(event.args, ":p")
+    else
+      absolute_filepath = vim.fn.fnamemodify(vim.env.NOTES .. "/" .. event.args, ":p")
+    end
+  else
+    absolute_filepath = vim.fn.expand "%:p"
+  end
+
+  -- https://help.obsidian.md/Advanced+topics/Using+Obsidian+URI#Shorthand%20formats
+  local uri = ("obsidian://%s"):format(absolute_filepath)
+
+  if vim.fn.exists "*netrw#BrowseX" then
+    vim.fn["netrw#BrowseX"](uri, 0)
+  else
+    -- fallback to xdg-open (change this if you're on a different OS)
+    vim.fn.jobstart("xdg-open " .. uri, { detach = true })
+  end
+end
+
+vim.api.nvim_create_user_command(
+  "ObsidianOpen",
+  M.obsidian_open,
+  { nargs = "?", desc = "Open a note in the Obsidian GUI app" }
+)
+
+-----------------------------------------------------------------------------
+
 return M
