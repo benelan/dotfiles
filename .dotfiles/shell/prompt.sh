@@ -99,7 +99,7 @@ post_prompt+="\[${RESET}\]" # reset styling
 # shellcheck disable=2154
 PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 
-PS2="\[${YELLOW}\]→ \[${RESET}\]"
+PS2="\[${YELLOW}\]…  \[${RESET}\]"
 
 export PS2
 
