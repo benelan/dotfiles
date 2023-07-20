@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = vim.fn.join(res.filetypes.writing, ","),
-  group = vim.api.nvim_create_augroup("jamin_writing_keymaps", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_setup_writing_files", { clear = true }),
   callback = function()
     vim.wo.spell = true
     vim.wo.cursorline = false
@@ -251,7 +251,7 @@ M.prez_mode_toggle = function()
   end
 
   -- toggle eyeliner.nvim highlighting
-  if not vim.tbl_isempty(vim.api.nvim_get_hl(0, { name = "EyelinerPrimary" })) then
+  if vim.fn.exists ":EyelinerEnable" then
     vim.cmd(prez_mode_enabled and "EyelinerEnable" or "EyelinerDisable")
   end
 
@@ -285,7 +285,14 @@ M.obsidian_open = function(event)
     if vim.fn.filereadable(event.args) == 1 then
       absolute_filepath = vim.fn.fnamemodify(event.args, ":p")
     else
-      absolute_filepath = vim.fn.fnamemodify(vim.env.NOTES .. "/" .. event.args, ":p")
+      absolute_filepath = vim.fn.fnamemodify(("%s/%s"):format(vim.env.NOTES, event.args), ":p")
+
+      if vim.fn.filereadable(absolute_filepath) == 0 then
+        vim.api.nvim_err_writeln(
+          ("File not found at: '%s' or '%s'"):format(event.args, absolute_filepath)
+        )
+        return
+      end
     end
   else
     absolute_filepath = vim.fn.expand "%:p"
@@ -302,11 +309,11 @@ M.obsidian_open = function(event)
   end
 end
 
-vim.api.nvim_create_user_command(
-  "ObsidianOpen",
-  M.obsidian_open,
-  { nargs = "?", desc = "Open a note in the Obsidian GUI app" }
-)
+vim.api.nvim_create_user_command("ObsidianOpen", M.obsidian_open, {
+  complete = "file",
+  nargs = "?",
+  desc = "Open a note in the Obsidian GUI app",
+})
 
 -----------------------------------------------------------------------------
 
