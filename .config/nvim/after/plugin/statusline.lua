@@ -94,18 +94,18 @@ end
 -- end
 
 function MyStatusLine()
-  return "%#TabLineSel#"
+  return "%#PmenuSel#"
     .. "  [%n]%m%r%h%w%q%y  "
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
     -------------------------------------------
-    .. "  %<%#NormalFloat#"
-    .. " %= "
+    .. " %<%#NormalFloat#"
+    .. "%="
     -------------------------------------------
     .. buffer_diagnostics()
     .. " %#TabLineFill#  " -- "%#Normal#"
     .. "%f  "
     -------------------------------------------
-    .. "%#TabLineSel#"
+    .. "%#PmenuSel#"
     .. "  %c:[%l/%L]  "
 end
