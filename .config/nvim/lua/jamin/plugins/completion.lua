@@ -1,22 +1,11 @@
+local res = require "jamin.resources"
+
 return {
-  {
-    "David-Kunz/cmp-npm", -- completes npm packages and their versions in package.json buffers
-    event = "BufEnter package.json",
-    cond = vim.fn.executable "npm" == 1,
-    dependencies = "nvim-lua/plenary.nvim",
-    opts = {},
-  },
-  -----------------------------------------------------------------------------
-  {
-    "petertriho/cmp-git", -- issues/prs/mentions/commits in git_commit/octo buffers
-    ft = require("jamin.resources").filetypes.writing,
-    cond = vim.fn.executable "git" == 1,
-  },
   -----------------------------------------------------------------------------
   {
     "uga-rosa/cmp-dictionary",
     cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
-    ft = require("jamin.resources").filetypes.writing,
+    ft = res.filetypes.writing,
     config = function()
       require("cmp_dictionary").switcher { spelllang = { en = "/usr/share/dict/words" } }
     end,
@@ -25,7 +14,7 @@ return {
   {
     "f3fora/cmp-spell", -- vim's spellsuggest
     -- enabled = false,
-    ft = require("jamin.resources").filetypes.writing,
+    ft = res.filetypes.writing,
   },
   -----------------------------------------------------------------------------
   -----------------------------------------------------------------------------
@@ -52,7 +41,6 @@ return {
       local cmp = require "cmp"
       local ls = require "luasnip"
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
-      local icons = require("jamin.resources").icons
 
       local has_words_before = function()
         unpack = unpack or table.unpack
@@ -63,7 +51,7 @@ return {
       end
 
       local filter_ft_writing = function(_, ctx)
-        for _, ft in ipairs(require("jamin.resources").filetypes.writing) do
+        for _, ft in ipairs(res.filetypes.writing) do
           if ft == ctx.filetype then
             return true
           end
@@ -130,7 +118,6 @@ return {
           format = function(entry, vim_item)
             vim_item.menu = ({
               buffer = " [BUF] ",
-              git = " [GIT] ",
               luasnip = "[SNIP] ",
               copilot = "[SNIP] ",
               nvim_lsp = " [LSP] ",
@@ -139,11 +126,11 @@ return {
               path = "[PATH] ",
               rg = "  [RG] ",
               spell = " [SPL] ",
-              npm = " [NPM] ",
               tmux = "[TMUX] ",
               treesitter = "[TREE] ",
               dictionary = "[DICT] ",
             })[entry.source.name]
+
             if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
               if icon then
@@ -152,14 +139,14 @@ return {
               else
                 vim_item.kind = string.format(
                   " %s  %s ",
-                  vim_item.kind == "Folder" and icons.lsp_kind.Folder or icons.lsp_kind.File,
+                  vim_item.kind == "Folder" and res.icons.lsp_kind.Folder or res.icons.lsp_kind.File,
                   vim_item.kind
                 )
               end
             else
               vim_item.kind = string.format(
                 " %s  %s ",
-                icons.lsp_kind[vim_item.kind] or icons.lsp_kind.Text,
+                res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Text,
                 vim_item.kind
               )
             end
@@ -171,8 +158,6 @@ return {
           { name = "copilot", group_index = 2 },
           { name = "luasnip", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
-          { name = "git", group_index = 2 },
-          { name = "npm", keyword_length = 4, group_index = 2 },
           { name = "tmux", keyword_length = 3, group_index = 2 },
           { name = "path", keyword_length = 3, group_index = 2 },
           { name = "buffer", keyword_length = 3, group_index = 2 },
@@ -201,7 +186,6 @@ return {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             cmp.config.compare.score,
-            cmp.config.compare.sort_text,
 
             function(entry1, entry2)
               local _, entry1_under = entry1.completion_item.label:find "^_+"
@@ -215,8 +199,12 @@ return {
               end
             end,
 
-            ---@diagnostic disable-next-line
+            ---@diagnostic disable: assign-type-mismatch
             cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            ---@diagnostic enable: assign-type-mismatch
+
+            cmp.config.compare.sort_text,
             cmp.config.compare.kind,
             cmp.config.compare.length,
             cmp.config.compare.order,
