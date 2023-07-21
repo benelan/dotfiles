@@ -90,6 +90,7 @@ M.icons = {
     fill_dot = "·",
     fill_slash = "╱",
     separator = "┊",
+    ellipses = "…  ",
   },
   lazy = {
     plugin = "",
@@ -127,6 +128,9 @@ M.filetypes = {
     "lspinfo",
     "man",
     "mason",
+    "neotest-output",
+    "neotest-output-panel",
+    "neotest-summary",
     "netrw",
     "octo",
     "qf",
@@ -190,14 +194,60 @@ M.lsp_servers = {
 M.mason_packages = {
   "actionlint", -- github action linter
   "codespell", -- commonly misspelled English words linter
-  "cspell", -- code spell checker
+  -- "cspell", -- code spell checker
   "delve", -- golang debug adapter
+  "hadolint", -- dockerfile linter
   "markdown-toc", -- markdown table of contents generator
   "markdownlint", -- markdown linter and formatter
   "shellcheck", -- shell linter
   "shfmt", -- shell formatter
   "stylua", -- lua formatter
-  "write-good", -- English grammar linter
+  -- "write-good", -- English grammar linter
+}
+
+M.treesitter_parsers = {
+  "astro",
+  "bash",
+  "css",
+  "diff",
+  "dockerfile",
+  "git_config",
+  "git_rebase",
+  "gitcommit",
+  "gitignore",
+  "go",
+  "gomod",
+  "gosum",
+  "gowork",
+  "graphql",
+  "html",
+  "http",
+  "javascript",
+  "jsdoc",
+  "json",
+  "jsonc",
+  "json5",
+  "latex",
+  "lua",
+  "luadoc",
+  "luap",
+  "markdown",
+  "markdown_inline",
+  "perl",
+  "python",
+  "query",
+  "regex",
+  "rust",
+  "scss",
+  "sql",
+  "svelte",
+  "toml",
+  "tsx",
+  "typescript",
+  "vim",
+  "vimdoc",
+  "vue",
+  "yaml",
 }
 
 return M

@@ -48,17 +48,7 @@ return {
       end)()
 
       require("nvim-treesitter.configs").setup {
-        -- stylua: ignore
-        ensure_installed = {
-          "astro", "bash", "css", "diff", "dockerfile",
-          "git_config", "git_rebase", "gitcommit", "gitignore",
-          "go", "gomod", "graphql", "html", "http",
-          "javascript", "jsdoc", "json", "jsonc",
-          "latex", "lua", "luadoc", "luap",
-          "markdown", "markdown_inline", "perl", "python",
-          "query", "regex", "rust", "scss", "sql", "svelte",
-          "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "yaml",
-        },
+        ensure_installed = require("jamin.resources").treesitter_parsers,
         highlight = {
           enable = true,
           -- additional_vim_regex_highlighting = { "markdown" },

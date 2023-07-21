@@ -74,6 +74,7 @@ vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
 
 local has_res, res = pcall(require, "jamin.resources")
 if has_res then
+  vim.opt.showbreak = res.icons.ui.ellipses
   vim.opt.fillchars = { diff = res.icons.ui.fill_slash }
   vim.opt.listchars = {
     extends = res.icons.ui.extends,

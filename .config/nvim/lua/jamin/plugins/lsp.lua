@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 return {
   {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
@@ -6,7 +8,7 @@ return {
       {
         "williamboman/mason.nvim", -- language server installer/manager
         build = ":MasonUpdate",
-        opts = { ensure_installed = require("jamin.resources").mason_packages },
+        opts = { ensure_installed = res.mason_packages },
         config = function(_, opts)
           require("mason").setup(opts)
           local mr = require "mason-registry"
@@ -32,7 +34,7 @@ return {
         "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
         build = ":MasonUpdate",
         opts = {
-          ensure_installed = require("jamin.resources").lsp_servers,
+          ensure_installed = res.lsp_servers,
           automatic_installation = true,
         },
       },
@@ -85,7 +87,7 @@ return {
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
 
-      for _, sign in ipairs(require("jamin.resources").icons.diagnostics) do
+      for _, sign in ipairs(res.icons.diagnostics) do
         vim.fn.sign_define("DiagnosticSign" .. sign.name, {
           texthl = "DiagnosticSign" .. sign.name,
           text = sign.text,
@@ -104,9 +106,9 @@ return {
 
       local lspconfig = require "lspconfig"
 
-      for _, server in pairs(require("jamin.resources").lsp_servers) do
-        -- zk plugin sets up its own lsp server
-        if server ~= "zk" then
+      for _, server in pairs(res.lsp_servers) do
+        -- zk and typescript plugins set up the clients themselves
+        if server ~= "zk" and server ~= "tsserver" then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -132,10 +134,24 @@ return {
           end
 
           -- disable formatting and use prettier/stylua instead (via null-ls below)
-          if vim.tbl_contains({ "tsserver", "jsonls", "lua_ls" }, client.name) then
+          if vim.tbl_contains({ "tsserver", "jsonls", "html", "lua_ls" }, client.name) then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
+          end
+
+          -- workaround for gopls not supporting semanticTokensProvider
+          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+          if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
+            local semantic = client.config.capabilities.textDocument.semanticTokens
+            client.server_capabilities.semanticTokensProvider = {
+              full = true,
+              legend = {
+                tokenTypes = semantic.tokenTypes,
+                tokenModifiers = semantic.tokenModifiers,
+              },
+              range = true,
+            }
           end
 
           local bufmap = function(mode, lhs, rhs, desc)
@@ -194,46 +210,101 @@ return {
         print("Setting autoformatting to: " .. tostring(format_is_enabled))
       end, {})
 
+      local fix_typescript_issues = function(bufnr)
+        local has_ts, ts = pcall(require, "typescript")
+        local tsserver_client = vim.lsp.get_active_clients({ bufnr = bufnr, name = "tsserver" })[1]
+        if not tsserver_client or not has_ts then
+          return
+        end
+
+        local diag = vim.diagnostic.get(
+          bufnr,
+          { namespace = vim.lsp.diagnostic.get_namespace(tsserver_client.id) }
+        )
+
+        if #diag > 0 then
+          ts.actions.fixAll { sync = true }
+          ts.actions.addMissingImports { sync = true }
+          ts.actions.removeUnused { sync = true }
+        end
+        ts.actions.organizeImports { sync = true }
+      end
+
+      local fix_eslint_issues = function(bufnr)
+        local eslint_client = vim.lsp.get_active_clients({ bufnr = bufnr, name = "eslint" })[1]
+        if not eslint_client then
+          return
+        end
+
+        local diag = vim.diagnostic.get(
+          bufnr,
+          { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id) }
+        )
+
+        if #diag > 0 then
+          vim.cmd "EslintFixAll"
+        end
+      end
+
       -- Create an augroup per client to prevent interference
       -- when multiple clients are attached to the same buffer
       local _augroups = {}
-      local get_augroup = function(client)
+      local get_client_augroup = function(client)
         if not _augroups[client.id] then
           local group_name = "jamin_auto_format_" .. client.name
           local id = vim.api.nvim_create_augroup(group_name, { clear = true })
           _augroups[client.id] = id
         end
-
         return _augroups[client.id]
       end
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_attach_format", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin_lsp_attach_auto_format", { clear = true }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
-
           if client == nil or not client.server_capabilities.documentFormattingProvider then
             return
           end
 
           -- Autocmd needs to run *before* the buffer saves
           vim.api.nvim_create_autocmd("BufWritePre", {
-            group = get_augroup(client),
+            group = get_client_augroup(client),
             buffer = args.buf,
-            callback = function()
-              if format_is_enabled then
-                vim.lsp.buf.format {
-                  async = false,
-                  filter = function(c)
-                    return c.id == client.id
-                  end,
-                }
+            callback = function(event)
+              if not format_is_enabled then
+                return
+              end
+              -- skip typescript/eslint fixes for non web dev files
+              local webdev_formatting = vim.tbl_contains(
+                res.filetypes.webdev,
+                vim.api.nvim_buf_get_option(event.buf, "filetype")
+              )
+
+              if webdev_formatting then
+                fix_typescript_issues(event.buf)
+              end
+
+              -- format the code
+              vim.lsp.buf.format {
+                async = false,
+                filter = function(c)
+                  return c.id == client.id
+                end,
+              }
+
+              if webdev_formatting then
+                fix_eslint_issues(event.buf)
               end
             end,
           })
         end,
       })
     end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "jose-elias-alvarez/typescript.nvim",
+    config = { server = require "jamin.lsp_servers.tsserver" },
   },
   -----------------------------------------------------------------------------
   {
@@ -259,81 +330,90 @@ return {
 
       local quiet_diagnostics = { virtual_text = false, signs = false }
 
+      local sources = {
+        hover.dictionary,
+        hover.printenv,
+        code_actions.gitrebase,
+        code_actions.shellcheck,
+        -- code_actions.gitsigns,
+        -- code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
+
+        -- diagnostics.cspell.with {
+        --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+        --   diagnostic_config = quiet_diagnostics,
+        --   prefer_local = "./node_modules/.bin",
+        -- },
+
+        -- diagnostics.codespell.with {
+        --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+        --   extra_args = {
+        --     "--builtin",
+        --     "clear,rare,informal,code,names,en-GB_to_en-US",
+        --     "--ignore-words",
+        --     vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
+        --   },
+        --   diagnostic_config = quiet_diagnostics,
+        -- },
+
+        -- diagnostics.write_good.with {
+        --   diagnostic_config = quiet_diagnostics,
+        --   prefer_local = "node_modules/.bin",
+        --   extra_filetypes = { "vimwiki" },
+        -- },
+
+        diagnostics.hadolint,
+        diagnostics.actionlint.with {
+          runtime_condition = function()
+            return vim.api
+              .nvim_buf_get_name(vim.api.nvim_get_current_buf())
+              :match "github/workflows" ~= nil
+          end,
+        },
+
+        diagnostics.markdownlint.with {
+          extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
+          extra_filetypes = { "vimwiki" },
+          prefer_local = "node_modules/.bin",
+          diagnostic_config = quiet_diagnostics,
+        },
+
+        diagnostics.stylelint.with {
+          prefer_local = "node_modules/.bin",
+          diagnostic_config = quiet_diagnostics,
+          condition = has_stylelint_configfile,
+        },
+
+        formatting.stylelint.with {
+          prefer_local = "node_modules/.bin",
+          condition = has_stylelint_configfile,
+        },
+
+        formatting.prettier.with {
+          prefer_local = "node_modules/.bin",
+          extra_filetypes = { "vimwiki" },
+        },
+
+        formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+        formatting.markdown_toc,
+        formatting.stylua,
+        formatting.trim_whitespace,
+
+        -- Reminder: be careful with shellharden if you (ab)use expansion
+        -- it can break your code w/o warning when you format()
+        -- formatting.shellharden,
+      }
+
+      local has_ts, ts_code_actions = pcall(require, "typescript.extensions.null-ls.code-actions")
+      if has_ts then
+        table.insert(sources, ts_code_actions)
+      end
+
       -- Install with Mason if you don't have all of these linters/formatters
       -- :MasonInstall shellcheck stylelint prettier markdownlint ...
       return {
         debug = false,
         fallback_severity = vim.diagnostic.severity.HINT,
-        sources = {
-          hover.dictionary,
-          hover.printenv,
-          -- code_actions.gitsigns,
-          code_actions.gitrebase,
-          code_actions.shellcheck,
-          code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
-
-          diagnostics.actionlint.with {
-            runtime_condition = function()
-              return vim.api
-                .nvim_buf_get_name(vim.api.nvim_get_current_buf())
-                :match "github/workflows" ~= nil
-            end,
-          },
-
-          diagnostics.codespell.with {
-            -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-            extra_args = {
-              "--builtin",
-              "clear,rare,informal,code,names,en-GB_to_en-US",
-              "--ignore-words",
-              vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
-            },
-            diagnostic_config = quiet_diagnostics,
-          },
-
-          diagnostics.cspell.with {
-            -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-            diagnostic_config = quiet_diagnostics,
-            prefer_local = "./node_modules/.bin",
-          },
-
-          diagnostics.write_good.with {
-            diagnostic_config = quiet_diagnostics,
-            prefer_local = "node_modules/.bin",
-            extra_filetypes = { "vimwiki" },
-          },
-
-          diagnostics.markdownlint.with {
-            extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
-            extra_filetypes = { "vimwiki" },
-            prefer_local = "node_modules/.bin",
-            diagnostic_config = quiet_diagnostics,
-          },
-
-          diagnostics.stylelint.with {
-            prefer_local = "node_modules/.bin",
-            diagnostic_config = quiet_diagnostics,
-            condition = has_stylelint_configfile,
-          },
-          formatting.stylelint.with {
-            prefer_local = "node_modules/.bin",
-            condition = has_stylelint_configfile,
-          },
-
-          formatting.prettier.with {
-            prefer_local = "node_modules/.bin",
-            extra_filetypes = { "vimwiki" },
-          },
-
-          formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-          formatting.markdown_toc,
-          formatting.stylua,
-          formatting.trim_whitespace,
-
-          -- Reminder: be careful with shellharden if you (ab)use expansion
-          -- it can break your code w/o warning when you format()
-          -- formatting.shellharden,
-        },
+        sources = sources,
       }
     end,
   },
