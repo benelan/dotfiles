@@ -439,13 +439,15 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
     let &t_PE = "\e[201~"
 
     " Cursor control
-    let &t_RC = "\e[?12$p"
-    let &t_SH = "\e[%d q"
-    let &t_RS = "\eP$q q\e\\"
-    let &t_SI = "\e[5 q"
-    let &t_SR = "\e[3 q"
-    " let &t_EI = "\e[1 q"
-    let &t_VS = "\e[?12l"
+    if exists("+cursorshape")
+        let &t_RS = "\eP$q q\e\\"
+        let &t_RC = "\e[?12$p"
+        let &t_VS = "\e[?12l"
+        let &t_SH = "\e[%d q"
+        let &t_SI = "\e[6 q"
+        let &t_SR = "\e[4 q"
+        let &t_EI = "\e[2 q"
+    endif
 
     " Enable focus event tracking, see  :help xterm-focus-event
     let &t_fe = "\e[?1004h"
@@ -456,10 +458,6 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
     " Window title
     let &t_ST = "\e[22;2t"
     let &t_RT = "\e[23;2t"
-    " change insert mode cursor from block to blinking line
-    let &t_SI = "\e[6 q"
-    let &t_SR = "\e[4 q"
-    let &t_EI = "\e[2 q"
 
     " Enable modified arrow keys, see  :help arrow_modifiers
     execute "silent! set <xUp>=\e[@;*A"

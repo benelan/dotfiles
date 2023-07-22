@@ -94,8 +94,6 @@ nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
 nnoremap q: :
-nnoremap <leader>q :q<cr>
-nnoremap <leader>w :w<cr>
 
 nnoremap <Backspace> <C-^>
 
@@ -119,10 +117,6 @@ nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 "" insert, command, terminal, and operator  keymaps           {{{
 cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
 cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
-
-" go to line above/below the cursor, from insert mode
-inoremap <C-Down> <C-O>o
-inoremap <C-Up> <C-O>O
 
 " expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
@@ -154,16 +148,6 @@ vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fro
 inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" git mergetool keymaps for selecting hunks                  {{{
-nnoremap <leader>gmU :diffupdate<cr>
-nnoremap <leader>gmr :diffget RE<cr>
-nnoremap <leader>gmR :%diffget RE<cr
-nnoremap <leader>gmb :diffget BA<cr>
-nnoremap <leader>gmB :%diffget BA<cr
-nnoremap <leader>gml :diffget LO<cr>
-nnoremap <leader>gmL :diffget LO<cr>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" lists - next/prev                                          {{{
 "" Argument list
 nnoremap [a :previous<CR>
@@ -190,7 +174,7 @@ nnoremap [t :tabprevious<CR>
 nnoremap ]t :tabnext<CR>
 nnoremap [T :tlast<CR>
 nnoremap ]T :tfirst<CR>
-
+"" Fix next/prev spelling error
 nnoremap [S [s1z=
 nnoremap ]S ]s1z=
 
@@ -225,31 +209,31 @@ nnoremap <Right> :vertical resize +5<CR>
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle options                                             {{{
 "" toggles highlighted cursor row; doesn't work in visual mode
-nnoremap <leader>sx :<C-U>set cursorline! cursorline?<CR>
+nnoremap <leader>sx <CMD>set cursorline!<CR>
 "" toggles highlighted cursor column; works in visual mode
-noremap <leader>sy :<C-U>set cursorcolumn! cursorcolumn?<CR>
+noremap <leader>sy <CMD>set cursorcolumn!<CR>
 "" toggles highlighting search results
-nnoremap <leader>sh :<C-U>set hlsearch! hlsearch?<CR>
+nnoremap <leader>sh <CMD>set hlsearch!<CR>
 "" toggles showing matches as I enter my pattern
-nnoremap <leader>si :<C-U>set incsearch! incsearch?<CR>
+nnoremap <leader>si <CMD>set incsearch!<CR>
 "" toggles spell checking
-nnoremap <leader>ss :<C-U>set spell! spell?<CR>
+nnoremap <leader>ss <CMD>set spell!<CR>
 "" toggles paste
-nnoremap <leader>sp :<C-U>set paste! paste?<CR>
+nnoremap <leader>sp <CMD>set paste!<CR>
 "" toggles showing tab, end-of-line, and trailing white space
-noremap <leader>sl :<C-U>set list! list?<CR>
+noremap <leader>sl <CMD>set list!<CR>
 "" toggles line number display
-noremap <leader>sn :<C-U>set relativenumber! relativenumber?<CR>
+noremap <leader>sn <CMD>set relativenumber!<CR>
 "" toggles soft wrapping
-noremap <leader>sw :<C-U>set wrap! wrap?<CR>
+noremap <leader>sw <CMD>set wrap!<CR>
 "" toggle colorcolumn
-nnoremap <silent> <leader>s\| :execute "set colorcolumn="
+nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                   \ . (&colorcolumn == "" ? "80" : "")<CR>
 "" toggle foldcolumn
-nnoremap <silent> <leader>sf :execute "set foldcolumn="
+nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                   \ . (&foldcolumn == "0" ? "1" : "0")<CR>
 "" toggle system clipboard
-nnoremap <silent> <leader>sc :execute "set clipboard="
+nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
                   \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -444,55 +428,57 @@ endfunction
 
 nnoremap <expr> g: operators#colon()
 
-" --------------------------------------------------------------------- }}}
-" Terminal options                                                      {{{
-" --------------------------------------------------------------------- {|}
+"----------------------------------------------------------------------}}}
+"  Terminal options                                                    {{{
+"----------------------------------------------------------------------{|}
 
-" :help terminal-output-codes
 
 " Fix modern terminal features
-" https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-" Styled and colored underline support
-let &t_AU = "\e[58:5:%dm"
-let &t_8u = "\e[58:2:%lu:%lu:%lum"
-let &t_Us = "\e[4:2m"
-let &t_Cs = "\e[4:3m"
-let &t_ds = "\e[4:4m"
-let &t_Ds = "\e[4:5m"
-let &t_Ce = "\e[4:0m"
-" Strikethrough
-let &t_Ts = "\e[9m"
-let &t_Te = "\e[29m"
-" Truecolor support
-let &t_8f = "\e[38:2:%lu:%lu:%lum"
-let &t_8b = "\e[48:2:%lu:%lu:%lum"
-let &t_RF = "\e]10;?\e\\"
-let &t_RB = "\e]11;?\e\\"
-" Bracketed paste
-let &t_BE = "\e[?2004h"
-let &t_BD = "\e[?2004l"
-let &t_PS = "\e[200~"
-let &t_PE = "\e[201~"
-" Cursor control
-let &t_RC = "\e[?12$p"
-let &t_SH = "\e[%d q"
-let &t_RS = "\eP$q q\e\\"
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-" let &t_EI = "\e[1 q"
-let &t_VS = "\e[?12l"
-" Focus tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-" change insert mode cursor from block to blinking line
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
+" :help terminal-output-codes
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|gnome\)'
+    " Styled and colored underline support
+    let &t_AU = "\e[58:5:%dm"
+    let &t_8u = "\e[58:2:%lu:%lu:%lum"
+    let &t_Us = "\e[4:2m"
+    let &t_Cs = "\e[4:3m"
+    let &t_ds = "\e[4:4m"
+    let &t_Ds = "\e[4:5m"
+    let &t_Ce = "\e[4:0m"
 
-" vim hardcodes background color erase even if the terminfo file does
-" not contain bce. This causes incorrect background rendering when
-" using a color theme with a background color in terminals such as
-" kitty that do not support background color erase.
-let &t_ut=""
+    " Enable true colors, see  :help xterm-true-color
+    let &t_8f = "\e[38:2:%lu:%lu:%lum"
+    let &t_8b = "\e[48:2:%lu:%lu:%lum"
+    let &t_RF = "\e]10;?\e\\"
+    let &t_RB = "\e]11;?\e\\"
 
-" --------------------------------------------------------------------- }}}
+    " Enable bracketed paste mode, see  :help xterm-bracketed-paste
+    let &t_BE = "\e[?2004h"
+    let &t_BD = "\e[?2004l"
+    let &t_PS = "\e[200~"
+    let &t_PE = "\e[201~"
+
+    " Cursor control
+    if exists("+cursorshape")
+        let &t_RS = "\eP$q q\e\\"
+        let &t_RC = "\e[?12$p"
+        let &t_VS = "\e[?12l"
+        let &t_SH = "\e[%d q"
+        let &t_SI = "\e[6 q"
+        let &t_SR = "\e[4 q"
+        let &t_EI = "\e[2 q"
+    endif
+
+    " Enable focus event tracking, see  :help xterm-focus-event
+    let &t_fe = "\e[?1004h"
+    let &t_fd = "\e[?1004l"
+    execute "set <FocusGained>=\e[I"
+    execute "set <FocusLost>=\e[O"
+
+    " Enable modified arrow keys, see  :help arrow_modifiers
+    execute "silent! set <xUp>=\e[@;*A"
+    execute "silent! set <xDown>=\e[@;*B"
+    execute "silent! set <xRight>=\e[@;*C"
+    execute "silent! set <xLeft>=\e[@;*D"
+
+    let &t_ut=""
+endif

@@ -7,10 +7,10 @@ My personal setup, **don't use the install script unless you're me**. I recommen
 To install the dotfiles in your `$HOME` directory, run:
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh)
+curl -Ls benelan.dev/d | sh
 ```
 
-The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. For more info, I found the idea on a [Hacker News thread](https://news.ycombinator.com/item?id=11071754). A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
+Use the [githubusercontent link](https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh) if the one above dies. The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. Read [this tutorial](https://www.atlassian.com/git/tutorials/dotfiles) for more info. A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
 
 An [alias](.dotfiles/shell/aliases.sh) `dot`, which works like `git`, allows you to manage dotfiles from any directory on a machine. It hides untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
 
@@ -22,9 +22,9 @@ dot push
 
 [Git bash completion](.dotfiles/shell/completions/2_git.completion.sh) and the git aliases defined at the bottom of [`~/.config/git/config`](.config/git/config) will also work for `dot`.
 
-My setup was primarily created for use in Ubuntu/Debian and derivative distros, but it worked in Fedora and should work in other Unix operating systems as well. I try to separate the Ubuntu-only code and make sure executables exist before using them. Vanilla Windows won't work, but WSL running Ubuntu does.
+My setup was primarily created for use in Ubuntu/Debian and their derivative distros, but it worked in Fedora and should work in other Unix operating systems as well. I try to separate the Ubuntu-only code and make sure executables exist before using them. Vanilla Windows won't work, but WSL running Ubuntu does.
 
-[`deps.init.sh`](https://github.com/benelan/dotfiles/blob/master/.dotfiles/scripts/deps.init.sh) and a few other scripts install the development tools I commonly use, as well as some other stuff like fonts.
+[`deps.init.sh`](.dotfiles/scripts/deps.init.sh) and a few other scripts install the development tools I commonly use, as well as some other stuff like fonts.
 
 > NOTE: I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
 
