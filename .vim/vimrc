@@ -10,7 +10,7 @@ if has("syntax") && !exists("syntax_on")
 endif
 
 set number relativenumber linebreak backspace=indent,eol,start
-set mouse=a ttymouse=sgr mousehide clipboard^=unnamed
+set mouse=a ttymouse=sgr mousehide clipboard=unnamed
 set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
