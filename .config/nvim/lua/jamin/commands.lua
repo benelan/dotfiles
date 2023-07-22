@@ -46,8 +46,18 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     keymap("n", "g^", "^", "Move to start of wrapped line")
     keymap("n", "gj", "j", "Move down wrapped lines")
     keymap("n", "gk", "k", "Move up wrapped lines")
-    keymap("n", "j", "gj", "Move down line")
-    keymap("n", "k", "gk", "Move up line")
+    vim.keymap.set(
+      "n",
+      "j",
+      "(v:count == 0 ? 'gj' : 'j')",
+      { desc = "Move down line", expr = true, silent = true, noremap = true }
+    )
+    vim.keymap.set(
+      "n",
+      "k",
+      "(v:count == 0 ? 'gk' : 'k')",
+      { desc = "Move down line", expr = true, silent = true, noremap = true }
+    )
   end,
 })
 
