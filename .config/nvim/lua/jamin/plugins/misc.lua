@@ -1,6 +1,6 @@
 return {
   -----------------------------------------------------------------------------
-  { "folke/lazy.nvim", version = "*" },
+  { "folke/lazy.nvim" },
   -----------------------------------------------------------------------------
   {
     -- NOTE: forked from https://github.com/ThePrimeagen/harpoon to add support

@@ -60,6 +60,7 @@ return {
       { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
       { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
       { "<leader>gP", "<cmd>GBrowsePR", desc = "Open GitHub pull request for a branch" },
+      { "<leader>gY", "<cmd>GBrowsePR!", desc = "Copy GitHub pull request for a branch" },
     },
     -- stylua: ignore
     cmd = {
@@ -120,18 +121,13 @@ return {
       vim.g.gruvbox_material_background = "soft"
       vim.g.gruvbox_material_foreground = "original"
       vim.g.gruvbox_material_ui_contrast = "high"
-      vim.g.gruvbox_material_statusline_style = "material"
-      vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
-      -- vim.g.gruvbox_material_spell_foreground = "colored"
-      -- vim.g.gruvbox_material_sign_column_background = "grey"
-      -- vim.g.gruvbox_material_menu_selection_background = "orange"
-      -- vim.g.gruvbox_material_current_word = "bold"
-      -- vim.g.gruvbox_material_visual = "reverse"
+      vim.g.gruvbox_material_diagnostic_virtual_text = "highlghted"
+      -- vim.g.gruvbox_material_statusline_style = "original"
 
-      vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_better_performance = 1
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_enable_bold = 0
       vim.g.gruvbox_material_diagnostic_text_highlight = 0
-      -- vim.g.gruvbox_material_enable_bold = 1
       -- vim.g.gruvbox_material_disable_terminal_colors = 1
       -- vim.g.gruvbox_material_dim_inactive_windows = 1
 
@@ -139,36 +135,38 @@ return {
         vim.g.gruvbox_material_transparent_background = 1
       end
 
-      vim.cmd [[
-        function! s:gruvbox_material_custom() abort
-          let s:palette = gruvbox_material#get_palette("soft", "material", {
-                      \     "bg_orange": ["#5A3B0A", "130"],
-                      \     "bg_visual_yellow": ["#7a380b", "208"]
-                      \ })
+      local gruvbox_custom_colors = function()
+        local palette = vim.fn["gruvbox_material#get_palette"]("soft", "material", {
+          bg_visual_yellow = { "#7a380b", "208" },
+          bg_orange = { "#5A3B0A", "130" },
+        })
 
-          call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
-          call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
-          call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
-          call gruvbox_material#highlight("GitSignsChange", s:palette.orange, s:palette.none)
-          call gruvbox_material#highlight("GitSignsChangeNr", s:palette.orange, s:palette.none)
-          call gruvbox_material#highlight("GitSignsChangeLn", s:palette.none, s:palette.bg_orange)
-          call gruvbox_material#highlight("GitStatusLineChange", s:palette.orange, s:palette.bg3)
-          call gruvbox_material#highlight("GitStatusLineAdd", s:palette.green, s:palette.bg3)
-          call gruvbox_material#highlight("GitStatusLineDelete", s:palette.red, s:palette.bg3)
-          call gruvbox_material#highlight("LazyStatusLineUpdates", s:palette.purple, s:palette.bg2)
-          call gruvbox_material#highlight("DapStatusLineInfo", s:palette.aqua, s:palette.bg2)
-          call gruvbox_material#highlight("CmpItemAbbrDeprecated", s:palette.grey1, s:palette.none, "strikethrough")
+        vim.fn["gruvbox_material#highlight"]("DiffDelete", palette.bg5, palette.bg_diff_red)
+        vim.fn["gruvbox_material#highlight"]("DiffChange", palette.none, palette.bg_orange)
+        vim.fn["gruvbox_material#highlight"]("DiffText", palette.fg0, palette.bg_visual_yellow)
+        vim.fn["gruvbox_material#highlight"]("GitSignsChange", palette.orange, palette.none)
+        vim.fn["gruvbox_material#highlight"]("GitSignsChangeNr", palette.orange, palette.none)
+        vim.fn["gruvbox_material#highlight"]("GitSignsChangeLn", palette.orange, palette.none)
+        vim.fn["gruvbox_material#highlight"]("GitStatusLineChange", palette.orange, palette.bg3)
+        vim.fn["gruvbox_material#highlight"]("GitStatusLineAdd", palette.green, palette.bg3)
+        vim.fn["gruvbox_material#highlight"]("GitStatusLineDelete", palette.red, palette.bg3)
+        vim.fn["gruvbox_material#highlight"](
+          "CmpItemAbbrDeprecated",
+          palette.grey1,
+          palette.none,
+          "strikethrough"
+        )
 
-          highlight! link CursorLineNr Purple
-        endfunction
+        vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Purple" })
+      end
 
-        augroup jamin_gruvbox_material_custom_colors
-            autocmd!
-            autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
-        augroup END
+      vim.api.nvim_create_autocmd({ "ColorScheme" }, {
+        pattern = "gruvbox-material",
+        group = vim.api.nvim_create_augroup("jamin_gruvbox_custom_colors", { clear = true }),
+        callback = gruvbox_custom_colors,
+      })
 
-        colorscheme gruvbox-material
-      ]]
+      vim.cmd "colorscheme gruvbox-material"
     end,
   },
 }

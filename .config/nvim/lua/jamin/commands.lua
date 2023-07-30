@@ -255,7 +255,7 @@ M.prez_mode_toggle = function()
   end
 
   -- redraw treesitter context which gets messed up
-  if vim.g.loaded_treesitter == 1 then
+  if vim.fn.exists ":TSContextToggle" then
     vim.cmd "TSContextToggle"
     vim.cmd "TSContextToggle"
   end

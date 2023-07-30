@@ -94,7 +94,7 @@ end
 -- end
 
 function MyStatusLine()
-  return "%#PmenuSel#"
+  return "%#TabLineSel#"
     .. "  [%n]%m%r%h%w%q%y  "
     -------------------------------------------
     .. gitsigns_info() -- fugitive_git_branch()
@@ -106,6 +106,6 @@ function MyStatusLine()
     .. " %#TabLineFill#  " -- "%#Normal#"
     .. "%f  "
     -------------------------------------------
-    .. "%#PmenuSel#"
+    .. "%#TabLineSel#"
     .. "  %c:[%l/%L]  "
 end

@@ -76,20 +76,20 @@ return {
             name = "git",
             t = { name = "toggle options" },
             f = { name = "find" },
-            h = { name = "hunks" },
             m = { name = "mergetool" },
           },
+          h = { name = "hunks" },
           o = {
             name = "octo (github)",
-            i = { name = "issues", D = { name = "remove" }, a = { name = "add" } },
+            r = { name = "reactions" },
             m = { name = "my stuff", i = { name = "issues" }, p = { name = "pull requests" } },
+            i = { name = "issues", D = { name = "remove" }, a = { name = "add" } },
             p = {
               name = "pull requests",
               D = { name = "remove" },
               a = { name = "add" },
               r = { name = "reviews" },
             },
-            r = { name = "reactions" },
           },
         },
       }
