@@ -11,15 +11,6 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  {
-    "f3fora/cmp-spell", -- vim's spellsuggest
-    -- enabled = false,
-    ft = res.filetypes.writing,
-  },
-  -----------------------------------------------------------------------------
-  -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" }, -- lsp document symbol
-  -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" }, -- function signature
   -----------------------------------------------------------------------------
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" }, -- lsp
@@ -33,7 +24,6 @@ return {
       "L3MON4D3/LuaSnip", -- snippet engine
       "hrsh7th/cmp-buffer", -- buffers
       "hrsh7th/cmp-path", -- relative paths
-      "ray-x/cmp-treesitter", -- treesitter nodes
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil }, -- visible text in other tmux panes
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
     },
@@ -121,13 +111,10 @@ return {
               luasnip = "[SNIP] ",
               copilot = "[SNIP] ",
               nvim_lsp = " [LSP] ",
-              nvim_lsp_document_symbol = "[SYMB] ",
               nvim_lsp_signature_help = " [SIG] ",
               path = "[PATH] ",
               rg = "  [RG] ",
-              spell = " [SPL] ",
               tmux = "[TMUX] ",
-              treesitter = "[TREE] ",
               dictionary = "[DICT] ",
             })[entry.source.name]
 
@@ -161,7 +148,6 @@ return {
           { name = "tmux", keyword_length = 3, group_index = 2 },
           { name = "path", keyword_length = 3, group_index = 2 },
           { name = "buffer", keyword_length = 3, group_index = 2 },
-          { name = "treesitter", keyword_length = 3, group_index = 2 },
           { name = "rg", group_index = 4, keyword_length = 4 },
           {
             name = "dictionary",
@@ -169,22 +155,12 @@ return {
             keyword_length = 3,
             entry_filter = filter_ft_writing,
           },
-          {
-            name = "spell",
-            group_index = 4,
-            keyword_length = 3,
-            entry_filter = filter_ft_writing,
-            option = {
-              enable_in_context = function()
-                return vim.wo.spell == true
-              end,
-            },
-          },
         },
         sorting = {
           comparators = {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
+            require("copilot_cmp.comparators").prioritize,
             cmp.config.compare.score,
 
             function(entry1, entry2)
@@ -212,14 +188,7 @@ return {
         },
       }
 
-      cmp.setup.cmdline({ "/", "?" }, {
-        sources = {
-          { name = "nvim_lsp_document_symbol" },
-          { name = "treesitter" },
-          { name = "buffer" },
-        },
-      })
-
+      cmp.setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
       cmp.setup.cmdline(":", {
         sources = {
           { name = "cmdline", group_index = 1 },
@@ -227,7 +196,6 @@ return {
           { name = "buffer", group_index = 2 },
           { name = "rg", keyword_length = 4, group_index = 2 },
           { name = "dictionary", keyword_length = 4, group_index = 3 },
-          { name = "spell", keyword_length = 4, group_index = 3 },
         },
       })
     end,
@@ -319,7 +287,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "zbirenbaum/copilot-cmp",
-    enabled = false,
+    -- enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     event = "InsertEnter",
     dependencies = {
@@ -334,9 +302,10 @@ return {
       require("copilot_cmp").setup()
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "github/copilot.vim", -- AI code completion
-    -- enabled = false,
+    enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
