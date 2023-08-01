@@ -439,7 +439,6 @@ if is-supported fzf; then
                         --no-sort \
                         --no-multi \
                         --tiebreak=index \
-                        --bind=ctrl-x:toggle-sort \
                         --query "$*" \
                         --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
                         --preview-window='right:hidden:wrap' \
@@ -488,7 +487,17 @@ if is-supported fzf; then
             return 1
         fi
         rg --files-with-matches --no-messages "$1" |
-            fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+            fzf \
+                --bind=ctrl-v:toggle-preview \
+                --bind=ctrl-x:toggle-sort \
+                --bind "ctrl-o:execute(o {})" \
+                --bind "ctrl-y:execute(echo {} | cb)" \
+                --bind "ctrl-e:execute($EDITOR {})" \
+                --header='(edit:ctrl-e) (open:ctrl-o) (copy:ctrl-y) (view:ctrl-v) (sort:ctrl-x)' \
+                --preview="bat --color=always {} 2> /dev/null |
+                    rg --colors 'match:bg:green' --colors 'match:fg:black' \
+                       --ignore-case --context 10 --color always '$1' ||
+                    rg --ignore-case --context 10 --pretty '$1' {}"
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

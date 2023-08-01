@@ -175,6 +175,7 @@
 [alias]
   a = add
   all = add --update
+  af = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
 
   b = branch
   bd = branch --delete --force
@@ -315,6 +316,12 @@
   # add/remove file(s) to/from index
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
+
+    tf = !git tag --sort -version:refname | fzf --reverse --multi \
+        --bind='ctrl-x:execute(git tag -d {})+accept' \
+        --bind='ctrl-o:execute(git checkout {})+accept' \
+        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
+        --preview 'git show --color=always {} | head -'$LINES
 
   # remove the old tag with this name and tag the latest commit with it.
   retag = "!f() { git tag -d \"$1\" && \
