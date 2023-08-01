@@ -109,7 +109,6 @@ return {
             vim_item.menu = ({
               buffer = " [BUF] ",
               luasnip = "[SNIP] ",
-              copilot = "[SNIP] ",
               nvim_lsp = " [LSP] ",
               nvim_lsp_signature_help = " [SIG] ",
               path = "[PATH] ",
@@ -142,7 +141,6 @@ return {
         },
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "copilot", group_index = 2 },
           { name = "luasnip", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "tmux", keyword_length = 3, group_index = 2 },
@@ -160,7 +158,6 @@ return {
           comparators = {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
-            require("copilot_cmp.comparators").prioritize,
             cmp.config.compare.score,
 
             function(entry1, entry2)
@@ -286,26 +283,8 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "zbirenbaum/copilot-cmp",
-    -- enabled = false,
-    cond = vim.env.USE_COPILOT == "1",
-    event = "InsertEnter",
-    dependencies = {
-      {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        opts = { suggestion = { enabled = false }, panel = { enabled = false } },
-      },
-    },
-    config = function()
-      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-      require("copilot_cmp").setup()
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
     "github/copilot.vim", -- AI code completion
-    enabled = false,
+    -- enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",

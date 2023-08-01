@@ -30,6 +30,9 @@ return {
         { "<leader>fb", function() builtin.buffers() end, desc = "Find buffer" },
         { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzying" },
         { "<leader>fr", function() builtin.registers() end, desc = "Find registers" },
+        { "<leader>fm", function() builtin.marks() end, desc = "Find marks" },
+        { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist" },
+        { "<leader>fc", function() builtin.commands() end, desc = "Find command" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find file" },
         { "<leader>ft", function() telescope_cwd "live_grep" end, desc = "Find text" },
         { "<leader>fv", function() builtin.find_files { search_dirs = { "~/.vim", "~/.config/nvim" } } end, desc = "Find (n)vim files" },
@@ -38,15 +41,15 @@ return {
 
         -- LSP keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-        { "<leader>lr", function() builtin.lsp_references() end, desc = "References" },
-        { "<leader>lq", function() builtin.quickfix() end, desc = "Telescope quickfix" },
-        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Telescope quickfix history" },
-        { "<leader>lt", function() builtin.lsp_type_definitions() end, desc = "Type definitions" },
-        { "<leader>lD", function() builtin.diagnostics() end, desc = "Workspace diagnostics" },
-        { "<leader>ls", function() builtin.lsp_document_symbols() end, desc = "Document symbols" },
-        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols() end, desc = "Workspace symbols" },
-        { "<leader>li", function() builtin.lsp_implementations() end, desc = "Implementations" },
-        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "Buffer diagnostics" },
+        { "<leader>lr", function() builtin.lsp_references() end, desc = "Find references" },
+        { "<leader>lq", function() builtin.quickfix() end, desc = "Find quickfix" },
+        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Find quickfix history" },
+        { "<leader>lt", function() builtin.lsp_type_definitions() end, desc = "Find type definitions" },
+        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols() end, desc = "Find workspace symbols" },
+        { "<leader>ls", function() builtin.lsp_document_symbols() end, desc = "Find document symbols" },
+        { "<leader>li", function() builtin.lsp_implementations() end, desc = "Find implementations" },
+        { "<leader>lD", function() builtin.diagnostics() end, desc = "Find workspace diagnostics" },
+        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "Find document diagnostics" },
 
         -- Git keymaps
         -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --

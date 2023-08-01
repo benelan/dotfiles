@@ -171,18 +171,12 @@ keymap("n", "[d", function()
 end, "Previous diagnostic")
 
 -- diagnostic error
-keymap("n", "]e", "<CMD>lua vim.diagnostic.goto_next({ severity = 'Error' })<CR>", "Next error")
+keymap("n", "]e", "<CMD>lua vim.diagnostic.goto_next({severity='Error'})<CR>", "Next error")
+keymap("n", "[e", "<CMD>lua vim.diagnostic.goto_prev({severity='Error'})<CR>", "Previous error")
 
-keymap("n", "[e", "<CMD>lua vim.diagnostic.goto_prev({ severity = 'Error' })<CR>", "Previous error")
 -- diagnostic warning
-keymap("n", "]w", "<CMD>lua vim.diagnostic.goto_next({ severity = 'Warn' })<CR>", "Next warning")
-
-keymap(
-  "n",
-  "[w",
-  "<CMD>lua vim.diagnostic.goto_prev({ severity = 'Warn' })<CR>",
-  "Previous warning"
-)
+keymap("n", "]w", "<CMD>lua vim.diagnostic.goto_next({severity='Warn'})<CR>", "Next warning")
+keymap("n", "[w", "<CMD>lua vim.diagnostic.goto_prev({severity='Warn'})<CR>", "Previous warning")
 
 -------------------------------------------------------------------------------
 ----> Git difftool and mergetool
@@ -285,3 +279,8 @@ keymap(
   "Toggle clipboard"
 )
 
+local virtual_text_enabled = true
+keymap("n", "<leader>sv", function()
+  virtual_text_enabled = not virtual_text_enabled
+  vim.diagnostic.config { virtual_text = virtual_text_enabled }
+end, "Toggle diagnostic virtual text")
