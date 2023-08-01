@@ -451,17 +451,51 @@ if has("autocmd")
         " Clear actively used marks to prevent jumping to other projects
         autocmd VimEnter *  delmarks REWQAZX
         " Create marks for specific filetypes when leaving buffer
-        autocmd BufLeave *.css,*.scss,*.sass      normal! mC
-        autocmd BufLeave *.csv,*.json,*.toml      normal! mD
-        autocmd BufLeave *.go,*.rs,*.zig          normal! mM
-        autocmd BufLeave *.html,*.svelte,*.vue    normal! mH
-        autocmd BufLeave *.js,*.jsx               normal! mJ
-        autocmd BufLeave *.lua                    normal! mL
-        autocmd BufLeave *.py                     normal! mP
-        autocmd BufLeave *.sh,*.bash              normal! mS
-        autocmd BufLeave *.ts,*.tsx               normal! mT
-        autocmd BufLeave *.vim,*vimrc             normal! mV
-        autocmd BufLeave *.yml,*.yaml             normal! mY
+        autocmd BufLeave \(//:\)\@<!*.css,
+                        \\(//:\)\@<!*.scss,
+                        \\(//:\)\@<!*.sass
+                            \ normal! mC
+
+        autocmd BufLeave \(//:\)\@<!*.csv,
+                        \\(//:\)\@<!*.json,
+                        \\(//:\)\@<!*.toml     
+                            \ normal! mD
+
+        autocmd BufLeave \(//:\)\@<!*.go,
+                        \\(//:\)\@<!*.rs,
+                        \\(//:\)\@<!*.zig         
+                            \ normal! mM
+
+        autocmd BufLeave \(//:\)\@<!*.html,
+                        \\(//:\)\@<!*.svelte,
+                        \\(//:\)\@<!*.vue   
+                            \ normal! mH
+
+        autocmd BufLeave \(//:\)\@<!*.js,
+                        \\(//:\)\@<!*.jsx                         
+                            \ normal! mJ
+
+        autocmd BufLeave \(//:\)\@<!*.lua                                         
+                            \ normal! mL
+
+        autocmd BufLeave \(//:\)\@<!*.py                                          
+                            \ normal! mP
+
+        autocmd BufLeave \(//:\)\@<!*.sh,
+                        \\(//:\)\@<!*.bash                        
+                            \ normal! mS
+
+        autocmd BufLeave \(//:\)\@<!*.ts,
+                        \\(//:\)\@<!*.tsx                         
+                            \ normal! mT
+
+        autocmd BufLeave \(//:\)\@<!*.vim,
+                        \\(//:\)\@<!*vimrc                       
+                            \ normal! mV
+
+        autocmd BufLeave \(//:\)\@<!*.yml,
+                        \\(//:\)\@<!*.yaml                       
+                            \ normal! mY
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
