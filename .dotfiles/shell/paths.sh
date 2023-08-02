@@ -72,6 +72,7 @@ pathappend() {
 pathprepend "$HOME/.dotfiles/bin"
 pathprepend "$HOME/.local/share/nvim/mason/bin"
 pathappend "$HOME/dev/personal/git-mux"
+pathappend "$HOME/dev/lib/forgit/bin"
 pathappend "$HOME/dev/lib/fzf/bin"
 pathappend "$HOME/dev/lib/fasd"
 pathappend "$HOME/dev/lib/fff"

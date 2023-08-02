@@ -1,5 +1,14 @@
 [core]
-    pager = delta
+pager = "bash -c '{                                                \
+    COLS=$(tput cols);                                             \
+    if [ $COLS -ge 110 ] && [ -z $FZF_PREVIEW_COLUMNS ]; then       \
+        delta --side-by-side -w $((COLS-5));                       \
+    elif [ $FZF_PREVIEW_COLUMNS -ge 80 ]; then  \
+        delta --side-by-side -w $((FZF_PREVIEW_COLUMNS-5));        \
+    else                                                           \
+        delta;                                                     \
+    fi                                                             \
+}'"
 
 [interactive]
     diffFilter = delta --color-only
@@ -8,11 +17,10 @@
     useBuiltin = false # required for git 2.37.0
 
 [delta]
-    features = gruvbox-dark zebra-dark
-    side-by-side = true
-    navigate = true    # use n and N to move between diff sections
+    features = navigate gruvbox-dark zebra-dark
     light = false
-    # hyperlinks = true
+    hyperlinks = false
+    wrap-right-prefix-symbol = "‣"
 
 [delta "zebra-dark"]
     minus-style = syntax "#330f0f"
