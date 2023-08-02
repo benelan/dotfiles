@@ -51,14 +51,9 @@ if is-supported fzf; then
     # fzf default window options
     FZF_DEFAULT_OPTS='--preview-window "right:57%" --cycle --exit-0 --select-1 --reverse'
     # fzf default keybingings
-    FZF_DEFAULT_OPTS+=' --bind=ctrl-f:preview-page-down,ctrl-b:preview-page-up,'
-    FZF_DEFAULT_OPS+='ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down,'
-    FZF_DEFAULT_OPS+='shift-up:preview-top,shift-down:preview-bottom,'
-    FZF_DEFAULT_OPS+='alt-up:half-page-up,alt-down:half-page-down'
+    FZF_DEFAULT_OPTS+=' --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down"'
     # fzf colorscheme (gruvbox)
-    FZF_DEFAULT_OPTS+=' --color=bg+:#3c3836,bg:#32302f,spinner:#fb4934,'
-    FZF_DEFAULT_OPS+='hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,'
-    FZF_DEFAULT_OPS+='pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934'
+    FZF_DEFAULT_OPTS+=' --color=bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934'
 
     export FZF_DEFAULT_OPTS
     export FZF_COMPLETION_TRIGGER='~~'

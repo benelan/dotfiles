@@ -1,0 +1,206 @@
+#!/usr/bin/env bash
+
+# [f]zf [t]ask[w]arrior was yoinked from taskfzf:
+# https://gitlab.com/doronbehar/taskwarrior-fzf
+# Copyright (c) 2020 Doron Behar [MIT License]
+
+# Default taskwarrior options
+__ftw_tw_cmd='task rc.defaultwidth=0 rc.defaultheight=0 rc.verbose=nothing rc._forcecolor=on'
+
+__fzf_version="$(fzf --version | awk '{print $1}')"
+if [ "$(
+    printf "%s\n%s" "0.18.0" "$__fzf_version" | sort -V | tail -1
+)" != "$__fzf_version" ]; then
+    (
+        printf "Your fzf version (%s) is not supported\n%s" \
+            "$__fzf_version" \
+            "Install 0.19.0 or higher from https://github.com/junegunn/fzf/releases"
+    ) >&2
+    exit 1
+fi
+
+# Make all less invocations interpret ANSI colors
+export LESS="-r"
+
+if [ "${_FTW_INTERNAL_ACTION}" = "keys" ]; then
+    cat >&2 <<EOF
+Key            Action
+===            ======
+ctrl-r         Reload the current report
+alt-/          Show keys
+alt-u          Undo last action
+alt-n          Add a new task
+alt-e          Edit selected tasks with \$EDITOR
+alt-m          Modify the first selected task
+alt-a          Annotate the first selected task
+alt-x          Delete tasks
+alt-d          Mark tasks as Done
+alt-]          Start task
+alt-[          Stop task
+alt-+          Append to first selected task
+alt-r          Change report
+alt-c          Change context
+alt-q          Reset the filter and context
+EOF
+    exit 0
+fi
+
+# create temp file for storing how to execute the next command in the main loop
+__ftw_current_filter="${XDG_CACHE_HOME:-$HOME/.cache}/fuzzy_taskwarrior_filter"
+if ! touch "$__ftw_current_filter"; then
+    (
+        printf "%s\n%s\n%s" \
+            "Can't create a file needed for internal state management at:" \
+            "$__ftw_current_filter" \
+            "Update the XDG_CACHE_HOME environment variable or create any missing directories."
+    ) >&2
+    exit 3
+fi
+
+# If a _FTW_ environmental variables is set (see explanation near
+# the main loop at the end), we'll need to do the following:
+if [ -n "$_FTW_TASK_ACTION" ]; then
+    # clear the screen so the new output from taskwarrior is more clear
+    clear
+    # checks if the arguments given to the task are numbers only
+    if [ "$_FTW_REPORT" = "all" ]; then
+        __ftw_tasks_args=$(grep -o '^[0-9a-f]\{8\}' "$@" | tr '\n' ' ')
+    else
+        __ftw_tasks_args=$(awk '{printf $1" "} END {printf "\n"}' "$@")
+    fi
+
+    case "$__ftw_tasks_args" in
+        [!a-f0-9] | *[-_./]*)
+            (
+                printf "Chosen tasks: %s\n%s\n%s\n%s\n%s" \
+                    "$__ftw_tasks_args" \
+                    "Update your reports in taskrc (with the exception of 'all') to contain the task's ID or UUID in the first column." \
+                    "Alternatively, choose a line with an ID/UUID in the first column." \
+                    "---------------------------------------------------------------------------" \
+                    "Press 'q' to continue"
+            ) | less
+            exit $?
+            ;;
+    esac
+
+    # Do the things on the stuff
+    case "$_FTW_TASK_ACTION" in
+        undo) task undo ;;
+        add)
+            # Needs no arguments but does need a prompt
+            printf "provide info for 'task add': "
+            read -r __ftw_add_args
+            # shellcheck disable=2086
+            task add $__ftw_add_args
+            ;;
+        append | modify | annotate)
+            printf "provide info for 'task %s%s': " "$__ftw_tasks_args" "$_FTW_TASK_ACTION"
+            read -r __ftw_args
+            # shellcheck disable=2086
+            task $__ftw_tasks_args $_FTW_TASK_ACTION $__ftw_args
+            ;;
+        *)
+            # shellcheck disable=2086
+            task $__ftw_tasks_args $_FTW_TASK_ACTION
+            ;;
+    esac
+    exit $?
+fi
+
+if [ -n "$_FTW_LIST_CHANGE" ]; then
+    # Generate the string to save in the marker file while changing the report or context
+    case $_FTW_LIST_CHANGE in
+        report)
+            $__ftw_tw_cmd reports | sed '$d' | fzf --ansi --no-multi \
+                --bind='enter:execute@echo {1}@+abort' >"$__ftw_current_filter"
+            ;;
+        context)
+            task context "$(
+                $__ftw_tw_cmd _context | cat - <(echo "none") | fzf --ansi --no-multi \
+                    --bind='enter:execute@echo {1}@+abort'
+            )"
+            ;;
+        quit)
+            rm -rf "$__ftw_current_filter"
+            task context none
+            ;;
+    esac
+
+    exit
+fi
+
+if [ -n "$_FTW_RELOAD" ]; then
+    __ftw_filter="$(cat "$__ftw_current_filter")"
+    __ftw_output=$($__ftw_tw_cmd "$__ftw_filter")
+    # Provide a clearer message when there's no output, rather than whatever fzf says
+    if [ -n "$__ftw_output" ]; then
+        echo "$__ftw_output"
+    else
+        echo "No tasks were found in filter $__ftw_filter"
+    fi
+    exit
+fi
+
+# Remove the marker file to help determine if this is the initial execution when
+# inside the loop. Setting the following environment variables will exit the loop
+if [ -z "${_FTW_LIST_CHANGE+1}" ] &&
+    [ -z "${_FTW_TASK_ACTION+1}" ] &&
+    [ "${_FTW_INTERNAL_ACTION}" != "reload" ]; then
+    rm -f "$__ftw_current_filter"
+fi
+
+# Every binding in fzf's interface below calls this script with an
+# environment variable _FTW_TASK_ACTION set to the appropriate value.
+
+# While Ctrl-c wasn't pressed inside fzf
+while [ $? != 130 ]; do
+
+    # If the marker file exists, it means the internal state is already set
+    if [ -w "$__ftw_current_filter" ]; then
+        __ftw_tw_args="$(cat "$__ftw_current_filter")"
+    else
+        # otherwise this is the initial execution
+        __ftw_tw_args="$*"
+        # Save the current filter used as in our marker file for the next execution
+        echo "$__ftw_tw_args" >"$__ftw_current_filter"
+    fi
+
+    # detect the 'all' report
+    # https://gitlab.com/doronbehar/taskwarrior-fzf/-/issues/8#note_339724564
+    case "$__ftw_tw_args" in
+        *all*) export _FTW_REPORT=all ;;
+    esac
+
+    # grab the current filter from the marker file when reloading
+    if [ "${_FTW_INTERNAL_ACTION}" = "reload" ]; then
+        $__ftw_tw_cmd "$__ftw_tw_args"
+        exit $?
+    fi
+
+    # - See https://github.com/junegunn/fzf/issues/1593#issuecomment-498007983
+    #   for an explanation of the tty redirection.
+    #
+    # - Add a 'print-query' action after 'execute' so the fzf process
+    #   quits and the loop continues to the next iteration. The 'abort' action
+    #   has an exit code of 130 which will end the loop.
+    #
+    # - Use {+f} instead of {+} because parsing a file is easier than a one liner
+    $__ftw_tw_cmd "$__ftw_tw_args" | fzf --ansi \
+        --multi \
+        --bind="ctrl-r:reload(env _FTW_INTERNAL_ACTION=reload $0)" \
+        --bind="alt-/:execute(env _FTW_INTERNAL_ACTION=keys $0 | less)+print-query" \
+        --bind="enter:execute(env _FTW_TASK_ACTION=information $0 {+f} | less)" \
+        --bind="alt-d:execute(env _FTW_TASK_ACTION=done $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-x:execute(env _FTW_TASK_ACTION=delete $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-u:execute(env _FTW_TASK_ACTION=undo $0< /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-e:execute(env _FTW_TASK_ACTION=edit $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-n:execute(env _FTW_TASK_ACTION=add $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-a:execute(env _FTW_TASK_ACTION=annotate $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-m:execute(env _FTW_TASK_ACTION=modify $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-]:execute(env _FTW_TASK_ACTION=start $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-[:execute(env _FTW_TASK_ACTION=stop $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-+:execute(env _FTW_TASK_ACTION=append $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
+        --bind="alt-r:execute(env _FTW_LIST_CHANGE=report $0)+reload(env _FTW_RELOAD=true $0)" \
+        --bind="alt-c:execute(env _FTW_LIST_CHANGE=context $0)+reload(env _FTW_RELOAD=true $0)" \
+        --bind="alt-q:execute(env _FTW_LIST_CHANGE=quit $0)+reload(env _FTW_RELOAD=true $0)"
+done
