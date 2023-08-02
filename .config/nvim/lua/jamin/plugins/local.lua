@@ -32,11 +32,14 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- Git integration
     keys = {
-      { "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
-      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
-      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Diff all changed files" },
-      { "<leader>gM", "<cmd>Git mergetool -y", desc = "Git mergetool" },
+      { "<leader>gg", "<cmd>Git<cr>", desc = "Fugitive status" },
+      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Commit" },
+      { "<leader>gp", "<cmd>Git push<cr>", desc = "Push" },
+      { "<leader>gT", "<cmd>Git push -u<cr>", desc = "Setup remote tracking" },
+      { "<leader>gP", "<cmd>Git pull --rebase<cr>", desc = "Pull (rebase)" },
+      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Blame sidebar" },
+      { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Difftool" },
+      { "<leader>gM", "<cmd>Git mergetool -y<cr>", desc = "Mergetool" },
       { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Diff file" },
       { "<leader>gW", "<cmd>Gwrite<cr>", desc = "Write changes" },
       { "<leader>gR", "<cmd>Gread<cr>", desc = "Read changes" },
@@ -57,10 +60,10 @@ return {
         [[ <cmd>execute 'bdelete '.join(filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^fugitive://.*"'), ' ')<cr> ]],
         desc = "Delete all fugitive buffers",
       },
-      { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Git buffer history", mode = "n" },
-      { "<leader>gl", ":Gclog --follow<cr>", desc = "Git selection history", mode = "x" },
-      { "<leader>gP", "<cmd>GBrowsePR", desc = "Open GitHub pull request for a branch" },
-      { "<leader>gY", "<cmd>GBrowsePR!", desc = "Copy GitHub pull request for a branch" },
+      { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "File history", mode = "n" },
+      { "<leader>gl", ":Gclog<cr>", desc = "Selection history", mode = "x" },
+      { "<leader>gO", "<cmd>GBrowsePR<cr>", desc = "Open GitHub PR" },
+      { "<leader>gY", "<cmd>GBrowsePR!<cr>", desc = "Copy GitHub PR" },
     },
     -- stylua: ignore
     cmd = {
@@ -74,8 +77,8 @@ return {
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
     keys = {
-      { "<leader>go", ":GBrowse<cr>", desc = "Open in browser", mode = { "n", "v" } },
-      { "<leader>gy", ":GBrowse!<cr>", desc = "Yank URL", mode = { "n", "v" } },
+      { "<leader>go", ":GBrowse<cr>", desc = "Open git object in browser", mode = { "n", "v" } },
+      { "<leader>gy", ":GBrowse!<cr>", desc = "Yank git object URL", mode = { "n", "v" } },
     },
   },
   -----------------------------------------------------------------------------

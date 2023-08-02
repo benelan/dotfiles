@@ -2,10 +2,7 @@ vim.opt.clipboard = "unnamed"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
 vim.opt.modeline = false
-vim.opt.virtualedit:append "block"
-
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.virtualedit:append "block,onemore"
 vim.opt.foldlevelstart = 99
 
 if vim.fn.executable "rg" == 1 then
@@ -23,7 +20,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 vim.opt.wildignorecase = true
-vim.opt.wildmode = "longest:full,full"
+vim.opt.wildmode = "longest,full"
 vim.opt.wildignore:append(
   ".git/*,node_modules/*,dist/*,build/*"
     .. "*.7z,*.avi,*.db,*.docx,*.filepart,*.flac,"
@@ -34,7 +31,7 @@ vim.opt.wildignore:append(
     .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip"
 )
 vim.opt.path = ".,./src/**,./api/**,./lua/**,./utils/**,./static,./config,,"
-vim.opt.completeopt = { "menu", "menuone", "noselect" }
+vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
 
 local ui = vim.api.nvim_list_uis() or {}
 vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
@@ -48,10 +45,12 @@ vim.opt.background = "dark"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
-vim.opt.diffopt:append "algorithm:patience,indent-heuristic"
+vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
 vim.opt.linebreak = true
+vim.opt.breakindent = true
 vim.opt.scrolloff = 8
-vim.opt.sidescrolloff = 8
+vim.opt.sidescrolloff = 15
+vim.opt.emoji = false
 
 vim.opt.tabstop = 2
 vim.opt.softtabstop = -1
@@ -60,6 +59,7 @@ vim.opt.shiftround = true
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
+vim.opt.spellcapcheck = ""
 vim.opt.spelloptions:append "camel"
 vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
 

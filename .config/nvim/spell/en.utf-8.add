@@ -1,8 +1,6 @@
 CCR
 CDN
 GH
-JSON
-LSP
 MLA
 PRs
 Redlands
@@ -143,3 +141,12 @@ url
 ip
 sha
 arg
+basename
+args
+xdg
+eof
+taskwarrior
+uuid
+gitlab
+tty
+ctrl

@@ -304,6 +304,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "jose-elias-alvarez/typescript.nvim",
+    ft = res.filetypes.webdev,
     config = { server = require "jamin.lsp_servers.tsserver" },
   },
   -----------------------------------------------------------------------------
@@ -394,7 +395,6 @@ return {
         },
 
         formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-        formatting.markdown_toc,
         formatting.stylua,
         formatting.trim_whitespace,
 

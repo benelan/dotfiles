@@ -39,6 +39,7 @@ return {
       -- Normal mode
       require("which-key").register {
         ["g:"] = "External program operator",
+        ["gc"] = "Comment operator",
         ["]S"] = "Fix next misspelled word",
         ["[S"] = "Fix previous misspelled word",
         ["<leader>"] = {
@@ -56,6 +57,7 @@ return {
           u = "Undotree",
           Z = "Zoom buffer",
           S = { name = "system" },
+          R = { name = "refactor" },
           E = {
             name = "ex",
             ["!"] = "Bang repeat",

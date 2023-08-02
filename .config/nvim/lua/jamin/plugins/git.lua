@@ -4,15 +4,15 @@ return {
     dependencies = "vim-fugitive",
     cmd = "GV",
     keys = {
-      { "<leader>gv", "<cmd>GV!<cr>", desc = "List commits for current file", mode = "n" },
-      { "<leader>gV", "<cmd>GV<cr>", desc = "List commits", mode = { "v", "n" } },
+      { "<leader>gv", "<cmd>GV!<cr>", desc = "View buffer commits", mode = "n" },
+      { "<leader>gV", ":GV<cr>", desc = "View commits", mode = { "v", "n" } },
     },
   },
   {
     "sodapopcan/vim-twiggy",
     dependencies = "vim-fugitive",
     cmd = "Twiggy",
-    keys = { { "<leader>gt", "<cmd>Twiggy<cr>", desc = "View branches" } },
+    keys = { { "<leader>gt", "<cmd>Twiggy<cr>", desc = "Twiggy branches" } },
     config = function()
       vim.g.twiggy_icons = { "*", "=", "+", "-", "~", "%", "x" }
     end,
@@ -25,7 +25,7 @@ return {
       { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk", mode = { "o", "x" } },
       { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk" },
       { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk" },
-      { "<leader>gp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
+      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
       { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk", mode = "v" },
       { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
       { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
@@ -33,11 +33,11 @@ return {
       { "<leader>hu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
       { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle git blame" },
       { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle git signs" },
-      { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display" },
-      { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff" },
+      { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle git deleted line display" },
+      { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle git word diff" },
       { "<leader>gth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle git line highlight" },
       { "<leader>gtn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle git number highlight" },
-      { "<leader>gB", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame" },
+      { "<leader>gB", function() require("gitsigns").blame_line { full = true } end, desc = "Blame popup" },
     },
     opts = {
       current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",

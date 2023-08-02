@@ -29,7 +29,6 @@ return {
       filetypes = { mdx = true },
       links = {
         -- style = "wiki",
-        conceal = true,
         transform_explicit = function(text)
           return text:gsub(" ", "-"):lower()
         end,
@@ -44,8 +43,8 @@ return {
         MkdnDecreaseHeading = { "n", "]<Tab>" },
         MkdnTableNextCell = false,
         MkdnTablePrevCell = false,
-        MkdnFoldSedtion = false,
-        MkdnUnfoldSedtion = false,
+        MkdnFoldSection =  { "n", "<leader>zm" },
+        MkdnUnfoldSection =  { "n", "<leader>zr" },
       },
     },
   },

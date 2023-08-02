@@ -1,10 +1,41 @@
 return {
   {
+    "nvim-treesitter/playground", -- for creating syntax queries
+    enabled = false,
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor", "TSNodeUnderCursor" },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+    --stylua: ignore
+    keys = {
+      { "<leader>Rf", function() require("refactoring").refactor "Extract Function" end, desc = "Extract function", mode = "v" },
+      { "<leader>RF", function() require("refactoring").refactor "Extract Function To File" end, desc = "Extract function to file", mode = "v" },
+      { "<leader>Rv", function() require("refactoring").refactor "Extract Variable" end, desc = "Extract variable", mode = "v" },
+      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable", mode = "v" },
+      { "<leader>Rb", function() require("refactoring").refactor "Extract Block" end, desc = "Extract block" },
+      { "<leader>RB", function() require("refactoring").refactor "Extract Block To File" end, desc = "Extract block to file" },
+      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable" },
+      { "<leader>Rr", function() require("refactoring").select_refactor { } end, desc = "Select refactor", mode = "v" },
+      { "<leader>RP", function() require("refactoring").debug.printf { below = false } end, desc = "Print scope" },
+      { "<leader>Rp", function() require("refactoring").debug.print_var { normal = true } end, desc = "Print variable" },
+      { "<leader>Rp", function() require("refactoring").debug.print_var { } end, desc = "Print variable", mode = "v" },
+      { "<leader>RC", function() require("refactoring").debug.cleanup { } end, desc = "Cleanup prints" },
+    },
+    opts = {
+      prompt_func_return_type = { go = true },
+      prompt_func_param_type = { go = true },
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
     "Wansmer/treesj", -- split/join treesitter nodes to multiple/single line(s)
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
-    opts = { use_default_keymaps = false, max_join_length = 300 },
+    opts = { use_default_keymaps = false, max_join_length = 420 },
   },
   -----------------------------------------------------------------------------
   {
@@ -51,15 +82,12 @@ return {
         ensure_installed = require("jamin.resources").treesitter_parsers,
         highlight = {
           enable = true,
-          -- additional_vim_regex_highlighting = { "markdown" },
+          -- additional_vim_regex_highlighting = { "markdown", "vimwiki" },
           -- disable = { "markdown", },
         },
         indent = { enable = true },
-        query_linter = {
-          enable = true,
-          use_virtual_text = true,
-          lint_events = { "BufWrite", "CursorHold" },
-        },
+        playground = { enable = true },
+        query_linter = { enable = true },
         context_commentstring = { enable = true },
         incremental_selection = {
           enable = true,
