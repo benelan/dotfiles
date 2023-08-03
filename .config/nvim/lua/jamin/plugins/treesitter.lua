@@ -82,7 +82,7 @@ return {
         ensure_installed = require("jamin.resources").treesitter_parsers,
         highlight = {
           enable = true,
-          -- additional_vim_regex_highlighting = { "markdown", "vimwiki" },
+          -- additional_vim_regex_highlighting = { "markdown" },
           -- disable = { "markdown", },
         },
         indent = { enable = true },

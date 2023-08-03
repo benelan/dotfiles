@@ -1,6 +1,10 @@
-# Review Week {{week}} / {{year}}
-
 ---
+title: Review week {{week}} / {{year}}
+tags: []
+type: journal
+---
+
+{{content}}
 
 ## Highlights
 

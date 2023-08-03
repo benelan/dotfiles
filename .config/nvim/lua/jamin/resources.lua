@@ -144,7 +144,6 @@ M.filetypes = {
     "octo",
     "rst",
     "text",
-    "vimwiki",
   },
   webdev = {
     "astro",

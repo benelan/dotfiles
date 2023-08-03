@@ -359,7 +359,6 @@ return {
         -- diagnostics.write_good.with {
         --   diagnostic_config = quiet_diagnostics,
         --   prefer_local = "node_modules/.bin",
-        --   extra_filetypes = { "vimwiki" },
         -- },
 
         diagnostics.hadolint,
@@ -373,7 +372,6 @@ return {
 
         diagnostics.markdownlint.with {
           extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
-          extra_filetypes = { "vimwiki" },
           prefer_local = "node_modules/.bin",
           diagnostic_config = quiet_diagnostics,
         },
@@ -389,10 +387,7 @@ return {
           condition = has_stylelint_configfile,
         },
 
-        formatting.prettier.with {
-          prefer_local = "node_modules/.bin",
-          extra_filetypes = { "vimwiki" },
-        },
+        formatting.prettier.with { prefer_local = "node_modules/.bin" },
 
         formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
         formatting.stylua,

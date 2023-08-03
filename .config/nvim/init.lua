@@ -1,12 +1,6 @@
 -------------------------------------------------------------------------------
 ----> Global options
 -------------------------------------------------------------------------------
-if vim.fn.executable "/usr/bin/python3" then
-  vim.g.python3_host_prog = "/usr/bin/python3"
-elseif vim.fn.executable "/bin/python3" then
-  vim.g.python3_host_prog = "/bin/python3"
-end
-
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
@@ -61,8 +55,8 @@ end, {
   -- "netrwSettings",
   "node_provider",
   "perl_provider",
-  -- "python3_provider",
-  -- "pythonx_provider",
+  "python3_provider",
+  "pythonx_provider",
   "remote_plugins",
   "ruby_provider",
   "tar",

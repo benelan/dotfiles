@@ -72,7 +72,6 @@ return {
           l = { name = "lsp" },
           s = { name = "settings" },
           t = { name = "tabs" },
-          W = { name = "wiki" },
           z = { name = "zk" },
           g = {
             name = "git",
