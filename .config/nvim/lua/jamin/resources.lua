@@ -209,7 +209,6 @@ M.treesitter_parsers = {
   "css",
   "diff",
   "dockerfile",
-  "git_config",
   "git_rebase",
   "gitcommit",
   "gitignore",
