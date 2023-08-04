@@ -136,6 +136,16 @@ install_docker_engine() {
     fi
 }
 
+# Install latest stable git version
+# https://git-scm.com/download/linux
+install_git() {
+    if ! is-supported git; then
+        sudo add-apt-repository -y ppa:git-core/ppa
+        sudo apt update
+        sudo apt install -y git || true
+    fi
+}
+
 # Install GitHub CLI
 # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 install_gh_cli() {
@@ -215,6 +225,7 @@ install_gnome_gruvbox_theme() {
 
 ### CLI install scripts (suitable for servers)
 install_apt_packages
+install_git
 install_gh_cli
 install_protonvpn_cli
 install_taskwarrior_tui
