@@ -490,8 +490,8 @@ if is-supported fzf; then
             fzf \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
-                --bind "ctrl-o:execute(o {})" \
-                --bind "ctrl-y:execute(echo {} | cb)" \
+                --bind "ctrl-o:execute(os-open {})" \
+                --bind "ctrl-y:execute(echo {} | os-cb)" \
                 --bind "ctrl-e:execute($EDITOR {})" \
                 --header='(edit:ctrl-e) (open:ctrl-o) (copy:ctrl-y) (view:ctrl-v) (sort:ctrl-x)' \
                 --preview="bat --color=always {} 2> /dev/null |
@@ -538,7 +538,7 @@ if is-supported fzf; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
     ## find an emoji                                          {{{
-    # usage: $ find_emoji | cb
+    # usage: $ find_emoji | os-cb
     if is-supported jq; then
         function femoji() {
             emoji_cache="${HOME}/.dotfiles/cache/emoji.json"

@@ -3,83 +3,105 @@ set -e
 
 OVERWRITE_REPOS=${OVERWRITE_REPOS:-false}
 
+# get the default branch for a repo (e.g. main or master)
 get_default_branch() {
     git -C "${1:-$PWD}" remote show "$(
         git -C "${1:-$PWD}" remote | grep -Eo "(upstream|origin)" | tail -1
     )" | grep "HEAD branch" | cut -d" " -f5
 }
 
+# stashes changes to the current branch, checks out the default branch,
+# pulls, checks out the original branch, and unstashes
+# arg1: path to repo
+# arg2: current branch name
+sync_default_branch() {
+    current_branch="$(git -C "$1" symbolic-ref --short HEAD)"
+    printf "stashing changes on '%s'\n" "$current_branch"
+    git -C "$1" stash push -m "automatic stash from repo update script"
+
+    printf "checking out and pulling changes to '%s'\n" "$2"
+    git -C "$1" checkout "$2"
+    git -C "$1" pull --rebase
+
+    printf "checking out and unstashing changes to '%s'\n" "$current_branch"
+    git -C "$1" checkout "$current_branch"
+    git -C "$1" stash pop || true
+    unset current_branch
+}
+
+# creates a new worktree for the default branch of a bare repo
+create_worktree_for_default_branch() {
+    worktree_name="$(echo "$1" | tr "./" "__")"
+    printf "creating worktree '%s' for branch '%s'\n" "$worktree_name" "$1"
+    git worktree add "$worktree_name" "$1"
+    cd "$worktree_name" || return
+    git branch -u "origin/$1"
+    unset worktree_name
+}
+
 clone_gh_repo() {
-    PARENT_PATH="$HOME/dev/$1"
+    PARENT_PATH="$DEV/$1"
     mkdir -p "$PARENT_PATH"
     repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
-
     printf "\n%s\n---------------------\n" "$2"
     if [ -d "$repo_dir" ]; then
         if [ "$OVERWRITE_REPOS" = true ]; then
-            printf "removing '%s\'\n" "$repo_dir"
+            printf "overwrite enabled, removing existing clone at '%s\'\n" "$repo_dir"
             rm -rf "${repo_dir:?}"
         else
-            current_branch="$(git -C "$repo_dir" symbolic-ref --short HEAD)"
-            printf "stashing changes on '%s'\n" "$current_branch"
-            git -C "$repo_dir" stash push -m "automatic stash from repo update script"
-
-            default_branch="$(get_default_branch "$repo_dir")"
-            printf "checking out and pulling changes to '%s'\n" "$default_branch"
-            git -C "$repo_dir" checkout "$default_branch"
-            git -C "$repo_dir" pull
-
-            printf "checking out and unstashing changes to '%s'\n" "$current_branch"
-            git -C "$repo_dir" checkout "$current_branch"
-            git -C "$repo_dir" stash pop || true
-            unset repo_dir current_branch default_branch
+            printf "repo already exists, syncing instead of cloning\n"
+            sync_default_branch "$repo_dir" "$(get_default_branch "$repo_dir")"
+            unset repo_dir
             return
         fi
     fi
-
     printf "cloning '%s'\n" "$2" "$repo_dir"
     git clone "git@github.com:$2.git" "$repo_dir"
     unset repo_dir
 }
 
 clone_gh_repo_bare() {
-    PARENT_PATH="$HOME/dev/$1"
+    PARENT_PATH="$DEV/$1"
     mkdir -p "$PARENT_PATH"
     repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
-
     printf "\n%s\n---------------------\n" "$2"
     if [ -d "$repo_dir" ]; then
         cd "$repo_dir" || return
-
         if [ "$OVERWRITE_REPOS" = true ]; then
-            printf "removing %s\n" "$repo_dir"
+            printf "overwrite enabled, removing existing directory at %s\n" "$repo_dir"
             rm -rf "${repo_dir:?}"
         elif ! [ -d "$repo_dir/.git" ]; then
-            printf "dir exists but is not a git repo\n"
+            # NOTE: check this only works if the bare repo was
+            # cloned the way I do it below
+            printf "directory exists but is not a git repo, cloning into it\n"
         else
-            printf "skipping %s\n" "$repo_dir"
-            unset repo_dir
+            default_branch="$(get_default_branch "$repo_dir")"
+            if [ -d "$repo_dir/$default_branch" ]; then
+                cd "$repo_dir/$default_branch" || return
+                printf "bare repo and worktree for the default branch already exist, syncing instead of cloning\n"
+                sync_default_branch "$repo_dir/$default_branch" "$default_branch"
+                unset repo_dir default_branch
+                return
+            fi
+            printf "bare repo exists, creating a worktree for the default branch %s\n" "$repo_dir"
+            create_worktree_for_default_branch "$default_branch"
+            unset repo_dir default_branch
             return
         fi
     fi
-
+    mkdir -p "$repo_dir"
+    cd "$repo_dir" || return
     printf "cloning '%s' to '%s'\n" "$2" "$repo_dir"
     git clone --bare "git@github.com:$2.git" .git
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git fetch origin
-
-    default_branch="$(get_default_branch)"
-    worktree_name="$(echo "$default_branch" | tr "./" "__")"
-    printf "creating worktree '%s' for branch '%s'\n" "$worktree_name" "$default_branch"
-    git worktree add "$worktree_name" "$default_branch"
-    cd "$worktree_name" || return
-    git branch -u "origin/$default_branch"
-    unset default_branch repo_dir worktree_name
+    create_worktree_for_default_branch "$(get_default_branch "$repo_dir")"
 }
 
 clone_gh_repo_bare "work" "Esri/calcite-design-system"
 clone_gh_repo_bare "work" "Esri/calcite-components-examples"
 clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
+
 clone_gh_repo "work" "Esri/jsapi-resources"
 clone_gh_repo "work" "benelan/calcite-samples"
 clone_gh_repo "work" "benelan/build-sizes"
@@ -87,8 +109,12 @@ clone_gh_repo "work" "benelan/github-scripts"
 clone_gh_repo "work" "benelan/milestone-action"
 clone_gh_repo "work" "benelan/need-info-action"
 clone_gh_repo "work" "benelan/test"
-clone_gh_repo "personal" "benelan/git-mux"
+
+clone_gh_repo "personal" "benelan/shutils"
 clone_gh_repo "personal" "benelan/choroator"
+clone_gh_repo "personal" "benelan/blog"
+clone_gh_repo "personal" "benelan/remix-blog"
+clone_gh_repo "personal" "benelan/benelan.github.io"
 clone_gh_repo "" "benelan/notes"
 
 unset WORK_PATH PERSONAL_PATH OVERWRITE_REPOS
