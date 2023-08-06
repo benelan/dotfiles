@@ -1,8 +1,8 @@
-local shared_settings = {
+local lang_settings = {
   format = {
-    indentSize = vim.opt.shiftwidth,
-    convertTabsToSpaces = vim.opt.expandtab,
-    tabSize = vim.opt.tabstop,
+    indentSize = vim.o.shiftwidth == 0 and vim.o.tabstop or vim.o.shiftwidth,
+    tabSize = vim.o.tabstop,
+    convertTabsToSpaces = vim.o.expandtab,
   },
   inlayHints = {
     includeInlayParameterNameHints = "all",
@@ -18,8 +18,13 @@ local shared_settings = {
 
 return {
   settings = {
-    typescript = shared_settings,
-    javascript = shared_settings,
+    typescript = lang_settings,
+    javascript = lang_settings,
   },
   completions = { completeFunctionCalls = true },
+  implicitProjectConfiguration = {
+    checkJs = true,
+    strictNullChecks = true,
+    strictFunctionTypes = true,
+  },
 }

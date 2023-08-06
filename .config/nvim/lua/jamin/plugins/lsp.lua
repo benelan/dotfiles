@@ -303,12 +303,6 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "jose-elias-alvarez/typescript.nvim",
-    ft = res.filetypes.webdev,
-    config = { server = require "jamin.lsp_servers.tsserver" },
-  },
-  -----------------------------------------------------------------------------
-  {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
@@ -398,11 +392,6 @@ return {
         -- formatting.shellharden,
       }
 
-      local has_ts, ts_code_actions = pcall(require, "typescript.extensions.null-ls.code-actions")
-      if has_ts then
-        table.insert(sources, ts_code_actions)
-      end
-
       -- Install with Mason if you don't have all of these linters/formatters
       -- :MasonInstall shellcheck stylelint prettier markdownlint ...
       return {
@@ -410,6 +399,22 @@ return {
         fallback_severity = vim.diagnostic.severity.HINT,
         sources = sources,
       }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "jose-elias-alvarez/typescript.nvim",
+    ft = res.filetypes.webdev,
+    opts = function()
+      local server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
+        on_attach = function()
+          local has_nls, nls = pcall(require, "null-ls")
+          if has_nls then
+            nls.register(require "typescript.extensions.null-ls.code-actions")
+          end
+        end,
+      })
+      return { server = server }
     end,
   },
 }
