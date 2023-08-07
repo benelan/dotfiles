@@ -33,6 +33,12 @@ let g:netrw_dirhistmax=0
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
+" Intelligently navigate tmux panes and Vim splits using the same keys.
+" See https://sunaku.github.io/tmux-select-pane.html for documentation.
+let progname = substitute($VIM, '.*[/\\]', '', '')
+set title titlestring=%{progname}\ %f\ +%l\ #%{tabpagenr()}.%{winnr()}
+if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
+
 "----------------------------------------------------------------------}}}
 "  Keymaps                                                             {{{
 "----------------------------------------------------------------------{|}
@@ -458,43 +464,43 @@ if has("autocmd")
 
         autocmd BufLeave \(//:\)\@<!*.csv,
                         \\(//:\)\@<!*.json,
-                        \\(//:\)\@<!*.toml     
+                        \\(//:\)\@<!*.toml
                             \ normal! mD
 
         autocmd BufLeave \(//:\)\@<!*.go,
                         \\(//:\)\@<!*.rs,
-                        \\(//:\)\@<!*.zig         
+                        \\(//:\)\@<!*.zig
                             \ normal! mM
 
         autocmd BufLeave \(//:\)\@<!*.html,
                         \\(//:\)\@<!*.svelte,
-                        \\(//:\)\@<!*.vue   
+                        \\(//:\)\@<!*.vue
                             \ normal! mH
 
         autocmd BufLeave \(//:\)\@<!*.js,
-                        \\(//:\)\@<!*.jsx                         
+                        \\(//:\)\@<!*.jsx
                             \ normal! mJ
 
-        autocmd BufLeave \(//:\)\@<!*.lua                                         
+        autocmd BufLeave \(//:\)\@<!*.lua
                             \ normal! mL
 
-        autocmd BufLeave \(//:\)\@<!*.py                                          
+        autocmd BufLeave \(//:\)\@<!*.py
                             \ normal! mP
 
         autocmd BufLeave \(//:\)\@<!*.sh,
-                        \\(//:\)\@<!*.bash                        
+                        \\(//:\)\@<!*.bash
                             \ normal! mS
 
         autocmd BufLeave \(//:\)\@<!*.ts,
-                        \\(//:\)\@<!*.tsx                         
+                        \\(//:\)\@<!*.tsx
                             \ normal! mT
 
         autocmd BufLeave \(//:\)\@<!*.vim,
-                        \\(//:\)\@<!*vimrc                       
+                        \\(//:\)\@<!*vimrc
                             \ normal! mV
 
         autocmd BufLeave \(//:\)\@<!*.yml,
-                        \\(//:\)\@<!*.yaml                       
+                        \\(//:\)\@<!*.yaml
                             \ normal! mY
     augroup END
 
