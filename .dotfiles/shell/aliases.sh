@@ -214,11 +214,6 @@ if is-supported task; then
     alias tch="task context home"
     alias tcn="task context none"
 
-    alias te="zk daily"
-    alias tey="nvim +VimwikiMakeYesterdayDiaryNote"
-    alias tet="nvim +VimwikiMakeTomorrowDiaryNote"
-    alias tei="nvim +VimwikiDiaryIndex"
-
     if is-supported taskopen; then
         alias to="taskopen"
         alias toa='$XDG_DATA_HOME/taskopen/scripts/users/artur-shaik/attach_vifm'
@@ -229,7 +224,7 @@ if is-supported task; then
 
     # shellcheck disable=2154
     [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task &&
-      git -C "$NOTES" commit -m "chore(task): sync" ||true &&
+      git -C "$NOTES" commit -m "chore(task): sync" || true &&
       git -C "$NOTES" pull || true &&
       git -C "$NOTES" push'
 fi
@@ -239,9 +234,9 @@ fi
 # --------------------------------------------------------------------- {|}
 
 alias g='git'
-alias gx="git-mux"
-alias gxt="git-mux task"
-alias gxp="git-mux project"
+alias x="git-mux"
+alias xt="git-mux task"
+alias xp="git-mux project"
 alias xs="git-mux project ~"
 
 # --------------------------------------------------------------------- }}}
