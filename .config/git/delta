@@ -1,9 +1,10 @@
 [core]
 pager = "bash -c '{                                                \
     COLS=$(tput cols);                                             \
-    if [ $COLS -ge 110 ] && [ -z $FZF_PREVIEW_COLUMNS ]; then       \
-        delta --side-by-side -w $((COLS-5));                       \
-    elif [ $FZF_PREVIEW_COLUMNS -ge 80 ]; then  \
+    if [ "${COLS:-0}" -gt "110" ] &&                               \
+        [ -z $FZF_PREVIEW_COLUMNS ]; then                          \
+            delta --side-by-side -w $((COLS-5));                   \
+    elif [ "${FZF_PREVIEW_COLUMNS:-0}" -gt "80" ]; then            \
         delta --side-by-side -w $((FZF_PREVIEW_COLUMNS-5));        \
     else                                                           \
         delta;                                                     \
