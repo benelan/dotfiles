@@ -1,18 +1,25 @@
 return {
   {
-    "junegunn/gv.vim",
+    "rbong/vim-flog",
     dependencies = "vim-fugitive",
-    cmd = "GV",
+    cmd = { "Flog", "Flogsplit", "Floggit" },
     keys = {
-      { "<leader>gv", "<cmd>GV!<cr>", desc = "View buffer commits", mode = "n" },
-      { "<leader>gV", ":GV<cr>", desc = "View commits", mode = { "v", "n" } },
+      { "<leader>gh", "<CMD>Flogsplit -path=%<CR>", desc = "History (file)", mode = "n" },
+      { "<leader>gh", ":Flog<CR>", desc = "History (selected lines)", mode = "v" },
+      { "<leader>gH", ":Flog<CR>", desc = "History", mode = "n" },
+      {
+        "<leader>gH",
+        ":<C-u>execute 'Flog -patch-search='.escape(GetVisualSelection(), ' /{}()[]~`!@#$%^&*+|\\\"')<CR>",
+        desc = "History (selected text in patch)",
+        mode = "v",
+      },
     },
   },
   {
     "sodapopcan/vim-twiggy",
     dependencies = "vim-fugitive",
     cmd = "Twiggy",
-    keys = { { "<leader>gt", "<cmd>Twiggy<cr>", desc = "Twiggy branches" } },
+    keys = { { "<leader>gt", "<cmd>Twiggy<CR>", desc = "Twiggy branches" } },
     config = function()
       vim.g.twiggy_icons = { "*", "=", "+", "-", "~", "%", "x" }
     end,

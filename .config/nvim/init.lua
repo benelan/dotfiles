@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-----> Global options
+----> Global settings
 -------------------------------------------------------------------------------
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -84,8 +84,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
-  dev = { path = vim.env.LIB, fallback = true },
-  install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },
   change_detection = { notify = false },
+  dev = { path = vim.env.LIB, fallback = true },
   ui = { icons = require("jamin.resources").icons.lazy },
+  install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },
 })

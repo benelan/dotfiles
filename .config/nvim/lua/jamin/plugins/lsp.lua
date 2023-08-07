@@ -365,7 +365,7 @@ return {
         },
 
         diagnostics.markdownlint.with {
-          extra_args = { "--disable", "MD024", "MD013", "MD041", "MD033" },
+          extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
           prefer_local = "node_modules/.bin",
           diagnostic_config = quiet_diagnostics,
         },
