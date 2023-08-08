@@ -16,15 +16,6 @@ return {
     },
   },
   {
-    "sodapopcan/vim-twiggy",
-    dependencies = "vim-fugitive",
-    cmd = "Twiggy",
-    keys = { { "<leader>gt", "<cmd>Twiggy<CR>", desc = "Twiggy branches" } },
-    config = function()
-      vim.g.twiggy_icons = { "*", "=", "+", "-", "~", "%", "x" }
-    end,
-  },
-  {
     "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
     event = "VeryLazy",
     -- stylua: ignore

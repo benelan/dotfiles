@@ -37,7 +37,6 @@
   "treesj": { "branch": "main", "commit": "00b382dc81eefaf42ad50a521e368f9057815bfb" },
   "typescript.nvim": { "branch": "main", "commit": "de304087e6e49981fde01af8ccc5b21e8519306f" },
   "vim-flog": { "branch": "master", "commit": "2cfa2e9d67a06a75d3d4e965c6bad558ff41e488" },
-  "vim-twiggy": { "branch": "master", "commit": "7a2161991722a811c4ff06b3ce0119dd180729fd" },
   "which-key.nvim": { "branch": "main", "commit": "7ccf476ebe0445a741b64e36c78a682c1c6118b7" },
   "zk-nvim": { "branch": "main", "commit": "797618aa07f58ceba6f79fb6e777e8e45c51e1ce" }
 }
