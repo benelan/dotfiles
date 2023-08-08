@@ -62,8 +62,6 @@ return {
       },
       { "<leader>gl", "<cmd>0Gclog --follow<cr>", desc = "Log file", mode = "n" },
       { "<leader>gl", ":Gclog<cr>", desc = "Log selected lines", mode = "x" },
-      { "<leader>gO", "<cmd>GBrowsePR<cr>", desc = "Open GitHub PR" },
-      { "<leader>gY", "<cmd>GBrowsePR!<cr>", desc = "Copy GitHub PR" },
     },
     -- stylua: ignore
     cmd = {
@@ -79,6 +77,8 @@ return {
     keys = {
       { "<leader>go", ":GBrowse<cr>", desc = "Open git object in browser", mode = { "n", "v" } },
       { "<leader>gy", ":GBrowse!<cr>", desc = "Yank git object URL", mode = { "n", "v" } },
+      { "<leader>gO", "<cmd>GBrowsePR<cr>", desc = "Open GitHub PR", mode = "n" },
+      { "<leader>gY", "<cmd>GBrowsePR!<cr>", desc = "Copy GitHub PR", mode = "n" },
     },
   },
   -----------------------------------------------------------------------------

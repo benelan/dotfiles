@@ -205,17 +205,6 @@ function! s:browse_github_pr(bang, args) abort
     endif
 endfunction
 
-" function! TwiggyCompleteBranches(A,L,P) abort
-"   let branches = ''
-"   for branch in twiggy#get_branches()
-"     let slicepos = len(split(a:A, '/')) - 1
-"     let branch = join(split(branch.fullname, '/')[0:slicepos], '/')
-"     let branches = branches . branch . "\n"
-"   endfor
-"   return branches
-" endfunction
-
-" command! -bang -nargs=? -complete=custom,TwiggyCompleteBranches
 command! -bang -nargs=? -complete=customlist,fugitive#CompleteObject
             \ GBrowsePR call s:browse_github_pr(<bang>0, <q-args>)
 
@@ -269,7 +258,6 @@ command! -nargs=* GrepArglist grep <args> ##
 function! M(x, y)
     return a:x == '' || a:x == v:false ? '' : a:y . a:x
 endfunction
-
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system grep function and user command                      {{{
@@ -325,15 +313,15 @@ nnoremap [x :ConflictMarkerPrev<CR>
 nnoremap ]x :ConflictMarkerNext<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" visual mode search or replace current selection            {{{
-function! VisualSelection(action) range
+"" save the value of the last visual selection                {{{
+function! VisualSelection(...) range
     let l:saved_reg = @"
     execute "normal! vgvy"
 
-    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let l:pattern = escape(@", " \\/.'`~!@#$%^&*+()[]{}|")
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
-    if a:action == "replace"
+    if a:0 > 0 && a:1 == "replace"
         call feedkeys(":%s/" . l:pattern . "/")
     endif
 
@@ -341,24 +329,10 @@ function! VisualSelection(action) range
     let @" = l:saved_reg
 endfunction
 
+" Use the function to search/replace visually selected text
 xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> * :<C-u>call VisualSelection("")<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection("")<CR>?<C-R>=@/<CR><CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" get the current visual selection                           {{{
-function! GetVisualSelection()
-    " Why is this not a built-in Vim script function?!
-    let [line_start, column_start] = getpos("'<")[1:2]
-    let [line_end, column_end] = getpos("'>")[1:2]
-    let lines = getline(line_start, line_end)
-    if len(lines) == 0
-        return ''
-    endif
-    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
-    let lines[0] = lines[0][column_start - 1:]
-    return join(lines, "\n")
-endfunction
+xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
+xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" delete buffer without closing window                       {{{

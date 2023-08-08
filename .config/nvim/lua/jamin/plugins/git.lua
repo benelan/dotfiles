@@ -5,11 +5,11 @@ return {
     cmd = { "Flog", "Flogsplit", "Floggit" },
     keys = {
       { "<leader>gh", "<CMD>Flogsplit -path=%<CR>", desc = "History (file)", mode = "n" },
+      { "<leader>gH", "<CMD>Flog<CR>", desc = "History", mode = "n" },
       { "<leader>gh", ":Flog<CR>", desc = "History (selected lines)", mode = "v" },
-      { "<leader>gH", ":Flog<CR>", desc = "History", mode = "n" },
       {
         "<leader>gH",
-        ":<C-u>execute 'Flog -patch-search='.escape(GetVisualSelection(), ' /{}()[]~`!@#$%^&*+|\\\"')<CR>",
+        ":<C-u>call VisualSelection('')<CR>:<C-R>=@/<CR><C-b>Flog -patch-search=<CR>",
         desc = "History (selected text in patch)",
         mode = "v",
       },
