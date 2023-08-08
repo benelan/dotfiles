@@ -32,23 +32,6 @@ return {
       local ls = require "luasnip"
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
 
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0
-          and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s"
-            == nil
-      end
-
-      local filter_ft_writing = function(_, ctx)
-        for _, ft in ipairs(res.filetypes.writing) do
-          if ft == ctx.filetype then
-            return true
-          end
-        end
-        return false
-      end
-
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -83,22 +66,18 @@ return {
               fallback()
             end
           end, { "i" }),
-          ["<C-n>"] = cmp.mapping(function(fallback)
+          ["<C-n>"] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-            elseif has_words_before() then
-              cmp.complete()
             else
-              fallback()
+              cmp.complete()
             end
           end, { "i", "c" }),
-          ["<C-p>"] = cmp.mapping(function(fallback)
+          ["<C-p>"] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-            elseif has_words_before() then
-              cmp.complete()
             else
-              fallback()
+              cmp.complete()
             end
           end, { "i", "c" }),
         },
@@ -151,7 +130,14 @@ return {
             name = "dictionary",
             group_index = 4,
             keyword_length = 3,
-            entry_filter = filter_ft_writing,
+            entry_filter = function(_, ctx)
+              for _, ft in ipairs(res.filetypes.writing) do
+                if ft == ctx.filetype then
+                  return true
+                end
+              end
+              return false
+            end,
           },
         },
         sorting = {
