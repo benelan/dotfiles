@@ -25,8 +25,7 @@ template = "default.md"
 ignore = [
   ".git/",
   ".obsidian/",
-  ".task/",
-  "log.md"
+  ".task/"
 ]
 
 # Configure random ID generation.

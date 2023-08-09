@@ -16,7 +16,7 @@ context.work.write=project:work
 context.home.read=project:home
 context.home.write=project:home
 
-uda.priority.values=H,,L
+uda.priority.default=M
 urgency.tags.coefficient=0
 urgency.project.coefficient=0.5
 
@@ -53,6 +53,8 @@ uda.taskwarrior-tui.task-report.prompt-on-delete=true
 uda.estimate.label=Estimate
 uda.estimate.values=34,21,13,8,5,3,2,1
 uda.estimate.type=string
+
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/ftw
 report.fuzzy.description=A report optimized for fuzzy finding with fzf
 report.fuzzy.columns=id,project,tags,description.oneline
 report.fuzzy.labels=ID,Project,Tags,Description
