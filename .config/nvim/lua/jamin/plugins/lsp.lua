@@ -4,6 +4,22 @@ return {
   {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     dependencies = {
+      {
+        "pmizio/typescript-tools.nvim",
+        ft = res.filetypes.webdev,
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        opts = function()
+          local ts = require "jamin.lsp_servers.tsserver"
+          return {
+            complete_function_calls = ts.completions.completeFunctionCalls,
+            settings = {
+              expose_as_code_action = { "fix_all", "add_missing_imports", "remove_unused" },
+              tsserver_format_options = ts.settings.typescript.format,
+              tsserver_file_preferences = ts.settings.typescript.inlayHints,
+            },
+          }
+        end,
+      },
       -----------------------------------------------------------------------------
       {
         "williamboman/mason.nvim", -- language server installer/manager
@@ -134,7 +150,12 @@ return {
           end
 
           -- disable formatting and use prettier/stylua instead (via null-ls below)
-          if vim.tbl_contains({ "tsserver", "jsonls", "html", "lua_ls" }, client.name) then
+          if
+            vim.tbl_contains(
+              { "typescript-tools", "tsserver", "jsonls", "html", "lua_ls" },
+              client.name
+            )
+          then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
@@ -144,14 +165,16 @@ return {
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
           if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
             local semantic = client.config.capabilities.textDocument.semanticTokens
-            client.server_capabilities.semanticTokensProvider = {
-              full = true,
-              legend = {
-                tokenTypes = semantic.tokenTypes,
-                tokenModifiers = semantic.tokenModifiers,
-              },
-              range = true,
-            }
+            if semantic then
+              client.server_capabilities.semanticTokensProvider = {
+                full = true,
+                legend = {
+                  tokenTypes = semantic.tokenTypes,
+                  tokenModifiers = semantic.tokenModifiers,
+                },
+                range = true,
+              }
+            end
           end
 
           local bufmap = function(mode, lhs, rhs, desc)
@@ -211,27 +234,26 @@ return {
       end, {})
 
       local fix_typescript_issues = function(bufnr)
-        local has_ts, ts = pcall(require, "typescript")
-        local tsserver_client = vim.lsp.get_active_clients({ bufnr = bufnr, name = "tsserver" })[1]
-        if not tsserver_client or not has_ts then
+        local has_ts_tools = pcall(require, "typescript-tools")
+        local ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]
+        if not ts_client or not has_ts_tools then
           return
         end
 
-        local diag = vim.diagnostic.get(
-          bufnr,
-          { namespace = vim.lsp.diagnostic.get_namespace(tsserver_client.id) }
-        )
+        local diag =
+          vim.diagnostic.get(bufnr, { namespace = vim.lsp.diagnostic.get_namespace(ts_client.id) })
 
         if #diag > 0 then
-          ts.actions.fixAll { sync = true }
-          ts.actions.addMissingImports { sync = true }
-          ts.actions.removeUnused { sync = true }
+          vim.cmd "TSToolsFixAll sync"
+          vim.cmd "TSToolsAddMissingImports sync"
+          vim.cmd "TSToolsRemoveUnused sync"
+          vim.cmd "TSToolsRemoveUnusedImports sync"
         end
-        ts.actions.organizeImports { sync = true }
+        vim.cmd "TSToolsOrganizeImports sync"
       end
 
       local fix_eslint_issues = function(bufnr)
-        local eslint_client = vim.lsp.get_active_clients({ bufnr = bufnr, name = "eslint" })[1]
+        local eslint_client = vim.lsp.get_clients({ bufnr = bufnr, name = "eslint" })[1]
         if not eslint_client then
           return
         end
@@ -402,37 +424,4 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  {
-    "pmizio/typescript-tools.nvim",
-    ft = res.filetypes.webdev,
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = function()
-      local ts = require "jamin.lsp_servers.tsserver"
-      return {
-        complete_function_calls = ts.completions.completeFunctionCalls,
-        settings = {
-          expose_as_code_action = { "fix_all", "add_missing_imports", "remove_unused" },
-          tsserver_format_options = ts.settings.typescript.format,
-          tsserver_file_preferences = ts.settings.typescript.inlayHints,
-        },
-      }
-    end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "jose-elias-alvarez/typescript.nvim",
-    enabled = false,
-    ft = res.filetypes.webdev,
-    opts = function()
-      local server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
-        on_attach = function()
-          local has_nls, nls = pcall(require, "null-ls")
-          if has_nls then
-            nls.register(require "typescript.extensions.null-ls.code-actions")
-          end
-        end,
-      })
-      return { server = server }
-    end,
-  },
 }
