@@ -279,7 +279,7 @@ return {
     end,
     config = function()
       -- the accept keymap adds junk characters to the end of the line when created in lua below
-      vim.cmd [[ imap <script><silent><nowait><expr> <M-y> copilot#Accept('<Tab>') ]]
+      vim.cmd [[ imap <script><silent><nowait><expr> <M-y> copilot#Accept('') ]]
     end,
     keys = {
       { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Copilot suggest" },

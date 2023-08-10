@@ -153,7 +153,7 @@
     statusHint = false
 
 [log]
-    date = short-local
+    date = human-local
 
 [format]
     ; man --pager='less -p "^PRETTY FORMATS"' git-log

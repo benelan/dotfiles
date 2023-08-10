@@ -7,6 +7,7 @@ return {
     -- NOTE: forked from https://github.com/ThePrimeagen/harpoon to add support
     -- for setting marks/cmds specific to the root directory of a git worktree
     "benelan/harpoon",
+    event = "VeryLazy",
     -- dependencies = "vim-fugitive",
     dev = true,
     opts = {
