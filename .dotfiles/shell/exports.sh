@@ -12,6 +12,7 @@ export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
+export CALCITE="$WORK/calcite-design-system"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # system settings                                             {{{

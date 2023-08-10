@@ -563,15 +563,48 @@ fi
 # --------------------------------------------------------------------- {|}
 
 ## toggles a label used for running visual snapshots on PRs   {{{
-if [ "$USE_WORK_STUFF" = "1" ] && is-supported gh; then
-    cc_visual_snapshots() {
-        if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
-            current_branch="$(git symbolic-ref --short HEAD)"
-            gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
-            gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
-            unset current_branch
-        fi
-    }
+if [ "$USE_WORK_STUFF" = "1" ]; then
+    if is-supported gh; then
+        cc_visual_snapshots() {
+            if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
+                current_branch="$(git symbolic-ref --short HEAD)"
+                gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
+                gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
+                unset current_branch
+            fi
+        }
+    fi
+
+    if is-supported jq; then
+        cc_pack_install() {
+            npm_root=$(npm prefix)
+
+            # clean test project
+            npm uninstall @esri/calcite-components @esri/calcite-components-react
+            rm -rf \
+                "$npm_root"/esri-calcite-components-*.tgz \
+                "$npm_root"/package-lock.json \
+                "$npm_root"/node_modules
+
+            # build calcite-design-system and pack calcite-components
+            npm run build --prefix "$CALCITE/main"
+            npm pack \
+                --prefix "$CALCITE/main" \
+                --workspace "packages/calcite-components" \
+                --pack-destination "$npm_root"
+
+            # pack calcite-components-react if the test project has react as a dependency
+            if [ "$(jq '.dependencies | has("react")' "$npm_root/package.json")" = "true" ]; then
+                npm pack \
+                    --prefix "$CALCITE/main" \
+                    --workspace "packages/calcite-components-react" \
+                    --pack-destination "$npm_root"
+            fi
+
+            # install the local tarball(s)
+            npm install "$npm_root"/esri-calcite-components-*.tgz
+        }
+    fi
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
