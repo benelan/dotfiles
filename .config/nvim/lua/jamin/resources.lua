@@ -183,7 +183,7 @@ M.lsp_servers = {
   "svelte",
   "taplo",
   "tailwindcss",
-  "tsserver",
+  -- "tsserver",
   "vimls",
   "volar",
   "yamlls",

@@ -403,7 +403,25 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "pmizio/typescript-tools.nvim",
+    ft = res.filetypes.webdev,
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = function()
+      local ts = require "jamin.lsp_servers.tsserver"
+      return {
+        complete_function_calls = ts.completions.completeFunctionCalls,
+        settings = {
+          expose_as_code_action = { "fix_all", "add_missing_imports", "remove_unused" },
+          tsserver_format_options = ts.settings.typescript.format,
+          tsserver_file_preferences = ts.settings.typescript.inlayHints,
+        },
+      }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "jose-elias-alvarez/typescript.nvim",
+    enabled = false,
     ft = res.filetypes.webdev,
     opts = function()
       local server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
