@@ -20,9 +20,9 @@ return {
   },
   {
     "jakewvincent/mkdnflow.nvim",
-    ft = "markdown",
+    ft = { "markdown", "md", "mdx" },
     opts = {
-      filetypes = { mdx = true },
+      filetypes = { md = true, rmd = true, mdx = true, markdown = true },
       links = {
         -- style = "wiki",
         transform_explicit = function(text)
@@ -30,7 +30,9 @@ return {
         end,
       },
       perspective = { priority = "current", fallback = "first" },
+      new_file_template = { use_template = true },
       mappings = {
+        MkdnEnter = { { "i", "n", "v" }, "<CR>" },
         MkdnToggleToDo = { { "n", "v" }, "<leader><Tab>" },
         MkdnMoveSource = { "n", "<leader>zR" },
         MkdnTab = { "i", "<Tab>" },

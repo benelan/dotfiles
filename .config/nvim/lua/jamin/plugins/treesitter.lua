@@ -1,7 +1,6 @@
 return {
   {
     "nvim-treesitter/playground", -- for creating syntax queries
-    enabled = false,
     dependencies = "nvim-treesitter/nvim-treesitter",
     cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor", "TSNodeUnderCursor" },
   },
@@ -48,9 +47,11 @@ return {
       { "JoosepAlviste/nvim-ts-context-commentstring" }, -- sets commentstring
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        config = function()
-          vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
-        end,
+        opts = {
+          multiline_threshold = 5,
+          mode = "cursor",
+          -- separator = "─",
+        },
         keys = {
           {
             "[C",

@@ -355,7 +355,7 @@ nnoremap <silent> <leader><Delete> :Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fzf user commands                                          {{{
-if isdirectory(expand("$HOME/dev/lib/fzf"))
+if isdirectory(expand("$LIB/fzf"))
     " Enable per-command history
     " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
     "   "previous-history" instead of "down" and "up".
@@ -614,7 +614,7 @@ function! MyFoldText()
     let w = winwidth(0) - &foldcolumn - &numberwidth - (&signcolumn == "yes" ? 2 : 0)
 
     let foldSize = " " . (1 + v:foldend - v:foldstart)
-            \ . " lines " . repeat(".::", v:foldlevel) . "."
+            \ . " lines " . repeat(".:", v:foldlevel) . "."
     let separator = repeat(" ", 3) . "<~"
     let expansion = repeat("~", w - strwidth(line.separator.foldSize))
     return line . separator . expansion . foldSize

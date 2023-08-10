@@ -101,6 +101,9 @@ return {
     dir = "~/.vim/pack/foo/opt/undotree",
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
+    init = function ()
+      vim.g.undotree_SetFocusWhenToggle = 1
+    end
   },
   -----------------------------------------------------------------------------
   {
@@ -160,7 +163,10 @@ return {
           "strikethrough"
         )
 
-        vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Purple" })
+        vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+        vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
+        vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
+        vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
       end
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
