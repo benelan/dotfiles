@@ -1,22 +1,18 @@
 [include]
-; https://github.com/dandavison/delta
-    path = ~/.config/git/delta
-; semi-personal info (mostly to prevent bot emails)
-    path = ~/.config/git/personal
-
-[commit]
-    template = ~/.config/git/message
+    ; https://github.com/dandavison/delta
+    path = ~/.config/git/delta.gitconfig
 
 [github]
     user = benelan
 
 [user]
     name = Ben Elan
-    ; email = $(gpg -K | awk '/<.*@.*>/ {gsub("<|>",""); print $7}')
-    ; signingKey = $(gpg -K --keyid-format SHORT | awk 'FNR == 3 {gsub("/*\//", ""); print $2}')
+    email = no-reply@benelan.dev
+    signingKey = 4675D4844DB91AC6849FF5C10E54F3EFE936CE58
 
-; [commit]
-;    gpgSign = true
+[commit]
+    template = ~/.config/git/message
+    gpgSign = true
 
 [core]
     excludesfile = ~/.dotfiles/assets/templates/.gitignore
