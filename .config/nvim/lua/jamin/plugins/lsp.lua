@@ -6,8 +6,8 @@ return {
     dependencies = {
       {
         "pmizio/typescript-tools.nvim",
-        ft = res.filetypes.webdev,
-        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        enabled = false,
+        dependencies = { "nvim-lua/plenary.nvim" },
         opts = function()
           local ts = require "jamin.lsp_servers.tsserver"
           return {
@@ -17,6 +17,22 @@ return {
               tsserver_format_options = ts.settings.typescript.format,
               tsserver_file_preferences = ts.settings.typescript.inlayHints,
             },
+          }
+        end,
+      },
+      {
+        "jose-elias-alvarez/typescript.nvim",
+        -- enabled = false,
+        opts = function()
+          return {
+            server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
+              on_attach = function()
+                local has_nls, nls = pcall(require, "null-ls")
+                if has_nls then
+                  nls.register(require "typescript.extensions.null-ls.code-actions")
+                end
+              end,
+            }),
           }
         end,
       },
@@ -80,6 +96,7 @@ return {
       },
       inlay_hints = { enabled = false },
       force_capabilities = {
+        telemetry = false,
         textDocument = {
           codeLens = { dynamicRegistration = false },
           completion = {
@@ -202,10 +219,10 @@ return {
           bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
           -- stylua: ignore end
 
-          if vim.lsp.buf.inlay_hint and client.server_capabilities.inlayHintProvider then
-            vim.lsp.buf.inlay_hint(args.buf, opts.inlay_hints.enabled)
+          if vim.lsp.inlay_hint and client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
             bufmap("n", "gh", function()
-              vim.lsp.buf.inlay_hint(0, nil)
+              vim.lsp.inlay_hint(0, nil)
             end, "Toggle inlay hints")
           end
 
@@ -234,22 +251,40 @@ return {
       end, {})
 
       local fix_typescript_issues = function(bufnr)
-        local has_ts_tools = pcall(require, "typescript-tools")
-        local ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]
-        if not ts_client or not has_ts_tools then
+        local has_ts, ts = pcall(require, "typescript")
+        local has_ts_tools, _ = pcall(require, "typescript-tools")
+        local ts_client
+        if has_ts then
+          ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "tsserver" })[1]
+        elseif has_ts_tools then
+          ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]
+        end
+        if not ts_client then
           return
         end
 
-        local diag =
-          vim.diagnostic.get(bufnr, { namespace = vim.lsp.diagnostic.get_namespace(ts_client.id) })
+        local diag = vim.diagnostic.get(
+          bufnr,
+          { namespace = vim.lsp.diagnostic.get_namespace(ts_client.id, false) }
+        )
 
         if #diag > 0 then
-          vim.cmd "TSToolsFixAll sync"
-          vim.cmd "TSToolsAddMissingImports sync"
-          vim.cmd "TSToolsRemoveUnused sync"
-          vim.cmd "TSToolsRemoveUnusedImports sync"
+          if has_ts then
+            ts.actions.fixAll { sync = true }
+            ts.actions.addMissingImports { sync = true }
+            ts.actions.removeUnused { sync = true }
+          elseif has_ts_tools then
+            vim.cmd "TSToolsFixAll sync"
+            vim.cmd "TSToolsAddMissingImports sync"
+            vim.cmd "TSToolsRemoveUnused sync"
+            vim.cmd "TSToolsRemoveUnusedImports sync"
+          end
         end
-        vim.cmd "TSToolsOrganizeImports sync"
+        if has_ts then
+          ts.actions.organizeImports { sync = true }
+        elseif has_ts_tools then
+          vim.cmd "TSToolsOrganizeImports sync"
+        end
       end
 
       local fix_eslint_issues = function(bufnr)
@@ -260,7 +295,7 @@ return {
 
         local diag = vim.diagnostic.get(
           bufnr,
-          { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id) }
+          { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id, false) }
         )
 
         if #diag > 0 then

@@ -141,6 +141,8 @@ M.filetypes = {
     "gitcommit",
     "mail",
     "markdown",
+    "markdown.mdx",
+    "mdx",
     "octo",
     "rst",
     "text",
@@ -166,6 +168,7 @@ M.filetypes = {
 }
 
 M.lsp_servers = {
+  -- "astro",
   "bashls",
   "cssls",
   -- "docker_compose_language_service",
@@ -181,8 +184,8 @@ M.lsp_servers = {
   -- "rust_analyzer",
   -- "sqlls",
   "svelte",
-  "taplo",
   "tailwindcss",
+  "taplo",
   -- "tsserver",
   "vimls",
   "volar",
@@ -192,7 +195,7 @@ M.lsp_servers = {
 
 M.mason_packages = {
   "actionlint", -- github action linter
-  "codespell", -- commonly misspelled English words linter
+  -- "codespell", -- commonly misspelled English words linter
   -- "cspell", -- code spell checker
   -- "delve", -- golang debug adapter
   "hadolint", -- dockerfile linter
