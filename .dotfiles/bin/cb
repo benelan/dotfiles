@@ -1,0 +1,193 @@
+#!/usr/bin/env sh
+
+# A portable clipboard utility that works on multiple operating systems.
+# https://gist.github.com/RichardBronosky/56d8f614fab2bacdd8b048fb58d0c0c7
+#
+# Uses `os-detect` to determine the operating system
+# https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
+
+if [ "$CB_LOGS" = "1" ] || [ -z "$CB_LOGS" ] && [ -n "$DEBUG" ]; then
+    CB_LOGS="$HOME/.dotfiles/cache/cb.log"
+fi
+
+logger() {
+    if [ -n "$DEBUG" ] || [ -n "$CB_LOGS" ] && [ "$CB_LOGS" != "0" ]; then
+        printf "%s | %s | %s" \
+            "$1" \
+            "$(date +%Y-%m-%dT%H:%M:%S 2>/dev/null)" \
+            "$2" \
+            >>"$CB_LOGS"
+    fi
+}
+
+linux_copy() {
+    if is-supported xclip; then
+        logger "INFO " "copy > using xclip"
+        cat | xclip -selection clipboard
+    elif is-supported xsel; then
+        logger "INFO " "copy > using xsel"
+        cat | xsel -bi
+    elif is-supported wl-copy; then
+        logger "INFO " "copy > using wl-copy"
+        cat | wl-copy
+    fi
+}
+
+linux_paste() {
+    if is-supported xclip; then
+        logger "INFO " "paste > using xclip"
+        xclip -selection clipboard -o
+    elif is-supported xsel; then
+        logger "INFO " "paste > using xsel"
+        xsel -bo
+    elif is-supported wl-copy; then
+        logger "INFO " "paste > using wl-copy"
+        wl-paste
+    fi
+}
+
+windows_wsl_copy() {
+    logger "INFO " "copy > using clip.exe"
+    cat | perl -pe 'chomp if eof' | /mnt/c/Windows/System32/clip.exe
+}
+
+windows_wsl_paste() {
+    logger "INFO " "paste > using powershell.exe"
+    /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Get-Clipboard | sed 's/\r//'
+}
+
+windows_cygwin_copy() {
+    logger "INFO " "copy > using /dev/clipboard"
+    cat >/dev/clipboard
+}
+
+windows_cygwin_paste() {
+    logger "INFO " "paste > using /dev/clipboard"
+    cat /dev/clipboard
+}
+
+osx_copy() {
+    logger "INFO " "copy > using pbcopy"
+    cat | pbcopy
+}
+
+osx_paste() {
+    logger "INFO " "paste > using pbpaste"
+    pbpaste
+}
+
+# https://sunaku.github.io/tmux-yank-osc52.html
+osc52_copy() {
+    logger "INFO " "copy > using OSC 52"
+    esc="\033]52;c;$(printf "%s" "$(cat "$@")" | head -c 74994 | base64 | tr -d '\r\n')\a"
+
+    if test -n "$TMUX" -o -z "${TERM##screen*}"; then
+        logger "INFO " "copy > using OSC 52 > escaping tmux"
+        esc="\033Ptmux;\033$esc\033\\"
+    fi
+    # shellcheck disable=2059
+    printf "$esc"
+}
+
+ssh_session() {
+    [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] ||
+        (command -v pstree >/dev/null 2>&1 && pstree -ps $$ | grep --quiet "sshd")
+}
+
+stdin_is_a_pipe() {
+    [ -p /dev/stdin ]
+}
+
+stdin_is_a_tty() {
+    [ -t 0 ]
+}
+
+stdin_is_pipe_like() {
+    stdin_is_a_pipe || ! stdin_is_a_tty
+}
+
+stdout_is_pipe_like() {
+    ! stdout_is_a_tty # meaning it must be a pipe or redirection
+}
+
+stdout_is_a_tty() {
+    [ -t 1 ]
+}
+
+requested_open_ended() {
+    [ "$1" = "-" ]
+}
+
+enable_tee_like_chaining() {
+    # see `man tee`
+    if stdout_is_pipe_like; then
+        logger "DEBUG" "copy > paste > stdout is pipe-like"
+        "${operating_system}_paste"
+    elif requested_open_ended "$@"; then
+        logger "DEBUG" "copy > paste > stdout is open-ended"
+        "${operating_system}_paste"
+        echo
+    fi
+}
+
+prevent_prompt_from_being_on_the_same_line() {
+    if stdout_is_a_tty; then
+        logger "DEBUG" "paste > stdout is a TTY"
+        # we don't have to be strict about not altering the output
+        echo
+    fi
+}
+
+test_suite() {
+    cb_cmd="$(basename "$0")"
+    printf '1234' | "$cb_cmd"
+
+    printf "\n1. output to TTY - expect '1234'\n"
+    "$cb_cmd"
+
+    printf "\n2. output to pipe - expect '1234'\n"
+    "$cb_cmd" | cat
+    echo
+
+    # TODO: hangs on linux
+    printf "\n3. input from pipe and output to pipe - expect '1234'\n"
+    printf '1234' | "$cb_cmd" | cat
+}
+
+main() {
+    operating_system="$(os-detect)"
+    logger "DEBUG" "operating system > \"$operating_system\""
+    case "$operating_system" in
+        windows_cygwin | windows_wsl | osx) ;;
+        linux*) operating_system="linux" ;;
+        # exit if the OS is not supported
+        *)
+            err_msg="operating system not supported, please log an issue"
+            logger "ERROR" "$err_msg"
+            echo "$err_msg" >&2
+            exit 1
+            ;;
+    esac
+
+    if stdin_is_pipe_like; then
+        logger "DEBUG" "copy > stdin is pipe like"
+        if ssh_session; then
+            logger "DEBUG" "copy > in ssh session"
+            osc52_copy "$@"
+        fi
+
+        "${operating_system}_copy"
+        enable_tee_like_chaining "$@"
+    else
+        logger "DEBUG" "paste > stdin is not pipe like"
+        "${operating_system}_paste"
+        prevent_prompt_from_being_on_the_same_line
+    fi
+}
+
+if [ "$1" = "--test" ]; then
+    test_suite
+else
+    logger "\nINFO " "START > args: $*"
+    main "$@"
+fi

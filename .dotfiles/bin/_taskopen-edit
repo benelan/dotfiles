@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Opens a task note and adds frontmatter data if the file does not exist
+if [ $# -eq 3 ]; then
+    if [ ! -e "$1" ]; then
+        printf "%s\n%s %s\n%s [%s]\n%s\n%s\n " \
+            "---" \
+            "title:" "$2" \
+            "tags:" "$3" \
+            "type: task" \
+            "---" >"$1"
+    fi
+    $EDITOR "$1"
+else
+    echo "Usage: $0 <file-path> <description> <tags>"
+fi

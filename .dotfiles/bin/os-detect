@@ -1,0 +1,106 @@
+#!/usr/bin/env sh
+# shellcheck disable=2076
+
+# Detects the operating and outputs it in a machine parsable format.
+#
+# The MIT License (MIT)
+# Copyright (c) 2023-present Ben Elan
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# detects the operating system
+if [ -f /proc/version ] && grep -iq Microsoft /proc/version; then
+    os="windows_wsl"
+elif [ -n "$OSTYPE" ]; then
+    case "$OSTYPE" in
+        solaris*) os="solaris" ;;
+        darwin*) os="osx" ;;
+        linux*) os="linux" ;;
+        bsd*) os="bsd" ;;
+        msys*) os="windows_msys" ;;
+        win32*) os="windows_win32" ;;
+        cygwin*) os="windows_cygwin" ;;
+        *) os="unknown_$OSTYPE" ;;
+    esac
+else
+    uname="$(uname -s 2>/dev/null)"
+    case "$uname" in
+        Linux*) os="linux" ;;
+        Darwin*) os="mac" ;;
+        CYGWIN*) os="windows_cygwin" ;;
+        *) os="unknown_$uname" ;;
+    esac
+fi
+
+# attempt to detect linux distro
+if [ "$os" = "linux" ]; then
+    # get the id from the standard "/etc/os-release" location
+    if [ -f /etc/os-release ]; then
+        distro="$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')"
+    else
+        # old distro versions may not follow the "os-release"
+        # standard and could have info in other files, such as:
+        # /etc/(lsb|system|redhat|centos)-release
+        # IDs found here: https://github.com/chef/os_release
+        system_info="$(cat /etc/[A-Za-z]*[_-][rv]e[lr]* | tr -d '"')"
+        case "$system_info" in
+            *"NAME=Ubuntu"*) distro="ubuntu" ;;
+            *"NAME=Pop!_OS"*) distro="pop" ;;
+            *"NAME=Linux Mint"*) distro="mint" ;;
+            *"NAME=Zorin"*) distro="zorin" ;;
+            *"NAME=elementary OS"*) distro="elementary" ;;
+            *"NAME=Debian"*) distro="debian" ;;
+            *"NAME=Cumulus"*) distro="cumulus" ;;
+            *"NAME=Raspbian"*) distro="raspbian" ;;
+            *"NAME=Kali"*) distro="kali" ;;
+            *"NAME=Xbian"*) distro="xbian" ;;
+            *"NAME=Gentoo"*) distro="gentoo" ;;
+            *"NAME=Arch Linux"*) distro="arch" ;;
+            *"NAME=Manjaro"*) distro="manjaro" ;;
+            *"NAME=NixOS"*) distro="nixos" ;;
+            *"NAME=CentOS"*) distro="centos" ;;
+            *"NAME=ClearOS"*) distro="clearos" ;;
+            *"NAME=Fedora"*) distro="fedora" ;;
+            *"NAME=Mageia"*) distro="mageia" ;;
+            *"NAME=Rocky"*) distro="rocky" ;;
+            *"NAME=Red Hat Enterprise Linux"*) distro="rhel" ;;
+            *"NAME=openSUSE"*) distro="opensuse" ;;
+            *"NAME=SLES"*) distro="sles" ;;
+            *"NAME=SLED"*) distro="sled" ;;
+            *"NAME=CASP"*) distro="casp" ;;
+            *"NAME=XCP-ng"*) distro="XCP-ng" ;;
+            *"NAME=XenServer"*) distro="xenenterprise" ;;
+            *"NAME=Alma"*) distro="alma" ;;
+            *"NAME=Alpine"*) distro="alpine" ;;
+            *"NAME=Antergos"*) distro="antergos" ;;
+            *"NAME=Slackware"*) distro="slackware" ;;
+            *) distro="unknown" ;;
+        esac
+    fi
+
+    # append debian/ubuntu to their derivatives for pattern matching
+    # so you can do '*ubuntu' which will match derivatives too
+    case "$distro" in
+        ubuntu | raspbian | kali | xbian) os="linux_${distro}__debian" ;;
+        pop | xmint | zorin | elementary) os="linux_${distro}__ubuntu" ;;
+        *) os="linux_$distro" ;;
+    esac
+fi
+
+echo "$os"

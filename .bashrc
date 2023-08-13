@@ -62,6 +62,7 @@ unset completions
 export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
 export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK"
 export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
+export GIT_MUX_LOGS="1"
 # ensure tmux is running
 [ -z "$TMUX" ] && git mux project "$PWD"
 
