@@ -1,0 +1,225 @@
+#!/usr/bin/env sh
+set -o errexit
+
+# Outputs, copies, or opens text matching a specified pattern.
+#
+# The -s flag requires the following scripts to be in your PATH:
+#   - `cb`        to access the clipboard
+#   - `o`         to open with the default system application
+#   - `os-detect` to determine the operating system for the above scripts
+#
+# Alternatively set the COPY_CMD and OPEN_CMD environment variables for your OS.
+# For example, on Linux put the following in your .bashrc (or equivalent):
+# export COPY_CMD="xclip -selection clipboard"
+# export OPEN_CMD="xdg-open"
+#
+# The MIT License (MIT)
+# Copyright (c) 2023-present Ben Elan
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# --------------------------------------------------------------------- }}}
+# Usage info                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+help() {
+    if [ -n "$*" ]; then
+        printf "Error: %s\n\n" "$*" >&2
+        logger "ERROR" "$*"
+    else
+        cat <<EOF
+Find text that matches a pattern and copy, open, or print it to stdout.
+
+Usage:           matpat [-t] [-s] [-p pattern]
+
+Flags:
+  -t . . . . . . Match text from tmux panes instead of stdin.
+  -s . . . . . . Select a match with fzf to copy, open, or print.
+                 Omit the flag to print all matches to stdout.
+  -p . . . . . . The pattern used to match text (options below).
+                 Omit the flag to select a pattern with fzf.
+  -h . . . . . . Show this message.
+
+Patterns:
+  u, uri, url    URIs (e.g., https://cht.sh or file://foo/bar.baz)
+  i, ip          IP addresses (e.g., 192.168.1.1)
+  s, sha         Short or long Git SHAs (e.g., 64945dd)
+  r, range       Git SHA ranges (e.g., 123456..654321)
+
+Examples:
+  # print all IP addresses from a log file.
+  cat logs/access.log | matpat -p ip
+  # find URIs in all open tmux panes and select one using fzf.
+  matpat -stp u
+
+EOF
+    fi
+    exit 1
+}
+
+# --------------------------------------------------------------------- }}}
+# Configuration                                                         {{{
+# --------------------------------------------------------------------- {|}
+
+COPY_CMD="${COPY_CMD:-cb}"
+OPEN_CMD="${OPEN_CMD:-o}"
+
+if [ "$MATPAT_LOGS" = "1" ] || [ -z "$MATPAT_LOGS" ] && [ -n "$DEBUG" ]; then
+    MATPAT_LOGS="$HOME/.dotfiles/cache/matpat.log"
+fi
+
+logger() {
+    if [ -n "$DEBUG" ] || [ -n "$MATPAT_LOGS" ] && [ "$MATPAT_LOGS" != "0" ]; then
+        printf "%s | %s | %s" \
+            "$1" \
+            "$(date +%Y-%m-%dT%H:%M:%S 2>/dev/null)" \
+            "$2" \
+            >>"$MATPAT_LOGS"
+    fi
+}
+
+# --------------------------------------------------------------------- }}}
+# Patterns                                                              {{{
+# --------------------------------------------------------------------- {|}
+
+uri() {
+    # https://en.wikipedia.org/wiki/List_of_URI_schemes
+    _uri_network_schemes='(?:https?://|\bwww\.|s?ftp://|wss?:|ssh://|udp://|vnc://|ldaps?://|dns://'
+    _uri_app_schemes='payto://|mailto:|callto:|tel:|magnet:|maps:|geo:|slack://|msteams://|news://|steam://|obsidian://'
+    _uri_misc_schemes='s3://|rediss?://|git://|svn://|cvs://|nfs://|file://|data:)'
+    _uri_schemes="(?:$_uri_network_schemes|$_uri_app_schemes|$_uri_misc_schemes)"
+    grep -oP "${_uri_schemes}[a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*(\([a-zA-Z0-9\-\@;\/?:&=%\$_.+!*\x27,~#]*\)|[a-zA-Z0-9\-\@;\/?:&=%\$_+*~])+"
+}
+
+ip_address() {
+    grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+}
+
+git_sha() {
+    grep -oE '\b[0-9a-f]{5,40}\b'
+}
+
+git_sha_range() {
+    grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'
+}
+
+# --------------------------------------------------------------------- }}}
+# Find/select or print matches                                          {{{
+# --------------------------------------------------------------------- {|}
+
+select_match() {
+    echo "$1" |
+        uniq |
+        fzf --no-multi --no-exit-0 --no-select-1 \
+            --header='(ctrl-y:copy) (ctrl-o:open) (enter:stdout) (ctrl-c:close)' \
+            --bind "ctrl-o:execute($OPEN_CMD {})+abort" \
+            --bind "ctrl-y:execute(echo {} | $COPY_CMD)+abort"
+}
+
+select_pattern() {
+    logger "INFO " "no pattern specified, interactively selecting one"
+    printf "%s\\n%s\\n%s\\n%s" \
+        'uri' \
+        'ip_address' \
+        'git_sha_range' \
+        'git_sha' |
+        fzf --no-multi --header "select the pattern"
+}
+
+match_pattern() {
+    if [ -z "$1" ]; then
+        help "no pattern specified or selected"
+    fi
+    if [ -n "$tmux_mode" ]; then
+        logger "DEBUG" "finding matches in all open tmux panes"
+        matches=$(for pane in $(tmux list-pane -a -F "#S:#I.#P"); do
+            tmux capture-pane -t "$pane" -p
+        done | $1)
+    else
+        logger "DEBUG" "finding matches from stdin"
+        # shellcheck disable=2086
+        matches=$(eval $1)
+    fi
+
+    if [ -n "$select_mode" ]; then
+        logger "DEBUG" "interactively selecting a match"
+        select_match "$matches"
+    else
+        logger "DEBUG" "printing matches to stdout"
+        echo "$matches"
+    fi
+
+    unset select_mode tmux_mode matches
+}
+
+# --------------------------------------------------------------------- }}}
+# Parse args                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+# if stdin is piped or not tty
+stdin_is_pipe_like() { [ -p /dev/stdin ] || ! [ -t 0 ]; }
+
+main() {
+    # Print usage info if `matpat` is called with no args, unless stdin
+    # is piped, in which case prompt the user to select a pattern.
+    if ! stdin_is_pipe_like; then
+        [ -z "$1" ] && help
+        # Automatically turn on tmux mode if attached and stdin is
+        # not piped, otherwise it hangs waiting for stdin.
+        if [ -n "$TMUX" ]; then
+            logger "WARN " "auto-enabling tmux mode to prevent hanging"
+            tmux_mode=1
+        fi
+    fi
+
+    pattern="select"
+
+    while getopts p:ths opt; do
+        case $opt in
+            h) help ;;
+            p)
+                logger "INFO " "pattern specified: $pattern"
+                pattern="$OPTARG"
+                ;;
+            t)
+                logger "INFO " "tmux mode enabled via flag"
+                tmux_mode=1
+                ;;
+            s)
+                logger "INFO " "select mode enabled via flag"
+                select_mode=1
+                ;;
+            *) help "invalid flag: \$opt\"" ;;
+        esac
+    done
+
+    shift "$((OPTIND - 1))"
+
+    case $pattern in
+        i | ip | ip_address) match_pattern ip_address ;;
+        r | range | git_sha_range) match_pattern git_sha_range ;;
+        s | sha | git_sha) match_pattern git_sha ;;
+        u | uri | url) match_pattern uri ;;
+        select) match_pattern "$(select_pattern)" ;;
+        *) help "unknown pattern: \"$pattern\"" ;;
+    esac
+}
+
+logger "\nINFO " "START > args: $*"
+main "$@"
