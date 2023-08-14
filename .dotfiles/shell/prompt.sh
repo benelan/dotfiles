@@ -17,10 +17,10 @@ bind "set vi-ins-mode-string \"I \""
         # Gruvbox colors from: https://github.com/morhetz/gruvbox
         BLACK=$(tput setaf 235)
         BLUE=$(tput setaf 66)
-        AQUA=$(tput setaf 72)
+        CYAN=$(tput setaf 72)
         GREEN=$(tput setaf 106)
         ORANGE=$(tput setaf 166)
-        PURPLE=$(tput setaf 132)
+        MAGENTA=$(tput setaf 132)
         RED=$(tput setaf 124)
         WHITE=$(tput setaf 230)
         YELLOW=$(tput setaf 172)
@@ -30,18 +30,18 @@ bind "set vi-ins-mode-string \"I \""
         UNDERLINE='e[4m'
         BLACK="\e[1;30m"
         BLUE="\e[1;34m"
-        AQUA="\e[1;36m"
+        CYAN="\e[1;36m"
         GREEN="\e[1;32m"
         ORANGE="\e[1;33m"
-        PURPLE="\e[1;35m"
+        MAGENTA="\e[1;35m"
         RED="\e[1;31m"
         WHITE="\e[1;37m"
         YELLOW="\e[1;33m"
     fi
 } >/dev/null 2>&1
 
-export BOLD UNDERLINE RESET BLACK BLUE AQUA \
-    GREEN ORANGE PURPLE RED WHITE YELLOW
+export BOLD UNDERLINE RESET BLACK BLUE CYAN \
+    GREEN ORANGE MAGENTA RED WHITE YELLOW
 
 # trim long paths if possible                   {{{
 if ((BASH_VERSINFO[0] >= 4)); then
@@ -89,18 +89,21 @@ pre_prompt+="\[${RESET}\]"             # reset styling
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # set the post_prompt                           {{{
 post_prompt="\n"
-# post_prompt+="\[${PURPLE}\][\!]" # history line number for easy hist expansion
-# shellcheck disable=2181,2016
+# post_prompt+="\[${MAGENTA}\][\!]" # history line number for easy hist expansion
+# shellcheck disable=2016
 post_prompt+='$(if [ $? -ne 0 ]; then printf "\[%s\]✘  " "$RED"; else printf "\[%s\]❱  " "$GREEN"; fi;)'
 post_prompt+="\[${RESET}\]" # reset styling
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 
-# shellcheck disable=2154
-PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
+if command -v __git_ps1 >/dev/null 2>&1; then
+    PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
+else
+    PROMPT_COMMAND='export PS1=${pre_prompt}${post_prompt}'
+fi
 
-PS2="\[${YELLOW}\]…  \[${RESET}\]"
+PS2="\[${YELLOW}\]… \[${RESET}\] "
 
-export PS2
+export PROMPT_COMMAND PS2
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
