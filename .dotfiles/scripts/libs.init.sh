@@ -15,8 +15,8 @@ build_neovim() {
         cd "$NEOVIM_PATH" || exit 1
         git fetch --all --tags --force
         git reset --hard origin/master
-        # git checkout nightly
-        git checkout stable
+        git checkout nightly
+        # git checkout stable
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
     fi
