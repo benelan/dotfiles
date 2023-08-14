@@ -1,29 +1,38 @@
-gh https://github.com/ ::
+
+gh https://github.com/ :github: -g
+gh-me https://github.com/benelan :github: -g
+gh-cc https://github.com/calcite-design-system :github: -g
 regex101 https://regex101.com/ :playground:regex: -g
-tsplay https://www.typescriptlang.org/play :interactive:playground:frontend:sample:typescript: -g
-codepen https://codepen.io/ :interactive:playground:frontend:sample: -g
-codesandbox https://codesandbox.io/dashboard :frontend:interactive:playground:sample: -g
+tsplay https://www.typescriptlang.org/play :interactive:playground:frontend:typescript: -g
+codepen https://codepen.io/ :interactive:playground:frontend: -g
+codesandbox https://codesandbox.io/dashboard :frontend:interactive:playground: -g
 bundlephobia https://bundlephobia.com/ :frontend:build:optimization: -g
-twcheatsheet https://flowbite.com/tools/tailwind-cheat-sheet/ :frontend:cheatsheet:
-webcomponents https://open-wc.org/ :frontend:guide:
-designpatterns https://www.patterns.dev/posts :guide:
+tw-cht https://flowbite.com/tools/tailwind-cheat-sheet/ :frontend:cheatsheet:
+wc https://open-wc.org/ :frontend:guide:web-components:
+design-patterns https://www.patterns.dev/posts :guide:
 refactorguru https://refactoring.guru/ :guide:
-martinfowler https://martinfowler.com/tags/ :guide:
+martinfowler https://martinfowler.com/tags/ :guide:blog:
 learnxy https://learnxinyminutes.com/ :guide:tooling:
-rustinteractive https://rust-book.cs.brown.edu/ :guide:interactive:rust: -g
-rustbook https://doc.rust-lang.org/stable/book/ :guide:rust:
-rustgentle https://stevedonovan.github.io/rust-gentle-intro/ :guide:rust:
-rustexample https://doc.rust-lang.org/rust-by-example/ :guide:rust:sample:
-gcli https://clig.dev/ :cli:guide:
-makefile https://www.gnu.org/software/make/manual/make.html :guide:ci:build:tooling:
-perfectmediaserver https://perfectmediaserver.com/ :hardware:homeserver:guide:backend:networking:
+rusti https://rust-book.cs.brown.edu/ :guide:interactive:rust: -g
+rustb https://doc.rust-lang.org/stable/book/ :guide:rust:
+rustg https://stevedonovan.github.io/rust-gentle-intro/ :guide:rust:
+ruste https://doc.rust-lang.org/rust-by-example/ :guide:rust:
+clig https://clig.dev/ :cli:guide:
+posix https://pubs.opengroup.org/onlinepubs/9699919799/utilities/contents.html :cli:utility:reference:
+makefile https://www.gnu.org/software/make/manual/make.html :reference:ci:build:tooling:
+perfectmediaserver https://perfectmediaserver.com/ :hardware:homeserver:blog:guide:backend:networking:
 naspie https://www.howtogeek.com/139433/how-to-turn-a-raspberry-pi-into-a-low-power-network-storage-device/ :hardware:guide:backend:homeserver:networking:
-smarthomejourney https://thesmarthomejourney.com/ :hardware:smarthome:homeserver:guide:backend:networking:
-homenetworkguy https://homenetworkguy.com/ :hardware:homeserver:guide:backend:networking:
-hng-opnsense https://homenetworkguy.com/how-to/set-up-a-fully-functioning-home-network-using-opnsense/ :homeserver:networking:guide:
-ittools https://it-tools.tech/ :interactive:networking: -g
-vireadline https://catonmat.net/ftp/bash-vi-editing-mode-cheat-sheet.pdf :cli:cheatsheet:
+smarthomejourney https://thesmarthomejourney.com/ :hardware:smarthome:homeserver:blog:guide:backend:networking:
+homenetworkguy https://homenetworkguy.com/ :hardware:homeserver:guide:backend:networking:blog:
+homenetworkguy-opnsense https://homenetworkguy.com/how-to/set-up-a-fully-functioning-home-network-using-opnsense/ :homeserver:networking:guide:blog:
+it-tools https://it-tools.tech/ :interactive:networking: -g
+vi-readline https://catonmat.net/ftp/bash-vi-editing-mode-cheat-sheet.pdf :cli:cheatsheet:vim:
 cloudfree https://cloudfree.shop/ :shop:hardware:smarthome: -g
 digiblur https://digiblur.com/ :shop:hardware:smarthome:guide:
 eff https://www.eff.org/press :news:privacy:
 propublica https://www.propublica.org/ :news:
+yt https://www.youtube.com :media:video: -g
+yt-tv https://tv.youtube.com :media:video: -g
+netflix https://www.netflix.com :media:video: -g
+hulu https://www.hulu.com :media:video: -g
+music https://music.apple.com/us/listen-now :media:music: -g

@@ -407,7 +407,10 @@ if is-supported fzf; then
         bookmark="$(awk NF "$XDG_CONFIG_HOME/surfraw/bookmarks" | fzf -e)"
         bookmark_name="$(awk '{print $1;}' <<<"$bookmark")"
         bookmark_gui_flag="$(awk '{print $4;}' <<<"$bookmark")"
-        surfraw "$bookmark_name" "$bookmark_gui_flag"
+
+        if [ -z "$bookmark_name" ]; then
+            surfraw "$bookmark_name" "$bookmark_gui_flag"
+        fi
         unset bookmark bookmark_name bookmark_gui_flag
     }
 
