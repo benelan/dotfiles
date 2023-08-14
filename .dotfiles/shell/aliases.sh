@@ -61,7 +61,6 @@ alias fdf='find . -type f -name'
 alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
 # shellcheck disable=2139
 alias functions="declare -f | awk '/^[a-z].* ()/{gsub(\" .*$\",\"\"); print $1};'"
-alias paths='echo -e ${PATH//:/\\n}'
 
 # Intuitive map function
 # For example, to list all directories that contain a certain file:

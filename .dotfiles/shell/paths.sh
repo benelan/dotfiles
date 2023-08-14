@@ -10,89 +10,123 @@ indirect_expand() {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
 # remove an entry from PATH                                   {{{
-# Usage: pathremove /path/to/bin [PATH]
-# Eg, to remove ~/bin from $PATH
-#     pathremove ~/bin PATH
-pathremove() {
+# Usage: path_remove /path/to/bin [PATH]
+path_remove() {
     IFS=':'
-    var=${2:-PATH}
-    # Bash has ${!var}, but this is not portable.
-    for dir in $(indirect_expand "${var}"); do
+    path_var=${2:-PATH}
+    # Bash has ${!path_var}, but this is not portable.
+    for path_dir in $(indirect_expand "${path_var}"); do
         IFS=''
-        if [ "${dir}" != "${1}" ]; then
-            newpath=${newpath}:${dir}
+        if [ "${path_dir}" != "${1}" ]; then
+            new_path=${new_path}:${path_dir}
         fi
     done
-    export "${var}"="${newpath#:}"
-    unset newpath dir var IFS
+    export "${path_var}"="${new_path#:}"
+    unset new_path path_dir path_var IFS
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
 # prepend an entry to PATH                                    {{{
-# Usage: pathprepend /path/to/bin [PATH]
-# Eg, to prepend ~/bin to $PATH
-#     pathprepend ~/bin PATH
-pathprepend() {
-    # if the path is already in the variable,
+# Usage: path_prepend /path/to/bin [PATH]
+path_prepend() {
+    # if the path is already in the path_variable,
     # remove it so we can move it to the front
-    pathremove "${1}" "${2}"
+    path_remove "${1}" "${2}"
     [ -d "${1}" ] || return
-    var="${2:-PATH}"
-    value=$(indirect_expand "$var")
-    # shellcheck disable=2140
-    export "${var}"="${1}${value:+:${value}}"
-    unset var value
+    path_var="${2:-PATH}"
+    path_value=$(indirect_expand "$path_var")
+    export "${path_var}"="${1}${path_value:+:${path_value}}"
+    unset path_var path_value
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
 # append an entry to PATH                                     {{{
-# Usage: pathappend /path/to/bin [PATH]
-# Eg, to append ~/bin to $PATH
-#     pathappend ~/bin PATH
-pathappend() {
-    pathremove "${1}" "${2}"
+# Usage: path_append /path/to/bin [PATH]
+path_append() {
+    path_remove "${1}" "${2}"
     [ -d "${1}" ] || return
-    var=${2:-PATH}
-    value=$(indirect_expand "$var")
-    # shellcheck disable=2140
-    export "${var}"="${value:+${value}:}${1}"
-    unset var value
+    path_var=${2:-PATH}
+    path_value=$(indirect_expand "$path_var")
+    export "${path_var}"="${path_value:+${path_value}:}${1}"
+    unset path_var path_value
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# print `path` usage info                                     {{{
+path_help() {
+    cat <<EOF
+Append, prepend, or remove entries from \$PATH.
+
+Usage:  path [(-a | -p | -r) <path>]...
+
+Flags:
+  -a    Add or move <path> to the front of \$PATH.
+  -p    Add or move <path> to the end of \$PATH.
+  -r    Remove <path> from \$PATH.
+  -h    Show this message.
+
+If no flags are given, print \$PATH.
+
+EOF
+    exit 1
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
+# Parse args                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+# arg_is_flag() { case $1 in -*) true ;; *) false ;; esac }
+
+path() {
+    if [ -z "$1" ]; then
+        echo "$PATH" | tr ':' '\n'
+        return
+    fi
+
+    while getopts r:a:p:h opt; do
+        case $opt in
+            h) path_help ;;
+            a) path_append "$OPTARG" ;;
+            r) path_remove "$OPTARG" ;;
+            p) path_prepend "$OPTARG" ;;
+            *) path_help ;;
+        esac
+    done
+
+}
+
+# --------------------------------------------------------------------- }}}
 # Set path                                                              {{{
 # --------------------------------------------------------------------- {|}
 
-pathprepend "$HOME/.dotfiles/bin"
-pathprepend "$HOME/.local/share/nvim/mason/bin"
-pathappend "$HOME/dev/personal/git-mux"
-pathappend "$HOME/dev/lib/forgit/bin"
-pathappend "$HOME/dev/lib/fzf/bin"
-pathappend "$HOME/dev/lib/fasd"
-pathappend "$HOME/dev/lib/fff"
-pathappend "$HOME/dev/lib/git-open"
-pathappend "$HOME/.local/bin"
-pathappend "$HOME/.volta/bin"
-pathappend "$HOME/.bun/bin"
-pathappend "$HOME/.cargo/bin"
-pathappend "$HOME/.luarocks/bin"
-pathappend "$HOME/.nimble/bin"
-pathappend "$HOME/go/bin"
-pathappend "/usr/local/go/bin"
-pathappend "/snap/bin"
-pathappend "/usr/local/games"
-pathappend "/usr/local/sbin"
-pathappend "/usr/local/bin"
-pathappend "/usr/games"
-pathappend "/usr/sbin"
-pathappend "/usr/bin"
-pathappend "/sbin"
-pathappend "/bin"
+path \
+    -p "$HOME/.dotfiles/bin" \
+    -p "$HOME/.local/share/nvim/mason/bin" \
+    -a "$HOME/dev/personal/git-mux" \
+    -a "$HOME/dev/lib/forgit/bin" \
+    -a "$HOME/dev/lib/fzf/bin" \
+    -a "$HOME/dev/lib/fasd" \
+    -a "$HOME/dev/lib/fff" \
+    -a "$HOME/dev/lib/git-open" \
+    -a "$HOME/.local/bin" \
+    -a "$HOME/.volta/bin" \
+    -a "$HOME/.bun/bin" \
+    -a "$HOME/.cargo/bin" \
+    -a "$HOME/.luarocks/bin" \
+    -a "$HOME/.nimble/bin" \
+    -a "$HOME/go/bin" \
+    -a "/usr/local/go/bin" \
+    -a "/snap/bin" \
+    -a "/usr/local/games" \
+    -a "/usr/local/sbin" \
+    -a "/usr/local/bin" \
+    -a "/usr/games" \
+    -a "/usr/sbin" \
+    -a "/usr/bin" \
+    -a "/sbin" \
+    -a "/bin"
 
 # --------------------------------------------------------------------- }}}
