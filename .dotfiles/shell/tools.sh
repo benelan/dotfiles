@@ -17,7 +17,7 @@ if is-supported git-forgit; then
         . ~/dev/lib/forgit/forgit.plugin.sh
 
     # Settings
-    export FORGIT_COPY_CMD="os-cb"
+    export FORGIT_COPY_CMD="cb"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

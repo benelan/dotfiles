@@ -38,4 +38,4 @@ done
 
 [ ! "$output" ] && printf "No message given!\n" && exit
 echo "$output"
-echo "$output" | os-cb
+echo "$output" | cb

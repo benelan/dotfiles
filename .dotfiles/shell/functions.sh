@@ -493,8 +493,8 @@ if is-supported fzf; then
             fzf \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
-                --bind "ctrl-o:execute(os-open {})" \
-                --bind "ctrl-y:execute(echo {} | os-cb)" \
+                --bind "ctrl-o:execute(o {})" \
+                --bind "ctrl-y:execute(echo {} | cb)" \
                 --bind "ctrl-e:execute($EDITOR {})" \
                 --header='(edit:ctrl-e) (open:ctrl-o) (copy:ctrl-y) (view:ctrl-v) (sort:ctrl-x)' \
                 --preview="bat --color=always {} 2> /dev/null |
@@ -541,7 +541,7 @@ if is-supported fzf; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
     ## find an emoji                                          {{{
-    # usage: $ find_emoji | os-cb
+    # usage: $ find_emoji | cb
     if is-supported jq; then
         function femoji() {
             emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
@@ -569,7 +569,7 @@ fi
 if [ "$USE_WORK_STUFF" = "1" ]; then
     if is-supported gh; then
         cc_visual_snapshots() {
-            if [[ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]]; then
+            if [ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]; then
                 current_branch="$(git symbolic-ref --short HEAD)"
                 gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
                 gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
@@ -581,6 +581,7 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
     if is-supported jq; then
         cc_pack_install() {
             npm_root=$(npm prefix)
+            worktree_root="${1:-main}"
 
             # clean test project
             npm uninstall @esri/calcite-components @esri/calcite-components-react
@@ -590,16 +591,16 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
                 "$npm_root"/node_modules
 
             # build calcite-design-system and pack calcite-components
-            npm run build --prefix "$CALCITE/main"
+            npm run build --prefix "$CALCITE/$worktree_root"
             npm pack \
-                --prefix "$CALCITE/main" \
+                --prefix "$CALCITE/$worktree_root" \
                 --workspace "packages/calcite-components" \
                 --pack-destination "$npm_root"
 
             # pack calcite-components-react if the test project has react as a dependency
             if [ "$(jq '.dependencies | has("react")' "$npm_root/package.json")" = "true" ]; then
                 npm pack \
-                    --prefix "$CALCITE/main" \
+                    --prefix "$CALCITE/$worktree_root" \
                     --workspace "packages/calcite-components-react" \
                     --pack-destination "$npm_root"
             fi

@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 # open (n)vim help pages from shell prompt
-$([ "$EDITOR" = "nvim" ] && echo "nvim" || echo "vim") +":h $*" +"wincmd o"
+$([ "$EDITOR" = "nvim" ] && echo "nvim" || echo "vim") +":h $1" +only
