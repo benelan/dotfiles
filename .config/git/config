@@ -345,9 +345,6 @@
     bdefault-fast = "!f() { basename $(git rev-parse --abbrev-ref origin/HEAD);}; f"
     bdefault-bare = "!f() { git remote show $(git remote | grep -Eo '(upstream|origin)' | tail -1) | grep 'HEAD branch' | cut -d' ' -f5; }; f"
 
-    ; from https://github.com/not-an-aardvark/git-delete-squashed
-    bprune = "!f() { local targetBranch=${1:-$(git bdefault)} && git checkout -q $targetBranch && git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d && git for-each-ref refs/heads/ \"--format=%(refname:short)\" | while read branch; do mergeBase=$(git merge-base $targetBranch $branch) && [[ $(git cherry $targetBranch $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == \"-\"* ]] && git branch -D $branch; done; }; f"
-
     ; list of local branches and their most recent commit
     blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 

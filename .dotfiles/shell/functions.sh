@@ -124,7 +124,7 @@ if is-supported pandoc; then
     # Convert markdown to HTML
     md2html() {
         pandoc "$1.md" --output="$1.html" --standalone \
-            --css="$HOME/.dotfiles/assets/pandoc.css" --from=gfm --to=html5
+            --css="$DOTFILES/assets/pandoc.css" --from=gfm --to=html5
     }
 fi
 
@@ -385,6 +385,25 @@ chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
 
 # --------------------------------------------------------------------- }}}
+# Git                                                                   {{{
+# --------------------------------------------------------------------- {|}
+
+# from https://github.com/not-an-aardvark/git-delete-squashed
+gbprune() {
+    TARGET_BRANCH="${1:-$(g bdefault)}" &&
+        git checkout -q "$TARGET_BRANCH" &&
+        git for-each-ref refs/heads/ "--format=%(refname:short)" |
+        while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
+            [[ $(
+                # shellcheck disable=2046,1083,1001
+                git cherry "$TARGET_BRANCH" $(git commit-tree $(
+                    git rev-parse "$branch"\^{tree}
+                ) -p "$mergeBase" -m _)
+            ) == "-"* ]] &&
+            git branch -D "$branch"; done
+
+}
+# --------------------------------------------------------------------- }}}
 # FZF                                                                   {{{
 # --------------------------------------------------------------------- {|}
 
@@ -544,7 +563,7 @@ if is-supported fzf; then
     # usage: $ find_emoji | cb
     if is-supported jq; then
         function femoji() {
-            emoji_cache="${HOME}/.dotfiles/cache/emoji.json"
+            emoji_cache="$DOTFILES/cache/emoji.json"
             if [ ! -r "$emoji_cache" ]; then
                 curl -sSLo "$emoji_cache" \
                     https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json
