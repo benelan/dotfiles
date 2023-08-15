@@ -6,9 +6,9 @@
 set -e
 sudo -v
 
-DEPS_DIR="$HOME/.dotfiles/deps"
-CACHE_DIR="$HOME/.dotfiles/cache"
-FONTS_DIR="$HOME/.local/share/fonts"
+DEPS_DIR="$DOTFILES/deps"
+CACHE_DIR="$DOTFILES/cache"
+FONTS_DIR="$XDG_DATA_HOME/fonts"
 WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
 
 mkdir -p "$DEPS_DIR" "$CACHE_DIR"
@@ -212,9 +212,9 @@ install_gnome_gruvbox_theme() {
             unset cursors
 
             # move icons and themes to the proper locations
-            mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons/Gruvbox-Plus-Dark ~/.themes/Gruvbox-Dark-BL
-            cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark/* ~/.icons/Gruvbox-Plus-Dark/
-            cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL/* ~/.themes/Gruvbox-Dark-BL/
+            mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons ~/.themes
+            cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
+            cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL ~/.themes
             cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
 
             # remove the repos because they are yuuge

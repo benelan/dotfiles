@@ -6,7 +6,7 @@ set -e
 # Comment out functions at the bottom to skip sections.
 
 BIN_DIR="$HOME/.local/bin"
-DEPS_DIR="$HOME/.dotfiles/deps"
+DEPS_DIR="$DOTFILES/deps"
 mkdir -p "$BIN_DIR"
 
 # Install the Rust language
@@ -122,7 +122,7 @@ install_git_jump() {
 
     # otherwise download it
     else
-        curl -sSLo ~/.dotfiles/bin/git-jump \
+        curl -sSLo "$BIN_DIR/git-jump" \
             https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
     fi
     chmod +x "$BIN_DIR/git-jump"
