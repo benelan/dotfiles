@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-OVERWRITE_REPOS=${OVERWRITE_REPOS:-false}
+if [ -z "$DEV" ]; then
+    printf "DEV environment variable not set, exiting\n"
+    exit 1
+fi
 
 # get the default branch for a repo (e.g. main or master)
 get_default_branch() {
@@ -40,12 +43,11 @@ create_worktree_for_default_branch() {
 }
 
 clone_gh_repo() {
-    PARENT_PATH="$DEV/$1"
-    mkdir -p "$PARENT_PATH"
-    repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
+    mkdir -p "$DEV/$1"
+    repo_dir="$DEV/$1/${3:-"$(basename "${2:?}")"}"
     printf "\n%s\n---------------------\n" "$2"
     if [ -d "$repo_dir" ]; then
-        if [ "$OVERWRITE_REPOS" = true ]; then
+        if [ "$OVERWRITE_REPOS" = "true" ]; then
             printf "overwrite enabled, removing existing clone at '%s\'\n" "$repo_dir"
             rm -rf "${repo_dir:?}"
         else
@@ -61,9 +63,8 @@ clone_gh_repo() {
 }
 
 clone_gh_repo_bare() {
-    PARENT_PATH="$DEV/$1"
-    mkdir -p "$PARENT_PATH"
-    repo_dir="$PARENT_PATH/${3:-"$(basename "${2:?}")"}"
+    mkdir -p "$DEV/$1"
+    repo_dir="$DEV/$1/${3:-"$(basename "${2:?}")"}"
     printf "\n%s\n---------------------\n" "$2"
     if [ -d "$repo_dir" ]; then
         cd "$repo_dir" || return
@@ -101,20 +102,19 @@ clone_gh_repo_bare() {
 clone_gh_repo_bare "work" "Esri/calcite-design-system"
 clone_gh_repo_bare "work" "Esri/calcite-components-examples"
 clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
+clone_gh_repo_bare "work" "benelan/calcite-samples"
 
 clone_gh_repo "work" "Esri/jsapi-resources"
-clone_gh_repo "work" "benelan/calcite-samples"
 clone_gh_repo "work" "benelan/build-sizes"
 clone_gh_repo "work" "benelan/github-scripts"
 clone_gh_repo "work" "benelan/milestone-action"
 clone_gh_repo "work" "benelan/need-info-action"
 clone_gh_repo "work" "benelan/test"
 
-clone_gh_repo "personal" "benelan/shutils"
+clone_gh_repo "personal" "benelan/git-mux"
 clone_gh_repo "personal" "benelan/choroator"
 clone_gh_repo "personal" "benelan/blog"
 clone_gh_repo "personal" "benelan/remix-blog"
 clone_gh_repo "personal" "benelan/benelan.github.io"
-clone_gh_repo "" "benelan/notes"
 
-unset WORK_PATH PERSONAL_PATH OVERWRITE_REPOS
+clone_gh_repo "" "benelan/notes"

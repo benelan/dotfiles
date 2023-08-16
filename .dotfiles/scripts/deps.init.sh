@@ -2,6 +2,11 @@
 # shellcheck disable=2046
 set -e
 
+if [ -z "$DOTFILES" ]; then
+    printf "DOTFILES environment variable not set, exiting\n"
+    exit 1
+fi
+
 # This script installs the tools I use.
 # Comment out functions at the bottom to skip sections.
 
@@ -50,66 +55,62 @@ install_volta() {
 # Install Rust CLI tools
 # https://crates.io
 install_cargo_packages() {
-    if [ -f "$DEPS_DIR/cargo" ]; then
-        if ! is-supported cargo || ! is-supported rustup; then
-            install-rust
-        else
-            rustup update
-        fi
-
-        cargo install $(cat "$DEPS_DIR/cargo")
-        # link batcat to bat due to package name conflict
-        ! is-supported bat && is-supported batcat &&
-            ln -s "$(command -v batcat)" "$BIN_DIR/bat"
-        # link fdfind to fd
-        ! is-supported fd && is-supported fdfind &&
-            ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
+    ! [ -f "$DEPS_DIR/cargo" ] && return
+    if ! is-supported cargo || ! is-supported rustup; then
+        install-rust
+    else
+        rustup update
     fi
+
+    cargo install $(cat "$DEPS_DIR/cargo")
+    # link batcat to bat due to package name conflict
+    ! is-supported bat && is-supported batcat &&
+        ln -s "$(command -v batcat)" "$BIN_DIR/bat"
+    # link fdfind to fd
+    ! is-supported fd && is-supported fdfind &&
+        ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
 }
 
 # Install global Node packages
 # https://www.npmjs.com
 install_node_packages() {
-    if [ -f "$DEPS_DIR/node" ]; then
-        if ! is-supported volta && ! is-supported node; then
-            install_volta # only works on x86_64 architectures for now
-        fi
-        npm install -g $(cat "$DEPS_DIR/node")
-    fi
+    ! [ -f "$DEPS_DIR/node" ] && return
+    # NOTE: volta only works on x86_64 architectures for now
+    ! is-supported volta && ! is-supported node && install_volta
+    npm install -g $(cat "$DEPS_DIR/node")
 }
 
 # Install Go CLI tools
 # https://pkg.go.dev
 install_golang_packages() {
-    if [ -f "$DEPS_DIR/golang" ]; then
-        if ! is-supported go; then
-            install_golang
-        fi
-        while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            go install "$pkg"
-        done <"$DEPS_DIR/golang"
-        unset pkg
-    fi
+    ! [ -f "$DEPS_DIR/golang" ] && return
+    ! is-supported go && install_golang
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        go install "$pkg"
+    done <"$DEPS_DIR/golang"
+    unset pkg
 }
 
 # Install Python CLI tools
 # https://pypi.org/project/pipx
 install_pip_packages() {
-    if [ -f "$DEPS_DIR/pip" ]; then
-        while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            pip3 install --user "$pkg"
-        done <"$DEPS_DIR/pip"
-        unset pkg
-    fi
+    ! [ -f "$DEPS_DIR/pip" ] && return
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        pip3 install --user "$pkg"
+    done <"$DEPS_DIR/pip"
+    unset pkg
 }
 
 # Install helpful bash scripts for git workflows
 # https://github.com/tj/git-extras
 install_git_extras() {
-    curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh | sudo bash /dev/stdin
+    curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh |
+        sudo bash /dev/stdin
 }
 
 install_git_jump() {
+    is-supported git-jump && return
+
     # it may already be on in the filesystem
     if [ -f /usr/local/share/git-core/contrib/git-jump/git-jump ] &&
         [ -r /usr/local/share/git-core/contrib/git-jump/git-jump ]; then
@@ -126,6 +127,16 @@ install_git_jump() {
             https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
     fi
     chmod +x "$BIN_DIR/git-jump"
+}
+
+install_taskopen() {
+    is-supported taskopen || ! is-supported task && return
+    curl -sSLo "$BIN_DIR/taskopen" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/taskopen
+    curl -sSLo "${XDG_DATA_HOME:-~/.local/share}/man/man1/taskopen.1" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopen.1
+    curl -sSLo "${XDG_DATA_HOME:-~/.local/share}/man/man5/taskopen.5" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopenrc.5
 }
 
 install_git_jump

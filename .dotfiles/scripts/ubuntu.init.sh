@@ -8,70 +8,66 @@ sudo -v
 
 DEPS_DIR="$DOTFILES/deps"
 CACHE_DIR="$DOTFILES/cache"
-FONTS_DIR="$XDG_DATA_HOME/fonts"
-WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
-
 mkdir -p "$DEPS_DIR" "$CACHE_DIR"
 
-[ "$USE_GUI_APPS" = "1" ] && mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
+if [ "$USE_GUI_APPS" = "1" ]; then
+    FONTS_DIR="$XDG_DATA_HOME/fonts"
+    WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
+    mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
+fi
 
 # Install CLI apt packages
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 install_apt_packages() {
-    if [ -f "$DEPS_DIR/apt" ]; then
-        while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            sudo apt install "$pkg" || true
-        done <"$DEPS_DIR/apt"
-        unset pkg
-    fi
+    ! [ -f "$DEPS_DIR/apt" ] && return
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt install "$pkg" || true
+    done <"$DEPS_DIR/apt"
+    unset pkg
 }
 
 # Install GUI apt packages
 install_apt_gui_packages() {
-    if [ -f "$DEPS_DIR/apt-gui" ]; then
-        while IFS="" read -r pkg || [ -n "$pkg" ]; do
-            sudo apt install "$pkg" || true
-        done <"$DEPS_DIR/apt-gui"
-        unset pkg
-    fi
+    ! [ -f "$DEPS_DIR/apt-gui" ] && return
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt install "$pkg" || true
+    done <"$DEPS_DIR/apt-gui"
+    unset pkg
 }
 
 # Install VS Code
 # https://code.visualstudio.com/docs/setup/linux
 install_vscode() {
-    if ! is-supported code; then
-        deb="$CACHE_DIR/vscode.deb"
-        curl -ssLo "$deb" \
-            "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-        sudo apt install -y "$deb" || true
-        unset deb
-    fi
+    is-supported code && return
+    deb="$CACHE_DIR/vscode.deb"
+    curl -ssLo "$deb" \
+        "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+    sudo apt install -y "$deb" || true
+    unset deb
 }
 
 # Install ProtonVPN CLI
 # https://protonvpn.com/support/linux-vpn-tool/#debian
 install_protonvpn_cli() {
-    if ! is-supported protonvpn-cli; then
-        checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
-        deb="protonvpn-stable-release_1.0.3_all.deb"
-        curl -sSLo "$CACHE_DIR/$deb" \
-            "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
-        echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
-        sudo apt install -y "$CACHE_DIR/$deb" || true
-        unset deb
-    fi
+    is-supported protonvpn-cli && return
+    checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
+    deb="protonvpn-stable-release_1.0.3_all.deb"
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
+    echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 # Install Discord
 # https://discord.com/download
 install_discord() {
-    if ! is-supported discord; then
-        deb="$CACHE_DIR/discord.deb"
-        curl -sSLo "$deb" \
-            https://discord.com/api/download?platform=linux\&format=deb
-        sudo apt install -y "$deb"
-        unset deb
-    fi
+    is-supported discord && return
+    deb="$CACHE_DIR/discord.deb"
+    curl -sSLo "$deb" \
+        https://discord.com/api/download?platform=linux\&format=deb
+    sudo apt install -y "$deb"
+    unset deb
 }
 
 # Install WezTerm
@@ -94,11 +90,11 @@ install_wezterm() {
 # Install Taskwarrior TUI
 # https://github.com/kdheepak/taskwarrior-tui
 install_taskwarrior_tui() {
-    if ! is-supported taskwarrior-tui; then
-        deb="taskwarrior-tui.deb"
-        curl -sSLo "$CACHE_DIR/$deb" "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
-        sudo apt install -y "$CACHE_DIR/$deb" || true
-    fi
+    is-supported taskwarrior-tui && return
+    deb="taskwarrior-tui.deb"
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
+    sudo apt install -y "$CACHE_DIR/$deb" || true
 }
 
 # Install Docker Desktop
@@ -119,61 +115,49 @@ install_docker_desktop() {
 # Install Docker Engine
 # https://docs.docker.com/engine/install/ubuntu/
 install_docker_engine() {
-    if ! is-supported docker; then
-        sudo mkdir -m 0755 -p /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
-            sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
-                sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    is-supported docker && return
+    sudo mkdir -m 0755 -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+        sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+            sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-        echo "deb [arch=$(dpkg --print-architecture) \
+    echo "deb [arch=$(dpkg --print-architecture) \
       signed-by=/etc/apt/keyrings/docker.gpg] \
         https://download.docker.com/linux/ubuntu \
         $(lsb_release -cs) stable" |
-            sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
-
-        sudo apt update
-        sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin || true
-    fi
+        sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 }
 
 # Install latest stable git version
 # https://git-scm.com/download/linux
-install_git() {
-    if ! is-supported git; then
+install_latest_git() {
+    grep -q "git-core/ppa" \
+        /etc/apt/sources.list /etc/apt/sources.list.d/* ||
         sudo add-apt-repository -y ppa:git-core/ppa
-        sudo apt update
-        sudo apt install -y git || true
-    fi
 }
 
 # Install GitHub CLI
 # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 install_gh_cli() {
-    if ! is-supported gh; then
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
-            sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
-            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
-            echo "deb [arch=$(dpkg --print-architecture) \
+    is-supported gh && return
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+        sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
+        sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
+        echo "deb [arch=$(dpkg --print-architecture) \
           signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
           https://cli.github.com/packages stable main" |
-            sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null &&
-            sudo apt update &&
-            sudo apt install -y gh || true
-    fi
+        sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
 }
 
 # Install Brave Browser
 # https://brave.com/linux/#debian-ubuntu-mint
 install_brave_browser() {
-    if ! is-supported brave-browser; then
-        sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
-            https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+    is-supported brave-browser && return
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
          https://brave-browser-apt-release.s3.brave.com/ stable main" |
-            sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-        sudo apt update
-        sudo apt install -y brave-browser || true
-    fi
+        sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 }
 
 # Install The four common font weights
@@ -225,7 +209,7 @@ install_gnome_gruvbox_theme() {
 
 ### CLI install scripts (suitable for servers)
 install_apt_packages
-install_git
+install_latest_git
 install_gh_cli
 install_protonvpn_cli
 install_taskwarrior_tui
@@ -245,4 +229,4 @@ if [ "$USE_GUI_APPS" = "1" ]; then
     install_font
 fi
 
-sudo apt -y update && sudo apt -y upgrade && sudo apt autoremove
+sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y

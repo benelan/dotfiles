@@ -1,7 +1,6 @@
 build-sizes
 cspell
 eslint
-neovim
 pm2
 prettier
 readability-cli

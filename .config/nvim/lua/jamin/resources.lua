@@ -164,6 +164,7 @@ M.filetypes = {
     "sh",
     "tmux",
     "vim",
+    "vifm",
   },
 }
 

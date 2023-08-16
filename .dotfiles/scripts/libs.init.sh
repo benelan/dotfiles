@@ -2,7 +2,10 @@
 set -e
 sudo -v
 
-LIB_PATH="$HOME/dev/lib"
+if [ -z "$LIB" ]; then
+    printf "LIB environment variable not set, exiting\n"
+    exit 1
+fi
 
 update_modules() {
     /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
@@ -10,48 +13,45 @@ update_modules() {
 }
 
 build_neovim() {
-    NEOVIM_PATH="$LIB_PATH/neovim"
-    if [ -d "$NEOVIM_PATH" ]; then
-        cd "$NEOVIM_PATH" || exit 1
-        git fetch --all --tags --force
-        git reset --hard origin/master
-        git checkout nightly
-        # git checkout stable
-        sudo make CMAKE_BUILD_TYPE=Release
-        sudo make install
-    fi
+    ! [ -d "$LIB/neovim" ] && return
+    cd "$LIB/neovim" || return
+    git fetch --all --tags --force
+    git reset --hard origin/master
+    git checkout nightly
+    # git checkout stable
+    sudo make CMAKE_BUILD_TYPE=Release
+    sudo make install
 }
 
 build_fzf() {
-    FZF_PATH="$LIB_PATH/fzf"
-    if [ -d "$FZF_PATH" ]; then
-        cd "$FZF_PATH" || exit 1
-        git fetch --all --tags --force
-        git reset --hard origin/master
-        git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
-        make
-        make install
-        chmod +x "$FZF_PATH/bin/fzf"
-    fi
+    ! [ -d "$LIB/fzf" ] && return
+    cd "$LIB/fzf" || return
+    git fetch --all --tags --force
+    git reset --hard origin/master
+    git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+    make
+    make install
+    chmod +x "$LIB/fzf/bin/fzf"
 }
 
 build_taskopen() {
-    TASKOPEN_PATH="$LIB_PATH/taskopen"
-    if [ -d "$TASKOPEN_PATH" ] && is-supported task && is-supported nim; then
-        cd "$TASKOPEN_PATH" || exit 1
+    if [ -d "$LIB/taskopen" ] && is-supported task && is-supported nim; then
+        cd "$LIB/taskopen" || return
         git fetch --tags --all --force
         git reset --hard origin/master
-        make PREFIX=/usr
-        sudo make PREFIX=/usr install
+        make PREFIX=/~/.local
+        sudo make PREFIX=~/.local install
     fi
 }
 
 update_vim_plugins() {
     cd && update_modules .vim
     vim +"$(
-        find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
+        find ~/.vim/pack/foo/opt \
+            -maxdepth 1 -mindepth 1 -type d \
             -exec basename --multiple {} \; |
-            perl -pe 's/^/packadd /' | tr '\n' '|'
+            perl -pe 's/^/packadd /' |
+            tr '\n' '|'
     ) helptags ALL | quit"
 }
 
@@ -60,10 +60,8 @@ update_neovim_plugins() {
 }
 
 # update_modules
-update_vim_plugins
-update_neovim_plugins
-build_neovim
-build_fzf
-build_taskopen
-
-unset LIB_PATH FZF_PATH NEOVIM_PATH TASKOPEN_PATH
+update_vim_plugins || true
+update_neovim_plugins || true
+build_neovim || true
+build_fzf || true
+# build_taskopen
