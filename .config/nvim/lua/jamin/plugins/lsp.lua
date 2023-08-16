@@ -157,9 +157,7 @@ return {
       ----> Keymaps and local settings
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {
-          clear = true,
-        }),
+        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", { clear = true }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client == nil then
@@ -361,6 +359,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
+    enabled = false,
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
@@ -459,4 +458,56 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  {
+    "mfussenegger/nvim-lint",
+    -- enabled = false,
+    config = function()
+      local lint = require "lint"
+      lint.linters_by_ft = {
+        dockerfile = { "hadolint" },
+        css = { "stylelint" },
+        scss = { "stylelint" },
+        sh = { "shellcheck" },
+        yaml = { "actionlint" },
+        markdown = { "markdownlint", "cspell" },
+      }
+      vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
+        group = vim.api.nvim_create_augroup("jamin_linter", { clear = true }),
+        callback = function()
+          lint.try_lint()
+        end,
+      })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "sbdchd/neoformat",
+    -- enabled = false,
+    config = function()
+      vim.g.neoformat_try_node_exe = 1
+      vim.g.neoformat_try_formatprg = 1
+      vim.g.neoformat_only_msg_on_error = true
+      vim.g.neoformat_basic_format_align = true
+      vim.g.neoformat_basic_format_retab = true
+      vim.g.neoformat_basic_format_trim = true
+      vim.g.neoformat_basic_format_wrap = true
+      vim.g.neoformat_enabled_javascript = { "prettier" }
+      vim.g.neoformat_enabled_javascriptreact = { "prettier" }
+      vim.g.neoformat_enabled_json = { "prettier" }
+      vim.g.neoformat_enabled_typescript = { "prettier" }
+      vim.g.neoformat_enabled_vue = { "prettier" }
+      vim.g.neoformat_enabled_typescriptreact = { "prettier" }
+      vim.g.neoformat_enabled_yaml = { "prettier" }
+      vim.g.neoformat_enabled_markdown = { "prettier" }
+      vim.g.neoformat_enabled_html = { "prettier" }
+      vim.g.neoformat_enabled_yaml = { "prettier" }
+      vim.g.neoformat_enabled_markdown = { "prettier" }
+      vim.g.neoformat_enabled_css = { "stylelint", "prettier" }
+      vim.g.neoformat_enabled_scss = { "stylelint", "prettier" }
+      vim.g.neoformat_enabled_lua = { "stylua" }
+      vim.g.neoformat_enabled_sh = { "shfmt" }
+      vim.g.neoformat_enabled_dockerfile = { "hadolint" }
+
+    end,
+  },
 }
