@@ -1,19 +1,17 @@
 #!/usr/bin/env sh
 set -o errexit
 
-# Outputs, copies, or opens text matching a specified pattern.
+# Prints, copies, or opens text matching a specified pattern.
 #
-# The -s flag requires the following scripts to be in your PATH:
-#   - `cb`        to access the clipboard
-#   - `o`         to open with the default system application
-#   - `os-detect` to determine the operating system for the above scripts
+# The MATPAT_COPY_CMD and MATPAT_OPEN_CMD environment variables are used to
+# execute the open/copy actions. The defaults should work for most unix systems.
 #
-# Alternatively set the COPY_CMD and OPEN_CMD environment variables for your OS.
-# For example, on Linux put the following in your .bashrc (or equivalent):
-# export COPY_CMD="xclip -selection clipboard"
-# export OPEN_CMD="xdg-open"
+# The selected item is piped to MATPAT_COPY_CMD:
+#     echo '<SELECTED>' | $MATPAT_COPY_CMD
+# The selected item is passed as an argument to MATPAT_OPEN_CMD:
+#     $MATPAT_OPEN_CMD '<SELECTED>'
 #
-# The MIT License (MIT)
+# The MIT License
 # Copyright (c) 2023-present Ben Elan
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -77,9 +75,6 @@ EOF
 # Configuration                                                         {{{
 # --------------------------------------------------------------------- {|}
 
-COPY_CMD="${COPY_CMD:-cb}"
-OPEN_CMD="${OPEN_CMD:-o}"
-
 if [ "$MATPAT_LOGS" = "1" ] || [ -z "$MATPAT_LOGS" ] && [ -n "$DEBUG" ]; then
     MATPAT_LOGS="$HOME/.dotfiles/cache/matpat.log"
 fi
@@ -93,6 +88,36 @@ logger() {
             >>"$MATPAT_LOGS"
     fi
 }
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+if [ -z "$MATPAT_COPY_CMD" ]; then
+    if has /mnt/c/Windows/System32/clip.exe; then
+        MATPAT_COPY_CMD="/mnt/c/Windows/System32/clip.exe" # Windows (WSL)
+    elif has xsel; then
+        MATPAT_COPY_CMD="xsel -bi" # Linux (X11)
+    elif has xclip; then
+        MATPAT_COPY_CMD="xclip -selection clipboard" # Linux (X11)
+    elif has wl-copy; then
+        MATPAT_COPY_CMD="wl-copy" # Linux (Wayland)
+    elif has pbcopy; then
+        MATPAT_COPY_CMD="pbcopy" # OSX
+    fi
+    logger "INFO " "MATPAT_COPY_CMD environment variable is not set, defaulting to \"$MATPAT_COPY_CMD\""
+fi
+
+if [ -z "$MATPAT_OPEN_CMD" ]; then
+    if has wslview; then
+        MATPAT_OPEN_CMD="wslview" # Windows (WSL)
+    elif has xdg-open; then
+        MATPAT_OPEN_CMD="xdg-open" # Linux
+    elif has open; then
+        MATPAT_OPEN_CMD="open" # OSX
+    elif [ -z "$BROWSER" ]; then
+        MATPAT_OPEN_CMD="$BROWSER" # Fallback
+    fi
+    logger "INFO " "MATPAT_OPEN_CMD environment variable is not set, defaulting to \"$MATPAT_OPEN_CMD\""
+fi
 
 # --------------------------------------------------------------------- }}}
 # Patterns                                                              {{{
@@ -123,13 +148,16 @@ git_sha_range() {
 # Find/select or print matches                                          {{{
 # --------------------------------------------------------------------- {|}
 
+o_err="echo 'Error: open command not found, set the MATPAT_OPEN_CMD environment variable' && exit 1"
+y_err="echo 'Error: copy command not found, set the MATPAT_COPY_CMD environment variable' && exit 1"
+
 select_match() {
     echo "$1" |
         uniq |
         fzf --no-multi --no-exit-0 --no-select-1 \
             --header='(ctrl-y:copy) (ctrl-o:open) (enter:stdout) (ctrl-c:close)' \
-            --bind "ctrl-o:execute($OPEN_CMD {})+abort" \
-            --bind "ctrl-y:execute(echo {} | $COPY_CMD)+abort"
+            --bind "ctrl-y:execute(if [ -z \"$MATPAT_COPY_CMD\" ]; then $o_err; else echo {} | $MATPAT_COPY_CMD >/dev/null; fi)+abort" \
+            --bind "ctrl-o:execute(if [ -z \"$MATPAT_OPEN_CMD\" ]; then $y_err; else $MATPAT_OPEN_CMD {}; fi)+abort"
 }
 
 select_pattern() {
@@ -192,7 +220,6 @@ main() {
 
     while getopts p:ths opt; do
         case $opt in
-            h) help ;;
             p)
                 logger "INFO " "pattern specified: $pattern"
                 pattern="$OPTARG"
@@ -205,6 +232,7 @@ main() {
                 logger "INFO " "select mode enabled via flag"
                 select_mode=1
                 ;;
+            h) help ;;
             *) help "invalid flag: \$opt\"" ;;
         esac
     done

@@ -109,6 +109,19 @@ is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+# my tools                                                    {{{
+is-supported matpat && export MATPAT_OPEN_CMD="$GUIBROWSER"
+
+# https://github.com/benelan/git-mux
+if is-supported git-mux; then
+    # shellcheck disable=2155
+    export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
+    export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK"
+    export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
+    export GIT_MUX_LOGS="1"
+fi
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # fff - https://github.com/dylanaraps/fff                     {{{
 if is-supported fff; then
     export FFF_COL2=7
