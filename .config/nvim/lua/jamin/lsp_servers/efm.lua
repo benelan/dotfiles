@@ -71,7 +71,7 @@ local stylelint = {
 -- Writing
 local markdownlint = {
   prefix = "markdownlint",
-  lintCommand = "markdownlint --stdin",
+  lintCommand = "markdownlint --disable MD031 MD024 MD013 MD041 MD033 --stdin",
   lintStdin = true,
   lintFormats = { "%f:%l %m", "%f:%l:%c %m", "%f: %l: %m" },
 }

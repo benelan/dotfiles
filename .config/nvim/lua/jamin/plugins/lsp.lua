@@ -5,6 +5,39 @@ return {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     dependencies = {
       {
+        "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
+        build = ":MasonUpdate",
+        opts = {
+          ensure_installed = res.lsp_servers,
+          automatic_installation = true,
+        },
+        dependencies = {
+          "williamboman/mason.nvim", -- language server installer/manager
+          build = ":MasonUpdate",
+          opts = { ensure_installed = res.mason_packages },
+          config = function(_, opts)
+            require("mason").setup(opts)
+            local mr = require "mason-registry"
+
+            local function ensure_installed()
+              for _, tool in ipairs(opts.ensure_installed) do
+                local p = mr.get_package(tool)
+                if not p:is_installed() then
+                  p:install()
+                end
+              end
+            end
+
+            if mr.refresh then
+              mr.refresh(ensure_installed)
+            else
+              ensure_installed()
+            end
+          end,
+        },
+      },
+      -----------------------------------------------------------------------------
+      {
         "pmizio/typescript-tools.nvim",
         enabled = false,
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -22,6 +55,7 @@ return {
           }
         end,
       },
+      -----------------------------------------------------------------------------
       {
         "jose-elias-alvarez/typescript.nvim",
         -- enabled = false,
@@ -37,40 +71,6 @@ return {
             }),
           }
         end,
-      },
-      -----------------------------------------------------------------------------
-      {
-        "williamboman/mason.nvim", -- language server installer/manager
-        build = ":MasonUpdate",
-        opts = { ensure_installed = res.mason_packages },
-        config = function(_, opts)
-          require("mason").setup(opts)
-          local mr = require "mason-registry"
-
-          local function ensure_installed()
-            for _, tool in ipairs(opts.ensure_installed) do
-              local p = mr.get_package(tool)
-              if not p:is_installed() then
-                p:install()
-              end
-            end
-          end
-
-          if mr.refresh then
-            mr.refresh(ensure_installed)
-          else
-            ensure_installed()
-          end
-        end,
-      },
-      -----------------------------------------------------------------------------
-      {
-        "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
-        build = ":MasonUpdate",
-        opts = {
-          ensure_installed = res.lsp_servers,
-          automatic_installation = true,
-        },
       },
       -----------------------------------------------------------------------------
       {
@@ -180,7 +180,9 @@ return {
 
           -- workaround for gopls not supporting semanticTokensProvider
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
+          if
+            client.name == "gopls" and not client.supports_method "textDocument/semanticTokens"
+          then
             local semantic = client.config.capabilities.textDocument.semanticTokens
             if semantic then
               client.server_capabilities.semanticTokensProvider = {
@@ -219,14 +221,14 @@ return {
           bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
           -- stylua: ignore end
 
-          if vim.lsp.inlay_hint and client.server_capabilities.inlayHintProvider then
+          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
             vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
             bufmap("n", "gh", function()
               vim.lsp.inlay_hint(0, nil)
             end, "Toggle inlay hints")
           end
 
-          if client.server_capabilities.codeLensProvider then
+          if client.supports_method "textDocument/codeLens" then
             bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "BufWritePost" }, {
               group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
@@ -319,7 +321,7 @@ return {
         group = vim.api.nvim_create_augroup("jamin_lsp_attach_auto_format", { clear = true }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client == nil or not client.server_capabilities.documentFormattingProvider then
+          if client == nil or not client.supports_method "textDocument/formatting" then
             return
           end
 
@@ -361,7 +363,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
-    enabled = false,
+    -- enabled = false,
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
@@ -444,14 +446,7 @@ return {
         formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
         formatting.stylua,
         formatting.trim_whitespace,
-
-        -- Reminder: be careful with shellharden if you (ab)use expansion
-        -- it can break your code w/o warning when you format()
-        -- formatting.shellharden,
       }
-
-      -- Install with Mason if you don't have all of these linters/formatters
-      -- :MasonInstall shellcheck stylelint prettier markdownlint ...
       return {
         debug = false,
         fallback_severity = vim.diagnostic.severity.HINT,
