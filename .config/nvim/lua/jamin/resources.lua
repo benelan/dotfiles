@@ -174,6 +174,7 @@ M.lsp_servers = {
   "cssls",
   -- "docker_compose_language_service",
   "dockerls",
+  "efm",
   "eslint",
   "gopls",
   -- "graphql",
@@ -197,12 +198,14 @@ M.lsp_servers = {
 M.mason_packages = {
   "actionlint", -- github action linter
   -- "codespell", -- commonly misspelled English words linter
-  -- "cspell", -- code spell checker
+  "cspell", -- code spell checker
   -- "delve", -- golang debug adapter
   "hadolint", -- dockerfile linter
   "markdownlint", -- markdown linter and formatter
+  "prettier", -- everything formatter
   "shellcheck", -- shell linter
   "shfmt", -- shell formatter
+  "stylelint", -- css/scss linter
   "stylua", -- lua formatter
   -- "write-good", -- English grammar linter
 }

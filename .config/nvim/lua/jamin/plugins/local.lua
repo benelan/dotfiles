@@ -34,8 +34,6 @@ return {
     keys = {
       { "<leader>gg", "<cmd>Git<cr>", desc = "Status" },
       { "<leader>gc", "<cmd>Git commit<cr>", desc = "Commit" },
-      { "<leader>gp", "<cmd>Git push<cr>", desc = "Push" },
-      { "<leader>gU", "<cmd>Git push -u<cr>", desc = "Push (set upstream)" },
       { "<leader>gP", "<cmd>Git pull --rebase<cr>", desc = "Pull (rebase)" },
       { "<leader>gb", "<cmd>Git blame<cr>", desc = "Blame sidebar" },
       { "<leader>gD", "<cmd>Git difftool -y<cr>", desc = "Difftool" },
