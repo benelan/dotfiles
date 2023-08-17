@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 
 # Opens a task note and adds frontmatter data if the file does not exist
-if [ $# -eq 3 ]; then
+if [ $# -gt 2 ]; then
     if [ ! -e "$1" ]; then
-        printf "%s\n%s %s\n%s [%s]\n%s\n%s\n " \
+        printf "%s\n%s\n%s\n%s\n%s\n%s\n" \
             "---" \
-            "title:" "$2" \
-            "tags:" "$3" \
+            "title: $2" \
+            "tags: [$3]" \
+            "$([ -n "$4" ] && echo "project: $4" || echo "")" \
             "type: task" \
             "---" >"$1"
     fi

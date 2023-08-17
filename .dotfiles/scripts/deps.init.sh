@@ -139,6 +139,7 @@ install_taskopen() {
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopenrc.5
 }
 
+install_taskopen
 install_git_jump
 # install_git_extras
 
