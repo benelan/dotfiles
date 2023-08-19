@@ -5,8 +5,8 @@ if [ -e "$HOME/.profile" ]; then
     . "$HOME/.profile"
 fi
 
-# If POSIXLY_CORRECT is set after doing that, force the `posix` option on and
-# don't load the rest of this stuff--so, just ~/.profile and ENV
+# Force the `posix` option on and if POSIXLY_CORRECT is set and stop sourcing
+# startup scripts. So make sure everything in ~/.profile is posix-compliant.
 if [ -n "$POSIXLY_CORRECT" ]; then
     set -o posix
     return

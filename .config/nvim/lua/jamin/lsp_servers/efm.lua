@@ -6,21 +6,19 @@
 -- Web Development
 local prettier = {
   prefix = "prettier",
+  formatCanRange = true,
+  formatStdin = true,
   formatCommand = [[
     $(
         [ -n "$(command -v node_modules/.bin/prettier)" ] &&
             echo "node_modules/.bin/prettier" ||
             echo "prettier"
     ) \
-        --stdin-filepath ${INPUT} \
-        ${--config-precedence:configPrecedence} \
-        ${--tab-width:tabWidth} \
-        ${--single-quote:singleQuote} \
-        ${--trailing-comma:trailingComma} \
-        ${--tab-width:tabWidth} \
-        ${--single-quote:singleQuote}
+        --config-precedence prefer-file \
+        ${--range-start=charStart} \
+        ${--range-end=charEnd} \
+        --stdin-filepath ${INPUT}
   ]],
-  formatStdin = true,
   rootMarkers = {
     ".prettierrc",
     ".prettierrc.cjs",
@@ -37,9 +35,9 @@ local prettier = {
 
 local eslint = {
   prefix = "eslint",
-  lintCommand = "eslint --format visualstudio --stdin --stdin-filename ${INPUT}",
-  lintIgnoreExitCode = true,
   lintStdin = true,
+  lintIgnoreExitCode = true,
+  lintCommand = "eslint --format visualstudio --stdin --stdin-filename ${INPUT}",
   lintFormats = { "%f(%l,%c): %tarning %m", "%f(%l,%c): %rror %m" },
   rootMarkers = {
     ".eslintrc",
@@ -51,8 +49,8 @@ local eslint = {
 
 local stylelint = {
   prefix = "stylelint",
-  lintCommand = "stylelint --no-color --formatter compact --stdin --stdin-filename ${INPUT}",
   lintStdin = true,
+  lintCommand = "stylelint --no-color --formatter compact --stdin --stdin-filename ${INPUT}",
   lintFormats = {
     "%.%#: line %l, col %c, %trror - %m",
     "%.%#: line %l, col %c, %tarning - %m",
@@ -71,8 +69,8 @@ local stylelint = {
 -- Writing
 local markdownlint = {
   prefix = "markdownlint",
-  lintCommand = "markdownlint --disable MD031 MD024 MD013 MD041 MD033 --stdin",
   lintStdin = true,
+  lintCommand = "markdownlint --disable MD031 MD024 MD013 MD041 MD033 --stdin",
   lintFormats = { "%f:%l %m", "%f:%l:%c %m", "%f: %l: %m" },
 }
 
@@ -80,17 +78,17 @@ local markdownlint = {
 -- Lua
 local luacheck = {
   prefix = "luacheck",
-  lintCommand = "luacheck --codes --formatter plain --std luajit --filename ${INPUT} -",
-  lintIgnoreExitCode = true,
   lintStdin = true,
+  lintIgnoreExitCode = true,
+  lintCommand = "luacheck --codes --formatter plain --std luajit --filename ${INPUT} -",
   lintFormats = { "%f:%l:%c: %m" },
   rootMarkers = { ".luacheckrc" },
 }
 
 local stylua = {
   prefix = "stylua",
-  formatCommand = "stylua --search-parent-directories --stdin-filepath ${INPUT} -",
   formatStdin = true,
+  formatCommand = "stylua --search-parent-directories --stdin-filepath ${INPUT} -",
   rootMarkers = { ".stylua.toml", "stylua.toml" },
 }
 
@@ -98,8 +96,8 @@ local stylua = {
 -- Shell
 local shellcheck = {
   prefix = "shellcheck",
-  lintCommand = "shellcheck --color=never --format=gcc -x -",
   lintStdin = true,
+  lintCommand = "shellcheck --color=never --format=gcc -x -",
   lintFormats = {
     "%f:%l:%c: %trror: %m",
     "%f:%l:%c: %tarning: %m",
@@ -110,8 +108,8 @@ local shellcheck = {
 
 local shfmt = {
   prefix = "shfmt",
-  formatCommand = "shfmt -ci -i 4",
   formatStdin = true,
+  formatCommand = "shfmt -ci -i 4",
   rootMarkers = {},
 }
 
@@ -119,16 +117,16 @@ local shfmt = {
 -- Golang
 local golangci_lint = {
   prefix = "golangci-lint",
-  lintCommand = "golangci-lint run --color never --out-format tab ${INPUT}",
   lintStdin = false,
+  lintCommand = "golangci-lint run --color never --out-format tab ${INPUT}",
   lintFormats = { "%.%#:%l:%c %m" },
   rootMarkers = {},
 }
 
 local staticcheck = {
   prefix = "staticcheck",
-  lintCommand = "staticcheck -f text ${INPUT}",
   lintStdin = false,
+  lintCommand = "staticcheck -f text ${INPUT}",
   lintFormats = { "%.%#:%l:%c: %m" },
   rootMarkers = {},
 }
@@ -137,16 +135,22 @@ local staticcheck = {
 -- Tooling
 local actionlint = { -- GitHub Actions
   prefix = "actionlint",
-  lintCommand = "actionlint -no-color",
   lintStdin = true,
-  lintFormats = { "%f:%l:%c: %m" },
+  lintIgnoreExitCode = true,
+  lintCommand = "actionlint -no-color -oneline -stdin-filename ${INPUT} -",
+  lintFormats = {
+    "%f:%l:%c: %.%#: SC%n:%trror:%m",
+    "%f:%l:%c: %.%#: SC%n:%tarning:%m",
+    "%f:%l:%c: %.%#: SC%n:%tnfo:%m",
+    "%f:%l:%c: %m",
+  },
   rootMarkers = { ".github" },
 }
 
 local hadolint = { -- Dockerfiles
   prefix = "hadolint",
-  lintCommand = "hadolint --no-color -",
   lintStdin = true,
+  lintCommand = "hadolint --no-color -",
   lintFormats = {
     "-:%l %.%# %trror: %m",
     "-:%l %.%# %tarning: %m",
@@ -160,30 +164,33 @@ local hadolint = { -- Dockerfiles
 -------------------------------------------------------------------------------
 
 local languages = {
-  dockerfile = { hadolint },
-  lua = { stylua },
-  typescript = { prettier },
-  javascript = { prettier },
-  typescriptreact = { prettier },
-  javascriptreact = { prettier },
-  yaml = { prettier },
-  json = { prettier },
-  html = { prettier },
-  scss = { stylelint, prettier },
   css = { stylelint, prettier },
+  dockerfile = { hadolint },
+  html = { prettier },
+  javascript = { prettier },
+  javascriptreact = { prettier },
+  json = { prettier },
+  lua = { stylua },
   markdown = { markdownlint, prettier },
-  vue = { prettier },
-  svelte = { prettier },
+  scss = { stylelint, prettier },
   sh = { shfmt },
+  svelte = { prettier },
+  typescript = { prettier },
+  typescriptreact = { prettier },
+  vue = { prettier },
+  yaml = { actionlint, prettier },
 }
 
 return {
-  init_options = { documentFormatting = true, documentRangeFormatting = true },
+  init_options = {
+    documentFormatting = true,
+    documentRangeFormatting = true,
+  },
   root_dir = vim.loop.cwd,
   filetypes = vim.tbl_keys(languages),
   settings = {
     rootMarkers = { ".git", "Dockerfile", "Makefile" },
-    lintDebounce = 100,
+    lintDebounce = 1000000000,
     -- logLevel = 5,
     languages = languages,
   },

@@ -104,6 +104,8 @@ clone_gh_repo_bare "work" "Esri/calcite-components-examples"
 clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
 clone_gh_repo_bare "work" "benelan/calcite-samples"
 
+clone_gh_repo "work" "Esri/calcite-design-system.wiki"
+clone_gh_repo "work" "Esri/stencil-react-testing"
 clone_gh_repo "work" "Esri/jsapi-resources"
 clone_gh_repo "work" "benelan/build-sizes"
 clone_gh_repo "work" "benelan/github-scripts"

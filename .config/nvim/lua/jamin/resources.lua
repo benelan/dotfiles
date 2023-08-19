@@ -186,7 +186,7 @@ M.lsp_servers = {
   -- "rust_analyzer",
   -- "sqlls",
   "svelte",
-  "tailwindcss",
+  -- "tailwindcss",
   "taplo",
   -- "tsserver",
   "vimls",
@@ -198,8 +198,9 @@ M.lsp_servers = {
 M.mason_packages = {
   "actionlint", -- github action linter
   -- "codespell", -- commonly misspelled English words linter
-  "cspell", -- code spell checker
+  -- "cspell", -- code spell checker
   -- "delve", -- golang debug adapter
+  -- "eslint", -- web dev linter
   "hadolint", -- dockerfile linter
   "markdownlint", -- markdown linter and formatter
   "prettier", -- everything formatter

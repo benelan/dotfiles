@@ -329,7 +329,7 @@
     ; arg3: message for the tag (optional, defaults to arg1)
     retag = "!f() { [ -z "$1" ] && echo 'Error: provide a tag name' && return || \
       git tag -d \"$1\" && \
-      git tag -a \"$1\" \"${2:-HEAD}\" -m \"${3:-$1}\" && \
+      git tag -a \"$1\" -m \"${3:-$1}\" \"${2:-HEAD}\" && \
       printf \"\nDo you want to 'git push origin %s --force'?\n[y/N]: \" \"$1\" && \
       read -r should_push && \
       case \"$should_push\" in [yY]*) git push origin \"$1\" --force ;; esac; }; f"

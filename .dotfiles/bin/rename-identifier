@@ -96,8 +96,8 @@ is-supported nvim && edit_cmd='nvim' ||
 
 # shellcheck disable=2086
 match_files=$($search_cmd -l '\b'$orig'\b' $search_files)
-start_rename='nnoremap <Tab> :%s/\<'$orig'\>/'$new'/gc<cr>'
-next_file='nnoremap <space><CR> :update\|:bd<cr>'
-rename_all='nnoremap <space><space><Tab> :bufdo %s/\<'$orig'\>/'$new'/ge\|:update<cr>'
+start_rename='nnoremap <localleader><Tab> :%s/\<'$orig'\>/'$new'/gc<cr>'
+next_file='nnoremap <localleader><CR> :update\|:bd<cr>'
+rename_all='nnoremap <localleader><localleader>a :bufdo %s/\<'$orig'\>/'$new'/ge\|:update<cr>'
 # shellcheck disable=2086
 $edit_cmd -c "$start_rename" -c "$next_file" -c "$rename_all" $match_files

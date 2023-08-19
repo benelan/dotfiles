@@ -2,7 +2,7 @@ vim.opt.clipboard = "unnamed"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
 vim.opt.modeline = false
-vim.opt.virtualedit:append "block,onemore"
+vim.opt.virtualedit:append "block"
 vim.opt.foldlevelstart = 99
 
 if vim.fn.executable "rg" == 1 then
@@ -50,7 +50,6 @@ vim.opt.linebreak = true
 vim.opt.breakindent = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 15
-vim.opt.emoji = false
 
 vim.opt.tabstop = 2
 vim.opt.softtabstop = -1

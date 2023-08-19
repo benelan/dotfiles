@@ -1,5 +1,4 @@
 build-sizes
-eslint
 pm2
 readability-cli
 ts-node

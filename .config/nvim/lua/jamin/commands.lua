@@ -92,9 +92,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+
     local backup = vim.fn.fnamemodify(file, ":p:~:h")
-    backup = backup:gsub("[/\\]", "%%")
-    vim.go.backupext = backup
+    if backup then
+      backup = backup:gsub("[/\\]", "%%")
+      vim.go.backupext = backup
+    end
   end,
 })
 
@@ -185,7 +188,7 @@ function M.floating_term()
 
   if term_winnr > 0 and win_count > 1 then
     vim.fn.execute(term_winnr .. "wincmd c")
-  elseif term_bufnr > 0 and term_bufnr ~= curr_bufnr then
+  elseif term_bufnr and term_bufnr > 0 and term_bufnr ~= curr_bufnr then
     vim.api.nvim_open_win(term_bufnr, true, winopts)
     vim.fn.execute "startinsert"
   else
