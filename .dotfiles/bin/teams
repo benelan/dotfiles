@@ -1,0 +1,112 @@
+#!/usr/bin/env sh
+set -o errexit
+
+CMD="$(basename "$0")"
+USER_LIST="${TEAMS_USER_LIST:-$HOME/.teamsbook}"
+
+TEAMS_URI="msteams:/l/chat/0/0?users="
+TEAMS_MESSAGE=""
+TEAMS_USERS=""
+
+# Usage info                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+help() {
+    if [ -n "$*" ]; then
+        printf "Error: %s\n\n" "$*" >&2
+    else
+        cat <<EOF
+Open Miscrosoft Teams with a prefilled message to a user or group chat.
+
+Usage:           $CMD [-m <message>] [-u <user>...]
+
+Flags:
+  -m . . . . . . Message to send to user(s). If omitted, stdin is used.
+  -u . . . . . . The user to message. Repeat the flag to create a group chat.
+  -h . . . . . . Show this message.
+
+Examples:
+  # Use build errors as the prefilled message, and select user(s) with fzf.
+  npm run build 2 > | $CMD
+
+  # Say good morning to a group chat.
+  $CMD -m "Good morning!" -u "boss@acme.com" -u "colleague@acme.com"
+
+EOF
+    fi
+    exit 1
+}
+
+# --------------------------------------------------------------------- }}}
+# Utilities                                                             {{{
+# --------------------------------------------------------------------- {|}
+
+# if stdin is piped or not tty
+stdin_is_pipe_like() { [ -p /dev/stdin ] || ! [ -t 0 ]; }
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+select_users() {
+    ! has fzf && help "fzf is required to select users"
+    [ ! -f "$USER_LIST" ] && help "user list not found: $USER_LIST"
+
+    fzf --multi \
+        --prompt="Select user(s): " \
+        --preview="echo {}" \
+        <"$USER_LIST" |
+        cut -d' ' -f1 |
+        tr '\n' ','
+}
+
+send_msg() {
+    if has xdg-open; then
+        OPEN_CMD="xdg-open"
+    elif has open; then
+        OPEN_CMD="open"
+    else
+        help "xdg-open or open is required to open Microsoft Teams"
+    fi
+    if ! has jq; then
+        help "jq is required to encode the message"
+    fi
+
+    [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
+    [ -z "$TEAMS_USERS" ] && help "no users specified"
+
+    printf "%s%s&message=%s" \
+        "$TEAMS_URI" \
+        "$TEAMS_USERS" \
+        "$TEAMS_MESSAGE" |
+        xargs $OPEN_CMD
+}
+
+# --------------------------------------------------------------------- }}}
+# Parse args                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+# If stdin is piped, use it as the message
+if stdin_is_pipe_like; then
+    TEAMS_MESSAGE="$(cat)"
+else
+    # Print help message if stdin is not piped and there are no args
+    [ -z "$*" ] && help
+fi
+
+while getopts m:u:h opt; do
+    case $opt in
+        m) [ -z "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
+        u)
+            [ -z "$TEAMS_USERS" ] &&
+                TEAMS_USERS="$OPTARG" ||
+                TEAMS_USERS="$TEAMS_USERS,$OPTARG"
+            ;;
+        h) help ;;
+        *) help "invalid flag: \$opt\"" ;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+TEAMS_MESSAGE="$(printf "%s" "$TEAMS_MESSAGE" | jq -sRr @uri)"
+send_msg
+
+# --------------------------------------------------------------------- }}}
