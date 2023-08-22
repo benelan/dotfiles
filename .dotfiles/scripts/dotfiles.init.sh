@@ -38,6 +38,7 @@ dot() {
 
 dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
+dot branch --set-upstream-to=origin/master master
 if dot checkout >/dev/null 2>&1; then
     printf "\n✔  Checked out dotfiles\n"
 else

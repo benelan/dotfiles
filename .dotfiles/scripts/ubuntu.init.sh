@@ -21,7 +21,7 @@ fi
 install_apt_packages() {
     ! [ -f "$DEPS_DIR/apt" ] && return
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install "$pkg" || true
+        sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt"
     unset pkg
 }
@@ -30,7 +30,7 @@ install_apt_packages() {
 install_apt_gui_packages() {
     ! [ -f "$DEPS_DIR/apt-gui" ] && return
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install "$pkg" || true
+        sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt-gui"
     unset pkg
 }
@@ -116,15 +116,15 @@ install_docker_desktop() {
 # https://docs.docker.com/engine/install/ubuntu/
 install_docker_engine() {
     is-supported docker && return
-    sudo mkdir -m 0755 -p /etc/apt/keyrings
+    sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
-        sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
-            sudo chmod a+r /etc/apt/keyrings/docker.gpg
+        sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
     echo "deb [arch=$(dpkg --print-architecture) \
-      signed-by=/etc/apt/keyrings/docker.gpg] \
-        https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" |
+    signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |
         sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 }
 
@@ -134,6 +134,7 @@ install_latest_git() {
     grep -q "git-core/ppa" \
         /etc/apt/sources.list /etc/apt/sources.list.d/* ||
         sudo add-apt-repository -y ppa:git-core/ppa
+    sudo apt install -y git
 }
 
 # Install GitHub CLI
@@ -147,6 +148,7 @@ install_gh_cli() {
           signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
           https://cli.github.com/packages stable main" |
         sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    sudo apt install -y gh
 }
 
 # Install Brave Browser
@@ -158,6 +160,7 @@ install_brave_browser() {
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
          https://brave-browser-apt-release.s3.brave.com/ stable main" |
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    sudo apt install -y brave-browser
 }
 
 # Install The four common font weights
@@ -179,7 +182,7 @@ install_font() {
 
 install_gruvbox_wallpaper() {
     curl -sSLo "$WALLPAPER_DIR/gruvbox_coffee.png" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
-    is-installed feh &&
+    is-supported feh &&
         feh --bg-center "$WALLPAPER_DIR/gruvbox_coffee.png" --image-bg "#3c3836"
 }
 
@@ -224,9 +227,9 @@ if [ "$USE_GUI_APPS" = "1" ]; then
     install_wezterm
     # install_docker_desktop
 
-    install_gnome_gruvbox_theme
-    install_gruvbox_wallpaper
-    install_font
+    # install_gnome_gruvbox_theme
+    # install_gruvbox_wallpaper
+    # install_font
 fi
 
 sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y

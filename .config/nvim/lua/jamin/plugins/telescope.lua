@@ -14,8 +14,8 @@ return {
       },
     },
     keys = function()
-      local builtin = require "telescope.builtin"
-      local themes = require "telescope.themes"
+      local has_builtin, builtin = pcall("telescope.builtin", require)
+      local has_themes, themes = pcall("telescope.themes", require)
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
       local function telescope_cwd(picker, args)

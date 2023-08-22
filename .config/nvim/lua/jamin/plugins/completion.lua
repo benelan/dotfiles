@@ -29,7 +29,7 @@ return {
     },
     config = function()
       local cmp = require "cmp"
-      local ls = require "luasnip"
+      local ls = pcall("luasnip", require)
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
 
       cmp.setup {
@@ -190,7 +190,7 @@ return {
     version = "v1.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     keys = function()
-      local ls = require "luasnip"
+      local ls = pcall("luasnip", require)
       return {
         {
           "<C-h>",

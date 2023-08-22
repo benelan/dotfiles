@@ -43,6 +43,42 @@ install_golang() {
     fi
 }
 
+# install lua
+# https://www.lua.org/download.html
+install_lua() {
+    is-supported lua && return
+    curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
+    tar -zxf lua-5.4.6.tar.gz
+    cd lua-5.4.6
+    make linux test
+    sudo make install
+}
+
+# install_luajit
+# https://luajit.org/download.html
+install_luajit() {
+    is-supported luajit && return
+    if ! [ -d "$LIB/luajit" ]; then
+        git clone https://luajit.org/git/luajit.git "$LIB/luajit"
+    fi
+    cd "$LIB/luajit"
+    git pull
+    sudo make
+    sudo make install
+}
+
+# install luarocks
+# https://luarocks.org/#quick-start
+install_luarocks() {
+    is-supported luarocks && return
+    wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
+    tar zxpf luarocks-3.9.2.tar.gz
+    cd luarocks-3.9.2
+    ./configure --lua-version=5.4
+    make
+    sudo make install
+}
+
 # Install Volta for managing Node/NPM
 # https://docs.volta.sh/guide/getting-started
 install_volta() {
@@ -57,7 +93,7 @@ install_volta() {
 install_cargo_packages() {
     ! [ -f "$DEPS_DIR/cargo" ] && return
     if ! is-supported cargo || ! is-supported rustup; then
-        install-rust
+        install_rust
     else
         rustup update
     fi
@@ -83,8 +119,8 @@ install_node_packages() {
 # Install Go CLI tools
 # https://pkg.go.dev
 install_golang_packages() {
-    ! [ -f "$DEPS_DIR/golang" ] && return
     ! is-supported go && install_golang
+    ! [ -f "$DEPS_DIR/golang" ] && return
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         go install "$pkg"
     done <"$DEPS_DIR/golang"
@@ -147,7 +183,10 @@ install_git_jump
 # install_nim
 # install_golang
 # install_volta
+# install_lua
+# install_luajit
 
+# install_luarocks
 install_node_packages
 install_pip_packages
 install_cargo_packages

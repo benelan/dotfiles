@@ -60,8 +60,8 @@ update_neovim_plugins() {
 }
 
 # update_modules
+ build_neovim || true
 update_vim_plugins || true
 update_neovim_plugins || true
-build_neovim || true
 build_fzf || true
 # build_taskopen
