@@ -29,13 +29,15 @@ return {
     },
     config = function()
       local cmp = require "cmp"
-      local ls = pcall("luasnip", require)
+      local has_ls, ls = pcall(require, "luasnip")
       local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
 
       cmp.setup {
         snippet = {
           expand = function(args)
-            ls.lsp_expand(args.body)
+            if has_ls then
+              ls.lsp_expand(args.body)
+            end
           end,
         },
         mapping = {
@@ -190,7 +192,7 @@ return {
     version = "v1.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     keys = function()
-      local ls = pcall("luasnip", require)
+      local ls = pcall(require, "luasnip")
       return {
         {
           "<C-h>",
@@ -290,14 +292,15 @@ return {
   },
   {
     "Exafunction/codeium.vim", -- free GitHub Copilot alternative
-    enabled = false,
+    -- enabled = false,
     cond = vim.env.USE_CODEIUM == "1",
     event = "InsertEnter",
-    init = function()
-      -- vim.g.codeium_manual = true
-      vim.g.codeium_disable_bindings = true
-      vim.g.codeium_filetypes = { bash = false }
-    end,
+    cmd = "Codeium",
+    -- init = function()
+    --   -- vim.g.codeium_manual = true
+    --   vim.g.codeium_disable_bindings = true
+    --   vim.g.codeium_filetypes = { bash = false }
+    -- end,
     -- stylua: ignore
     keys = {
       { "<M-y>", function() return vim.fn["codeium#Accept"]() end, mode = "i", desc = "Codeium accept" },

@@ -7,7 +7,10 @@ return {
         arrayIndex = "Disable",
         paramName = "Disable",
       },
-      diagnostics = { globals = { "vim" } },
+      diagnostics = {
+        globals = { "vim" },
+        disable = { "missing-fields" },
+      },
       workspace = {
         checkThirdParty = false,
         -- library = {

@@ -14,8 +14,14 @@ return {
       },
     },
     keys = function()
-      local has_builtin, builtin = pcall("telescope.builtin", require)
-      local has_themes, themes = pcall("telescope.themes", require)
+      local has_builtin, builtin = pcall(require, "telescope.builtin")
+      local has_themes, themes = pcall(require, "telescope.themes")
+
+      -- fix errors on initial neovim install
+      if not has_themes or not has_builtin then
+        return
+      end
+
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
       local function telescope_cwd(picker, args)
