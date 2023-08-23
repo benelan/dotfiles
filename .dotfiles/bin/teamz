@@ -27,7 +27,7 @@ Flags:
 
 Examples:
   # Use build errors as the prefilled message, and select user(s) with fzf.
-  npm --no-color run build 2> | $CMD
+  npm --no-color run build 2>&1 >/dev/null | $CMD
 
   # Say good morning to a group chat.
   $CMD -m "Good morning!" -u "boss@acme.com" -u "colleague@acme.com"
