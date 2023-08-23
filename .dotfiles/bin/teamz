@@ -27,7 +27,7 @@ Flags:
 
 Examples:
   # Use build errors as the prefilled message, and select user(s) with fzf.
-  npm run build 2 > | $CMD
+  npm --no-color run build 2> | $CMD
 
   # Say good morning to a group chat.
   $CMD -m "Good morning!" -u "boss@acme.com" -u "colleague@acme.com"
@@ -38,6 +38,10 @@ Environment Variables:
       One user per line and the user's email must be the first word.
       Additional info can be added after the email for fuzzy finding.
       Fuzzy selecting does not occur when users are specified via the -u flag.
+
+Troubleshooting:
+  Add the following line under [Default Applications] in ~/.config/mimeapps.list
+    x-scheme-handler/msteams=teams.desktop
 
 EOF
     fi
