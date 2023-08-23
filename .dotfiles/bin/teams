@@ -13,7 +13,7 @@ TEAMS_USERS=""
 
 help() {
     if [ -n "$*" ]; then
-        printf "Error: %s\n\n" "$*" >&2
+        printf "Error: %s\nTry -h for more info.\n" "$*" >&2
     else
         cat <<EOF
 Open Miscrosoft Teams with a prefilled message to a user or group chat.
@@ -21,9 +21,9 @@ Open Miscrosoft Teams with a prefilled message to a user or group chat.
 Usage:           $CMD [-m <message>] [-u <user>...]
 
 Flags:
-  -m . . . . . . Message to send to user(s). If omitted, stdin is used.
-  -u . . . . . . The user to message. Repeat the flag to create a group chat.
-  -h . . . . . . Show this message.
+  -m             Message to send user(s). If omitted, stdin is used.
+  -u             User to message. Repeat the flag to create a group chat.
+  -h             Show this message.
 
 Examples:
   # Use build errors as the prefilled message, and select user(s) with fzf.
@@ -31,6 +31,13 @@ Examples:
 
   # Say good morning to a group chat.
   $CMD -m "Good morning!" -u "boss@acme.com" -u "colleague@acme.com"
+
+Environment Variables:
+  TEAMS_USER_LIST
+      Path to a list for selecting user(s) with fzf, defaults to ~/.teamsbook
+      One user per line and the user's email must be the first word.
+      Additional info can be added after the email for fuzzy finding.
+      Fuzzy selecting does not occur when users are specified via the -u flag.
 
 EOF
     fi
@@ -48,7 +55,7 @@ has() { command -v "$1" >/dev/null 2>&1; }
 
 select_users() {
     ! has fzf && help "fzf is required to select users"
-    [ ! -f "$USER_LIST" ] && help "user list not found: $USER_LIST"
+    [ ! -f "$USER_LIST" ] && help "user list not found at \"$USER_LIST\"."
 
     fzf --multi \
         --prompt="Select user(s): " \
@@ -58,7 +65,7 @@ select_users() {
         tr '\n' ','
 }
 
-send_msg() {
+create_msg() {
     if has xdg-open; then
         OPEN_CMD="xdg-open"
     elif has open; then
@@ -66,18 +73,21 @@ send_msg() {
     else
         help "xdg-open or open is required to open Microsoft Teams"
     fi
-    if ! has jq; then
-        help "jq is required to encode the message"
+    if has nohup; then
+        OPEN_CMD="nohup $OPEN_CMD"
     fi
 
-    [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
-    [ -z "$TEAMS_USERS" ] && help "no users specified"
-
+    # shellcheck disable=2086
     printf "%s%s&message=%s" \
         "$TEAMS_URI" \
         "$TEAMS_USERS" \
         "$TEAMS_MESSAGE" |
-        xargs $OPEN_CMD
+        xargs $OPEN_CMD 2>/dev/null
+}
+
+uri_encode_msg() {
+    ! has jq && help "jq is required to encode the message"
+    TEAMS_MESSAGE="$(printf "%s" "$TEAMS_MESSAGE" | jq -sRr @uri)"
 }
 
 # --------------------------------------------------------------------- }}}
@@ -94,19 +104,24 @@ fi
 
 while getopts m:u:h opt; do
     case $opt in
-        m) [ -z "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
+        m) [ -n "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
         u)
             [ -z "$TEAMS_USERS" ] &&
                 TEAMS_USERS="$OPTARG" ||
                 TEAMS_USERS="$TEAMS_USERS,$OPTARG"
             ;;
         h) help ;;
-        *) help "invalid flag: \$opt\"" ;;
+        *) help "invalid flag: \"$opt\"" ;;
     esac
 done
+
 shift "$((OPTIND - 1))"
 
-TEAMS_MESSAGE="$(printf "%s" "$TEAMS_MESSAGE" | jq -sRr @uri)"
-send_msg
+uri_encode_msg
+
+[ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
+[ -z "$TEAMS_USERS" ] && help "no users specified"
+
+create_msg
 
 # --------------------------------------------------------------------- }}}

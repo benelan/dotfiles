@@ -107,19 +107,19 @@ path \
     -p "$HOME/.local/share/nvim/mason/bin" \
     -a "$HOME/dev/personal/git-mux" \
     -a "$HOME/dev/lib/forgit/bin" \
+    -a "$HOME/dev/lib/git-open" \
     -a "$HOME/dev/lib/fzf/bin" \
     -a "$HOME/dev/lib/fasd" \
     -a "$HOME/dev/lib/fff" \
-    -a "$HOME/dev/lib/git-open" \
     -a "$HOME/.local/bin" \
-    -a "$HOME/.volta/bin" \
-    -a "$HOME/.bun/bin" \
-    -a "$HOME/.cargo/bin" \
     -a "$HOME/.luarocks/bin" \
     -a "$HOME/.nimble/bin" \
+    -a "$HOME/.volta/bin" \
+    -a "$HOME/.cargo/bin" \
+    -a "$HOME/.bun/bin" \
     -a "$HOME/go/bin" \
-    -a "/usr/local/go/bin" \
     -a "/snap/bin" \
+    -a "/usr/local/go/bin" \
     -a "/usr/local/games" \
     -a "/usr/local/sbin" \
     -a "/usr/local/bin" \

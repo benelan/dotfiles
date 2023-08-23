@@ -52,6 +52,7 @@ nmap
 openssh-client
 openssl
 pandoc
+parallel
 perl
 pkg-config
 python3

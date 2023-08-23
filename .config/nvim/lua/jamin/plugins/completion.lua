@@ -30,7 +30,7 @@ return {
     config = function()
       local cmp = require "cmp"
       local has_ls, ls = pcall(require, "luasnip")
-      local icons_status_okay, devicons = pcall(require, "nvim-web-devicons")
+      local has_devicons, devicons = pcall(require, "nvim-web-devicons")
 
       cmp.setup {
         snippet = {
@@ -98,7 +98,7 @@ return {
               dictionary = "[DICT] ",
             })[entry.source.name]
 
-            if vim.tbl_contains({ "path" }, entry.source.name) and icons_status_okay then
+            if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
               if icon then
                 vim_item.kind = string.format(" %s   %s  ", icon, vim_item.kind)
@@ -192,7 +192,10 @@ return {
     version = "v1.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     keys = function()
-      local ls = pcall(require, "luasnip")
+      local has_ls, ls = pcall(require, "luasnip")
+      if not has_ls then
+        return {}
+      end
       return {
         {
           "<C-h>",
@@ -272,42 +275,15 @@ return {
   -----------------------------------------------------------------------------
   {
     "github/copilot.vim", -- AI code completion
-    -- enabled = false,
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
-    init = function()
-      -- vim.g.copilot_no_tab_map = true
-    end,
-    config = function()
-      -- the accept keymap adds junk characters to the end of the line when created in lua below
-      vim.cmd [[ imap <script><silent><nowait><expr> <M-y> copilot#Accept('') ]]
-    end,
-    keys = {
-      { "<M-;>", "<Plug>(copilot-suggest)", mode = "i", desc = "Copilot suggest" },
-      { "<M-n>", "<Plug>(copilot-next)", mode = "i", desc = "Copilot next" },
-      { "<M-p>", "<Plug>(copilot-previous)", mode = "i", desc = "Copilot previous" },
-      { "<M-e>", "<Plug>(copilot-dismiss)", mode = "i", desc = "Copilot dismiss" },
-    },
   },
   {
     "Exafunction/codeium.vim", -- free GitHub Copilot alternative
-    -- enabled = false,
     cond = vim.env.USE_CODEIUM == "1",
-    event = "InsertEnter",
-    cmd = "Codeium",
-    -- init = function()
-    --   -- vim.g.codeium_manual = true
-    --   vim.g.codeium_disable_bindings = true
-    --   vim.g.codeium_filetypes = { bash = false }
-    -- end,
-    -- stylua: ignore
-    keys = {
-      { "<M-y>", function() return vim.fn["codeium#Accept"]() end, mode = "i", desc = "Codeium accept" },
-      { "<M-;>", function() return vim.fn["codeium#Complete"]() end, mode = "i", desc = "Codeium suggest" },
-      { "<M-n>", function() return vim.fn["codeium#CycleCompletions"](1) end, mode = "i", desc = "Codeium next" },
-      { "<M-p>", function() return vim.fn["codeium#CycleCompletions"](-1) end, mode = "i", desc = "Codeium previous" },
-      { "<M-e>", function() return vim.fn["codeium#Clear"]() end, mode = "i", desc = "Codeium dismiss" },
-    },
+    init = function()
+      vim.g.codeium_enabled = true
+    end,
   },
 }
