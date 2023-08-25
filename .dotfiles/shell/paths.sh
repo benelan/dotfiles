@@ -111,13 +111,13 @@ path \
     -a "$HOME/dev/lib/fzf/bin" \
     -a "$HOME/dev/lib/fasd" \
     -a "$HOME/dev/lib/fff" \
-    -a "$HOME/.local/bin" \
     -a "$HOME/.luarocks/bin" \
     -a "$HOME/.nimble/bin" \
     -a "$HOME/.volta/bin" \
     -a "$HOME/.cargo/bin" \
     -a "$HOME/.bun/bin" \
     -a "$HOME/go/bin" \
+    -a "$HOME/.local/bin" \
     -a "/snap/bin" \
     -a "/usr/local/go/bin" \
     -a "/usr/local/games" \

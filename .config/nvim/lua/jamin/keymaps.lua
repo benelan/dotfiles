@@ -284,3 +284,11 @@ keymap("n", "<leader>sv", function()
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config { virtual_text = virtual_text_enabled }
 end, "Toggle diagnostic virtual text")
+
+keymap("n", "<leader>st", function()
+  if vim.b.ts_highlight then
+    vim.treesitter.stop()
+  else
+    vim.treesitter.start()
+  end
+end, "Toggle treesitter")

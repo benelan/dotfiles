@@ -23,7 +23,7 @@ alias -- -="vifm ."
 alias e='${EDITOR:-vim}'
 alias se='sudo e'
 # minimum usable vim options
-alias v="vim -u DEFAULTS +'set rnu nu hid ar | nnoremap Y y$'"
+alias v="vim -u DEFAULTS +'set rnu nu hid ar et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
 COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)

@@ -76,10 +76,11 @@ M.icons = {
     delete = i("󰍵 ", "-"),
     branch = i " ",
   },
-  ui = {
+  ui = { -- utf8 icons so no fallbacks required
     checkmark = "🗸 ",
     prompt = "❱ ",
     select = "  ",
+    circle = "● ",
     expanded = "🞃 ",
     collapsed = "🞂 ",
     replace = "� ",
@@ -87,10 +88,11 @@ M.icons = {
     nbsp = "␣",
     extends = "»",
     precedes = "«",
+    ellipses = "…  ",
     fill_dot = "·",
     fill_slash = "╱",
     separator = "┊",
-    ellipses = "…  ",
+    block = "█",
   },
   lazy = {
     plugin = "",

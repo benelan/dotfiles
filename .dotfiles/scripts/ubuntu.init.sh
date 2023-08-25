@@ -151,6 +151,17 @@ install_gh_cli() {
     sudo apt install -y gh
 }
 
+# Install Glow CLI (Markdown rendering)
+# https://github.com/charmbracelet/glow
+install_glow() {
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://repo.charm.sh/apt/gpg.key |
+        sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" |
+        sudo tee /etc/apt/sources.list.d/charm.list
+    sudo apt update && sudo apt install glow
+}
+
 # Install Brave Browser
 # https://brave.com/linux/#debian-ubuntu-mint
 install_brave_browser() {

@@ -11,7 +11,7 @@ endif
 
 set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard=unnamed
-set showmatch mat=1 ttyfast lazyredraw autoread confirm hidden
+set showmatch ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
 set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
@@ -109,6 +109,8 @@ if isdirectory(expand("$HOME/dev/lib/fzf"))
     nnoremap <leader>ff :FZF<CR>
     nnoremap <leader>fg :GFiles<CR>
     nnoremap <leader>fb :Buffers<CR>
+    nnoremap <leader>fd :LS<CR>
+
 endif
 
 nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
@@ -283,7 +285,9 @@ nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                   \ . (&foldcolumn == "0" ? "1" : "0")<CR>
 "" toggle system clipboard
 nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
-                  \ . (&clipboardn == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
+                  \ . (&clipboard == "umnamed"
+                    \ ? "unnamed,unnamedplus"
+                    \ : "unnamed")<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -483,6 +487,11 @@ if exists("+termguicolors")
     set termguicolors
 endif
 
+if v:version < 500
+    finish
+endif
+packadd! gruvbox-material
+
 function! s:gruvbox_material_custom() abort
     let s:palette = gruvbox_material#get_palette("soft", "material", {
                 \"bg_orange": ["#5A3B0A", "130"],
@@ -520,7 +529,6 @@ let g:gruvbox_material_disable_italic_comment = 1
 " let g:gruvbox_material_disable_terminal_colors = 1
 " let g:gruvbox_material_dim_inactive_windows = 1
 
-packadd! gruvbox-material
 colorscheme gruvbox-material
 
 "----------------------------------------------------------------------}}}

@@ -34,7 +34,7 @@ let g:netrw_dirhistmax=0
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 " Intelligently navigate tmux panes and Vim splits using the same keys.
-" See https://sunaku.github.io/tmux-select-pane.html for documentation.
+" See https://sunaku.github.io/tmux-select-pane.html
 let progname = substitute($VIM, '.*[/\\]', '', '')
 set title titlestring=%{progname}\ %f\ +%l\ #%{tabpagenr()}.%{winnr()}
 if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
@@ -376,30 +376,45 @@ if isdirectory(expand("$LIB/fzf"))
 
     " See `man fzf-tmux` for available options
     if exists("$TMUX")
-    let g:fzf_layout = { "tmux": "-p90%,60%" }
+        let g:fzf_layout = { "tmux": "-p90%,60%" }
     else
-    let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
+        let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
     endif
 
     "" get git root directory
     function! g:GitRootDirectory()
-    let root = systemlist("git -C " . shellescape(expand("%:p:h"),) . " rev-parse --show-toplevel")[0]
-    return v:shell_error ? "" : root
+        let root = systemlist("git -C "
+                    \ . shellescape(expand("%:p:h"),)
+                    \ . " rev-parse --show-toplevel")[0]
+        return v:shell_error ? "" : root
     endfunction
 
     command! -bang GFiles
         \ call fzf#run(fzf#wrap("gfiles",
-        \ {"source": "git ls-files", "sink": "e", "dir": g:GitRootDirectory()},
+        \ {
+            \ "source": "git ls-files",
+            \ "sink": "e",
+            \ "dir": g:GitRootDirectory(),
+            \ "options": [
+                \ "--preview", "~/.vim/bin/fzf-preview.sh {}"
+            \ ]
+        \ },
         \<bang>0))
 
     " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
     " The name is ignored if g:fzf_history_dir is not defined.
     command! -bang -complete=dir -nargs=? LS
-        \ call fzf#run(fzf#wrap("ls", {"source": "ls", "dir": <q-args>}, <bang>0))
+        \ call fzf#run(fzf#wrap("ls", {
+            \ "source": "ls",
+            \ "dir": <q-args>,
+            \ "options": [
+                \ "--preview", "~/.vim/bin/fzf-preview.sh {}"
+            \ ]
+        \ }, <bang>0))
 
     command! -bar -bang -nargs=? -complete=buffer Buffers
-        \ call fzf#run(fzf#wrap("buffers",
-        \ {"source": map(
+        \ call fzf#run(fzf#wrap("buffers", {
+        \ "source": map(
             \ filter(
                 \ range(1, bufnr("$")),
                 \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"
@@ -413,8 +428,8 @@ if isdirectory(expand("$LIB/fzf"))
             \ "--prompt", "Buffer > ",
             \ "--query", <q-args>
         \ ],
-        \ "sink": "e"},
-        \ <bang>0))
+        \ "sink": "e"
+        \ }, <bang>0))
 endif
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -579,10 +594,15 @@ if has("autocmd")
               " \ | setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 
         " Set up formatters
-        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,
+        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,svelte,
               \javascript,typescript,javascriptreact,typescriptreact
-              \ setlocal formatprg=npx\ prettier\ --\ --stdin-filepath\ %\ 2>\ /dev/null
+              \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
 
+        autocmd Filetype sh,bash,zsh
+                    \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+
+        autocmd Filetype lua
+                    \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -
     augroup END
 
     command! Lint silent make % | silent redraw!
