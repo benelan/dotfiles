@@ -1,4 +1,3 @@
----@diagnostic disable: redundant-parameter
 -------------------------------------------------------------------------------
 ---------------->            Mapping  Modes                   <----------------
 -------------------------------------------------------------------------------
@@ -53,7 +52,7 @@ keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
 
 -- directory navigation
-keymap("n", "cd", "<CMD>cd %:h <bar> pwd<CR>", "Change directory to buffer")
+keymap("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", "Change directory to buffer")
 
 -- Search visually selected text
 -- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><cr>]])
@@ -65,11 +64,16 @@ keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
 -- Add empty lines before and after cursor line
 keymap(
   "n",
-  "gO",
+  "[<space>",
   "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
   "Put empty line above"
 )
-keymap("n", "go", "<CMD>call append(line('.'), repeat([''], v:count1))<CR>", "Put empty line below")
+keymap(
+  "n",
+  "]<space>",
+  "<CMD>call append(line('.'), repeat([''], v:count1))<CR>",
+  "Put empty line below"
+)
 
 -- Reselect latest changed, put, or yanked text
 vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
@@ -134,14 +138,6 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 -- keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
 -- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
 -- keymap("n", "[A", "<CMD>first<CR>", "First argument")
-
--- jump
--- keymap("n", "]j", "<C-o>", "Next jump")
--- keymap("n", "[j", "<C-i>", "Previous jump")
-
--- change
--- keymap("n", "]c", "g,", "Next change")
--- keymap("n", "[c", "g;", "Previous change")
 
 -- Skip past lower level diagnostics so I can fix my errors first
 -- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua

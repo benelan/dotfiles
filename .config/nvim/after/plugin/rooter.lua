@@ -7,7 +7,7 @@ local root_names = {
   ".git",
   "package.json",
   ".luarc.json",
-  "lua",
+  ".stylua.toml",
   "go.mod",
   "Cargo.toml",
   "Dockerfile",
@@ -47,6 +47,9 @@ local function set_root(args)
   end
 
   local path = vim.fs.dirname(args.file)
+  if not path then
+    return
+  end
 
   -- Try cache and resort to searching upward for root directory
   local root = root_cache[path]
@@ -69,7 +72,14 @@ local function set_root(args)
   vim.fn.chdir(root)
 end
 
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
   group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
   callback = set_root,
 })
+
+vim.api.nvim_create_user_command("Rcd", function()
+  set_root { buf = 0, file = vim.fn.expand "%:p" }
+  vim.cmd "pwd"
+end, { desc = "Change directory to project root" })
+
+vim.keymap.set("n", "cr", "<CMD>Rcd<CR>", { desc = "Change directory to project root" })

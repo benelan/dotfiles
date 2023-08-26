@@ -215,7 +215,7 @@ return {
           bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           bufmap("n", "g ", vim.diagnostic.open_float, "Diagnostics")
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
-          bufmap("n", "gt", vim.lsp.buf.type_definition, "LSP type definition")
+          bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
           bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")

@@ -1,11 +1,5 @@
 return {
   {
-    "nvim-treesitter/playground", -- for creating syntax queries
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor", "TSNodeUnderCursor" },
-  },
-  -----------------------------------------------------------------------------
-  {
     "ThePrimeagen/refactoring.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     --stylua: ignore
@@ -87,7 +81,6 @@ return {
           -- disable = { "markdown", },
         },
         indent = { enable = true },
-        playground = { enable = true },
         query_linter = { enable = true },
         context_commentstring = { enable = true },
         incremental_selection = {

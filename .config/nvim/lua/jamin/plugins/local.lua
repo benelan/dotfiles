@@ -67,6 +67,9 @@ return {
       "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep", "Gread", "Gwrite", "Gwq",
       "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit", "Gsplit", "Gvsplit",
     },
+    init = function()
+      -- vim.g.fugitive_dynamic_colors = 0
+    end,
   },
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
@@ -99,9 +102,16 @@ return {
     dir = "~/.vim/pack/foo/opt/undotree",
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
-    init = function ()
+    init = function()
       vim.g.undotree_SetFocusWhenToggle = 1
-    end
+      vim.g.undotree_WindowLayout = 2
+      vim.cmd [[
+        function g:Undotree_CustomMap()
+            nnoremap <buffer> ] <plug>UndotreeNextSavedState
+            nnoremap <buffer> [ <plug>UndotreePreviousSavedState
+        endfunction
+      ]]
+    end,
   },
   -----------------------------------------------------------------------------
   {
@@ -120,7 +130,7 @@ return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
     lazy = false,
-    priority = 99999,
+    priority = 42069,
     config = function()
       vim.g.gruvbox_material_background = "soft"
       vim.g.gruvbox_material_foreground = "original"

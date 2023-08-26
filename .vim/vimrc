@@ -101,195 +101,198 @@ endif
 " Keymaps                                                               {{{
 " --------------------------------------------------------------------- {|}
 
-let mapleader = " "
+if has("keymap")
+    let mapleader = " "
 
-"" general keymaps                                            {{{
-if isdirectory(expand("$HOME/dev/lib/fzf"))
-    set runtimepath+=~/dev/lib/fzf
-    nnoremap <leader>ff :FZF<CR>
-    nnoremap <leader>fg :GFiles<CR>
-    nnoremap <leader>fb :Buffers<CR>
-    nnoremap <leader>fd :LS<CR>
+    "" general keymaps                                            {{{
+    if isdirectory(expand("$HOME/dev/lib/fzf"))
+        set runtimepath+=~/dev/lib/fzf
+        nnoremap <leader>ff :FZF<CR>
+        nnoremap <leader>fg :GFiles<CR>
+        nnoremap <leader>fb :Buffers<CR>
+        nnoremap <leader>fd :LS<CR>
+
+    endif
+
+    nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
+
+    nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
+
+    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
+    nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
+    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
+    nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
+    xnoremap <leader>gl :Gclog --follow<CR>
+
+    nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
+    nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
+
+    nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
+    nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
+
+    nnoremap Y y$
+    vnoremap Y y
+
+    nnoremap n nzzzv
+    nnoremap N Nzzzv
+
+    nnoremap <C-u> <C-u>zz
+    nnoremap <C-d> <C-d>zz
+
+    xnoremap g/ <esc>/\\%V
+    nnoremap go <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap gO <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+    nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
+
+    if empty(mapcheck("<C-U>", "i"))
+    inoremap <C-U> <C-G>u<C-U>
+    endif
+    if empty(mapcheck("<C-W>", "i"))
+    inoremap <C-W> <C-G>u<C-W>
+    endif
+
+    "" https://vi.stackexchange.com/a/213
+    " move down jumping over blank lines and indents
+    nnoremap <silent> gJ :let _=&lazyredraw<CR>
+                \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
+                \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+    " move up jumping over blank lines and indents
+    nnoremap <silent> gK :let _=&lazyredraw<CR>
+                \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
+                \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
+    "" :W sudo saves the file
+    command! W execute "w !sudo tee % > /dev/null" <bar> edit!
+
+    nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" misc input and terminal mode keymaps                       {{{
+    inoremap , ,<C-g>u
+    inoremap ? ?<C-g>u
+    inoremap . .<C-g>u
+    inoremap ; ;<C-g>u
+
+    tnoremap <leader><Esc> <C-\><C-n>
+    tnoremap <Esc><Esc> <C-\><C-n>
+    tnoremap <S-Space> <Space>
+    tnoremap <C-Space> <Space>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" git difftool/mergetool keymaps for selecting hunks         {{{
+    nnoremap <leader>gw :diffget<bar>diffupdate<CR>
+    vnoremap <leader>gw :diffget<bar>diffupdate<CR>
+    nnoremap <leader>gr :diffget
+    vnoremap <leader>gr :diffget
+
+    nnoremap <leader>gmu :diffupdate<CR>
+    nnoremap <leader>gmr :diffget RE <bar> diffupdate<CR>
+    nnoremap <leader>gmR :%diffget RE <bar> diffupdate<cr
+    nnoremap <leader>gmb :diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>gmB :%diffget BA <bar> diffupdate<cr
+    nnoremap <leader>gml :diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>gmL :%diffget LO <bar> diffupdate<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" lists - next/prev                                          {{{
+    "" Argument list
+    nnoremap [a :previous<CR>
+    nnoremap ]a :next<CR>
+    nnoremap [A :last<CR>
+    nnoremap ]A :first<CR>
+    "" Buffer list
+    nnoremap [b :bprevious<CR>
+    nnoremap ]b :bnext<CR>
+    nnoremap [B :blast<CR>
+    nnoremap ]B :bfirst<CR>
+    "" Quickfix list
+    nnoremap [q :cprevious<CR>
+    nnoremap ]q :cnext<CR>
+    nnoremap [Q :clast<CR>
+    nnoremap ]Q :cfirst<CR>
+    "" Location list
+    nnoremap [l :lprevious<CR>
+    nnoremap ]l :lnext<CR>
+    nnoremap [L :llast<CR>
+    nnoremap ]L :lfirst<CR>
+    "" Tab list
+    nnoremap [t :tabprevious<CR>
+    nnoremap ]t :tabnext<CR>
+    nnoremap [T :tlast<CR>
+    nnoremap ]T :tfirst<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" buffers, tabs, and windows                                 {{{
+
+    "" close all the buffers
+    nnoremap <leader>bda :bufdo bd<CR>
+    "" picks buffer
+    nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
+
+    "" Managing tabs
+    nnoremap <leader>tn :tabnew<CR>
+    nnoremap <leader>to :tabonly<CR>
+    nnoremap <leader>tc :tabclose<CR>
+
+    "" toggles between this and the last accessed tab
+    let s:last_tab = 1
+    nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
+    au TabLeave * let s:last_tab = tabpagenr()
+
+    " Navigate splits
+    nnoremap <C-h> <C-W>h
+    nnoremap <C-j> <C-W>j
+    nnoremap <C-k> <C-W>k
+    nnoremap <C-l> <C-W>l
+
+    " Resize splits
+    nnoremap <Left> :vertical resize -5<CR>
+    nnoremap <Down> :resize -5<CR>
+    nnoremap <Up> :resize +5<CR>
+    nnoremap <Right> :vertical resize +5<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" toggle options                                             {{{
+    "" toggles automatic indentation based on the previous line
+    nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
+    "" toggles highlighted cursor row; doesn't work in visual mode
+    nnoremap <leader>sx <CMD>set cursorline!<CR>
+    "" toggles highlighted cursor column; works in visual mode
+    noremap <leader>sy <CMD>set cursorcolumn!<CR>
+    "" toggles highlighting search results
+    nnoremap <leader>sh <CMD>set hlsearch!<CR>
+    "" toggles showing matches as I enter my pattern
+    nnoremap <leader>si <CMD>set incsearch!<CR>
+    "" toggles spell checking
+    nnoremap <leader>ss <CMD>set spell!<CR>
+    "" toggles paste
+    nnoremap <leader>sp <CMD>set paste!<CR>
+    "" toggles showing tab, end-of-line, and trailing white space
+    noremap <leader>sl <CMD>set list!<CR>
+    "" toggles line number display
+    noremap <leader>sn <CMD>set relativenumber!<CR>
+    "" toggles position display in bottom right
+    noremap <leader>sr <CMD>set ruler!<CR>
+    "" toggles soft wrapping
+    noremap <leader>sw <CMD>set wrap!<CR>
+    "" toggle modifiable
+    nnoremap <leader>sM <CMD>set modifiable!<CR>
+    "" toggle colorcolumn
+    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
+                    \ . (&colorcolumn == "" ? "80" : "")<CR>
+    "" toggle foldcolumn
+    nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
+                    \ . (&foldcolumn == "0" ? "1" : "0")<CR>
+    "" toggle system clipboard
+    nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
+                    \ . (&clipboard == "umnamed"
+                        \ ? "unnamed,unnamedplus"
+                        \ : "unnamed")<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 endif
-
-nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
-
-nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
-
-nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
-nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
-nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
-nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
-nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
-xnoremap <leader>gl :Gclog --follow<CR>
-
-nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
-nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
-
-nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
-nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
-
-nnoremap Y y$
-vnoremap Y y
-
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
-nnoremap <C-u> <C-u>zz
-nnoremap <C-d> <C-d>zz
-
-xnoremap g/ <esc>/\\%V
-nnoremap go <CMD>call append(line('.'), repeat([''], v:count1))<CR>
-nnoremap gO <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
-nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
-
-if empty(mapcheck("<C-U>", "i"))
-  inoremap <C-U> <C-G>u<C-U>
-endif
-if empty(mapcheck("<C-W>", "i"))
-  inoremap <C-W> <C-G>u<C-W>
-endif
-
-"" https://vi.stackexchange.com/a/213
-" move down jumping over blank lines and indents
-nnoremap <silent> gJ :let _=&lazyredraw<CR>
-            \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
-            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-" move up jumping over blank lines and indents
-nnoremap <silent> gK :let _=&lazyredraw<CR>
-            \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
-            \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
-"" :W sudo saves the file
-command! W execute "w !sudo tee % > /dev/null" <bar> edit!
-
-nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" misc input and terminal mode keymaps                       {{{
-inoremap , ,<C-g>u
-inoremap ? ?<C-g>u
-inoremap . .<C-g>u
-inoremap ; ;<C-g>u
-
-tnoremap <leader><Esc> <C-\><C-n>
-tnoremap <Esc><Esc> <C-\><C-n>
-tnoremap <S-Space> <Space>
-tnoremap <C-Space> <Space>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" git difftool/mergetool keymaps for selecting hunks         {{{
-nnoremap <leader>gw :diffget<bar>diffupdate<CR>
-vnoremap <leader>gw :diffget<bar>diffupdate<CR>
-nnoremap <leader>gr :diffget
-vnoremap <leader>gr :diffget
-
-nnoremap <leader>gmu :diffupdate<CR>
-nnoremap <leader>gmr :diffget RE <bar> diffupdate<CR>
-nnoremap <leader>gmR :%diffget RE <bar> diffupdate<cr
-nnoremap <leader>gmb :diffget BA <bar> diffupdate<CR>
-nnoremap <leader>gmB :%diffget BA <bar> diffupdate<cr
-nnoremap <leader>gml :diffget LO <bar> diffupdate<CR>
-nnoremap <leader>gmL :%diffget LO <bar> diffupdate<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" lists - next/prev                                          {{{
-"" Argument list
-nnoremap [a :previous<CR>
-nnoremap ]a :next<CR>
-nnoremap [A :last<CR>
-nnoremap ]A :first<CR>
-"" Buffer list
-nnoremap [b :bprevious<CR>
-nnoremap ]b :bnext<CR>
-nnoremap [B :blast<CR>
-nnoremap ]B :bfirst<CR>
-"" Quickfix list
-nnoremap [q :cprevious<CR>
-nnoremap ]q :cnext<CR>
-nnoremap [Q :clast<CR>
-nnoremap ]Q :cfirst<CR>
-"" Location list
-nnoremap [l :lprevious<CR>
-nnoremap ]l :lnext<CR>
-nnoremap [L :llast<CR>
-nnoremap ]L :lfirst<CR>
-"" Tab list
-nnoremap [t :tabprevious<CR>
-nnoremap ]t :tabnext<CR>
-nnoremap [T :tlast<CR>
-nnoremap ]T :tfirst<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" buffers, tabs, and windows                                 {{{
-
-"" close all the buffers
-nnoremap <leader>bda :bufdo bd<CR>
-"" picks buffer
-nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
-
-"" Managing tabs
-nnoremap <leader>tn :tabnew<CR>
-nnoremap <leader>to :tabonly<CR>
-nnoremap <leader>tc :tabclose<CR>
-
-"" toggles between this and the last accessed tab
-let s:last_tab = 1
-nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let s:last_tab = tabpagenr()
-
-" Navigate splits
-nnoremap <C-h> <C-W>h
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-l> <C-W>l
-
-" Resize splits
-nnoremap <Left> :vertical resize -5<CR>
-nnoremap <Down> :resize -5<CR>
-nnoremap <Up> :resize +5<CR>
-nnoremap <Right> :vertical resize +5<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" toggle options                                             {{{
-"" toggles automatic indentation based on the previous line
-nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
-"" toggles highlighted cursor row; doesn't work in visual mode
-nnoremap <leader>sx <CMD>set cursorline!<CR>
-"" toggles highlighted cursor column; works in visual mode
-noremap <leader>sy <CMD>set cursorcolumn!<CR>
-"" toggles highlighting search results
-nnoremap <leader>sh <CMD>set hlsearch!<CR>
-"" toggles showing matches as I enter my pattern
-nnoremap <leader>si <CMD>set incsearch!<CR>
-"" toggles spell checking
-nnoremap <leader>ss <CMD>set spell!<CR>
-"" toggles paste
-nnoremap <leader>sp <CMD>set paste!<CR>
-"" toggles showing tab, end-of-line, and trailing white space
-noremap <leader>sl <CMD>set list!<CR>
-"" toggles line number display
-noremap <leader>sn <CMD>set relativenumber!<CR>
-"" toggles position display in bottom right
-noremap <leader>sr <CMD>set ruler!<CR>
-"" toggles soft wrapping
-noremap <leader>sw <CMD>set wrap!<CR>
-"" toggle modifiable
-nnoremap <leader>sM <CMD>set modifiable!<CR>
-"" toggle colorcolumn
-nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
-                  \ . (&colorcolumn == "" ? "80" : "")<CR>
-"" toggle foldcolumn
-nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
-                  \ . (&foldcolumn == "0" ? "1" : "0")<CR>
-"" toggle system clipboard
-nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
-                  \ . (&clipboard == "umnamed"
-                    \ ? "unnamed,unnamedplus"
-                    \ : "unnamed")<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 " --------------------------------------------------------------------- }}}
 " Autocommands                                                          {{{
@@ -319,98 +322,102 @@ endif
 " Functions and user commands                                           {{{
 " --------------------------------------------------------------------- {|}
 
-command! Src :source $MYVIMRC
+if has("eval")
+    command! Src :source $MYVIMRC
 
-"" get the git branch for the current buffer                  {{{
-function! GitBranch()
-    try
-        if exists("*fugitive#Head") && FugitiveGitDir() != expand("~")."/.git"
-            return fugitive#Head()
-        else
-            let branch = systemlist(
-                        \   "git -C " .
-                        \   shellescape(expand("%:p:h")) .
-                        \   " branch --show-current"
-                        \ )[0]
-
-            return v:shell_error ? "" : branch
-        endif
-    catch
-        return ""
-    endtry
-endfunction
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" toggle the display of a terminal buffer                    {{{
-let s:term_buf_nr = -1
-function! s:TerminalToggle() abort
-    if s:term_buf_nr == -1
-        execute "botright terminal"
-        let s:term_buf_nr = bufnr("$")
-    else
+    "" get the git branch for the current buffer                  {{{
+    function! GitBranch()
         try
-            execute "bdelete! " . s:term_buf_nr
+            if exists("*fugitive#Head") && FugitiveGitDir() != expand("~")."/.git"
+                return fugitive#Head()
+            else
+                let branch = systemlist(
+                            \   "git -C " .
+                            \   shellescape(expand("%:p:h")) .
+                            \   " branch --show-current"
+                            \ )[0]
+
+                return v:shell_error ? "" : branch
+            endif
         catch
-            let s:term_buf_nr = -1
-            call <SID>TerminalToggle()
-            return
+            return ""
         endtry
-        let s:term_buf_nr = -1
-    endif
-endfunction
+    endfunction
 
-command! TerminalToggle call <sid>TerminalToggle()
-nnoremap <silent> <leader>T <CMD>TerminalToggle<CR>
-tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" toggle the display of a terminal buffer                    {{{
+    let s:term_buf_nr = -1
+    function! s:TerminalToggle() abort
+        if s:term_buf_nr == -1
+            execute "botright terminal"
+            let s:term_buf_nr = bufnr("$")
+        else
+            try
+                execute "bdelete! " . s:term_buf_nr
+            catch
+                let s:term_buf_nr = -1
+                call <SID>TerminalToggle()
+                return
+            endtry
+            let s:term_buf_nr = -1
+        endif
+    endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" strip trailing white space from the end of lines           {{{
-function! StripTrailingWhitespace()
-    let save_cursor = getpos(".")
-    let old_query = getreg("/")
-    silent! %s/\s\+$//e
-    call setpos(".", save_cursor)
-    call setreg("/", old_query)
-endfunction
+    command! TerminalToggle call <sid>TerminalToggle()
+    nnoremap <silent> <leader>T <CMD>TerminalToggle<CR>
+    tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" strip trailing white space from the end of lines           {{{
+    function! StripTrailingWhitespace()
+        let save_cursor = getpos(".")
+        let old_query = getreg("/")
+        silent! %s/\s\+$//e
+        call setpos(".", save_cursor)
+        call setreg("/", old_query)
+    endfunction
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+endif
 
 " --------------------------------------------------------------------- }}}
 " Statusline                                                            {{{
 " --------------------------------------------------------------------- {|}
 
-let g:git_branch="" " gets set in an autocmd above
-function! DisplayGitBranch()
-    return g:git_branch != "" ? "   " .. g:git_branch .. "  " : ""
-endfunction
+if has("eval") && has("statusline")
+    let g:git_branch="" " gets set in an autocmd above
+    function! DisplayGitBranch()
+        return g:git_branch != "" ? "   " .. g:git_branch .. "  " : ""
+    endfunction
 
-set statusline=%#TabLineSel#                    " TabLineSel highlight
-set statusline+=\ \                             " Whitespace
-set statusline+=[%n]                            " Buffer number
-set statusline+=%m                              " Modified flag
-set statusline+=%r                              " Readonly flag
-set statusline+=%h                              " Help file flag
-set statusline+=%w                              " Preview window flag
-set statusline+=%q                              " Quickfix/location list flag
-set statusline+=%y                              " File type
-set statusline+=\ \                             " Whitespace
-set statusline+=%#TabLine#                      " TabLine highlight
-set statusline+=%{g:DisplayGitBranch()}         " Git branch name
-set statusline+=%#TabLineFill#                  " TabLineFill highlight
-set statusline+=%=                              " Left/Right separator
-set statusline+=\ \                             " Whitespace
-set statusline+=%#TabLine#                      " TabLine highlight
-set statusline+=\ \                             " Whitespace
-set statusline+=%f                              " File name
-set statusline+=\ \                             " Whitespace
-set statusline+=%#TabLineSel#                   " TabLineSel highlight
-set statusline+=\ \                             " Whitespace
-set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
-set statusline+=\ \                             " Whitespace
+    set statusline=%#TabLineSel#                    " TabLineSel highlight
+    set statusline+=\ \                             " Whitespace
+    set statusline+=[%n]                            " Buffer number
+    set statusline+=%m                              " Modified flag
+    set statusline+=%r                              " Readonly flag
+    set statusline+=%h                              " Help file flag
+    set statusline+=%w                              " Preview window flag
+    set statusline+=%q                              " Quickfix/location list flag
+    set statusline+=%y                              " File type
+    set statusline+=\ \                             " Whitespace
+    set statusline+=%#TabLine#                      " TabLine highlight
+    set statusline+=%{g:DisplayGitBranch()}         " Git branch name
+    set statusline+=%#TabLineFill#                  " TabLineFill highlight
+    set statusline+=%=                              " Left/Right separator
+    set statusline+=\ \                             " Whitespace
+    set statusline+=%#TabLine#                      " TabLine highlight
+    set statusline+=\ \                             " Whitespace
+    set statusline+=%f                              " File name
+    set statusline+=\ \                             " Whitespace
+    set statusline+=%#TabLineSel#                   " TabLineSel highlight
+    set statusline+=\ \                             " Whitespace
+    set statusline+=%c:[%l/%L]                      " cursor:line/total_lines
+    set statusline+=\ \                             " Whitespace
+endif
 
 "----------------------------------------------------------------------}}}
-"  Terminal options                                                    {{{
-"----------------------------------------------------------------------{|}
+" Terminal options                                                      {{{
+"-----------------------------------------------------------------------{|}
 
 " :help terminal-output-codes
 
@@ -481,54 +488,56 @@ endif
 " Colorscheme                                                           {{{
 " --------------------------------------------------------------------- {|}
 
-set background=dark
-set t_Co=256
-if exists("+termguicolors")
-    set termguicolors
+if has("eval") && has("syntax")
+    set background=dark
+    set t_Co=256
+    if exists("+termguicolors")
+        set termguicolors
+    endif
+
+    if v:version < 500
+        finish
+    endif
+    packadd! gruvbox-material
+
+    function! s:gruvbox_material_custom() abort
+        let s:palette = gruvbox_material#get_palette("soft", "material", {
+                    \"bg_orange": ["#5A3B0A", "130"],
+                    \ "bg_visual_yellow": ["#7a380b", "208"]
+                    \ })
+
+        call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
+        call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
+        call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
+        highlight! link CursorLineNr Purple
+    endfunction
+
+    augroup GruvboxMaterialCustom
+        autocmd!
+        autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
+    augroup END
+
+    let g:gruvbox_material_background = "soft"
+    let g:gruvbox_material_foreground = "original"
+    let g:gruvbox_material_ui_contrast = "high"
+    let g:gruvbox_material_statusline_style = "material"
+    let g:gruvbox_material_diagnostic_virtual_text = "colored"
+    " let g:gruvbox_material_spell_foreground = "colored"
+    " let g:gruvbox_material_sign_column_background = "grey"
+    " let g:gruvbox_material_menu_selection_background = "orange"
+    " let g:gruvbox_material_current_word = "bold"
+    " let g:gruvbox_material_visual = "reverse"
+
+    let g:gruvbox_material_better_performance = 1
+    let g:gruvbox_material_diagnostic_text_highlight = 0
+    let g:gruvbox_material_transparent_background = 1
+    let g:gruvbox_material_disable_italic_comment = 1
+    " let g:gruvbox_material_enable_italic = 1
+    " let g:gruvbox_material_enable_bold = 1
+    " let g:gruvbox_material_disable_terminal_colors = 1
+    " let g:gruvbox_material_dim_inactive_windows = 1
+
+    colorscheme gruvbox-material
 endif
-
-if v:version < 500
-    finish
-endif
-packadd! gruvbox-material
-
-function! s:gruvbox_material_custom() abort
-    let s:palette = gruvbox_material#get_palette("soft", "material", {
-                \"bg_orange": ["#5A3B0A", "130"],
-                \ "bg_visual_yellow": ["#7a380b", "208"]
-                \ })
-
-    call gruvbox_material#highlight("DiffDelete", s:palette.bg5, s:palette.bg_diff_red)
-    call gruvbox_material#highlight("DiffChange", s:palette.none, s:palette.bg_orange)
-    call gruvbox_material#highlight("DiffText", s:palette.fg0, s:palette.bg_visual_yellow)
-    highlight! link CursorLineNr Purple
-endfunction
-
-augroup GruvboxMaterialCustom
-    autocmd!
-    autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
-augroup END
-
-let g:gruvbox_material_background = "soft"
-let g:gruvbox_material_foreground = "original"
-let g:gruvbox_material_ui_contrast = "high"
-let g:gruvbox_material_statusline_style = "material"
-let g:gruvbox_material_diagnostic_virtual_text = "colored"
-" let g:gruvbox_material_spell_foreground = "colored"
-" let g:gruvbox_material_sign_column_background = "grey"
-" let g:gruvbox_material_menu_selection_background = "orange"
-" let g:gruvbox_material_current_word = "bold"
-" let g:gruvbox_material_visual = "reverse"
-
-let g:gruvbox_material_better_performance = 1
-let g:gruvbox_material_diagnostic_text_highlight = 0
-let g:gruvbox_material_transparent_background = 1
-let g:gruvbox_material_disable_italic_comment = 1
-" let g:gruvbox_material_enable_italic = 1
-" let g:gruvbox_material_enable_bold = 1
-" let g:gruvbox_material_disable_terminal_colors = 1
-" let g:gruvbox_material_dim_inactive_windows = 1
-
-colorscheme gruvbox-material
 
 "----------------------------------------------------------------------}}}

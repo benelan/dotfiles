@@ -24,7 +24,7 @@ let g:netrw_altv = 1
 let g:netrw_banner = 0
 " let g:netrw_keepdir = 0
 " let g:netrw_liststyle = 3
-let g:netrw_localmkdiropt	= " -p"
+let g:netrw_localmkdiropt = " -p"
 let g:netrw_preview = 1
 let g:netrw_sort_by = "extent"
 let g:netrw_usetab = 1
@@ -44,6 +44,7 @@ if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
 "----------------------------------------------------------------------{|}
 
 "" general keymaps                                            {{{
+map Q gq
 nnoremap q: :
 nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
@@ -103,7 +104,7 @@ vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
-nnoremap gy <cmd>let @+=@*<cr>
+nnoremap gY <cmd>let @+=@*<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
@@ -155,8 +156,6 @@ nnoremap <leader>SS <cmd>execute "!surfraw -g "
 nnoremap g: <Plug>(ColonOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
-nnoremap cr <Plug>(ReplaceOperator)
-vnoremap cr <Plug>(ReplaceOperator)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -212,7 +211,6 @@ command! -bang -nargs=? -complete=customlist,fugitive#CompleteObject
 "" toggle quickfix list open/close                            {{{
 com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif"
 nnoremap <C-q> <cmd>QfToggle<cr>
-nnoremap Q <cmd>QfToggle<cr>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" quickfix list to/from file for later access                {{{
@@ -233,7 +231,7 @@ command! BufSaveAsQf call getbufinfo()
     \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
 
 " Copy all quickfix entries for the current file into location list entries.
-com! Qf2Ll call getqflist()
+command! Qf2Ll call getqflist()
     \ ->filter({i, x -> x.bufnr == bufnr()})
     \ ->setloclist(0)
 
@@ -460,7 +458,7 @@ if has("autocmd")
     augroup jamin_global_marks
         autocmd!
         " Clear actively used marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks REWQAZX
+        autocmd VimEnter *  delmarks WQAZX
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave \(//:\)\@<!*.css,
                         \\(//:\)\@<!*.scss,
@@ -472,15 +470,19 @@ if has("autocmd")
                         \\(//:\)\@<!*.toml
                             \ normal! mD
 
-        autocmd BufLeave \(//:\)\@<!*.go,
-                        \\(//:\)\@<!*.rs,
-                        \\(//:\)\@<!*.zig
-                            \ normal! mM
+        autocmd BufLeave \(//:\)\@<!*.go
+                            \ normal! mG
 
-        autocmd BufLeave \(//:\)\@<!*.html,
-                        \\(//:\)\@<!*.svelte,
-                        \\(//:\)\@<!*.vue
+        autocmd BufLeave \(//:\)\@<!*.rs
+                            \ normal! mR
+
+        autocmd BufLeave \(//:\)\@<!*.html
                             \ normal! mH
+
+        autocmd BufLeave \(//:\)\@<!*.svelte,
+                        \\(//:\)\@<!*.vue,
+                        \\(//:\)\@<!*.astro
+                            \ normal! mE
 
         autocmd BufLeave \(//:\)\@<!*.js,
                         \\(//:\)\@<!*.jsx
@@ -493,7 +495,8 @@ if has("autocmd")
                             \ normal! mP
 
         autocmd BufLeave \(//:\)\@<!*.sh,
-                        \\(//:\)\@<!*.bash
+                        \\(//:\)\@<!*.bash,
+                        \\(//:\)\@<!$DOTFILES/bin/*
                             \ normal! mS
 
         autocmd BufLeave \(//:\)\@<!*.ts,
@@ -542,9 +545,9 @@ if has("autocmd")
      augroup jamin_quickfix
         autocmd!
         autocmd QuickFixCmdPost cgetexpr cwindow
-                    \| call setqflist([], "a", {"title": ":" . s:command})
+                \| call setqflist([], "a", {"title": ":" . s:command})
         autocmd QuickFixCmdPost lgetexpr lwindow
-                    \| call setloclist(0, [], "a", {"title": ":" . s:command})
+                \| call setloclist(0, [], "a", {"title": ":" . s:command})
 
         autocmd QuickFixCmdPost [^l]* cwindow
     augroup END
@@ -569,43 +572,46 @@ if has("autocmd")
         autocmd FileType rust compiler cargo
         autocmd FileType bash,sh compiler shellcheck
         autocmd FileType yaml compiler yamllint
-        autocmd FileType css,scss,sass compiler stylelint
-        autocmd FileType javascript,javascriptreact,vue,svelte compiler eslint
+        autocmd FileType css,scss compiler stylelint
+        autocmd FileType javascript{,react},vue,svelte,astro compiler eslint
+
+        autocmd BufNew *.{test,spec,e2e}.[jt]s{,x} compiler jest
+        autocmd BufNew {support,scripts}/*.ts compiler ts-node
 
         " There are builtin tsc and go compilers but a few tweaks are needed
         " https://github.com/fatih/vim-go/blob/master/compiler/go.vim
         autocmd FileType go
-              \ if filereadable("makefile") || filereadable("Makefile")
-              \ | setlocal makeprg=make
-              \ | else
-              \ | setlocal makeprg=go\ build
-              \ | endif
-              \ | setlocal errorformat=%-G#\ %.%#
-              \ | setlocal errorformat+=%-G%.%#panic:\ %m
-              \ | setlocal errorformat+=%Ecan\'t\ load\ package:\ %m
-              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:%c:\ %m
-              \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
-              \ | setlocal errorformat+=%C%*\\s%m
-              \ | setlocal errorformat+=%-G%.%#
+                \ if filereadable("makefile") || filereadable("Makefile")
+                \ | setlocal makeprg=make
+                \ | else
+                \ | setlocal makeprg=go\ build
+                \ | endif
+                \ | setlocal errorformat=%-G#\ %.%#
+                \ | setlocal errorformat+=%-G%.%#panic:\ %m
+                \ | setlocal errorformat+=%Ecan\'t\ load\ package:\ %m
+                \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:%c:\ %m
+                \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
+                \ | setlocal errorformat+=%C%*\\s%m
+                \ | setlocal errorformat+=%-G%.%#
 
         " https://github.com/leafgarland/typescript-vim/blob/master/compiler/typescript.vim
-        autocmd FileType typescript,typescriptreact compiler tsc
-              " \ setlocal makeprg=tsc\ $*\ %
-              " \ | setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
+        autocmd FileType typescript{,react} compiler tsc
+                " \ setlocal makeprg=tsc\ $*\ %
+                " \ | setlocal errorformat+=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 
         " Set up formatters
-        autocmd Filetype css,scss,json,markdown,mdx,vue,yaml,html,svelte,
-              \javascript,typescript,javascriptreact,typescriptreact
-              \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+        autocmd FileType json,yaml,markdown,mdx,css,scss,html,
+                \astro,svelte,vue,{java,type}script{,react}
+                \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
 
-        autocmd Filetype sh,bash,zsh
-                    \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+        autocmd FileType {,ba,da,k,z}sh
+                \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
 
-        autocmd Filetype lua
-                    \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -
+        autocmd FileType lua
+                \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
     augroup END
 
-    command! Lint silent make % | silent redraw!
+        command! Lint silent make % | silent redraw!
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
@@ -717,7 +723,6 @@ endfunction
 "----------------------------------------------------------------------{|}
 
 inoreabbrev teh the
-inoreabbrev CDS Calcite Design System
 inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
 
 "----------------------------------------------------------------------}}}

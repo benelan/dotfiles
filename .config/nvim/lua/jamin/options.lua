@@ -1,3 +1,5 @@
+local has_res, res = pcall(require, "jamin.resources")
+
 vim.opt.clipboard = "unnamed"
 vim.opt.updatetime = 200
 vim.opt.confirm = true
@@ -21,16 +23,8 @@ vim.opt.smartcase = true
 
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest,full"
-vim.opt.wildignore:append(
-  ".git/*,node_modules/*,dist/*,build/*"
-    .. "*.7z,*.avi,*.db,*.docx,*.filepart,*.flac,"
-    .. "*.gif,*.gifv,*.gpg,*.gz,*.ico,*.iso,*.jpeg,*.jpg,"
-    .. "*.m4a,*.mkv,*.mp3,*.mp4,*.min.*,*.odt,*.ogg,"
-    .. "*.pbm,*.pdf,*.png,*.ppt,*.psd,*.pyc,*.rar,"
-    .. "*.sqlite*,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,"
-    .. "*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip"
-)
-vim.opt.path = ".,./src/**,./api/**,./lua/**,./utils/**,./static,./config,,"
+vim.opt.wildignore = res.path.ignore
+vim.opt.path = res.path.include
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
 
 local ui = vim.api.nvim_list_uis() or {}
@@ -71,7 +65,6 @@ vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.backupskip:append "/dev/shm/*,/usr/tmp/*,/var/tmp/*,*/systemd/user/*"
 
-local has_res, res = pcall(require, "jamin.resources")
 if has_res then
   vim.opt.showbreak = res.icons.ui.ellipses
   vim.opt.fillchars = { diff = res.icons.ui.fill_slash }
