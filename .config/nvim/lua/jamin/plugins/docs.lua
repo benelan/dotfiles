@@ -68,4 +68,39 @@ return {
       require("zk").setup { picker = "telescope" }
     end,
   },
+  {
+    "luckasRanarison/nvim-devdocs",
+    build = ":DevdocsFetch",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = function()
+      return vim.fn.executable "glow" == 1
+          and {
+            previewer_cmd = "glow",
+            cmd_args = { "-s", "dark", "-w", "80" },
+            picker_cmd = true,
+            picker_cmd_args = { "-p" },
+          }
+        or {}
+    end,
+    cmd = {
+      "DevdocsFetch",
+      "DevdocsInstall",
+      "DevdocsUninstall",
+      "DevdocsOpen",
+      "DevdocsOpenFloat",
+      "DevdocsOpenCurrent",
+      "DevdocsOpenCurrentFloat",
+      "DevdocsUpdate",
+      "DevdocsUpdateAll",
+    },
+    keys = {
+      { "<leader>do", "<cmd>DevdocsOpenCurrentFloat<cr>", desc = "Open Devdocs (buffer)" },
+      { "<leader>dO", "<cmd>DevdocsOpen<cr>", desc = "Open Devdocs" },
+      { "<leader>dU", "<cmd>DevdocsUpdateAll<cr>", desc = "Update Devdocs" },
+    },
+  },
 }

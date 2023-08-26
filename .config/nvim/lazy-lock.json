@@ -23,6 +23,7 @@
   "neogen": { "branch": "main", "commit": "1dd0319ccf41b2498f45a3c7607f2ee325ffc6a0" },
   "null-ls.nvim": { "branch": "main", "commit": "0010ea927ab7c09ef0ce9bf28c2b573fc302f5a7" },
   "nvim-cmp": { "branch": "main", "commit": "51f1e11a89ec701221877532ee1a23557d291dd5" },
+  "nvim-devdocs": { "branch": "master", "commit": "3eef2b2b33ecca7bfe370662c614d8e6f5b4323c" },
   "nvim-lspconfig": { "branch": "master", "commit": "a27356f1ef9c11e1f459cc96a3fcac5c265e72d6" },
   "nvim-treesitter": { "branch": "master", "commit": "4d41d9bfb09dd0836ce6910404e3cd570500c9ca" },
   "nvim-treesitter-context": { "branch": "master", "commit": "ce583c89c8db8d34cd5dff0dc91e13b446fdbe50" },

@@ -56,12 +56,22 @@ update_vim_plugins() {
 }
 
 update_neovim_plugins() {
-    nvim --headless "+Lazy! sync" +qa
+    nvim --headless +"Lazy! sync" +qa
+}
+
+update_devdocs_sources() {
+    sources="astro bash css docker dom gnu_make go html http javascript node npm react sass tailwindcss typescript vite vue-3"
+    nvim --headless \
+        +"DevdocsFetch" \
+        +"DevdocsInstall $sources" \
+        +"DevdocsUpdateAll" \
+        +qa
 }
 
 # update_modules
- build_neovim || true
+build_neovim || true
 update_vim_plugins || true
 update_neovim_plugins || true
+update_devdocs_sources || true
 build_fzf || true
 # build_taskopen
