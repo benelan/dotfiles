@@ -287,7 +287,7 @@ vim.api.nvim_create_user_command(
 --- filesystem without having to specify an absolute path.
 ---
 --- @param event table  A user command's callback argument. See :h nvim_create_user_command
---- @example (assumes ~/work/project/thing.md doesn't exist)
+--- @example - assumes ~/work/project/thing.md doesn't exist
 ---   :let $NOTES="~/some/path/to/notes"
 ---   :pwd                   -> ~/work/project
 ---   :ObsidianOpen thing    -> opens ~/some/path/to/notes/thing.md
@@ -316,9 +316,10 @@ M.obsidian_open = function(event)
 
   if vim.fn.exists "*netrw#BrowseX" then
     vim.fn["netrw#BrowseX"](uri, 0)
-  else
-    -- fallback to xdg-open (change this if you're on a different OS)
+  elseif vim.fn.executable "xdg-open" == 1 then
     vim.fn.jobstart("xdg-open " .. uri, { detach = true })
+  elseif vim.fn.executable "open" == 1 then
+    vim.fn.jobstart("open " .. uri, { detach = true })
   end
 end
 

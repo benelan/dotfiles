@@ -149,3 +149,5 @@ uuid
 gitlab
 tty
 ctrl
+POSIX
+WSL

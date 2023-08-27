@@ -18,7 +18,7 @@ help() {
         cat <<EOF
 Open Miscrosoft Teams with a prefilled message to a user or group chat.
 
-Usage:           $CMD [-m <message>] [-u <user>...]
+Usage:           $CMD [-m MESSAGE] [-u USER...]
 
 Flags:
   -m             Message to send user(s). If omitted, stdin is used.

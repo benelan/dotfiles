@@ -11,21 +11,19 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" }, -- function signature
+  { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
   -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" }, -- lsp
-  -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" }, -- commandline
+  { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
   -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       "L3MON4D3/LuaSnip", -- snippet engine
-      "hrsh7th/cmp-buffer", -- buffers
-      "hrsh7th/cmp-path", -- relative paths
+      "hrsh7th/cmp-buffer", -- buffer source
+      "hrsh7th/cmp-path", -- path source
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil }, -- visible text in other tmux panes
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- rg from cwd
+      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- ripgrep from cwd
     },
     config = function()
       local cmp = require "cmp"
@@ -189,7 +187,7 @@ return {
   {
     "L3MON4D3/LuaSnip", -- snippet engine
     build = "make install_jsregexp",
-    version = "v1.*",
+    version = "v2.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     keys = function()
       local has_ls, ls = pcall(require, "luasnip")
@@ -214,9 +212,7 @@ return {
         {
           "<C-l>",
           function()
-            if ls.expand_or_jumpable() then
-              ls.expand_or_jump()
-            elseif ls.jumpable(1) then
+           if ls.jumpable(1) then
               ls.jump(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Accept"]()
@@ -226,10 +222,11 @@ return {
             end
           end,
           mode = { "i", "s" },
+          expr = true,
           desc = "Luasnip jump forward or codeium accept",
         },
         {
-          "<C-;>",
+          "<C-\\>",
           function()
             if ls.choice_active() then
               ls.change_choice(1)
@@ -280,10 +277,14 @@ return {
     event = "InsertEnter",
   },
   {
-    "Exafunction/codeium.vim", -- free GitHub Copilot alternative
+    "Exafunction/codeium.vim", -- AI completion
     cond = vim.env.USE_CODEIUM == "1",
     init = function()
       vim.g.codeium_enabled = true
+      vim.g.codeium_no_map_tab = true
+      vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
+      -- vim.g.codeium_manual = true
+      vim.g.codeium_filetypes = { text = false }
     end,
   },
 }

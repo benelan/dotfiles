@@ -1,13 +1,13 @@
 
 
 # -----------------------------------------------------------------------------
-# <type>[(scope)][!]: <subject>
-# <blank line>
-# [body]
-# <blank line>
-# [footer(s)]
+# <type>[(<scope>)][!]: <description>
+#
+# [<body>]
+#
+# [<footer>]
 # -----------------------------------------------------------------------------
-# type
+# <type>        Type of change from one of the following:
 #   - fix:      A bug fix
 #   - feat:     A new feature
 #   - refactor: A code change that neither fixes a bug nor adds a feature
@@ -16,47 +16,26 @@
 #   - docs:     Documentation only changes, including code comments
 #   - ci:       Changes to CI configuration files, workflows, and scripts
 #   - chore:    Other changes that don't modify src or test files
-#   - build:    Changes to the build system or external dependencies
-#   - style:    Formatting changes that don't effect code meaning/functionality
+#   - build:    Changes to the build system or dependencies
+#   - style:    Formatting changes that don't effect meaning/functionality
 #   - revert:   Reverts a previous commit
 # -----------------------------------------------------------------------------
-# [optional] scope
-#   - init:     Initialize commit
-#   - ui:       User interface changes
-#   - deps:     Dependencies upgrading/adding/removing/etc.
-#   - config:   Configuration changes
-#   - i18n:     Internationalization and localization
-#   - a11y:     Accessibility changes
-#   - ...
+# <scope>       Concept, module, component, etc. (e.g. ui/deps/a11y/i18n)
 # -----------------------------------------------------------------------------
-# [optional] context
-#   - !         Indicates a breaking change
+# !             Indicates a breaking change
 # -----------------------------------------------------------------------------
-# subject
-#   - Short summary
-#   - Don't end with a period
-#   - Start writing in lower case
-#   - 100 characters or less
-#   - Use the imperative tone
-#   - Use present tense
+# <subject>     Short (80 characters or less) summary in the present 
+#               tense and imperative tone without sentence casing/punctuation
 # -----------------------------------------------------------------------------
-# [optional] body
-#   - Explain "what" and "why" instead of "how"
-#   - Can use multiple lines with "-" for bullet points
-#   - Wrap at around 100 characters
+# <body>        Explaination of the change (what and why, not how). Bullet
+#               points ("-") or full sentences are both acceptable.
 # -----------------------------------------------------------------------------
-# [optional] footer(s)
-#   - Add info about a breaking change in the following format
-#     - BREAKING CHANGE: <description> <fix/replacement>
-#   - Link a pull request to an issue using a keyword
-#     - close #<issue number>
-#     - fix #<issue number>
-#     - resolve #<issue number>
-#   - Provide URL links for more context or further reading
-#   - Wrap at around 100 characters
+# <footer>      Breaking change info, issue number(s), and/or URL references
+#                 - BREAKING CHANGE: <description> <fix/replacement>
+#                 - closes|fixes|resolves #<issue number>
+#                 - ref: <url>
 # -----------------------------------------------------------------------------
-# Conventional Commits
-# A specification for adding human and machine readable meaning to commit messages
-# Ref: https://www.conventionalcommits.org
+# Conventional Commits - https://www.conventionalcommits.org
+# Specification for writing human and machine readable commit messages
 # -----------------------------------------------------------------------------
 

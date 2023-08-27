@@ -119,7 +119,6 @@ if is-supported git-mux; then
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
     export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
-    export GIT_MUX_LOGS="1"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
