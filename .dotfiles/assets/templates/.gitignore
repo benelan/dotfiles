@@ -6,6 +6,7 @@ build/
 dist/
 Session.vim
 Quickfix.txt
+nohup.out
 .*cache*
 *.tmp
 *.bak
@@ -26,6 +27,8 @@ Quickfix.txt
 *.o
 *.so
 *.map
+*.min.js
+*.min.css
 
 # Packages #
 ############

@@ -559,7 +559,6 @@ if has("autocmd")
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
         autocmd BufNewFile .gitignore 0r ~/.dotfiles/assets/templates/.gitignore
         autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
-        autocmd BufNewFile .prettierrc.json 0r ~/.dotfiles/assets/templates/.prettierrc.json
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
     augroup END
 
