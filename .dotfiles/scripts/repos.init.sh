@@ -32,6 +32,14 @@ sync_default_branch() {
     unset current_branch
 }
 
+is_git_root() {
+    git_dir="$(git rev-parse --path-format=relative --git-dir)"
+    [ "$git_dir" = ".git" ] || [ "$git_dir" = "." ] ||
+        [ "$(
+            git rev-parse --path-format=absolute --show-toplevel
+        )" = "${1:-$(pwd)}" ]
+}
+
 # creates a new worktree for the default branch of a bare repo
 create_worktree_for_default_branch() {
     worktree_name="$(echo "$1" | tr "./" "__")"
@@ -71,10 +79,11 @@ clone_gh_repo_bare() {
         if [ "$OVERWRITE_REPOS" = true ]; then
             printf "overwrite enabled, removing existing directory at %s\n" "$repo_dir"
             rm -rf "${repo_dir:?}"
-        elif ! [ -d "$repo_dir/.git" ]; then
-            # NOTE: check this only works if the bare repo was
-            # cloned the way I do it below
+        elif ! is_git_root "$repo_dir"; then
             printf "directory exists but is not a git repo, cloning into it\n"
+        elif ! git rev-parse --is-bare-repository >/dev/null; then
+            printf "WARN: cannot sync a bare git repo with the non-bare repo at '%s' \n" "$repo_dir"
+            return
         else
             default_branch="$(get_default_branch "$repo_dir")"
             if [ -d "$repo_dir/$default_branch" ]; then

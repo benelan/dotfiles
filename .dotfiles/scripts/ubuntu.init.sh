@@ -176,7 +176,7 @@ install_brave_browser() {
 
 # Install The four common font weights
 # https://github.com/ryanoasis/nerd-fonts
-install_font() {
+install_iosevka_font() {
     # Iosevka
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
@@ -240,7 +240,7 @@ if [ "$USE_GUI_APPS" = "1" ]; then
 
     # install_gnome_gruvbox_theme
     # install_gruvbox_wallpaper
-    # install_font
+    # install_iosevka_font
 fi
 
 sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
