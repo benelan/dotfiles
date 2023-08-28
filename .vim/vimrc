@@ -387,7 +387,8 @@ endif
 if has("eval") && has("statusline")
     let g:git_branch="" " gets set in an autocmd above
     function! DisplayGitBranch()
-        return g:git_branch != "" ? "   " .. g:git_branch .. "  " : ""
+        let icon = expand("$USE_DEVICONS") == "1" ? "   " : "   "
+        return g:git_branch != "" ? icon .. g:git_branch .. "  " : ""
     endfunction
 
     set statusline=%#TabLineSel#                    " TabLineSel highlight

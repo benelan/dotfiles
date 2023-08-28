@@ -15,23 +15,18 @@ M.keys = {
     action = act.DisableDefaultAssignment,
   },
   {
-    key = "+",
-    mods = "ALT|SHIFT",
-    action = act.IncreaseFontSize,
-  },
-  {
     key = "-",
     mods = "CTRL",
     action = act.DisableDefaultAssignment,
   },
   {
-    key = "_",
+    key = "+",
     mods = "ALT|SHIFT",
-    action = act.DecreaseFontSize,
+    action = act.IncreaseFontSize,
   },
   {
-    key = "0",
-    mods = "CTRL",
+    key = "_",
+    mods = "ALT|SHIFT",
     action = act.DecreaseFontSize,
   },
   {
@@ -91,7 +86,7 @@ M.keys = {
 
   -- Keymaps for activating key tables
   {
-    key = "r",
+    key = "Enter",
     mods = "LEADER",
     action = act.ActivateKeyTable {
       name = "resize_pane",
