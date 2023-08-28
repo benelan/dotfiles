@@ -184,7 +184,7 @@ M.lsp_servers = {
   "jsonls",
   "lua_ls",
   "marksman",
-  "mdx-analyzer",
+  -- "mdx_analyzer",
   -- "pyright",
   -- "rust_analyzer",
   -- "sqlls",
