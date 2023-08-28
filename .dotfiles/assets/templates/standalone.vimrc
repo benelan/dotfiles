@@ -361,6 +361,58 @@ if has("autocmd")
     augroup END
 endif
 
+"----------------------------------------------------------------------}}}
+"  Text objects                                                        {|}
+"----------------------------------------------------------------------{|}
+
+if has("eval")
+    "" Indentation                                                 {{{
+    "" https://vimways.org/2018/transactions-pending/
+    "" inside (without surrounding empty lines)
+    function! s:inIndentationTextObject()
+        let l:magic = &magic
+        set magic
+        normal! ^
+        let l:vCol = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
+        let l:pat = '^\(\s*\%'.l:vCol.'v\|^$\)\@!'
+        let l:start = search(l:pat, 'bWn') + 1
+        let l:end = search(l:pat, 'Wn')
+        if (l:end !=# 0)
+            let l:end -= 1
+        endif
+        execute 'normal! '.l:start.'G0'
+        call search('^[^\n\r]', 'Wc')
+        execute 'normal! Vo'.l:end.'G'
+        call search('^[^\n\r]', 'bWc')
+        normal! $o
+        let &magic = l:magic
+    endfunction
+
+    "" around (with surrounding empty lines)
+    function! s:aroundIndentationTextObject()
+        let l:magic = &magic
+        set magic
+        normal! ^
+        let l:vCol = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
+        let l:pat = '^\(\s*\%'.l:vCol.'v\|^$\)\@!'
+        let l:start = search(l:pat, 'bWn') + 1
+        let l:end = search(l:pat, 'Wn')
+        if (l:end !=# 0)
+            let l:end -= 1
+        endif
+        execute 'normal! '.l:start.'G0V'.l:end.'G$o'
+        let &magic = l:magic
+    endfunction
+
+    "" keymaps
+    xnoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
+    onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
+    xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
+    onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+endif
+
 " --------------------------------------------------------------------- }}}
 " Operatorfuncs                                                         {{{
 " --------------------------------------------------------------------- {|}

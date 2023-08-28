@@ -138,12 +138,13 @@ function! s:HandleSystemOpen()
         return
     endif
 
-    if s:OpenURI(l:word)              | return | endif
-    if s:OpenGitHubIssue(l:word)      | return | endif
-    if s:OpenURI(l:line)              | return | endif
-    if s:OpenDepNPM(l:line)           | return | endif
-    if s:OpenGitHubIssue(l:line)      | return | endif
-    echom "No openable text found"
+    if s:OpenURI(l:word)
+    elseif s:OpenGitHubIssue(l:word)
+    elseif s:OpenURI(l:line)
+    elseif s:OpenDepNPM(l:line)
+    elseif s:OpenGitHubIssue(l:line)
+    else | echom "No openable text found"
+endif
 endfunction
 " --------------------------------------------------------------------- }}}
 

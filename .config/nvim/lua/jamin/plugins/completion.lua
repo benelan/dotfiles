@@ -212,7 +212,7 @@ return {
         {
           "<C-l>",
           function()
-           if ls.jumpable(1) then
+            if ls.jumpable(1) then
               ls.jump(1)
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Accept"]()
@@ -271,13 +271,13 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "github/copilot.vim", -- AI code completion
+    "github/copilot.vim",
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
   },
   {
-    "Exafunction/codeium.vim", -- AI completion
+    "Exafunction/codeium.vim",
     cond = vim.env.USE_CODEIUM == "1",
     init = function()
       vim.g.codeium_enabled = true
