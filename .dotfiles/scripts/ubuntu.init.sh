@@ -12,7 +12,7 @@ mkdir -p "$DEPS_DIR" "$CACHE_DIR"
 
 if [ "$USE_GUI_APPS" = "1" ]; then
     FONTS_DIR="$XDG_DATA_HOME/fonts"
-    WALLPAPER_DIR="$HOME/Pictures/Wallpaper"
+    WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
     mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
 fi
 
@@ -192,17 +192,33 @@ install_iosevka_font() {
 }
 
 install_gruvbox_wallpaper() {
-    curl -sSLo "$WALLPAPER_DIR/gruvbox_coffee.png" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
-    is-supported feh &&
-        feh --bg-center "$WALLPAPER_DIR/gruvbox_coffee.png" --image-bg "#3c3836"
+    curl -sSLo "$WALLPAPER_DIR/gruvbox_coffee.png" \
+        https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+    case "$XDG_CURRENT_DESKTOP" in
+        *gnome* | *GNOME*)
+            if is-supported gsettings; then
+                gsettings set org.gnome.desktop.background picture-uri \
+                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
+                gsettings set org.gnome.desktop.background picture-uri-dark \
+                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
+                return 0
+            fi
+            ;;
+    esac
+    if is-supported feh; then
+        feh --no-fehbg --bg-center --image-bg "#3c3836" \
+            "$WALLPAPER_DIR/gruvbox_coffee.png"
+    fi
 }
 
 install_gnome_gruvbox_theme() {
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
             # download gruvbox gnome theme and icons
-            git -C "$CACHE_DIR" clone --depth=1 https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
-            git -C "$CACHE_DIR" clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+            git -C "$CACHE_DIR" clone --depth=1 \
+                https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+            git -C "$CACHE_DIR" clone --depth=1 \
+                https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
 
             cursors="FlatbedCursors-0.5.2.tar.bz2"
             curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"

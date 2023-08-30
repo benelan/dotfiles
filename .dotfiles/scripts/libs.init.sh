@@ -3,7 +3,7 @@ set -e
 sudo -v
 
 if [ -z "$LIB" ]; then
-    printf "LIB environment variable not set, exiting\n"
+    printf "\$LIB environment variable not set, exiting\n"
     exit 1
 fi
 
@@ -60,18 +60,18 @@ update_neovim_plugins() {
 }
 
 update_devdocs_sources() {
-    sources="astro bash css docker dom gnu_make go html http javascript node npm react sass tailwindcss typescript vite vue-3"
-    nvim --headless \
-        +"DevdocsFetch" \
-        +"DevdocsInstall $sources" \
-        +"DevdocsUpdateAll" \
-        +qa
+    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
+        [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -lt 18 ]; then
+        nvim --headless +"DevdocsInstall astro bash css docker dom gnu_make go html http javascript node npm react sass tailwindcss typescript vite vue-3"
+    else
+        nvim --headless +DevdocsUpdateAll
+    fi
 }
 
 # update_modules
 build_neovim || true
+build_fzf || true
+# build_taskopen || true
 update_vim_plugins || true
 update_neovim_plugins || true
 update_devdocs_sources || true
-build_fzf || true
-# build_taskopen
