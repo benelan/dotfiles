@@ -130,8 +130,8 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 -- -- location
 -- keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
 -- keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
--- keymap("n", "]l", "<CMD>llast<CR>", "Last location")
--- keymap("n", "[l", "<CMD>lfirst<CR>", "First location")
+-- keymap("n", "]L", "<CMD>llast<CR>", "Last location")
+-- keymap("n", "[L", "<CMD>lfirst<CR>", "First location")
 
 -- argument
 -- keymap("n", "]a", "<CMD>next<CR>", "Next argument")
@@ -139,20 +139,8 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 -- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
 -- keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
--- Skip past lower level diagnostics so I can fix my errors first
--- https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/after/plugin/diagnostic.lua
-local get_highest_error_severity = function()
-  for _, level in ipairs(require("jamin.resources").icons.diagnostics) do
-    local diags = vim.diagnostic.get(0, { severity = { min = level.severity } })
-    if #diags > 0 then
-      return level
-    end
-  end
-end
-
 keymap("n", "]d", function()
   vim.diagnostic.goto_next {
-    severity = get_highest_error_severity(),
     wrap = true,
     float = true,
   }
@@ -160,19 +148,43 @@ end, "Next diagnostic")
 
 keymap("n", "[d", function()
   vim.diagnostic.goto_prev {
-    severity = get_highest_error_severity(),
     wrap = true,
     float = true,
   }
 end, "Previous diagnostic")
 
--- diagnostic error
-keymap("n", "]e", "<CMD>lua vim.diagnostic.goto_next({severity='Error'})<CR>", "Next error")
-keymap("n", "[e", "<CMD>lua vim.diagnostic.goto_prev({severity='Error'})<CR>", "Previous error")
+keymap("n", "]e", function()
+  vim.diagnostic.goto_next {
+    severity = "Error",
+    wrap = true,
+    float = true,
+  }
+end, "Next diagnostic")
 
--- diagnostic warning
-keymap("n", "]w", "<CMD>lua vim.diagnostic.goto_next({severity='Warn'})<CR>", "Next warning")
-keymap("n", "[w", "<CMD>lua vim.diagnostic.goto_prev({severity='Warn'})<CR>", "Previous warning")
+keymap("n", "[e", function()
+  vim.diagnostic.goto_prev {
+    severity = "Error",
+    wrap = true,
+    float = true,
+  }
+end, "Previous diagnostic")
+
+
+keymap("n", "]w", function()
+  vim.diagnostic.goto_next {
+    severity = "Warn",
+    wrap = true,
+    float = true,
+  }
+end, "Next diagnostic")
+
+keymap("n", "[w", function()
+  vim.diagnostic.goto_prev {
+    severity = "Warn",
+    wrap = true,
+    float = true,
+  }
+end, "Previous diagnostic")
 
 -------------------------------------------------------------------------------
 ----> Git difftool and mergetool

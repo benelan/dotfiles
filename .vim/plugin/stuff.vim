@@ -18,18 +18,18 @@ let g:markdown_fenced_languages = [
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" netrw settings                                             {{{
-let g:netrw_altfile = 1
-let g:netrw_alto = 1
-let g:netrw_altv = 1
 let g:netrw_banner = 0
+let g:netrw_altfile = 1
 " let g:netrw_keepdir = 0
 " let g:netrw_liststyle = 3
-let g:netrw_localmkdiropt = " -p"
-let g:netrw_preview = 1
-let g:netrw_sort_by = "extent"
 let g:netrw_usetab = 1
 let g:netrw_winsize = 25
-let g:netrw_dirhistmax=0
+let g:netrw_preview = 1
+let g:netrw_special_syntax = 1
+
+if exists("*netrw_gitignore#Hide")
+    let g:netrw_list_hide = netrw_gitignore#Hide()
+endif
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -95,6 +95,14 @@ onoremap V :<C-U>execute "normal! `[v`]"<CR>
 " Use entire buffer as an object
 onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
+" Line text objects
+" includes spaces/newlines
+xnoremap al $o0
+onoremap al <cmd>normal val<CR>
+" no spaces/newlines
+xnoremap il <Esc>^vg_
+onoremap il <cmd>normal! ^vg_<CR>
+
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
 nnoremap x "_x
@@ -104,7 +112,7 @@ vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
-nnoremap gY <cmd>let @+=@*<cr>
+nnoremap gY <CMD>let @+=@*<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
@@ -129,27 +137,8 @@ nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
             \ .' = '. string(getreg(v:register))<cr><c-f><left>
 " start ex command for vimgrep
 nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
-"" start ex command for lhelpgrep
-nnoremap <leader>Eh :<C-U>lhelpgrep \c<S-Left>
 "" replace word under cursor in whole buffer
 nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
-" repeat the last command and add a bang
-nnoremap <leader>E! :<Up><Home><S-Right>!<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" external shell commands                                    {{{
-nnoremap <leader>Sm <cmd>execute "!surfraw mdn "
-             \ . shellescape(input("search mdn: "))<CR>
-nnoremap <leader>Sg <cmd>execute "!surfraw google "
-             \ . shellescape(input("search google: "))<CR>
-nnoremap <leader>Sw <cmd>execute "!surfraw wikipedia "
-             \ . shellescape(input("search wikipedia: "))<CR>
-nnoremap <leader>Sd <cmd>execute "!surfraw duckduckgo "
-             \ . shellescape(input("search duckduckgo: "))<CR>
-nnoremap <leader>SS <cmd>execute "!surfraw -g "
-             \ . shellescape(input("elvi/bookmark: ")) . " "
-             \ . shellescape(input("search: "))<CR>
-
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" plug keymaps                                               {{{
@@ -167,45 +156,27 @@ function! s:warn(msg)
   echohl WarningMsg | echom a:msg | echohl None
 endfunction
 
-" Open GitHub PR for branch (current or <arg>) in the browser {{{
-" See $ gh pr view --help
-let s:gh_pr_cmd = (exists("$TMUX")
-        \   ? "!tmux new-window -n github_pr "
-        \   : "!"
-        \ ) . "gh pr view --web --"
-
-command! -nargs=? PR execute s:gh_pr_cmd <args>
-
-" Same thing only with Fugitive's git object completion
-" and bang to copy
-function! s:browse_github_pr(bang, args) abort
+"" Open GitHub PR in browser for <arg> or current             {{{
+"" See $ gh pr view --help
+function! s:GitHubPR(bang, args) abort
     if !executable("gh")
         return s:warn("gh cli required: https://cli.github.com")
     endif
 
-    let s:url = substitute(
-                \   system("gh pr view --json url --jq '.url' -- " . a:args),
-                \   '\n\+$', '', ''
-                \ )
-    echom s:url
-
     if a:bang && has('clipboard')
+        let s:url = substitute(
+            \   system("gh pr view --json url --jq '.url' -- " . a:args),
+            \   '\n\+$', '', ''
+            \ )
+        echom s:url
         let @+ = s:url
     else
-        if !exists('g:loaded_netrw')
-            runtime! autoload/netrw.vim
-        endif
-
-        if exists('*netrw#BrowseX')
-            call netrw#BrowseX(s:url, 0)
-        else
-            return s:warn("netrw required to open github pull request")
-        endif
+        execute "gh pr view --web --" . a:args
     endif
+
 endfunction
 
-command! -bang -nargs=? -complete=customlist,fugitive#CompleteObject
-            \ GBrowsePR call s:browse_github_pr(<bang>0, <q-args>)
+command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle quickfix list open/close                            {{{
@@ -216,7 +187,7 @@ nnoremap <C-q> <cmd>QfToggle<cr>
 "" quickfix list to/from file for later access                {{{
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
-command! Qfsave call getqflist()
+command! SaveQf call getqflist()
     \ ->map({i, x -> (
     \     x.bufnr != 0
     \         ? bufname(x.bufnr) .":". x.lnum .":". x.col .":"
@@ -225,10 +196,10 @@ command! Qfsave call getqflist()
     \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
 
 " Save all open buffers to a file that can be loaded as a quickfix list (-q).
-command! BufSaveAsQf call getbufinfo()
+command! SaveBufsAsQf call getbufinfo()
     \ ->filter({i, x -> x.listed && x.name != ''})
     \ ->map({i, x -> fnamemodify(x.name, ':~') .':'. string(x.lnum) .': '})
-    \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
+    \ ->writefile(input('Write? ', 'Buffers.txt'), 's')
 
 " Copy all quickfix entries for the current file into location list entries.
 command! Qf2Ll call getqflist()
@@ -237,20 +208,20 @@ command! Qf2Ll call getqflist()
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" grep all files in the quickfix, buffer, or argument lists  {{{
-command! -nargs=* GrepQflist call getqflist()
+command! -nargs=* GrepQfList call getqflist()
     \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
     \ ->sort() ->uniq() ->join(' ')
     \ ->M('grep <args> ')
     \ ->execute()
 
-command! -nargs=* GrepBuflist call range(0, bufnr('$'))
+command! -nargs=* GrepBufList call range(0, bufnr('$'))
     \ ->filter({i, x -> buflisted(x)})
     \ ->map({i, x -> fnameescape(bufname(x))})
     \ ->join(' ')
     \ ->M('grep <args> ')
     \ ->execute()
 
-command! -nargs=* GrepArglist grep <args> ##
+command! -nargs=* GrepArgList grep <args> ##
 
 " return a string if the first arg is not empty.
 function! M(x, y)
@@ -458,23 +429,12 @@ if has("autocmd")
     augroup jamin_global_marks
         autocmd!
         " Clear actively used marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks WQAZX
+        autocmd VimEnter *  delmarks WQAZ
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave \(//:\)\@<!*.css,
                         \\(//:\)\@<!*.scss,
                         \\(//:\)\@<!*.sass
                             \ normal! mC
-
-        autocmd BufLeave \(//:\)\@<!*.csv,
-                        \\(//:\)\@<!*.json,
-                        \\(//:\)\@<!*.toml
-                            \ normal! mD
-
-        autocmd BufLeave \(//:\)\@<!*.go
-                            \ normal! mG
-
-        autocmd BufLeave \(//:\)\@<!*.rs
-                            \ normal! mR
 
         autocmd BufLeave \(//:\)\@<!*.html
                             \ normal! mH
@@ -485,11 +445,20 @@ if has("autocmd")
                             \ normal! mE
 
         autocmd BufLeave \(//:\)\@<!*.js,
-                        \\(//:\)\@<!*.jsx
                             \ normal! mJ
 
-        autocmd BufLeave \(//:\)\@<!*.lua
-                            \ normal! mL
+        autocmd BufLeave \(//:\)\@<!*.ts,
+                            \ normal! mT
+
+        autocmd BufLeave \(//:\)\@<!*.jsx,
+                        \\(//:\)\@<!*.tsx
+                            \ normal! mX
+
+        autocmd BufLeave \(//:\)\@<!*.go
+                            \ normal! mG
+
+        autocmd BufLeave \(//:\)\@<!*.rs
+                            \ normal! mR
 
         autocmd BufLeave \(//:\)\@<!*.py
                             \ normal! mP
@@ -499,13 +468,17 @@ if has("autocmd")
                         \\(//:\)\@<!$DOTFILES/bin/*
                             \ normal! mS
 
-        autocmd BufLeave \(//:\)\@<!*.ts,
-                        \\(//:\)\@<!*.tsx
-                            \ normal! mT
+        autocmd BufLeave \(//:\)\@<!*.lua
+                            \ normal! mL
 
         autocmd BufLeave \(//:\)\@<!*.vim,
                         \\(//:\)\@<!*vimrc
                             \ normal! mV
+
+        autocmd BufLeave \(//:\)\@<!*.csv,
+                        \\(//:\)\@<!*.json,
+                        \\(//:\)\@<!*.toml
+                            \ normal! mD
 
         autocmd BufLeave \(//:\)\@<!*.yml,
                         \\(//:\)\@<!*.yaml
@@ -553,7 +526,7 @@ if has("autocmd")
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    " Use skeletons when creating specific new files          {{{
+    "" Use skeletons when creating specific new files         {{{
     augroup jamin_skeletons
         autocmd!
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
@@ -564,7 +537,7 @@ if has("autocmd")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" set makeprg or use a builtin compiler when possible    {{{
-    augroup jamin_compilers
+    augroup jamin_compilers_formatters
         autocmd!
         " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler
         autocmd FileType python compiler pylint
@@ -620,8 +593,6 @@ endif
 "----------------------------------------------------------------------{|}
 
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
-set foldtext=MyFoldText()
-
 function! MyFoldText()
     " get first non-blank line
     let fs = v:foldstart
@@ -645,11 +616,11 @@ function! MyFoldText()
     return line . separator . expansion . foldSize
 endfunction
 
+set foldtext=MyFoldText()
+
 "----------------------------------------------------------------------}}}
 "  TabLine                                                             {{{
 "----------------------------------------------------------------------{|}
-
-set tabline=%!MyTabLine()
 
 "" get the current working directory                          {{{
 function! TabCWD() abort
@@ -717,11 +688,6 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
-"----------------------------------------------------------------------}}}
-"  Abbreviations                                                       {{{
-"----------------------------------------------------------------------{|}
-
-inoreabbrev teh the
-inoreabbrev JSAPI ArcGIS Maps SDK for JavaScript
+set tabline=%!MyTabLine()
 
 "----------------------------------------------------------------------}}}

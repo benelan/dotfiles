@@ -7,7 +7,14 @@ return {
     cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
     ft = res.filetypes.writing,
     config = function()
-      require("cmp_dictionary").switcher { spelllang = { en = "/usr/share/dict/words" } }
+      local has_dict, dict = pcall(require, "cmp_dictionary")
+      if not has_dict then
+        return
+      end
+
+      dict.setup { first_case_insensitive = true }
+      dict.switcher { spelllang = { en = "/usr/share/dict/words" } }
+      dict.update()
     end,
   },
   -----------------------------------------------------------------------------
@@ -91,7 +98,7 @@ return {
               nvim_lsp = " [LSP] ",
               nvim_lsp_signature_help = " [SIG] ",
               path = "[PATH] ",
-              rg = "  [RG] ",
+              rg = "[GREP] ",
               tmux = "[TMUX] ",
               dictionary = "[DICT] ",
             })[entry.source.name]
@@ -125,10 +132,10 @@ return {
           { name = "tmux", keyword_length = 3, group_index = 2 },
           { name = "path", keyword_length = 3, group_index = 2 },
           { name = "buffer", keyword_length = 3, group_index = 2 },
-          { name = "rg", group_index = 4, keyword_length = 4 },
+          { name = "rg", keyword_length = 3, group_index = 3 },
           {
             name = "dictionary",
-            group_index = 4,
+            group_index = 3,
             keyword_length = 3,
             entry_filter = function(_, ctx)
               for _, ft in ipairs(res.filetypes.writing) do

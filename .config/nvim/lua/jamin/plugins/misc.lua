@@ -2,7 +2,6 @@ return {
   -----------------------------------------------------------------------------
   { "folke/lazy.nvim" },
   -----------------------------------------------------------------------------
-  { "tpope/vim-rsi", event = { "InsertEnter", "CmdlineEnter" } },
   {
     -- NOTE: forked from https://github.com/ThePrimeagen/harpoon to add support
     -- for setting marks/cmds specific to the root directory of a git worktree
@@ -25,8 +24,8 @@ return {
               "docker build --tag calcite-components .",
               "docker run --init --interactive --rm "
                 .. "--cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) "
-                .. "--name calcite-components_test calcite-components"
-                .. "npm --workspace=@esri/calcite-components run test -- -- --watch ",
+                .. "--name calcite-components_test calcite-components "
+                .. "npm --workspace=@esri/calcite-components run test -- -- --watchAll",
               "docker run --init --interactive --rm "
                 .. "--cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) "
                 .. "--name calcite-components-start --publish 3333:3333 calcite-components "

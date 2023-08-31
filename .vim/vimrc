@@ -11,7 +11,7 @@ endif
 
 set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard=unnamed
-set showmatch ttyfast lazyredraw autoread confirm hidden
+set ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
 set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
@@ -21,7 +21,7 @@ set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
 set backupdir=$HOME/.vim/backups noswapfile
 set sessionoptions-=options viewoptions-=options
-set path-=/usr/include path+=src/** define= include=
+set path-=/usr/include path+=** define= include=
 set foldmethod=indent foldlevel=99 foldclose=all
 set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,
@@ -32,6 +32,10 @@ set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \,*.s3m,*.sdbm,*.sqlite,*.swf,*.swp,*.tar,*.tga,*.ttf,*.wav,*.webm,
     \*.xbm,*.xcf,*.xls,*.xlsx,*.xpm,*.xz,*.zip,
     \*/node_modules/*,*/dist/*,*/build/*
+
+if filereadable("/usr/share/dict/words")
+    set dictionary=/usr/share/dict/words
+endif
 
 " don't backup some system files for security
 if v:version > 801 || v:version == 801 && has("patch1519")
@@ -141,8 +145,8 @@ if has("keymap")
     nnoremap <C-d> <C-d>zz
 
     xnoremap g/ <esc>/\\%V
-    nnoremap go <CMD>call append(line('.'), repeat([''], v:count1))<CR>
-    nnoremap gO <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+    nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
     if empty(mapcheck("<C-U>", "i"))

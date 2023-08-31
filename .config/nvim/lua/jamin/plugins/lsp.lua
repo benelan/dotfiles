@@ -82,7 +82,7 @@ return {
     },
     opts = {
       diagnostics = {
-        virtual_text = true,
+        virtual_text = { severity = { min = vim.diagnostic.severity.WARN } },
         update_in_insert = false,
         underline = true,
         severity_sort = true,
@@ -390,30 +390,6 @@ return {
         hover.printenv,
         code_actions.gitrebase,
         code_actions.shellcheck,
-        -- code_actions.gitsigns,
-        -- code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
-
-        -- diagnostics.cspell.with {
-        --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-        --   diagnostic_config = quiet_diagnostics,
-        --   prefer_local = "./node_modules/.bin",
-        -- },
-
-        -- diagnostics.codespell.with {
-        --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-        --   extra_args = {
-        --     "--builtin",
-        --     "clear,rare,informal,code,names,en-GB_to_en-US",
-        --     "--ignore-words",
-        --     vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
-        --   },
-        --   diagnostic_config = quiet_diagnostics,
-        -- },
-
-        -- diagnostics.write_good.with {
-        --   diagnostic_config = quiet_diagnostics,
-        --   prefer_local = "node_modules/.bin",
-        -- },
 
         diagnostics.hadolint,
         diagnostics.actionlint.with {
