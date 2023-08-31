@@ -55,25 +55,25 @@ is-supported nvim && EDITOR='nvim' ||
 TERMINAL="gnome-terminal"
 # is-supported wezterm && TERMINAL='wezterm'
 
+CLIBROWSER='sensible-browser'
+is-supported w3m && CLIBROWSER='w3m' ||
+    {
+        is-supported links2 && CLIBROWSER='links2'
+    } ||
+    {
+        is-supported lynx && CLIBROWSER='lynx'
+    }
+
 BROWSER='sensible-browser'
-is-supported w3m && BROWSER='w3m' ||
+is-supported firefox && BROWSER='firefox' ||
     {
-        is-supported links2 && BROWSER='links2'
+        is-supported brave-browser && BROWSER='brave-browser'
     } ||
     {
-        is-supported lynx && BROWSER='lynx'
+        is-supported google-chrome && BROWSER='google-chrome'
     }
 
-GUIBROWSER='sensible-browser'
-is-supported firefox && GUIBROWSER='firefox' ||
-    {
-        is-supported brave-browser && GUIBROWSER='brave-browser'
-    } ||
-    {
-        is-supported google-chrome && GUIBROWSER='google-chrome'
-    }
-
-export EDITOR TERMINAL BROWSER GUIBROWSER
+export EDITOR TERMINAL BROWSER CLIBROWSER
 export VISUAL=$EDITOR
 export PAGER='less'
 export MANPAGER=$PAGER
@@ -110,7 +110,7 @@ is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # my tools                                                    {{{
-is-supported matpat && export MATPAT_OPEN_CMD="$GUIBROWSER"
+is-supported matpat && export MATPAT_OPEN_CMD="$BROWSER"
 
 # https://github.com/benelan/git-mux
 if is-supported git-mux; then
