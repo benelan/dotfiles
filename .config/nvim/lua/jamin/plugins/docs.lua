@@ -70,6 +70,7 @@ return {
   },
   {
     "luckasRanarison/nvim-devdocs",
+    dev = true,
     build = ":DevdocsFetch",
     dependencies = {
       "nvim-lua/plenary.nvim",
