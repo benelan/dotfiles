@@ -103,11 +103,15 @@ cd && dot submodule update --init --recursive
 
 if [ -d /usr/share/bash-completion/completions/ ]; then
     printf "\n➜  Copying completion scripts to system\n\n"
+
     sudo cp ~/.dotfiles/shell/completions/0_tmux.completion.sh \
         /usr/share/bash-completion/completions/tmux
 
     sudo cp ~/.dotfiles/shell/completions/0_fasd.completion.sh \
         /usr/share/bash-completion/completions/fasd
+
+    sudo cp ~/.dotfiles/shell/completions/0_npm.completion.sh \
+        /usr/share/bash-completion/completions/npm
 fi
 
 printf "\n✔  Initialization complete\n"

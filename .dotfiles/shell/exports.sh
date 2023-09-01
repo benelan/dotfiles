@@ -103,6 +103,7 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # misc tools                                                  {{{
+is-supported fasd && export _FASD_DATA="$DOTFILES/cache/fasd"
 is-supported bat && export BAT_THEME="gruvbox-dark"
 is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"

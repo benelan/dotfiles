@@ -2,17 +2,6 @@
 
 # fasd - https://github.com/clvv/fasd
 if is-supported fasd; then
-    _fasd_prompt_func() {
-        eval "fasd --proc $(fasd --sanitize "$(history 1 |
-            sed "s/^[ ]*[0-9]*[ ]*//")")" >>"/dev/null" 2>&1
-    }
-
-    # add bash hook
-    case $PROMPT_COMMAND in
-        *_fasd_prompt_func*) ;;
-        *) PROMPT_COMMAND="_fasd_prompt_func;$PROMPT_COMMAND" ;;
-    esac
-
     # bash command mode completion
     _fasd_bash_cmd_complete() {
         # complete command after "-e"

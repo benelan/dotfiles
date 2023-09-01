@@ -102,6 +102,18 @@ else
     PROMPT_COMMAND='export PS1=${pre_prompt}${post_prompt}'
 fi
 
+if is-supported fasd; then
+    _fasd_prompt_func() {
+        eval "fasd --proc $(fasd --sanitize "$(history 1 |
+            sed "s/^[ ]*[0-9]*[ ]*//")")" >>"/dev/null" 2>&1
+    }
+
+    case $PROMPT_COMMAND in
+        *_fasd_prompt_func*) ;;
+        *) PROMPT_COMMAND="_fasd_prompt_func;$PROMPT_COMMAND" ;;
+    esac
+fi
+
 PS2="\[${YELLOW}\]… \[${RESET}\] "
 
 export PROMPT_COMMAND PS2
