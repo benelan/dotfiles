@@ -14,4 +14,4 @@ fi
 
 # Source ~/.bashrc if it exists; the tests for both interactivity and
 # minimum version numbers are in there
-[ -r "$HOME/.bashrc" ] && [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+[ -r "$HOME/.bashrc" ] && . "$HOME/.bashrc"

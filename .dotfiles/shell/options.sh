@@ -16,17 +16,10 @@ export LESS_TERMCAP_us=$'\e[04;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 
 # generate LS_COLORS
-[ -r ~/.dir_colors ] && [ -f ~/.dir_colors ] && eval "$(dircolors ~/.dir_colors)"
+[ -r ~/.dircolors ] && eval "$(dircolors ~/.dircolors)"
 
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'
-
-# If not set, make new shells get the history lines from all previous
-# shells instead of the default "last window closed" history.
-
-if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
-    PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-fi
 
 # Use vi editing mode instead of emacs
 # set -o vi

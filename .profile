@@ -1,19 +1,21 @@
 #!/bin/sh
 # shellcheck disable=1090
 
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
 # SHELL - PATHS                                                         {{{
 # --------------------------------------------------------------------- {|}
 
-[ -r ~/.dotfiles/shell/paths.sh ] &&
-    [ -f ~/.dotfiles/shell/paths.sh ] &&
-    . ~/.dotfiles/shell/paths.sh
+[ -r ~/.dotfiles/shell/paths.sh ] && . ~/.dotfiles/shell/paths.sh
 
 # --------------------------------------------------------------------- }}}
 # SHELL - EXPORTS                                                       {{{
 # --------------------------------------------------------------------- {|}
 
-[ -r ~/.dotfiles/shell/exports.sh ] &&
-    [ -f ~/.dotfiles/shell/exports.sh ] &&
-    . ~/.dotfiles/shell/exports.sh
+[ -r ~/.dotfiles/shell/exports.sh ] && . ~/.dotfiles/shell/exports.sh
 
 # --------------------------------------------------------------------- }}}

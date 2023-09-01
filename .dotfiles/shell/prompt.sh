@@ -96,12 +96,14 @@ post_prompt+="\[${RESET}\]" # reset styling
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 
+# setup git prompt
 if command -v __git_ps1 >/dev/null 2>&1; then
     PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 else
     PROMPT_COMMAND='export PS1=${pre_prompt}${post_prompt}'
 fi
 
+# setup fasd
 if is-supported fasd; then
     _fasd_prompt_func() {
         eval "fasd --proc $(fasd --sanitize "$(history 1 |
@@ -112,6 +114,12 @@ if is-supported fasd; then
         *_fasd_prompt_func*) ;;
         *) PROMPT_COMMAND="_fasd_prompt_func;$PROMPT_COMMAND" ;;
     esac
+fi
+
+# If not set, make new shells get the history lines from all previous
+# shells instead of the default "last window closed" history.
+if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
+    PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
 PS2="\[${YELLOW}\]… \[${RESET}\] "
