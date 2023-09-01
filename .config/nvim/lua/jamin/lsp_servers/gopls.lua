@@ -35,8 +35,16 @@ return {
   flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
   settings = {
     gopls = {
-      codelenses = { gc_details = true },
       semanticTokens = true,
+      usePlaceholders = true,
+      completeUnimported = true,
+      directoryFilters = { "-node_modules", "-vendor" },
+      codelenses = {
+        gc_details = true,
+        test = true,
+        tidy = true,
+        generate = true,
+      },
       analyses = {
         fieldalignment = false,
         nilness = true,
