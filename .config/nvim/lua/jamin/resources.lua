@@ -78,7 +78,7 @@ M.icons = {
   },
   ui = { -- utf8 icons so no fallbacks required
     checkmark = "🗸 ",
-    prompt = "❱ ", -- ❯ ❱ ⧽
+    prompt = "❱ ",
     select = "➤  ",
     circle = "● ",
     expanded = "🞃 ",

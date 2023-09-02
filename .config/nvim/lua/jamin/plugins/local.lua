@@ -1,4 +1,7 @@
 return {
+  -- stuff shared with the vim config
+  { dir = "~/.vim", lazy = false },
+  -----------------------------------------------------------------------------
   {
     dir = "~/dev/lib/fzf",
     cmd = { "FZF" },
@@ -8,9 +11,6 @@ return {
       { "<leader>fzb", "<cmd>Buffers<cr>", desc = "FZF Buffers" },
     },
   },
-  -----------------------------------------------------------------------------
-  -- stuff shared with the vim config
-  { dir = "~/.vim", lazy = false },
   -----------------------------------------------------------------------------
   -- tpope plugins
   { dir = "~/.vim/pack/foo/start/vim-repeat", event = "CursorHold" },
@@ -78,8 +78,6 @@ return {
     keys = {
       { "<leader>go", ":GBrowse<cr>", desc = "Open git object in browser", mode = { "n", "v" } },
       { "<leader>gy", ":GBrowse!<cr>", desc = "Yank git object URL", mode = { "n", "v" } },
-      { "<leader>gO", "<cmd>GBrowsePR<cr>", desc = "Open GitHub PR", mode = "n" },
-      { "<leader>gY", "<cmd>GBrowsePR!<cr>", desc = "Copy GitHub PR", mode = "n" },
     },
   },
   -----------------------------------------------------------------------------
@@ -104,7 +102,6 @@ return {
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
     init = function()
       vim.g.undotree_SetFocusWhenToggle = 1
-      vim.g.undotree_WindowLayout = 2
       vim.cmd [[
         function g:Undotree_CustomMap()
             nnoremap <buffer> ] <plug>UndotreeNextSavedState
@@ -117,13 +114,11 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vifm.vim",
     ft = "vifm",
-    cmd = { "Vifm", "TabVifm", "SplitVifm" },
+    cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()
       -- there is a weird startup error unless I define the keymap in init too
       keymap("n", "-", "<cmd>Vifm<cr>")
-      -- vim.g.vifm_replace_netrw = true
-      vim.g.vifm_term = "x-terminal-emulator"
     end,
   },
   -----------------------------------------------------------------------------

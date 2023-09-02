@@ -213,7 +213,7 @@ return {
           bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
           bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-          bufmap("n", "g ", vim.diagnostic.open_float, "Diagnostics")
+          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
@@ -230,7 +230,7 @@ return {
 
           if client.supports_method "textDocument/codeLens" then
             bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "BufWritePost" }, {
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
               group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
               buffer = args.buf,
               callback = function()

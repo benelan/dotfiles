@@ -24,7 +24,7 @@ vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
 -------------------------------------------------------------------------------
 ----> Global functions
 -------------------------------------------------------------------------------
-R = function(name)
+_G.R = function(name)
   require("plenary.reload").reload_module(name)
 end
 

@@ -40,7 +40,7 @@ return {
         { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist" },
         { "<leader>fc", function() builtin.commands() end, desc = "Find command" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find file" },
-        { "<leader>ft", function() telescope_cwd "live_grep" end, desc = "Find text" },
+        { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text" },
         { "<leader>fv", function() builtin.find_files { search_dirs = { "~/.vim", "~/.config/nvim" } } end, desc = "Find (n)vim files" },
         { "<leader>fd", function() builtin.find_files { search_dirs = { "~/.dotfiles" } } end, desc = "Find dotfiles" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Fuzzy find in buffer" },
@@ -78,12 +78,9 @@ return {
         ["<C-b>"] = "preview_scrolling_up",
         ["<C-j>"] = "move_selection_next",
         ["<C-k>"] = "move_selection_previous",
-        ["<Down>"] = "cycle_history_next",
-        ["<Up>"] = "cycle_history_prev",
-        ["<M-j>"] = "cycle_history_next",
-        ["<M-k>"] = "cycle_history_prev",
+        ["<C-n>"] = "cycle_history_next",
+        ["<C-p>"] = "cycle_history_prev",
         ["<M-l>"] = require("telescope.actions.layout").cycle_layout_next,
-        ["<M-h>"] = require("telescope.actions.layout").cycle_layout_prev,
         ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = function(...)
@@ -94,40 +91,16 @@ return {
 
       return {
         defaults = {
-          -- path_display = { "smart" },
-          prompt_prefix = string.format(" %s ", require("jamin.resources").icons.ui.prompt),
-          selection_caret = require("jamin.resources").icons.ui.select,
-          multi_icon = require("jamin.resources").icons.ui.checkmark,
-          entry_prefix = "   ",
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",
-          cycle_layout_list = { "horizontal", "vertical", "bottom_pane" },
+          history = { limit = 420 },
           set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
-          -- stylua: ignore
-          file_ignore_patterns = {
-            -- dev directories
-            "%.git/", "node_modules/", "dist/", "build/",
-            -- home directories
-            "%.cache/", "%.var/", "%.mozilla/", "%.pki/", "%.cert/", "%.gnupg/", "%.ssh/",
-            "~/Music", "~/Videos", "~/Steam", "~/Pictures",
-            -- media files
-            "%.mp3", "%.mp4", "%.mkv", "%.m4a", "%.m4p", "%.png", "%.jpeg", "%.avi", "%.ico",
-            -- packages
-            "%.7z", "%.dmg%", "%.gz", "%.iso", "%.jar", "%.rar", "%.tar", "%.zip",
-            -- auto-generated files
-            -- "%.tmp", "%.orig", "%.lock", "%.bak",
-            -- compiled
-            -- "%.com", "%.class", "%.dll", "%.exe", "%.o", "%.so", "%.map", "%.min.js",
-          },
-          -- stylua: ignore
-          vimgrep_arguments = {
-            "rg", "--color=never", "--no-heading", "--with-filename",
-            "--line-number", "--column", "--smart-case", "--trim", "--hidden",
-            "--glob=!.git/", "--glob=!node_modules/",
+          git_worktrees = {
+            { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" },
+            { toplevel = vim.env.CALCITE, gitdir = vim.env.CALCITE .. "/.git" },
           },
           mappings = { i = default_mappings, n = default_mappings },
-          history = { history = 1000 },
         },
         pickers = {
           live_grep = { only_sort_text = true },

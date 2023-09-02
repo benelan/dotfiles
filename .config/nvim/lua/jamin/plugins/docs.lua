@@ -53,10 +53,10 @@ return {
     -- stylua: ignore
     keys = {
       -- Search for the notes matching the current visual selection.
-      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
       { "<leader>zn", function() require("zk.commands").get "ZkNew" { title = vim.fn.input "Title: " } end, desc = "New note" },
       { "<leader>zo", function() require("zk.commands").get "ZkNotes" { sort = { "modified" } } end, desc = "Open notes" },
       { "<leader>zt", function() require("zk.commands").get "ZkTags" { } end, desc = "Tags" },
+      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
       {
         "<leader>zf",
         function() require("zk.commands").get "ZkNotes" { sort = { "modified" }, match = { vim.fn.input "Search: " } } end,
