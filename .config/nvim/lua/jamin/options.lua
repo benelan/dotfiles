@@ -61,14 +61,4 @@ vim.opt.undolevels = 10000
 if has_res then
   vim.opt.showbreak = res.icons.ui.ellipses
   vim.opt.fillchars = { diff = res.icons.ui.fill_slash }
-  vim.opt.listchars = {
-    extends = res.icons.ui.extends,
-    precedes = res.icons.ui.precedes,
-    trail = res.icons.ui.fill_dot,
-    lead = res.icons.ui.fill_dot,
-    leadmultispace = res.icons.ui.separator
-      .. string.rep(" ", vim.api.nvim_get_option_value("tabstop", {}) / 2),
-    nbsp = res.icons.ui.nbsp,
-    eol = res.icons.ui.eol,
-  }
 end

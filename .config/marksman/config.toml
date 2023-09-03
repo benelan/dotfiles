@@ -1,0 +1,9 @@
+# https://github.com/artempyanykh/marksman/blob/main/docs/configuration.md
+
+[completion]
+# The style of wiki links completion.
+# Other values include:
+# * "file-stem" to complete using file name without an extension,
+# * "file-path-stem" same as above but using file path.
+# * "title-slug" use the file's title
+wiki.style = "file-path-stem"

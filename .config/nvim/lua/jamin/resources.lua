@@ -83,7 +83,6 @@ M.icons = {
     circle = "● ",
     expanded = "🞃 ",
     collapsed = "🞂 ",
-    replace = "� ",
     eol = "⮠",
     nbsp = "␣",
     extends = "»",

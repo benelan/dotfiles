@@ -201,3 +201,6 @@ monorepo
 filesystem
 workspace's
 updaters
+utf8
+fallbacks
+mdx

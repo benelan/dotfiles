@@ -3,6 +3,7 @@ local res = require "jamin.resources"
 -------------------------------------------------------------------------------
 ----> Autocommands
 -------------------------------------------------------------------------------
+
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", { clear = true }),
   callback = function()
@@ -97,5 +98,25 @@ vim.api.nvim_create_autocmd("BufWritePre", {
       backup = backup:gsub("[/\\]", "%%")
       vim.go.backupext = backup
     end
+  end,
+})
+
+-----------------------------------------------------------------------------
+
+-- use listchars like an indentline plugin
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = vim.api.nvim_create_augroup("jamin_ghetto_indentlines", { clear = true }),
+  callback = function()
+    vim.opt.listchars = {
+      tab = "|->",
+      -- eol = res.icons.ui.eol,
+      extends = res.icons.ui.extends,
+      precedes = res.icons.ui.precedes,
+      trail = res.icons.ui.fill_dot,
+      lead = res.icons.ui.fill_dot,
+      nbsp = res.icons.ui.nbsp,
+      leadmultispace = res.icons.ui.separator
+        .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", {}) - 1),
+    }
   end,
 })

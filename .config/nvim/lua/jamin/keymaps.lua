@@ -1,18 +1,17 @@
--------------------------------------------------------------------------------
----------------->            Mapping  Modes                   <----------------
--------------------------------------------------------------------------------
--- >    <Space>	    Normal, Visual, Select and Operator-pending               |
--- >          n	    Normal                                                    |
--- >          v	    Visual and Select                                         |
--- >          s	    Select                                                    |
--- >          x	    Visual                                                    |
--- >          o	    Operator-pending                                          |
--- >          !	    Insert and Command-line                                   |
--- >          i	    Insert                                                    |
--- >          l	    Insert, Command-line and LanArg                           |
--- >          c	    Command-line                                              |
--- >          t	    Terminal-Job                                              |
--------------------------->  :h map-listing  <---------------------------------
+---------->             Mapping  Modes                  <----------
+-------------------------------------------------------------------
+-->    <Space>     Normal, Visual, Select and Operator-pending    |
+-->          n     Normal                                         |
+-->          v     Visual and Select                              |
+-->          s     Select                                         |
+-->          x     Visual                                         |
+-->          o     Operator-pending                               |
+-->          !     Insert and Command-line                        |
+-->          i     Insert                                         |
+-->          l     Insert, Command-line and LanArg                |
+-->          c     Command-line                                   |
+-->          t     Terminal-Job                                   |
+-------------------->  :h map-listing  <---------------------------
 
 -- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
@@ -151,7 +150,6 @@ keymap("n", "[e", function()
     float = true,
   }
 end, "Previous diagnostic")
-
 
 keymap("n", "]w", function()
   vim.diagnostic.goto_next {
