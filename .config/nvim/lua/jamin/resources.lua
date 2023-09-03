@@ -116,6 +116,7 @@ M.filetypes = {
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
+    "Trouble",
     "checkhealth",
     "cmp_menu",
     "dap-repl",

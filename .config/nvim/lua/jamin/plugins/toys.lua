@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 return {
   {
     "nvim-tree/nvim-web-devicons",
@@ -25,6 +27,29 @@ return {
       require("eyeliner").setup(opts)
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "folke/trouble.nvim",
+    -- enabled = false,
+    opts = {
+      icons = vim.g.use_devicons == true,
+      fold_open = res.icons.ui.expanded,
+      fold_closed = res.icons.ui.collapsed,
+      indent_lines = false,
+      use_diagnostic_signs = true,
+    },
+    cmd = { "TroubleToggle", "Trouble" },
+    -- stylua: ignore
+    keys = {
+      { "<leader>xx", "<CMD>TroubleToggle document_diagnostics<CR>", desc = "Trouble document diagnostics" },
+      { "<leader>xw", "<CMD>TroubleToggle workspace_diagnostics<CR>", desc = "Trouble workspace diagnostics" },
+      { "<leader>xr", "<CMD>TroubleToggle lsp_references<CR>", desc = "Trouble LSP references" },
+      { "<leader>xt", "<CMD>TroubleToggle lsp_type_definitions<CR>", desc = "Trouble LSP type definitions" },
+      { "<leader>xd", "<CMD>TroubleToggle lsp_definitions<CR>", desc = "Trouble LSP definitions" },
+      { "<leader>xq", "<CMD>TroubleToggle quickfix<CR>", desc = "Trouble quickfix" },
+      { "<leader>xl", "<CMD>TroubleToggle loclist<CR>", desc = "Trouble loclist" },
+    },
   },
   -----------------------------------------------------------------------------
   {
