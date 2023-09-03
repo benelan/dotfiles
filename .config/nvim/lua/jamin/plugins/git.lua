@@ -59,18 +59,18 @@ return {
       -- Find possible actions
       { "<leader>oa", "<cmd>Octo actions<CR>", desc = "Actions" },
 
-      -- Find possible actions
+      -- Search using GitHub's qualifiers
+      -- https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
+      -- https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
       { "<leader>os", "<cmd>Octo search<CR>", desc = "Search" },
 
       -- Issues
       { "<leader>oil", "<cmd>Octo issue list<CR>", desc = "List issues" },
       { "<leader>oic", "<cmd>Octo issue create<CR>", desc = "Create issue" },
-      { "<leader>ois", "<cmd>Octo issue search<CR>", desc = "Search issues" },
 
       -- Pull requests
       { "<leader>opl", "<cmd>Octo pr list<CR>", desc = "List pull requests" },
       { "<leader>opc", "<cmd>Octo pr create<CR>", desc = "Create pull request" },
-      { "<leader>ops", "<cmd>Octo pr search<CR>", desc = "Search pull request" },
 
       -- Reviews
       { "<leader>oprr", "<cmd>Octo review resume<CR>", desc = "Resume review" },
@@ -80,10 +80,10 @@ return {
       -- My stuff
       { "<leader>omia", "<cmd>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List my assigned issues" },
       { "<leader>omic", "<cmd>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List my created issues" },
-      { "<leader>omr", "<cmd>Octo repo list<CR>", desc = "List my repos" },
-      { "<leader>omg", "<cmd>Octo gist list<CR>", desc = "List my gists" },
       { "<leader>ompc", "<cmd>Octo search is:open is:pr author:benelan<CR>", desc = "List my created pull requests" },
       { "<leader>ompa", "<cmd>Octo search is:open is:pr assignee:benelan<CR>", desc = "List my assigned pull requests" },
+      { "<leader>omr", "<cmd>Octo repo list<CR>", desc = "List my repos" },
+      { "<leader>omg", "<cmd>Octo gist list<CR>", desc = "List my gists" },
     },
     opts = {
       enable_builtin = true,

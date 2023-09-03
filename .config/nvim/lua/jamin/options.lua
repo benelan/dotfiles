@@ -37,7 +37,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
-vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
+-- vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
 vim.opt.linebreak = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 15

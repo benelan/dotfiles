@@ -12,7 +12,13 @@ return {
         globals = { "vim" },
         disable = { "missing-fields" },
       },
-      workspace = { checkThirdParty = false },
+      workspace = {
+        checkThirdParty = false,
+        library = {
+          [vim.fn.expand "$VIMRUNTIME/lua"] = true,
+          [vim.fn.stdpath "config" .. "/lua"] = true,
+        },
+      },
       telemetry = { enable = false },
       format = { enable = false },
       completion = { callSnippet = "Replace", displayContext = 4 },
