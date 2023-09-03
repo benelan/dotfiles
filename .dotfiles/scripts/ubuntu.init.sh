@@ -20,18 +20,22 @@ fi
 # https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 install_apt_packages() {
     ! [ -f "$DEPS_DIR/apt" ] && return
+
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt"
+
     unset pkg
 }
 
 # Install GUI apt packages
 install_apt_gui_packages() {
     ! [ -f "$DEPS_DIR/apt-gui" ] && return
+
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt-gui"
+
     unset pkg
 }
 
@@ -40,8 +44,10 @@ install_apt_gui_packages() {
 install_vscode() {
     is-supported code && return
     deb="$CACHE_DIR/vscode.deb"
+
     curl -ssLo "$deb" \
         "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+
     sudo apt install -y "$deb" || true
     unset deb
 }
@@ -52,9 +58,11 @@ install_protonvpn_cli() {
     is-supported protonvpn-cli && return
     checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
     deb="protonvpn-stable-release_1.0.3_all.deb"
+
     curl -sSLo "$CACHE_DIR/$deb" \
         "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
     echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
+
     sudo apt install -y "$CACHE_DIR/$deb" || true
     unset deb
 }
@@ -64,8 +72,10 @@ install_protonvpn_cli() {
 install_discord() {
     is-supported discord && return
     deb="$CACHE_DIR/discord.deb"
+
     curl -sSLo "$deb" \
         https://discord.com/api/download?platform=linux\&format=deb
+
     sudo apt install -y "$deb"
     unset deb
 }
@@ -74,8 +84,10 @@ install_discord() {
 # https://wezfurlong.org/wezterm/install/linux.html
 install_wezterm() {
     deb="wezterm-nightly.Ubuntu22.04.deb"
+
     curl -sSLo "$CACHE_DIR/$deb" \
         "https://github.com/wez/wezterm/releases/download/nightly/$deb"
+
     sudo apt install -y "$CACHE_DIR/$deb" || true
     unset deb
 
@@ -92,33 +104,41 @@ install_wezterm() {
 install_taskwarrior_tui() {
     is-supported taskwarrior-tui && return
     deb="taskwarrior-tui.deb"
+
     curl -sSLo "$CACHE_DIR/$deb" \
         "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
+
     sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 # Install Docker Desktop
 # https://docs.docker.com/desktop/install/ubuntu/
 install_docker_desktop() {
-    if ! is-supported docker-desktop; then
-        deb="docker-desktop-4.16.2-amd64.deb"
-        rm -r ~/.docker/desktop || true
-        sudo rm /usr/local/bin/com.docker.cli || true
-        sudo apt purge docker-desktop || true
-        curl -sSLo "$CACHE_DIR/$deb" \
-            "https://desktop.docker.com/linux/main/amd64/$deb"
-        sudo apt install "$CACHE_DIR/$deb" || true
-        unset deb
-    fi
+    is-supported docker-desktop && return
+    deb="docker-desktop-4.16.2-amd64.deb"
+
+    rm -r ~/.docker/desktop || true
+    sudo rm /usr/local/bin/com.docker.cli || true
+    sudo apt purge docker-desktop || true
+
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://desktop.docker.com/linux/main/amd64/$deb"
+
+    sudo apt install "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 # Install Docker Engine
 # https://docs.docker.com/engine/install/ubuntu/
 install_docker_engine() {
     is-supported docker && return
+
     sudo install -m 0755 -d /etc/apt/keyrings
+
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
         sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
     sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
     echo "deb [arch=$(dpkg --print-architecture) \
@@ -134,6 +154,7 @@ install_latest_git() {
     grep -q "git-core/ppa" \
         /etc/apt/sources.list /etc/apt/sources.list.d/* ||
         sudo add-apt-repository -y ppa:git-core/ppa
+
     sudo apt install -y git
 }
 
@@ -141,6 +162,7 @@ install_latest_git() {
 # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 install_gh_cli() {
     is-supported gh && return
+
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
         sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
         sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
@@ -148,6 +170,7 @@ install_gh_cli() {
           signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
           https://cli.github.com/packages stable main" |
         sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+
     sudo apt install -y gh
 }
 
@@ -155,10 +178,13 @@ install_gh_cli() {
 # https://github.com/charmbracelet/glow
 install_glow() {
     sudo mkdir -p /etc/apt/keyrings
+
     curl -fsSL https://repo.charm.sh/apt/gpg.key |
         sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+
     echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" |
         sudo tee /etc/apt/sources.list.d/charm.list
+
     sudo apt update && sudo apt install glow
 }
 
@@ -166,11 +192,14 @@ install_glow() {
 # https://brave.com/linux/#debian-ubuntu-mint
 install_brave_browser() {
     is-supported brave-browser && return
+
     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
          https://brave-browser-apt-release.s3.brave.com/ stable main" |
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+
     sudo apt install -y brave-browser
 }
 
@@ -180,10 +209,13 @@ install_iosevka_font() {
     # Iosevka
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
+
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
+
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
+
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
 
@@ -192,8 +224,15 @@ install_iosevka_font() {
 }
 
 install_gruvbox_wallpaper() {
-    curl -sSLo "$WALLPAPER_DIR/gruvbox_coffee.png" \
+    wallpaper="$WALLPAPER_DIR/gruvbox_coffe.png"
+
+    if [ -f "$wallpaper" ]; then
+        return
+    fi
+
+    curl -sSLo "$wallpaper" \
         https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
             if is-supported gsettings; then
@@ -201,13 +240,15 @@ install_gruvbox_wallpaper() {
                     "file://$WALLPAPER_DIR/gruvbox_coffee.png"
                 gsettings set org.gnome.desktop.background picture-uri-dark \
                     "file://$WALLPAPER_DIR/gruvbox_coffee.png"
+
                 return 0
             fi
             ;;
     esac
+
     if is-supported feh; then
         feh --no-fehbg --bg-center --image-bg "#3c3836" \
-            "$WALLPAPER_DIR/gruvbox_coffee.png"
+            "$wallpaper"
     fi
 }
 

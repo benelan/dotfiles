@@ -1,48 +1,66 @@
 #!/usr/bin/env bash
+# shellcheck disable=2016
 
-# show readline mode                                          {{{
+# define terminal colors                        {{{
+# Gruvbox colors from:
+# https://github.com/morhetz/gruvbox-contrib/blob/master/color.table
+{
+    if [ "$(tput colors)" -gt 254 ]; then
+        RESET=$(tput sgr0)
+        BOLD=$(tput bold)
+        UNDERLINE=$(tput smul)
+
+        BLACK=$(tput setaf 235)
+        RED=$(tput setaf 124)
+        GREEN=$(tput setaf 106)
+        YELLOW=$(tput setaf 172)
+        BLUE=$(tput setaf 66)
+        MAGENTA=$(tput setaf 132)
+        CYAN=$(tput setaf 72)
+        ORANGE=$(tput setaf 166)
+        WHITE=$(tput setaf 246)
+        GREY=$(tput setaf 245)
+
+        RED_BRIGHT=$(tput setaf 167)
+        GREEN_BRIGHT=$(tput setaf 142)
+        YELLOW_BRIGHT=$(tput setaf 214)
+        BLUE_BRIGHT=$(tput setaf 109)
+        MAGENTA_BRIGHT=$(tput setaf 175)
+        CYAN_BRIGHT=$(tput setaf 14)
+        ORANGE_BRIGHT=$(tput setaf 209)
+        WHITE_BRIGHT=$(tput setaf 223)
+
+        export RED_BRIGHT GREEN_BRIGHT YELLOW_BRIGHT BLUE_BRIGHT \
+            MAGENTA_BRIGHT CYAN_BRIGHT ORANGE_BRIGHT WHITE_BRIGHT
+    else
+        RESET="\e[0m"
+        BOLD='\e[1m'
+        UNDERLINE='e[4m'
+        BLACK="\e[30m"
+        RED="\e[31m"
+        GREEN="\e[32m"
+        YELLOW="\e[33m"
+        BLUE="\e[34m"
+        MAGENTA="\e[35m"
+        CYAN="\e[36m"
+        ORANGE="\e[33m"
+        WHITE="\e[37m"
+        GREY="\e[1;30m"
+    fi
+} >/dev/null 2>&1
+
+export BOLD UNDERLINE RESET BLACK RED GREEN YELLOW BLUE \
+    MAGENTA CYAN ORANGE WHITE GREY
+
+# - - - - - - - - - - - - - - - - - - - - - - - }}}
+# show readline mode                            {{{
 # [E]macs, vi [I]nsert, or vi [C]ommand
 bind "set show-mode-in-prompt on"
 bind "set emacs-mode-string \"E \""
 bind "set vi-cmd-mode-string \"C \""
 bind "set vi-ins-mode-string \"I \""
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# define terminal colors                                      {{{
-{
-    if [ "$(tput colors)" -gt 255 ]; then
-        RESET=$(tput sgr0)
-        BOLD=$(tput bold)
-        UNDERLINE=$(tput smul)
-        # Gruvbox colors from: https://github.com/morhetz/gruvbox
-        BLACK=$(tput setaf 235)
-        BLUE=$(tput setaf 66)
-        CYAN=$(tput setaf 72)
-        GREEN=$(tput setaf 106)
-        ORANGE=$(tput setaf 166)
-        MAGENTA=$(tput setaf 132)
-        RED=$(tput setaf 124)
-        WHITE=$(tput setaf 230)
-        YELLOW=$(tput setaf 172)
-    else
-        RESET="\e[0m"
-        BOLD='\e[1m'
-        UNDERLINE='e[4m'
-        BLACK="\e[1;30m"
-        BLUE="\e[1;34m"
-        CYAN="\e[1;36m"
-        GREEN="\e[1;32m"
-        ORANGE="\e[1;33m"
-        MAGENTA="\e[1;35m"
-        RED="\e[1;31m"
-        WHITE="\e[1;37m"
-        YELLOW="\e[1;33m"
-    fi
-} >/dev/null 2>&1
-
-export BOLD UNDERLINE RESET BLACK BLUE CYAN \
-    GREEN ORANGE MAGENTA RED WHITE YELLOW
-
+# - - - - - - - - - - - - - - - - - - - - - - - }}}
 # trim long paths if possible                   {{{
 if ((BASH_VERSINFO[0] >= 4)); then
     PROMPT_DIRTRIM=4
@@ -57,7 +75,7 @@ else
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
-# highlight the hostname when connected via SSH {{{
+# highlight hostname when connected via SSH     {{{
 if [ -n "${SSH_TTY}" ]; then
     hostStyle="${BOLD}${RED}"
 else
@@ -89,21 +107,27 @@ pre_prompt+="\[${RESET}\]"             # reset styling
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # set the post_prompt                           {{{
 post_prompt="\n"
-# post_prompt+="\[${MAGENTA}\][\!]" # history line number for easy hist expansion
-# shellcheck disable=2016
-post_prompt+='$(if [ $? -ne 0 ]; then printf "\[%s\]✘  " "$RED"; else printf "\[%s\]❱  " "$GREEN"; fi;)'
+
+# NOTE: this history number won't always be correct when ignoring duplicates
+# post_prompt+="·\[${MAGENTA}\]\!\[${RESET}\]·"
+
+# show the exit code of the previous command if it failed
+post_prompt+='$(_exit="$?"; if [ "$_exit" -ne 0 ]; then printf "\[%s\]%s✘  " '
+post_prompt+="\"$RED\""' "$_exit"; else printf "\[%s\]❱ " '
+post_prompt+="\"$GREEN\""'; fi)'
+
 post_prompt+="\[${RESET}\]" # reset styling
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
-
-# setup git prompt
+# setup git prompt                              {{{
 if command -v __git_ps1 >/dev/null 2>&1; then
     PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 else
     PROMPT_COMMAND='export PS1=${pre_prompt}${post_prompt}'
 fi
 
-# setup fasd
+# - - - - - - - - - - - - - - - - - - - - - - - }}}
+# setup fasd                                    {{{
 if is-supported fasd; then
     _fasd_prompt_func() {
         eval "fasd --proc $(fasd --sanitize "$(history 1 |
@@ -116,14 +140,12 @@ if is-supported fasd; then
     esac
 fi
 
-# If not set, make new shells get the history lines from all previous
-# shells instead of the default "last window closed" history.
+# - - - - - - - - - - - - - - - - - - - - - - - }}}
+# get all bash history                          {{{
 if ! printf "%s" "$PROMPT_COMMAND" | grep "history -a" &>/dev/null; then
     PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 fi
 
-PS2="\[${YELLOW}\]… \[${RESET}\] "
+# - - - - - - - - - - - - - - - - - - - - - - --}}}
 
-export PROMPT_COMMAND PS2
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+export PROMPT_COMMAND PS2="\[${YELLOW}\]… \[${RESET}\] "
