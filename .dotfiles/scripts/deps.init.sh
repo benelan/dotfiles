@@ -6,9 +6,9 @@ set -e
 # Comment out functions at the bottom to skip sections.
 
 BIN_DIR="$HOME/.local/bin"
-MAN_DIR="${XDG_DATA_HOME:-~/.local/share}/man"
+MAN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/man"
 DEPS_DIR="$DOTFILES/deps"
-mkdir -p "$BIN_DIR" "$MAN_DIR"
+mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5"
 
 # Install programming languages                                         {{{
 # --------------------------------------------------------------------- {|}
@@ -193,7 +193,7 @@ install_fasd() {
     curl -sSLo "$MAN_DIR/man1/fasd.1" \
         https://raw.githubusercontent.com/clvv/fasd/master/fasd.1
 
-    chmod +x "$BIN_DIR/fasd"
+    sudo chmod +x "$BIN_DIR/fasd"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -207,7 +207,7 @@ install_fff() {
     curl -sSLo "$MAN_DIR/man1/fff.1" \
         https://raw.githubusercontent.com/clvv/fff/master/fff.1
 
-    chmod +x "$BIN_DIR/fff"
+    sudo chmod +x "$BIN_DIR/fff"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -215,10 +215,10 @@ install_fff() {
 install_git-open() {
     is-supported git-open && return
 
-    curl -sSLo "$BIN_DIR/git-open" \
+    curl -sSLo "$BIN_DIR/git-o" \
         https://raw.githubusercontent.com/paulirish/git-open/master/git-open
 
-    chmod +x "$BIN_DIR/git-open"
+    sudo chmod +x "$BIN_DIR/git-o"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -242,7 +242,7 @@ install_git-jump() {
             https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
     fi
 
-    chmod +x "$BIN_DIR/git-jump"
+    sudo chmod +x "$BIN_DIR/git-jump"
     unset loc1 loc2
 }
 

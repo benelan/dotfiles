@@ -4,18 +4,6 @@
 [submodule "dev/lib/fzf"]
 	path = dev/lib/fzf
 	url = https://github.com/junegunn/fzf
-[submodule "dev/lib/fasd"]
-	path = dev/lib/fasd
-	url = https://github.com/clvv/fasd
-[submodule "dev/lib/fff"]
-	path = dev/lib/fff
-	url = https://github.com/dylanaraps/fff
-[submodule "dev/lib/git-open"]
-	path = dev/lib/git-open
-	url = https://github.com/paulirish/git-open
-[submodule "dev/lib/taskopen"]
-	path = dev/lib/taskopen
-	url = https://github.com/jschlatow/taskopen
 [submodule ".vim/pack/foo/start/gruvbox-material"]
 	path = .vim/pack/foo/start/gruvbox-material
 	url = https://github.com/sainnhe/gruvbox-material
