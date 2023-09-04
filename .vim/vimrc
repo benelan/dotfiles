@@ -5,6 +5,7 @@ set nocompatible
 if has("autocmd")
     filetype plugin indent on
 endif
+
 if has("syntax") && !exists("syntax_on")
     syntax enable
 endif
@@ -81,9 +82,11 @@ endif
 if has("cmdline_hist") && &history < 1000
     set history=1000
 endif
+
 if &tabpagemax < 50
     set tabpagemax=50
 endif
+
 if !empty(&viminfo)
     set viminfo^=!
 endif
@@ -152,6 +155,7 @@ if has("keymap")
     if empty(mapcheck("<C-U>", "i"))
     inoremap <C-U> <C-G>u<C-U>
     endif
+
     if empty(mapcheck("<C-W>", "i"))
     inoremap <C-W> <C-G>u<C-W>
     endif
@@ -161,6 +165,7 @@ if has("keymap")
     nnoremap <silent> gJ :let _=&lazyredraw<CR>
                 \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
                 \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+
     " move up jumping over blank lines and indents
     nnoremap <silent> gK :let _=&lazyredraw<CR>
                 \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
@@ -190,36 +195,46 @@ if has("keymap")
     nnoremap <leader>gr :diffget
     vnoremap <leader>gr :diffget
 
-    nnoremap <leader>gmu :diffupdate<CR>
-    nnoremap <leader>gmr :diffget RE <bar> diffupdate<CR>
-    nnoremap <leader>gmR :%diffget RE <bar> diffupdate<cr
-    nnoremap <leader>gmb :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>gmB :%diffget BA <bar> diffupdate<cr
-    nnoremap <leader>gml :diffget LO <bar> diffupdate<CR>
-    nnoremap <leader>gmL :%diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>mu :diffupdate<CR>
+    nnoremap <leader>mb :diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>mB :%diffget BA <bar> diffupdate<cr
+
+    " LOCAL is the left buffer when using vimdiff
+    nnoremap <leader>mh :diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>mH :%diffget LO <bar> diffupdate<CR>
+
+    " REMOTE is the rightmost buffer
+    nnoremap <leader>ml :diffget RE <bar> diffupdate<CR>
+    nnoremap <leader>mL :%diffget RE <bar> diffupdate<cr
+
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{
+
     "" Argument list
     nnoremap [a :previous<CR>
     nnoremap ]a :next<CR>
     nnoremap [A :last<CR>
     nnoremap ]A :first<CR>
+
     "" Buffer list
     nnoremap [b :bprevious<CR>
     nnoremap ]b :bnext<CR>
     nnoremap [B :blast<CR>
     nnoremap ]B :bfirst<CR>
+
     "" Quickfix list
     nnoremap [q :cprevious<CR>
     nnoremap ]q :cnext<CR>
     nnoremap [Q :clast<CR>
     nnoremap ]Q :cfirst<CR>
+
     "" Location list
     nnoremap [l :lprevious<CR>
     nnoremap ]l :lnext<CR>
     nnoremap [L :llast<CR>
     nnoremap ]L :lfirst<CR>
+
     "" Tab list
     nnoremap [t :tabprevious<CR>
     nnoremap ]t :tabnext<CR>
@@ -258,36 +273,50 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
+
     "" toggles automatic indentation based on the previous line
     nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
     "" toggles highlighted cursor row; doesn't work in visual mode
+
     nnoremap <leader>sx <CMD>set cursorline!<CR>
     "" toggles highlighted cursor column; works in visual mode
+
     noremap <leader>sy <CMD>set cursorcolumn!<CR>
     "" toggles highlighting search results
+
     nnoremap <leader>sh <CMD>set hlsearch!<CR>
     "" toggles showing matches as I enter my pattern
+
     nnoremap <leader>si <CMD>set incsearch!<CR>
     "" toggles spell checking
+
     nnoremap <leader>ss <CMD>set spell!<CR>
     "" toggles paste
+
     nnoremap <leader>sp <CMD>set paste!<CR>
     "" toggles showing tab, end-of-line, and trailing white space
+
     noremap <leader>sl <CMD>set list!<CR>
     "" toggles line number display
+
     noremap <leader>sn <CMD>set relativenumber!<CR>
     "" toggles position display in bottom right
+
     noremap <leader>sr <CMD>set ruler!<CR>
     "" toggles soft wrapping
     noremap <leader>sw <CMD>set wrap!<CR>
+
     "" toggle modifiable
     nnoremap <leader>sM <CMD>set modifiable!<CR>
+
     "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                     \ . (&colorcolumn == "" ? "80" : "")<CR>
+
     "" toggle foldcolumn
     nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                     \ . (&foldcolumn == "0" ? "1" : "0")<CR>
+
     "" toggle system clipboard
     nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
                     \ . (&clipboard == "umnamed"
@@ -305,6 +334,7 @@ endif
 if has("autocmd")
     augroup jamin_vimrc
         autocmd!
+
         "" setup syntax complete for filetypes that don't have their own
         if exists("+omnifunc")
             autocmd Filetype *
@@ -319,6 +349,7 @@ if has("autocmd")
         let excludedFileTypes = []
         autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0
                     \ | :call StripTrailingWhitespace() | endif
+
     augroup END
 endif
 
@@ -389,6 +420,7 @@ endif
 " --------------------------------------------------------------------- {|}
 
 if has("eval") && has("statusline")
+
     let g:git_branch="" " gets set in an autocmd above
     function! DisplayGitBranch()
         let icon = expand("$USE_DEVICONS") == "1" ? "   " : "   "
@@ -429,6 +461,7 @@ endif
 " Fix modern terminal features
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
 if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
+
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"
@@ -494,8 +527,10 @@ endif
 " --------------------------------------------------------------------- {|}
 
 if has("eval") && has("syntax")
+
     set background=dark
     set t_Co=256
+
     if exists("+termguicolors")
         set termguicolors
     endif
@@ -503,6 +538,7 @@ if has("eval") && has("syntax")
     if v:version < 500
         finish
     endif
+
     packadd! gruvbox-material
 
     function! s:gruvbox_material_custom() abort

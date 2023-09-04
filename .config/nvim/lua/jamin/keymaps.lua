@@ -176,13 +176,13 @@ keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<CR>", "Get hunk")
 keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk")
 
 -- three way diff for merge conflict resolution
-keymap("n", "<leader>gmu", "<CMD>diffupdate<CR>", "Update diff")
-keymap("n", "<leader>gmr", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote")
-keymap("n", "<leader>gmR", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all from remote")
-keymap("n", "<leader>gmb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base")
-keymap("n", "<leader>gmB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all from base")
-keymap("n", "<leader>gml", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local")
-keymap("n", "<leader>gmL", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all from local")
+keymap("n", "<leader>mu", "<CMD>diffupdate<CR>", "Update diff")
+keymap("n", "<leader>mb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base")
+keymap("n", "<leader>mB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all from base")
+keymap("n", "<leader>ml", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote")
+keymap("n", "<leader>mL", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all from remote")
+keymap("n", "<leader>mh", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local")
+keymap("n", "<leader>mH", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all from local")
 
 -------------------------------------------------------------------------------
 ----> Windows

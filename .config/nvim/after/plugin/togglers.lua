@@ -60,7 +60,10 @@ end
 vim.api.nvim_create_user_command(
   "DiagnosticToggle",
   diagnostic_toggle,
-  { desc = "Toggles diagnostics for the current buffer, or globally if called with a bang" }
+  {
+    bang = true,
+    desc = "Toggles diagnostics for the current buffer, or globally if called with a bang",
+  }
 )
 
 keymap("n", "<leader>sd", "<CMD>DiagnosticToggle<CR>", "Toggle buffer diagnostics")

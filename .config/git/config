@@ -88,7 +88,7 @@
 
 [diff]
     algorithm = patience
-    tool = nvimdiff
+    tool = vimdiff
     colorMoved = default
     keepBackup = false
     ; Detect copies as well as renames.
@@ -100,32 +100,33 @@
     ; Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
-[difftool "nvimdiff"]
-    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[difftool "fugitive"]
+    cmd = vim -f +\"packadd vim-fugitive | Gvdiffsplit!\" $MERGED
+    prompt = false
 
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
     keepBackup = false
-    tool = nvimdiff ; nvimdiff1337
+    tool = vimdiff ; or nvimdiff or fugitive
 
 [mergetool]
     keepBackup = false
     keepTemporaries = true
 
-[mergetool "nvimdiff"]
-    ; https://git-scm.com/docs/git-mergetool
+[mergetool "vimdiff"]
     ; https://git-scm.com/docs/vimdiff
-    ; layout available since git v2.37
-    ; if on an older version, use "nvim1337" mergetool
-    ; or install latest git version:
-    ; https://git-scm.com/download/linux
-    layout = "LOCAL,REMOTE/MERGED+LOCAL,BASE,REMOTE/MERGED"
-    trustExitCode = true
+    ; The layout option is available since git v2.37
+    layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
 
-[mergetool "nvimdiff1337"]
-    cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
-    trustExitCode = true
+[mergetool "fugitive"]
+    ; https://github.com/tpope/vim-fugitive
+    cmd = nvim -f +DiagnosticToggle! \
+        +\"nnoremap <leader>mh :diffget //2<CR> \
+        | nnoremap <leader>ml :diffget //3<CR> \
+        | nnoremap <leader>mH :%diffget //2<CR> \
+        | nnoremap <leader>mL :%diffget //3<CR> \
+        | Gvdiffsplit!\" $MERGED
 
 [rebase]
     ; Create a temporary stash entry before the operation begins.
@@ -211,7 +212,6 @@
         && git -c sequence.editor=: rebase -i $sha~1; \
     }; f"
 
-
     co = checkout
     cob = checkout -b
     com = !git checkout "$(git bdefault)"
@@ -225,9 +225,9 @@
     dt = difftool
 
     ; edit the files changed locally
-    e = "!f() { $EDITOR $(git diff --name-only HEAD); }; f"
-    ; open Fugitive difftool
-    ed = "!f() { $EDITOR +\"Git difftool -y $*\"; }; f"
+    e = !$EDITOR $(git diff --name-only HEAD)
+    ; open Fugitive's difftool
+    ed = !$EDITOR +\"Git difftool -y\"
     ; sync origin's default branch and edit the changed files
     eom = "!f() { default_branch=$(git bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
 
@@ -237,7 +237,7 @@
     m = merge
     mm = !git merge "$(git bdefault)"
     mom = !git fetch && git merge "origin/$(git bdefault)"
-    mt = mergetool
+    mt = mergetool --tool=fugitive
 
     p = push
     puoc = !git push --set-upstream origin $(git symbolic-ref --short HEAD)
