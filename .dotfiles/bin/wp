@@ -14,7 +14,7 @@ while [ -n "$answer" ]; do
     chunk_length=255
     [ "${#answer}" -lt 256 ] && chunk_length=$((${#answer} - 1))
     text="${text}${answer:0:chunk_length}"
-    answer="${answer:$(($chunk_length + 3))}"
+    answer="${answer:$((chunk_length + 3))}"
 done
 
 echo "$text"

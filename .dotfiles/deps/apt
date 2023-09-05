@@ -15,6 +15,7 @@ curl
 datamash
 ddgr
 diffutils
+dnsutils
 doxygen
 feh
 ffmpeg
@@ -45,6 +46,7 @@ lynx
 make
 mount
 mplayer
+mutt
 neofetch
 net-tools
 ninja-build

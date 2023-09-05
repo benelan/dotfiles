@@ -194,9 +194,10 @@ command! reload :write | restart full
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
 " Text
-" filextype {*.md,*.mdx,*.ts},<text/*>
-"         \ {Open in EDITOR}
-"         \ $EDITOR %f,
+filextype {*.md,*.mdx,*.ts},<text/*>
+        \ {Open in EDITOR}
+        \ $EDITOR %f,
+fileviewer {*.md,*.mdx,*.ts},<text/*> $EDITOR %f
 
 " Pdf
 filextype {*.pdf},<application/pdf> zathura %c %i &, apvlv %c, xpdf %c

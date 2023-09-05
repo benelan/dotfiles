@@ -5,9 +5,7 @@
 
 # expand arg1 to an environment variable                      {{{
 # Usage: indirect_expand PATH -> $PATH
-indirect_expand() {
-    env | sed -n "s/^$1=//p"
-}
+indirect_expand() { env | sed -n "s/^$1=//p"; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # remove an entry from PATH                                   {{{
@@ -95,7 +93,6 @@ path() {
             *) path_help ;;
         esac
     done
-
 }
 
 # --------------------------------------------------------------------- }}}

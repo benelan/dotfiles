@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
-# Keep around 128K lines of history in file
-export HISTFILESIZE=131072
+export HISTFILESIZE=42069
 
 # Omit duplicates and commands that begin with a space from history.
 export HISTCONTROL='ignoreboth:erasedups'
 
 # Keep the times of the commands in history
-export HISTTIMEFORMAT='%F %T  '
+export HISTTIMEFORMAT=''
 
 # Highlight section titles in manual pages.
 export LESS_TERMCAP_md=$'\e[01;32m'
@@ -24,45 +23,64 @@ export LESS_TERMCAP_ue=$'\e[0m'
 # Use vi editing mode instead of emacs
 # set -o vi
 # set +o emacs
+
 # Disable <CTRL-D> which is used to exit the shell
 set -o ignoreeof
 
 # Automatically prepend `cd` to directory names
 shopt -s autocd
+
 # Correct small errors in directory names given to the `cd` builtin
 shopt -s cdspell
+
 # Check that hashed commands still exist before running them
 shopt -s checkhash
+
 # Update LINES and COLUMNS after each command if necessary
 shopt -s checkwinsize
+
 # Put multi-line commands into one history entry
 shopt -s cmdhist
+
 # Include filenames with leading dots in pattern matching
 shopt -s dotglob
+
 # Enable extended globbing: !(foo), ?(bar|baz)...
 shopt -s extglob
+
 # Append history to $HISTFILE rather than overwriting it
 shopt -s histappend
+
 # If history expansion fails, reload the command to try again
 shopt -s histreedit
+
 # Load history expansion result as the next command, don't run them directly
 shopt -s histverify
+
 # Don't assume a word with a @ in it is a hostname
 shopt -u hostcomplete
+
 # Don't change newlines to semicolons in history
 shopt -s lithist
+
 # Don't try to tell me when my mail is read
 shopt -u mailwarn
+
 # Don't complete a Tab press on an empty line with every possible command
 shopt -s no_empty_cmd_completion
+
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
+
 # Pass an empty value if no matches are found when expanding a glob
 shopt -s nullglob
+
 # Use programmable completion, if available
 shopt -s progcomp
+
 # Warn me if I try to shift nonexistent values off an array
 shopt -s shift_verbose
+
 # Don't search $PATH to find files for the `source` builtin
 shopt -u sourcepath
 
@@ -71,6 +89,7 @@ if ((BASH_VERSINFO[0] >= 4)); then
 
     # Correct small errors in directory names during completion
     shopt -s dirspell
+
     # Allow double-star globs to match files and recursive paths
     shopt -s globstar
 
@@ -98,6 +117,7 @@ if ((BASH_VERSINFO[0] >= 4)); then
         fi
         READLINE_POINT=${#READLINE_LINE}
     }
+
     # Define shortcut keys: [Esc] [Esc]
     bind -x '"\e\e": sudo-command-line'
 

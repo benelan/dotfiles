@@ -1,4 +1,4 @@
-SURFRAW_text_browser=$CLIBROWSER
+SURFRAW_text_browser=$TERMBROWSER
 SURFRAW_graphical_browser=$BROWSER
 SURFRAW_graphical=yes
 SURFRAW_screen=tmux

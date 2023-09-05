@@ -112,9 +112,9 @@ post_prompt="\n"
 # post_prompt+="·\[${MAGENTA}\]\!\[${RESET}\]·"
 
 # show the exit code of the previous command if it failed
-post_prompt+='$(_exit="$?"; if [ "$_exit" -ne 0 ]; then printf "\[%s\]%s✘  " '
-post_prompt+="\"$RED\""' "$_exit"; else printf "\[%s\]❱ " '
-post_prompt+="\"$GREEN\""'; fi)'
+post_prompt+='$(_exit="$?"; if [ "$_exit" -ne 0 ]; then printf "%s%s✘  " '
+post_prompt+="\"\[$RED\]\""' "$_exit"; else printf "%s❱ " '
+post_prompt+="\"\[$GREEN\]\""'; fi)'
 
 post_prompt+="\[${RESET}\]" # reset styling
 

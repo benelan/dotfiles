@@ -19,8 +19,7 @@ export CALCITE="$WORK/calcite-design-system"
 export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
-# Keep around 16K lines of history in memory
-export HISTSIZE=16384
+export HISTSIZE=42069
 
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr
 export PYTHONIOENCODING='UTF-8'
@@ -55,13 +54,13 @@ is-supported nvim && EDITOR='nvim' ||
 TERMINAL="gnome-terminal"
 # is-supported wezterm && TERMINAL='wezterm'
 
-CLIBROWSER='sensible-browser'
-is-supported w3m && CLIBROWSER='w3m' ||
+TERMBROWSER='sensible-browser'
+is-supported w3m && TERMBROWSER='w3m' ||
     {
-        is-supported links2 && CLIBROWSER='links2'
+        is-supported links2 && TERMBROWSER='links2'
     } ||
     {
-        is-supported lynx && CLIBROWSER='lynx'
+        is-supported lynx && TERMBROWSER='lynx'
     }
 
 BROWSER='sensible-browser'
@@ -73,7 +72,7 @@ is-supported firefox && BROWSER='firefox' ||
         is-supported google-chrome && BROWSER='google-chrome'
     }
 
-export EDITOR TERMINAL BROWSER CLIBROWSER
+export EDITOR TERMINAL BROWSER TERMBROWSER
 export VISUAL=$EDITOR
 export PAGER='less'
 export MANPAGER=$PAGER
