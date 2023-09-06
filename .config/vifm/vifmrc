@@ -610,9 +610,9 @@ nnoremap <a-u> <c-w>x
 " let $VIFM_SERVER_NAME = v:servername
 
 " Activate screen/tmux support
-if expand($TMUX) != ""
-    screen!
-endif
+" if expand($TMUX) != ""
+"     screen!
+" endif
 
 " --------------------------------------------------------------------- }}}
 " Miscellaneous                                                         {{{

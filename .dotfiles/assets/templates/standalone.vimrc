@@ -12,30 +12,37 @@ endif
 set number relativenumber linebreak backspace=indent,eol,start
 set clipboard=unnamed autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
-set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
+set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
 set wildmenu wildmode=list:longest,full
 set complete-=i completeopt=noselect,menuone,menuone
 set laststatus=2 showtabline=2 display+=lastline
 set splitbelow splitright scrolloff=8 sidescrolloff=8
+set path-=/usr/include path+=** define= include=
 set noswapfile t_vb= nrformats-=octal
 set foldmethod=indent foldlevel=99
 set ttimeout ttimeoutlen=100
 
+if filereadable("/usr/share/dict/words")
+    set dictionary=/usr/share/dict/words
+endif
+
 if has('reltime')
   set incsearch
 endif
+
 if has("extra_search")
     set hlsearch
 endif
 
 if has("multi_byte_encoding")
-    set listchars+=extends:»,precedes:«,trail:·,eol:⮠
-    set listchars+=multispace:┊\ ,nbsp:␣
+    set listchars+=extends:»,precedes:«
+    set listchars+=multispace:·\ ,trail:·
+    " set listchars+=nbsp:␣,eol:⮠
     let &showbreak= "…  "
     set fillchars+=diff:╱
 else
-    let &showbreak= "... "
     set listchars+=extends:>,precedes:<
+    let &showbreak= "... "
 endif
 
 if exists("+breakindent")
@@ -65,7 +72,6 @@ if v:version > 703 || v:version == 703 && has("patch541")
 endif
 
 if has("persistent_undo")
-    set undodir=$HOME/.vim/undos
     set undofile
 endif
 
@@ -77,9 +83,36 @@ endif
 colorscheme desert
 hi! link TabLineFill Statusline
 
-let g:netrw_banner = 0
-let g:netrw_winsize = 25
+"" markdown settings                                          {{{
 let g:markdown_recommended_style = 0
+" Helps with syntax highlighting by specififying filetypes
+" for common abbreviations used in markdown fenced code blocks
+let g:markdown_fenced_languages = [
+    \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
+    \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
+    \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
+    \ 'yml=yaml', 'shell=sh', 'py=python',
+    \ 'ts=typescript', 'tsx=typescriptreact',
+    \ 'js=javascript', 'jsx=javascriptreact'
+    \ ]
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
+"" netrw settings                                             {{{
+let g:netrw_banner = 0
+let g:netrw_altfile = 1
+" let g:netrw_keepdir = 0
+" let g:netrw_liststyle = 3
+let g:netrw_usetab = 1
+let g:netrw_winsize = 25
+let g:netrw_preview = 1
+let g:netrw_special_syntax = 1
+
+if exists("*netrw_gitignore#Hide")
+    let g:netrw_list_hide = netrw_gitignore#Hide()
+endif
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 " --------------------------------------------------------------------- }}}
 " Keymaps                                                               {{{
@@ -104,19 +137,30 @@ if has("keymap")
 
     nnoremap <Backspace> <C-^>
 
+    " Use the repeat operator with a visual selection. This is useful for
+    " performing an edit on a single line, then highlighting a visual block
+    " on a number of lines to repeat the edit.
+    vnoremap . :normal .<cr>
+
+    " Repeat a macro on a visual selection of lines. Complete the command by
+    " choosing the register containing the macro.
+    vnoremap @ :normal @
+
     vnoremap < <gv
     vnoremap > >gv
-
-    nnoremap <silent> <leader>bd :bdelete<CR>
 
     " Create splits
     nnoremap <leader>- :split<cr>
     nnoremap <leader>\ :vsplit<cr>
 
+    nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+
     xnoremap g/ <esc>/\\%V
-    nnoremap go <cmd>call append(line('.'), repeat([''], v:count1))<cr>
-    nnoremap gO <cmd>call append(line('.') - 1, repeat([''], v:count1))<cr>
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
+
+    " Open a new tab of the current buffer and cursor position
+    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
 
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
@@ -130,6 +174,7 @@ if has("keymap")
 
     " use last changed or yanked text as an object
     onoremap V :<C-U>execute "normal! `[v`]"<CR>
+
     " use entire buffer as an object
     onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
@@ -150,9 +195,33 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" clear search highlights and reset syntax                   {{{
-    nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
-    vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
-    inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
+    nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>
+                \:diffupdate<CR>:syntax sync fromstart<CR><C-l>
+
+    vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>
+                \:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
+
+    inoremap <C-l> <C-O>:nohlsearch<CR><C-O>
+                \:diffupdate<CR><C-O>:syntax sync fromstart<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" git difftool/mergetool keymaps for selecting hunks         {{{
+    nnoremap <leader>gw :diffget <bar> diffupdate<CR>
+    vnoremap <leader>gw :diffget <bar> diffupdate<CR>
+    nnoremap <leader>gr :diffget<CR>
+    vnoremap <leader>gr :diffget<CR>
+
+    nnoremap <leader>mu :diffupdate<CR>
+    nnoremap <leader>mb :diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>mB :%diffget BA <bar> diffupdate<CR>
+
+    " LOCAL is the left buffer when using vimdiff
+    nnoremap <leader>mh :diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>mH :%diffget LO <bar> diffupdate<CR>
+
+    " REMOTE is the rightmost buffer
+    nnoremap <leader>ml :diffget RE <bar> diffupdate<CR>
+    nnoremap <leader>mL :%diffget RE <bar> diffupdate<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{
@@ -161,32 +230,39 @@ if has("keymap")
     nnoremap ]a :next<CR>
     nnoremap [A :last<CR>
     nnoremap ]A :first<CR>
+
     "" Buffer list
     nnoremap [b :bprevious<CR>
     nnoremap ]b :bnext<CR>
     nnoremap [B :blast<CR>
     nnoremap ]B :bfirst<CR>
+
     "" Quickfix list
     nnoremap [q :cprevious<CR>
     nnoremap ]q :cnext<CR>
     nnoremap [Q :clast<CR>
     nnoremap ]Q :cfirst<CR>
+
     "" Location list
     nnoremap [l :lprevious<CR>
     nnoremap ]l :lnext<CR>
     nnoremap [L :llast<CR>
     nnoremap ]L :lfirst<CR>
+
     "" Tab list
     nnoremap [t :tabprevious<CR>
     nnoremap ]t :tabnext<CR>
     nnoremap [T :tlast<CR>
     nnoremap ]T :tfirst<CR>
+
     "" Fix next/prev spelling error
     nnoremap [S [s1z=
     nnoremap ]S ]s1z=
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" buffers, tabs, and windows                                 {{{
+
+    nnoremap <silent> <leader>bd :bdelete<CR>
 
     "" picks buffer
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
@@ -215,33 +291,56 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
+
+    "" toggles automatic indentation based on the previous line
+    nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
+
     "" toggles highlighted cursor row; doesn't work in visual mode
     nnoremap <leader>sx <CMD>set cursorline!<CR>
+
     "" toggles highlighted cursor column; works in visual mode
     noremap <leader>sy <CMD>set cursorcolumn!<CR>
+
     "" toggles highlighting search results
     nnoremap <leader>sh <CMD>set hlsearch!<CR>
+
     "" toggles showing matches as I enter my pattern
     nnoremap <leader>si <CMD>set incsearch!<CR>
+
     "" toggles spell checking
     nnoremap <leader>ss <CMD>set spell!<CR>
+
     "" toggles paste
     nnoremap <leader>sp <CMD>set paste!<CR>
+
     "" toggles showing tab, end-of-line, and trailing white space
     noremap <leader>sl <CMD>set list!<CR>
+
     "" toggles line number display
     noremap <leader>sn <CMD>set relativenumber!<CR>
+
+    "" toggles position display in bottom right
+    noremap <leader>sr <CMD>set ruler!<CR>
+
     "" toggles soft wrapping
     noremap <leader>sw <CMD>set wrap!<CR>
+
+    "" toggle modifiable
+    nnoremap <leader>sM <CMD>set modifiable!<CR>
+
     "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                     \ . (&colorcolumn == "" ? "80" : "")<CR>
+
     "" toggle foldcolumn
     nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                     \ . (&foldcolumn == "0" ? "1" : "0")<CR>
+
     "" toggle system clipboard
     nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
-                    \ . (&clipboard == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>
+                    \ . (&clipboard == "umnamed"
+                        \ ? "unnamed,unnamedplus"
+                        \ : "unnamed")<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
@@ -347,9 +446,9 @@ if has("autocmd")
 
         if exists("+omnifunc")
             autocmd Filetype *
-              \	if &omnifunc == "" |
-              \		setlocal omnifunc=syntaxcomplete#Complete |
-              \	endif
+              \ if &omnifunc == "" |
+              \     setlocal omnifunc=syntaxcomplete#Complete |
+              \ endif
         endif
 
         " Set up formatters

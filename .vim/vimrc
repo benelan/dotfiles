@@ -15,7 +15,7 @@ set mouse=a ttymouse=sgr mousehide clipboard=unnamed
 set ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal
-set tabstop=4 softtabstop=-1 shiftwidth=0 shiftround smarttab expandtab
+set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
 set wildmenu wildmode=list:longest,full
 set complete-=i completeopt=noselect,menuone,menuone
 set laststatus=2 showtabline=2 display+=lastline
@@ -53,13 +53,14 @@ if has("extra_search")
 endif
 
 if has("multi_byte_encoding")
-    set listchars+=extends:»,precedes:«,trail:·,eol:⮠
-    set listchars+=multispace:┊\ ,nbsp:␣
+    set listchars+=extends:»,precedes:«
+    set listchars+=multispace:·\ ,trail:·
+    " set listchars+=nbsp:␣,eol:⮠
     let &showbreak= "…  "
     set fillchars+=diff:╱
 else
-    let &showbreak= "... "
     set listchars+=extends:>,precedes:<
+    let &showbreak= "... "
 endif
 
 if exists("+breakindent")
@@ -110,6 +111,7 @@ endif
 
 if has("keymap")
     let mapleader = " "
+    let maplocalleader = "\\"
 
     "" general keymaps                                            {{{
     if isdirectory(expand("$HOME/dev/lib/fzf"))
@@ -190,14 +192,14 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
-    nnoremap <leader>gw :diffget<bar>diffupdate<CR>
-    vnoremap <leader>gw :diffget<bar>diffupdate<CR>
-    nnoremap <leader>gr :diffget
-    vnoremap <leader>gr :diffget
+    nnoremap <leader>gw :diffget <bar> diffupdate<CR>
+    vnoremap <leader>gw :diffget <bar> diffupdate<CR>
+    nnoremap <leader>gr :diffget<CR>
+    vnoremap <leader>gr :diffget<CR>
 
     nnoremap <leader>mu :diffupdate<CR>
     nnoremap <leader>mb :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>mB :%diffget BA <bar> diffupdate<cr
+    nnoremap <leader>mB :%diffget BA <bar> diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
     nnoremap <leader>mh :diffget LO <bar> diffupdate<CR>
@@ -205,7 +207,7 @@ if has("keymap")
 
     " REMOTE is the rightmost buffer
     nnoremap <leader>ml :diffget RE <bar> diffupdate<CR>
-    nnoremap <leader>mL :%diffget RE <bar> diffupdate<cr
+    nnoremap <leader>mL :%diffget RE <bar> diffupdate<CR>
 
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -276,33 +278,34 @@ if has("keymap")
 
     "" toggles automatic indentation based on the previous line
     nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
+
     "" toggles highlighted cursor row; doesn't work in visual mode
-
     nnoremap <leader>sx <CMD>set cursorline!<CR>
+
     "" toggles highlighted cursor column; works in visual mode
-
     noremap <leader>sy <CMD>set cursorcolumn!<CR>
+
     "" toggles highlighting search results
-
     nnoremap <leader>sh <CMD>set hlsearch!<CR>
+
     "" toggles showing matches as I enter my pattern
-
     nnoremap <leader>si <CMD>set incsearch!<CR>
+
     "" toggles spell checking
-
     nnoremap <leader>ss <CMD>set spell!<CR>
+
     "" toggles paste
-
     nnoremap <leader>sp <CMD>set paste!<CR>
+
     "" toggles showing tab, end-of-line, and trailing white space
-
     noremap <leader>sl <CMD>set list!<CR>
+
     "" toggles line number display
-
     noremap <leader>sn <CMD>set relativenumber!<CR>
-    "" toggles position display in bottom right
 
+    "" toggles position display in bottom right
     noremap <leader>sr <CMD>set ruler!<CR>
+
     "" toggles soft wrapping
     noremap <leader>sw <CMD>set wrap!<CR>
 
@@ -338,9 +341,9 @@ if has("autocmd")
         "" setup syntax complete for filetypes that don't have their own
         if exists("+omnifunc")
             autocmd Filetype *
-              \	if &omnifunc == "" |
-              \		setlocal omnifunc=syntaxcomplete#Complete |
-              \	endif
+              \ if &omnifunc == "" |
+              \    setlocal omnifunc=syntaxcomplete#Complete |
+              \ endif
         endif
 
         autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()

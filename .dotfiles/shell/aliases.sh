@@ -21,7 +21,7 @@ alias cbf="xclip -se c <"
 
 alias -- -="vifm ."
 alias e='${EDITOR:-vim}'
-alias se='sudo e'
+alias se='sudo ${EDITOR:-vim}'
 # minimum usable vim options
 alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar et ts=4 sw=4 | nnoremap Y y$'"
 
@@ -56,7 +56,7 @@ alias fdd='find . -type d -name'
 # Finds files.
 alias fdf='find . -type f -name'
 
-# List declared aliases, functions, paths
+# List declared aliases and functions
 # shellcheck disable=2139
 alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
 # shellcheck disable=2139
@@ -215,7 +215,6 @@ if is-supported task; then
 
     if is-supported taskopen; then
         alias to="taskopen"
-        alias toa='$XDG_DATA_HOME/taskopen/scripts/users/artur-shaik/attach_vifm'
     fi
 
     is-supported taskwarrior-tui && alias tui="taskwarrior-tui"
@@ -233,9 +232,9 @@ fi
 # --------------------------------------------------------------------- {|}
 
 alias g='git'
-alias x="git-mux"
-alias xt="git-mux task"
-alias xp="git-mux project"
+alias gx="git-mux"
+alias gxt="git-mux task"
+alias gxp="git-mux project"
 alias xs="git-mux project ~"
 
 # --------------------------------------------------------------------- }}}
@@ -268,7 +267,7 @@ edit_dotfiles() {
 }
 
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
-alias G="edit_dotfiles +G +'wincmd o'"
+alias G="edit_dotfiles +G +only"
 
 # --------------------------------------------------------------------- }}}
 # GitHub                                                                {{{
@@ -309,7 +308,7 @@ if is-supported docker; then
         alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components npm --workspace=@esri/calcite-components start"
 
         # shellcheck disable=2139
-        alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watch"
+        alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watchAll"
 
         # shellcheck disable=2139
         alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
