@@ -9,7 +9,7 @@ hist() {
         less --no-init --raw-control-chars --quiet
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## search for text within the current directory               {{{
 s() {
@@ -18,7 +18,7 @@ s() {
         less --no-init --raw-control-chars --quiet
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## google from the command line                               {{{
 # https://leahneukirchen.org/dotfiles/bin/goog
@@ -29,7 +29,7 @@ goog() {
         sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## use $EDITOR to edit text inside a pipeline                 {{{
 # Write all data to a temporary file, edit that file, then
@@ -43,7 +43,7 @@ vipe() {
     cat "$tmp"
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## jump to search pattern in man page(s)                      {{{
 ## Example: jump to the examples heading in two git man pages
@@ -57,17 +57,17 @@ mans() {
         man --pager="$man_pager" "$@"
     fi
 }
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## use vifm to cd                                             {{{
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## make one or more directories and cd into the last one      {{{
 mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## add surfraw bookmark                                       {{{
 # see fob() later in the file for finding/opening a bookmark
@@ -85,7 +85,7 @@ mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
 #        only works when using fob(), not surfraw directly
 bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Filesystem                                                            {{{
@@ -99,7 +99,7 @@ if is-supported fff; then
     }
 fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## format JSON and sort fields                                {{{
 # arg1: input file
@@ -111,7 +111,7 @@ fmtjson() {
 
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## pandoc functions for converting between text filetypes     {{{
 if is-supported pandoc; then
@@ -128,7 +128,7 @@ if is-supported pandoc; then
     }
 fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## run a command when a target file is modified               {{{
 # $ onmodify note.md md2html note
@@ -145,7 +145,7 @@ if is-supported inotifywait; then
     }
 fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## get gzipped file size                                      {{{
 gz() {
@@ -158,7 +158,7 @@ gz() {
     unset ORIGSIZE GZIPSIZE RATIO SAVED
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## create a data URL from a file                              {{{
 dataurl() {
@@ -170,7 +170,7 @@ dataurl() {
     unset MIMETYPE
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 ## recursively search parent directory for file               {{{
 # param 1: name of file or directory to find
@@ -182,14 +182,14 @@ parent_find() {
     parent-find "$1" "$(dirname "${2:-$PWD}")"
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## remove duplicate lines from a file                         {{{
 # param: file to dedup
 # example: $ dedup-lines deps.txt > unique_deps.txt
 dedup_lines() { awk '!visited[$0]++' "$@"; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Networking                                                            {{{
@@ -211,22 +211,22 @@ wtfport() {
     echo -e "$pid"
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## kill the process listening on the provided port            {{{
 killport() { wtfport "$1" | xargs kill -9; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## find real from shortened url                               {{{
 unshorten() { curl -sIL "$1" | sed -n 's/Location: *//p'; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## check if a website is down                                 {{{
 down4me() { curl -s "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## generate a certificate and key for local testing           {{{
 crt() {
@@ -234,7 +234,7 @@ crt() {
         -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## add entry to ssh config                                    {{{
 add_ssh() {
@@ -245,17 +245,17 @@ add_ssh() {
         >>~/.ssh/config
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## list hosts defined in ssh config                           {{{
 ssh_list() { awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## add all ssh private keys to agent                          {{{
 ssh_add_all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## display all ip addresses for this host                     {{{
 ips() {
@@ -282,7 +282,7 @@ ips() {
     )"
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Git                                                                   {{{
@@ -323,7 +323,7 @@ fgco() {
     unset PICK_BRANCH_CMD SEARCH_TERM
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Arrays                                                                {{{
@@ -357,14 +357,14 @@ _array_contains_element() {
     return 1
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## dedupe an array (without embedded newlines)                {{{
 array_dedup() {
     printf '%s\n' "$@" | sort -u
 }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Cheatsheets                                                           {{{
@@ -382,7 +382,7 @@ chtjs() { curl "https://cheat.sh/javascript/""$(echo "$*" | tr ' ' '+')"; }
 # cheatsheet: typescript
 chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Git                                                                   {{{
@@ -446,7 +446,7 @@ if is-supported fzf; then
         )" || return
     }
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## fasd fzf integration functions                         {{{
     if is-supported fasd; then
@@ -480,7 +480,7 @@ if is-supported fzf; then
         }
     fi
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## open the selected file in the default editor           {{{
     #   - CTRL-O to open with `open` command,
@@ -500,7 +500,7 @@ if is-supported fzf; then
         fi
     }
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## uses rg to find text in a file                         {{{
     fif() {
@@ -522,7 +522,7 @@ if is-supported fzf; then
                     rg --ignore-case --context 10 --pretty '$1' {}"
     }
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## Select multiple files to run a command on              {{{
     # e.g. $ fmr vlc
@@ -543,7 +543,7 @@ if is-supported fzf; then
         unset kill_pid
     }
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## fgshow - git commit browser                            {{{
     fgshow() {
@@ -557,7 +557,7 @@ if is-supported fzf; then
                 FZF-EOF"
     }
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
     ## find an emoji                                          {{{
     # usage: $ find_emoji | cb
@@ -577,7 +577,7 @@ if is-supported fzf; then
         }
     fi
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 fi
 
 # --------------------------------------------------------------------- }}}
@@ -630,6 +630,6 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
     fi
 fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}

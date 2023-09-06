@@ -17,13 +17,13 @@ local lang_settings = {
 }
 
 return {
-single_file_support = true,
-    init_options = {
-        preferences = {
-            includeCompletionsWithSnippetText = true,
-            includeCompletionsWithInsertText = true,
-        },
+  single_file_support = true,
+  init_options = {
+    preferences = {
+      includeCompletionsWithSnippetText = true,
+      includeCompletionsWithInsertText = true,
     },
+  },
   settings = {
     typescript = lang_settings,
     javascript = lang_settings,

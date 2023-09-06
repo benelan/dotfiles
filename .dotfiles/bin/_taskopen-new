@@ -4,4 +4,3 @@
 if [ $# -eq 1 ]; then
     task "$1" annotate "notes"
 fi
-

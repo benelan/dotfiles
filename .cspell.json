@@ -3,9 +3,7 @@
   "language": "en",
   "version": "0.2",
   "allowCompoundWords": true,
-  "dictionaries": [
-    "nvim"
-  ],
+  "dictionaries": ["nvim"],
   "ignorePaths": [
     "node_modules/**",
     "dist/**",

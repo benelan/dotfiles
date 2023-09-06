@@ -63,7 +63,7 @@
   "Lua.completion.keywordSnippet": "Both",
   "terminal.external.linuxExec": "wezterm",
   "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "vsintellicode.modify.editor.suggestSelection":"automaticallyOverrodeDefaultValue",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "liveServer.settings.donotShowInfoMsg": true,
   "search.smartCase": true,
   "search.exclude": {

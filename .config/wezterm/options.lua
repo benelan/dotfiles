@@ -29,7 +29,7 @@ function M.apply_config(config)
 
   config.font_size = 14
   config.use_cap_height_to_scale_fallback_fonts = true
-  config.font = wezterm.font_with_fallback { "Iosevka Nerd Font", }
+  config.font = wezterm.font_with_fallback { "Iosevka Nerd Font" }
 
   config.color_scheme = utils.color_scheme
   config.colors = {
