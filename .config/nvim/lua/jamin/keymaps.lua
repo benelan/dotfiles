@@ -247,7 +247,6 @@ keymap("n", "<leader>si", "<CMD>set incsearch!<CR>", "Toggle incsearch")
 keymap("n", "<leader>sl", "<CMD>set list!<CR>", "Toggle list")
 keymap("n", "<leader>sx", "<CMD>set cursorline!<CR>", "Toggle cursorline")
 keymap("n", "<leader>sy", "<CMD>set cursorcolumn!<CR>", "Toggle cursorcolumn")
-keymap("n", "<leader>s<Tab>", "<CMD>set autoindent!<CR>", "Toggle autoindent")
 keymap("n", "<leader>sM", "<CMD>set modifiable!<CR>", "Toggle modifiable")
 keymap(
   "n",

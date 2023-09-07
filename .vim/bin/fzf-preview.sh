@@ -21,6 +21,7 @@ fi
 if [[ -n "$CENTER" && ! "$CENTER" =~ ^[0-9] ]]; then
   exit 1
 fi
+
 CENTER=${CENTER/[^0-9]*/}
 
 # MS Win support
@@ -28,8 +29,10 @@ if [[ "$FILE" =~ '\' ]]; then
   if [ -z "$MSWINHOME" ]; then
     MSWINHOME="$HOMEDRIVE$HOMEPATH"
   fi
+
   if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
     MSWINHOME="${MSWINHOME//\\/\\\\}"
+
     FILE="${FILE/#\~\\/$MSWINHOME\\}"
     FILE=$(wslpath -u "$FILE")
   elif [ -n "$MSWINHOME" ]; then
@@ -38,6 +41,7 @@ if [[ "$FILE" =~ '\' ]]; then
 fi
 
 FILE="${FILE/#\~\//$HOME/}"
+
 if [ ! -r "$FILE" ]; then
   echo "File not found ${FILE}"
   exit 1
@@ -61,6 +65,7 @@ if [ -z "$FZF_PREVIEW_COMMAND" ] && [ "${BATNAME:+x}" ]; then
 fi
 
 FILE_LENGTH=${#FILE}
+
 MIME=$(file --dereference --mime -- "$FILE")
 if [[ "${MIME:FILE_LENGTH}" =~ binary ]]; then
   echo "$MIME"

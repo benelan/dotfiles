@@ -20,8 +20,10 @@ function! MyFoldText()
 
     let foldSize = " " . (1 + v:foldend - v:foldstart)
             \ . " lines " . repeat(".:", v:foldlevel) . "."
+
     let separator = repeat(" ", 3) . "<~"
     let expansion = repeat("~", w - strwidth(line.separator.foldSize))
+
     return line . separator . expansion . foldSize
 endfunction
 

@@ -1,4 +1,5 @@
 {
+  "telemetry.telemetryLevel": "off",
   "window.zoomLevel": 1,
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.wordWrap": "off",
@@ -13,10 +14,6 @@
   "editor.linkedEditing": true,
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
-  "gruvboxMaterial.darkPalette": "original",
-  "gruvboxMaterial.darkWorkbench": "high-contrast",
-  "gruvboxMaterial.lightWorkbench": "high-contrast",
-  "workbench.colorTheme": "Gruvbox Material Dark",
   "editor.fontLigatures": true,
   "editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
@@ -32,11 +29,9 @@
   "explorer.sortOrder": "type",
   "extensions.autoUpdate": false,
   "extensions.autoCheckUpdates": true,
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
   "files.eol": "\n",
   "files.defaultLanguage": "${activeEditorLanguage}",
   "files.hotExit": "onExitAndWindowClose",
@@ -47,6 +42,27 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.surveys.enabled": false,
+  "terminal.external.linuxExec": "wezterm",
+  "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "search.smartCase": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/build": true,
+    "**/dist": true,
+    "*.min.js": true
+  },
+  "gruvboxMaterial.darkPalette": "original",
+  "gruvboxMaterial.darkWorkbench": "high-contrast",
+  "gruvboxMaterial.lightWorkbench": "high-contrast",
+  "workbench.colorTheme": "Gruvbox Material Dark",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one"
   },
@@ -61,19 +77,7 @@
   "Lua.telemetry.enable": false,
   "Lua.completion.callSnippet": "Both",
   "Lua.completion.keywordSnippet": "Both",
-  "terminal.external.linuxExec": "wezterm",
-  "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "liveServer.settings.donotShowInfoMsg": true,
-  "search.smartCase": true,
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/*.code-search": true,
-    "**/build": true,
-    "**/dist": true,
-    "*.min.js": true
-  },
   "vim.easymotion": false,
   "vim.enableNeovim": true,
   "vim.highlightedyank.enable": true,

@@ -27,6 +27,7 @@ function! s:ExecuteOpen(text)
         if !exists('g:loaded_netrw')
             runtime! autoload/netrw.vim
         endif
+
         if exists('*netrw#BrowseX')
             call netrw#BrowseX(a:text, 0)
         else
@@ -42,13 +43,14 @@ endfunction
 " Open URI using the default system app (browser, email client, etc)    {{{
 " --------------------------------------------------------------------- {|}
 function! s:OpenURI(text)
-    " This pattern can be improved,
-    " but at least it works with hashes/params
+    " TODO: This pattern can be improved
     let l:pattern='[a-z]*:\/\/[^ >,;()"'.. "'"..'{}]*'
     let l:match = matchstr(a:text, l:pattern)
     let l:uri = shellescape(l:match, 1)
+
     if l:match != ""
         echom l:uri
+
         call s:ExecuteOpen(l:uri)
         :redraw!
         return 1
@@ -62,6 +64,7 @@ function! s:OpenPath(text)
     " use Vim's builtin file handler
     if isdirectory(a:text) || filereadable(a:text)
         echom a:text
+
         call s:ExecuteOpen(a:text)
         :redraw!
         return 1
@@ -72,14 +75,15 @@ endfunction
 " Open NPM dependency in the browser if the file is package.json        {{{
 " --------------------------------------------------------------------- {|}
 function! s:OpenDepNPM(text)
-  " the regex is pretty simple, so only
-  " attempt to match in package.json files
+    " only attempt to match in package.json files
     if expand("%:t") == "package.json"
         let l:pattern='\v"(.*)": "([>|^|~|0-9|=|<].*)"'
         let l:match = matchlist(a:text, l:pattern)
+
         if len(l:match) > 0
             let l:url_prefix='https://www.npmjs.com/package/'
             let l:pkg_url = shellescape(l:url_prefix.l:match[1], 1)
+
             call s:ExecuteOpen(l:pkg_url)
             :redraw!
             return 1
@@ -95,15 +99,19 @@ function! s:OpenGitHubIssue(text)
     if executable('gh') " requires github-cli
         " get the workspace's current repo
         let l:dirty_url=system('echo $(gh repo view --json url --jq ".url")')
+
         " remove any control characters
         let l:gh_url=substitute(l:dirty_url, '[[:cntrl:]]', '', 'g')
+
         " rudimentary regex pattern for issue/pr numbers
         let l:pattern='\v(#)(\d+)'
         let l:match = matchlist(a:text, l:pattern)
+
         if len(l:match) > 1 && !empty(l:gh_url) && l:gh_url ==# "no git remote found"
             " shellescape the url and append the issue number
             let l:issue_url = shellescape(l:gh_url..'/issues/'..l:match[2])
             echom l:issue_url
+
             call s:ExecuteOpen(l:issue_url)
             :redraw!
             return 1

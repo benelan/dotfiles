@@ -85,6 +85,7 @@ hi! link TabLineFill Statusline
 
 "" markdown settings                                          {{{
 let g:markdown_recommended_style = 0
+
 " Helps with syntax highlighting by specififying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
@@ -126,16 +127,24 @@ if has("keymap")
     nnoremap Y y$
     vnoremap Y y
 
+    nnoremap q: :
+    nnoremap Q gq
+
+    nnoremap <Backspace> <C-^>
+
     nnoremap n nzzzv
     nnoremap N Nzzzv
 
     nnoremap <C-u> <C-u>zz
     nnoremap <C-d> <C-d>zz
 
-    nnoremap q: :
-    nnoremap Q gq
-
-    nnoremap <Backspace> <C-^>
+    " move line(s) up and down
+    nnoremap <S-Down> <CMD>m .+1<CR>==
+    nnoremap <S-Up> <CMD>m .-2<CR>==
+    inoremap <S-Down> <esc><CMD>m .+1<CR>==gi
+    inoremap <S-Up> <esc><CMD>m .-2<CR>==gi
+    vnoremap <S-Down> :m '>+1<CR>gv=gv
+    vnoremap <S-Up> :m '<-2<CR>gv=gv
 
     " Use the repeat operator with a visual selection. This is useful for
     " performing an edit on a single line, then highlighting a visual block
@@ -146,26 +155,23 @@ if has("keymap")
     " choosing the register containing the macro.
     vnoremap @ :normal @
 
+    " Remain in visual mode when indenting
     vnoremap < <gv
     vnoremap > >gv
 
-    " Create splits
-    nnoremap <leader>- :split<cr>
-    nnoremap <leader>\ :vsplit<cr>
-
+    " Create a new line above/below the cursor
     nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
+    " Search in the selection
     xnoremap g/ <esc>/\\%V
+
+    " Re-select the previous selection
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
-    " Open a new tab of the current buffer and cursor position
-    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
-
+    " Change pwd to the buffer's directory
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" insert, command, terminal, and operator  keymaps           {{{
     cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
     cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
@@ -182,16 +188,19 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" system clipboard                                           {{{
-    vnoremap p "_dP
-    nnoremap x "_x
-    nnoremap gy <cmd>let @+=@*<cr>
-
     nnoremap <leader>y "+y
     vnoremap <leader>y "+y
     nnoremap <leader>Y "+y$
+
     vnoremap <leader>d "_d
+
     nnoremap <leader>p "+p
     vnoremap <leader>p "+p
+    vnoremap p "_dP
+
+    nnoremap x "_x
+
+    nnoremap gy <cmd>let @+=@*<cr>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" clear search highlights and reset syntax                   {{{
@@ -262,10 +271,14 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" buffers, tabs, and windows                                 {{{
 
+    "" pick buffer to jump to
+    nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
+
+    "" delete buffer
     nnoremap <silent> <leader>bd :bdelete<CR>
 
-    "" picks buffer
-    nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
+    " Open a new tab of the current buffer and cursor position
+    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
 
     "" Managing tabs
     nnoremap <leader>tn :tabnew<cr>
@@ -276,6 +289,10 @@ if has("keymap")
     let s:last_tab = 1
     nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
     au TabLeave * let s:last_tab = tabpagenr()
+
+    " Create splits
+    nnoremap <leader>- :split<cr>
+    nnoremap <leader>\ :vsplit<cr>
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -291,9 +308,6 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
-
-    "" toggles automatic indentation based on the previous line
-    nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
 
     "" toggles highlighted cursor row; doesn't work in visual mode
     nnoremap <leader>sx <CMD>set cursorline!<CR>
@@ -319,14 +333,8 @@ if has("keymap")
     "" toggles line number display
     noremap <leader>sn <CMD>set relativenumber!<CR>
 
-    "" toggles position display in bottom right
-    noremap <leader>sr <CMD>set ruler!<CR>
-
     "" toggles soft wrapping
     noremap <leader>sw <CMD>set wrap!<CR>
-
-    "" toggle modifiable
-    nnoremap <leader>sM <CMD>set modifiable!<CR>
 
     "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
@@ -455,6 +463,7 @@ if has("autocmd")
         autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
                 \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+
         autocmd FileType {,ba,da,k,z}sh
                 \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
     augroup END
@@ -467,22 +476,29 @@ endif
 if has("eval")
     "" Indentation                                                 {{{
     "" https://vimways.org/2018/transactions-pending/
+
     "" inside (without surrounding empty lines)
     function! s:inIndentationTextObject()
         let l:magic = &magic
         set magic
         normal! ^
+
         let l:vCol = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
         let l:pat = '^\(\s*\%'.l:vCol.'v\|^$\)\@!'
+
         let l:start = search(l:pat, 'bWn') + 1
         let l:end = search(l:pat, 'Wn')
+
         if (l:end !=# 0)
             let l:end -= 1
         endif
+
         execute 'normal! '.l:start.'G0'
         call search('^[^\n\r]', 'Wc')
+
         execute 'normal! Vo'.l:end.'G'
         call search('^[^\n\r]', 'bWc')
+
         normal! $o
         let &magic = l:magic
     endfunction
@@ -492,13 +508,17 @@ if has("eval")
         let l:magic = &magic
         set magic
         normal! ^
+
         let l:vCol = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
         let l:pat = '^\(\s*\%'.l:vCol.'v\|^$\)\@!'
+
         let l:start = search(l:pat, 'bWn') + 1
         let l:end = search(l:pat, 'Wn')
+
         if (l:end !=# 0)
             let l:end -= 1
         endif
+
         execute 'normal! '.l:start.'G0V'.l:end.'G$o'
         let &magic = l:magic
     endfunction
@@ -506,6 +526,7 @@ if has("eval")
     "" keymaps
     xnoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
     onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
+
     xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
     onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
 
@@ -521,55 +542,53 @@ if has("eval")
     "" Replace text selected with a motion with the contents
     "" of a register in a repeatable way.
     "" https://dev.sanctum.geek.nz/cgit/vim-replace-operator
-
-    " Replace the operated text with the contents of a register
     function! ReplaceOperator(type) abort
-    " Save the current value of the unnamed register and the current value of
-    " the 'clipboard' and 'selection' options into a dictionary for restoring
-    " after this is all done
-    let save = {
-            \ 'unnamed': @@,
-            \ 'clipboard': &clipboard,
-            \ 'selection': &selection
-            \ }
+        " Save the current value of the unnamed register and the current value of
+        " the 'clipboard' and 'selection' options into a dictionary for restoring
+        " after this is all done
+        let save = {
+                \ 'unnamed': @@,
+                \ 'clipboard': &clipboard,
+                \ 'selection': &selection
+                \ }
 
-    " Don't involve any system clipboard for the duration of this function
-    set clipboard-=unnamed
-    set clipboard-=unnamedplus
+        " Don't involve any system clipboard for the duration of this function
+        set clipboard-=unnamed
+        set clipboard-=unnamedplus
 
-    " Ensure that we include end-of-line and final characters in selections
-    set selection=inclusive
+        " Ensure that we include end-of-line and final characters in selections
+        set selection=inclusive
 
-    " Build normal mode keystrokes to select the operated text in visual mode
-    if a:type ==# 'line'
-        let select = "'[V']"
-    elseif a:type ==# 'block'
-        let select = "`[\<C-V>`]"
-    else
-        let select = '`[v`]'
-    endif
+        " Build normal mode keystrokes to select the operated text in visual mode
+        if a:type ==# 'line'
+            let select = "'[V']"
+        elseif a:type ==# 'block'
+            let select = "`[\<C-V>`]"
+        else
+            let select = '`[v`]'
+        endif
 
-    " Build normal mode keystrokes to paste from the selected register; only add
-    " a register prefix if it's not the default unnamed register, because Vim
-    " before 7.4 gets ""p wrong in visual mode
-    let paste = 'p'
-    if s:register !=# '"'
-        let paste = '"'.s:register.paste
-    endif
-    silent execute 'normal! '.select.paste
+        " Build normal mode keystrokes to paste from the selected register;
+        " only add a register prefix if it's not the default unnamed register,
+        " because Vim before 7.4 gets ""p wrong in visual mode
+        let paste = 'p'
+        if s:register !=# '"'
+            let paste = '"'.s:register.paste
+        endif
+        silent execute 'normal! '.select.paste
 
-    " Restore contents of the unnamed register and the previous values of the
-    " 'clipboard' and 'selection' options
-    let @@ = save['unnamed']
-    let &clipboard = save['clipboard']
-    let &selection = save['selection']
+        " Restore contents of the unnamed register and the previous values of
+        " the 'clipboard' and 'selection' options
+        let @@ = save['unnamed']
+        let &clipboard = save['clipboard']
+        let &selection = save['selection']
     endfunction
 
     " Helper function for normal mode map
     function! s:operators_replace(register) abort
-    let s:register = a:register
-    set operatorfunc=ReplaceOperator
-    return 'g@'
+        let s:register = a:register
+        set operatorfunc=ReplaceOperator
+        return 'g@'
     endfunction
 
     nnoremap <expr> <leader>r <SID>operators_replace(v:register)
@@ -580,18 +599,19 @@ if has("eval")
     "" Use an external program to execute a command
     " https://dev.sanctum.geek.nz/cgit/vim-colon-operator
     function! ColonOperator(type) abort
-    if !exists('s:command')
-        let s:command = input('g:', '', 'command')
-    endif
-    execute "'[,']".s:command
+        if !exists('s:command')
+            let s:command = input('g:', '', 'command')
+        endif
+
+        execute "'[,']".s:command
     endfunction
 
     " Clear command so that we get prompted to input it, set operator function,
     " and return <expr> motions to run it
     function! s:operators_colon() abort
-    unlet! s:command
-    set operatorfunc=ColonOperator
-    return 'g@'
+        unlet! s:command
+        set operatorfunc=ColonOperator
+        return 'g@'
     endfunction
 
     nnoremap <expr> g: <SID>operators_colon()

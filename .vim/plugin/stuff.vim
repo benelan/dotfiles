@@ -135,8 +135,10 @@ inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromsta
 " Edit contents of register
 nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
             \ .' = '. string(getreg(v:register))<cr><c-f><left>
+
 " start ex command for vimgrep
 nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+
 "" replace word under cursor in whole buffer
 nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
@@ -169,11 +171,11 @@ function! s:GitHubPR(bang, args) abort
             \   '\n\+$', '', ''
             \ )
         echom s:url
+
         let @+ = s:url
     else
         execute "gh pr view --web --" . a:args
     endif
-
 endfunction
 
 command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)

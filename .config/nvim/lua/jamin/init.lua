@@ -69,6 +69,21 @@ end, {
   "zipPlugin",
 })
 
+if vim.g.vscode then
+  vim.cmd [[
+    source ~/.vim/plugin/stuff.vim
+    source ~/.vim/plugin/operators.vim
+    source ~/.vim/plugin/system_open_handler.vim
+  ]]
+
+  -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary
+  keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
+  keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
+
+  -- skip loading neovim plugins with lazy.nvim when using the vscode extension
+  return
+end
+
 -- Bootstrap Lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then

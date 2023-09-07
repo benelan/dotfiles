@@ -1,4 +1,9 @@
-local zk = require "zk.util"
+local has_zk, zk = pcall(require, "zk.util")
+
+if not has_zk then
+  return
+end
+
 -- Add the key mappings only for Markdown files in a zk notebook.
 if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   -- Create a new note after asking for its title.

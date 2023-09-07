@@ -149,17 +149,26 @@ if has("keymap")
     nnoremap <C-u> <C-u>zz
     nnoremap <C-d> <C-d>zz
 
-    xnoremap g/ <esc>/\\%V
+    " move line(s) up and down
+    nnoremap <S-Down> <CMD>m .+1<CR>==
+    nnoremap <S-Up> <CMD>m .-2<CR>==
+    inoremap <S-Down> <esc><CMD>m .+1<CR>==gi
+    inoremap <S-Up> <esc><CMD>m .-2<CR>==gi
+    vnoremap <S-Down> :m '>+1<CR>gv=gv
+    vnoremap <S-Up> :m '<-2<CR>gv=gv
+
     nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+
+    xnoremap g/ <esc>/\\%V
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
     if empty(mapcheck("<C-U>", "i"))
-    inoremap <C-U> <C-G>u<C-U>
+        inoremap <C-U> <C-G>u<C-U>
     endif
 
     if empty(mapcheck("<C-W>", "i"))
-    inoremap <C-W> <C-G>u<C-W>
+        inoremap <C-W> <C-G>u<C-W>
     endif
 
     "" https://vi.stackexchange.com/a/213
@@ -248,6 +257,7 @@ if has("keymap")
 
     "" close all the buffers
     nnoremap <leader>bda :bufdo bd<CR>
+
     "" picks buffer
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
@@ -276,9 +286,6 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
 
-    "" toggles automatic indentation based on the previous line
-    nnoremap <leader>s<Tab> <CMD>set autoindent!<CR>
-
     "" toggles highlighted cursor row; doesn't work in visual mode
     nnoremap <leader>sx <CMD>set cursorline!<CR>
 
@@ -303,14 +310,8 @@ if has("keymap")
     "" toggles line number display
     noremap <leader>sn <CMD>set relativenumber!<CR>
 
-    "" toggles position display in bottom right
-    noremap <leader>sr <CMD>set ruler!<CR>
-
     "" toggles soft wrapping
     noremap <leader>sw <CMD>set wrap!<CR>
-
-    "" toggle modifiable
-    nnoremap <leader>sM <CMD>set modifiable!<CR>
 
     "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
@@ -404,16 +405,6 @@ if has("eval")
     command! TerminalToggle call <sid>TerminalToggle()
     nnoremap <silent> <leader>T <CMD>TerminalToggle<CR>
     tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" strip trailing white space from the end of lines           {{{
-    function! StripTrailingWhitespace()
-        let save_cursor = getpos(".")
-        let old_query = getreg("/")
-        silent! %s/\s\+$//e
-        call setpos(".", save_cursor)
-        call setreg("/", old_query)
-    endfunction
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif

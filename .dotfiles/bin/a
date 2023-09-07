@@ -1,8 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Aligns lines of text on CHAR (useful in vim)
 # For example, align selected text on commas:
-# :'<,'>!align ,
+# :'<,'>!a ,
+
 CHAR=${1:-=}
-shift
+[ -n "$1" ] && shift
+
 exec column -t -s "$CHAR" -o "$CHAR" "$@"
