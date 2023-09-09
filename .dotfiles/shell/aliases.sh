@@ -132,7 +132,7 @@ alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 alias hosts='sudo $EDITOR /etc/hosts'
 
-alias speedtest="wget -O /dev/null http://speed.transip.nl/100mb.bin"
+alias speedtest="wget -O /dev/null http://speed.transip.nl/10mb.bin"
 
 alias vpn="protonvpn-cli"
 
@@ -140,7 +140,7 @@ alias vpn="protonvpn-cli"
 alias ping='ping -c 5'
 
 # Pings hostname(s) 30 times in quick succession
-alias fastping='ping -c 30 -i.2'
+alias fping='ping -c 30 -i.2'
 
 # resume by default
 alias wget='wget -c'
@@ -276,7 +276,7 @@ alias G="edit_dotfiles +G +only"
 # https://cli.github.com/
 # Open Octo with my issues/prs
 alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
-alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN<CR>"'
+alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 
 # --------------------------------------------------------------------- }}}
 # Docker                                                                {{{

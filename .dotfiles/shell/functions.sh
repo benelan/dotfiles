@@ -93,7 +93,7 @@ bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
 
 ## fff wrapper that changes to directory on exit              {{{
 if is-supported fff; then
-    f() {
+    ff() {
         fff "$@"
         cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
     }
@@ -202,10 +202,10 @@ wtfport() {
     pid_name=$(echo "$line" | awk '{print $1}')
 
     # If there's nothing running, exit
-    [[ -z "$pid" ]] && exit 0
+    [ -z "$pid" ] && return 0
 
     # output the process name to stderr so it won't be piped along
-    echo >&2 -e "$pid_name"
+    printf "%s" "$pid_name" >&2
 
     # print the process id. It can be piped, for example to pbcopy
     echo -e "$pid"
@@ -434,7 +434,7 @@ if is-supported fzf; then
     }
 
     ## cd into the directory of the selected file             {{{
-    fzfile() {
+    fcd() {
         cd "$(
             fzf +m -q "$*" \
                 --preview="${FZF_PREVIEW_CMD}" \

@@ -101,8 +101,8 @@ pre_prompt+="\[${BOLD}\]\[${userStyle}\]\u" # username
 pre_prompt+="\[${RESET}\] at "
 pre_prompt+="\[${BOLD}\]\[${hostStyle}\]\h" # host
 pre_prompt+="\[${RESET}\] in "
-pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w" # working directory full path
-pre_prompt+="\[${RESET}\]"             # reset styling
+pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w"      # PWD
+pre_prompt+="\[${RESET}\]"
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # set the post_prompt                           {{{

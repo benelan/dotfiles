@@ -20,6 +20,8 @@ export LESS_TERMCAP_ue=$'\e[0m'
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'
 
+stty -ixon
+
 # Use vi editing mode instead of emacs
 # set -o vi
 # set +o emacs
