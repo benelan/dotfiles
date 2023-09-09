@@ -20,10 +20,15 @@ elseif $EDITOR != ''
     let &vicmd = $EDITOR
 endif
 
-set dotdirs=
 set number
 set relativenumber
+
 set grepprg='rg --vimgrep --hidden --glob "!.git"'
+
+" ignore .git directory on :find
+set findprg='find %s %a -print ,
+            \ -type d \( ! -readable -o ! -executable -o -path "*/.git" \)
+            \ -prune'
 
 " This makes vifm perform file operations on its own instead of relying on
 " standard utilities like `cp`.  While using `cp` and alike is a more universal
@@ -38,11 +43,10 @@ set syscalls
 " I recommend not changing this until you are familiar with vifm.
 " This probably shouldn't be an option.
 set trash
-set trashdir=~/.local/share/Trash/files
+set trashdir=%r/.vifm_trash,$HOME/.local/share/Trash/files
 
 " This is how many directories to store in the directory history.
 set history=420
-
 
 " Maximum number of changes that can be undone.
 set undolevels=1069
@@ -95,6 +99,8 @@ set nohlsearch
 " Use increment searching (search while typing)
 set incsearch
 
+set tabstop=2
+
 " Try to leave some space from cursor to upper/lower border in lists
 set scrolloff=4
 
@@ -105,9 +111,10 @@ endif
 
 " show hidden files on startup
 set dotfiles
+set dotdirs=
 
-" Set custom status line look
-set statusline="  Hint: %z  %=  %f %20d %15A %10E (%a) "
+" Set custom statusline
+set statusline="  %f  %=  %20d %15A %10E (%a) "
 
 set rulerformat='%2l-%S%[ +%x%]'
 set tablabel=%[(%n)%]%[%[%T{tree}%]%[{%c}%]@%]%p:t
@@ -119,15 +126,13 @@ set tuioptions=psuv
 
 " :mark mark /full/directory/path [filename]
 mark h ~/
-mark d ~/.dotfiles/
-mark n ~/dev/notes
-mark p ~/dev/personal/
-mark l ~/dev/lib/
-mark w ~/dev/work/
-mark c ~/dev/work/calcite-design-system/
+mark d expand($DOTFILES)
+mark n expand($NOTES)
+mark p expand($PERSONAL)
+mark l expand($LIB)
+mark w expand($WORK)
+mark c expand($CALCITE)
 mark v ~/.config/nvim/
-mark s /media/ben/stuff/
-mark t /media/ben/things/
 
 " --------------------------------------------------------------------- }}}
 " Commands                                                              {{{
@@ -155,8 +160,10 @@ command! unzip unzip %f
 command! run !! ./%f
 command! make !!make %a
 command! mcd :mkdir %a | cd %a
+command! mcd! :mkdir! %a | cd %a
 command! vgrep nvim "+grep %a"
 command! reload :write | restart full
+command! bak :clone %c.bak
 
 " --------------------------------------------------------------------- }}}
 " File types association                                                {{{
@@ -475,14 +482,27 @@ fileviewer *[^/] bat --color always --wrap never --pager never %c -p
 " --------------------------------------------------------------------- {|}
 
 " Start shell in current directory
-nnoremap s :shell<cr>
+nnoremap S :shell<cr>
 
 " Display sorting dialog
-nnoremap S :sort<cr>
+nnoremap s :sort<cr>
 
 " Toggle visibility of preview window
-nnoremap gp :view<cr>
-vnoremap gp :view<cr>gv
+nnoremap w :view<cr>
+vnoremap w :view<cr>gv
+
+" Scroll preview window
+nnoremap <C-f> <C-w>w15j<C-w>w
+nnoremap <C-b> <C-w>w15k<C-w>w 
+
+" moving cursor in another pane
+nnoremap <silent> <C-j> <space>j<space>
+nnoremap <silent> <C-k> <space>k<space>
+nnoremap <silent> <C-h> <space>h<space>
+nnoremap <silent> <C-l> <space>l<space>
+
+nnoremap > <C-w>>
+nnoremap < <C-w><
 
 " Open file in new instance of neovim
 nnoremap o :!nvim %f<cr>
@@ -493,9 +513,6 @@ if executable("nvr")
 else
     nmap O o
 endif
-
-" Open file in the background using its default program
-nnoremap gb :file &<cr>l
 
 " Interaction with system clipboard
 if has('win')
@@ -511,6 +528,7 @@ if has('win')
     nnoremap yn :!echo %"c%i| clip<cr>
     " yank root of current file's name to Windows clipboard
     nnoremap yr :!echo %"c:r%i| clip<cr>
+
 elseif executable('xclip')
     " yank current directory path into the clipboard
     nnoremap yd :!echo -n %d | xclip -selection clipboard %i<cr>
@@ -524,6 +542,7 @@ elseif executable('xclip')
     " yank root of current file's name into the clipboard
     nnoremap yr :!echo -n %c:r | xclip -selection clipboard %i<cr>
                 \:echo expand('%"c:r') "is yanked to clipboard"<cr>
+
 elseif executable('xsel')
     " yank current directory path into primary and selection clipboards
     nnoremap yd :!echo -n %d | xsel --input --primary %i &&
@@ -541,6 +560,7 @@ elseif executable('xsel')
     nnoremap yr :!echo -n %c:r | xsel --input --primary %i &&
                 \ echo -n %c:r | xsel --clipboard --input %i<cr>
                 \:echo expand('%"c:r') "is yanked to clipboard"<cr>
+
 elseif executable("pbcopy")
     " yank current directory path into the clipboard
     nnoremap yd :!echo -n %d | pbcopy %i<cr>
@@ -562,17 +582,44 @@ nnoremap cc cw<c-u>
 nnoremap A cw
 
 " Open console in current directory
-if $DISPLAY && executable('xterm')
-    nnoremap \t :!xterm &<cr>
-elseif $TERMINAL
-    nnoremap \t :!$TERMINAL &<cr>
+if $TERMINAL
+    nnoremap \t :!$TERMINAL 2>/dev/null &<cr>
 endif
 
 " Open editor to edit vifmrc and apply settings after returning to vifm
 nnoremap \c :write | edit $MYVIFMRC | restart full<cr>
 
+" toggle wrap setting on ,w key
+nnoremap <silent> \w :set invwrap<cr>
+
+" faster search of files that start with a particular string
+nnoremap f/ /^
+
+" toggle view columns
+set viewcolumns=*{name}..,6{}.
+command! toggleview
+        \ :if &viewcolumns == '*{name}..,6{}.'
+        \ |    set viewcolumns=*{name}.,10{perms},12{uname},-7{gname},10{size}.,20{mtime}
+        \ |else
+        \ |set viewcolumns=*{name}..,6{}.
+        \ |endif
+nnoremap \v :toggleview<cr>
+
+" toggle between sorting: by name <--> by size <--> by mtime
+command! togglesort
+         \ :if &sort == '-size,+name'
+         \ |    set sort=+mtime
+         \ |    echo 'Sorted by modification date'
+         \ |elseif &sort == '+name'
+         \ |    set sort=-size
+         \ |    echo 'Sorted by size'
+         \ |else
+         \ |    set sort=+name
+         \ |    echo 'Sorted by name'
+         \ |endif
+nnoremap <silent> \s :togglesort<cr>
+
 " Example of standard two-panel file managers mappings
-nnoremap <f3> :!bat %f<cr>
 nnoremap <f4> :edit<cr>
 nnoremap <f5> :copy<cr>
 nnoremap <f6> :move<cr>
@@ -618,23 +665,17 @@ nnoremap <a-u> <c-w>x
 " Miscellaneous                                                         {{{
 " --------------------------------------------------------------------- {|}
 
-command! FZFlocate : set noquickview
-                  \| let $FZF_PICK = system('locate $HOME | fzf-tmux --height 10 2>/dev/tty')
-                  \| if $FZF_PICK != ''
-                  \|     execute 'goto' fnameescape($FZF_PICK)
-                " \|     execute system('[ -f "$FZF_PICK" ] && echo goto || echo cd') fnameescape($FZF_PICK)
-                  \| endif
-
 command! FZFfind : set noquickview
-                \| let $FZF_PICK = term('find | fzf --height 10 2>/dev/tty')
-                \| if $FZF_PICK != ''
-                \|     execute 'goto' fnameescape($FZF_PICK)
-                \| endif
+        \| let $FZF_PICK = term('fd | fzf 2>/dev/tty')
+        \| if $FZF_PICK != ''
+        \|  execute system('[ -f "$FZF_PICK" ] && echo goto || echo cd')
+        \     fnameescape($FZF_PICK)
+        \| endif
 
-nnoremap <a-i> <c-g>
-nnoremap <c-g> :FZFlocate<cr>
-nnoremap <c-f> :FZFfind<cr>
-nnoremap <c-a> ggvG<cr>
+nnoremap <A-f> :FZFfind<cr>
+
+nnoremap <C-a> ggvG<cr>
+nnoremap <A-i> <c-g>
 
 " create new tab
 nnoremap <c-t> :tabnew<cr>:view!<cr>
