@@ -11,7 +11,6 @@ function M.apply_config(config)
   config.audible_bell = "Disabled"
   config.animation_fps = 1
   config.check_for_updates = false
-  config.enable_wayland = false
   config.enable_kitty_graphics = true
   config.warn_about_missing_glyphs = false
   config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
@@ -23,7 +22,7 @@ function M.apply_config(config)
   config.inactive_pane_hsb = { saturation = 0.7, brightness = 0.8 }
   config.switch_to_last_active_tab_when_closing_tab = true
   config.clean_exit_codes = { 130 }
-  config.exit_behavior = "CloseOnCleanExit"
+  config.exit_behavior = "Close"
   config.window_close_confirmation = "NeverPrompt"
   config.scrollback_lines = 10000
 
@@ -59,14 +58,31 @@ function M.apply_config(config)
 
   config.launch_menu = {
     { args = { "btop" } },
-    { args = { "gh", "dash" } },
-    { args = { "lazygit" } },
     {
-      label = "edit dotfiles",
+      label = "GitHub Issues",
+      args = { "nvim", "-c", ":Octo issue list assignee=benelan state=OPEN" },
+    },
+    {
+      label = "GitHub Pull Requests",
+      args = { "nvim", "-c", ":Octo search is:open is:pr author:benelan sort:updated" },
+    },
+    {
+      label = "Fugitive Status",
+      args = {
+        "nvim",
+        "-c",
+        ":Git | only",
+        "--cmd",
+        "let $GIT_WORK_TREE = expand('~')",
+        "--cmd",
+        "let $GIT_DIR = expand('~/.git')",
+      },
+    },
+    {
+      label = "Edit Dotfiles",
       cwd = wezterm.home_dir,
       args = {
         "nvim",
-        "~",
         "-c",
         ":Telescope git_files",
         "--cmd",
@@ -76,9 +92,9 @@ function M.apply_config(config)
       },
     },
     {
-      label = "edit Calcite",
-      cwd = wezterm.home_dir .. "/dev/work/calcite-design-system",
-      args = { "nvim", ".", "-c", ":Telescope git_files" },
+      label = "Edit Calcite",
+      cwd = wezterm.home_dir .. "/dev/work/calcite-design-system/main",
+      args = { "nvim", "-c", ":Telescope git_files" },
     },
   }
 

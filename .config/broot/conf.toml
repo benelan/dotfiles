@@ -22,7 +22,7 @@ show_matching_characters_on_path_searches = false
 # if you don't want the hidden files you can launch `br -H`)
 # A popular flag is the `g` one which displays git related info.
 #
-# default_flags = ""
+default_flags = "hg"
 
 ###############################################################
 # Date/Time format
@@ -121,56 +121,15 @@ quit_on_last_cancel = true
 # More information on https://dystroy.org/broot/verbs/
 
 [[verbs]]
-invocation = "edit"
-key = "F2"
-shortcut = "e"
-execution = "$EDITOR +{line} {file}"
-leave_broot = false
-
-[[verbs]]
-key = "ctrl-c"
-execution = ":quit"
-
-[[verbs]]
 name = "touch"
 invocation = "touch {new_file}"
 execution = "touch {directory}/{new_file}"
 leave_broot = false
 
 [[verbs]]
-invocation = "create {subpath}"
-execution = "$EDITOR {directory}/{subpath}"
-leave_broot = false
-
-[[verbs]]
 invocation = "git_diff"
 shortcut = "gdf"
 execution = "git difftool -y {file}"
-
-[[verbs]]
-name = "view"
-invocation = "view"
-execution = "$PAGER {file}"
-
-[[verbs]]
-invocation = "terminal"
-key = "ctrl-t"
-execution = "$SHELL"
-set_working_dir = true
-leave_broot = false
-
-[[verbs]]
-invocation = "home"
-key = "ctrl-home"
-execution = ":focus ~"
-
-[[verbs]]
-key = "left"
-execution = ":parent"
-
-[[verbs]]
-key = "right"
-execution = ":focus"
 
 [[verbs]]
 key = "ctrl-h"
@@ -189,16 +148,12 @@ key = "ctrl-k"
 execution = ":line_up"
 
 [[verbs]]
-key = "ctrl-d"
-execution = ":page_down"
+key = "alt-b"
+internal = ":input_go_word_left"
 
 [[verbs]]
-key = "ctrl-u"
-execution = ":page_up"
-
-[[verbs]]
-key = "ctrl-g"
-execution = ":toggle_git_status"
+key = "alt-f"
+internal = ":input_go_word_right"
 
 ###############################################################
 # Skin

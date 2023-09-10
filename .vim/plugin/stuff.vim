@@ -44,7 +44,6 @@ if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
 "----------------------------------------------------------------------{|}
 
 "" general keymaps                                            {{{
-map Q gq
 nnoremap q: :
 nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
@@ -59,6 +58,13 @@ nnoremap <leader>\ :vsplit<cr>
 
  " Open a new tab of the current buffer and cursor position
 nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
+
+" Format the entire buffer preserving cursor location
+" Requires the 'B' text object defined below
+nmap Q mfgqB'f
+
+" Format selected text maintaining the selection
+xmap Q gq`[v`]
 
 " Use the repeat operator with a visual selection
 " This is useful for performing an edit on a single line, then highlighting a
@@ -92,14 +98,15 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 " Use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
+
 " Use entire buffer as an object
 onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
-" Line text objects
-" includes spaces/newlines
+" Line text objects including spaces/newlines
 xnoremap al $o0
 onoremap al <cmd>normal val<CR>
-" no spaces/newlines
+
+" Line text objects excluding spaces/newlines
 xnoremap il <Esc>^vg_
 onoremap il <cmd>normal! ^vg_<CR>
 
@@ -107,11 +114,14 @@ onoremap il <cmd>normal! ^vg_<CR>
 "" system clipboard                                           {{{
 nnoremap x "_x
 vnoremap <leader>d "_d
+
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
+
 nnoremap <leader>p "+p
 vnoremap <leader>p "+p
+
 nnoremap gY <CMD>let @+=@*<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -119,8 +129,10 @@ nnoremap gY <CMD>let @+=@*<CR>
 " fix the next/previous misspelled word
 nnoremap [S [s1z=
 nnoremap ]S ]s1z=
+
 " fix the misspelled word under the cursor
 nnoremap <M-z> 1z=
+
 " fix the previous misspelled word w/o moving cursor
 inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
@@ -145,6 +157,9 @@ nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" plug keymaps                                               {{{
 nnoremap g: <Plug>(ColonOperator)
+
+nnoremap gs <Plug>(ReplaceOperator)
+vnoremap gs <Plug>(ReplaceOperator)
 nnoremap <leader>r <Plug>(ReplaceOperator)
 vnoremap <leader>r <Plug>(ReplaceOperator)
 
@@ -251,37 +266,13 @@ nnoremap <silent> <leader>e :Netrw<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" go to next/previous merge conflict hunks                   {{{
-function! s:conflictGoToMarker(pos, hunk) abort
-    if filter(copy(a:hunk), "v:val == [0, 0]") == []
-        call cursor(a:hunk[0][0], a:hunk[0][1])
-        return 1
-    else
-        echohl ErrorMsg | echo "conflict not found" | echohl None
-        call setpos(".", a:pos)
-        return 0
-    endif
+"" from https://github.com/tpope/vim-unimpaired
+function! s:findConflict(reverse) abort
+  call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
 
-function! s:conflictNext(cursor) abort
-    return s:conflictGoToMarker(getpos("."), [
-                \ searchpos("^<<<<<<<", (a:cursor ? "cW" : "W")),
-                \ searchpos("^=======", "cW"),
-                \ searchpos("^>>>>>>>", "cW"),
-                \ ])
-endfunction
-
-function! s:conflictPrevious(cursor) abort
-    return s:conflictGoToMarker(getpos("."), reverse([
-                \ searchpos("^>>>>>>>", (a:cursor ? "bcW" : "bW")),
-                \ searchpos("^=======", "bcW"),
-                \ searchpos("^<<<<<<<", "bcW"),
-                \ ]))
-endfunction
-
-command! -nargs=0 -bang ConflictMarkerNext call s:conflictNext(<bang>0)
-command! -nargs=0 -bang ConflictMarkerPrev call s:conflictPrevious(<bang>0)
-nnoremap [x :ConflictMarkerPrev<CR>
-nnoremap ]x :ConflictMarkerNext<CR>
+nnoremap <silent> [x :<C-U>call <SID>findConflict(1)<CR>
+nnoremap <silent> ]x :<C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{
@@ -326,7 +317,7 @@ nnoremap <silent> <leader><Delete> :Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fzf user commands                                          {{{
-if isdirectory(expand("$LIB/fzf"))
+if isdirectory(expand("$LIB/fzf")) && executable("fzf")
     " Enable per-command history
     " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
     "   "previous-history" instead of "down" and "up".
@@ -334,16 +325,17 @@ if isdirectory(expand("$LIB/fzf"))
 
     " An action can be a reference to a function that processes selected lines
     function! s:build_quickfix_list(lines)
-    call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
-    copen
-    cc
+        call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+        copen
+        cc
     endfunction
 
     let g:fzf_action = {
-    \ "ctrl-q": function("s:build_quickfix_list"),
-    \ "ctrl-t": "tab split",
-    \ "ctrl-x": "split",
-    \ "ctrl-v": "vsplit" }
+    \    "ctrl-q": function("s:build_quickfix_list"),
+    \    "ctrl-t": "tab split",
+    \    "ctrl-x": "split",
+    \    "ctrl-v": "vsplit"
+    \ }
 
     " See `man fzf-tmux` for available options
     if exists("$TMUX")
@@ -355,51 +347,49 @@ if isdirectory(expand("$LIB/fzf"))
     "" get git root directory
     function! g:GitRootDirectory()
         let root = systemlist("git -C "
-                    \ . shellescape(expand("%:p:h"),)
-                    \ . " rev-parse --show-toplevel")[0]
+            \ . shellescape(expand("%:p:h"),)
+            \ . " rev-parse --show-toplevel")[0]
         return v:shell_error ? "" : root
     endfunction
 
     command! -bang GFiles
-        \ call fzf#run(fzf#wrap("gfiles",
-        \ {
-            \ "source": "git ls-files",
-            \ "sink": "e",
-            \ "dir": g:GitRootDirectory(),
-            \ "options": [
-                \ "--preview", "~/.vim/bin/fzf-preview.sh {}"
-            \ ]
-        \ },
-        \<bang>0))
+        \ call fzf#run(fzf#wrap("gfiles", {
+        \    "source": "git ls-files",
+        \    "sink": "e",
+        \    "dir": g:GitRootDirectory(),
+        \    "options": [
+        \        "--preview", "~/.vim/bin/fzf-preview.sh {}"
+        \    ]
+        \ },<bang>0))
 
     " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
     " The name is ignored if g:fzf_history_dir is not defined.
     command! -bang -complete=dir -nargs=? LS
         \ call fzf#run(fzf#wrap("ls", {
-            \ "source": "ls",
-            \ "dir": <q-args>,
-            \ "options": [
-                \ "--preview", "~/.vim/bin/fzf-preview.sh {}"
-            \ ]
+        \     "source": "ls",
+        \     "dir": <q-args>,
+        \     "options": [
+        \         "--preview", "~/.vim/bin/fzf-preview.sh {}"
+        \     ]
         \ }, <bang>0))
 
     command! -bar -bang -nargs=? -complete=buffer Buffers
         \ call fzf#run(fzf#wrap("buffers", {
-        \ "source": map(
-            \ filter(
-                \ range(1, bufnr("$")),
-                \ "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"
-            \ ),
-            \ "bufname(v:val)"
-        \ ),
-        \ "options": [
-            \ "+m",
-            \ "-x",
-            \ "--ansi",
-            \ "--prompt", "Buffer > ",
-            \ "--query", <q-args>
-        \ ],
-        \ "sink": "e"
+        \     "source": map(
+        \         filter(
+        \             range(1, bufnr("$")),
+        \             "buflisted(v:val) && getbufvar(v:val, '&filetype') != 'qf'"
+        \         ),
+        \         "bufname(v:val)"
+        \     ),
+        \     "options": [
+        \         "+m",
+        \         "-x",
+        \         "--ansi",
+        \         "--prompt", "Buffer > ",
+        \         "--query", <q-args>
+        \     ],
+        \     "sink": "e"
         \ }, <bang>0))
 endif
 
@@ -432,6 +422,7 @@ if has("autocmd")
         autocmd!
         " Clear actively used marks to prevent jumping to other projects
         autocmd VimEnter *  delmarks WQAZ
+
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave \(//:\)\@<!*.css,
                         \\(//:\)\@<!*.scss,
@@ -521,6 +512,7 @@ if has("autocmd")
         autocmd!
         autocmd QuickFixCmdPost cgetexpr cwindow
                 \| call setqflist([], "a", {"title": ":" . s:command})
+
         autocmd QuickFixCmdPost lgetexpr lwindow
                 \| call setloclist(0, [], "a", {"title": ":" . s:command})
 
