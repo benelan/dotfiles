@@ -32,6 +32,7 @@ imagemagick
 jq
 libfontconfig1-dev
 libfreetype6-dev
+libjson-perl
 libreadline-dev
 librsvg2-bin
 libtool
