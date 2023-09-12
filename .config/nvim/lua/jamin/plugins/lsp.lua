@@ -39,7 +39,7 @@ return {
       -----------------------------------------------------------------------------
       {
         "pmizio/typescript-tools.nvim",
-        enabled = false,
+        -- enabled = false,
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = function()
           local ts = require "jamin.lsp_servers.tsserver"
@@ -48,7 +48,7 @@ return {
             settings = {
               tsserver_path = vim.env.HOME
                 .. "/.volta/tools/image/packages/typescript/lib/node_modules/typescript/lib/tsserver.js",
-              expose_as_code_action = { "fix_all", "add_missing_imports", "remove_unused" },
+              expose_as_code_action = { "all" },
               tsserver_format_options = ts.settings.typescript.format,
               tsserver_file_preferences = ts.settings.typescript.inlayHints,
             },
@@ -58,7 +58,7 @@ return {
       -----------------------------------------------------------------------------
       {
         "jose-elias-alvarez/typescript.nvim",
-        -- enabled = false,
+        enabled = false,
         opts = function()
           return {
             server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
@@ -111,6 +111,8 @@ return {
       },
     },
     config = function(_, opts)
+      local lspconfig = require "lspconfig"
+
       -------------------------------------------------------------------------------
       --> Diagnostics and capabilities
 
@@ -139,8 +141,6 @@ return {
       -------------------------------------------------------------------------------
       ----> Server setup
 
-      local lspconfig = require "lspconfig"
-
       for _, server in pairs(res.lsp_servers) do
         -- zk and typescript plugins set up the clients themselves
         if server ~= "zk" and server ~= "tsserver" then
@@ -165,6 +165,14 @@ return {
           if client == nil then
             return
           end
+
+          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
+          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
+          vim.api.nvim_set_option_value(
+            "formatexpr",
+            "v:lua.vim.lsp.formatexpr()",
+            { buf = args.buf }
+          )
 
           -- disable formatting and use prettier/stylua instead (via null-ls below)
           if
@@ -218,7 +226,6 @@ return {
           bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
           bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
-          bufmap("n", "<leader>sF", "<cmd>AutoFormatToggle<cr>", "Toggle format on save")
           -- stylua: ignore end
 
           if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
@@ -238,124 +245,6 @@ return {
               end,
             })
           end
-        end,
-      })
-
-      -------------------------------------------------------------------------------
-      ----> Format on Save
-      -- from https://github.com/nvim-lua/kickstart.nvim
-
-      -- Command for toggling autoformatting
-      local format_is_enabled = false
-      vim.api.nvim_create_user_command("AutoFormatToggle", function()
-        format_is_enabled = not format_is_enabled
-        print("Setting autoformatting to: " .. tostring(format_is_enabled))
-      end, {})
-
-      local fix_typescript_issues = function(bufnr)
-        local has_ts, ts = pcall(require, "typescript")
-        local has_ts_tools, _ = pcall(require, "typescript-tools")
-        local ts_client
-        if has_ts then
-          ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "tsserver" })[1]
-        elseif has_ts_tools then
-          ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]
-        end
-        if not ts_client then
-          return
-        end
-
-        local diag = vim.diagnostic.get(
-          bufnr,
-          { namespace = vim.lsp.diagnostic.get_namespace(ts_client.id, false) }
-        )
-
-        if #diag > 0 then
-          if has_ts then
-            ts.actions.fixAll { sync = true }
-            ts.actions.addMissingImports { sync = true }
-            ts.actions.removeUnused { sync = true }
-          elseif has_ts_tools then
-            vim.cmd "TSToolsFixAll sync"
-            vim.cmd "TSToolsAddMissingImports sync"
-            vim.cmd "TSToolsRemoveUnused sync"
-            vim.cmd "TSToolsRemoveUnusedImports sync"
-          end
-        end
-        if has_ts then
-          ts.actions.organizeImports { sync = true }
-        elseif has_ts_tools then
-          vim.cmd "TSToolsOrganizeImports sync"
-        end
-      end
-
-      local fix_eslint_issues = function(bufnr)
-        local eslint_client = vim.lsp.get_clients({ bufnr = bufnr, name = "eslint" })[1]
-        if not eslint_client then
-          return
-        end
-
-        local diag = vim.diagnostic.get(
-          bufnr,
-          { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id, false) }
-        )
-
-        if #diag > 0 then
-          vim.cmd "EslintFixAll"
-        end
-      end
-
-      -- Create an augroup per client to prevent interference
-      -- when multiple clients are attached to the same buffer
-      local _augroups = {}
-      local get_client_augroup = function(client)
-        if not _augroups[client.id] then
-          local group_name = "jamin_auto_format_" .. client.name
-          local id = vim.api.nvim_create_augroup(group_name, { clear = true })
-          _augroups[client.id] = id
-        end
-        return _augroups[client.id]
-      end
-
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_attach_auto_format", { clear = true }),
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client == nil or not client.supports_method "textDocument/formatting" then
-            return
-          end
-
-          -- Autocmd needs to run *before* the buffer saves
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            group = get_client_augroup(client),
-            buffer = args.buf,
-            callback = function(event)
-              if not format_is_enabled then
-                return
-              end
-              -- skip typescript/eslint fixes for non web dev files
-              local webdev_formatting = vim.tbl_contains(
-                res.filetypes.webdev,
-                vim.api.nvim_buf_get_option(event.buf, "filetype")
-              )
-
-              if webdev_formatting then
-                fix_typescript_issues(event.buf)
-              end
-
-              -- format the code
-              vim.lsp.buf.format {
-                async = false,
-                filter = function(c)
-                  return c.id == client.id
-                end,
-              }
-
-              if webdev_formatting then
-                fix_eslint_issues(event.buf)
-              end
-            end,
-          })
         end,
       })
     end,
@@ -388,6 +277,7 @@ return {
       local sources = {
         hover.dictionary,
         hover.printenv,
+
         code_actions.gitrebase,
         code_actions.shellcheck,
 
@@ -412,13 +302,7 @@ return {
           condition = has_stylelint_configfile,
         },
 
-        formatting.stylelint.with {
-          prefer_local = "node_modules/.bin",
-          condition = has_stylelint_configfile,
-        },
-
         formatting.prettier.with { prefer_local = "node_modules/.bin" },
-
         formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
         formatting.stylua,
         formatting.trim_whitespace,
