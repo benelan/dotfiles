@@ -26,13 +26,7 @@ return {
       require("neotest").setup {
         status = { virtual_text = true },
         output = { open_on_run = true },
-        icons = {
-          unknown = require("jamin.resources").icons.lsp_kind.Conditional,
-          passed = require("jamin.resources").icons.ui.checkmark,
-          running = require("jamin.resources").icons.debug.play,
-          skipped = require("jamin.resources").icons.debug.skip,
-          failed = require("jamin.resources").icons.debug.terminate,
-        },
+        icons = require("jamin.resources").icons.test,
         adapters = {
           require "neotest-jest" { jestCommand = "npm test --", jestConfigFile = "jest.config.ts" },
         },

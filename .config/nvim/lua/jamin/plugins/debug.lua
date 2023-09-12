@@ -5,6 +5,8 @@
 -- Debug Adapter protocol:
 --   https://microsoft.github.io/debug-adapter-protocol/
 
+local res = require "jamin.resources"
+
 return {
   "mfussenegger/nvim-dap", -- debug adapter protocol
   enabled = false,
@@ -37,7 +39,7 @@ return {
       "<leader>Dv",
       function()
         require("dap.ext.vscode").load_launchjs(nil,
-          { node = require("jamin.resources").filetypes.webdev, ["pwa-node"] = require("jamin.resources").filetypes.webdev }
+          { node = res.filetypes.webdev, ["pwa-node"] = res.filetypes.webdev }
         )
       end,
       desc = "Load vscode launch file",
@@ -53,7 +55,7 @@ return {
     -- web dev configs
     -- https://github.com/microsoft/vscode-js-debug
     -- https://github.com/mxsdev/nvim-dap-vscode-js
-    for _, language in ipairs(require("jamin.resources").filetypes.webdev) do
+    for _, language in ipairs(res.filetypes.webdev) do
       dap.configurations[language] = {
         {
           -- make sure to start up Chrome in debug mode first:
@@ -65,18 +67,21 @@ return {
           port = 9222,
           webRoot = "${workspaceFolder}",
         },
+
         {
           name = "Attach to Node process",
           type = "pwa-node",
           request = "attach",
           processId = require("dap.utils").pick_process,
         },
+
         {
           name = "Debug current Node file",
           type = "pwa-node",
           request = "launch",
           program = "${file}",
         },
+
         {
           name = "Debug Jest tests",
           type = "pwa-node",
@@ -96,39 +101,6 @@ return {
     end
 
     -----------------------------------------------------------------------------
-    -- BASH
-    -----------------------------------------------------------------------------
-
-    local bashdb_dir = vim.fn.stdpath "data" .. "/mason/packages/bash-debug-adapter"
-
-    dap.adapters.bashdb =
-      { type = "executable", command = bashdb_dir .. "/bash-debug-adapter", name = "bashdb" }
-
-    for _, language in ipairs { "sh", "bash" } do
-      dap.configurations[language] = {
-        {
-          type = "bashdb",
-          request = "launch",
-          name = "Launch - Bash",
-          showDebugOutput = true,
-          pathBashdb = bashdb_dir .. "extension/bashdb_dir/bashdb",
-          pathBashdbLib = bashdb_dir .. "extension/bashdb_dir",
-          trace = true,
-          file = "${file}",
-          program = "${file}",
-          cwd = "${workspaceFolder}",
-          pathCat = "cat",
-          pathBash = "/bin/bash",
-          pathMkfifo = "mkfifo",
-          pathPkill = "pkill",
-          args = {},
-          env = {},
-          terminalKind = "integrated",
-        },
-      }
-    end
-
-    -----------------------------------------------------------------------------
     -- UI
     -----------------------------------------------------------------------------
 
@@ -136,34 +108,38 @@ return {
     dap.set_log_level "TRACE"
 
     vim.fn.sign_define("DapBreakpoint", {
-      text = require("jamin.resources").icons.debug.bug,
+      text = res.icons.debug.breakpoint,
       texthl = "AquaSign",
       linehl = "",
       numhl = "",
     })
+
     vim.fn.sign_define("DapBreakpointCondition", {
-      text = require("jamin.resources").icons.debug.bug_outline,
+      text = res.icons.debug.breakpoint_condition,
       texthl = "YellowSign",
       linehl = "",
       numhl = "",
     })
+
     vim.fn.sign_define("DapBreakpointRejected", {
-      text = require("jamin.resources").icons.debug.cancel,
+      text = res.icons.debug.breakpoint_rejected,
       texthl = "RedSign",
       linehl = "",
       numhl = "",
     })
-    vim.fn.sign_define("DapStopped", {
-      text = require("jamin.resources").icons.debug.exit,
-      texthl = "PurpleSign",
-      linehl = "Visual",
-      numhl = "PurpleSign",
-    })
+
     vim.fn.sign_define("DapLogPoint", {
-      text = require("jamin.resources").icons.debug.robot,
+      text = res.icons.debug.logpoint,
       texthl = "BlueSign",
       linehl = "",
       numhl = "",
+    })
+
+    vim.fn.sign_define("DapStopped", {
+      text = res.icons.debug.stopped,
+      texthl = "PurpleSign",
+      linehl = "Visual",
+      numhl = "PurpleSign",
     })
   end,
   dependencies = {
@@ -183,6 +159,7 @@ return {
     -----------------------------------------------------------------------------
     {
       "leoluz/nvim-dap-go",
+      enabled = false,
       opts = {},
     },
     -----------------------------------------------------------------------------
@@ -215,13 +192,18 @@ return {
         controls = {
           element = "repl",
           enabled = true,
-          icons = require("jamin.resources").icons.debug,
+          icons = res.icons.debug,
         },
       },
       config = function(_, opts)
-        local dap = require "dap"
+        local has_dap, dap = pcall(require, "dap")
         local dapui = require "dapui"
+
         dapui.setup(opts)
+
+        if not has_dap then
+          return
+        end
 
         -- Automatically open UI
         dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -244,7 +226,10 @@ return {
     {
       "nvim-telescope/telescope-dap.nvim",
       config = function()
-        require("telescope").load_extension "dap"
+        local has_telescope, telescope = pcall(require, "telescope")
+        if has_telescope then
+          telescope.load_extension "dap"
+        end
       end,
     },
   },
