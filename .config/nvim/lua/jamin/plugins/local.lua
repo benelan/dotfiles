@@ -67,9 +67,9 @@ return {
       "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep", "Gread", "Gwrite", "Gwq",
       "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit", "Gsplit", "Gvsplit",
     },
-    init = function()
-      -- vim.g.fugitive_dynamic_colors = 0
-    end,
+    -- init = function()
+    --   vim.g.fugitive_dynamic_colors = 0
+    -- end,
   },
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
@@ -102,12 +102,22 @@ return {
     keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>" } },
     init = function()
       vim.g.undotree_SetFocusWhenToggle = 1
-      vim.cmd [[
-        function g:Undotree_CustomMap()
-            nnoremap <buffer> ] <plug>UndotreeNextSavedState
-            nnoremap <buffer> [ <plug>UndotreePreviousSavedState
-        endfunction
-      ]]
+
+      vim.g.Undotree_CustomMap = function()
+        vim.keymap.set("n", "]", "<Plug>UndotreeNextSavedState", {
+          desc = "Next saved state",
+          silent = true,
+          noremap = true,
+          buffer = true,
+        })
+
+        vim.keymap.set("n", "[", "<Plug>UndotreePreviousSavedState", {
+          desc = "Previous saved state",
+          silent = true,
+          noremap = true,
+          buffer = true,
+        })
+      end
     end,
   },
   -----------------------------------------------------------------------------
@@ -118,7 +128,7 @@ return {
     keys = { { "-", "<cmd>Vifm<cr>" } },
     init = function()
       -- there is a weird startup error unless I define the keymap in init too
-      keymap("n", "-", "<cmd>Vifm<cr>")
+      keymap("n", "-", "<CMD>Vifm<CR>")
     end,
   },
   -----------------------------------------------------------------------------
@@ -150,21 +160,21 @@ return {
           bg_orange = { "#5A3B0A", "130" },
         })
 
-        vim.fn["gruvbox_material#highlight"]("DiffDelete", palette.bg5, palette.bg_diff_red)
-        vim.fn["gruvbox_material#highlight"]("DiffChange", palette.none, palette.bg_orange)
-        vim.fn["gruvbox_material#highlight"]("DiffText", palette.fg0, palette.bg_visual_yellow)
-        vim.fn["gruvbox_material#highlight"]("GitSignsChange", palette.orange, palette.none)
-        vim.fn["gruvbox_material#highlight"]("GitSignsChangeNr", palette.orange, palette.none)
-        vim.fn["gruvbox_material#highlight"]("GitSignsChangeLn", palette.orange, palette.none)
-        vim.fn["gruvbox_material#highlight"]("GitStatusLineChange", palette.orange, palette.bg3)
-        vim.fn["gruvbox_material#highlight"]("GitStatusLineAdd", palette.green, palette.bg3)
-        vim.fn["gruvbox_material#highlight"]("GitStatusLineDelete", palette.red, palette.bg3)
-        vim.fn["gruvbox_material#highlight"](
-          "CmpItemAbbrDeprecated",
-          palette.grey1,
-          palette.none,
-          "strikethrough"
-        )
+        local hl = vim.fn["gruvbox_material#highlight"]
+
+        hl("DiffDelete", palette.bg5, palette.bg_diff_red)
+        hl("DiffChange", palette.none, palette.bg_orange)
+        hl("DiffText", palette.fg0, palette.bg_visual_yellow)
+
+        hl("GitSignsChange", palette.orange, palette.none)
+        hl("GitSignsChangeNr", palette.orange, palette.none)
+        hl("GitSignsChangeLn", palette.orange, palette.none)
+
+        hl("GitStatusLineChange", palette.orange, palette.bg3)
+        hl("GitStatusLineAdd", palette.green, palette.bg3)
+        hl("GitStatusLineDelete", palette.red, palette.bg3)
+
+        hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 
         vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
         vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })

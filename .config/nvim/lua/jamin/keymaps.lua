@@ -248,18 +248,28 @@ keymap("n", "<leader>sl", "<CMD>set list!<CR>", "Toggle list")
 keymap("n", "<leader>sx", "<CMD>set cursorline!<CR>", "Toggle cursorline")
 keymap("n", "<leader>sy", "<CMD>set cursorcolumn!<CR>", "Toggle cursorcolumn")
 keymap("n", "<leader>sM", "<CMD>set modifiable!<CR>", "Toggle modifiable")
+
+keymap(
+  "n",
+  "<leader>sC",
+  ':execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR>',
+  "Toggle conceallevel"
+)
+
 keymap(
   "n",
   "<leader>sf",
   ':execute "set foldcolumn=" . (&foldcolumn == "0" ? "1" : "0")<CR>',
   "Toggle foldcolumn"
 )
+
 keymap(
   "n",
   "<leader>s|",
   ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR>',
   "Toggle colorcolumn"
 )
+
 keymap(
   "n",
   "<leader>sc",

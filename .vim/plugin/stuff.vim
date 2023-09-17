@@ -61,7 +61,7 @@ nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
 
 " Format the entire buffer preserving cursor location
 " Requires the 'B' text object defined below
-nmap Q mfgqB'f
+nmap Q mfgqB`f
 
 " Format selected text maintaining the selection
 xmap Q gq`[v`]

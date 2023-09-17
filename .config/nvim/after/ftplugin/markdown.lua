@@ -1,76 +1,73 @@
+local has_mkdnflow, mkdnflow = pcall(require, "mkdnflow")
 local has_zk, zk = pcall(require, "zk.util")
 
-if not has_zk then
-  return
+-- conceal wikilinks, copied from:
+-- https://github.com/jakewvincent/mkdnflow.nvim/blob/main/lua/mkdnflow/conceal.lua
+vim.cmd [[
+  call matchadd('Conceal', '\zs\[\[[^[]\{-}[|]\ze[^[]\{-}\]\]')
+  call matchadd('Conceal', '\[\[[^[\{-}[|][^[]\{-}\zs\]\]\ze')
+  call matchadd('Conceal', '\zs\[\[\ze[^[]\{-}\]\]')
+  call matchadd('Conceal', '\[\[[^[]\{-}\zs\]\]\ze')
+  highlight Conceal ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+]]
+
+local bufmap = function(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs, {
+    buffer = true,
+    silent = true,
+    noremap = true,
+    desc = desc or nil,
+  })
+end
+
+if has_mkdnflow then
+  -- recreate theh goBack keymap falling back to the alt buffer
+  bufmap("n", "<BS>", function()
+    if not mkdnflow.buffers.goBack() then
+      vim.cmd "b#"
+    end
+  end, "Go back a buffer")
 end
 
 -- Add the key mappings only for Markdown files in a zk notebook.
-if zk.notebook_root(vim.fn.expand "%:p") ~= nil then
-  -- Create a new note after asking for its title.
-  -- This overrides the global `<leader>zn` mapping to create the note in the same directory as the current buffer.
-  vim.keymap.set(
+---@diagnostic disable-next-line: param-type-mismatch
+if has_zk and zk.notebook_root(vim.fn.expand "%:p") ~= nil then
+  -- Override the global kemap to create the new note in the same directory as the current buffer.
+  bufmap(
     "n",
     "<leader>zn",
-    "<cmd>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "New note" }
+    "<CMD>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
+    "New note"
   )
-  -- Create a new note in the same directory as the current buffer, using the current selection for title.
-  vim.keymap.set(
+
+  -- Create a new note using the current selection for the title.
+  bufmap(
     "v",
     "<leader>znt",
     ":'<,'>ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>",
-    {
-      buffer = true,
-      silent = true,
-      noremap = true,
-      desc = "New note using selected title",
-    }
+    "New note using selected title"
   )
-  -- Create a new note in the same directory as the current buffer, using the current selection for note content and asking for its title.
-  vim.keymap.set(
+
+  -- Use the current selection for the new note's content and prompt for the title.
+  bufmap(
     "v",
     "<leader>znc",
     ":'<,'>ZkNewFromContentSelection { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
-    {
-      buffer = true,
-      silent = true,
-      noremap = true,
-      desc = "New note using selected content",
-    }
+    "New note using selected content"
   )
-  -- Open notes linking to the current buffer.
-  vim.keymap.set(
-    "n",
-    "<leader>zb",
-    "<cmd>ZkBacklinks<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "Backlinks" }
-  )
-  -- Alternative for backlinks using pure LSP and showing the source context.
-  -- vim.keymap.set('n', '<leader>zb', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+
   -- Open notes linked by the current buffer.
-  vim.keymap.set(
-    "n",
-    "<leader>zl",
-    "<cmd>ZkLinks<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "Links" }
-  )
-  -- Open the code actions for a visual selection.
-  vim.keymap.set(
-    "v",
-    "<leader>za",
-    ":'<,'>lua vim.lsp.buf.range_code_action()<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "Code action" }
-  )
-  vim.keymap.set(
+  bufmap("n", "<leader>zl", "<CMD>ZkLinks<CR>", "Note links")
+
+  -- Open notes linking to the current buffer.
+  bufmap("n", "<leader>zb", "<CMD>ZkBacklinks<CR>", "Note backlinks")
+
+  bufmap(
     "v",
     "<leader>z<CR>",
     "'<,'>ZkInsertLinkAtSelection {matchSelected = true}<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "Insert link" }
+    "Insert link"
   )
-  vim.keymap.set(
-    "n",
-    "<leader>z<CR>",
-    "<cmd>ZkInsertLink<CR>",
-    { buffer = true, silent = true, noremap = true, desc = "Insert link" }
-  )
+
+  bufmap("n", "<leader>z<CR>", "<CMD>ZkInsertLink<CR>", "Insert link")
 end

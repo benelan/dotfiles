@@ -219,12 +219,7 @@ killport() { wtfport "$1" | xargs kill -9; }
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## find real from shortened url                               {{{
-unshorten() { curl -sIL "$1" | sed -n 's/Location: *//p'; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
-## check if a website is down                                 {{{
-down4me() { curl -s "http://downforeveryoneorjustme.com/$1" | sed '/just you/!d;s/<[^>]*>//g'; }
+unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
@@ -239,9 +234,16 @@ crt() {
 ## add entry to ssh config                                    {{{
 add_ssh() {
     [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
+
     [ ! -d ~/.ssh ] && mkdir -m 700 ~/.ssh
     [ ! -e ~/.ssh/config ] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
-    printf "%s" "\n\nHost $1\n  HostName $2\n  User $3\n  ServerAliveInterval 30\n  ServerAliveCountMax 120" \
+
+    printf "\n\n%s\n %s\n %s\n %s\n %s" \
+        "Host $1" \
+        "HostName $2" \
+        "User $3" \
+        "ServerAliveInterval 30" \
+        "ServerAliveCountMax 120" \
         >>~/.ssh/config
 }
 

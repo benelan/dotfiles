@@ -46,9 +46,13 @@ return {
           return {
             complete_function_calls = ts.completions.completeFunctionCalls,
             settings = {
-              tsserver_path = vim.env.HOME
-                .. "/.volta/tools/image/packages/typescript/lib/node_modules/typescript/lib/tsserver.js",
-              expose_as_code_action = { "all" },
+              expose_as_code_action = {
+                "add_missing_imports",
+                "fix_all",
+                "organize_imports",
+                "remove_unused",
+                "remove_unused_imports",
+              },
               tsserver_format_options = ts.settings.typescript.format,
               tsserver_file_preferences = ts.settings.typescript.inlayHints,
             },
