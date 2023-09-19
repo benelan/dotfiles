@@ -26,7 +26,7 @@ return {
   {
     "Wansmer/treesj", -- split/join treesitter nodes to multiple/single line(s)
     dependencies = "nvim-treesitter/nvim-treesitter",
-    keys = { { "<leader><Tab>", "<cmd>TSJToggle<cr>", desc = "SplitJoin" } },
+    keys = { { "<leader><Tab>", "<CMD>TSJToggle<CR>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
     opts = { use_default_keymaps = false, max_join_length = 420 },
   },

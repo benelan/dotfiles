@@ -166,29 +166,31 @@ return {
         group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", { clear = true }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
+
           if client == nil then
             return
           end
 
-          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
-          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
-          vim.api.nvim_set_option_value(
-            "formatexpr",
-            "v:lua.vim.lsp.formatexpr()",
-            { buf = args.buf }
-          )
-
-          -- disable formatting and use prettier/stylua instead (via null-ls below)
+          -- disable formatting for these servers in favor of prettier/stylua/shfmt
           if
             vim.tbl_contains(
-              { "typescript-tools", "tsserver", "jsonls", "html", "lua_ls" },
+              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
               client.name
             )
           then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
+          elseif client.supports_method "textDocument/formatting" then
+            vim.api.nvim_set_option_value(
+              "formatexpr",
+              "v:lua.vim.lsp.formatexpr()",
+              { buf = args.buf }
+            )
           end
+
+          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
+          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
           -- workaround for gopls not supporting semanticTokensProvider
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
@@ -219,12 +221,12 @@ return {
 
           -- stylua: ignore start
           bufmap("n", "K", vim.lsp.buf.hover, "Hover")
-          bufmap("n", "gH", vim.lsp.buf.signature_help, "LSP signature help")
           bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
           bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
           bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
           bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
+          bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
           bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
@@ -234,7 +236,7 @@ return {
 
           if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
             vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
-            bufmap("n", "gh", function()
+            bufmap("n", "gH", function()
               vim.lsp.inlay_hint(0, nil)
             end, "Toggle inlay hints")
           end

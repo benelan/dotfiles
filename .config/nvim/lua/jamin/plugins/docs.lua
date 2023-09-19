@@ -17,7 +17,7 @@ return {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
     build = "cd app && npm install",
     ft = { "markdown" },
-    keys = { { "<leader>dp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown preview" } },
+    keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
   },
   -----------------------------------------------------------------------------
   {
@@ -110,9 +110,9 @@ return {
       "DevdocsUpdateAll",
     },
     keys = {
-      { "<leader>do", "<cmd>DevdocsOpenCurrentFloat<cr>", desc = "Open Devdocs (buffer)" },
-      { "<leader>dO", "<cmd>DevdocsOpen<cr>", desc = "Open Devdocs" },
-      { "<leader>dU", "<cmd>DevdocsUpdateAll<cr>", desc = "Update Devdocs" },
+      { "<leader>do", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs (buffer)" },
+      { "<leader>dO", "<CMD>DevdocsOpen<CR>", desc = "Open Devdocs" },
+      { "<leader>dU", "<CMD>DevdocsUpdateAll<CR>", desc = "Update Devdocs" },
     },
   },
 }

@@ -54,8 +54,8 @@ keymap("t", "<esc><esc>", "<C-\\><C-N>")
 keymap("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", "Change directory to buffer")
 
 -- Search visually selected text
--- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><cr>]])
--- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><cr>]])
+-- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])
+-- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><CR>]])
 
 -- Search inside visually highlighted text
 keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
@@ -81,11 +81,6 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
   noremap = true,
   desc = "Visually select changed text",
 })
-
--------------------------------------------------------------------------------
-----> User command mappings
--------------------------------------------------------------------------------
----@see file* lua/jamin/commands.lua
 
 -------------------------------------------------------------------------------
 ----> Lists
@@ -188,15 +183,19 @@ keymap("n", "<leader>mH", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all fro
 ----> Windows
 -------------------------------------------------------------------------------
 
--- create tmux style splits
+-- create splits
 keymap("n", "<M-\\>", "<C-w>v", "Vertical split")
 keymap("n", "<M-->", "<C-w>s", "Horizontal split")
+
+keymap("n", "<leader>\\", "<C-w>v", "Vertical split")
+keymap("n", "<leader>-", "<C-w>s", "Horizontal split")
 
 ---- navigate
 keymap("n", "<C-h>", "<C-w>h", "Focus window left")
 keymap("n", "<C-j>", "<C-w>j", "Focus window below")
 keymap("n", "<C-k>", "<C-w>k", "Focus window above")
 keymap("n", "<C-l>", "<C-w>l", "Focus window right")
+
 keymap("v", "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window left")
 keymap("v", "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus window below")
 keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus window above")
@@ -214,7 +213,11 @@ keymap("n", "<M-Down>", "<C-w>J", "Move window down")
 keymap("n", "<M-Up>", "<C-w>K", "Move window up")
 keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
+-- close
 keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
+
+keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit")
+keymap("n", "<leader>q", "<CMD>quit<CR>", "Quit")
 
 -------------------------------------------------------------------------------
 ----> Tabs
@@ -228,11 +231,11 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 ----> Buffers
 -------------------------------------------------------------------------------
 
--- list, pick, and jump to a buffer
-keymap("n", "<leader>bj", ":<C-U>buffers<CR>:buffer<Space>", "Jump to buffer")
+keymap({ "n", "i" }, "<M-w>", "<CMD>write<CR>", "Write buffer")
+keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
 
-keymap("n", "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
-keymap({ "n", "i" }, "<M-q>", "<CMD>q<CR>", "Quit")
+keymap("n", "<leader>w", "<CMD>write<CR>", "Write buffer")
+keymap("n", "<leader>x", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
@@ -290,3 +293,15 @@ keymap("n", "<leader>st", function()
     vim.treesitter.start()
   end
 end, "Toggle treesitter")
+
+
+if vim.g.vscode then
+  -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary
+  keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
+  keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
+
+  keymap("n", "gr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
+  keymap("n", "gR", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
+
+  keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
+end

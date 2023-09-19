@@ -113,4 +113,4 @@ vim.api.nvim_create_user_command(
   { desc = "Toggles a variety of UI options to reduce noise while presenting/coding" }
 )
 
-keymap("n", "<leader>sN", "<CMD>NoiseToggle<CR>", "Toggle UI noise")
+keymap("n", "<leader>su", "<CMD>UIToggle<CR>", "Toggle UI noise")

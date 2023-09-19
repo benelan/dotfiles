@@ -1,12 +1,13 @@
-" System Open Handler                                                   {|}
-" --------------------------------------------------------------------- {|}
-" The regex can be vastly improved, but it works for the most part.
-
 if exists('g:loaded_jamin_system_open_handler') || &cp | finish | endif
 let g:loaded_jamin_system_open_handler = 1
 
+" System Open Handler
+" The regex can be vastly improved, but it works for the most part.
+
+" --------------------------------------------------------------------- {|}
 " Determine the system's `open` command                                 {{{
 " --------------------------------------------------------------------- {|}
+
 if has('wsl')
     let g:opencmd = 'wslview'
 elseif (has('win32') || has('win64'))
@@ -22,6 +23,7 @@ endif
 " --------------------------------------------------------------------- }}}
 " Execute the open command                                              {{{
 " --------------------------------------------------------------------- {|}
+
 function! s:ExecuteOpen(text)
     if g:opencmd == 'netrw'
         if !exists('g:loaded_netrw')
@@ -42,6 +44,7 @@ endfunction
 " --------------------------------------------------------------------- }}}
 " Open URI using the default system app (browser, email client, etc)    {{{
 " --------------------------------------------------------------------- {|}
+
 function! s:OpenURI(text)
     " TODO: This pattern can be improved
     let l:pattern='[a-z]*:\/\/[^ >,;()"'.. "'"..'{}]*'
@@ -60,6 +63,7 @@ endfunction
 " --------------------------------------------------------------------- }}}
 " Open file or path using the default system app                        {{{
 " --------------------------------------------------------------------- {|}
+
 function! s:OpenPath(text)
     " use Vim's builtin file handler
     if isdirectory(a:text) || filereadable(a:text)
@@ -74,6 +78,7 @@ endfunction
 " --------------------------------------------------------------------- }}}
 " Open NPM dependency in the browser if the file is package.json        {{{
 " --------------------------------------------------------------------- {|}
+
 function! s:OpenDepNPM(text)
     " only attempt to match in package.json files
     if expand("%:t") == "package.json"
@@ -91,10 +96,10 @@ function! s:OpenDepNPM(text)
     endif
 endfunction
 
-
 " --------------------------------------------------------------------- }}}
 " GitHub issue/PR number for current repo                               {{{
 " --------------------------------------------------------------------- {|}
+
 function! s:OpenGitHubIssue(text)
     if executable('gh') " requires github-cli
         " get the workspace's current repo
@@ -119,10 +124,10 @@ function! s:OpenGitHubIssue(text)
     endif
 endfunction
 
-
 " --------------------------------------------------------------------- }}}
 " Plug function                                                         {{{
 " --------------------------------------------------------------------- {|}
+
 " equivalent to NeoVim's `vim.startswith`
 function! s:StartsWith(longer, shorter) abort
     return a:longer[0:len(a:shorter)-1] ==# a:shorter

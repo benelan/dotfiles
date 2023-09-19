@@ -1,11 +1,10 @@
-"  Indent text objects                                                 {{{
-"----------------------------------------------------------------------{|}
-
-" https://vimways.org/2018/transactions-pending/
 if exists('g:loaded_jamin_text_objects') || &cp | finish | endif
 let g:loaded_jamin_text_objects = 1
 
+" https://vimways.org/2018/transactions-pending/
+
 "" in indentation                                             {{{
+
 function! s:inIndentationTextObject()
 	let l:magic = &magic
 	set magic
@@ -34,6 +33,7 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" around indentation                                         {{{
+
 function! s:aroundIndentationTextObject()
 	let l:magic = &magic
 	set magic
@@ -65,4 +65,3 @@ xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
 onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"----------------------------------------------------------------------}}}

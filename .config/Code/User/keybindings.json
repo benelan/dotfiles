@@ -40,14 +40,6 @@
     "when": "listFocus && !inputFocus"
   },
   {
-    "key": "alt+v",
-    "command": "workbench.action.splitEditorRight"
-  },
-  {
-    "key": "alt+s",
-    "command": "workbench.action.splitEditorDown"
-  },
-  {
     "key": "ctrl+h",
     "command": "workbench.action.focusLeftGroup"
   },
@@ -64,8 +56,24 @@
     "command": "workbench.action.focusBelowGroup"
   },
   {
-    "key": "alt+right",
-    "command": "workbench.action.increaseViewSize"
+    "key": "alt+\\",
+    "command": "workbench.action.splitEditorRight"
+  },
+  {
+    "key": "alt+-",
+    "command": "workbench.action.splitEditorDown"
+  },
+  {
+    "key": "alt+x",
+    "command": "workbench.action.closeActiveEditor"
+  },
+  {
+    "key": "alt+a",
+    "command": "explorer.newFile"
+  },
+  {
+    "key": "alt+/",
+    "command": "filesExplorer.findInWorkspace"
   },
   {
     "key": "alt+right",
@@ -84,27 +92,25 @@
     "command": "workbench.action.moveActiveEditorGroupDown"
   },
   {
-    "key": "alt+a",
-    "command": "explorer.newFile"
+    "key": "-",
+    "command": "workbench.action.toggleSidebarVisibility",
+    "when": "filesExplorerFocus && !inputFocus"
   },
   {
-    "key": "alt+/",
-    "command": "filesExplorer.findInWorkspace"
+    "key": "-",
+    "command": "workbench.view.explorer",
+    "when": "editorTextFocus && neovim.mode == 'normal'"
   },
   {
+    "command": "vscode-neovim.send",
+    "key": "alt+j",
+    "when": "editorTextFocus",
+    "args": "<M-j>"
+  },
+  {
+    "command": "vscode-neovim.send",
     "key": "alt+k",
-    "command": "editor.action.showHover"
-  },
-  {
-    "command": "vscode-neovim.compositeEscape1",
-    "key": "j",
-    "when": "neovim.mode == insert && editorTextFocus",
-    "args": "j"
-  },
-  {
-    "command": "vscode-neovim.compositeEscape2",
-    "key": "k",
-    "when": "neovim.mode == insert && editorTextFocus",
-    "args": "k"
+    "when": "editorTextFocus",
+    "args": "<M-k>"
   }
 ]

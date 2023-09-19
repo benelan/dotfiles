@@ -3,9 +3,10 @@ local utils = require "utils"
 local M = {}
 
 -- https://wezfurlong.org/wezterm/config/lua/wezterm/format
-M.cells = {}
-M.separator_char = "   "
-M.colors = {
+local cells = {}
+local separator_char = "   "
+
+local colors = {
   date_fg = utils.colors.brights[5],
   date_bg = utils.colors.background,
   battery_good = utils.colors.brights[7],
@@ -23,31 +24,31 @@ M.colors = {
 ---@param fg string
 ---@param bg string
 ---@param separate boolean
-M.push = function(text, icon, fg, bg, separate)
-  table.insert(M.cells, { Foreground = { Color = fg } })
-  table.insert(M.cells, { Background = { Color = bg } })
-  table.insert(M.cells, { Attribute = { Intensity = "Bold" } })
-  table.insert(M.cells, { Text = icon .. " " .. text .. " " })
+local add_section = function(text, icon, fg, bg, separate)
+  table.insert(cells, { Foreground = { Color = fg } })
+  table.insert(cells, { Background = { Color = bg } })
+  table.insert(cells, { Attribute = { Intensity = "Bold" } })
+  table.insert(cells, { Text = icon .. " " .. text .. " " })
 
   if separate then
-    table.insert(M.cells, { Foreground = { Color = M.colors.separator_fg } })
-    table.insert(M.cells, { Background = { Color = M.colors.separator_bg } })
-    table.insert(M.cells, { Text = M.separator_char })
+    table.insert(cells, { Foreground = { Color = colors.separator_fg } })
+    table.insert(cells, { Background = { Color = colors.separator_bg } })
+    table.insert(cells, { Text = separator_char })
   end
 
-  table.insert(M.cells, "ResetAttributes")
+  table.insert(cells, "ResetAttributes")
 end
 
-M.set_date = function()
+local display_date = function()
   local date = wezterm.strftime " %a %H:%M"
-  M.push(date, "    ", M.colors.date_fg, M.colors.date_bg, true)
+  add_section(date, "    ", colors.date_fg, colors.date_bg, true)
 end
 
-M.set_active_key_table = function(window, pane)
-  M.push(window:active_key_table() or "", " ", M.colors.key_table_fg, M.colors.key_table_bg, true)
+local display_active_key_table = function(window, pane)
+  add_section(window:active_key_table() or "", " ", colors.key_table_fg, colors.key_table_bg, true)
 end
 
-M.set_battery = function()
+local display_battery = function()
   -- https://wezfurlong.org/wezterm/config/lua/wezterm/battery_info
   local charge = ""
   local charge_color = ""
@@ -59,30 +60,30 @@ M.set_battery = function()
 
     if b.state == "Charging" then
       icon = "󰂄 "
-      charge_color = M.colors.battery_good
+      charge_color = colors.battery_good
     elseif charge_percentage < 33 then
       icon = "󱊡 "
-      charge_color = M.colors.battery_low
+      charge_color = colors.battery_low
     elseif charge_percentage < 66 then
       icon = "󱊢 "
-      charge_color = M.colors.battery_medium
+      charge_color = colors.battery_medium
     else
       icon = "󱊣 "
-      charge_color = M.colors.battery_good
+      charge_color = colors.battery_good
     end
   end
 
-  M.push(charge, icon, charge_color, M.colors.battery_bg, false)
+  add_section(charge, icon, charge_color, colors.battery_bg, false)
 end
 
 M.setup = function()
   wezterm.on("update-right-status", function(window, pane)
-    M.cells = {}
-    M.set_date()
-    M.set_battery()
-    M.set_active_key_table(window)
+    cells = {}
+    display_date()
+    display_battery()
+    display_active_key_table(window)
 
-    window:set_right_status(wezterm.format(M.cells))
+    window:set_right_status(wezterm.format(cells))
   end)
 end
 

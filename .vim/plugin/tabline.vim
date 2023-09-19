@@ -1,7 +1,12 @@
-"  TabLine                                                             {{{
-"----------------------------------------------------------------------{|}
+if exists('g:loaded_jamin_tabline') || &cp | finish | endif
+let g:loaded_jamin_tabline = 1
 
+set tabline=%!MyTabLine()
+
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  {|}
 "" get the current working directory                          {{{
+
 function! TabCWD() abort
     let cwd = fnamemodify(getcwd(), ":~")
     if cwd isnot# "~/"
@@ -14,6 +19,7 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" get the buffer count and current index                     {{{
+
 function! BufferInfo() abort
     let buffers = filter(range(1, bufnr("$")), {i, v ->
                 \  buflisted(v) && getbufvar(v, "&filetype") isnot# "qf"
@@ -32,6 +38,7 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" get the tab count                                          {{{
+
 function! TabCount() abort
     let count_tabs = tabpagenr("$")
 
@@ -42,6 +49,7 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" display the tabline                                        {{{
+
 function! MyTabLine()
     let s = ""
 
@@ -72,7 +80,3 @@ function! MyTabLine()
 endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-set tabline=%!MyTabLine()
-
-"----------------------------------------------------------------------}}}

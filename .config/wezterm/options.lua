@@ -3,7 +3,7 @@ local utils = require "utils"
 local M = {}
 
 function M.apply_config(config)
-  -- Using wezterm term requires additional setup
+  -- Using wezterm TERM requires additional setup
   -- https://wezfurlong.org/wezterm/config/lua/config/term
   config.term = "wezterm" -- xterm-256color
   config.default_cwd = wezterm.home_dir

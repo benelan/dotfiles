@@ -114,31 +114,9 @@ if has("keymap")
     let maplocalleader = "\\"
 
     "" general keymaps                                            {{{
-    if isdirectory(expand("$HOME/dev/lib/fzf"))
-        set runtimepath+=~/dev/lib/fzf
-        nnoremap <leader>ff :FZF<CR>
-        nnoremap <leader>fg :GFiles<CR>
-        nnoremap <leader>fb :Buffers<CR>
-        nnoremap <leader>fd :LS<CR>
 
-    endif
-
-    nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
-
-    nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
-
-    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
-    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
-    nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
-    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
-    nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
-    xnoremap <leader>gl :Gclog --follow<CR>
-
-    nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
-    nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
-
-    nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
-    nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
+    nnoremap <leader>q :q<cr>
+    nnoremap <leader>w :w<cr>
 
     nnoremap Y y$
     vnoremap Y y
@@ -255,8 +233,11 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" buffers, tabs, and windows                                 {{{
 
+    "" close buffer 
+    nnoremap <leader>x :bdelete<CR>
+
     "" close all the buffers
-    nnoremap <leader>bda :bufdo bd<CR>
+    nnoremap <leader>xa :bufdo bdelete<CR>
 
     "" picks buffer
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
@@ -270,6 +251,10 @@ if has("keymap")
     let s:last_tab = 1
     nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
     au TabLeave * let s:last_tab = tabpagenr()
+
+    " Create splits
+    nnoremap <leader>- :split<cr>
+    nnoremap <leader>\ :vsplit<cr>
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -328,7 +313,34 @@ if has("keymap")
                         \ : "unnamed")<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" plugins                                                    {{{
 
+    if isdirectory(expand("$HOME/dev/lib/fzf"))
+        set runtimepath+=~/dev/lib/fzf
+        nnoremap <leader>ff :FZF<CR>
+        nnoremap <leader>fg :GFiles<CR>
+        nnoremap <leader>fb :Buffers<CR>
+        nnoremap <leader>fd :LS<CR>
+    endif
+
+    nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
+
+    nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
+
+    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
+    nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
+    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
+    nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
+    xnoremap <leader>gl :Gclog --follow<CR>
+
+    nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
+    nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
+
+    nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
+    nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
 " --------------------------------------------------------------------- }}}

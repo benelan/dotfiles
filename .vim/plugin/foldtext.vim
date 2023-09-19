@@ -1,7 +1,10 @@
-"  Fold text                                                           {{{
-"----------------------------------------------------------------------{|}
+if exists('g:loaded_jamin_foldtext') || &cp | finish | endif
+let g:loaded_jamin_foldtext = 1
 
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
+
+set foldtext=MyFoldText()
+
 function! MyFoldText()
     " get first non-blank line
     let fs = v:foldstart
@@ -26,7 +29,3 @@ function! MyFoldText()
 
     return line . separator . expansion . foldSize
 endfunction
-
-set foldtext=MyFoldText()
-
-"----------------------------------------------------------------------}}}

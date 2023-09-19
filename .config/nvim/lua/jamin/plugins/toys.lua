@@ -30,30 +30,6 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "folke/trouble.nvim",
-    -- enabled = false,
-    opts = {
-      icons = vim.g.use_devicons == true,
-      fold_open = res.icons.ui.expanded,
-      fold_closed = res.icons.ui.collapsed,
-      indent_lines = false,
-      use_diagnostic_signs = true,
-      action_keys = { preview = "o", jump_close = "O" },
-    },
-    cmd = { "TroubleToggle", "Trouble" },
-    -- stylua: ignore
-    keys = {
-      { "<leader>xx", "<CMD>TroubleToggle document_diagnostics<CR>", desc = "Trouble document diagnostics" },
-      { "<leader>xw", "<CMD>TroubleToggle workspace_diagnostics<CR>", desc = "Trouble workspace diagnostics" },
-      { "<leader>xr", "<CMD>TroubleToggle lsp_references<CR>", desc = "Trouble LSP references" },
-      { "<leader>xt", "<CMD>TroubleToggle lsp_type_definitions<CR>", desc = "Trouble LSP type definitions" },
-      { "<leader>xd", "<CMD>TroubleToggle lsp_definitions<CR>", desc = "Trouble LSP definitions" },
-      { "<leader>xq", "<CMD>TroubleToggle quickfix<CR>", desc = "Trouble quickfix" },
-      { "<leader>xl", "<CMD>TroubleToggle loclist<CR>", desc = "Trouble loclist" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
     "folke/which-key.nvim",
     -- enabled = false,
     event = "CursorHold",
@@ -74,9 +50,6 @@ return {
         ["<leader>"] = {
           ["<C-l>"] = "Redraw",
           ["<Del>"] = "Delete buffer",
-          ["-"] = "Horizontal split",
-          ["\\"] = "Vertical split",
-          ["bd"] = "Delete buffer and window",
           E = {
             name = "ex",
             R = "Replace word under cursor",
@@ -86,7 +59,6 @@ return {
           R = { name = "refactor" },
           Y = "Copy to clipboard (EOL)",
           Z = "Zoom buffer",
-          b = { name = "buffers" },
           d = { name = "docs" },
           f = { name = "find", z = { name = "fzf" } },
           g = { name = "git", t = { name = "toggle options" }, f = { name = "find" } },
@@ -98,13 +70,9 @@ return {
             m = { name = "my stuff", i = { name = "issues" }, p = { name = "pull requests" } },
           },
           p = "Paste to clipboard",
-          q = "Quit",
-          r = "Replace operator",
           s = { name = "settings" },
           t = { name = "tabs" },
           u = "Undotree",
-          w = "Write",
-          x = { name = "trouble" },
           y = "Copy to clipboard",
           z = { name = "zk" },
         },
@@ -121,7 +89,6 @@ return {
           h = { name = "hunks" },
           m = { name = "mergetool" },
           p = "Paste from clipboard",
-          r = "Replace operator",
           y = "Copy to clipboard",
           z = { name = "zk" },
         },

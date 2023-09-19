@@ -1,5 +1,6 @@
-" Did you mean...                                                       {|}
-" --------------------------------------------------------------------- {|}
+if exists('g:loaded_jamin_did_you_mean') || &cp | finish | endif
+let g:loaded_jamin_did_you_mean = 1
+
 " Vim global plugin for selecting the file you actually want to open
 " https://github.com/EinfachToll/DidYouMean
 " Maintainer: Daniel Schemala <istjanichtzufassen@gmail.com>

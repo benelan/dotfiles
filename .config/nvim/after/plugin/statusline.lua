@@ -49,62 +49,95 @@ local function buffer_diagnostics()
 end
 
 -- branch name and added/deleted/changed line count
-local function gitsigns_info()
-  ---@diagnostic disable-next-line: undefined-field
-  local gs = vim.b.gitsigns_status_dict
-  if gs and gs.head ~= "" then
-    return string.format(
-      "%%#TabLineFill#  %s%s  %%#NormalFloat# %s",
-      icons.git.branch,
-      gs.head,
-      format_numeric_data {
+local function gitsigns_state(fallback)
+  if vim.b.gitsigns_status_dict then
+    return " "
+      .. format_numeric_data {
         {
           highlight = "GitStatusLineAdd", -- "GitSignsAdd",
           icon = icons.git.add,
-          count = gs.added,
+          count = vim.b.gitsigns_status_dict.added,
         },
         {
           highlight = "GitStatusLineChange", -- "GitSignsChange",
           icon = icons.git.edit,
-          count = gs.changed,
+          count = vim.b.gitsigns_status_dict.changed,
         },
         {
           highlight = "GitStatusLineDelete", -- "GitSignsDelete",
           icon = icons.git.delete,
-          count = gs.removed,
+          count = vim.b.gitsigns_status_dict.removed,
         },
       }
-    )
+  end
+  return fallback or ""
+end
+
+local function gitsigns_branch(fallback)
+  if vim.g.gitsigns_head ~= nil then
+    return string.format("  %s%s  ", icons.git.branch, vim.g.gitsigns_head)
   else
-    return ""
+    return fallback or ""
   end
 end
 
--- local function fugitive_git_branch()
---   if
---     vim.g.loaded_fugitive == 1
---     and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git"
---   then
---     local head = vim.fn["fugitive#Head"]()
---     if head ~= "" then
---       return string.format("%%#NormalFloat#  %s%s  ", icons.git.branch, head)
---     end
+local function fugitive_branch(fallback)
+  if vim.g.loaded_fugitive == 1 and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
+    local head = vim.fn["fugitive#Head"]()
+    if head ~= "" then
+      return icons.git.branch .. head
+    end
+  end
+  return fallback or ""
+end
+
+-- number of updatable plugins
+local function lazy_updates(fallback)
+  local has_lazy, lazy = pcall(require, "lazy.status")
+  if has_lazy and lazy.has_updates() then
+    return string.format("[%s%s]", icons.lsp_kind.Package, lazy.updates())
+  end
+  return fallback or ""
+end
+
+-- debug info
+local function debug_info(fallback)
+  local has_dap, dap = pcall(require, "dap")
+  if has_dap then
+    local dap_status = dap.status()
+    if not vim.tbl_contains({ "", nil }, dap_status) then
+      return "%#DapStatusLineInfo#" .. dap_status
+    end
+  end
+  return fallback or ""
+end
+
+-- navic bread crumb
+-- local function navic_breadcrumbs(fallback)
+--   local has_navic, navic = pcall(require, "nvim-navic")
+--   if has_navic and navic.is_available() then
+--     return "  " .. navic.get_location()
 --   end
---   return ""
+--   return fallback or ""
 -- end
 
 function MyStatusLine()
-  return "%#TabLineSel#"
-    .. "  [%n]%m%r%h%w%q%y  "
+  return "%#TabLineSel#  "
+    .. lazy_updates()
+    .. "[%n]%m%r%h%w%q%y  "
     -------------------------------------------
-    .. gitsigns_info() -- fugitive_git_branch()
+    .. "%#TabLineFill#"
+    .. gitsigns_branch(fugitive_branch())
     -------------------------------------------
-    .. " %<%#NormalFloat#"
+    .. "%#NormalFloat#"
+    .. debug_info(gitsigns_state())
+    -------------------------------------------
+    .. "%<%#NormalFloat#"
     .. "%="
     -------------------------------------------
     .. buffer_diagnostics()
-    .. " %#TabLineFill#  " -- "%#Normal#"
-    .. "%f  "
+    .. "  %#TabLineFill#" -- "%#Normal#"
+    .. "  %f  "
     -------------------------------------------
     .. "%#TabLineSel#"
     .. "  %c:[%l/%L]  "

@@ -60,5 +60,5 @@ vim.opt.undolevels = 10000
 
 if has_res then
   vim.opt.showbreak = res.icons.ui.ellipses
-  vim.opt.fillchars = { diff = res.icons.ui.fill_slash }
+  vim.opt.fillchars = { eob = res.icons.ui.fill_shade, diff = res.icons.ui.fill_slash }
 end

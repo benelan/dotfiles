@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------
 ----> Global settings
 -------------------------------------------------------------------------------
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
@@ -24,6 +25,7 @@ vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
 -------------------------------------------------------------------------------
 ----> Global functions
 -------------------------------------------------------------------------------
+
 _G.R = function(name)
   require("plenary.reload").reload_module(name)
 end
@@ -35,6 +37,7 @@ end
 -------------------------------------------------------------------------------
 ----> Load modules
 -------------------------------------------------------------------------------
+
 require "jamin.options"
 require "jamin.keymaps"
 require "jamin.commands"
@@ -42,6 +45,7 @@ require "jamin.commands"
 -------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------
+
 -- prevent unused builtin plugins from loading
 vim.tbl_map(function(p)
   vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
@@ -69,6 +73,7 @@ end, {
   "zipPlugin",
 })
 
+-- settings for neovim embedded in VSCode
 if vim.g.vscode then
   vim.cmd [[
     source ~/.vim/plugin/stuff.vim
@@ -76,15 +81,10 @@ if vim.g.vscode then
     source ~/.vim/plugin/system_open_handler.vim
   ]]
 
-  -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary
-  keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
-  keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
-
-  -- skip loading neovim plugins with lazy.nvim when using the vscode extension
-  return
+  return -- skip loading neovim plugins
 end
 
--- Bootstrap Lazy.nvim if it isn't installed
+-- bootstrap lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -101,6 +101,7 @@ vim.opt.rtp:prepend(lazypath)
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   change_detection = { notify = false },
+  checker = { enabled = true, notify = false },
   dev = { path = vim.env.LIB, fallback = true },
   ui = { icons = require("jamin.resources").icons.lazy },
   install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },

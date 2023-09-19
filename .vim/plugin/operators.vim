@@ -1,25 +1,24 @@
-" Operatorfunc plugins                                                  {|}
-" --------------------------------------------------------------------- {|}
+if exists('loaded_jamin_operators') || &compatible || v:version < 700
+  finish
+endif
+let loaded_jamin_operators = 1
+
+" Operatorfunc plugns
 "
 " Author: Tom Ryder <tom@sanctum.geek.nz>
 " Source: https://dev.sanctum.geek.nz/cgit/vim-replace-operator.git/about/
 " Source: https://dev.sanctum.geek.nz/cgit/vim-colon-operator.git/about/
 " License: Same as Vim itself
 
-if exists('loaded_jamin_operator') || &compatible || v:version < 700
-  finish
-endif
-let loaded_jamin_operator = 1
-
-" --------------------------------------------------------------------- }}}
-" Replace operator                                                      {{{
+" --------------------------------------------------------------------- {|}
+" Substitute operator                                                   {{{
 " --------------------------------------------------------------------- {|}
 "
-"Replace text selected with a motion with the contents
+" Substitute text selected with a motion with the contents
 " of a register in a repeatable way.
 "
-" Replace the operated text with the contents of a register
-function! ReplaceOperator(type) abort
+" Substitute the operated text with the contents of a register
+function! SubstituteOperator(type) abort
 
   " Save the current value of the unnamed register and the current value of
   " the 'clipboard' and 'selection' options into a dictionary for restoring
@@ -64,14 +63,14 @@ function! ReplaceOperator(type) abort
 endfunction
 
 " Helper function for normal mode map
-function! operators#replace(register) abort
+function! operators#substitute(register) abort
   let s:register = a:register
-  set operatorfunc=ReplaceOperator
+  set operatorfunc=SubstituteOperator
   return 'g@'
 endfunction
 
-nnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
-xnoremap <expr> <Plug>(ReplaceOperator) operators#replace(v:register)
+nnoremap <expr> <Plug>(SubstituteOperator) operators#substitute(v:register)
+xnoremap <expr> <Plug>(SubstituteOperator) operators#substitute(v:register)
 
 " --------------------------------------------------------------------- }}}
 " Colon operator                                                        {{{

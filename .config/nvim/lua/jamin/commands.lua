@@ -32,20 +32,24 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = vim.fn.join(res.filetypes.writing, ","),
-  group = vim.api.nvim_create_augroup("jamin_setup_writing_files", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_writing_files", { clear = true }),
   callback = function()
     vim.wo.spell = true
     vim.wo.cursorline = false
     vim.wo.wrap = true
+
     vim.b.editorconfig = false
     vim.b.no_cursorline = true
 
     keymap("n", "$", "g$", "Move to end of line")
     keymap("n", "^", "g^", "Move to start of line")
+
     keymap("n", "g$", "$", "Move to end of wrapped line")
     keymap("n", "g^", "^", "Move to start of wrapped line")
+
     keymap("n", "gj", "j", "Move down wrapped lines")
     keymap("n", "gk", "k", "Move up wrapped lines")
+
     vim.keymap.set(
       "n",
       "j",
@@ -70,6 +74,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
     if vim.wo.diff then
       return
     end
+
     if vim.tbl_contains(res.filetypes.marker_folds, vim.bo.filetype) then
       vim.wo.foldmethod = "marker"
     elseif vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
@@ -90,6 +95,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     if event.match:match "^%w%w+://" then
       return
     end
+
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 
@@ -116,7 +122,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       lead = res.icons.ui.fill_dot,
       nbsp = res.icons.ui.nbsp,
       leadmultispace = res.icons.ui.separator
-        .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", {}) - 1),
+        .. string.rep("x", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
     }
   end,
 })

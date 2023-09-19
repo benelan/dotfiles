@@ -1,10 +1,13 @@
+if exists('g:loaded_jamin_stuff') || &cp | finish | endif
+let g:loaded_jamin_stuff = 1
+
+"----------------------------------------------------------------------{|}
 "  Settings                                                            {{{
 "----------------------------------------------------------------------{|}
 
 let g:qf_disable_statusline = 1
-
-"" markdown settings                                          {{{
 let g:markdown_recommended_style = 0
+
 " Helps with syntax highlighting by specififying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
@@ -16,8 +19,9 @@ let g:markdown_fenced_languages = [
     \ 'js=javascript', 'jsx=javascriptreact'
     \ ]
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  {|}
 "" netrw settings                                             {{{
+
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
 " let g:netrw_keepdir = 0
@@ -45,35 +49,24 @@ if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
 
 "" general keymaps                                            {{{
 nnoremap q: :
-nnoremap <leader>q :q<cr>
-nnoremap <leader>w :w<cr>
 
 nnoremap <Backspace> <C-^>
 
-nnoremap <silent> <leader>bd :bdelete<CR>
+ " Open a new tab of the current buffer and cursor position.
+nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<CR>
 
-" Create splits
-nnoremap <leader>- :split<cr>
-nnoremap <leader>\ :vsplit<cr>
+" Format the entire buffer preserving cursor location.
+" Requires the 'B' text object defined below.
+nmap Q mFgqBg`F
 
- " Open a new tab of the current buffer and cursor position
-nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
-
-" Format the entire buffer preserving cursor location
-" Requires the 'B' text object defined below
-nmap Q mfgqB`f
-
-" Format selected text maintaining the selection
+" Format selected text maintaining the selection.
 xmap Q gq`[v`]
 
-" Use the repeat operator with a visual selection
-" This is useful for performing an edit on a single line, then highlighting a
-" visual block on a number of lines to repeat the edit.
-vnoremap . :normal .<cr>
+" Use the repeat operator on a visual selection.
+vnoremap . :normal .<CR>
 
-" Repeat a macro on a visual selection of lines
-" Same as above but with a macro; complete the command by choosing the register
-" containing the macro.
+" Repeat a macro on a visual selection. 
+" Complete the command by choosing the register containing the macro.
 vnoremap @ :normal @
 
 " Maintain selection while indenting
@@ -86,15 +79,16 @@ nnoremap & :&&<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" insert, command, and operator  keymaps                     {{{
+
 cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
 cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
-" Go to line above/below the cursor, from insert mode
-inoremap <C-Down> <C-O>o
-inoremap <C-Up> <C-O>O
+" Add a line above/below the cursor from insert mode
+inoremap <C-Down> <C-O>O
+inoremap <C-Up> <C-O>o
 
 " Expand the buffer's directory
-cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
 " Use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
@@ -112,6 +106,7 @@ onoremap il <cmd>normal! ^vg_<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
+
 nnoremap x "_x
 vnoremap <leader>d "_d
 
@@ -126,6 +121,7 @@ nnoremap gY <CMD>let @+=@*<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" spelling                                                   {{{
+
 " fix the next/previous misspelled word
 nnoremap [S [s1z=
 nnoremap ]S ]s1z=
@@ -138,15 +134,17 @@ inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" clear search highlights and reset syntax                   {{{
+
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
 inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" ex commands (vimgrep, search/replace, etc)                 {{{
+
 " Edit contents of register
 nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
-            \ .' = '. string(getreg(v:register))<cr><c-f><left>
+            \ .' = '. string(getreg(v:register))<CR><c-f><left>
 
 " start ex command for vimgrep
 nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
@@ -156,12 +154,11 @@ nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" plug keymaps                                               {{{
+
 nnoremap g: <Plug>(ColonOperator)
 
-nnoremap gs <Plug>(ReplaceOperator)
-vnoremap gs <Plug>(ReplaceOperator)
-nnoremap <leader>r <Plug>(ReplaceOperator)
-vnoremap <leader>r <Plug>(ReplaceOperator)
+nnoremap gs <Plug>(SubstituteOperator)
+vnoremap gs <Plug>(SubstituteOperator)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -197,11 +194,13 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle quickfix list open/close                            {{{
+
 com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif"
-nnoremap <C-q> <cmd>QfToggle<cr>
+nnoremap <C-q> <cmd>QfToggle<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" quickfix list to/from file for later access                {{{
+
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
 command! SaveQf call getqflist()
@@ -225,6 +224,7 @@ command! Qf2Ll call getqflist()
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" grep all files in the quickfix, buffer, or argument lists  {{{
+
 command! -nargs=* GrepQfList call getqflist()
     \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
     \ ->sort() ->uniq() ->join(' ')
@@ -247,6 +247,7 @@ endfunction
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system grep function and user command                      {{{
+
 function! Grep(...)
     return system(join([&grepprg] + [expandcmd(join(a:000, " "))], " "))
 endfunction
@@ -255,6 +256,7 @@ command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle netrw open/close                                    {{{
+
 function! s:NetrwToggle()
   try | Rexplore
   catch | Explore
@@ -266,6 +268,7 @@ nnoremap <silent> <leader>e :Netrw<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" go to next/previous merge conflict hunks                   {{{
+
 "" from https://github.com/tpope/vim-unimpaired
 function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
@@ -276,6 +279,7 @@ nnoremap <silent> ]x :<C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{
+
 function! VisualSelection(...) range
     let l:saved_reg = @"
     execute "normal! vgvy"
@@ -298,6 +302,7 @@ xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" delete buffer without closing window                       {{{
+
 "" https://stackoverflow.com/a/6271254
 function s:BGoneHeathen(action, bang)
   let l:cur = bufnr("%")
@@ -317,6 +322,7 @@ nnoremap <silent> <leader><Delete> :Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fzf user commands                                          {{{
+
 if isdirectory(expand("$LIB/fzf")) && executable("fzf")
     " Enable per-command history
     " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
@@ -418,6 +424,7 @@ if has("autocmd")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" set global marks by filetype when leaving buffers      {{{
+
     augroup jamin_global_marks
         autocmd!
         " Clear actively used marks to prevent jumping to other projects
@@ -480,6 +487,7 @@ if has("autocmd")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" filetype-specific options                              {{{
+
     augroup jamin_filetype_options
         autocmd!
         autocmd FileType * setlocal formatoptions-=o
@@ -491,6 +499,7 @@ if has("autocmd")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" automatically toggle some options on enter/leave       {{{
+
     augroup jamin_toggle_options
         autocmd!
         "  autocmd BufEnter,FocusGained,WinEnter * if &number | set relativenumber | endif
@@ -501,7 +510,7 @@ if has("autocmd")
 
         autocmd InsertEnter,WinLeave * setlocal nocursorline
         autocmd InsertLeave,WinEnter *
-                    \ if !exists("b:no_cursorline") || !b:no_cursorline
+                    \ if !exists("g:vscode") && !exists("b:no_cursorline") || !b:no_cursorline
                     \ |   setlocal cursorline
                     \ | endif
     augroup END
@@ -521,6 +530,7 @@ if has("autocmd")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Use skeletons when creating specific new files         {{{
+
     augroup jamin_skeletons
         autocmd!
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
