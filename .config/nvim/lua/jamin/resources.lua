@@ -177,7 +177,7 @@ M.lsp_servers = {
   "cssls",
   -- "docker_compose_language_service",
   "dockerls",
-  -- "efm",
+  "efm",
   "eslint",
   "gopls",
   -- "graphql",
@@ -329,4 +329,5 @@ M.path = {
     "*.zip",
   },
 }
+
 return M

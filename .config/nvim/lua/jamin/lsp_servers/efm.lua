@@ -3,9 +3,9 @@
 -------------------------------------------------------------------------------
 ----> Formatter/Linter configurations
 -------------------------------------------------------------------------------
--- Web Development
+
+-- Web development
 local prettier = {
-  prefix = "prettier",
   formatCanRange = true,
   formatStdin = true,
   formatCommand = [[
@@ -21,11 +21,11 @@ local prettier = {
   ]],
   rootMarkers = {
     ".prettierrc",
-    ".prettierrc.cjs",
     ".prettierrc.js",
+    ".prettierrc.cjs",
+    ".prettierrc.mjs",
     ".prettierrc.json",
     ".prettierrc.json5",
-    ".prettierrc.mjs",
     ".prettierrc.toml",
     ".prettierrc.yaml",
     ".prettierrc.yml",
@@ -34,7 +34,7 @@ local prettier = {
 }
 
 local eslint = {
-  prefix = "eslint",
+  lintSource = "eslint",
   lintStdin = true,
   lintIgnoreExitCode = true,
   lintCommand = "eslint --format visualstudio --stdin --stdin-filename ${INPUT}",
@@ -42,42 +42,43 @@ local eslint = {
   rootMarkers = {
     ".eslintrc",
     ".eslintrc.js",
+    ".eslintrc.cjs",
+    ".eslintrc.mjs",
     ".eslintrc.json",
     ".eslintrc.yml",
+    ".eslintrc.yaml",
   },
 }
 
 local stylelint = {
-  prefix = "stylelint",
+  lintSource = "stylelint",
   lintStdin = true,
   lintCommand = "stylelint --no-color --formatter compact --stdin --stdin-filename ${INPUT}",
   lintFormats = {
     "%.%#: line %l, col %c, %trror - %m",
     "%.%#: line %l, col %c, %tarning - %m",
   },
+  requireMarker = true,
   rootMarkers = {
     ".stylelintrc",
     ".stylelintrc.js",
     ".stylelintrc.json",
     ".stylelintrc.yml",
     "stylelint.config.js",
-    "node_modules/.bin/stylelint",
   },
 }
 
--------------------------------------------------------------------------------
 -- Writing
 local markdownlint = {
-  prefix = "markdownlint",
+  lintSource = "markdownlint",
   lintStdin = true,
   lintCommand = "markdownlint --disable MD031 MD024 MD013 MD041 MD033 --stdin",
   lintFormats = { "%f:%l %m", "%f:%l:%c %m", "%f: %l: %m" },
 }
 
--------------------------------------------------------------------------------
 -- Lua
 local luacheck = {
-  prefix = "luacheck",
+  lintSource = "luacheck",
   lintStdin = true,
   lintIgnoreExitCode = true,
   lintCommand = "luacheck --codes --formatter plain --std luajit --filename ${INPUT} -",
@@ -86,16 +87,14 @@ local luacheck = {
 }
 
 local stylua = {
-  prefix = "stylua",
   formatStdin = true,
   formatCommand = "stylua --search-parent-directories --stdin-filepath ${INPUT} -",
   rootMarkers = { ".stylua.toml", "stylua.toml" },
 }
 
--------------------------------------------------------------------------------
 -- Shell
 local shellcheck = {
-  prefix = "shellcheck",
+  lintSource = "shellcheck",
   lintStdin = true,
   lintCommand = "shellcheck --color=never --format=gcc -x -",
   lintFormats = {
@@ -103,38 +102,31 @@ local shellcheck = {
     "%f:%l:%c: %tarning: %m",
     "%f:%l:%c: %tote: %m",
   },
-  rootMarkers = {},
 }
 
 local shfmt = {
-  prefix = "shfmt",
   formatStdin = true,
   formatCommand = "shfmt -ci -i 4",
-  rootMarkers = {},
 }
 
--------------------------------------------------------------------------------
 -- Golang
 local golangci_lint = {
-  prefix = "golangci-lint",
+  lintSource = "golangci",
   lintStdin = false,
   lintCommand = "golangci-lint run --color never --out-format tab ${INPUT}",
   lintFormats = { "%.%#:%l:%c %m" },
-  rootMarkers = {},
 }
 
 local staticcheck = {
-  prefix = "staticcheck",
+  lintSource = "staticcheck",
   lintStdin = false,
   lintCommand = "staticcheck -f text ${INPUT}",
   lintFormats = { "%.%#:%l:%c: %m" },
-  rootMarkers = {},
 }
 
--------------------------------------------------------------------------------
 -- Tooling
 local actionlint = { -- GitHub Actions
-  prefix = "actionlint",
+  lintSource = "actionlint",
   lintStdin = true,
   lintIgnoreExitCode = true,
   lintCommand = "actionlint -no-color -oneline -stdin-filename ${INPUT} -",
@@ -144,11 +136,12 @@ local actionlint = { -- GitHub Actions
     "%f:%l:%c: %.%#: SC%n:%tnfo:%m",
     "%f:%l:%c: %m",
   },
-  rootMarkers = { ".github" },
+  requireMarker = true,
+  rootMarkers = { "workflows/" },
 }
 
 local hadolint = { -- Dockerfiles
-  prefix = "hadolint",
+  lintSource = "hadolint",
   lintStdin = true,
   lintCommand = "hadolint --no-color -",
   lintFormats = {
@@ -191,7 +184,6 @@ return {
   settings = {
     rootMarkers = { ".git", "Dockerfile", "Makefile" },
     lintDebounce = 1000000000,
-    -- logLevel = 5,
     languages = languages,
   },
 }
