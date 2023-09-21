@@ -83,6 +83,28 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 })
 
 -------------------------------------------------------------------------------
+----> LSP
+-------------------------------------------------------------------------------
+
+keymap("n", "K", vim.lsp.buf.hover, "Hover")
+keymap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
+keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
+keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
+keymap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
+keymap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+keymap("n", "gd", vim.lsp.buf.definition, "LSP definition")
+keymap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
+keymap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
+keymap("n", "gr", vim.lsp.buf.references, "LSP references")
+keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
+keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+
+-- stylua: ignore start
+keymap("n", "gH", function() vim.lsp.inlay_hint(0, nil) end, "Toggle inlay hints")
+keymap({ "n", "v" }, "gF", function() vim.lsp.buf.format { async = true } end, "Format")
+-- stylua: ignore end
+
+-------------------------------------------------------------------------------
 ----> Lists
 -------------------------------------------------------------------------------
 
@@ -293,7 +315,6 @@ keymap("n", "<leader>st", function()
     vim.treesitter.start()
   end
 end, "Toggle treesitter")
-
 
 if vim.g.vscode then
   -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary

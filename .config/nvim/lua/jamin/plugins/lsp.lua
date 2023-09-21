@@ -53,26 +53,8 @@ return {
                 "remove_unused",
                 "remove_unused_imports",
               },
-              tsserver_format_options = ts.settings.typescript.format,
               tsserver_file_preferences = ts.settings.typescript.inlayHints,
             },
-          }
-        end,
-      },
-      -----------------------------------------------------------------------------
-      {
-        "jose-elias-alvarez/typescript.nvim",
-        enabled = false,
-        opts = function()
-          return {
-            server = vim.tbl_deep_extend("force", require "jamin.lsp_servers.tsserver", {
-              on_attach = function()
-                local has_nls, nls = pcall(require, "null-ls")
-                if has_nls then
-                  nls.register(require "typescript.extensions.null-ls.code-actions")
-                end
-              end,
-            }),
           }
         end,
       },
@@ -160,7 +142,7 @@ return {
       end
 
       -------------------------------------------------------------------------------
-      ----> Keymaps and local settings
+      ----> On attach
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", { clear = true }),
@@ -171,7 +153,11 @@ return {
             return
           end
 
-          -- disable formatting for these servers in favor of prettier/stylua/shfmt
+          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
+          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
+
+          -- disable formatting for some LSP servers in favor of better standalone programs
+          -- e.g.  prettier, shfmt, stylua
           if
             vim.tbl_contains(
               { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
@@ -182,6 +168,7 @@ return {
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
           elseif client.supports_method "textDocument/formatting" then
+            -- if the LSP server has formatting capabilities, use it for formatexpr
             vim.api.nvim_set_option_value(
               "formatexpr",
               "v:lua.vim.lsp.formatexpr()",
@@ -189,8 +176,19 @@ return {
             )
           end
 
-          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
-          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
+          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
+            vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
+          end
+
+          if client.supports_method "textDocument/codeLens" then
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+              group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
+              buffer = args.buf,
+              callback = function()
+                vim.lsp.codelens.refresh()
+              end,
+            })
+          end
 
           -- workaround for gopls not supporting semanticTokensProvider
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
@@ -209,115 +207,78 @@ return {
               }
             end
           end
-
-          local bufmap = function(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, {
-              buffer = args.buf,
-              silent = true,
-              noremap = true,
-              desc = desc,
-            })
-          end
-
-          -- stylua: ignore start
-          bufmap("n", "K", vim.lsp.buf.hover, "Hover")
-          bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-          bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
-          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
-          bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-          bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-          bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
-          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
-          bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
-          bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
-          bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-          bufmap({ "n", "v" }, "gF", function() vim.lsp.buf.format {async = true} end, "Format")
-          -- stylua: ignore end
-
-          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
-            vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
-            bufmap("n", "gH", function()
-              vim.lsp.inlay_hint(0, nil)
-            end, "Toggle inlay hints")
-          end
-
-          if client.supports_method "textDocument/codeLens" then
-            bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-              group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
-              buffer = args.buf,
-              callback = function()
-                vim.lsp.codelens.refresh()
-              end,
-            })
-          end
         end,
       })
     end,
   },
   -----------------------------------------------------------------------------
   {
-    "jose-elias-alvarez/null-ls.nvim", -- integrates formatters and linters
-    -- enabled = false,
-    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
-    opts = function()
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
-      local hover = require("null-ls").builtins.hover
-      local formatting = require("null-ls").builtins.formatting
-      local diagnostics = require("null-ls").builtins.diagnostics
-      local code_actions = require("null-ls").builtins.code_actions
+    "mfussenegger/nvim-lint",
+    config = function()
+      local lint = require "lint"
 
-      local has_stylelint_configfile = function(utils)
-        return utils.root_has_file {
-          ".stylelintrc",
-          ".stylelintrc.js",
-          ".stylelintrc.json",
-          ".stylelintrc.yml",
-          "stylelint.config.js",
-          "node_modules/.bin/stylelint",
-        }
+      lint.linters_by_ft = {
+        dockerfile = { "hadolint" },
+        css = { "stylelint" },
+        scss = { "stylelint" },
+        sh = { "shellcheck" },
+        yaml = { "actionlint" },
+        markdown = { "markdownlint", "cspell" },
+      }
+
+      local markdownlint = require("lint").linters.markdownlint
+      markdownlint.args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" }
+
+      vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
+        group = vim.api.nvim_create_augroup("jamin_linter", { clear = true }),
+        callback = function()
+          lint.try_lint()
+        end,
+      })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "stevearc/conform.nvim",
+    dependencies = { "neovim/nvim-lspconfig" },
+    config = function()
+      local conform = require "conform"
+
+      conform.setup {
+        formatters_by_ft = {
+          -- "_" means filetypes w/o any other formatters configured
+          ["_"] = { "trim_whitespace" },
+          -- runs multiple formatters sequentially
+          markdown = { "markdownlint", "prettier" },
+          css = { "stylelint", "prettier" },
+          scss = { "stylelint", "prettier" },
+          sh = { "shellcheck", "shfmt" },
+          lua = { "stylua" },
+          yaml = { "prettier" },
+        },
+      }
+
+      for _, filetype in ipairs(res.filetypes.webdev) do
+        conform.formatters_by_ft[filetype] = { "prettier" }
       end
 
-      local quiet_diagnostics = { virtual_text = false, signs = false }
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        group = vim.api.nvim_create_augroup("jamin_formatter", { clear = true }),
+        pattern = vim.tbl_keys(conform.formatters_by_ft),
+        callback = function(args)
+          vim.api.nvim_set_option_value(
+            "formatexpr",
+            "v:lua.require'conform'.formatexpr()",
+            { buf = args.buf }
+          )
 
-      local sources = {
-        hover.dictionary,
-        hover.printenv,
+          vim.keymap.set({ "n", "v" }, "gF", function()
+            require("conform").format { async = true, lsp_fallback = true }
+          end, { desc = "Format buffer", noremap = true, buffer = args.buf })
+        end,
+      })
 
-        code_actions.gitrebase,
-        code_actions.shellcheck,
-
-        diagnostics.hadolint,
-        diagnostics.actionlint.with {
-          runtime_condition = function()
-            return vim.api
-              .nvim_buf_get_name(vim.api.nvim_get_current_buf())
-              :match "github/workflows" ~= nil
-          end,
-        },
-
-        diagnostics.markdownlint.with {
-          extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
-          prefer_local = "node_modules/.bin",
-          diagnostic_config = quiet_diagnostics,
-        },
-
-        diagnostics.stylelint.with {
-          prefer_local = "node_modules/.bin",
-          diagnostic_config = quiet_diagnostics,
-          condition = has_stylelint_configfile,
-        },
-
-        formatting.prettier.with { prefer_local = "node_modules/.bin" },
-        formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-        formatting.stylua,
-        formatting.trim_whitespace,
-      }
-      return {
-        debug = false,
-        fallback_severity = vim.diagnostic.severity.HINT,
-        sources = sources,
-      }
+      require("conform.formatters.shfmt").args = { "-ci", "-i", "4", "-filename", "$FILENAME" }
     end,
   },
 }
