@@ -1,6 +1,6 @@
 return {
   {
-    "danymat/neogen", -- Generates doc annotations
+    "danymat/neogen", -- Generates doc annotations for a variety of filetypes
     dependencies = "nvim-treesitter/nvim-treesitter",
     opts = { snippet_engine = "luasnip" },
     cmd = "Neogen",
@@ -21,7 +21,7 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "jakewvincent/mkdnflow.nvim",
+    "jakewvincent/mkdnflow.nvim", -- Keymaps and utils for editing markdown files
     ft = { "markdown", "md", "mdx" },
     opts = {
       filetypes = { md = true, rmd = true, mdx = true, markdown = true },
@@ -51,11 +51,10 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "mickael-menu/zk-nvim", -- Requires https://github.com/mickael-menu/zk
+    "mickael-menu/zk-nvim", -- Tool for writing markdown notes or a personal wiki
     ft = { "markdown" },
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
     keys = {
-      -- Search for the notes matching the current visual selection.
       { "<leader>zn", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note" },
       { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags" },
       { "<leader>zo", "<CMD>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes" },
@@ -65,6 +64,7 @@ return {
         desc = "Find notes",
         mode = "n",
       },
+      -- Search for the notes matching the current visual selection.
       { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
     },
     config = function()
@@ -73,7 +73,7 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "luckasRanarison/nvim-devdocs",
+    "luckasRanarison/nvim-devdocs", -- Read https://devdocs.io directly in neovim
     dev = true,
     build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
     dependencies = {
@@ -82,6 +82,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = function()
+      -- use glow to render docs if installed - https://github.com/charmbracelet/glow
       local glow_opts = vim.fn.executable "glow" == 1
           and {
             previewer_cmd = "glow",

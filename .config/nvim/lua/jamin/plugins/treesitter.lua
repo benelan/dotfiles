@@ -1,6 +1,6 @@
 return {
   {
-    "ThePrimeagen/refactoring.nvim",
+    "ThePrimeagen/refactoring.nvim", -- common refactor actions and automated debug print statement generation
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     --stylua: ignore
     keys = {
@@ -86,7 +86,7 @@ return {
         incremental_selection = {
           enable = true,
           keymaps = {
-            init_selection = "<C-n>",
+            init_selection = "<C-n>", -- normal mode; the rest are visual
             node_incremental = "<C-n>",
             scope_incremental = "<C-s>",
             node_decremental = "<C-p>",

@@ -99,7 +99,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- load the plugin specs
-require("lazy").setup("jamin.plugins", {
+require("lazy").setup({ "folke/lazy.nvim", import = "jamin.plugins" }, {
   change_detection = { notify = false },
   checker = { enabled = true, notify = false },
   dev = { path = vim.env.LIB, fallback = true },

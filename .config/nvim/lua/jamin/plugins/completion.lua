@@ -3,7 +3,8 @@ local res = require "jamin.resources"
 return {
   -----------------------------------------------------------------------------
   {
-    "uga-rosa/cmp-dictionary",
+    "uga-rosa/cmp-dictionary", -- completes words from a dictionary file
+    -- only use source if a dict file exists in the usual place
     cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
     ft = res.filetypes.writing,
     config = function()
@@ -18,19 +19,32 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
+  {
+    "hrsh7th/cmp-nvim-lsp", -- completes API info from attached langauge servers
+    "hrsh7th/cmp-nvim-lsp-signature-help", -- completes function signatures via LSP
+    event = "LspAttach",
+  },
   -----------------------------------------------------------------------------
-  { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
+  {
+    "hrsh7th/cmp-cmdline", -- completes (neo)vim APIs in command mode
+    event = "CmdlineEnter",
+  },
   -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       "L3MON4D3/LuaSnip", -- snippet engine
-      "hrsh7th/cmp-buffer", -- buffer source
-      "hrsh7th/cmp-path", -- path source
-      { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil }, -- visible text in other tmux panes
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 }, -- ripgrep from cwd
+      "hrsh7th/cmp-buffer", -- completes text in the current buffer
+      "hrsh7th/cmp-path", -- completes filesystem paths
+      {
+        "andersevenrud/cmp-tmux", -- completes text visible in other tmux panes
+        cond = vim.env.TMUX ~= nil,
+      },
+      {
+        "lukas-reineke/cmp-rg", -- completes text from other files in the project
+        cond = vim.fn.executable "rg" == 1,
+      },
     },
     config = function()
       local cmp = require "cmp"
@@ -38,6 +52,9 @@ return {
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
 
       cmp.setup {
+        confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
+
+        -- setup LuaSnip with the completion engine
         snippet = {
           expand = function(args)
             if has_ls then
@@ -45,16 +62,39 @@ return {
             end
           end,
         },
+
         mapping = {
-          ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
-          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "s" }),
-          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "s" }),
           ["<C-e>"] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
+          ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
+
+          -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true },
             { "i", "c" }
           ),
           ["<C-z>"] = cmp.mapping(cmp.mapping.confirm { select = true }, { "i", "c" }),
+
+          -- scroll the documentation window that some results have
+          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "s" }),
+          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "s" }),
+
+          -- go to the next/previous completion result
+          ["<C-n>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+            else
+              cmp.complete()
+            end
+          end, { "i", "c" }),
+          ["<C-p>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+            else
+              cmp.complete()
+            end
+          end, { "i", "c" }),
+
+          -- Next/previous result, but use Codeium instead if it's installed
           ["<C-j>"] = cmp.mapping(function(fallback)
             if vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
@@ -73,25 +113,12 @@ return {
               fallback()
             end
           end, { "i" }),
-          ["<C-n>"] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
-            else
-              cmp.complete()
-            end
-          end, { "i", "c" }),
-          ["<C-p>"] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
-            else
-              cmp.complete()
-            end
-          end, { "i", "c" }),
         },
-        confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
+
         formatting = {
           fields = { "abbr", "menu", "kind" },
           format = function(entry, vim_item)
+            -- show the item's completion source in the results
             vim_item.menu = ({
               buffer = " [BUF] ",
               luasnip = "[SNIP] ",
@@ -103,12 +130,16 @@ return {
               dictionary = "[DICT] ",
             })[entry.source.name]
 
+            -- use devicons when completing paths (if enabled/installed)
+            -- devicons require a patched font, e.g. from https://www.nerdfonts.com/
             if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
+
               if icon then
                 vim_item.kind = string.format(" %s   %s  ", icon, vim_item.kind)
                 vim_item.kind_hl_group = hl_group
               else
+                -- use a fallback folder or file icon if the filetype doesn't exist in devicons
                 vim_item.kind = string.format(
                   " %s  %s ",
                   vim_item.kind == "Folder" and res.icons.lsp_kind.Folder or res.icons.lsp_kind.File,
@@ -116,6 +147,7 @@ return {
                 )
               end
             else
+              -- use LSP kind icons for non-path completion items and specify a fallback icon
               vim_item.kind = string.format(
                 " %s  %s ",
                 res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Text,
@@ -125,34 +157,14 @@ return {
             return vim_item
           end,
         },
-        sources = {
-          { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "luasnip", group_index = 2 },
-          { name = "nvim_lsp", group_index = 2 },
-          { name = "tmux", keyword_length = 3, group_index = 2 },
-          { name = "path", keyword_length = 3, group_index = 2 },
-          { name = "buffer", keyword_length = 3, group_index = 2 },
-          { name = "rg", keyword_length = 3, group_index = 3 },
-          {
-            name = "dictionary",
-            group_index = 3,
-            keyword_length = 3,
-            entry_filter = function(_, ctx)
-              for _, ft in ipairs(res.filetypes.writing) do
-                if ft == ctx.filetype then
-                  return true
-                end
-              end
-              return false
-            end,
-          },
-        },
+
         sorting = {
           comparators = {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             cmp.config.compare.score,
 
+            -- move private (starts with an underscore) results to the bottom
             function(entry1, entry2)
               local _, entry1_under = entry1.completion_item.label:find "^_+"
               local _, entry2_under = entry2.completion_item.label:find "^_+"
@@ -174,6 +186,30 @@ return {
             cmp.config.compare.kind,
             cmp.config.compare.length,
             cmp.config.compare.order,
+          },
+        },
+
+        sources = {
+          { name = "nvim_lsp_signature_help", group_index = 1 },
+          { name = "luasnip", group_index = 2 },
+          { name = "nvim_lsp", group_index = 2 },
+          { name = "tmux", keyword_length = 3, group_index = 2 },
+          { name = "path", keyword_length = 3, group_index = 2 },
+          { name = "buffer", keyword_length = 3, group_index = 2 },
+          -- only show ripgrep and dictioinary if there are no results from other sources
+          { name = "rg", keyword_length = 3, group_index = 3 },
+          {
+            name = "dictionary",
+            group_index = 3,
+            keyword_length = 3,
+            entry_filter = function(_, ctx)
+              for _, ft in ipairs(res.filetypes.writing) do
+                if ft == ctx.filetype then
+                  return true
+                end
+              end
+              return false
+            end,
           },
         },
       }
@@ -198,9 +234,13 @@ return {
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     keys = function()
       local has_ls, ls = pcall(require, "luasnip")
+
       if not has_ls then
         return {}
       end
+
+      -- The keymaps have Codeium fallbacks for when there are no snippet actions
+      -- If Codeium isn't installed, there are additional fallbacks
       return {
         {
           "<C-h>",
@@ -246,6 +286,7 @@ return {
         },
       }
     end,
+
     opts = function()
       return {
         history = false,
@@ -254,6 +295,7 @@ return {
         enable_autosnippets = true,
       }
     end,
+
     config = function(_, opts)
       local ls = require "luasnip"
       local lua_loader = require "luasnip.loaders.from_lua"
@@ -261,8 +303,13 @@ return {
 
       ls.config.set_config(opts)
 
+      -- loads friendly_snippets
       vscode_loader.lazy_load()
+
+      -- loads the snippets I created for VSCode a while ago
       vscode_loader.lazy_load { paths = { "~/.config/Code/User" } }
+
+      -- loads snippets in the luasnippets dir of my neovim config
       lua_loader.lazy_load()
 
       vim.api.nvim_create_user_command("LuaSnipEdit", function()
@@ -278,13 +325,16 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "github/copilot.vim",
+    -- alternative Copilot plugin written in Lua with with cmp integration:
+    -- https://github.com/zbirenbaum/copilot.lua
+    "github/copilot.vim", -- AI completion tool - https://github.com/features/copilot
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
   },
+  -----------------------------------------------------------------------------
   {
-    "Exafunction/codeium.vim",
+    "Exafunction/codeium.vim", -- free Copilot alternative -- https://codeium.com/
     cond = vim.env.USE_CODEIUM == "1",
     init = function()
       vim.g.codeium_enabled = true

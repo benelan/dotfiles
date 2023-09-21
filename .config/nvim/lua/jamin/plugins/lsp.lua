@@ -19,9 +19,11 @@ return {
             require("mason").setup(opts)
             local mr = require "mason-registry"
 
+            -- make sure all of the Mason tools are installed
             local function ensure_installed()
               for _, tool in ipairs(opts.ensure_installed) do
                 local p = mr.get_package(tool)
+
                 if not p:is_installed() then
                   p:install()
                 end
@@ -38,8 +40,7 @@ return {
       },
       -----------------------------------------------------------------------------
       {
-        "pmizio/typescript-tools.nvim",
-        -- enabled = false,
+        "pmizio/typescript-tools.nvim", -- Lua implementation of typescript-language-server
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = function()
           local ts = require "jamin.lsp_servers.tsserver"
@@ -60,7 +61,7 @@ return {
       },
       -----------------------------------------------------------------------------
       {
-        "folke/neodev.nvim",
+        "folke/neodev.nvim", -- Enhances the lua language server with neovim APIs
         ft = "lua",
         opts = {},
       },
@@ -102,14 +103,17 @@ return {
       -------------------------------------------------------------------------------
       --> Diagnostics and capabilities
 
+      -- set the diagnostic opts specified above
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
+      -- remove border characters from hover and signature help
       vim.lsp.handlers["textDocument/hover"] =
         vim.lsp.with(vim.lsp.handlers.hover, { border = opts.diagnostics.float.border })
 
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
 
+      -- set the diagnostic icons
       for _, sign in ipairs(res.icons.diagnostics) do
         vim.fn.sign_define("DiagnosticSign" .. sign.name, {
           texthl = "DiagnosticSign" .. sign.name,
@@ -118,6 +122,7 @@ return {
         })
       end
 
+      -- combine default LSP client capabilities with override opts specified above
       local capabilities = vim.tbl_deep_extend(
         "force",
         require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
@@ -128,8 +133,8 @@ return {
       ----> Server setup
 
       for _, server in pairs(res.lsp_servers) do
-        -- zk and typescript plugins set up the clients themselves
-        if server ~= "zk" and server ~= "tsserver" then
+        -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
+        if not vim.tbl_contains({ "zk", "tsserver" }, server) then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -153,6 +158,7 @@ return {
             return
           end
 
+          -- sync up OG vim features with language server
           vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
           vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
@@ -176,10 +182,12 @@ return {
             )
           end
 
+          -- setup inlay hints if supported by language server
           if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
             vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
           end
 
+          -- setup codelens if supported by language server
           if client.supports_method "textDocument/codeLens" then
             vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
               group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),

@@ -1,4 +1,4 @@
--- Toggles a floating terminal window
+-- Toggles a persistent floating terminal window
 local function floating_term()
   ---@diagnostic disable: param-type-mismatch
   local term_bufnr = vim.fn.bufnr "term://"
@@ -8,6 +8,9 @@ local function floating_term()
 
   local win_count = vim.fn.winnr "$"
   local ui = vim.api.nvim_list_uis()[1]
+
+  -- window dimensions are proportional to the editor size
+  -- positioned in the bottom right corner of the editor
   local winopts = {
     relative = "editor",
     width = math.floor(ui.width / 3),
@@ -26,6 +29,7 @@ local function floating_term()
     vim.fn.execute "startinsert"
   else
     vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, winopts)
+
     vim.fn.execute "term"
     vim.cmd "set winfixheight nobuflisted"
     vim.fn.execute "startinsert"
@@ -44,6 +48,7 @@ keymap("t", "<M-t>", "<CMD>TermToggle<CR>", "Close floating terminal")
 local function diagnostic_toggle(event)
   local vars = event.bang and vim.g or vim.b
   vars.diagnostics_disabled = not vars.diagnostics_disabled
+
   local cmd = vars.diagnostics_disabled and "disable" or "enable"
 
   vim.api.nvim_echo({
@@ -93,7 +98,7 @@ local function noise_toggle()
     vim.g.matchup_matchparen_offscreen = { method = noise_disabled and "popup" or "" }
   end
 
-  -- -- redraw treesitter context which gets messed up
+  -- redraw treesitter context which gets messed up
   if vim.fn.exists ":TSContextToggle" then
     vim.cmd "TSContextToggle"
     vim.cmd "TSContextToggle"
