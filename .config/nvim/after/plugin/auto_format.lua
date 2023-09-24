@@ -18,9 +18,7 @@ local fix_typescript_issues = function(bufnr)
   local ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]
 
   -- exit if the typescript client isn't attached
-  if not ts_client then
-    return
-  end
+  if not ts_client then return end
 
   local diag = vim.diagnostic.get(bufnr, {
     namespace = vim.lsp.diagnostic.get_namespace(ts_client.id, false),
@@ -41,27 +39,21 @@ end
 local fix_eslint_issues = function(bufnr)
   local eslint_client = vim.lsp.get_clients({ bufnr = bufnr, name = "eslint" })[1]
 
-  if not eslint_client then
-    return
-  end
+  if not eslint_client then return end
 
   local diag = vim.diagnostic.get(
     bufnr,
     { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id, false) }
   )
 
-  if #diag > 0 then
-    vim.cmd "EslintFixAll"
-  end
+  if #diag > 0 then vim.cmd "EslintFixAll" end
 end
 
 -- formatting needs to happen before the file saves
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("jamin_auto_format", { clear = true }),
   callback = function(event)
-    if not format_is_enabled then
-      return
-    end
+    if not format_is_enabled then return end
 
     -- typescript goes first so the formatting changes it causes from the actions
     -- are fixed by prettier. For example, organizing imports can change the indent size.

@@ -138,51 +138,81 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 -- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
 -- keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
-keymap("n", "]d", function()
-  vim.diagnostic.goto_next {
-    wrap = true,
-    float = true,
-  }
-end, "Next diagnostic")
+keymap(
+  "n",
+  "]d",
+  function()
+    vim.diagnostic.goto_next {
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Next diagnostic"
+)
 
-keymap("n", "[d", function()
-  vim.diagnostic.goto_prev {
-    wrap = true,
-    float = true,
-  }
-end, "Previous diagnostic")
+keymap(
+  "n",
+  "[d",
+  function()
+    vim.diagnostic.goto_prev {
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Previous diagnostic"
+)
 
-keymap("n", "]e", function()
-  vim.diagnostic.goto_next {
-    severity = "Error",
-    wrap = true,
-    float = true,
-  }
-end, "Next diagnostic")
+keymap(
+  "n",
+  "]e",
+  function()
+    vim.diagnostic.goto_next {
+      severity = "Error",
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Next diagnostic"
+)
 
-keymap("n", "[e", function()
-  vim.diagnostic.goto_prev {
-    severity = "Error",
-    wrap = true,
-    float = true,
-  }
-end, "Previous diagnostic")
+keymap(
+  "n",
+  "[e",
+  function()
+    vim.diagnostic.goto_prev {
+      severity = "Error",
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Previous diagnostic"
+)
 
-keymap("n", "]w", function()
-  vim.diagnostic.goto_next {
-    severity = "Warn",
-    wrap = true,
-    float = true,
-  }
-end, "Next diagnostic")
+keymap(
+  "n",
+  "]w",
+  function()
+    vim.diagnostic.goto_next {
+      severity = "Warn",
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Next diagnostic"
+)
 
-keymap("n", "[w", function()
-  vim.diagnostic.goto_prev {
-    severity = "Warn",
-    wrap = true,
-    float = true,
-  }
-end, "Previous diagnostic")
+keymap(
+  "n",
+  "[w",
+  function()
+    vim.diagnostic.goto_prev {
+      severity = "Warn",
+      wrap = true,
+      float = true,
+    }
+  end,
+  "Previous diagnostic"
+)
 
 -------------------------------------------------------------------------------
 ----> Git difftool and mergetool

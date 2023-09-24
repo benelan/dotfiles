@@ -27,9 +27,7 @@ return {
       filetypes = { md = true, rmd = true, mdx = true, markdown = true },
       links = {
         -- style = "wiki",
-        transform_explicit = function(text)
-          return text:gsub(" ", "-"):lower()
-        end,
+        transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
       },
       perspective = { priority = "current", fallback = "first" },
       new_file_template = { use_template = true },
@@ -67,9 +65,7 @@ return {
       -- Search for the notes matching the current visual selection.
       { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
     },
-    config = function()
-      require("zk").setup { picker = "telescope" }
-    end,
+    config = function() require("zk").setup { picker = "telescope" } end,
   },
   -----------------------------------------------------------------------------
   {

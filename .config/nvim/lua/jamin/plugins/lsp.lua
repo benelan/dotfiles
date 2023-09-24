@@ -24,9 +24,7 @@ return {
               for _, tool in ipairs(opts.ensure_installed) do
                 local p = mr.get_package(tool)
 
-                if not p:is_installed() then
-                  p:install()
-                end
+                if not p:is_installed() then p:install() end
               end
             end
 
@@ -154,9 +152,7 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client == nil then
-            return
-          end
+          if client == nil then return end
 
           -- sync up OG vim features with language server
           vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
@@ -192,9 +188,7 @@ return {
             vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
               group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
               buffer = args.buf,
-              callback = function()
-                vim.lsp.codelens.refresh()
-              end,
+              callback = function() vim.lsp.codelens.refresh() end,
             })
           end
 

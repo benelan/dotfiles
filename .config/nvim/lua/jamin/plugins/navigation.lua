@@ -31,9 +31,7 @@ return {
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
         build = "make",
-        config = function()
-          require("telescope").load_extension "fzf"
-        end,
+        config = function() require("telescope").load_extension "fzf" end,
       },
     },
     keys = function()
@@ -41,9 +39,7 @@ return {
       local has_themes, themes = pcall(require, "telescope.themes")
 
       -- fix errors on initial neovim install
-      if not has_themes or not has_builtin then
-        return
-      end
+      if not has_themes or not has_builtin then return end
 
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
@@ -164,9 +160,7 @@ return {
         },
       }
     end,
-    config = function(_, opts)
-      require("telescope").setup(opts)
-    end,
+    config = function(_, opts) require("telescope").setup(opts) end,
   },
   -----------------------------------------------------------------------------
   {

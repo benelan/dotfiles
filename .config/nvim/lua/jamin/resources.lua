@@ -1,8 +1,6 @@
 local M = {}
 
-local i = function(icon, backup)
-  return vim.g.use_devicons and icon or backup or ""
-end
+local i = function(icon, backup) return vim.g.use_devicons and icon or backup or "" end
 
 M.icons = {
   diagnostics = {

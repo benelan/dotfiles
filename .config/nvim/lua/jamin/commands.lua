@@ -6,9 +6,7 @@ local res = require "jamin.resources"
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", { clear = true }),
-  callback = function()
-    vim.highlight.on_yank { higroup = "Visual", timeout = 269 }
-  end,
+  callback = function() vim.highlight.on_yank { higroup = "Visual", timeout = 269 } end,
 })
 
 -----------------------------------------------------------------------------
@@ -71,9 +69,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
   group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", { clear = true }),
   callback = function()
-    if vim.wo.diff then
-      return
-    end
+    if vim.wo.diff then return end
 
     if vim.tbl_contains(res.filetypes.marker_folds, vim.bo.filetype) then
       vim.wo.foldmethod = "marker"
@@ -92,9 +88,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("jamin_auto_create_dir", { clear = true }),
   callback = function(event)
-    if event.match:match "^%w%w+://" then
-      return
-    end
+    if event.match:match "^%w%w+://" then return end
 
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")

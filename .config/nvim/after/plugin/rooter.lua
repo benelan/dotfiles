@@ -26,9 +26,7 @@ local root_cache = {}
 ---@return string?
 local function get_lsp_root(buf, ignore)
   local clients = vim.lsp.get_clients { bufnr = buf }
-  if not next(clients) then
-    return
-  end
+  if not next(clients) then return end
 
   for _, client in pairs(clients) do
     if
@@ -42,14 +40,10 @@ local function get_lsp_root(buf, ignore)
 end
 
 local function set_root(args)
-  if args.file == "" or string.match(args.file, "^%a*://") then
-    return
-  end
+  if args.file == "" or string.match(args.file, "^%a*://") then return end
 
   local path = vim.fs.dirname(args.file)
-  if not path then
-    return
-  end
+  if not path then return end
 
   -- Try cache and resort to searching upward for root directory
   local root = root_cache[path]
@@ -64,9 +58,7 @@ local function set_root(args)
     root = vim.fs.dirname(root_file) or get_lsp_root(args.buf, ignored_lsps)
   end
 
-  if not root or root == vim.fn.getcwd() then
-    return
-  end
+  if not root or root == vim.fn.getcwd() then return end
 
   root_cache[path] = root
   vim.fn.chdir(root)

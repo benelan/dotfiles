@@ -71,9 +71,7 @@ local function diagnostic_toggle(event)
     },
   }, false, {})
 
-  vim.schedule(function()
-    vim.diagnostic[cmd](event.bang and nil or 0)
-  end)
+  vim.schedule(function() vim.diagnostic[cmd](event.bang and nil or 0) end)
 end
 
 vim.api.nvim_create_user_command("DiagnosticToggle", diagnostic_toggle, {
@@ -108,9 +106,7 @@ local function ui_toggle()
   )
 
   -- toggle lsp diagnostics
-  vim.schedule(function()
-    vim.diagnostic[ui_disabled and "disable" or "enable"](nil)
-  end)
+  vim.schedule(function() vim.diagnostic[ui_disabled and "disable" or "enable"](nil) end)
 
   -- toggle matchup popup
   if vim.g.loaded_matchup == 1 then

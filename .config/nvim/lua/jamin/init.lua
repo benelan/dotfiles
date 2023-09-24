@@ -26,9 +26,7 @@ vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
 ----> Global functions
 -------------------------------------------------------------------------------
 
-_G.R = function(name)
-  require("plenary.reload").reload_module(name)
-end
+_G.R = function(name) require("plenary.reload").reload_module(name) end
 
 _G.keymap = function(mode, lhs, rhs, desc)
   vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
@@ -47,9 +45,7 @@ require "jamin.commands"
 -------------------------------------------------------------------------------
 
 -- prevent unused builtin plugins from loading
-vim.tbl_map(function(p)
-  vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1
-end, {
+vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1 end, {
   "2html_plugin",
   "gzip",
   -- "matchit",

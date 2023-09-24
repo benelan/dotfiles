@@ -9,9 +9,7 @@ return {
     ft = res.filetypes.writing,
     config = function()
       local has_dict, dict = pcall(require, "cmp_dictionary")
-      if not has_dict then
-        return
-      end
+      if not has_dict then return end
 
       dict.setup { first_case_insensitive = true }
       dict.switcher { spelllang = { en = "/usr/share/dict/words" } }
@@ -57,9 +55,7 @@ return {
         -- setup LuaSnip with the completion engine
         snippet = {
           expand = function(args)
-            if has_ls then
-              ls.lsp_expand(args.body)
-            end
+            if has_ls then ls.lsp_expand(args.body) end
           end,
         },
 
@@ -204,9 +200,7 @@ return {
             keyword_length = 3,
             entry_filter = function(_, ctx)
               for _, ft in ipairs(res.filetypes.writing) do
-                if ft == ctx.filetype then
-                  return true
-                end
+                if ft == ctx.filetype then return true end
               end
               return false
             end,
@@ -235,9 +229,7 @@ return {
     keys = function()
       local has_ls, ls = pcall(require, "luasnip")
 
-      if not has_ls then
-        return {}
-      end
+      if not has_ls then return {} end
 
       -- The keymaps have Codeium fallbacks for when there are no snippet actions
       -- If Codeium isn't installed, there are additional fallbacks
@@ -312,9 +304,11 @@ return {
       -- loads snippets in the luasnippets dir of my neovim config
       lua_loader.lazy_load()
 
-      vim.api.nvim_create_user_command("LuaSnipEdit", function()
-        lua_loader.edit_snippet_files()
-      end, {})
+      vim.api.nvim_create_user_command(
+        "LuaSnipEdit",
+        function() lua_loader.edit_snippet_files() end,
+        {}
+      )
 
       ls.filetype_extend("typescript", { "javascript" })
       ls.filetype_extend("javascriptreact", { "javascript" })

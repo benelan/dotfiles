@@ -23,9 +23,7 @@ end
 if has_mkdnflow then
   -- recreate theh goBack keymap falling back to the alt buffer
   bufmap("n", "<BS>", function()
-    if not mkdnflow.buffers.goBack() then
-      vim.cmd "b#"
-    end
+    if not mkdnflow.buffers.goBack() then vim.cmd "b#" end
   end, "Go back a buffer")
 end
 

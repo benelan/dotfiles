@@ -49,9 +49,7 @@ return {
         keys = {
           {
             "[C",
-            function()
-              require("treesitter-context").go_to_context()
-            end,
+            function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
           },
         },

@@ -30,7 +30,12 @@ return {
         [[ <CMD>execute 'bdelete '.join(filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^fugitive://.*"'), ' ')<CR> ]],
         desc = "Delete all fugitive buffers",
       },
-      { "<leader>gl", "<CMD>0Gclog --follow<CR>", desc = "Fugitive buffer history (qf)", mode = "n" },
+      {
+        "<leader>gl",
+        "<CMD>0Gclog --follow<CR>",
+        desc = "Fugitive buffer history (qf)",
+        mode = "n",
+      },
       { "<leader>gl", ":Gclog<CR>", desc = "Fugitive history (qf)", mode = "x" },
     },
     -- stylua: ignore
@@ -59,7 +64,12 @@ return {
     dependencies = "vim-fugitive",
     cmd = { "Flog", "Flogsplit", "Floggit" },
     keys = {
-      { "<leader>gh", "<CMD>Flogsplit -path=%<CR>", desc = "Git buffer history (Flog)", mode = "n" },
+      {
+        "<leader>gh",
+        "<CMD>Flogsplit -path=%<CR>",
+        desc = "Git buffer history (Flog)",
+        mode = "n",
+      },
       { "<leader>gH", "<CMD>Flog<CR>", desc = "Git history (Flog)", mode = "n" },
       { "<leader>gh", ":Flog<CR>", desc = "Git history (Flog)", mode = "v" },
       {
