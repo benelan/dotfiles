@@ -1,144 +1,167 @@
+local has_dap, dap = pcall(require, "dap")
+local has_navic, navic = pcall(require, "nvim-navic")
+local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
-vim.opt.statusline = "%!v:lua.MyStatusLine()"
 
----@class NumericData
+local highlights = {
+  section_flags = "TabLineSel",
+  section_context = "TabLineFill",
+  section_state = "NormalFloat",
+  git_added = "GitStatusLineAdd",
+  git_changed = "GitStatusLineChange",
+  git_removed = "GitStatusLineDelete",
+  dap = "DapStatusLineInfo",
+  lazy = "LazyStatusLineInfo",
+}
+
+---Format a highlight group for the statusline.
+local function fmt_hl(h) return "%#" .. h .. "#" end
+
+---@class StateData
 ---@field icon string
 ---@field highlight string
----@field count number
+---@field value number
 
----Get the length of a table.
----@param T table
----@return string length
-local function table_length(T)
-  local len = 0
-  for _ in pairs(T) do
-    len = len + 1
-  end
-  return len
-end
-
----Turns a table into a string formatted for use in a statusline.
----Only displays an item if its count is more than 0.
----@param d NumericData
+---Turn a table containg state information into a string formatted for use in
+---a statusline. Only displays states with values greater than zero.
+---@param data StateData
 ---@return string
-local function format_numeric_data(d)
+local function format_numeric_state(data)
   local template = ""
   local output = {}
-  for _, item in ipairs(d) do
-    if item.count and item.count > 0 then
+
+  for _, item in ipairs(data) do
+    if item.value and item.value > 0 then
       table.insert(output, item.highlight)
       table.insert(output, item.icon)
-      table.insert(output, item.count)
-      template = template .. "%%#%s# %s%d "
+      table.insert(output, item.value)
+
+      template = template .. "%%#%s#%s%d  "
     end
   end
-  return #template > 0 and string.format(template, (unpack or table.unpack)(output)) or ""
+
+  return template ~= "" and vim.trim(string.format(template, (unpack or table.unpack)(output)))
+    or ""
 end
 
--- show diagnostic count if a severity has more than 0
-local function buffer_diagnostics()
+---Show diagnostic count if a severity has more than 0 items.
+local function buffer_diagnostics(fallback)
   local data = {}
+
   for _, diagnostic in ipairs(icons.diagnostics) do
     table.insert(data, {
-      icon = diagnostic.text .. (vim.g.use_devicons and "" or ":"),
-      count = table_length(vim.diagnostic.get(0, { severity = diagnostic.severity })),
       highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name) .. "Float",
+      icon = diagnostic.text .. (vim.g.use_devicons and "" or ":"),
+      value = vim.tbl_count(vim.diagnostic.get(0, { severity = diagnostic.severity })),
     })
   end
-  return format_numeric_data(data)
+
+  local diag = format_numeric_state(data)
+  return diag ~= "" and string.format("  %s  ", diag) or fallback and fallback() or ""
 end
 
--- branch name and added/deleted/changed line count
+---Show added/removed/changed line count via Gitsigns.
 local function gitsigns_state(fallback)
-  if vim.b.gitsigns_status_dict then
-    return " "
-      .. format_numeric_data {
-        {
-          highlight = "GitStatusLineAdd", -- "GitSignsAdd",
-          icon = icons.git.add,
-          count = vim.b.gitsigns_status_dict.added,
-        },
-        {
-          highlight = "GitStatusLineChange", -- "GitSignsChange",
-          icon = icons.git.edit,
-          count = vim.b.gitsigns_status_dict.changed,
-        },
-        {
-          highlight = "GitStatusLineDelete", -- "GitSignsDelete",
-          icon = icons.git.delete,
-          count = vim.b.gitsigns_status_dict.removed,
-        },
-      }
-  end
-  return fallback or ""
+  return vim.b.gitsigns_status_dict
+      and string.format(
+        "  %s  ",
+        format_numeric_state {
+          {
+            highlight = highlights.git_added,
+            icon = icons.git.added,
+            value = vim.b.gitsigns_status_dict.added,
+          },
+          {
+            highlight = highlights.git_removed,
+            icon = icons.git.removed,
+            value = vim.b.gitsigns_status_dict.removed,
+          },
+          {
+            highlight = highlights.git_changed,
+            icon = icons.git.changed,
+            value = vim.b.gitsigns_status_dict.changed,
+          },
+        }
+      )
+    or fallback and fallback()
+    or ""
 end
 
-local function gitsigns_branch(fallback)
-  if vim.g.gitsigns_head ~= nil then
-    return string.format("  %s%s  ", icons.git.branch, vim.g.gitsigns_head)
-  else
-    return fallback or ""
-  end
+---Show HEAD ref name via Gitsigns.
+local function gitsigns_head(fallback)
+  return vim.g.gitsigns_head and string.format("  %s%s  ", icons.git.branch, vim.g.gitsigns_head)
+    or fallback and fallback()
+    or ""
 end
 
-local function fugitive_branch(fallback)
-  if vim.g.loaded_fugitive == 1 and vim.fn["FugitiveGitDir"]() ~= vim.fn.expand "~/.git" then
+---Show HEAD ref name via Fugitive.
+local function fugitive_head(fallback)
+  if vim.g.loaded_fugitive and vim.fn.exists "*fugitive#Head" then
     local head = vim.fn["fugitive#Head"]()
-    if head ~= "" then
-      return icons.git.branch .. head
-    end
+
+    if head ~= "" then return string.format("  %s%s  ", icons.git.branch, head) end
   end
-  return fallback or ""
+
+  return fallback and fallback() or ""
 end
 
--- number of updatable plugins
+---Show number of updatable plugins.
 local function lazy_updates(fallback)
-  local has_lazy, lazy = pcall(require, "lazy.status")
-  if has_lazy and lazy.has_updates() then
-    return string.format("[%s%s]", icons.lsp_kind.Package, lazy.updates())
-  end
-  return fallback or ""
+  return has_lazy
+      and lazy.has_updates()
+      and string.format(
+        "  %s%s%s  ",
+        fmt_hl(highlights.lazy),
+        (vim.g.use_devicons and icons.lsp_kind.Package or "P"),
+        lazy.updates()
+      )
+    or fallback and fallback()
+    or ""
 end
 
--- debug info
-local function debug_info(fallback)
-  local has_dap, dap = pcall(require, "dap")
+---Show debug info.
+local function debug_state(fallback)
   if has_dap then
     local dap_status = dap.status()
+
     if not vim.tbl_contains({ "", nil }, dap_status) then
-      return "%#DapStatusLineInfo#" .. dap_status
+      return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
     end
   end
-  return fallback or ""
+
+  return fallback and fallback() or ""
 end
 
--- navic bread crumb
--- local function navic_breadcrumbs(fallback)
---   local has_navic, navic = pcall(require, "nvim-navic")
---   if has_navic and navic.is_available() then
---     return "  " .. navic.get_location()
---   end
---   return fallback or ""
--- end
+---Show navic breadcrumb.
+local function navic_breadcrumbs(fallback)
+  return has_navic and navic.is_available() and navic.get_location()
+    or fallback and fallback()
+    or ""
+end
 
-function MyStatusLine()
-  return "%#TabLineSel#  "
-    .. lazy_updates()
-    .. "[%n]%m%r%h%w%q%y  "
-    -------------------------------------------
-    .. "%#TabLineFill#"
-    .. gitsigns_branch(fugitive_branch())
-    -------------------------------------------
-    .. "%#NormalFloat#"
-    .. debug_info(gitsigns_state())
-    -------------------------------------------
-    .. "%<%#NormalFloat#"
+function JaminStatusLine()
+  return ""
+    ---- left flags section ----------------------
+    .. fmt_hl(highlights.section_flags)
+    .. "  %m%w%y  "
+    ---- left context section --------------------
+    .. fmt_hl(highlights.section_context)
+    .. gitsigns_head(fugitive_head)
+    ---- left state section ----------------------
+    .. fmt_hl(highlights.section_state)
+    .. debug_state(gitsigns_state)
+    ---- split between left/right sections -------
     .. "%="
-    -------------------------------------------
-    .. buffer_diagnostics()
-    .. "  %#TabLineFill#" -- "%#Normal#"
+    ---- right state section ---------------------
+    .. fmt_hl(highlights.section_state)
+    .. buffer_diagnostics(lazy_updates)
+    ---- right context section -------------------
+    .. fmt_hl(highlights.section_context)
+    .. "%<" -- start collapsing on the file path
     .. "  %f  "
-    -------------------------------------------
-    .. "%#TabLineSel#"
-    .. "  %c:[%l/%L]  "
+    ---- right flags section ---------------------
+    .. fmt_hl(highlights.section_flags)
+    .. "  %v:[%l/%L]  "
 end
+
+vim.opt.statusline = "%!v:lua.JaminStatusLine()"

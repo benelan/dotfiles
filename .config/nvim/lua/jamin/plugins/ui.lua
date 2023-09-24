@@ -1,5 +1,3 @@
-local res = require "jamin.resources"
-
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
@@ -43,7 +41,8 @@ return {
         hl("GitStatusLineAdd", palette.green, palette.bg3)
         hl("GitStatusLineDelete", palette.red, palette.bg3)
 
-        hl("DapStatusLineInfo", palette.purple, palette.bg2)
+        hl("LazyStatusLineInfo", palette.purple, palette.bg3)
+        hl("DapStatusLineInfo", palette.aqua, palette.bg3)
 
         hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 

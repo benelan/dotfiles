@@ -1,7 +1,7 @@
 if exists('g:loaded_jamin_tabline') || &cp | finish | endif
 let g:loaded_jamin_tabline = 1
 
-set tabline=%!MyTabLine()
+set tabline=%!JaminTabLine()
 
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  {|}
@@ -50,7 +50,7 @@ endfunction
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" display the tabline                                        {{{
 
-function! MyTabLine()
+function! JaminTabLine()
     let s = ""
 
     for i in range(tabpagenr("$"))
@@ -65,11 +65,7 @@ function! MyTabLine()
         let s .= "%" . tab . "T"
         let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
         let s .= " " . tab .":"
-        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "] " : "[No Name] ")
-
-        if bufmodified
-            let s .= "[+] "
-        endif
+        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "]:" . bufnr . " " : "[No Name] ")
     endfor
 
     let s .= "%#TabLineFill#"

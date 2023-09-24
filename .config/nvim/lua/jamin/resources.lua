@@ -71,9 +71,9 @@ M.icons = {
     Variable = i " ",
   },
   git = {
-    add = i("󰐖 ", "+"),
-    edit = i("󰏬 ", "*"),
-    delete = i("󰍵 ", "-"),
+    added = i("󰐖 ", "+"),
+    changed = i("󰏬 ", "*"),
+    removed = i("󰍵 ", "-"),
     branch = i " ",
   },
   ui = { -- utf8 icons so no fallbacks required

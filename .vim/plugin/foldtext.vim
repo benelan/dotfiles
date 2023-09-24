@@ -3,9 +3,9 @@ let g:loaded_jamin_foldtext = 1
 
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
 
-set foldtext=MyFoldText()
+set foldtext=JaminFoldText()
 
-function! MyFoldText()
+function! JaminFoldText()
     " get first non-blank line
     let fs = v:foldstart
 
