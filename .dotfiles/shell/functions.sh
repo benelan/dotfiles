@@ -591,7 +591,7 @@ fi
 # --------------------------------------------------------------------- {|}
 
 if [ "$USE_WORK_STUFF" = "1" ]; then
-    ## toggles a label used for running visual snapshots on PRs   {{{
+    ## toggle a label used to run CC visual snapshots on PRs      {{{
 
     if is-supported gh; then
         cc_visual_snapshots() {
@@ -605,39 +605,72 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
     fi
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-    ## build/pack CC/CCR and install them in a test app           {{{
+    ## pack CC/CCR and install them in a test app                 {{{
 
-    if is-supported jq; then
-        cc_pack_install() {
-            npm_root=$(npm prefix)
-            worktree_root="${1:-main}"
+    # Uses `npm pack` to install CC and CCR in an example app for testing.
+    #
+    # TODO: figure out why CC's types aren't included in the packed tarball.
+    #       Use the `cc_install_copy` script instead for now.
+    #
+    # NOTE: make sure to build the calcite monorepo first, then run the
+    #       script from anywhere in the example app's directory.
+    cc_install_pack() {
+        npm_root=$(npm prefix)
+        worktree_root="${1:-main}"
 
-            # clean test project
-            npm uninstall @esri/calcite-components @esri/calcite-components-react
-            rm -rf \
-                "$npm_root"/esri-calcite-components-*.tgz \
-                "$npm_root"/package-lock.json \
-                "$npm_root"/node_modules
+        # clean test project
+        npm uninstall @esri/calcite-components @esri/calcite-components-react
+        rm -rf \
+            "$npm_root"/esri-calcite-components-*.tgz \
+            "$npm_root"/package-lock.json \
+            "$npm_root"/node_modules
 
-            # build calcite-design-system and pack calcite-components
-            npm run build --prefix "$CALCITE/$worktree_root"
+        # pack calcite-components
+        npm pack \
+            --prefix "$CALCITE/$worktree_root" \
+            --workspace "packages/calcite-components" \
+            --pack-destination "$npm_root"
+
+        # pack calcite-components-react if the test project has react as a dependency
+        if is-supported jq && [ "$(
+            jq '.dependencies | has("react")' "$npm_root/package.json"
+        )" = "true" ]; then
             npm pack \
                 --prefix "$CALCITE/$worktree_root" \
-                --workspace "packages/calcite-components" \
+                --workspace "packages/calcite-components-react" \
                 --pack-destination "$npm_root"
+        fi
 
-            # pack calcite-components-react if the test project has react as a dependency
-            if [ "$(jq '.dependencies | has("react")' "$npm_root/package.json")" = "true" ]; then
-                npm pack \
-                    --prefix "$CALCITE/$worktree_root" \
-                    --workspace "packages/calcite-components-react" \
-                    --pack-destination "$npm_root"
-            fi
+        # install the local tarball(s)
+        npm install "$npm_root"/esri-calcite-components-*.tgz
+    }
 
-            # install the local tarball(s)
-            npm install "$npm_root"/esri-calcite-components-*.tgz
-        }
-    fi
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## copy CC/CCR dists to a test app's node_modules             {{{
+
+    # NOTE: make sure to build the calcite monorepo first, then run the
+    #       script from anywhere in the example app's directory.
+    cc_install_copy() {
+        calcite_worktree="${1:-main}"
+
+        example_npm_root=$(npm prefix)
+        example_cc_path="$example_npm_root/node_modules/@esri/calcite_components/"
+        example_ccr_path="$example_npm_root/node_modules/@esri/calcite_components-react/"
+
+        mkdir -p "$example_cc_path" "$example_ccr_path"
+
+        # copy calcite-components dist
+        cp "$CALCITE/$calcite_worktree/packages/calcite-components/dist" \
+            "$example_cc_path"
+
+        # copy calcite-components-react dist if the test aapp has react as a dependency
+        if is-supported jq && [ "$(
+            jq '.dependencies | has("react")' "$example_npm_root/package.json"
+        )" = "true" ]; then
+            cp "$CALCITE/$calcite_worktree/packages/calcite-components-react/dist" \
+                "$example_ccr_path"
+        fi
+    }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 fi
