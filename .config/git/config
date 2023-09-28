@@ -18,7 +18,6 @@
     excludesfile = ~/.dotfiles/assets/templates/.gitignore
     ; Disable line endings output conversion.
     autocrlf = input
-    commentChar = "#"
 
     ; Treat spaces before tabs and all kinds of trailing whitespace as an error.
     ; [default] trailing-space: looks for spaces at the end of a line
@@ -26,11 +25,12 @@
     whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
     ; Speed up commands involving untracked files such as `git status`.
-    ; See https://git-scm.com/docs/git-update-index;_untracked_cache
+    ; See --untracked-cache in https://git-scm.com/docs/git-update-index
     untrackedCache = true
 
 [credential "https://github.com"]
-	helper =
+    helper =
+    ; Use the GitHub CLI for authenticating git.
 	helper = !/usr/bin/gh auth git-credential
 
 [credential "https://gist.github.com"]
@@ -45,9 +45,6 @@
     ; Show most recently changed branches first.
     sort = -committerdate
     autosetuprebase = always
-
-[fetch]
-    prune = true
 
 [color]
     ; Use colors in Git commands when possible
@@ -101,14 +98,14 @@
     textconv = hexdump -v -C
 
 [difftool "fugitive"]
-    cmd = vim -f +\"packadd vim-fugitive | Gvdiffsplit!\" $MERGED
+    cmd = vim -f +'packadd vim-fugitive | Gvdiffsplit!' $MERGED
     prompt = false
 
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
     keepBackup = false
-    tool = vimdiff ; or nvimdiff or fugitive
+    tool = vimdiff ; alternatives: nvimdiff or fugitive
 
 [mergetool]
     keepBackup = false
@@ -122,24 +119,15 @@
 [mergetool "fugitive"]
     ; https://github.com/tpope/vim-fugitive
     cmd = nvim -f +DiagnosticToggle! \
-        +\"nnoremap <leader>mh :diffget //2<CR> \
+        +'nnoremap <leader>mh :diffget //2<CR> \
         | nnoremap <leader>ml :diffget //3<CR> \
         | nnoremap <leader>mH :%diffget //2<CR> \
         | nnoremap <leader>mL :%diffget //3<CR> \
-        | Gvdiffsplit!\" $MERGED
-
-[rebase]
-    ; Create a temporary stash entry before the operation begins.
-    autostash = true
-    autosquash = true
+        | Gvdiffsplit!' $MERGED
 
 [status]
     ; Enable submodule summary of commits.
     submoduleSummary = true
-    short = true
-
-[pull]
-	rebase = true
 
 [help]
     ; Correct and execute mistyped commands.
@@ -158,7 +146,7 @@
     ; pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
 
 [init]
-    defaultBranch = master
+    defaultBranch = main
 
 ; URL shorthands
 [url "git@github.com:"]
@@ -175,18 +163,27 @@
 
 [alias]
     a = add
-    all = add --update
+    all = add --all
+    au = add --update
+    
+    ; add unmerged files
+    aum  = !"git ls-files --unmerged | cut -f2 | sort -u | xargs git add"
+
+    ; interactively add unstaged files using fzf
     af = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
 
     b = branch
-    bd = branch --delete --force
+    bd = branch -D
+    buoc = !git branch -u origin/$(git symbolic-ref --short HEAD)
+
     ; delete multiple branches
     fbd = !git branch | fzf --multi | xargs git branch -D
-    buoc = !git branch -u origin/$(git symbolic-ref --short HEAD)
+
+    ; list branches with author names and the most recently created at the bottom
     bc = for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes
 
     c = commit --verbose
-    cA = commit --verbose --all
+    call = commit --verbose --all
     cm = commit --verbose -m
     ca = commit --verbose --amend
     cane = commit --verbose --amend --no-edit
@@ -198,18 +195,18 @@
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase -i $sha~1; \
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
     }; f"
 
     ; same as above but pick an unmerged (to default branch) commit.
-    ; Likely requires a force push, hence the extra 'f'
+    ; likely requires a force push, hence the extra 'f'
     cff = "!f() { \
         sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
         --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase -i $sha~1; \
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
     }; f"
 
     co = checkout
@@ -226,12 +223,23 @@
 
     ; edit the files changed locally
     e = !$EDITOR $(git diff --name-only HEAD)
-    ; open Fugitive's difftool
-    ed = !$EDITOR +\"Git difftool -y\"
-    ; sync origin's default branch and edit the changed files
-    eom = "!f() { default_branch=$(git bdefault); git fetch; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
 
-    f = fetch --all --prune
+    ; edit modified (unstaged) files
+    em = !$(git var GIT_EDITOR) $(git ls-files --modified | sort -u)
+
+    ; edit staged files
+    es = !$(git var GIT_EDITOR) $(git ls-files --stage    | cut -f2 | sort -u)
+
+    ; edit unmerged files (usually due to a merge conflict)
+    eum = !$(git var GIT_EDITOR) $(git ls-files --unmerged | cut -f2 | sort -u)
+
+    ; open Fugitive's difftool
+    edf = !$EDITOR +'Git difftool -y'
+
+    ; sync origin's default branch and edit the changed files
+    eom = "!f() { default_branch=$(git bdefault); git fetch --prune --tags; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
+
+    f = fetch --all --prune --tags
     g = grep
 
     m = merge
@@ -242,25 +250,32 @@
     p = push
     puoc = !git push --set-upstream origin $(git symbolic-ref --short HEAD)
 
-    pl = pull
-    plum = !git pull upstream "$(git bdefault)"
+    pl = pull --rebase --autostash
+    plum = !git pull --rebase --autostash upstream "$(git bdefault)"
 
     r = reset
-    rs = r --soft
-    rH = r --hard
+    rs = reset --soft
+    rh = reset --hard
     pristine = !git reset --hard && git clean -dfx
 
-    rb = rebase
+    rb = rebase --autostash --autosquash
     rba = rebase --abort
     rbc = rebase --continue
     rbs = rebase --skip
-    rbi = rebase --interactive @{upstream}
-    rbom = "!f() { default_branch="(git bdefault)"; git fetch origin "$default_branch" && git rebase "origin/$default_branch" && git update-ref "refs/heads/$default_branch" "origin/$default_branch"; }; f"
+    rbu = rebase --autostash --autosquash --interactive @{upstream}
+    rbom = "!f() { \
+        default_branch="$(git bdefault)" \
+        git fetch origin "$default_branch" \
+        git rebase --autostash --autosquash "origin/$default_branch" \
+        git update-ref "refs/heads/$default_branch" "origin/$default_branch" \
+    }; f"
 
-    s = status
+    s = status --short
 
     st = stash
+    sta = stash apply
     stl = stash list
+    std = stash drop
     stpo = stash pop
     stpu = stash push
 
@@ -269,6 +284,11 @@
 
     t = tag
     tnext = name-rev --tags --name-only
+    tf = !git tag --sort -version:refname | fzf --reverse --multi \
+        --bind='ctrl-x:execute(git tag -d {})+accept' \
+        --bind='ctrl-o:execute(git checkout {})+accept' \
+        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
+        --preview 'git show --color=always {} | head -'$LINES
 
     w = worktree
     wa = worktree add
@@ -276,13 +296,22 @@
     wl = worktree list
     wp = worktree prune
 
+    ls = ls-files
+
     l = log
     lg = log --graph
+
+    ; log graph with relative dates
     lgr = log --graph --abbrev-commit --date=relative --pretty=format:'%C(bold)%C(blue)%h%Creset%C(auto)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'
 
+    ; log with full commit messages
     lmsg = log --stat --pretty=format:'%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s%+b%n%Creset'
+
+    ; log unpushed commits
     lup = log --branches --not --remotes --no-walk --decorate --oneline
-    lum = log "$(git bdefault)" ^HEAD
+
+    ; log unmerged commits
+    lum = !git log "$(git bdefault)" ^HEAD
 
     new = log HEAD@{1}..HEAD@{0}
 
@@ -301,7 +330,7 @@
     ; find branches containing commit
     fb = "!f() { git branch -a --contains $1; }; f"
 
-    ; checkout commity by fuzzy finding w/ fzf
+    ; checkout commit by fuzzy finding w/ fzf
     fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
 
     ; get commit sha by fuzzy finding w/ fzf
@@ -317,13 +346,7 @@
     hide = update-index --assume-unchanged
     unhide = update-index --no-assume-unchanged
 
-    tf = !git tag --sort -version:refname | fzf --reverse --multi \
-        --bind='ctrl-x:execute(git tag -d {})+accept' \
-        --bind='ctrl-o:execute(git checkout {})+accept' \
-        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
-        --preview 'git show --color=always {} | head -'$LINES
-
-    ; remove a tag by name recreate it on a specified commit
+    ; remove a tag by name and recreate it on a specified commit
     ; arg1: tag name to recreate on different commit (required)
     ; arg2: commit to tag (optional, defaults to HEAD)
     ; arg3: message for the tag (optional, defaults to arg1)
@@ -352,26 +375,14 @@
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
     ;----------------------------------------------------------------------------
 
-    ; log like - we like this summarization our key performance indicators
     ll = log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'
 
-    ; log like long  - we like this summarization our key performance indicators
     lll = log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'
 
     ; Ignore all untracked files by appending them to .gitignore:
-    ignore = "!git status | grep -P \"^\\t\" | grep -vF .gitignore | sed \"s/^\\t//\" >> .gitignore"
+    ignore-untracked = "!git status --short | grep -P \"^\\t\" | grep -vF .gitignore | sed \"s/^\\t//\" >> .gitignore"
 
-
-    edit-cached   = !"f() { git ls-files --cached          | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-deleted  = !"f() { git ls-files --deleted         | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-others   = !"f() { git ls-files --others          | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-ignored  = !"f() { git ls-files --ignored         | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-killed   = !"f() { git ls-files --killed          | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-modified = !"f() { git ls-files --modified        | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-stage    = !"f() { git ls-files --stage | cut -f2 | sort -u ; }; `git var GIT_EDITOR` `f`"
-    edit-unmerged = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; `git var GIT_EDITOR` `f`"
-    add-unmerged  = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
-
+    ; resolve merge conflicts by file, accepts globs as args
     ours   = !"f() { git checkout --ours   $@ && git add $@; }; f"
     theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
@@ -381,32 +392,28 @@
     ; this cleaning will facilitate a rebase, because there won't be any conflict
     ; due to an "unclean" working directory (not in sync with the index).
     ; The unwip will restore the deleted files to the working tree.
-    wip = !"git add --all; git ls-files --deleted -z | xargs -0 git rm; git commit --message=wip"
-    unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
+    wip = !"git add --all; git ls-files --deleted -z | xargs -0 git rm; git commit --message='chore: WIP'"
+    unwip = !"git log -n 1 | grep -q -c 'chore: WIP' && git reset HEAD~1"
 
 
-    ; Stash snapshot - from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     ; Take a snapshot of your current working tree without removing changes.
     ; This is handy for refactoring where you can't quite fit what you've done
     ; into a commit but daren't stray too far from now without a backup.
     ;
     ; Running this:
-    ;
     ;    $ git snapshot
     ;
     ; Creates this stash:
-    ;
     ;    stash@{0}: On feature/handy-git-tricks: snapshot: Mon Apr 8 12:39:06 BST 2013
     ;
     ; And seemingly no changes to your working tree.
-    ;
-    snapshot = !git stash push "snapshot: $(date)" && git stash apply "stash@{0}"
+    snapshot = !git stash push "chore: SNAPSHOT $(date)" && git stash apply "stash@{0}"
 
     ; List all issues mentioned in commit messages between range of commits
     ;
     ; Best used with tags:
-    ;  $ git issues v1.0..v1.1
+    ;    $ git issues v1.0..v1.1
     ;
     ; But will work with any valid commit range:
-    ;  $ git issues master..HEAD
-    issues = !sh -c \"git log $1 --oneline | grep -o \\\";[0-9]\\+\\\" | sort -u\"
+    ;    $ git issues master..HEAD
+    issues = !"sh -c \"git log $1 --oneline | grep -o \\\"#[0-9]\\+\\\" | sort -u\""

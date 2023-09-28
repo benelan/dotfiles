@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------- {|}
 
 ## search history                                             {{{
+
 hist() {
     grep --color=always "$*" "$HISTFILE" |
         less --no-init --raw-control-chars --quiet
@@ -12,6 +13,7 @@ hist() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## search for text within the current directory               {{{
+
 s() {
     grep --color=always "$*" --ignore-case --recursive \
         --exclude-dir=".git" --exclude-dir="node_modules" . |
@@ -21,6 +23,7 @@ s() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 ## google from the command line                               {{{
+
 # https://leahneukirchen.org/dotfiles/bin/goog
 goog() {
     curl -A Mozilla/4.0 -skLm 10 \
@@ -30,8 +33,8 @@ goog() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## use $EDITOR to edit text inside a pipeline                 {{{
+
 # Write all data to a temporary file, edit that file, then
 # print it again.
 # https://www.uninformativ.de/git/bin-pub/file/vipe.html
@@ -44,8 +47,8 @@ vipe() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## jump to search pattern in man page(s)                      {{{
+
 ## Example: jump to the examples heading in two git man pages
 ## mans ^examples git-log git-checkout
 mans() {
@@ -57,19 +60,20 @@ mans() {
         man --pager="$man_pager" "$@"
     fi
 }
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## use vifm to cd                                             {{{
+
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## make one or more directories and cd into the last one      {{{
+
 mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## add surfraw bookmark                                       {{{
+
 # see fob() later in the file for finding/opening a bookmark
 # the following is my personal bookmark convention
 # <name> <url> <:[tag1:tag2:tag...]:> [-g]
@@ -92,6 +96,7 @@ bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
 # --------------------------------------------------------------------- {|}
 
 ## fff wrapper that changes to directory on exit              {{{
+
 if is-supported fff; then
     ff() {
         fff "$@"
@@ -100,8 +105,8 @@ if is-supported fff; then
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## format JSON and sort fields                                {{{
+
 # arg1: input file
 # arg2: output file, defaults to input file
 fmtjson() {
@@ -112,8 +117,8 @@ fmtjson() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## pandoc functions for converting between text filetypes     {{{
+
 if is-supported pandoc; then
     # Open a markdown file in the less pager
     mdless() {
@@ -129,8 +134,8 @@ if is-supported pandoc; then
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## run a command when a target file is modified               {{{
+
 # $ onmodify note.md md2html note
 if is-supported inotifywait; then
     onmodify() {
@@ -146,8 +151,8 @@ if is-supported inotifywait; then
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## get gzipped file size                                      {{{
+
 gz() {
     ORIGSIZE=$(wc -c <"$1")
     GZIPSIZE=$(gzip -c "$1" | wc -c)
@@ -159,8 +164,8 @@ gz() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## create a data URL from a file                              {{{
+
 dataurl() {
     MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
     if [ "$MIMETYPE" = "text/*" ]; then
@@ -171,8 +176,8 @@ dataurl() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
 ## recursively search parent directory for file               {{{
+
 # param 1: name of file or directory to find
 # param 2: directory to start from (defaults to PWD)
 # example: $ parent-find .git
@@ -183,8 +188,8 @@ parent_find() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## remove duplicate lines from a file                         {{{
+
 # param: file to dedup
 # example: $ dedup-lines deps.txt > unique_deps.txt
 dedup_lines() { awk '!visited[$0]++' "$@"; }
@@ -196,6 +201,7 @@ dedup_lines() { awk '!visited[$0]++' "$@"; }
 # --------------------------------------------------------------------- {|}
 
 ## get the pid of the prccess listening on the provided port  {{{
+
 wtfport() {
     line="$(lsof -i -P -n | grep LISTEN | grep ":$1")"
     pid=$(echo "$line" | awk '{print $2}')
@@ -212,26 +218,26 @@ wtfport() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## kill the process listening on the provided port            {{{
+
 killport() { wtfport "$1" | xargs kill -9; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## find real from shortened url                               {{{
+
 unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## generate a certificate and key for local testing           {{{
+
 crt() {
     openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
         -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## add entry to ssh config                                    {{{
+
 add_ssh() {
     [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
 
@@ -248,18 +254,18 @@ add_ssh() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## list hosts defined in ssh config                           {{{
+
 ssh_list() { awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## add all ssh private keys to agent                          {{{
+
 ssh_add_all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## display all ip addresses for this host                     {{{
+
 ips() {
     printf "%s\n" "Router IP (Gateway): $(
         netstat -rn | awk 'FNR == 3 {print $2}' ||
@@ -291,6 +297,7 @@ ips() {
 # --------------------------------------------------------------------- {|}
 
 ## checkout a branch based on fuzzy search term               {{{
+
 # If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
 # Otherwise, checkout the most recently committed branch that matches the query
 # git (find|fuzzy) checkout
@@ -326,12 +333,32 @@ fgco() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## delete squash merged branches                              {{{
+
+# from https://github.com/not-an-aardvark/git-delete-squashed
+gbprune() {
+    TARGET_BRANCH="${1:-$(g bdefault)}" &&
+        git checkout -q "$TARGET_BRANCH" &&
+        git for-each-ref refs/heads/ "--format=%(refname:short)" |
+        while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
+            [[ $(
+                # shellcheck disable=2046,1083,1001
+                git cherry "$TARGET_BRANCH" $(git commit-tree $(
+                    git rev-parse "$branch"\^{tree}
+                ) -p "$mergeBase" -m _)
+            ) == "-"* ]] &&
+            git branch -D "$branch"; done
+
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Arrays                                                                {{{
 # --------------------------------------------------------------------- {|}
 
 ## searches an array for an exact match against arg1          {{{
+
 # exits as soon as a match is found
 #
 # Returns:
@@ -360,8 +387,8 @@ _array_contains_element() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## dedupe an array (without embedded newlines)                {{{
+
 array_dedup() {
     printf '%s\n' "$@" | sort -u
 }
@@ -373,38 +400,14 @@ array_dedup() {
 # --------------------------------------------------------------------- {|}
 
 ## search https://github.com/chubin/cheat.sh                  {{{
+
 # $ cht :help
-
-# cheatsheet
 cht() { curl "https://cheat.sh/$1"; }
-
-# cheatsheet: javascript
 chtjs() { curl "https://cheat.sh/javascript/""$(echo "$*" | tr ' ' '+')"; }
-
-# cheatsheet: typescript
 chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
-# --------------------------------------------------------------------- }}}
-# Git                                                                   {{{
-# --------------------------------------------------------------------- {|}
-
-# from https://github.com/not-an-aardvark/git-delete-squashed
-gbprune() {
-    TARGET_BRANCH="${1:-$(g bdefault)}" &&
-        git checkout -q "$TARGET_BRANCH" &&
-        git for-each-ref refs/heads/ "--format=%(refname:short)" |
-        while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
-            [[ $(
-                # shellcheck disable=2046,1083,1001
-                git cherry "$TARGET_BRANCH" $(git commit-tree $(
-                    git rev-parse "$branch"\^{tree}
-                ) -p "$mergeBase" -m _)
-            ) == "-"* ]] &&
-            git branch -D "$branch"; done
-
-}
 # --------------------------------------------------------------------- }}}
 # FZF                                                                   {{{
 # --------------------------------------------------------------------- {|}
@@ -436,6 +439,7 @@ if is-supported fzf; then
     }
 
     ## cd into the directory of the selected file             {{{
+
     fcd() {
         cd "$(
             fzf +m -q "$*" \
@@ -449,8 +453,8 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## fasd fzf integration functions                         {{{
+
     if is-supported fasd; then
         # selectable cd to frecency directory using fasd
         fz() {
@@ -483,8 +487,8 @@ if is-supported fzf; then
     fi
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## open the selected file in the default editor           {{{
+
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
@@ -503,8 +507,8 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## uses rg to find text in a file                         {{{
+
     fif() {
         if [ ! "$#" -gt 0 ]; then
             echo "Need a string to search for!"
@@ -525,14 +529,14 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## Select multiple files to run a command on              {{{
+
     # e.g. $ fmr vlc
     fmr() { fzf -m -x | xargs -d'\n' -r "$@"; }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## finds and kills a process pid                          {{{
+
     fkill() {
         if [ "$UID" != "0" ]; then
             kill_pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
@@ -546,8 +550,8 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## fgshow - git commit browser                            {{{
+
     fgshow() {
         git log --graph --color=always \
             --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
@@ -560,8 +564,8 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
     ## find an emoji                                          {{{
+
     # usage: $ find_emoji | cb
     if is-supported jq; then
         function femoji() {
@@ -586,8 +590,9 @@ fi
 # Work                                                                  {{{
 # --------------------------------------------------------------------- {|}
 
-## toggles a label used for running visual snapshots on PRs   {{{
 if [ "$USE_WORK_STUFF" = "1" ]; then
+    ## toggles a label used for running visual snapshots on PRs   {{{
+
     if is-supported gh; then
         cc_visual_snapshots() {
             if [ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]; then
@@ -598,6 +603,9 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             fi
         }
     fi
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## build/pack CC/CCR and install them in a test app           {{{
 
     if is-supported jq; then
         cc_pack_install() {
@@ -630,8 +638,8 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             npm install "$npm_root"/esri-calcite-components-*.tgz
         }
     fi
-fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+fi
 
 # --------------------------------------------------------------------- }}}

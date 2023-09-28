@@ -10,6 +10,7 @@ alias x="tmux"
 
 # rerun last command as sudo
 alias plz='sudo $(fc -ln -1)'
+
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
 
@@ -20,8 +21,10 @@ alias rr='rm -rf'
 alias cbf="xclip -se c <"
 
 alias -- -="vifm ."
+
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
+
 # minimum usable vim options
 alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar et ts=4 sw=4 | nnoremap Y y$'"
 
@@ -32,15 +35,19 @@ GROUPDIRSFIRST_SUPPORTED=$(is-supported "ls --group-directories-first" --group-d
 
 # shellcheck disable=2139
 alias ls="ls $COLORS_SUPPORTED"
+
 # list all files/dirs, short format, sort by time
 # shellcheck disable=2139
 alias l="ls -Art $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+
 # list all files/dirs, long format, sort by time
 # shellcheck disable=2139
 alias ll="ls -hogArt $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+
 # List directories, long format, sort by time
 # shellcheck disable=2139
 alias lsd="ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED"
+
 # Lists hidden files, long format, sort by time
 # shellcheck disable=2139
 alias lsh="ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
@@ -53,12 +60,14 @@ is-supported colordiff && alias diff='colordiff'
 
 # Finds directories.
 alias fdd='find . -type d -name'
+
 # Finds files.
 alias fdf='find . -type f -name'
 
 # List declared aliases and functions
 # shellcheck disable=2139
 alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
+
 # shellcheck disable=2139
 alias functions="declare -f | awk '/^[a-z].* ()/{gsub(\" .*$\",\"\"); print $1};'"
 
@@ -124,6 +133,7 @@ if is-supported curl; then
 elif is-supported wget; then
     wttr() { wget -qO- --compression=auto --timeout=10 "https://wttr.in/$*"; }
 fi
+
 alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 # --------------------------------------------------------------------- }}}
@@ -158,8 +168,10 @@ alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
 if is-supported ps; then
     # searchable process list
     alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
+
     # get top processes eating memory
     alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
+
     # get top processes eating cpu
     alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 fi
@@ -179,14 +191,13 @@ if is-supported npm; then
     alias nt="npm test"
     alias nr="npm run"
     alias nrb="npm run build"
+    alias nib='rm -rf $(npm prefix)/{node_modules,dist,build} && npm install && npm run build'
 
     alias ncu="npx npm-check-updates"
     alias npxplz='npx $(fc -ln -1)'
 
-    if is-supported fzf; then
-        is-supported jq &&
-            alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
-    fi
+    is-supported fzf && is-supported jq &&
+        alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
 fi
 
 # --------------------------------------------------------------------- }}}
@@ -284,20 +295,25 @@ alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 
 if is-supported docker; then
     ## general docker aliases                                 {{{
+
     # display names of running containers
     alias dkrls="docker container ls | awk 'NR > 1 {print \$NF}'"
+
     # delete all containers / images
     alias dkrR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+
     # stats on images
     alias dkrstats='docker stats $(docker ps -q)'
+
     # list images installed
     alias dkrimg='docker images'
+
     # prune everything
     alias dkrprune='docker system prune -a'
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
     ## work docker aliases for calcite-components             {{{
+
     if [ "$USE_WORK_STUFF" = "1" ]; then
         # workaround to run e2e tests on ubuntu due to a Stencil bug
         # https://github.com/ionic-team/stencil/issues/3853
