@@ -9,15 +9,14 @@ local prettier = {
   formatCanRange = true,
   formatStdin = true,
   formatCommand = [[
-    $(
-        [ -n "$(command -v node_modules/.bin/prettier)" ] &&
-            echo "node_modules/.bin/prettier" ||
-            echo "prettier"
-    ) \
+    cmd="prettier"
+    bin="$(npm root)/.bin/$cmd"
+    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
         --config-precedence prefer-file \
-        ${--range-start=charStart} \
-        ${--range-end=charEnd} \
-        --stdin-filepath ${INPUT}
+        ${--range-start:charStart} \
+        ${--range-end:charEnd} \
+        --stdin \
+        --stdin-filepath '${INPUT}'
   ]],
   rootMarkers = {
     ".prettierrc",
@@ -37,7 +36,14 @@ local eslint = {
   lintSource = "eslint",
   lintStdin = true,
   lintIgnoreExitCode = true,
-  lintCommand = "eslint --format visualstudio --stdin --stdin-filename ${INPUT}",
+  lintCommand = [[
+    cmd="eslint"
+    bin="$(npm root)/.bin/$cmd"
+    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
+        --format visualstudio \
+        --stdin \
+        --stdin-filename ${INPUT}
+  ]],
   lintFormats = { "%f(%l,%c): %tarning %m", "%f(%l,%c): %rror %m" },
   rootMarkers = {
     ".eslintrc",
@@ -53,7 +59,16 @@ local eslint = {
 local stylelint = {
   lintSource = "stylelint",
   lintStdin = true,
-  lintCommand = "stylelint --no-color --formatter compact --stdin --stdin-filename ${INPUT}",
+  lintIgnoreExitCode = true,
+  lintCommand = [[
+    cmd="stylelint
+    bin="$(npm root)/.bin/$cmd"
+    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
+      --no-color \
+      --formatter compact \
+      --stdin  \
+      --stdin-filename ${INPUT}
+  ]],
   lintFormats = {
     "%.%#: line %l, col %c, %trror - %m",
     "%.%#: line %l, col %c, %tarning - %m",
@@ -72,7 +87,14 @@ local stylelint = {
 local markdownlint = {
   lintSource = "markdownlint",
   lintStdin = true,
-  lintCommand = "markdownlint --disable MD031 MD024 MD013 MD041 MD033 --stdin",
+  lintIgnoreExitCode = true,
+  lintCommand = [[
+    cmd="markdownlint"
+    bin="$(npm root)/.bin/$cmd"
+    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
+        --disable MD031 MD024 MD013 MD041 MD033 \
+        --stdin
+  ]],
   lintFormats = { "%f:%l %m", "%f:%l:%c %m", "%f: %l: %m" },
 }
 
@@ -183,7 +205,7 @@ return {
   filetypes = vim.tbl_keys(languages),
   settings = {
     rootMarkers = { ".git", "Dockerfile", "Makefile" },
-    lintDebounce = 1000000000,
+    lintDebounce = 1000000000, -- one second debounce
     languages = languages,
   },
 }
