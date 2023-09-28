@@ -19,6 +19,9 @@ return {
   -----------------------------------------------------------------------------
   {
     "hrsh7th/cmp-nvim-lsp", -- completes API info from attached langauge servers
+    event = "LspAttach",
+  },
+  {
     "hrsh7th/cmp-nvim-lsp-signature-help", -- completes function signatures via LSP
     event = "LspAttach",
   },
