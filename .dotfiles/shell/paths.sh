@@ -102,12 +102,8 @@ path() {
 path \
     -p "$HOME/.dotfiles/bin" \
     -p "$HOME/.local/share/nvim/mason/bin" \
-    -a "$HOME/dev/personal/git-mux" \
-    -a "$HOME/dev/lib/forgit/bin" \
-    -a "$HOME/dev/lib/git-open" \
+    -a "$HOME/dev/personal/git-mux/bin" \
     -a "$HOME/dev/lib/fzf/bin" \
-    -a "$HOME/dev/lib/fasd" \
-    -a "$HOME/dev/lib/fff" \
     -a "$HOME/.luarocks/bin" \
     -a "$HOME/.nimble/bin" \
     -a "$HOME/.volta/bin" \

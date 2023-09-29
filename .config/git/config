@@ -264,11 +264,10 @@
     rbs = rebase --skip
     rbu = rebase --autostash --autosquash --interactive @{upstream}
     rbom = "!f() { \
-        default_branch="$(git bdefault)" \
-        git fetch origin "$default_branch" \
-        git rebase --autostash --autosquash "origin/$default_branch" \
-        git update-ref "refs/heads/$default_branch" "origin/$default_branch" \
-    }; f"
+        default_branch="$(git bdefault)" && \
+        git fetch origin "$default_branch" && \
+        git rebase --autostash --autosquash "origin/$default_branch" && \
+        git update-ref "refs/heads/$default_branch" "origin/$default_branch"; }; f"
 
     s = status --short
 

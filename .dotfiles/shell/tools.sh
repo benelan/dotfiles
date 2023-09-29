@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=1090
 
-# cargo - https://github.com/rust-lang/cargo                  {{{
-# [ -r ~/.cargo/env ] && [ -f ~/.cargo/env ] && . ~/.cargo/env
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # broot - https://github.com/Canop/broot                      {{{
 is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
     . ~/.config/broot/launcher/bash/br

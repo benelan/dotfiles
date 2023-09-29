@@ -18,6 +18,11 @@ return {
     build = "cd app && npm install",
     ft = { "markdown" },
     keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
+    init = function()
+      vim.g.mkdp_browser = vim.env.ALTBROWSER or vim.env.BROWSER or "o"
+      vim.g.mkdp_preview_options = { sync_scroll_type = "top" }
+      vim.g.mkdp_auto_close = false
+    end,
   },
   -----------------------------------------------------------------------------
   {

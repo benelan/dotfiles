@@ -1,5 +1,55 @@
 #!/usr/bin/env bash
 
+# Gruvbox colors from:
+# https://github.com/morhetz/gruvbox-contrib/blob/master/color.table
+{
+    if [ "$(tput colors)" -gt 254 ]; then
+        RESET=$(tput sgr0)
+        BOLD=$(tput bold)
+        UNDERLINE=$(tput smul)
+
+        BLACK=$(tput setaf 235)
+        RED=$(tput setaf 124)
+        GREEN=$(tput setaf 106)
+        YELLOW=$(tput setaf 172)
+        BLUE=$(tput setaf 66)
+        MAGENTA=$(tput setaf 132)
+        CYAN=$(tput setaf 72)
+        ORANGE=$(tput setaf 166)
+        WHITE=$(tput setaf 246)
+        GREY=$(tput setaf 245)
+
+        RED_BRIGHT=$(tput setaf 167)
+        GREEN_BRIGHT=$(tput setaf 142)
+        YELLOW_BRIGHT=$(tput setaf 214)
+        BLUE_BRIGHT=$(tput setaf 109)
+        MAGENTA_BRIGHT=$(tput setaf 175)
+        CYAN_BRIGHT=$(tput setaf 14)
+        ORANGE_BRIGHT=$(tput setaf 209)
+        WHITE_BRIGHT=$(tput setaf 223)
+
+        export RED_BRIGHT GREEN_BRIGHT YELLOW_BRIGHT BLUE_BRIGHT \
+            MAGENTA_BRIGHT CYAN_BRIGHT ORANGE_BRIGHT WHITE_BRIGHT
+    else
+        RESET="\e[0m"
+        BOLD='\e[1m'
+        UNDERLINE='e[4m'
+        BLACK="\e[30m"
+        RED="\e[31m"
+        GREEN="\e[32m"
+        YELLOW="\e[33m"
+        BLUE="\e[34m"
+        MAGENTA="\e[35m"
+        CYAN="\e[36m"
+        ORANGE="\e[33m"
+        WHITE="\e[37m"
+        GREY="\e[1;30m"
+    fi
+} >/dev/null 2>&1
+
+export BOLD UNDERLINE RESET BLACK RED GREEN YELLOW BLUE \
+    MAGENTA CYAN ORANGE WHITE GREY
+
 export HISTFILESIZE=42069
 
 # Omit duplicates and commands that begin with a space from history.
@@ -9,10 +59,12 @@ export HISTCONTROL='ignoreboth:erasedups'
 export HISTTIMEFORMAT=''
 
 # Highlight section titles in manual pages.
-export LESS_TERMCAP_md=$'\e[01;32m'
-export LESS_TERMCAP_me=$'\e[0m'
-export LESS_TERMCAP_us=$'\e[04;33m'
-export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_md="$BOLD$GREEN"
+export LESS_TERMCAP_me="$RESET"
+export LESS_TERMCAP_us="$UNDERLINE$YELLOW"
+export LESS_TERMCAP_ue="$RESET"
+export LESS_TERMCAP_so="$MAGENTA"
+export LESS_TERMCAP_se="$RESET"
 
 # generate LS_COLORS
 [ -r ~/.dircolors ] && eval "$(dircolors ~/.dircolors)"

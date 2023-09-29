@@ -33,6 +33,7 @@ fi
 # --------------------------------------------------------------------- {|}
 
 ## Rust    - https://www.rust-lang.org/tools/install           {{{
+
 install_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     export PATH="${PATH}:${HOME}/.cargo/bin"
@@ -40,6 +41,7 @@ install_rust() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Nim     - https://nim-lang.org/install_unix.html            {{{
+
 install_nim() {
     curl https://nim-lang.org/choosenim/init.sh -sSf | sh
     export PATH="${PATH}:${HOME}/.nimble/bin"
@@ -47,6 +49,7 @@ install_nim() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Golang  - https://go.dev/doc/install                        {{{
+
 install_golang() {
     # checksum will need to be updated when using a new go version
     checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
@@ -65,6 +68,7 @@ install_golang() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Node.js - https://docs.volta.sh/guide/getting-started       {{{
+
 install_volta() {
     curl https://get.volta.sh | bash -s -- --skip-setup
 
@@ -74,8 +78,17 @@ install_volta() {
     volta install node@16
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Bun     - https://bun.sh/docs/installation                  {{{
+
+install_bun() {
+    curl -fsSL https://bun.sh/install | bash
+    export BUN_INSTALL="$HOME/.bun"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Lua     - https://www.lua.org/download.html                 {{{
+
 install_lua() {
     is-supported lua && return
     curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
@@ -88,6 +101,7 @@ install_lua() {
 }
 
 ### LuaJIT (compiler)              {{{
+
 ### https://luajit.org/download.html
 install_luajit() {
     is-supported luajit && return
@@ -105,6 +119,7 @@ install_luajit() {
 
 ###}}}
 ### Luarocks (Lua package manager) {{{
+
 ### https://luarocks.org#quick-start
 install_luarocks() {
     is-supported luarocks && return
@@ -126,6 +141,7 @@ install_luarocks() {
 # --------------------------------------------------------------------- {|}
 
 ## Rust   CLI tools - https://crates.io                        {{{
+
 install_cargo_packages() {
     ! [ -f "$DEPS_DIR/cargo" ] && return
 
@@ -148,6 +164,7 @@ install_cargo_packages() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Golang CLI tools - https://pkg.go.dev                       {{{
+
 install_golang_packages() {
     ! is-supported go && install_golang
     ! [ -f "$DEPS_DIR/golang" ] && return
@@ -160,6 +177,7 @@ install_golang_packages() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Python CLI tools - https://pypi.org/project/pipx/           {{{
+
 install_pip_packages() {
     ! [ -f "$DEPS_DIR/pip" ] && return
 
@@ -171,6 +189,7 @@ install_pip_packages() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Node.js packages - https://www.npmjs.com                    {{{
+
 install_node_packages() {
     ! [ -f "$DEPS_DIR/node" ] && return
 
@@ -186,6 +205,7 @@ install_node_packages() {
 # --------------------------------------------------------------------- {|}
 
 ## taskopen   - https://github.com/jschlatow/taskopen          {{{
+
 install_taskopen() {
     is-supported taskopen || ! is-supported task && return
 
@@ -203,6 +223,7 @@ install_taskopen() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## fasd       - https://github.com/clvv/fasd                   {{{
+
 install_fasd() {
     is-supported fasd && return
 
@@ -217,6 +238,7 @@ install_fasd() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## fff        - https://github.com/dylanaraps/fff              {{{
+
 install_fff() {
     is-supported fff && return
 
@@ -231,6 +253,7 @@ install_fff() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## git-open   - https://github.com/paulirish/git-open          {{{
+
 install_git-open() {
     is-supported git-open && return
 
@@ -242,6 +265,7 @@ install_git-open() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## git-jump   - https://github.com/git/git/tree/master/contrib {{{
+
 install_git-jump() {
     is-supported git-jump && return
 
@@ -267,6 +291,7 @@ install_git-jump() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## git-extras - https://github.com/tj/git-extras               {{{
+
 ## Install helpful bash scripts for git workflows
 install_git-extras() {
     curl -sSL https://raw.githubusercontent.com/tj/git-extras/master/install.sh |
@@ -280,6 +305,7 @@ install_git-extras() {
 # --------------------------------------------------------------------- {|}
 
 ## Install CLI apt packages                                    {{{
+
 ## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 install_apt_packages() {
     ! [ -f "$DEPS_DIR/apt" ] && return
@@ -293,6 +319,7 @@ install_apt_packages() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install GUI apt packages                                    {{{
+
 install_apt_gui_packages() {
     ! [ -f "$DEPS_DIR/apt-gui" ] && return
 
@@ -305,6 +332,7 @@ install_apt_gui_packages() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install VS Code                                             {{{
+
 ## https://code.visualstudio.com/docs/setup/linux
 install_vscode() {
     is-supported code && return
@@ -319,6 +347,7 @@ install_vscode() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install ProtonVPN CLI                                       {{{
+
 ## https://protonvpn.com/support/linux-vpn-tool/#debian
 install_protonvpn_cli() {
     is-supported protonvpn-cli && return
@@ -335,6 +364,7 @@ install_protonvpn_cli() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Discord                                             {{{
+
 ## https://discord.com/download
 install_discord() {
     is-supported discord && return
@@ -349,6 +379,7 @@ install_discord() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install WezTerm                                             {{{
+
 ## https://wezfurlong.org/wezterm/install/linux.html
 install_wezterm() {
     deb="wezterm-nightly.Ubuntu22.04.deb"
@@ -369,6 +400,7 @@ install_wezterm() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Taskwarrior TUI                                     {{{
+
 ## https://github.com/kdheepak/taskwarrior-tui
 install_taskwarrior_tui() {
     is-supported taskwarrior-tui && return
@@ -383,6 +415,7 @@ install_taskwarrior_tui() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Docker Desktop                                      {{{
+
 ## https://docs.docker.com/desktop/install/ubuntu/
 install_docker_desktop() {
     is-supported docker-desktop && return
@@ -401,6 +434,7 @@ install_docker_desktop() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Docker Engine                                       {{{
+
 ## https://docs.docker.com/engine/install/ubuntu/
 install_docker_engine() {
     is-supported docker && return
@@ -421,6 +455,7 @@ install_docker_engine() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install latest stable git version                           {{{
+
 ## https://git-scm.com/download/linux
 install_latest_git() {
     grep -q "git-core/ppa" \
@@ -432,6 +467,7 @@ install_latest_git() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install GitHub CLI                                          {{{
+
 ## https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 install_gh_cli() {
     is-supported gh && return
@@ -449,6 +485,7 @@ install_gh_cli() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Glow CLI (Markdown rendering)                       {{{
+
 ## https://github.com/charmbracelet/glow
 install_glow() {
     sudo mkdir -p /etc/apt/keyrings
@@ -464,6 +501,7 @@ install_glow() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Brave Browser                                       {{{
+
 ## https://brave.com/linux/#debian-ubuntu-mint
 install_brave_browser() {
     is-supported brave-browser && return
@@ -480,6 +518,7 @@ install_brave_browser() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install The four common font weights                        {{{
+
 ## https://github.com/ryanoasis/nerd-fonts
 install_iosevka_font() {
     # Iosevka
@@ -501,6 +540,7 @@ install_iosevka_font() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install gruvbox coffee wallpaper                            {{{
+
 install_gruvbox_wallpaper() {
     wallpaper="$WALLPAPER_DIR/gruvbox_coffee.png"
 
@@ -532,6 +572,7 @@ install_gruvbox_wallpaper() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install gruvbox gnome theme                                 {{{
+
 install_gnome_gruvbox_theme() {
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
@@ -557,6 +598,7 @@ install_gnome_gruvbox_theme() {
             ;;
     esac
 }
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
@@ -564,6 +606,7 @@ install_gnome_gruvbox_theme() {
 # --------------------------------------------------------------------- {|}
 
 ## Update git submodules                                       {{{
+
 update_modules() {
     /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
         submodule update --init --recursive --rebase "$@"
@@ -571,6 +614,7 @@ update_modules() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install fzf                                                 {{{
+
 install_fzf() {
     ! [ -d "$LIB/fzf" ] && return
     cd "$LIB/fzf" || return
@@ -586,6 +630,7 @@ install_fzf() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install neovim                                              {{{
+
 install_neovim() {
     ! [ -d "$LIB/neovim" ] && return
     cd "$LIB/neovim" || return
@@ -601,6 +646,7 @@ install_neovim() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install vim plugins                                         {{{
+
 install_vim_plugins() {
     cd && update_modules .vim
 
@@ -615,12 +661,14 @@ install_vim_plugins() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install neovim plugins                                      {{{
+
 install_neovim_plugins() {
     nvim --headless +"Lazy! sync" +qa
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install nvim-devdocs sources                                {{{
+
 install_devdocs_sources() {
     if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
         [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -lt 18 ]; then
@@ -629,6 +677,7 @@ install_devdocs_sources() {
         nvim --headless +DevdocsUpdateAll
     fi
 }
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
@@ -636,6 +685,7 @@ install_devdocs_sources() {
 # --------------------------------------------------------------------- {|}
 
 ## Ubuntu-specific packages                                    {{{
+
 case $(os-detect) in
     *ubuntu)
         ## CLI install scripts (suitable for servers)
@@ -666,6 +716,7 @@ esac
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Shell scripts                                               {{{
+
 install_fasd
 install_fff
 install_taskopen
@@ -675,6 +726,7 @@ install_git-jump
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Programming languages                                       {{{
+
 # install_rust
 # install_nim
 # install_golang
@@ -685,6 +737,7 @@ install_git-jump
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Programming language packages                               {{{
+
 install_node_packages
 install_pip_packages
 install_cargo_packages
@@ -692,6 +745,7 @@ install_golang_packages
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Git submodules                                              {{{
+
 install_neovim || true
 install_fzf || true
 
