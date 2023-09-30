@@ -252,20 +252,6 @@ alias xs="git-mux project ~"
 # Dotfiles                                                              {{{
 # --------------------------------------------------------------------- {|}
 
-# setup the alias for managing dotfiles
-# It behaves like git, and can be called from any directory, e.g.
-# $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
-# The whole home directory excluding the dotfiles is untracked.
-# Prevent `dot clean` so everything isn't deleted.
-# Most of the important stuff is gitignored anyway.
-dot() {
-    if [ "$1" = "clean" ]; then
-        echo "Don't delete your home directory, dumbass"
-    else
-        /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"
-    fi
-}
-
 alias d='dot'
 
 # creates env vars so git plugins work with the bare dotfiles repo
