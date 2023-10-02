@@ -1,0 +1,982 @@
+#!/usr/bin/env bash
+# shellcheck disable=2046
+
+# This script manages my dotfiles. The `deps` command installs dependencies
+# and tools. All other commands are passed to `git` with environment variables
+# set so it always executes on the dotfiles repo. For example:
+#
+#   $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
+#
+# The whole home directory excluding the dotfiles is untracked so `dot status`
+# isn't cluttered. The script prevents `dot clean` so everything isn't deleted,
+# but the important stuff is gitignored anyway.
+
+# Programming language install functions                                {{{
+# --------------------------------------------------------------------- {|}
+
+## Rust    - https://www.rust-lang.org/tools/install           {{{
+
+_languages+="rust "
+install_language_rust() {
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    export PATH="${PATH}:${HOME}/.cargo/bin"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Nim     - https://nim-lang.org/install_unix.html            {{{
+
+_languages+="nim "
+install_language_nim() {
+    curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+    export PATH="${PATH}:${HOME}/.nimble/bin"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Golang  - https://go.dev/doc/install                        {{{
+
+_languages+="golang "
+install_language_golang() {
+    # checksum will need to be updated when using a new go version
+    checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
+    outfile="go1.20.5.linux-amd64.tar.gz"
+    curl -sSLo "$outfile" "https://go.dev/dl/$outfile"
+
+    if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
+        sudo rm -rf /usr/local/go
+        sudo tar -C /usr/local -xzf "$outfile"
+        rm "$outfile"
+        export PATH="${PATH}:/usr/local/go/bin"
+    else
+        printf "\nchecksum does not match, please install golang manually:\nhttps://go.dev/doc/install"
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Node.js - https://docs.volta.sh/guide/getting-started       {{{
+
+_languages+="volta "
+install_language_volta() {
+    curl https://get.volta.sh | bash -s -- --skip-setup
+
+    export VOLTA_HOME=~/.volta
+    export PATH="${PATH}:${VOLTA_HOME}/bin"
+
+    volta install node@16
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Bun     - https://bun.sh/docs/installation                  {{{
+
+_languages+="bun "
+install_bun() {
+    curl -fsSL https://bun.sh/install | bash
+    export BUN_INSTALL="$HOME/.bun"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Lua     - https://www.lua.org/download.html                 {{{
+
+_languages+="lua "
+install_language_lua() {
+    is-supported lua && return
+    curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
+
+    tar -zxf lua-5.4.6.tar.gz
+    cd lua-5.4.6 || return
+
+    make linux test
+    sudo make install
+}
+
+### LuaJIT (compiler)              {{{
+### https://luajit.org/download.html
+
+_languages+="luajit "
+install_language_luajit() {
+    is-supported luajit && return
+
+    if ! [ -d "$LIB/luajit" ]; then
+        git clone https://luajit.org/git/luajit.git "$LIB/luajit"
+    fi
+
+    cd "$LIB/luajit" || return
+    git pull
+
+    sudo make
+    sudo make install
+}
+
+###}}}
+### Luarocks (Lua package manager) {{{
+### https://luarocks.org#quick-start
+
+_languages+="luarocks "
+install_language_luarocks() {
+    is-supported luarocks && return
+
+    wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
+    tar zxpf luarocks-3.9.2.tar.gz
+    cd luarocks-3.9.2 || return
+
+    ./configure --lua-version=5.4
+    make
+    sudo make install
+}
+###}}}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Package manager install functions                                     {{{
+# --------------------------------------------------------------------- {|}
+
+## Rust   CLI tools - https://crates.io                        {{{
+
+_packages+="cargo "
+install_packages_cargo() {
+    ! [ -f "$DEPS_DIR/cargo" ] && return
+
+    if ! is-supported cargo || ! is-supported rustup; then
+        install_language_rust
+    else
+        rustup update
+    fi
+
+    cargo install $(cat "$DEPS_DIR/cargo")
+
+    # link batcat to bat due to package name conflict
+    ! is-supported bat && is-supported batcat &&
+        ln -s "$(command -v batcat)" "$BIN_DIR/bat"
+
+    # link fdfind to fd
+    ! is-supported fd && is-supported fdfind &&
+        ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Golang CLI tools - https://pkg.go.dev                       {{{
+
+_packages+="golang "
+install_packages_golang() {
+    ! is-supported go && install_language_golang
+    ! [ -f "$DEPS_DIR/golang" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        go install "$pkg"
+    done <"$DEPS_DIR/golang"
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Python CLI tools - https://pypi.org/project/pipx/           {{{
+
+_packages+="pip "
+install_packages_pip() {
+    ! [ -f "$DEPS_DIR/pip" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        pip3 install --user "$pkg"
+    done <"$DEPS_DIR/pip"
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Node.js packages - https://www.npmjs.com                    {{{
+
+_packages+="node "
+
+install_packages_node() {
+    ! [ -f "$DEPS_DIR/node" ] && return
+
+    # NOTE: volta only works on x86_64 architectures for now
+    ! is-supported volta && ! is-supported node && install_language_volta
+    npm install -g $(cat "$DEPS_DIR/node")
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Shell script install functions                                        {{{
+# --------------------------------------------------------------------- {|}
+
+## taskopen   - https://github.com/jschlatow/taskopen          {{{
+
+_scripts+="task_open "
+
+install_script_taskopen() {
+    is-supported taskopen || ! is-supported task && return
+
+    curl -sSLo "$BIN_DIR/taskopen" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/taskopen
+
+    curl -sSLo "$MAN_DIR/man1/taskopen.1" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopen.1
+
+    curl -sSLo "$MAN_DIR/man5/taskopenrc.5" \
+        https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopenrc.5
+
+    chmod +x "$BIN_DIR/taskopen"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## fasd       - https://github.com/clvv/fasd                   {{{
+
+_scripts+="fasd "
+
+install_script_fasd() {
+    is-supported fasd && return
+
+    curl -sSLo "$BIN_DIR/fasd" \
+        https://raw.githubusercontent.com/clvv/fasd/master/fasd
+
+    curl -sSLo "$MAN_DIR/man1/fasd.1" \
+        https://raw.githubusercontent.com/clvv/fasd/master/fasd.1
+
+    sudo chmod +x "$BIN_DIR/fasd"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## fff        - https://github.com/dylanaraps/fff              {{{
+
+_scripts+="fff "
+
+install_script_fff() {
+    is-supported fff && return
+
+    curl -sSLo "$BIN_DIR/fff" \
+        https://raw.githubusercontent.com/dylanaraps/fff/master/fff
+
+    curl -sSLo "$MAN_DIR/man1/fff.1" \
+        https://raw.githubusercontent.com/clvv/fff/master/fff.1
+
+    sudo chmod +x "$BIN_DIR/fff"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## git-open   - https://github.com/paulirish/git-open          {{{
+
+_scripts+="git-open "
+
+install_script_git-open() {
+    is-supported git-open && return
+
+    curl -sSLo "$BIN_DIR/git-o" \
+        https://raw.githubusercontent.com/paulirish/git-open/master/git-open
+
+    sudo chmod +x "$BIN_DIR/git-o"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## git-jump   - https://github.com/git/git/tree/master/contrib {{{
+
+_scripts+="git-jump "
+
+install_script_git-jump() {
+    is-supported git-jump && return
+
+    # it may already be on in the filesystem
+    loc1="/usr/local/share/git-core/contrib/git-jump/git-jump"
+
+    # sometimes it gets put in doc for some reason
+    loc2="/usr/share/doc/git/contrib/git-jump/git-jump"
+
+    if [ -f "$loc1" ] && [ -r "$loc1" ]; then
+        cp -p "$loc1" "$BIN_DIR"
+    elif [ -f "$loc2" ] && [ -r "$loc2" ]; then
+        cp -p "$loc2" "$BIN_DIR"
+    else
+        # otherwise download it
+        curl -sSLo "$BIN_DIR/git-jump" \
+            https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
+    fi
+
+    sudo chmod +x "$BIN_DIR/git-jump"
+    unset loc1 loc2
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## git-forgit - https://github.com/wfxr/forgit                 {{{
+
+_scripts+="git-forgit "
+
+install_git-forgit() {
+    curl -sSLo "$BIN_DIR/git-forgit" \
+        https://raw.githubusercontent.com/wfxr/forgit/master/bin/git-forgit
+
+    if [ -d /usr/share/bash-completion/completions ]; then
+        curl -sSLo /usr/share/bash-completion/completions/git-forgit \
+            https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## git-extras - https://github.com/tj/git-extras               {{{
+
+_scripts+="git-extras "
+
+## Install helpful bash scripts for git workflows
+install_script_git-extras() {
+    dir=$(mktemp -t -d git-extras-install.XXXXXXXXXX) &&
+        cd "$dir" &&
+        git clone https://github.com/tj/git-extras.git &>/dev/null &&
+        cd git-extras &&
+        git checkout \
+            $(git describe --tags $(git rev-list --tags --max-count=1)) \
+            &>/dev/null &&
+        sudo make install &&
+        rm -rf "$dir"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Ubuntu dependency install functions                                   {{{
+# --------------------------------------------------------------------- {|}
+
+## Install CLI apt packages                                    {{{
+
+_ubuntu+="apt "
+
+## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
+install_ubuntu_apt() {
+    ! [ -f "$DEPS_DIR/apt" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt install -y "$pkg" || true
+    done <"$DEPS_DIR/apt"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install GUI apt packages                                    {{{
+
+_ubuntu+="apt-gui "
+
+install_ubuntu_apt-gui() {
+    ! [ -f "$DEPS_DIR/apt-gui" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt install -y "$pkg" || true
+    done <"$DEPS_DIR/apt-gui"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install VS Code                                             {{{
+
+_ubuntu+="vscode "
+
+## https://code.visualstudio.com/docs/setup/linux
+install_ubuntu_vscode() {
+    is-supported code && return
+    deb="$CACHE_DIR/vscode.deb"
+
+    curl -ssLo "$deb" \
+        "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+
+    sudo apt install -y "$deb" || true
+    unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install ProtonVPN CLI                                       {{{
+
+_ubuntu+="protonvpn "
+
+## https://protonvpn.com/support/linux-vpn-tool/#debian
+install_ubuntu_protonvpn() {
+    is-supported protonvpn-cli && return
+    checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
+    deb="protonvpn-stable-release_1.0.3_all.deb"
+
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
+    echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
+
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Discord                                             {{{
+
+_ubuntu+="discord "
+
+## https://discord.com/download
+install_ubuntu_discord() {
+    is-supported discord && return
+    deb="$CACHE_DIR/discord.deb"
+
+    curl -sSLo "$deb" \
+        https://discord.com/api/download?platform=linux\&format=deb
+
+    sudo apt install -y "$deb"
+    unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install WezTerm                                             {{{
+
+_ubuntu+="wezterm "
+
+## https://wezfurlong.org/wezterm/install/linux.html
+install_ubuntu_wezterm() {
+    deb="wezterm-nightly.Ubuntu22.04.deb"
+
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://github.com/wez/wezterm/releases/download/nightly/$deb"
+
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
+
+    # https://wezfurlong.org/wezterm/config/lua/config/term.html
+    tempfile=$(mktemp) &&
+        curl -o "$tempfile" \
+            https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo &&
+        tic -x -o ~/.terminfo "$tempfile" &&
+        rm "$tempfile"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Taskwarrior TUI                                     {{{
+
+_ubuntu+="taskwarrior-tui "
+
+## https://github.com/kdheepak/taskwarrior-tui
+install_ubuntu_taskwarrior-tui() {
+    is-supported taskwarrior-tui && return
+    deb="taskwarrior-tui.deb"
+
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
+
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Docker Desktop                                      {{{
+
+_ubuntu+="docker-desktop "
+
+## https://docs.docker.com/desktop/install/ubuntu/
+install_ubuntu_docker-desktop() {
+    is-supported docker-desktop && return
+    deb="docker-desktop-4.16.2-amd64.deb"
+
+    rm -r ~/.docker/desktop || true
+    sudo rm /usr/local/bin/com.docker.cli || true
+    sudo apt purge docker-desktop || true
+
+    curl -sSLo "$CACHE_DIR/$deb" \
+        "https://desktop.docker.com/linux/main/amd64/$deb"
+
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Docker Engine                                       {{{
+
+_ubuntu+="docker-engine "
+
+## https://docs.docker.com/engine/install/ubuntu/
+install_ubuntu_docker-engine() {
+    is-supported docker && return
+
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+        sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+    # shellcheck disable=2027
+    echo "deb [arch="$(
+        dpkg --print-architecture
+    )" signed-by=/etc/apt/keyrings/docker.gpg] \
+       https://download.docker.com/linux/ubuntu "$(
+        . /etc/os-release && echo "$VERSION_CODENAME"
+    )" stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+
+    sudo apt update && sudo apt install -y \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install latest stable git version                           {{{
+
+_ubuntu+="git "
+
+## https://git-scm.com/download/linux
+install_ubuntu_git() {
+    grep -q "git-core/ppa" \
+        /etc/apt/sources.list /etc/apt/sources.list.d/* ||
+        sudo add-apt-repository -y ppa:git-core/ppa
+
+    sudo apt update && sudo apt install -y git
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install GitHub CLI                                          {{{
+
+_ubuntu+="gh "
+
+## https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+install_ubuntu_gh() {
+    is-supported gh && return
+
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+        sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
+        sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
+        echo "deb [arch=$(dpkg --print-architecture) \
+          signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+          https://cli.github.com/packages stable main" |
+        sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+
+    sudo apt update && sudo apt install -y gh
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Glow CLI (Markdown rendering)                       {{{
+
+_ubuntu+="glow "
+
+## https://github.com/charmbracelet/glow
+install_ubuntu_glow() {
+    sudo mkdir -p /etc/apt/keyrings
+
+    curl -fsSL https://repo.charm.sh/apt/gpg.key |
+        sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+
+    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" |
+        sudo tee /etc/apt/sources.list.d/charm.list
+
+    sudo apt update && sudo apt install -y glow
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Brave Browser                                       {{{
+
+_ubuntu+="brave "
+
+## https://brave.com/linux/#debian-ubuntu-mint
+install_ubuntu-brave() {
+    is-supported brave-browser && return
+
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+         https://brave-browser-apt-release.s3.brave.com/ stable main" |
+        sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+
+    sudo apt update && sudo apt install -y brave-browser
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Operating system theme                                                {{{
+# --------------------------------------------------------------------- {|}
+
+## Install The four common font weights                        {{{
+
+_themes+="font "
+
+## https://github.com/ryanoasis/nerd-fonts
+install_theme_font() {
+    # Iosevka
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
+
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
+
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
+
+    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
+
+    # reload the font cache
+    fc-cache -rf
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install gruvbox coffee wallpaper                            {{{
+
+_themes+="wallpaper "
+
+install_theme_wallpaper() {
+    wallpaper="$WALLPAPER_DIR/gruvbox_coffee.png"
+
+    if [ -f "$wallpaper" ]; then
+        return
+    fi
+
+    curl -sSLo "$wallpaper" \
+        https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+
+    case "$XDG_CURRENT_DESKTOP" in
+        *gnome* | *GNOME*)
+            if is-supported gsettings; then
+                gsettings set org.gnome.desktop.background picture-uri \
+                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
+                gsettings set org.gnome.desktop.background picture-uri-dark \
+                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
+
+                return 0
+            fi
+            ;;
+    esac
+
+    if is-supported feh; then
+        feh --no-fehbg --bg-center --image-bg "#3c3836" \
+            "$wallpaper"
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install gruvbox gnome theme                                 {{{
+
+_themes+="gruvbox "
+
+install_theme_gruvbox() {
+    case "$XDG_CURRENT_DESKTOP" in
+        *gnome* | *GNOME*)
+            # download gruvbox gnome theme and icons
+            git -C "$CACHE_DIR" clone --depth=1 \
+                https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+            git -C "$CACHE_DIR" clone --depth=1 \
+                https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+
+            cursors="FlatbedCursors-0.5.2.tar.bz2"
+            curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
+            extract "$cursors"
+            unset cursors
+
+            # move icons and themes to the proper locations
+            mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons ~/.themes
+            cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
+            cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL ~/.themes
+            cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
+
+            # remove the repos because they are yuuge
+            rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack" "$CACHE_DIR/Gruvbox-GTK-Theme" ./FlatbedCursors*
+            ;;
+    esac
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Git submodule install/build functions                                 {{{
+# --------------------------------------------------------------------- {|}
+
+## Update git submodules                                       {{{
+
+update_modules() {
+    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
+        submodule update --init --recursive --rebase "$@"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install fzf                                                 {{{
+
+_builds+="fzf "
+
+install_build_fzf() {
+    ! [ -d "$LIB/fzf" ] && return
+    cd "$LIB/fzf" || return
+
+    git fetch --all --tags --force
+    git reset --hard origin/master
+    git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+
+    make
+    make install
+    chmod +x "$LIB/fzf/bin/fzf"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install neovim                                              {{{
+
+_builds+="neovim "
+
+install_build_neovim() {
+    ! [ -d "$LIB/neovim" ] && return
+    cd "$LIB/neovim" || return
+
+    git fetch --all --tags --force
+    git reset --hard origin/master
+    git checkout nightly
+    # git checkout stable
+
+    sudo make CMAKE_BUILD_TYPE=Release
+    sudo make install
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install vim plugins                                         {{{
+
+_packages+="vim "
+
+install_packages_vim() {
+    cd && update_modules .vim
+
+    vim +"$(
+        find ~/.vim/pack/foo/opt \
+            -maxdepth 1 -mindepth 1 -type d \
+            -exec basename --multiple {} \; |
+            perl -pe 's/^/packadd /' |
+            tr '\n' '|'
+    ) helptags ALL | quit"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install neovim plugins                                      {{{
+
+_packages+="vim "
+
+install_packages_neovim() {
+    nvim --headless +"Lazy! sync" +qa
+
+    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
+        [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -lt 18 ]; then
+        nvim --headless +"DevdocsInstall astro bash css docker dom gnu_make go html http javascript node npm react sass tailwindcss typescript vite vue-3"
+    else
+        nvim --headless +DevdocsUpdateAll
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Create dependency group functions                                     {{{
+# --------------------------------------------------------------------- {|}
+
+## Ubuntu-specific packages                                    {{{
+
+ubuntu_installs() {
+    case $(os-detect) in
+        *ubuntu)
+            ## CLI install scripts (suitable for servers)
+            install_ubuntu_apt
+            install_ubuntu_git
+            install_ubuntu_gh
+            install_ubuntu_glow
+            install_ubuntu_protonvpn
+            install_ubuntu_taskwarrior-tui
+            install_ubuntu_docker-engine
+
+            ## GUI install scripts
+            if [ "$USE_GUI_APPS" = "1" ]; then
+                install_ubuntu_apt-gui
+                install_ubuntu_discord
+                install_ubuntu_vscode
+                install_ubuntu-brave
+                install_ubuntu_wezterm
+                # install_ubuntu_docker-desktop
+            fi
+
+            sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
+            ;;
+    esac
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## User interface                                              {{{
+
+theme_installs() {
+    install_theme_gruvbox
+    install_theme_wallpaper
+    install_theme_font
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Shell scripts                                               {{{
+
+script_installs() {
+    install_script_fasd
+    install_script_fff
+    install_script_taskopen
+    install_script_git-open
+    install_script_git-jump
+    install_script_git-extras
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Programming languages                                       {{{
+
+language_installs() {
+    install_language_rust
+    install_language_nim
+    install_language_golang
+    install_language_volta
+    install_language_lua
+    install_language_luajit
+    install_language_luarocks
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Programming language packages                               {{{
+
+packages_installs() {
+    install_packages_node
+    install_packages_pip
+    install_packages_cargo
+    install_packages_golang
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Git submodules                                              {{{
+
+build_installs() {
+    install_build_neovim || true
+    install_build_fzf || true
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+# Parse arguments and execute functions                                 {{{
+# --------------------------------------------------------------------- {|}
+
+## Dependency installation help message                        {{{
+
+deps_help() {
+    if [ -n "$*" ]; then
+        printf "Error: %s\n\n" "$*" >&2
+    fi
+    cat <<EOF
+Install dependencies by category or name.
+
+Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>] 
+                 [-s <script>]  [-t <theme>] [-u <ubuntu>]
+
+Flags:
+  -A    Install all dependencies
+  -B    Install all locally built dependencies
+  -L    Install all programming languages
+  -P    Install all package manager dependencies
+  -S    Install all shell script dependencies
+  -T    Install all operating system theme dependencies
+  -U    Install all Ubuntu-specific dependencies
+        
+  -b    Install a locally built dependency
+  -l    Install a programming language
+  -p    Install a package manager dependency or (n)vim plugin
+  -s    Install a shell script dependency
+  -t    Install an operating system theme dependency
+  -u    Install an Ubuntu-specific dependency
+
+  -o    Output a list of the dependencies that can be installed
+  -h    Show this message
+EOF
+    exit 1
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Print list of installable dependencies                      {{{
+
+deps_list() {
+    printf "%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
+        "PROGRAMMING LANGUAGES" \
+        "$(echo "$_languages" | tr ' ' '\n')" \
+        "PACKAGE MANAGER DEPENDENCIES" \
+        "$(echo "$_packages" | tr ' ' '\n')" \
+        "LOCALLY BUILT DEPENDENCIES" \
+        "$(echo "$_builds" | tr ' ' '\n')" \
+        "UBUNTU-SPECIFIC DEPENDENCIES" \
+        "$(echo "$_ubuntu" | tr ' ' '\n')" \
+        "SHELL SCRIPT DEPENDENCIES" \
+        "$(echo "$_scripts" | tr ' ' '\n')"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Parse dependency flags and run install functions            {{{
+
+deps_flags() {
+    if [ -z "$LIB" ] || [ -z "$DOTFILES" ]; then
+        printf "\$LIB and/or \$DOTFILES environment variable(s) not set, exiting.\n" >&2
+        exit 1
+    fi
+
+    if [ -z "$*" ]; then
+        deps_help "at least one flag is required"
+    fi
+
+    BIN_DIR="$HOME/.local/bin"
+    MAN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/man"
+    DEPS_DIR="$DOTFILES/deps"
+    CACHE_DIR="$DOTFILES/cache"
+
+    mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
+
+    if [ "$USE_GUI_APPS" = "1" ]; then
+        FONTS_DIR="$XDG_DATA_HOME/fonts"
+        WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
+        mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
+    fi
+
+    while getopts Bb:Uu:Ll:Ss:Tt:Pp:Aho opt; do
+        case $opt in
+            A)
+                ubuntu_installs
+                packages_installs
+                script_installs
+                build_installs
+                vim_installs
+                theme_installs
+                ;;
+
+            B) build_installs ;;
+            b) install_build_"${OPTARG}" ;;
+
+            L) language_installs ;;
+            l) install_language_"${OPTARG}" ;;
+
+            P) packages_installs ;;
+            p) install_packages_"${OPTARG}" ;;
+
+            S) script_installs ;;
+            s) install_script_"${OPTARG}" ;;
+
+            T) theme_installs ;;
+            t) install_theme_"${OPTARG}" ;;
+
+            U) ubuntu_installs ;;
+            u)
+                install_ubuntu_"${OPTARG}"
+                ;;
+
+            o) deps_list ;;
+            h) deps_help ;;
+            *) deps_help "invalid flag: \"$opt\"" ;;
+        esac
+    done
+
+    shift "$((OPTIND - 1))"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Determine whether to install deps or pass args to git       {{{
+
+main() {
+    case $1 in
+        deps) shift && deps_flags "$@" ;;
+        clean) echo "Don't delete your home directory, dumbass" && return 1 ;;
+        *) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@" ;;
+    esac
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+# --------------------------------------------------------------------- }}}
+
+main "$@"
