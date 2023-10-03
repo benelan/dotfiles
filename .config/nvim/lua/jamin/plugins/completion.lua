@@ -51,6 +51,7 @@ return {
       local cmp = require "cmp"
       local has_ls, ls = pcall(require, "luasnip")
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
+      local has_copilot_cmp, copilot_comparators = pcall(require, "copilot_cmp.comparators")
 
       cmp.setup {
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
@@ -67,11 +68,11 @@ return {
           ["<CR>"] = cmp.mapping(cmp.mapping.confirm { select = false }),
 
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
+          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm { select = true }, { "i", "c" }),
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true },
             { "i", "c" }
           ),
-          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm { select = true }, { "i", "c" }),
 
           -- scroll the documentation window that some results have
           ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "s" }),
@@ -85,6 +86,7 @@ return {
               cmp.complete()
             end
           end, { "i", "c" }),
+
           ["<C-p>"] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
@@ -93,11 +95,10 @@ return {
             end
           end, { "i", "c" }),
 
-          -- Next/previous result, but use Codeium instead if it's installed
+          -- Next/previous result, but use Copilot or Codeium instead if installed
           ["<C-j>"] = cmp.mapping(function(fallback)
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
-            if has_copilot then
+            if has_copilot and not has_copilot_cmp then
               copilot.next()
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
@@ -107,10 +108,10 @@ return {
               fallback()
             end
           end, { "i" }),
+
           ["<C-k>"] = cmp.mapping(function(fallback)
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
-            if has_copilot then
+            if has_copilot and not has_copilot_cmp then
               copilot.prev()
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
@@ -123,18 +124,21 @@ return {
         },
 
         formatting = {
-          fields = { "abbr", "menu", "kind" },
           format = function(entry, vim_item)
+            local i = function(str) return res.icons.ui.dot .. str end
+
             -- show the item's completion source in the results
             vim_item.menu = ({
-              buffer = " [BUF] ",
-              luasnip = "[SNIP] ",
-              nvim_lsp = " [LSP] ",
-              nvim_lsp_signature_help = " [SIG] ",
-              path = "[PATH] ",
-              rg = "[GREP] ",
-              tmux = "[TMUX] ",
-              dictionary = "[DICT] ",
+              buffer = i " BUF",
+              -- cmdline = "",
+              copilot = i " SNIP",
+              luasnip = i " SNIP",
+              dictionary = i " DICT",
+              nvim_lsp = i " LSP",
+              nvim_lsp_signature_help = i " SIG",
+              path = i " PATH",
+              rg = i " GREP",
+              tmux = i " TMUX",
             })[entry.source.name]
 
             -- use devicons when completing paths (if enabled/installed)
@@ -143,20 +147,21 @@ return {
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
 
               if icon then
-                vim_item.kind = string.format(" %s   %s  ", icon, vim_item.kind)
+                vim_item.kind = string.format(" %s  %s", icon, vim_item.kind)
                 vim_item.kind_hl_group = hl_group
               else
                 -- use a fallback folder or file icon if the filetype doesn't exist in devicons
                 vim_item.kind = string.format(
-                  " %s  %s ",
+                  " %s  %s",
                   vim_item.kind == "Folder" and res.icons.lsp_kind.Folder or res.icons.lsp_kind.File,
                   vim_item.kind
                 )
               end
             else
+              vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
               -- use LSP kind icons for non-path completion items and specify a fallback icon
               vim_item.kind = string.format(
-                " %s  %s ",
+                " %s %s",
                 res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Text,
                 vim_item.kind
               )
@@ -170,6 +175,8 @@ return {
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             cmp.config.compare.score,
+
+            has_copilot_cmp and copilot_comparators.prioritize or nil,
 
             -- move private (starts with an underscore) results to the bottom
             function(entry1, entry2)
@@ -199,10 +206,11 @@ return {
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
           { name = "luasnip", group_index = 2 },
+          { name = "copilot", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
-          { name = "tmux", keyword_length = 3, group_index = 2 },
+          { name = "tmux", keyword_length = 2, group_index = 2 },
+          { name = "buffer", keyword_length = 2, group_index = 2 },
           { name = "path", keyword_length = 3, group_index = 2 },
-          { name = "buffer", keyword_length = 3, group_index = 2 },
           -- only show ripgrep and dictioinary if there are no results from other sources
           { name = "rg", keyword_length = 3, group_index = 3 },
           {
@@ -220,13 +228,14 @@ return {
       }
 
       cmp.setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
+
       cmp.setup.cmdline(":", {
         sources = {
+          { name = "nvim_lsp_signature_help", group_index = 1 },
           { name = "cmdline", group_index = 1 },
-          { name = "path", group_index = 2 },
-          { name = "buffer", group_index = 2 },
-          { name = "rg", keyword_length = 4, group_index = 2 },
-          { name = "dictionary", keyword_length = 4, group_index = 3 },
+          { name = "buffer", keyword_length = 2, group_index = 2 },
+          { name = "rg", keyword_length = 3, group_index = 3 },
+          { name = "dictionary", keyword_length = 2, group_index = 3 },
         },
       })
     end,
@@ -237,85 +246,17 @@ return {
     build = "make install_jsregexp",
     version = "v2.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
-    keys = function()
-      local has_ls, ls = pcall(require, "luasnip")
+    config = function()
+      local ls = require "luasnip"
+      local lua_loader = require "luasnip.loaders.from_lua"
+      local vscode_loader = require "luasnip.loaders.from_vscode"
 
-      if not has_ls then return {} end
-
-      -- The keymaps have Codeium fallbacks for when there are no snippet actions
-      -- If Codeium isn't installed, there are additional fallbacks
-      return {
-        {
-          "<C-h>",
-          function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
-            if ls.jumpable(-1) then
-              ls.jump(-1)
-            elseif has_copilot then
-              copilot.dismiss()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Clear"]()
-            else
-              return vim.lsp.buf.signature_help()
-            end
-          end,
-          mode = { "i", "s" },
-          desc = "Luasnip jump back or codeium clear",
-        },
-        {
-          "<C-l>",
-          function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
-            if ls.jumpable(1) then
-              ls.jump(1)
-            elseif has_copilot and copilot.is_visible() then
-              copilot.accept_line()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Accept"]()
-            else
-              -- fallback to "redrawing" the buffer like readline's mapping
-              vim.cmd "nohlsearch | diffupdate | syntax sync fromstart"
-            end
-          end,
-          mode = { "i", "s" },
-          desc = "Luasnip jump forward or codeium accept",
-        },
-        {
-          "<C-\\>",
-          function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
-            if ls.choice_active() then
-              ls.change_choice(1)
-            elseif has_copilot then
-              copilot.toggle_auto_trigger()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Complete"]()
-            end
-          end,
-          mode = { "i", "s" },
-          desc = "Luasnip choice or codeium complete",
-        },
-      }
-    end,
-
-    opts = function()
-      return {
+      ls.config.set_config {
         history = false,
         region_check_events = "CursorMoved,CursorHold,InsertEnter",
         delete_check_events = "InsertLeave",
         enable_autosnippets = true,
       }
-    end,
-
-    config = function(_, opts)
-      local ls = require "luasnip"
-      local lua_loader = require "luasnip.loaders.from_lua"
-      local vscode_loader = require "luasnip.loaders.from_vscode"
-
-      ls.config.set_config(opts)
 
       -- loads friendly_snippets
       vscode_loader.lazy_load()
@@ -338,6 +279,77 @@ return {
       ls.filetype_extend("vue", { "javascript", "typescript" })
       ls.filetype_extend("svelte", { "javascript", "typescript" })
     end,
+    keys = function()
+      local has_ls, ls = pcall(require, "luasnip")
+      if not has_ls then return {} end
+
+      -- The keymaps have Copilot/Codeium fallbacks for when there are no snippet actions
+      return {
+        {
+          "<C-h>",
+          function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+            local has_copilot_cmp = pcall(require, "copilot_cmp")
+
+            if ls.jumpable(-1) then
+              ls.jump(-1)
+            elseif has_copilot and not has_copilot_cmp and copilot.is_visible() then
+              copilot.dismiss()
+            elseif has_copilot and not has_copilot_cmp and not copilot.is_visible() then
+              local has_copilot_panel, copilot_panel = pcall(require, "copilot.panel")
+              if has_copilot_panel then copilot_panel.refresh() end
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Clear"]()
+            else
+              return vim.lsp.buf.signature_help()
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip jump back or copilot/codeium dismiss",
+        },
+
+        {
+          "<C-l>",
+          function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+            local has_copilot_cmp = pcall(require, "copilot_cmp")
+
+            if ls.jumpable(1) then
+              ls.jump(1)
+            elseif has_copilot and not has_copilot_cmp and copilot.is_visible() then
+              copilot.accept_line()
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Accept"]()
+            else
+              -- fallback to "redrawing" the buffer like readline's mapping
+              vim.cmd "nohlsearch | diffupdate | syntax sync fromstart"
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip jump forward or copilot/codeium accept",
+        },
+
+        {
+          "<C-\\>",
+          function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+            local has_copilot_cmp = pcall(require, "copilot_cmp")
+
+            if ls.choice_active() then
+              ls.change_choice(1)
+            elseif has_copilot and not has_copilot_cmp then
+              copilot.toggle_auto_trigger()
+              copilot.dismiss()
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#Complete"]()
+            else
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Luasnip choice, copilot toggle auto_trigger, or codeium suggest",
+        },
+      }
+    end,
   },
   -----------------------------------------------------------------------------
   {
@@ -347,10 +359,38 @@ return {
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
+    dependencies = {
+      {
+        "zbirenbaum/copilot-cmp", -- integrates Copilot with cmp
+        enabled = false,
+        config = function()
+          vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+          require("copilot_cmp").setup()
+        end,
+      },
+    },
     config = function()
+      local has_copilot_cmp = pcall(require, "copilot_cmp")
+
       require("copilot").setup {
-        panel = { layout = { position = "right", ratio = 0.3 } },
-        suggestion = { auto_trigger = true, keymap = { accept = false } },
+        panel = {
+          enabled = not has_copilot_cmp,
+          layout = { position = "right", ratio = 0.3 },
+          keymap = {
+            jump_next = "]",
+            jump_prev = "[",
+            refresh = "<CR>",
+            accept = "<Tab>",
+          },
+        },
+        suggestion = {
+          enabled = not has_copilot_cmp,
+          auto_trigger = true,
+          keymap = {
+            accept = false, -- remapped below to add fallback
+            accept_word = "<M-l>",
+          },
+        },
       }
     end,
     keys = {
