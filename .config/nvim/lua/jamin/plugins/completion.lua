@@ -95,7 +95,11 @@ return {
 
           -- Next/previous result, but use Codeium instead if it's installed
           ["<C-j>"] = cmp.mapping(function(fallback)
-            if vim.g.codeium_enabled then
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
+            if has_copilot then
+              copilot.next()
+            elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
             elseif cmp.visible() then
               cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
@@ -104,7 +108,11 @@ return {
             end
           end, { "i" }),
           ["<C-k>"] = cmp.mapping(function(fallback)
-            if vim.g.codeium_enabled then
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
+            if has_copilot then
+              copilot.prev()
+            elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
             elseif cmp.visible() then
               cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
@@ -240,8 +248,12 @@ return {
         {
           "<C-h>",
           function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
             if ls.jumpable(-1) then
               ls.jump(-1)
+            elseif has_copilot then
+              copilot.dismiss()
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Clear"]()
             else
@@ -254,8 +266,12 @@ return {
         {
           "<C-l>",
           function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
             if ls.jumpable(1) then
               ls.jump(1)
+            elseif has_copilot and copilot.is_visible() then
+              copilot.accept_line()
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Accept"]()
             else
@@ -264,14 +280,17 @@ return {
             end
           end,
           mode = { "i", "s" },
-          expr = true,
           desc = "Luasnip jump forward or codeium accept",
         },
         {
           "<C-\\>",
           function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
             if ls.choice_active() then
               ls.change_choice(1)
+            elseif has_copilot then
+              copilot.toggle_auto_trigger()
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#Complete"]()
             end
@@ -322,12 +341,36 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    -- alternative Copilot plugin written in Lua with with cmp integration:
-    -- https://github.com/zbirenbaum/copilot.lua
-    "github/copilot.vim", -- AI completion tool - https://github.com/features/copilot
+    -- "github/copilot.vim", -- official Copilot plugin
+    -- alternative Copilot plugin written in Lua with with optional cmp integration
+    "https://github.com/zbirenbaum/copilot.lua",
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
+    config = function()
+      require("copilot").setup {
+        panel = { layout = { position = "right", ratio = 0.3 } },
+        suggestion = { auto_trigger = true, keymap = { accept = false } },
+      }
+    end,
+    keys = {
+      {
+        "<Tab>",
+        function()
+          if require("copilot.suggestion").is_visible() then
+            require("copilot.suggestion").accept()
+          else
+            vim.api.nvim_feedkeys(
+              vim.api.nvim_replace_termcodes("<Tab>", true, false, true),
+              "n",
+              false
+            )
+          end
+        end,
+        mode = "i",
+        desc = "Copilot accept",
+      },
+    },
   },
   -----------------------------------------------------------------------------
   {
