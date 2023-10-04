@@ -2,7 +2,9 @@
 # shellcheck disable=2046
 
 # This script manages my dotfiles. The `deps` command installs dependencies
-# and tools. All other commands are passed to `git` with environment variables
+# and tools. See `dot deps -h` for usage information.
+#
+# All other commands are passed to `git` with environment variables
 # set so it always executes on the dotfiles repo. For example:
 #
 #   $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
@@ -17,6 +19,7 @@
 ## Rust    - https://www.rust-lang.org/tools/install           {{{
 
 _languages+="rust "
+
 install_language_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     export PATH="${PATH}:${HOME}/.cargo/bin"
@@ -26,6 +29,7 @@ install_language_rust() {
 ## Nim     - https://nim-lang.org/install_unix.html            {{{
 
 _languages+="nim "
+
 install_language_nim() {
     curl https://nim-lang.org/choosenim/init.sh -sSf | sh
     export PATH="${PATH}:${HOME}/.nimble/bin"
@@ -35,6 +39,7 @@ install_language_nim() {
 ## Golang  - https://go.dev/doc/install                        {{{
 
 _languages+="golang "
+
 install_language_golang() {
     # checksum will need to be updated when using a new go version
     checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
@@ -55,19 +60,21 @@ install_language_golang() {
 ## Node.js - https://docs.volta.sh/guide/getting-started       {{{
 
 _languages+="volta "
+
 install_language_volta() {
     curl https://get.volta.sh | bash -s -- --skip-setup
 
     export VOLTA_HOME=~/.volta
     export PATH="${PATH}:${VOLTA_HOME}/bin"
 
-    volta install node@16
+    volta install node
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Bun     - https://bun.sh/docs/installation                  {{{
 
 _languages+="bun "
+
 install_bun() {
     curl -fsSL https://bun.sh/install | bash
     export BUN_INSTALL="$HOME/.bun"
@@ -77,10 +84,11 @@ install_bun() {
 ## Lua     - https://www.lua.org/download.html                 {{{
 
 _languages+="lua "
+
 install_language_lua() {
     is-supported lua && return
-    curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
 
+    curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
     tar -zxf lua-5.4.6.tar.gz
     cd lua-5.4.6 || return
 
@@ -92,6 +100,7 @@ install_language_lua() {
 ### https://luajit.org/download.html
 
 _languages+="luajit "
+
 install_language_luajit() {
     is-supported luajit && return
 
@@ -111,6 +120,7 @@ install_language_luajit() {
 ### https://luarocks.org#quick-start
 
 _languages+="luarocks "
+
 install_language_luarocks() {
     is-supported luarocks && return
 
@@ -122,6 +132,7 @@ install_language_luarocks() {
     make
     sudo make install
 }
+
 ###}}}
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -133,6 +144,7 @@ install_language_luarocks() {
 ## Rust   CLI tools - https://crates.io                        {{{
 
 _packages+="cargo "
+
 install_packages_cargo() {
     ! [ -f "$DEPS_DIR/cargo" ] && return
 
@@ -157,6 +169,7 @@ install_packages_cargo() {
 ## Golang CLI tools - https://pkg.go.dev                       {{{
 
 _packages+="golang "
+
 install_packages_golang() {
     ! is-supported go && install_language_golang
     ! [ -f "$DEPS_DIR/golang" ] && return
@@ -171,6 +184,7 @@ install_packages_golang() {
 ## Python CLI tools - https://pypi.org/project/pipx/           {{{
 
 _packages+="pip "
+
 install_packages_pip() {
     ! [ -f "$DEPS_DIR/pip" ] && return
 
@@ -186,10 +200,10 @@ install_packages_pip() {
 _packages+="node "
 
 install_packages_node() {
-    ! [ -f "$DEPS_DIR/node" ] && return
-
     # NOTE: volta only works on x86_64 architectures for now
     ! is-supported volta && ! is-supported node && install_language_volta
+
+    ! [ -f "$DEPS_DIR/node" ] && return
     npm install -g $(cat "$DEPS_DIR/node")
 }
 
@@ -201,10 +215,10 @@ install_packages_node() {
 
 ## taskopen   - https://github.com/jschlatow/taskopen          {{{
 
-_scripts+="task_open "
+_scripts+="taskopen "
 
 install_script_taskopen() {
-    is-supported taskopen || ! is-supported task && return
+    is-supported taskopen && return
 
     curl -sSLo "$BIN_DIR/taskopen" \
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/taskopen
@@ -215,7 +229,7 @@ install_script_taskopen() {
     curl -sSLo "$MAN_DIR/man5/taskopenrc.5" \
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopenrc.5
 
-    chmod +x "$BIN_DIR/taskopen"
+    sudo chmod +x "$BIN_DIR/taskopen"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -258,8 +272,6 @@ install_script_fff() {
 _scripts+="git-open "
 
 install_script_git-open() {
-    is-supported git-open && return
-
     curl -sSLo "$BIN_DIR/git-o" \
         https://raw.githubusercontent.com/paulirish/git-open/master/git-open
 
@@ -272,8 +284,6 @@ install_script_git-open() {
 _scripts+="git-jump "
 
 install_script_git-jump() {
-    is-supported git-jump && return
-
     # it may already be on in the filesystem
     loc1="/usr/local/share/git-core/contrib/git-jump/git-jump"
 
@@ -299,14 +309,16 @@ install_script_git-jump() {
 
 _scripts+="git-forgit "
 
-install_git-forgit() {
+install_script_git-forgit() {
     curl -sSLo "$BIN_DIR/git-forgit" \
         https://raw.githubusercontent.com/wfxr/forgit/master/bin/git-forgit
 
     if [ -d /usr/share/bash-completion/completions ]; then
-        curl -sSLo /usr/share/bash-completion/completions/git-forgit \
+        curl -sSLo "$DOTFILES/shell/completions/4_git-forgit.completion.sh" \
             https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
     fi
+
+    sudo chmod +x "$BIN_DIR/git-forgit"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -316,15 +328,19 @@ _scripts+="git-extras "
 
 ## Install helpful bash scripts for git workflows
 install_script_git-extras() {
-    dir=$(mktemp -t -d git-extras-install.XXXXXXXXXX) &&
-        cd "$dir" &&
-        git clone https://github.com/tj/git-extras.git &>/dev/null &&
-        cd git-extras &&
-        git checkout \
-            $(git describe --tags $(git rev-list --tags --max-count=1)) \
-            &>/dev/null &&
-        sudo make install &&
-        rm -rf "$dir"
+    if is-supported git-extras; then
+        sudo git extras update
+    else
+        dir=$(mktemp -t -d git-extras-install.XXXXXXXXXX) &&
+            cd "$dir" &&
+            git clone https://github.com/tj/git-extras.git &>/dev/null &&
+            cd git-extras &&
+            git checkout \
+                $(git describe --tags $(git rev-list --tags --max-count=1)) \
+                &>/dev/null &&
+            sudo make install &&
+            rm -rf "$dir"
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -480,10 +496,10 @@ install_ubuntu_docker-desktop() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Docker Engine                                       {{{
 
-_ubuntu+="docker-engine "
+_ubuntu+="docker "
 
 ## https://docs.docker.com/engine/install/ubuntu/
-install_ubuntu_docker-engine() {
+install_ubuntu_docker() {
     is-supported docker && return
 
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -584,12 +600,14 @@ install_ubuntu-brave() {
 # Operating system theme                                                {{{
 # --------------------------------------------------------------------- {|}
 
-## Install The four common font weights                        {{{
+## Install the four common font weights of Iosevka             {{{
 
 _themes+="font "
 
 ## https://github.com/ryanoasis/nerd-fonts
 install_theme_font() {
+    FONTS_DIR="$XDG_DATA_HOME/fonts"
+
     # Iosevka
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
@@ -613,63 +631,100 @@ install_theme_font() {
 _themes+="wallpaper "
 
 install_theme_wallpaper() {
-    wallpaper="$WALLPAPER_DIR/gruvbox_coffee.png"
+    wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
 
     if [ -f "$wallpaper" ]; then
-        return
+        return 0
     fi
 
-    curl -sSLo "$wallpaper" \
-        https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+    curl -sSLo "$wallpaper" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
             if is-supported gsettings; then
-                gsettings set org.gnome.desktop.background picture-uri \
-                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
-                gsettings set org.gnome.desktop.background picture-uri-dark \
-                    "file://$WALLPAPER_DIR/gruvbox_coffee.png"
-
-                return 0
+                gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper"
+                gsettings set org.gnome.desktop.background picture-uri-dark "file://$wallpaper"
+            fi
+            ;;
+        *)
+            if is-supported feh; then
+                feh --no-fehbg --bg-center --image-bg "#3c3836" "$wallpaper"
             fi
             ;;
     esac
-
-    if is-supported feh; then
-        feh --no-fehbg --bg-center --image-bg "#3c3836" \
-            "$wallpaper"
-    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install gruvbox gnome theme                                 {{{
 
-_themes+="gruvbox "
+_themes+="gtk "
 
-install_theme_gruvbox() {
+install_theme_gtk() {
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
-            # download gruvbox gnome theme and icons
-            git -C "$CACHE_DIR" clone --depth=1 \
-                https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+            mkdir -p ~/.themes
+
+            # download gruvbox gnome theme
             git -C "$CACHE_DIR" clone --depth=1 \
                 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
 
-            cursors="FlatbedCursors-0.5.2.tar.bz2"
-            curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
-            extract "$cursors"
-            unset cursors
+            # move to ~/.themes dir for gtk-3.0
+            cp -r "$CACHE_DIR/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL" ~/.themes
 
-            # move icons and themes to the proper locations
-            mkdir -p ~/.icons/FlatbedCursors-Orange/ ~/.icons ~/.themes
-            cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
-            cp -r "$CACHE_DIR"/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL ~/.themes
-            cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
+            # symlink the gtk-4.0 theme files
+            ln --force --symbolic ~/.themes/Gruvbox-Dark-BL/gtk-4.0/* ~/.config/gtk-4.0/
 
-            # remove the repos because they are yuuge
-            rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack" "$CACHE_DIR/Gruvbox-GTK-Theme" ./FlatbedCursors*
+            # remove the repo because it's yuuge
+            rm -rf "$CACHE_DIR/Gruvbox-GTK-Theme"
             ;;
+        *) echo "Unsupported desktop environment: $XDG_CURRENT_DESKTOP" && return 0 ;;
     esac
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install gruvbox gnome theme                                 {{{
+
+_themes+="icons "
+
+install_theme_icons() {
+    if [ "$(uname)" != "Linux" ]; then
+        echo "Unsupported operating system: $(uname)"
+        return 0
+    fi
+
+    mkdir -p ~/.icons
+
+    # download gruvbox icons
+    git -C "$CACHE_DIR" clone --depth=1 \
+        https://github.com/SylEleuth/gruvbox-plus-icon-pack.git
+
+    # checkout the latest release (need to remove --depth=1 from clone)
+    # git -C "$CACHE_DIR" checkout "$(
+    #     git describe --tags "$(git rev-list --tags --max-count=1)"
+    # )"
+
+    # remove the old icons to prevent symlink errors
+    rm -rf ~/.icons/Gruvbox-Plus-Dark
+
+    # move icons to the proper location
+    cp -r "$CACHE_DIR"/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark ~/.icons
+
+    # remove the repo because it's yuuge
+    rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack"
+
+    # download and install flatbed cursor if it doesn't exist
+    if ! [ -d "$HOME/.icons/FlatbedCursors-Orange" ]; then
+        cursors="FlatbedCursors-0.5.2.tar.bz2"
+
+        curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
+        extract "$cursors"
+
+        mkdir -p ~/.icons/FlatbedCursors-Orange/
+        cp -r ./FlatbedCursors-Orange/* ~/.icons/FlatbedCursors-Orange/
+        rm -rf ./FlatbedCursors*
+
+        unset cursors
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -696,7 +751,9 @@ install_build_fzf() {
 
     git fetch --all --tags --force
     git reset --hard origin/master
-    git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+    git checkout "$(
+        git describe --tags "$(git rev-list --tags --max-count=1)"
+    )"
 
     make
     make install
@@ -730,24 +787,23 @@ install_packages_vim() {
     cd && update_modules .vim
 
     vim +"$(
-        find ~/.vim/pack/foo/opt \
-            -maxdepth 1 -mindepth 1 -type d \
+        find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
             -exec basename --multiple {} \; |
-            perl -pe 's/^/packadd /' |
-            tr '\n' '|'
+            perl -pe 's/^/packadd /' | tr '\n' '|'
     ) helptags ALL | quit"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install neovim plugins                                      {{{
 
-_packages+="vim "
+_packages+="neovim "
 
 install_packages_neovim() {
     nvim --headless +"Lazy! sync" +qa
 
-    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
-        [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -lt 18 ]; then
+    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] && [ "$(
+        find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l
+    )" -lt 18 ]; then
         nvim --headless +"DevdocsInstall astro bash css docker dom gnu_make go html http javascript node npm react sass tailwindcss typescript vite vue-3"
     else
         nvim --headless +DevdocsUpdateAll
@@ -767,19 +823,19 @@ ubuntu_installs() {
         *ubuntu)
             ## CLI install scripts (suitable for servers)
             install_ubuntu_apt
-            install_ubuntu_git
+            install_ubuntu_docker
             install_ubuntu_gh
+            install_ubuntu_git
             install_ubuntu_glow
             install_ubuntu_protonvpn
             install_ubuntu_taskwarrior-tui
-            install_ubuntu_docker-engine
 
             ## GUI install scripts
             if [ "$USE_GUI_APPS" = "1" ]; then
                 install_ubuntu_apt-gui
+                install_ubuntu-brave
                 install_ubuntu_discord
                 install_ubuntu_vscode
-                install_ubuntu-brave
                 install_ubuntu_wezterm
                 # install_ubuntu_docker-desktop
             fi
@@ -793,9 +849,10 @@ ubuntu_installs() {
 ## User interface                                              {{{
 
 theme_installs() {
-    install_theme_gruvbox
-    install_theme_wallpaper
     install_theme_font
+    install_theme_wallpaper
+    install_theme_gtk
+    install_theme_icons
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -805,8 +862,9 @@ script_installs() {
     install_script_fasd
     install_script_fff
     install_script_taskopen
-    install_script_git-open
+    install_script_git-forgit
     install_script_git-jump
+    install_script_git-open
     install_script_git-extras
 }
 
@@ -814,23 +872,26 @@ script_installs() {
 ## Programming languages                                       {{{
 
 language_installs() {
-    install_language_rust
-    install_language_nim
     install_language_golang
+    # install_language_lua
+    # install_language_luajit
+    # install_language_luarocks
+    # install_language_nim
+    install_language_rust
     install_language_volta
-    install_language_lua
-    install_language_luajit
-    install_language_luarocks
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Programming language packages                               {{{
 
 packages_installs() {
-    install_packages_node
-    install_packages_pip
     install_packages_cargo
     install_packages_golang
+    install_packages_node
+    install_packages_pip
+
+    install_packages_neovim
+    install_packages_vim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -839,6 +900,17 @@ packages_installs() {
 build_installs() {
     install_build_neovim || true
     install_build_fzf || true
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## All install groups                                          {{{
+
+all_installs() {
+    ubuntu_installs
+    packages_installs
+    script_installs
+    build_installs
+    theme_installs
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -885,23 +957,23 @@ EOF
 ## Print list of installable dependencies                      {{{
 
 deps_list() {
-    printf "%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
+    printf "\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
         "PROGRAMMING LANGUAGES" \
-        "$(echo "$_languages" | tr ' ' '\n')" \
+        "$(echo "$_languages" | tr ' ' '\n' | sort)" \
         "PACKAGE MANAGER DEPENDENCIES" \
-        "$(echo "$_packages" | tr ' ' '\n')" \
+        "$(echo "$_packages" | tr ' ' '\n' | sort)" \
         "LOCALLY BUILT DEPENDENCIES" \
-        "$(echo "$_builds" | tr ' ' '\n')" \
+        "$(echo "$_builds" | tr ' ' '\n' | sort)" \
         "UBUNTU-SPECIFIC DEPENDENCIES" \
-        "$(echo "$_ubuntu" | tr ' ' '\n')" \
+        "$(echo "$_ubuntu" | tr ' ' '\n' | sort)" \
         "SHELL SCRIPT DEPENDENCIES" \
-        "$(echo "$_scripts" | tr ' ' '\n')"
+        "$(echo "$_scripts" | tr ' ' '\n' | sort)"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Parse dependency flags and run install functions            {{{
 
-deps_flags() {
+deps_parse_flags() {
     if [ -z "$LIB" ] || [ -z "$DOTFILES" ]; then
         printf "\$LIB and/or \$DOTFILES environment variable(s) not set, exiting.\n" >&2
         exit 1
@@ -918,23 +990,8 @@ deps_flags() {
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
 
-    if [ "$USE_GUI_APPS" = "1" ]; then
-        FONTS_DIR="$XDG_DATA_HOME/fonts"
-        WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
-        mkdir -p "$FONTS_DIR" "$WALLPAPER_DIR"
-    fi
-
     while getopts Bb:Uu:Ll:Ss:Tt:Pp:Aho opt; do
         case $opt in
-            A)
-                ubuntu_installs
-                packages_installs
-                script_installs
-                build_installs
-                vim_installs
-                theme_installs
-                ;;
-
             B) build_installs ;;
             b) install_build_"${OPTARG}" ;;
 
@@ -951,10 +1008,9 @@ deps_flags() {
             t) install_theme_"${OPTARG}" ;;
 
             U) ubuntu_installs ;;
-            u)
-                install_ubuntu_"${OPTARG}"
-                ;;
+            u) install_ubuntu_"${OPTARG}" ;;
 
+            A) all_installs ;;
             o) deps_list ;;
             h) deps_help ;;
             *) deps_help "invalid flag: \"$opt\"" ;;
@@ -969,8 +1025,16 @@ deps_flags() {
 
 main() {
     case $1 in
-        deps) shift && deps_flags "$@" ;;
-        clean) echo "Don't delete your home directory, dumbass" && return 1 ;;
+        # install dependencies
+        deps) shift && deps_parse_flags "$@" ;;
+
+        # prevent git aliases 'clean' and 'clear' from git-extras from being used
+        clea*) echo "Don't delete your home directory, dumbass" && return 1 ;;
+
+        # change the 'all' git alias to not add untracked files
+        all) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" add --update ;;
+
+        # all other commands are passed directly go git
         *) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@" ;;
     esac
 }

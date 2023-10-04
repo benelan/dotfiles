@@ -4,10 +4,6 @@ set -o errexit
 CMD="$(basename "$0")"
 USER_LIST="${TEAMS_USER_LIST:-$HOME/.teamsbook}"
 
-TEAMS_URI="msteams:/l/chat/0/0?users="
-TEAMS_MESSAGE=""
-TEAMS_USERS=""
-
 # Usage info                                                            {{{
 # --------------------------------------------------------------------- {|}
 
@@ -18,7 +14,7 @@ help() {
         cat <<EOF
 Open Miscrosoft Teams with a prefilled message to a user or group chat.
 
-Usage:           $CMD [-m MESSAGE] [-u USER...]
+Usage:           $CMD [-m MESSAGE] [-u USER]...
 
 Flags:
   -m             Message to send user(s). If omitted, stdin is used.
@@ -35,13 +31,17 @@ Examples:
 Environment Variables:
   TEAMS_USER_LIST
       Path to a list for selecting user(s) with fzf, defaults to ~/.teamsbook
-      One user per line and the user's email must be the first word.
-      Additional info can be added after the email for fuzzy finding.
-      Fuzzy selecting does not occur when users are specified via the -u flag.
+      One user per line and the user's email must be first. Additional info 
+      can optionally be added after the email for fuzzy finding. Fuzzy
+      selecting does not occur when users are specified via the -u flag.
 
 Troubleshooting:
-  Add the following line under [Default Applications] in ~/.config/mimeapps.list
-    x-scheme-handler/msteams=teams.desktop
+  If you are using the Teams desktop application, try adding the following line
+  under [Default Applications] in ~/.config/mimeapps.list
+      x-scheme-handler/msteams=teams.desktop
+    
+  If using the Teams web application (e.g. the PWA), you can specify the browser
+  to use via the "\$WORKBROWSER" or "\$BROWSER" environment variables.
 
 EOF
     fi
@@ -74,15 +74,32 @@ create_msg() {
         OPEN_CMD="xdg-open"
     elif has open; then
         OPEN_CMD="open"
+    fi
+
+    # Use the desktop app if installed, otherwise open in browser
+    if has teams; then
+        TEAMS_URI="msteams:/l/chat/0/0"
     else
+        TEAMS_URI="https://teams.microsoft.com/l/chat/0/0"
+
+        # Use a browser if set via environment variables if present
+        if has "$WORKBROWSER"; then
+            OPEN_CMD="$WORKBROWSER"
+        elif has "$BROWSER"; then
+            OPEN_CMD="$BROWSER"
+        fi
+    fi
+
+    if [ -z "$OPEN_CMD" ]; then
         help "xdg-open or open is required to open Microsoft Teams"
     fi
+
     if has nohup; then
         OPEN_CMD="nohup $OPEN_CMD"
     fi
 
     # shellcheck disable=2086
-    printf "%s%s&message=%s" \
+    printf "%s?users=%s&message=%s" \
         "$TEAMS_URI" \
         "$TEAMS_USERS" \
         "$TEAMS_MESSAGE" |
@@ -98,34 +115,37 @@ uri_encode_msg() {
 # Parse args                                                            {{{
 # --------------------------------------------------------------------- {|}
 
-# If stdin is piped, use it as the message
-if stdin_is_pipe_like; then
-    TEAMS_MESSAGE="$(cat)"
-else
-    # Print help message if stdin is not piped and there are no args
-    [ -z "$*" ] && help
-fi
+main() {
+    # If stdin is piped, use it as the message
+    if stdin_is_pipe_like; then
+        TEAMS_MESSAGE="$(cat)"
+    else
+        # Print help message if stdin is not piped and there are no args
+        [ -z "$*" ] && help
+    fi
 
-while getopts m:u:h opt; do
-    case $opt in
-        m) [ -n "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
-        u)
-            [ -z "$TEAMS_USERS" ] &&
-                TEAMS_USERS="$OPTARG" ||
-                TEAMS_USERS="$TEAMS_USERS,$OPTARG"
-            ;;
-        h) help ;;
-        *) help "invalid flag: \"$opt\"" ;;
-    esac
-done
+    while getopts m:u:h opt; do
+        case $opt in
+            m) [ -n "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
+            u)
+                [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$OPTARG" ||
+                    TEAMS_USERS="$TEAMS_USERS,$OPTARG"
+                ;;
+            h) help ;;
+            *) help "invalid flag: \"$opt\"" ;;
+        esac
+    done
 
-shift "$((OPTIND - 1))"
+    shift "$((OPTIND - 1))"
 
-uri_encode_msg
+    uri_encode_msg
 
-[ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
-[ -z "$TEAMS_USERS" ] && help "no users specified"
+    [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
+    [ -z "$TEAMS_USERS" ] && help "no users specified"
 
-create_msg
+    create_msg
+}
 
 # --------------------------------------------------------------------- }}}
+
+main "$@"

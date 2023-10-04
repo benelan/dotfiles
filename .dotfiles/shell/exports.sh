@@ -92,7 +92,18 @@ elif is-supported google-chrome && [ $BROWSER != "google-chrome" ]; then
     ALTBROWSER="google-chrome"
 fi
 
-export EDITOR TERMINAL BROWSER TERMBROWSER ALTBROWSER
+WORKBROWSER="sensible-browser"
+if is-supported brave-browser && [ $BROWSER != "brave-browser" ] && [ $ALTBROWSER != "brave-browser" ]; then
+    WORKBROWSER="brave-browser"
+elif is-supported vivaldi && [ $BROWSER != "vivaldi" ] && [ $ALTBROWSER != "brave-browser" ]; then
+    WORKBROWSER="vivaldi"
+elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ] && [ $ALTBROWSER != "chromium-browser" ]; then
+    WORKBROWSER="chromium-browser"
+elif is-supported google-chrome && [ $BROWSER != "google-chrome" ] && [ $ALTBROWSER != "google-chrome" ]; then
+    WORKBROWSER="google-chrome"
+fi
+
+export EDITOR TERMINAL BROWSER TERMBROWSER ALTBROWSER WORKBROWSER
 export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
@@ -176,32 +187,8 @@ if is-supported git-mux; then
     export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
     export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
 
-    export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK"
+    export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# fff - https://github.com/dylanaraps/fff                     {{{
-
-if is-supported fff; then
-    export FFF_COL2=7
-    export FFF_COL5=0
-
-    # use the OS trashcan
-    export FFF_TRASH="$XDG_DATA_HOME/Trash/files"
-
-    # common work projects
-    export FFF_FAV1="$WORK/calcite-design-system"
-    export FFF_FAV2="$WORK/calcite-design-system.wiki"
-    export FFF_FAV3="$WORK/arcgis-esm-samples/"
-
-    # the usual suspects
-    export FFF_FAV4="$XDG_CONFIG_HOME/nvim"
-    export FFF_FAV5="$LIB"
-    export FFF_FAV6="$WORK"
-    export FFF_FAV7="$PERSONAL"
-    export FFF_FAV8="$DOTFILES"
-    export FFF_FAV9="$NOTES"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

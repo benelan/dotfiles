@@ -4,6 +4,7 @@ gimp
 gir1.2-appindicator3-0.1
 gnome-shell-extension-appindicator
 gnome-tweaks
+gtk2-engines-murrine
 handbrake
 peek
 vlc
