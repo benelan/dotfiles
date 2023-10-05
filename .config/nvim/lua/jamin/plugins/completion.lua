@@ -353,9 +353,20 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "Exafunction/codeium.vim", -- free Copilot alternative - https://codeium.com/
+    cond = vim.env.USE_CODEIUM == "1",
+    init = function()
+      vim.g.codeium_enabled = true
+      vim.g.codeium_no_map_tab = true
+      vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
+      -- vim.g.codeium_manual = true
+      vim.g.codeium_filetypes = { text = false }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     -- "github/copilot.vim", -- official Copilot plugin
-    -- alternative Copilot plugin written in Lua with with optional cmp integration
-    "https://github.com/zbirenbaum/copilot.lua",
+    "https://github.com/zbirenbaum/copilot.lua", -- alternative written in Lua
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
@@ -414,14 +425,48 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "Exafunction/codeium.vim", -- free Copilot alternative -- https://codeium.com/
-    cond = vim.env.USE_CODEIUM == "1",
-    init = function()
-      vim.g.codeium_enabled = true
-      vim.g.codeium_no_map_tab = true
-      vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
-      -- vim.g.codeium_manual = true
-      vim.g.codeium_filetypes = { text = false }
-    end,
+    -- https://platform.openai.com/docs/guides/gpt-best-practices
+    "jackMort/ChatGPT.nvim", -- unofficial ChatGPT wrapper
+    cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
+    cmd = {
+      "ChatGPT",
+      "ChatGPTActAs",
+      "ChatGPTEditWithInstruction",
+      "ChatGPTRun",
+    },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {
+      api_key_cmd = string.format("gpg --decrypt %s/cache/openai.txt.gpg", vim.env.DOTFILES),
+      show_quickfixes_cmd = "copen",
+      chat = {
+        welcome_message = res.art.bender_dots,
+        question_sign = res.icons.lsp_kind.Comment .. " ",
+        answer_sign = res.icons.ui.select,
+      },
+      popup_input = {
+        prompt = string.format(" %s ", res.icons.ui.prompt),
+      },
+    },
+    -- stylua: ignore
+    keys = {
+      { "<leader>cc", "<cmd>ChatGPT<CR>", "ChatGPT" },
+      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", "Select prompt" },
+      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
+      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar correction", mode = { "n", "v" } },
+      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
+      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
+      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
+      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add tests", mode = { "n", "v" } },
+      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize code", mode = { "n", "v" } },
+      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
+      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix bugs", mode = { "n", "v" } },
+      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain code", mode = { "n", "v" } },
+      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen edit", mode = { "n", "v" } },
+      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code readability analysis", mode = { "n", "v" } },
+    },
   },
 }

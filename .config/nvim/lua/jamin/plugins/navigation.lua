@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 return {
   {
     -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
@@ -111,9 +113,9 @@ return {
 
       return {
         defaults = {
-          prompt_prefix = string.format(" %s ", require("jamin.resources").icons.ui.prompt),
-          selection_caret = string.format("%s ", require("jamin.resources").icons.ui.select),
-          multi_icon = require("jamin.resources").icons.ui.checkmark,
+          prompt_prefix = string.format(" %s ", res.icons.ui.prompt),
+          selection_caret = string.format("%s ", res.icons.ui.select),
+          multi_icon = res.icons.ui.checkmark,
           entry_prefix = string.rep(" ", 4),
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",
@@ -175,7 +177,7 @@ return {
         mark_git_root = true, -- the option I added in the fork
         save_on_toggle = true,
         enter_on_sendcmd = true,
-        excluded_filetypes = require("jamin.resources").filetypes.excluded,
+        excluded_filetypes = res.filetypes.excluded,
       },
       projects = {
         -- Docker commands for running StencilJS demos or e2e tests (Puppeteer and Jest)

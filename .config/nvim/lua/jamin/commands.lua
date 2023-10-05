@@ -29,15 +29,13 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 -----------------------------------------------------------------------------
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = vim.fn.join(res.filetypes.writing, ","),
+  pattern = res.filetypes.writing,
   group = vim.api.nvim_create_augroup("jamin_writing_files", { clear = true }),
   callback = function()
     vim.wo.spell = true
     vim.wo.cursorline = false
     vim.wo.wrap = true
-
     vim.b.editorconfig = false
-    vim.b.no_cursorline = true
 
     keymap("n", "$", "g$", "Move to end of line")
     keymap("n", "^", "g^", "Move to start of line")

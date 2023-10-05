@@ -507,12 +507,6 @@ if has("autocmd")
 
         autocmd BufEnter term://* startinsert
         autocmd BufLeave term://* stopinsert
-
-        autocmd InsertEnter,WinLeave * setlocal nocursorline
-        autocmd InsertLeave,WinEnter *
-                    \ if !exists("g:vscode") && !exists("b:no_cursorline") || !b:no_cursorline
-                    \ |   setlocal cursorline
-                    \ | endif
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

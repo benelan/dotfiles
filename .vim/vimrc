@@ -361,11 +361,11 @@ if has("autocmd")
 
         autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()
 
-        "" automatically strip whitespaces when files are saved
-        let excludedFileTypes = []
-        autocmd BufWritePre * if index(excludedFileTypes, &ft) < 0
-                    \ | :call StripTrailingWhitespace() | endif
-
+        autocmd InsertEnter,WinLeave * setlocal nocursorline
+        autocmd InsertLeave,WinEnter *
+                    \ if !exists("g:vscode") && !exists("b:no_cursorline") || !b:no_cursorline
+                    \ |   setlocal cursorline
+                    \ | endif
     augroup END
 endif
 

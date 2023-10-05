@@ -48,6 +48,8 @@ return {
         vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
         vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
         vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
+
+        vim.cmd "highlight ErrorMsg cterm=bold gui=bold"
       end
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
