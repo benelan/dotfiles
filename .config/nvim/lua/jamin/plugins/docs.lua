@@ -6,10 +6,10 @@ return {
     cmd = "Neogen",
     -- stylua: ignore
     keys = {
-      { "<leader>df", function() require("neogen").generate { type = "func" } end, desc = "Annotate function" },
-      { "<leader>dc", function() require("neogen").generate { type = "class" } end, desc = "Annotate class" },
-      { "<leader>dt", function() require("neogen").generate { type = "type" } end, desc = "Annotate type" },
-      { "<leader>db", function() require("neogen").generate { type = "file" } end, desc = "Annotate buffer" },
+      { "<leader>df", function() require("neogen").generate { type = "func" } end, desc = "Annotate function (neogen)" },
+      { "<leader>dc", function() require("neogen").generate { type = "class" } end, desc = "Annotate class (neogen)" },
+      { "<leader>dt", function() require("neogen").generate { type = "type" } end, desc = "Annotate type (neogen)" },
+      { "<leader>db", function() require("neogen").generate { type = "file" } end, desc = "Annotate buffer (neogen)" },
     },
   },
   -----------------------------------------------------------------------------
@@ -58,17 +58,17 @@ return {
     ft = { "markdown" },
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
     keys = {
-      { "<leader>zn", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note" },
-      { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags" },
-      { "<leader>zo", "<CMD>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes" },
+      { "<leader>z<CR>", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note (zk)" },
+      { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags (zk)" },
+      { "<leader>zo", "<CMD>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes (zk)" },
       {
         "<leader>zf",
         "<CMD>ZkNotes { sort = { 'modified' }, match = { vim.fn.input 'Search: ' } }<CR>",
-        desc = "Find notes",
+        desc = "Find notes (zk)",
         mode = "n",
       },
       -- Search for the notes matching the current visual selection.
-      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes", mode = "v" },
+      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes (zk)", mode = "v" },
     },
     config = function() require("zk").setup { picker = "telescope" } end,
   },
@@ -83,18 +83,36 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = function()
-      -- use glow to render docs if installed - https://github.com/charmbracelet/glow
-      local glow_opts = vim.fn.executable "glow" == 1
-          and {
-            previewer_cmd = "glow",
-            cmd_args = { "-s", "dark", "-w", "80" },
-            picker_cmd = true,
-            picker_cmd_args = { "-s", "dark", "-w", "69" },
-          }
-        or {}
+      -- calculate the width and height of the floating window
+      local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
+      local width = math.floor(ui.width / 2)
+      local height = ui.height - 7
+
+      -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
+      local glow_opts = {}
+
+      if vim.fn.executable "glow" == 1 then
+        glow_opts = {
+          previewer_cmd = "glow",
+          picker_cmd = true,
+          cmd_args = { "-s", "dark", "-w", width },
+          picker_cmd_args = { "-s", "dark" },
+          cmd_ignore = { "javascript", "dom", "html", "css" },
+        }
+      end
 
       return vim.tbl_deep_extend("force", glow_opts, {
-        mappings = { open_in_browser = "<leader>o" },
+        mappings = { open_in_browser = "<C-b>" },
+        float_win = {
+          relative = "editor",
+          width = width,
+          height = height,
+          col = ui.width - 1,
+          row = ui.height - 3,
+          anchor = "SE",
+          style = "minimal",
+          border = "solid",
+        },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
         end,
@@ -111,8 +129,11 @@ return {
       "DevdocsUpdate",
       "DevdocsUpdateAll",
     },
+    -- stylua: ignore
     keys = {
-      { "<leader>do", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs (buffer)" },
+      { "<leader>dd", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs current filetype (floating)" },
+      { "<leader>dD", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open Devdocs current filetype" },
+      { "<leader>do", "<CMD>DevdocsOpenFloat<CR>", desc = "Open Devdocs (floating)" },
       { "<leader>dO", "<CMD>DevdocsOpen<CR>", desc = "Open Devdocs" },
       { "<leader>dU", "<CMD>DevdocsUpdateAll<CR>", desc = "Update Devdocs" },
     },

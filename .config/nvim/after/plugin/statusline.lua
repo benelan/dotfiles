@@ -143,7 +143,7 @@ function JaminStatusLine()
   return ""
     ---- left flags section ----------------------
     .. fmt_hl(highlights.section_flags)
-    .. "  %m%w%y  "
+    .. "  %m[%n]%r%w%y  "
     ---- left context section --------------------
     .. fmt_hl(highlights.section_context)
     .. gitsigns_head(fugitive_head)

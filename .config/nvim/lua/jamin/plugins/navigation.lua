@@ -51,42 +51,47 @@ return {
         )
       end
 
-      -- stylua: ignore
       return {
-        { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent files" },
-        { "<leader>fb", function() builtin.buffers() end, desc = "Find buffers" },
-        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding" },
-        { "<leader>fr", function() builtin.registers() end, desc = "Find register contents" },
-        { "<leader>fm", function() builtin.marks() end, desc = "Find marks" },
-        { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist locations" },
-        { "<leader>fc", function() builtin.commands() end, desc = "Find commands" },
-        { "<leader>fk", function() builtin.keymaps() end, desc = "Find keymaps" },
-        { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files" },
-        { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text" },
-        { "<leader>fv", function() builtin.find_files { search_dirs = { "~/.vim", "~/.config/nvim" } } end, desc = "Find (n)vim files" },
-        { "<leader>fd", function() builtin.find_files { search_dirs = { "~/.dotfiles" } } end, desc = "Find dotfiles" },
-        { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Fuzzy find in buffer" },
+        { "<leader>f", function() builtin.builtin() end, desc = "Telescope builtins" },
+        { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent files (telescope)" },
+        { "<leader>fb", function() builtin.buffers() end, desc = "Find buffers (telescope)" },
+        { "<leader>fr", function() builtin.registers() end, desc = "Find register contents (telescope)" },
+        { "<leader>fm", function() builtin.marks() end, desc = "Find marks (telescope)" },
+        { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist locations (telescope)" },
+        { "<leader>fc", function() builtin.commands() end, desc = "Find commands (telescope)" },
+        { "<leader>fk", function() builtin.keymaps() end, desc = "Find keymaps (telescope)" },
+        { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
+        { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
+        { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Find in buffer (telescope)" },
+        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
+        { "<leader>f:", function() builtin.keymaps() end, desc = "Find command history (telescope)" },
 
         -- LSP keymaps
-        { "<leader>lr", function() builtin.lsp_references() end, desc = "Find LSP references" },
-        { "<leader>lq", function() builtin.quickfix() end, desc = "Find quickfix items" },
-        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Find quickfix history" },
-        { "<leader>ly", function() builtin.lsp_type_definitions() end, desc = "Find LSP type definitions" },
-        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols() end, desc = "Find LSP workspace symbols" },
-        { "<leader>ls", function() builtin.lsp_document_symbols() end, desc = "Find LSP document symbols" },
-        { "<leader>li", function() builtin.lsp_implementations() end, desc = "Find LSP implementations" },
-        { "<leader>lD", function() builtin.diagnostics() end, desc = "Find LSP workspace diagnostics" },
-        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "Find LSP document diagnostics" },
+        { "<leader>lr", function() builtin.lsp_references() end, desc = "LSP references (telescope)" },
+        { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
+        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Quickfix history (telescope)" },
+        { "<leader>ly", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
+        { "<leader>li", function() builtin.lsp_implementations() end, desc = "LSP implementations (telescope)" },
+
+        { "<leader>lD", function() builtin.diagnostics() end, desc = "LSP workspace diagnostics (telescope)" },
+        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "LSP document diagnostics (telescope)" },
+
+        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols {
+          ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" },
+        } end, desc = "LSP workspace symbols (telescope)" },
+        { "<leader>ls", function() builtin.lsp_document_symbols {
+          ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" },
+        } end, desc = "LSP document symbols (telescope)" },
 
         -- Git keymaps
-        { "<C-p>", function() telescope_cwd "git_files" end, desc = "Find git files" },
-        { "<leader>fg", function() telescope_cwd "git_files" end, desc = "Find git files" },
-        { "<leader>gfb", function() builtin.git_branches() end, desc = "Find git branches" },
-        { "<leader>gfs", function() builtin.git_status() end, desc = "Git status (Telescope)" },
-        { "<leader>gfS", function() builtin.git_stash() end, desc = "Git stash (Telescope)" },
-        { "<leader>gfH", function() builtin.git_commits() end, desc = "Find git history" },
-        { "<leader>gfh", function() builtin.git_bcommits() end, desc = "Find git buffer history", mode = "n" },
-        { "<leader>gfh", function() builtin.git_bcommits_range() end, desc = "Find git history", mode = "v" },
+        { "<C-p>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
+        { "<leader>fgf", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
+        { "<leader>fgb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
+        { "<leader>fgs", function() builtin.git_status() end, desc = "Git status (telescope)" },
+        { "<leader>fgS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
+        { "<leader>fgH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
+        { "<leader>fgh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
+        { "<leader>fgh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope", mode = "v" },
       }
     end,
     opts = function()
@@ -131,7 +136,6 @@ return {
         pickers = {
           live_grep = { only_sort_text = true },
           buffers = {
-            ignore_current_buffer = true,
             sort_lastused = true,
             sort_mru = true,
             initial_mode = "normal",
@@ -213,10 +217,10 @@ return {
       { "<M-d>", function() require("harpoon.ui").nav_file(3) end, desc = "Harpoon mark 3" },
       { "<M-f>", function() require("harpoon.ui").nav_file(4) end, desc = "Harpoon mark 4" },
       { "<M-c>", function() require("harpoon.cmd-ui").toggle_quick_menu() end, desc = "Harpoon command menu" },
-      { "<M-1>", function() require("harpoon.tmux").sendCommand("{top-right}", 1) end, desc = "Send command 1" },
-      { "<M-2>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 2) end, desc = "Send command 2" },
-      { "<M-3>", function() require("harpoon.tmux").sendCommand("{top-right}", 3) end, desc = "Send command 3" },
-      { "<M-4>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 4) end, desc = "Send command 4" },
+      { "<M-1>", function() require("harpoon.tmux").sendCommand("{top-right}", 1) end, desc = "Harpoon send command 1" },
+      { "<M-2>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 2) end, desc = "Harpoon send command 2" },
+      { "<M-3>", function() require("harpoon.tmux").sendCommand("{top-right}", 3) end, desc = "Harpoon send command 3" },
+      { "<M-4>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 4) end, desc = "Harpoon send command 4" },
     },
   },
 }

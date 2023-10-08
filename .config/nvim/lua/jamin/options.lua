@@ -1,7 +1,7 @@
 local has_res, res = pcall(require, "jamin.resources")
 
 vim.opt.clipboard = "unnamed"
-vim.opt.updatetime = 100
+vim.opt.updatetime = 169
 vim.opt.confirm = true
 vim.opt.modeline = false
 vim.opt.virtualedit:append "block"

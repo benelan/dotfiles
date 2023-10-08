@@ -7,10 +7,10 @@
 # https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
 
 case "$(os-detect)" in
-    windows_wsl) wslview "${@:-.}" ;;
-    windows_cygwin) cygstart "${@:-.}" ;;
-    windows_m*) start "${@:-.}" ;;
-    osx) open "${@:-.}" ;;
-    linux*) xdg-open "${@:-.}" ;;
+    windows_wsl) wslview "${*:-.}" ;;
+    windows_cygwin) cygstart "${*:-.}" ;;
+    windows_m*) start "${*:-.}" ;;
+    osx) open "${*:-.}" ;;
+    linux*) xdg-open "${*:-.}" ;;
     *) echo "Unknown operating system and open command, please log an issue" && exit 1 ;;
 esac

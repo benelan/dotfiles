@@ -86,7 +86,7 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 ----> LSP
 -------------------------------------------------------------------------------
 
-keymap("n", "K", vim.lsp.buf.hover, "Hover")
+keymap("n", "K", vim.lsp.buf.hover, "LSP hover")
 keymap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
 keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
 keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
@@ -100,8 +100,8 @@ keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
 keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
 
 -- stylua: ignore start
-keymap("n", "gH", function() vim.lsp.inlay_hint(0, nil) end, "Toggle inlay hints")
-keymap({ "n", "v" }, "gF", function() vim.lsp.buf.format { async = true } end, "Format")
+keymap("n", "gH", function() vim.lsp.inlay_hint(0, nil) end, "Toggle LSP inlay hints")
+keymap({ "n", "v" }, "gF", function() vim.lsp.buf.format { async = true } end, "LSP format")
 -- stylua: ignore end
 
 -------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ keymap(
       float = true,
     }
   end,
-  "Next diagnostic"
+  "Next diagnostic error"
 )
 
 keymap(
@@ -185,7 +185,7 @@ keymap(
       float = true,
     }
   end,
-  "Previous diagnostic"
+  "Previous diagnostic error"
 )
 
 keymap(
@@ -198,7 +198,7 @@ keymap(
       float = true,
     }
   end,
-  "Next diagnostic"
+  "Next diagnostic warning"
 )
 
 keymap(
@@ -211,7 +211,7 @@ keymap(
       float = true,
     }
   end,
-  "Previous diagnostic"
+  "Previous diagnostic warning"
 )
 
 -------------------------------------------------------------------------------
@@ -219,17 +219,17 @@ keymap(
 -------------------------------------------------------------------------------
 
 -- two way diff for staging/resetting hunks
-keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<CR>", "Get hunk")
-keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk")
+keymap({ "n", "v" }, "<leader>gr", ":diffget<bar>diffupdate<CR>", "Get hunk (diff)")
+keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 
 -- three way diff for merge conflict resolution
 keymap("n", "<leader>mu", "<CMD>diffupdate<CR>", "Update diff")
-keymap("n", "<leader>mb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base")
-keymap("n", "<leader>mB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all from base")
-keymap("n", "<leader>ml", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote")
-keymap("n", "<leader>mL", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all from remote")
-keymap("n", "<leader>mh", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local")
-keymap("n", "<leader>mH", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all from local")
+keymap("n", "<leader>mb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base (diff)")
+keymap("n", "<leader>mB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all hunks from base (diff)")
+keymap("n", "<leader>ml", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote (diff)")
+keymap("n", "<leader>mL", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all hunks from remote (diff)")
+keymap("n", "<leader>mh", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local (diff)")
+keymap("n", "<leader>mH", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all hunks from local (diff)")
 
 -------------------------------------------------------------------------------
 ----> Windows

@@ -5,8 +5,8 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- the GOAT git plugin
     keys = {
       { "<leader>gg", "<CMD>Git<CR>", desc = "Fugitive status" },
-      { "<leader>gc", "<CMD>Git commit<CR>", desc = "Git commit" },
-      { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Git pull --rebase" },
+      { "<leader>gc", "<CMD>Git commit<CR>", desc = "Fugitive commit" },
+      { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },
       { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
       { "<leader>gD", "<CMD>Git difftool -y<CR>", desc = "Fugitive difftool" },
       { "<leader>gM", "<CMD>Git mergetool -y<CR>", desc = "Fugitive mergetool" },
@@ -16,13 +16,13 @@ return {
       {
         "<M-w>",
         "<CMD>Gwrite <BAR> if &diff && tabpagenr('$') > 1 <BAR> tabclose <BAR> endif<CR>",
-        desc = "Write changes and close difftool tab",
+        desc = "Write changes and close fugitive difftool tab",
         mode = { "n" },
       },
       {
         "<M-r>",
         "<CMD>Gread <BAR> write <BAR> if &diff && tabpagenr('$') > 1 <BAR> tabclose <BAR> endif<CR>",
-        desc = "Read changes and close difftool tab",
+        desc = "Read changes and close fugitive difftool tab",
         mode = { "n" },
       },
       {
@@ -33,10 +33,10 @@ return {
       {
         "<leader>gl",
         "<CMD>0Gclog --follow<CR>",
-        desc = "Fugitive buffer history (qf)",
+        desc = "Buffer history in quickfix (fugitive)",
         mode = "n",
       },
-      { "<leader>gl", ":Gclog<CR>", desc = "Fugitive history (qf)", mode = "x" },
+      { "<leader>gl", ":Gclog<CR>", desc = "History in quickfix (fugitive)", mode = "x" },
     },
     -- stylua: ignore
     cmd = {
@@ -54,8 +54,8 @@ return {
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
     keys = {
-      { "<leader>go", ":GBrowse<CR>", desc = "Open git object in browser", mode = { "n", "v" } },
-      { "<leader>gy", ":GBrowse!<CR>", desc = "Yoink git object URL", mode = { "n", "v" } },
+      { "<leader>go", ":GBrowse<CR>", desc = "Open git object in browser (fugitive)", mode = { "n", "v" } },
+      { "<leader>gy", ":GBrowse!<CR>", desc = "Yoink git object URL (fugitive)", mode = { "n", "v" } },
     },
   },
   -----------------------------------------------------------------------------
@@ -67,15 +67,15 @@ return {
       {
         "<leader>gh",
         "<CMD>Flogsplit -path=%<CR>",
-        desc = "Git buffer history (Flog)",
+        desc = "Git buffer history (flog)",
         mode = "n",
       },
-      { "<leader>gH", "<CMD>Flog<CR>", desc = "Git history (Flog)", mode = "n" },
-      { "<leader>gh", ":Flog<CR>", desc = "Git history (Flog)", mode = "v" },
+      { "<leader>gH", "<CMD>Flog<CR>", desc = "Git history (flog)", mode = "n" },
+      { "<leader>gh", ":Flog<CR>", desc = "Git history (flog)", mode = "v" },
       {
         "<leader>gH",
         ":<C-u>call VisualSelection('')<CR>:<C-R>=@/<CR><C-b>Flog -patch-search=<CR>",
-        desc = "Find selected text in git patch history (Flog)",
+        desc = "Find selected text in git patch history (flog)",
         mode = "v",
       },
     },
@@ -86,22 +86,22 @@ return {
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
-      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk", mode = { "o", "x" } },
-      { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk" },
-      { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk" },
-      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk", mode = "v" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk", mode = "v" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
-      { "<leader>hu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk" },
-      { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle git blame" },
-      { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle git signs" },
-      { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle git deleted line display" },
-      { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle git word diff" },
-      { "<leader>gth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle git line highlight" },
-      { "<leader>gtn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle git number highlight" },
-      { "<leader>gB", function() require("gitsigns").blame_line { full = true } end, desc = "Blame popup" },
+      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk (gitsigns)", mode = { "o", "x" } },
+      { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk (gitsigns)" },
+      { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk (gitsigns)" },
+      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk (gitsigns)" },
+      { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk (gitsigns)", mode = "v" },
+      { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk (gitsigns)", mode = "v" },
+      { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hun (gitsigns)k" },
+      { "<leader>hw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk (gitsigns)" },
+      { "<leader>hu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk (gitsigns)" },
+      { "<leader>gtb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle blame (gitsigns)" },
+      { "<leader>gts", function() require("gitsigns").toggle_signs() end, desc = "Toggle signs (gitsigns)" },
+      { "<leader>gtd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display (gitsigns)" },
+      { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff (gitsigns)" },
+      { "<leader>gth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle line highlight (gitsigns)" },
+      { "<leader>gtn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle number highlight (gitsigns)" },
+      { "<leader>gB", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame line (gitsigns)" },
     },
     opts = {
       current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
@@ -121,44 +121,44 @@ return {
     -- stylua: ignore
     keys = {
       -- Find possible actions
-      { "<leader>oa", "<CMD>Octo actions<CR>", desc = "Actions" },
+      { "<leader>o", "<CMD>Octo actions<CR>", desc = "Actions (octo)" },
 
       -- Search using GitHub's qualifiers
       -- https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
       -- https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
-      { "<leader>os", "<CMD>Octo search<CR>", desc = "Search" },
+      { "<leader>os", "<CMD>Octo search<CR>", desc = "Search (octo)" },
 
       -- Issues
-      { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues" },
-      { "<leader>oic", "<CMD>Octo issue create<CR>", desc = "Create issue" },
+      { "<leader>oi<CR>", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
+      { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
+      { "<leader>oia", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
+      { "<leader>oic", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
 
       -- Pull requests
+      { "<leader>op<CR>", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opc", "<CMD>Octo pr create<CR>", desc = "Create pull request" },
+      { "<leader>opa", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
+      { "<leader>opc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
 
       -- Reviews
-      { "<leader>oprr", "<CMD>Octo review resume<CR>", desc = "Resume review" },
-      { "<leader>oprs", "<CMD>Octo review start<CR>", desc = "Start review" },
-      { "<leader>oprf", "<CMD>Octo review submit<CR>", desc = "Finish review" },
+      { "<leader>o.", "<CMD>Octo review resume<CR>", desc = "Resume review (octo)" },
+      { "<leader>o<Tab>", "<CMD>Octo review start<CR>", desc = "Start review (octo)" },
+      { "<leader>o<CR>", "<CMD>Octo review submit<CR>", desc = "Submit review (octo)" },
+      { "<leader>o<Delete>", "<CMD>Octo review discard<CR>", desc = "Discard review (octo)" },
+      { "<leader>o<leader>", "<CMD>Octo review comments<CR>", desc = "Show pending review comments (octo)" },
 
-      -- My created/assigned issues and pull requests
-      { "<leader>omia", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List my assigned issues" },
-      { "<leader>omic", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List my created issues" },
-      { "<leader>ompc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List my created pull requests" },
-      { "<leader>ompa", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List my assigned pull requests" },
-
-      -- My created repos and gists
-      { "<leader>omr", "<CMD>Octo repo list<CR>", desc = "List my repos" },
-      { "<leader>omg", "<CMD>Octo gist list<CR>", desc = "List my gists" },
+      -- My repos and gists
+      { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },
+      { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
     },
     opts = {
       enable_builtin = true,
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
-      file_panel = { use_icons = vim.g.use_devicons == true },
+      file_panel = { use_icons = vim.g.use_devicons },
       right_bubble_delimiter = res.icons.ui.block,
       left_bubble_delimiter = res.icons.ui.block,
       reaction_viewer_hint_icon = res.icons.ui.circle,
-      user_icon = res.icons.lsp_kind.Copilot,
+      user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
       timeline_marker = res.icons.ui.prompt,
     },
     config = function(_, opts)

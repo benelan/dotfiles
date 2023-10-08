@@ -24,7 +24,7 @@ if has_mkdnflow then
   -- recreate theh goBack keymap falling back to the alt buffer
   bufmap("n", "<BS>", function()
     if not mkdnflow.buffers.goBack() then vim.cmd "b#" end
-  end, "Go back a buffer")
+  end, "Go back a buffer (mkdnflow)")
 end
 
 -- Add the key mappings only for Markdown files in a zk notebook.
@@ -33,9 +33,9 @@ if has_zk and zk.notebook_root(vim.fn.expand "%:p") ~= nil then
   -- Override the global kemap to create the new note in the same directory as the current buffer.
   bufmap(
     "n",
-    "<leader>zn",
+    "<leader>z<CR>",
     "<CMD>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
-    "New note"
+    "New note (zk)"
   )
 
   -- Create a new note using the current selection for the title.
@@ -43,7 +43,7 @@ if has_zk and zk.notebook_root(vim.fn.expand "%:p") ~= nil then
     "v",
     "<leader>znt",
     ":'<,'>ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>",
-    "New note using selected title"
+    "New note using selected title (zk)"
   )
 
   -- Use the current selection for the new note's content and prompt for the title.
@@ -51,21 +51,21 @@ if has_zk and zk.notebook_root(vim.fn.expand "%:p") ~= nil then
     "v",
     "<leader>znc",
     ":'<,'>ZkNewFromContentSelection { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
-    "New note using selected content"
+    "New note using selected content (zk)"
   )
 
   -- Open notes linked by the current buffer.
-  bufmap("n", "<leader>zl", "<CMD>ZkLinks<CR>", "Note links")
+  bufmap("n", "<leader>zl", "<CMD>ZkLinks<CR>", "Note links (zk)")
 
   -- Open notes linking to the current buffer.
-  bufmap("n", "<leader>zb", "<CMD>ZkBacklinks<CR>", "Note backlinks")
+  bufmap("n", "<leader>zb", "<CMD>ZkBacklinks<CR>", "Note backlinks (zk)")
 
   bufmap(
     "v",
     "<leader>z<CR>",
     "'<,'>ZkInsertLinkAtSelection {matchSelected = true}<CR>",
-    "Insert link"
+    "Insert link (zk)"
   )
 
-  bufmap("n", "<leader>z<CR>", "<CMD>ZkInsertLink<CR>", "Insert link")
+  bufmap("n", "<leader>z<CR>", "<CMD>ZkInsertLink<CR>", "Insert link (zk)")
 end

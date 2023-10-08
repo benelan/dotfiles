@@ -110,11 +110,11 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       -- eol = res.icons.ui.eol,
       extends = res.icons.ui.extends,
       precedes = res.icons.ui.precedes,
-      trail = res.icons.ui.fill_dot,
-      lead = res.icons.ui.fill_dot,
+      trail = res.icons.ui.dot,
+      lead = res.icons.ui.dot,
       nbsp = res.icons.ui.nbsp,
       leadmultispace = res.icons.ui.separator
-        .. string.rep("x", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
+        .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
     }
   end,
 })

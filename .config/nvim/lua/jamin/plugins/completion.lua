@@ -426,7 +426,12 @@ return {
   -----------------------------------------------------------------------------
   {
     -- https://platform.openai.com/docs/guides/gpt-best-practices
-    "jackMort/ChatGPT.nvim", -- unofficial ChatGPT wrapper
+    --
+    -- NOTE: this is a fork of the unofficial ChatGPT plugin that adds config
+    -- options for replacing nerd font icons. Some of the ones in use are broken.
+    -- I created an upstream PR: https://github.com/jackMort/ChatGPT.nvim/pull/297
+    "benelan/ChatGPT.nvim",
+    branch = "icon-config-options",
     cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
     cmd = {
       "ChatGPT",
@@ -444,29 +449,39 @@ return {
       show_quickfixes_cmd = "copen",
       chat = {
         welcome_message = res.art.bender_dots,
-        question_sign = res.icons.lsp_kind.Comment .. " ",
+        question_sign = res.icons.ui.speech_bubble,
         answer_sign = res.icons.ui.select,
+        border_left_sign = res.icons.ui.fill_solid,
+        border_right_sign = res.icons.ui.fill_solid,
+        sessions_window = {
+          inactive_sign = string.format(" %s ", res.icons.ui.box),
+          active_sign = string.format(" %s ", res.icons.ui.box_checked),
+          current_line_sign = res.icons.ui.collapsed,
+        },
       },
       popup_input = {
         prompt = string.format(" %s ", res.icons.ui.prompt),
+      },
+      settings_window = {
+        setting_sign = string.format(" %s ", res.icons.ui.dot_outline),
       },
     },
     -- stylua: ignore
     keys = {
       { "<leader>cc", "<cmd>ChatGPT<CR>", "ChatGPT" },
-      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", "Select prompt" },
-      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
-      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar correction", mode = { "n", "v" } },
-      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
-      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
-      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
-      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add tests", mode = { "n", "v" } },
-      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize code", mode = { "n", "v" } },
-      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
-      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix bugs", mode = { "n", "v" } },
-      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain code", mode = { "n", "v" } },
-      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen edit", mode = { "n", "v" } },
-      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code readability analysis", mode = { "n", "v" } },
+      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", "ChatGPT select prompt" },
+      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
+      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
+      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
+      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
+      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
+      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
+      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
+      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
+      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
+      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
+      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
+      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
     },
   },
 }

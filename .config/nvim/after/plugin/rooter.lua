@@ -64,7 +64,7 @@ local function set_root(args)
   vim.fn.chdir(root)
 end
 
-vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
   group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
   callback = set_root,
 })

@@ -4,18 +4,18 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     --stylua: ignore
     keys = {
-      { "<leader>Rf", function() require("refactoring").refactor "Extract Function" end, desc = "Extract function", mode = "v" },
-      { "<leader>RF", function() require("refactoring").refactor "Extract Function To File" end, desc = "Extract function to file", mode = "v" },
-      { "<leader>Rv", function() require("refactoring").refactor "Extract Variable" end, desc = "Extract variable", mode = "v" },
-      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable", mode = "v" },
-      { "<leader>Rb", function() require("refactoring").refactor "Extract Block" end, desc = "Extract block" },
-      { "<leader>RB", function() require("refactoring").refactor "Extract Block To File" end, desc = "Extract block to file" },
-      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable" },
+      { "<leader>Rf", function() require("refactoring").refactor "Extract Function" end, desc = "Extract function (refactor)", mode = "v" },
+      { "<leader>RF", function() require("refactoring").refactor "Extract Function To File" end, desc = "Extract function to file (refactor)", mode = "v" },
+      { "<leader>Rv", function() require("refactoring").refactor "Extract Variable" end, desc = "Extract variable (refactor)", mode = "v" },
+      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable (refactor)", mode = "v" },
+      { "<leader>Rb", function() require("refactoring").refactor "Extract Block" end, desc = "Extract block (refactor)" },
+      { "<leader>RB", function() require("refactoring").refactor "Extract Block To File" end, desc = "Extract block to file (refactor)" },
+      { "<leader>Ri", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable (refactor)" },
       { "<leader>Rr", function() require("refactoring").select_refactor { } end, desc = "Select refactor", mode = "v" },
-      { "<leader>RP", function() require("refactoring").debug.printf { below = false } end, desc = "Print scope" },
-      { "<leader>Rp", function() require("refactoring").debug.print_var { normal = true } end, desc = "Print variable" },
-      { "<leader>Rp", function() require("refactoring").debug.print_var { } end, desc = "Print variable", mode = "v" },
-      { "<leader>RC", function() require("refactoring").debug.cleanup { } end, desc = "Cleanup prints" },
+      { "<leader>RP", function() require("refactoring").debug.printf { below = false } end, desc = "Print scope (refactor)" },
+      { "<leader>Rp", function() require("refactoring").debug.print_var { normal = true } end, desc = "Print variable (refactor)" },
+      { "<leader>Rp", function() require("refactoring").debug.print_var { } end, desc = "Print variable (refactor)", mode = "v" },
+      { "<leader>RC", function() require("refactoring").debug.cleanup { } end, desc = "Cleanup prints (refactor)" },
     },
     opts = {
       prompt_func_return_type = { go = true },
@@ -42,7 +42,8 @@ return {
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         opts = {
-          multiline_threshold = 5,
+          multiline_threshold = 1,
+          max_lines = 6,
           mode = "cursor",
           -- separator = "─",
         },
