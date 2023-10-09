@@ -17,7 +17,7 @@ local function floating_term()
     row = ui.height - 3,
     anchor = "SE",
     style = "minimal",
-    border = "solid",
+    border = "rounded",
   }
 
   if term_winnr > 0 and win_count > 1 then
