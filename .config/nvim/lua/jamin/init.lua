@@ -99,6 +99,8 @@ require("lazy").setup({ "folke/lazy.nvim", import = "jamin.plugins" }, {
   change_detection = { notify = false },
   checker = { enabled = true, notify = false },
   dev = { path = vim.env.LIB, fallback = true },
-  ui = { border = "rounded", icons = require("jamin.resources").icons.lazy },
   install = { colorscheme = { "gruvbox", "retrobox", "habamax" } },
+  ui = { border = "rounded", icons = require("jamin.resources").icons.lazy },
 })
+
+keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim")

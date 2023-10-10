@@ -62,6 +62,7 @@ return {
           StatusLineInfo = { fg = p.bright_blue, bg = p.dark0_soft },
           StatusLineHint = { fg = p.bright_aqua, bg = p.dark0_soft },
           CmpItemAbbrDeprecated = { fg = p.gray, bg = "NONE", strikethrough = true },
+          QuickFixLine = { fg = p.bright_orange, bg = p.dark2, bold = true },
         },
       }
 

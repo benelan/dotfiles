@@ -80,9 +80,6 @@ nnoremap & :&&<CR>
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" insert, command, and operator  keymaps                     {{{
 
-cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
-cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
-
 " Add a line above/below the cursor from insert mode
 inoremap <C-Down> <C-O>O
 inoremap <C-Up> <C-O>o

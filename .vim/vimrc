@@ -166,7 +166,7 @@ if has("keymap")
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" misc input and terminal mode keymaps                       {{{
+    "" misc input/terminal/command mode keymaps                   {{{
     inoremap , ,<C-g>u
     inoremap ? ?<C-g>u
     inoremap . .<C-g>u
@@ -176,6 +176,10 @@ if has("keymap")
     tnoremap <Esc><Esc> <C-\><C-n>
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
+
+    cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
+    cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
+
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{

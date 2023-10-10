@@ -51,6 +51,7 @@ return {
         )
       end
 
+      -- stylua: ignore
       return {
         { "<leader>f", function() builtin.builtin() end, desc = "Telescope builtins" },
         { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent files (telescope)" },
@@ -96,7 +97,7 @@ return {
     end,
     opts = function()
       -- use the same mappings in insert and normal mode
-      local default_mappings = {
+      local mappings = {
         ["<C-c>"] = "close",
         ["<C-x>"] = false,
         ["<C-d>"] = "results_scrolling_down",
@@ -131,7 +132,7 @@ return {
             { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" },
             { toplevel = vim.env.CALCITE, gitdir = vim.env.CALCITE .. "/.git" },
           },
-          mappings = { i = default_mappings, n = default_mappings },
+          mappings = { i = mappings, n = mappings },
         },
         pickers = {
           live_grep = { only_sort_text = true },

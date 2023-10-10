@@ -358,7 +358,7 @@ install_ubuntu_apt() {
     ! [ -f "$DEPS_DIR/apt" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install -y "$pkg" || true
+        sudo apt install -y "$pkg" >/dev/null || true
     done <"$DEPS_DIR/apt"
 
     unset pkg
@@ -373,7 +373,7 @@ install_ubuntu_apt-gui() {
     ! [ -f "$DEPS_DIR/apt-gui" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install -y "$pkg" || true
+        sudo apt install -y "$pkg" >/dev/null || true
     done <"$DEPS_DIR/apt-gui"
 
     unset pkg

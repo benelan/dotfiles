@@ -112,7 +112,7 @@ local function lazy_updates(fallback)
       and string.format(
         "  %s%s%s  ",
         fmt_hl(highlights.lazy),
-        (vim.g.use_devicons and icons.lsp_kind.Package or "P"),
+        (vim.g.use_devicons and icons.lsp_kind.Package or icons.ui.box),
         lazy.updates()
       )
     or fallback and fallback()
