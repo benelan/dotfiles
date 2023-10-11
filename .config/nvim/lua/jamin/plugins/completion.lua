@@ -123,6 +123,10 @@ return {
           end, { "i" }),
         },
 
+        window = {
+          -- completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
         formatting = {
           format = function(entry, vim_item)
             local i = function(str) return res.icons.ui.dot .. str end
@@ -459,12 +463,10 @@ return {
           current_line_sign = res.icons.ui.collapsed,
         },
       },
-      popup_input = {
-        prompt = string.format(" %s ", res.icons.ui.prompt),
-      },
-      settings_window = {
-        setting_sign = string.format(" %s ", res.icons.ui.dot_outline),
-      },
+      popup_input = { prompt = string.format(" %s ", res.icons.ui.prompt) },
+      settings_window = { setting_sign = string.format(" %s ", res.icons.ui.dot_outline) },
+      popup_window = { win_options = { foldcolumn = "0" } },
+      system_window = { win_options = { foldcolumn = "0" } },
     },
     -- stylua: ignore
     keys = {

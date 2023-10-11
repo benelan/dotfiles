@@ -12,7 +12,7 @@ curl -Ls benelan.dev/d | sh
 
 Use the [githubusercontent link](https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh) if the one above dies. The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. Read [this tutorial](https://www.atlassian.com/git/tutorials/dotfiles) for more info. A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
 
-An [alias](.dotfiles/shell/aliases.sh) `dot`, which works like `git`, allows you to manage dotfiles from any directory on a machine. It hides untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
+A [`dot`](.dotfiles/bin/dot) script, which works like `git`, allows you to manage dotfiles from any directory on a machine. It hides untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
 
 ```sh
 dot add .config/xyz/config.yml
@@ -24,7 +24,7 @@ dot push
 
 My setup was primarily created for use in Ubuntu/Debian and their derivative distros, but it worked in Fedora and should work in other Unix operating systems as well. I try to separate the Ubuntu-only code and make sure executables exist before using them. Vanilla Windows won't work, but WSL running Ubuntu does.
 
-[`deps.init.sh`](.dotfiles/scripts/deps.init.sh) and a few other scripts install the development tools I commonly use, as well as some other stuff like fonts.
+The `dot` script also has a `deps` command for installing various dependencies, including development tools, GUI apps, shell scripts, fonts, themes, and more. See `dot deps -h` for usage information.
 
 > NOTE: I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
 

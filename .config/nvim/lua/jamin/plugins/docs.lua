@@ -1,3 +1,5 @@
+local res = require("jamin.resources")
+
 return {
   {
     "danymat/neogen", -- Generates doc annotations for a variety of filetypes
@@ -15,19 +17,18 @@ return {
   -----------------------------------------------------------------------------
   {
     "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
-    build = "cd app && npm install",
+    build = "cd app && npm install && git reset --hard",
     ft = { "markdown" },
     keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
-    init = function()
+    config = function()
       vim.g.mkdp_browser = vim.env.ALTBROWSER or vim.env.BROWSER or "o"
-      vim.g.mkdp_preview_options = { sync_scroll_type = "top" }
       vim.g.mkdp_auto_close = false
     end,
   },
   -----------------------------------------------------------------------------
   {
     "jakewvincent/mkdnflow.nvim", -- Keymaps and utils for editing markdown files
-    ft = { "markdown", "md", "mdx" },
+    ft = { "markdown" },
     opts = {
       filetypes = { md = true, rmd = true, mdx = true, markdown = true },
       links = {
@@ -57,16 +58,12 @@ return {
     "mickael-menu/zk-nvim", -- Tool for writing markdown notes or a personal wiki
     ft = { "markdown" },
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
+    -- stylua: ignore
     keys = {
       { "<leader>z<CR>", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note (zk)" },
       { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags (zk)" },
       { "<leader>zo", "<CMD>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes (zk)" },
-      {
-        "<leader>zf",
-        "<CMD>ZkNotes { sort = { 'modified' }, match = { vim.fn.input 'Search: ' } }<CR>",
-        desc = "Find notes (zk)",
-        mode = "n",
-      },
+      { "<leader>zf", "<CMD>ZkNotes { sort = { 'modified' }, match = { vim.fn.input 'Search: ' } }<CR>", desc = "Find notes (zk)", mode = "n" },
       -- Search for the notes matching the current visual selection.
       { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes (zk)", mode = "v" },
     },
@@ -111,7 +108,7 @@ return {
           row = ui.height - 3,
           anchor = "SE",
           style = "minimal",
-          border = "solid",
+          border = res.icons.border,
         },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})

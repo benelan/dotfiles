@@ -1,3 +1,5 @@
+local res = require("jamin.resources")
+
 return {
   {
     "ThePrimeagen/refactoring.nvim", -- common refactor actions and automated debug print statement generation
@@ -73,7 +75,7 @@ return {
       end)()
 
       require("nvim-treesitter.configs").setup {
-        ensure_installed = require("jamin.resources").treesitter_parsers,
+        ensure_installed = res.treesitter_parsers,
         highlight = {
           enable = true,
           -- additional_vim_regex_highlighting = { "markdown" },
@@ -94,7 +96,7 @@ return {
         textobjects = {
           lsp_interop = {
             enable = true,
-            border = "solid",
+            border = res.icons.border,
             peek_definition_code = {
               ["gpf"] = "@function.outer",
               ["gpc"] = "@class.outer",

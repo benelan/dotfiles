@@ -74,6 +74,7 @@ M.icons = {
     removed = i("󰍵 ", "-"),
     branch = i " ",
   },
+  border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
   ui = { -- utf8 icons so no fallbacks required
     prompt = "❱ ",
     select = "➤  ",

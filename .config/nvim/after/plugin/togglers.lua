@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 ---Toggles a persistent floating terminal window
 local function floating_term()
   local term_bufnr = vim.fn.bufnr "term://"
@@ -17,7 +19,7 @@ local function floating_term()
     row = ui.height - 3,
     anchor = "SE",
     style = "minimal",
-    border = "solid",
+    border = res.icons.border,
   }
 
   if term_winnr > 0 and win_count > 1 then
@@ -101,9 +103,7 @@ local function ui_toggle()
   vim.opt.laststatus = ui_disabled and 3 or 0
   vim.opt.showtabline = ui_disabled and 2 or 0
 
-  vim.opt.fillchars:append(
-    "eob:" .. (ui_disabled and require("jamin.resources").icons.ui.fill_shade or " ")
-  )
+  vim.opt.fillchars:append("eob:" .. (ui_disabled and res.icons.ui.fill_shade or " "))
 
   -- toggle lsp diagnostics
   vim.schedule(function() vim.diagnostic[ui_disabled and "disable" or "enable"](nil) end)

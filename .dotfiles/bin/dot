@@ -737,7 +737,7 @@ install_theme_icons() {
 
 update_modules() {
     /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
-        submodule update --init --recursive --rebase "$@"
+        submodule update --recursive --rebase --remote "$@"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -898,8 +898,10 @@ packages_installs() {
 ## Git submodules                                              {{{
 
 build_installs() {
+    update_modules
     install_build_neovim || true
     install_build_fzf || true
+    install_packages_vim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

@@ -215,7 +215,7 @@
 
     cl = clone
 
-    cp = cherry-pick
+    cp = cpk
 
     d = diff
     ds = diff --staged

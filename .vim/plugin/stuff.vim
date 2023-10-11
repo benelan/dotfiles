@@ -507,19 +507,6 @@ if has("autocmd")
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" set quickfix title                                     {{{
-     augroup jamin_quickfix
-        autocmd!
-        autocmd QuickFixCmdPost cgetexpr cwindow
-                \| call setqflist([], "a", {"title": ":" . s:command})
-
-        autocmd QuickFixCmdPost lgetexpr lwindow
-                \| call setloclist(0, [], "a", {"title": ":" . s:command})
-
-        autocmd QuickFixCmdPost [^l]* cwindow
-    augroup END
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Use skeletons when creating specific new files         {{{
 
     augroup jamin_skeletons
