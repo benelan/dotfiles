@@ -63,15 +63,15 @@ function! JaminTabLine()
         let bufmodified = getbufvar(bufnr, "&mod")
 
         let s .= "%" . tab . "T"
-        let s .= (tab == tabpagenr() ? "%#Visual#" : "%#StatusLineNC#")
+        let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
         let s .= " " . tab .":"
-        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "]" . " " : "[No Name] ")
+        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "]:" . bufnr . " " : "[No Name] ")
     endfor
 
-    let s .= "%#StatusLineNC#"
+    let s .= "%#TabLineFill#"
     let s .= "%=" . "%( %{BufferInfo()} %)"
-    let s .= "%#Visual#" . "%( %{TabCWD()} %)"
-    let s .= "%#StatusLineNC#" . "%( %{TabCount()} %)"
+    let s .= "%#TabLine#" . "%( %{TabCWD()} %)"
+    let s .= "%#TabLineFill#" . "%( %{TabCount()} %)"
     return s
 endfunction
 

@@ -94,7 +94,7 @@ return {
         textobjects = {
           lsp_interop = {
             enable = true,
-            border = "rounded",
+            border = "solid",
             peek_definition_code = {
               ["gpf"] = "@function.outer",
               ["gpc"] = "@class.outer",

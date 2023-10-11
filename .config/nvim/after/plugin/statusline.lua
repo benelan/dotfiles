@@ -4,14 +4,14 @@ local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
 
 local highlights = {
-  section_flags = "TabLine",
-  section_context = "StatusLine",
-  section_state = "StatusLineState",
-  git_added = "StatusLineGitAdd",
-  git_changed = "StatusLineGitChange",
-  git_removed = "StatusLineGitDelete",
-  dap = "StatusLineDap",
-  lazy = "StatusLineLazy",
+  section_flags = "TabLineSel",
+  section_context = "TabLineFill",
+  section_state = "NormalFloat",
+  git_added = "GitStatusLineAdd",
+  git_changed = "GitStatusLineChange",
+  git_removed = "GitStatusLineDelete",
+  dap = "DapStatusLineInfo",
+  lazy = "LazyStatusLineInfo",
 }
 
 ---Format a highlight group for the statusline.
@@ -50,7 +50,7 @@ local function buffer_diagnostics(fallback)
 
   for _, diagnostic in ipairs(icons.diagnostics) do
     table.insert(data, {
-      highlight = "StatusLine" .. diagnostic.name,
+      highlight = (diagnostic.name == "Warn" and "Warning" or diagnostic.name) .. "Float",
       icon = diagnostic.text .. (vim.g.use_devicons and "" or ":"),
       value = vim.tbl_count(vim.diagnostic.get(0, { severity = diagnostic.severity })),
     })
@@ -143,7 +143,7 @@ function JaminStatusLine()
   return ""
     ---- left flags section ----------------------
     .. fmt_hl(highlights.section_flags)
-    .. "  [%n]%r%w%y%m  "
+    .. "  %m[%n]%r%w%y  "
     ---- left context section --------------------
     .. fmt_hl(highlights.section_context)
     .. gitsigns_head(fugitive_head)

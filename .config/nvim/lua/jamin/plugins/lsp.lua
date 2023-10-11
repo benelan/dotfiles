@@ -75,7 +75,7 @@ return {
           show_header = false,
           focusable = true,
           style = "minimal",
-          border = "rounded",
+          border = "solid",
           source = true,
           header = "",
           prefix = "",

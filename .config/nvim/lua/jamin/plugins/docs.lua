@@ -111,7 +111,7 @@ return {
           row = ui.height - 3,
           anchor = "SE",
           style = "minimal",
-          border = "rounded",
+          border = "solid",
         },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
