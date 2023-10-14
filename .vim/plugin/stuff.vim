@@ -183,7 +183,7 @@ function! s:GitHubPR(bang, args) abort
 
         let @+ = s:url
     else
-        execute "gh pr view --web --" . a:args
+        execute system("gh pr view --web --" . a:args)
     endif
 endfunction
 

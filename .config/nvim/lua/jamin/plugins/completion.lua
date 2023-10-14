@@ -430,12 +430,7 @@ return {
   -----------------------------------------------------------------------------
   {
     -- https://platform.openai.com/docs/guides/gpt-best-practices
-    --
-    -- NOTE: this is a fork of the unofficial ChatGPT plugin that adds config
-    -- options for replacing nerd font icons. Some of the ones in use are broken.
-    -- I created an upstream PR: https://github.com/jackMort/ChatGPT.nvim/pull/297
-    "benelan/ChatGPT.nvim",
-    branch = "icon-config-options",
+    "jackMort/ChatGPT.nvim",
     cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
     cmd = {
       "ChatGPT",

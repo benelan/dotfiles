@@ -54,8 +54,18 @@ return {
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
     keys = {
-      { "<leader>go", ":GBrowse<CR>", desc = "Open git object in browser (fugitive)", mode = { "n", "v" } },
-      { "<leader>gy", ":GBrowse!<CR>", desc = "Yoink git object URL (fugitive)", mode = { "n", "v" } },
+      {
+        "<leader>go",
+        ":GBrowse<CR>",
+        desc = "Open git object in browser (fugitive)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>gy",
+        ":GBrowse!<CR>",
+        desc = "Yoink git object URL (fugitive)",
+        mode = { "n", "v" },
+      },
     },
   },
   -----------------------------------------------------------------------------
@@ -116,6 +126,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
+    cond = vim.fn.executable "gh" == 1,
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "Octo",
     -- stylua: ignore
@@ -135,6 +146,18 @@ return {
       { "<leader>oic", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
 
       -- Pull requests
+      {
+        "<leader>op",
+        function()
+          local number = vim.fn.system "gh pr view --json number --jq .number"
+          if number and not string.match(number, "request") then
+            vim.cmd("Octo pr edit " .. number)
+          else
+            print "No pull request found for current branch"
+          end
+        end,
+        desc = "Open pull request for current branch (octo)",
+      },
       { "<leader>op<CR>", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
       { "<leader>opa", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
@@ -155,11 +178,15 @@ return {
       enable_builtin = true,
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       file_panel = { use_icons = vim.g.use_devicons },
-      right_bubble_delimiter = res.icons.ui.block,
-      left_bubble_delimiter = res.icons.ui.block,
+      -- right_bubble_delimiter = res.icons.ui.block,
+      -- left_bubble_delimiter = res.icons.ui.block,
       reaction_viewer_hint_icon = res.icons.ui.circle,
       user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
       timeline_marker = res.icons.ui.prompt,
+      mappings = {
+        issue = { open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" } },
+        pull_requests = { open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" } },
+      },
     },
     config = function(_, opts)
       require("octo").setup(opts)

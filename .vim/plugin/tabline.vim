@@ -65,7 +65,7 @@ function! JaminTabLine()
         let s .= "%" . tab . "T"
         let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
         let s .= " " . tab .":"
-        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "]:" . bufnr . " " : "[No Name] ")
+        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "] " : "[No Name] ")
     endfor
 
     let s .= "%#TabLineFill#"
