@@ -1,22 +1,141 @@
 #!/usr/bin/env bash
 # shellcheck disable=2046
 
-# This script manages my dotfiles. The `deps` command installs dependencies
-# and tools. See `dot deps -h` for usage information.
+# Ben Elan's dotfiles and dependency management script.
 #
-# All other commands are passed to `git` with environment variables
-# set so it always executes on the dotfiles repo. For example:
+# The `setup` command clones the dotfiles as a bare git repo in $HOME.
+# It also does some minor setup like moving bash completion scripts.
+# Any conflicting dotfiles are moved to ~/.dotfiles-backup.
+
+# The `deps` command installs/updates dependencies. For usage information, see:
+#   $ dot deps -h
+#
+# All other commands are passed to `git` with environment variables set so it
+# always executes on the dotfiles repo. For example:
 #
 #   $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
 #
-# The whole home directory excluding the dotfiles is untracked so `dot status`
-# isn't cluttered. The script prevents `dot clean` so everything isn't deleted,
-# but the important stuff is gitignored anyway.
+# The repo is set up to not show untracked files so `dot status` isn't cluttered.
+# The script also prevents `dot clean` so everything isn't deleted, and a lot of
+# unrelated directories are gitignored.
+#
+# Aliases in ~/.config/git/config work with `dot` too. For example, `dot cm` is:
+#   $ git --git-dir="$HOME/.git/" --work-tree="$HOME" commit -m
 
+# Setup dotfiles                                                        {{{
+# --------------------------------------------------------------------- {|}
+setup_dotfiles() {
+    set -e
+
+    if [ -d ~/.git ]; then
+        printf "%s\n  %s\n  %s" \
+            "Error: the home directory is already under version control. Either" \
+            "1. Use 'dot pull' to update the dotfiles." \
+            "2. Remove ~/.git and run the script again to continue." >&2
+        exit 1
+    fi
+
+    # any current, conflicting dotfiles will be moved here
+    DOTFILES_BACKUP_DIR="$HOME/.dotfiles-backup"
+
+    # Don't use SSH to clone if there is no SSH key on the machine
+    # This is for when I spin up a new VM and don't want to login to GitHub
+    if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
+        GIT_URL=https://github.com/benelan/dotfiles
+    else
+        GIT_URL=git@github.com:benelan/dotfiles
+    fi
+
+    git clone --bare "$GIT_URL" "$HOME/.git"
+
+    dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
+
+    # Make sure fetching works correctly for all branches
+    dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+    # Prevents showing everything in $HOME when using status/diff.
+    # Dotfiles need to be manually added for them to show up, e.g.
+    # $ dot add ~/.npmrc
+    dot config status.showUntrackedFiles no
+
+    dot branch --set-upstream-to=origin/master master
+
+    if dot checkout >/dev/null 2>&1; then
+        printf "\nChecked out dotfiles\n" >&2
+    else
+        printf "\n> Backing up conflicting dotfiles to %s\n" "$DOTFILES_BACKUP_DIR" >&2
+        # Get the list of files that need to be backed up
+        files=$(dot checkout 2>&1 | grep -e "^\s")
+        printf "%s\n" "$files" >&2
+
+        dirs=$(
+            echo "$files" |
+                # Remove everything after the last "/" from file paths
+                awk 'BEGIN{FS=OFS="/"} {NF--} 1' |
+                # Files in $HOME will end up being blank lines
+                sed '/^[[:blank:]]*$/d'
+        )
+        # Using dirname is easier but won't work on OSX
+        # dirs=$(echo "$files" | xargs dirname)
+
+        # Create the directories in $DOTFILES_BACKUP_DIR
+        mkdir -p "$DOTFILES_BACKUP_DIR"
+        echo "$dirs" | xargs -I{} mkdir -p "$DOTFILES_BACKUP_DIR/{}"
+
+        # Move the conflicting files to the new directories
+        echo "$files" | xargs -I{} mv {} "$DOTFILES_BACKUP_DIR/{}"
+
+        # Checkout the dotfiles now that there are no conflicts.
+        # Move the files from $DOTFILES_BACKUP_DIR to $HOME to undo the script:
+        # $ mv ~/.dotfiles-backup/* ~/
+        if ! dot checkout; then
+            printf "\nError: unable to setup the dotfiles\n" >&2
+            exit 1
+        else
+            printf "\nChecked out dotfiles\n" >&2
+        fi
+    fi
+
+    unset files
+    unset GIT_URL
+    unset DOTFILES_BACKUP_DIR
+
+    # Make the bins and scripts executable
+    printf "\n> Making scripts and bins executable\n" >&2
+    [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
+    [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
+
+    if [ -d /usr/share/bash-completion/completions ]; then
+        printf "\n>  Copying completion scripts to system\n\n" >&2
+
+        sudo cp ~/.dotfiles/shell/completions/0_tmux.completion.sh \
+            /usr/share/bash-completion/completions/tmux
+
+        sudo cp ~/.dotfiles/shell/completions/0_fasd.completion.sh \
+            /usr/share/bash-completion/completions/fasd
+
+        sudo cp ~/.dotfiles/shell/completions/0_npm.completion.sh \
+            /usr/share/bash-completion/completions/npm
+    fi
+
+    # Must install libs before they can be pwn'd
+    printf "\n> Installing git submodules\n\n" >&2
+    cd && dot submodule update --init --recursive
+
+    # fzf install script
+    [ ! "$(command -v fzf)" ] &&
+        ~/dev/lib/fzf/install \
+            --bin --key-bindings --completion --no-update-rc
+
+    printf "\n+ Setup complete!\n" >&2
+    cd -
+}
+
+# --------------------------------------------------------------------- }}}
 # Programming language install functions                                {{{
 # --------------------------------------------------------------------- {|}
 
-## Rust    - https://www.rust-lang.org/tools/install           {{{
+## Rust - https://www.rust-lang.org/tools/install              {{{
 
 _languages+="rust "
 
@@ -26,7 +145,7 @@ install_language_rust() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Nim     - https://nim-lang.org/install_unix.html            {{{
+## Nim  - https://nim-lang.org/install_unix.html               {{{
 
 _languages+="nim "
 
@@ -36,11 +155,11 @@ install_language_nim() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Golang  - https://go.dev/doc/install                        {{{
+## Go   - https://go.dev/doc/install                           {{{
 
-_languages+="golang "
+_languages+="go "
 
-install_language_golang() {
+install_language_go() {
     # checksum will need to be updated when using a new go version
     checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
     outfile="go1.20.5.linux-amd64.tar.gz"
@@ -57,11 +176,11 @@ install_language_golang() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Node.js - https://docs.volta.sh/guide/getting-started       {{{
+## Node - https://docs.volta.sh/guide/getting-started          {{{
 
-_languages+="volta "
+_languages+="node "
 
-install_language_volta() {
+install_language_node() {
     curl https://get.volta.sh | bash -s -- --skip-setup
 
     export VOLTA_HOME=~/.volta
@@ -71,7 +190,7 @@ install_language_volta() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Bun     - https://bun.sh/docs/installation                  {{{
+## Bun  - https://bun.sh/docs/installation                     {{{
 
 _languages+="bun "
 
@@ -81,7 +200,7 @@ install_bun() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Lua     - https://www.lua.org/download.html                 {{{
+## Lua  - https://www.lua.org/download.html                    {{{
 
 _languages+="lua "
 
@@ -141,7 +260,7 @@ install_language_luarocks() {
 # Package manager install functions                                     {{{
 # --------------------------------------------------------------------- {|}
 
-## Rust   CLI tools - https://crates.io                        {{{
+## Cargo global packages - https://crates.io                   {{{
 
 _packages+="cargo "
 
@@ -166,12 +285,12 @@ install_packages_cargo() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Golang CLI tools - https://pkg.go.dev                       {{{
+## Go global packages    - https://pkg.go.dev                  {{{
 
-_packages+="golang "
+_packages+="go "
 
-install_packages_golang() {
-    ! is-supported go && install_language_golang
+install_packages_go() {
+    ! is-supported go && install_language_go
     ! [ -f "$DEPS_DIR/golang" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
@@ -181,7 +300,7 @@ install_packages_golang() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Python CLI tools - https://pypi.org/project/pipx/           {{{
+## Pip global packages   - https://pypi.org/project/pip        {{{
 
 _packages+="pip "
 
@@ -195,13 +314,13 @@ install_packages_pip() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Node.js packages - https://www.npmjs.com                    {{{
+## NPM global packages   - https://www.npmjs.com               {{{
 
-_packages+="node "
+_packages+="npm "
 
-install_packages_node() {
+install_packages_npm() {
     # NOTE: volta only works on x86_64 architectures for now
-    ! is-supported volta && ! is-supported node && install_language_volta
+    ! is-supported volta && ! is-supported node && install_language_node
 
     ! [ -f "$DEPS_DIR/node" ] && return
     npm install -g $(cat "$DEPS_DIR/node")
@@ -524,7 +643,7 @@ install_ubuntu_docker() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install latest stable git version                           {{{
+## Install Git (latest stable version)                         {{{
 
 _ubuntu+="git "
 
@@ -581,7 +700,7 @@ install_ubuntu_glow() {
 _ubuntu+="brave "
 
 ## https://brave.com/linux/#debian-ubuntu-mint
-install_ubuntu-brave() {
+install_ubuntu_brave() {
     is-supported brave-browser && return
 
     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
@@ -592,6 +711,21 @@ install_ubuntu-brave() {
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 
     sudo apt update && sudo apt install -y brave-browser
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Vivaldi Browser                                     {{{
+
+_ubuntu+="vivaldi "
+
+install_ubuntu_vivaldi() {
+    is-supported vivaldi && return
+    deb="vivaldi-stable_amd64.deb"
+
+    curl -sSLo "$CACHE_DIR/$deb" "https://downloads.vivaldi.com/stable//$deb"
+
+    sudo apt install -y "$CACHE_DIR/$deb" || true
+    unset deb
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -833,20 +967,22 @@ ubuntu_installs() {
             ## GUI install scripts
             if [ "$USE_GUI_APPS" = "1" ]; then
                 install_ubuntu_apt-gui
-                install_ubuntu-brave
+                install_ubuntu_brave
                 install_ubuntu_discord
                 install_ubuntu_vscode
                 install_ubuntu_wezterm
+                install_ubuntu_vivaldi
                 # install_ubuntu_docker-desktop
             fi
 
             sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
             ;;
+        *) echo "Not on an Ubuntu-based system" && return 1 ;;
     esac
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## User interface                                              {{{
+## Operating system stylings                                   {{{
 
 theme_installs() {
     install_theme_font
@@ -872,22 +1008,22 @@ script_installs() {
 ## Programming languages                                       {{{
 
 language_installs() {
-    install_language_golang
+    install_language_go
     # install_language_lua
     # install_language_luajit
     # install_language_luarocks
     # install_language_nim
     install_language_rust
-    install_language_volta
+    install_language_node
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Programming language packages                               {{{
+## Package manager dependencies                                {{{
 
 packages_installs() {
     install_packages_cargo
-    install_packages_golang
-    install_packages_node
+    install_packages_go
+    install_packages_npm
     install_packages_pip
 
     install_packages_neovim
@@ -930,7 +1066,7 @@ deps_help() {
     cat <<EOF
 Install dependencies by category or name.
 
-Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>] 
+Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>]
                  [-s <script>]  [-t <theme>] [-u <ubuntu>]
 
 Flags:
@@ -941,7 +1077,7 @@ Flags:
   -S    Install all shell script dependencies
   -T    Install all operating system theme dependencies
   -U    Install all Ubuntu-specific dependencies
-        
+
   -b    Install a locally built dependency
   -l    Install a programming language
   -p    Install a package manager dependency or (n)vim plugin
@@ -1027,10 +1163,13 @@ deps_parse_flags() {
 
 main() {
     case $1 in
-        # install dependencies
+        # clone and setup the dotfiles repo
+        setup) setup_dotfiles ;;
+
+        # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
 
-        # prevent git aliases 'clean' and 'clear' from git-extras from being used
+        # prevent usage of git commands 'clean' and 'clear' (from git-extras)
         clea*) echo "Don't delete your home directory, dumbass" && return 1 ;;
 
         # change the 'all' git alias to not add untracked files

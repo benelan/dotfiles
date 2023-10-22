@@ -9,10 +9,9 @@ To install the dotfiles in your `$HOME` directory, run:
 ```sh
 curl -Ls benelan.dev/d | sh
 ```
+Use the [`dot`](.dotfiles/bin/dot) script's `setup` command if the link above dies. The script will backup any conflicting files to `~/.dotfiles-backup`. It will set up the dotfiles as a bare git repo to make syncing changes much easier. Read [this tutorial](https://www.atlassian.com/git/tutorials/dotfiles) for more info. A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
 
-Use the [githubusercontent link](https://raw.githubusercontent.com/benelan/dotfiles/master/.dotfiles/scripts/dotfiles.init.sh) if the one above dies. The script will backup any conflicting files to `~/.dotfiles-backup`. It will setup a bare git repo to make syncing changes much easier. Read [this tutorial](https://www.atlassian.com/git/tutorials/dotfiles) for more info. A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in my experience that can get messy.
-
-A [`dot`](.dotfiles/bin/dot) script, which works like `git`, allows you to manage dotfiles from any directory on a machine. It hides untracked files, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
+You can use [`dot`](.dotfiles/bin/dot) like `git` and the arguments will be passed to `git` with environment variables set to ensure `dot` always acts on the bare repo. Untracked files are hidden, so you will need to manually add files before they show up in the status/diff. A typical workflow for adding a new configuration to the repo is:
 
 ```sh
 dot add .config/xyz/config.yml
@@ -26,7 +25,7 @@ My setup was primarily created for use in Ubuntu/Debian and their derivative dis
 
 The `dot` script also has a `deps` command for installing various dependencies, including development tools, GUI apps, shell scripts, fonts, themes, and more. See `dot deps -h` for usage information.
 
-> NOTE: I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
+> **NOTE:** I slimmed down recently, but checkout (pun intended) the `extras` branch for more goodies.
 
 ## Configuration
 
