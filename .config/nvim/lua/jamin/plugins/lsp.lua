@@ -213,4 +213,70 @@ return {
       })
     end,
   },
+  {
+    "nvimtools/none-ls.nvim", -- integrates formatters and linters
+    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+    opts = function()
+      local nls = require "null-ls"
+
+      -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
+      local hover = nls.builtins.hover
+      local formatting = nls.builtins.formatting
+      local diagnostics = nls.builtins.diagnostics
+      local code_actions = nls.builtins.code_actions
+
+      local has_stylelintrc = function(utils)
+        return utils.root_has_file {
+          ".stylelintrc",
+          ".stylelintrc.js",
+          ".stylelintrc.json",
+          ".stylelintrc.yml",
+          "stylelint.config.js",
+          "node_modules/.bin/stylelint",
+        }
+      end
+
+      local quiet_diagnostics = { virtual_text = false, signs = false }
+
+      local sources = {
+        hover.dictionary,
+        hover.printenv,
+
+        code_actions.gitrebase,
+        code_actions.shellcheck,
+
+        diagnostics.hadolint,
+
+        diagnostics.actionlint.with {
+          runtime_condition = function()
+            return vim.api
+              .nvim_buf_get_name(vim.api.nvim_get_current_buf())
+              :match "github/workflows" ~= nil
+          end,
+        },
+
+        diagnostics.markdownlint.with {
+          extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
+          prefer_local = "node_modules/.bin",
+          diagnostic_config = quiet_diagnostics,
+        },
+
+        diagnostics.stylelint.with {
+          prefer_local = "node_modules/.bin",
+          diagnostic_config = quiet_diagnostics,
+          condition = has_stylelintrc,
+        },
+
+        formatting.prettier.with { prefer_local = "node_modules/.bin" },
+        formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+        formatting.stylua,
+        formatting.trim_whitespace,
+      }
+      return {
+        debug = false,
+        fallback_severity = vim.diagnostic.severity.HINT,
+        sources = sources,
+      }
+    end,
+  },
 }
