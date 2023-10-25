@@ -20,7 +20,7 @@ alias rr='rm -rf'
 # copy to clipboard from file
 alias cbf="xclip -se c <"
 
-alias -- -="vifm ."
+alias f="vifm ."
 
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
@@ -84,7 +84,6 @@ alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput s
 # Navigation                                                            {{{
 # --------------------------------------------------------------------- {|}
 
-alias -- --="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."

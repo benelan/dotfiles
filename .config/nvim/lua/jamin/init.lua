@@ -94,13 +94,15 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local icons = require("jamin.resources").icons
+
 -- load the plugin specs
 require("lazy").setup({ "folke/lazy.nvim", import = "jamin.plugins" }, {
   change_detection = { notify = false },
   checker = { enabled = true, notify = false },
   dev = { path = vim.env.LIB, fallback = true },
-  ui = { icons = require("jamin.resources").icons.lazy },
   install = { colorscheme = { "gruvbox-material", "retrobox", "habamax" } },
+  ui = { border = icons.border, icons = icons.lazy },
 })
 
 keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim")

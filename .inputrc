@@ -73,6 +73,9 @@ $if Bash
   # Wrap a command in $( ... )
   "\C-xq": "\C-a\$(\C-e)"
 
+  # Open vifm in the current directory
+  "\e-": "vifm .\C-m"
+
   # Pipipe the last command to fzf and
   # pass the output to a new command
   "\C-xF": '$(!!|fzf --ansi --height 40)\C-a \C-m\C-m'

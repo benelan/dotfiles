@@ -14,7 +14,10 @@ return {
         dependencies = {
           "williamboman/mason.nvim", -- language server installer/manager
           build = ":MasonUpdate",
-          opts = { ensure_installed = res.mason_packages },
+          opts = {
+            ensure_installed = res.mason_packages,
+            ui = { border = res.icons.border, height = 0.8 },
+          },
           config = function(_, opts)
             require("mason").setup(opts)
             local mr = require "mason-registry"
@@ -41,10 +44,11 @@ return {
         "pmizio/typescript-tools.nvim", -- Lua implementation of typescript-language-server
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = function()
-          local ts = require "jamin.lsp_servers.tsserver"
+          local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
           return {
-            complete_function_calls = ts.completions.completeFunctionCalls,
+            complete_function_calls = has_ts and ts.completions.completeFunctionCalls or true,
             settings = {
+              tsserver_file_preferences = has_ts and ts.settings.typescript.inlayHints or {},
               expose_as_code_action = {
                 "add_missing_imports",
                 "fix_all",
@@ -52,7 +56,6 @@ return {
                 "remove_unused",
                 "remove_unused_imports",
               },
-              tsserver_file_preferences = ts.settings.typescript.inlayHints,
             },
           }
         end,
@@ -67,19 +70,20 @@ return {
     },
     opts = {
       diagnostics = {
-        virtual_text = { severity = { min = vim.diagnostic.severity.WARN } },
-        update_in_insert = false,
-        underline = true,
-        severity_sort = true,
+        virtual_text = {
+          severity = { min = vim.diagnostic.severity.WARN },
+          source = "if_many",
+        },
         float = {
-          show_header = false,
-          focusable = true,
-          style = "minimal",
           border = res.icons.border,
-          source = true,
           header = "",
           prefix = "",
+          focusable = true,
+          source = true,
         },
+        severity_sort = true,
+        underline = true,
+        update_in_insert = false,
       },
       inlay_hints = { enabled = false },
       force_capabilities = {
@@ -159,7 +163,7 @@ return {
           vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
           -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier, shfmt, stylua
+          -- e.g.  prettier, shfmt, stylua (using null-ls.nvim or efm-langserver)
           if
             vim.tbl_contains(
               { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
@@ -214,7 +218,7 @@ return {
     end,
   },
   {
-    "nvimtools/none-ls.nvim", -- integrates formatters and linters
+    "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       local nls = require "null-ls"
@@ -225,57 +229,54 @@ return {
       local diagnostics = nls.builtins.diagnostics
       local code_actions = nls.builtins.code_actions
 
-      local has_stylelintrc = function(utils)
-        return utils.root_has_file {
-          ".stylelintrc",
-          ".stylelintrc.js",
-          ".stylelintrc.json",
-          ".stylelintrc.yml",
-          "stylelint.config.js",
-          "node_modules/.bin/stylelint",
-        }
-      end
-
       local quiet_diagnostics = { virtual_text = false, signs = false }
 
-      local sources = {
-        hover.dictionary,
-        hover.printenv,
-
-        code_actions.gitrebase,
-        code_actions.shellcheck,
-
-        diagnostics.hadolint,
-
-        diagnostics.actionlint.with {
-          runtime_condition = function()
-            return vim.api
-              .nvim_buf_get_name(vim.api.nvim_get_current_buf())
-              :match "github/workflows" ~= nil
-          end,
-        },
-
-        diagnostics.markdownlint.with {
-          extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
-          prefer_local = "node_modules/.bin",
-          diagnostic_config = quiet_diagnostics,
-        },
-
-        diagnostics.stylelint.with {
-          prefer_local = "node_modules/.bin",
-          diagnostic_config = quiet_diagnostics,
-          condition = has_stylelintrc,
-        },
-
-        formatting.prettier.with { prefer_local = "node_modules/.bin" },
-        formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-        formatting.stylua,
-        formatting.trim_whitespace,
-      }
       return {
         debug = false,
         fallback_severity = vim.diagnostic.severity.HINT,
-        sources = sources,
+        sources = {
+          hover.dictionary,
+          hover.printenv,
+
+          code_actions.gitrebase,
+          code_actions.shellcheck,
+
+          diagnostics.hadolint,
+
+          diagnostics.actionlint.with {
+            runtime_condition = function()
+              return vim.api
+                .nvim_buf_get_name(vim.api.nvim_get_current_buf())
+                :match "github/workflows" ~= nil
+            end,
+          },
+
+          diagnostics.markdownlint.with {
+            extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
+            prefer_local = "node_modules/.bin",
+            diagnostic_config = quiet_diagnostics,
+          },
+
+          diagnostics.stylelint.with {
+            prefer_local = "node_modules/.bin",
+            diagnostic_config = quiet_diagnostics,
+            condition = function(utils)
+              return utils.root_has_file {
+                ".stylelintrc",
+                ".stylelintrc.js",
+                ".stylelintrc.json",
+                ".stylelintrc.yml",
+                "stylelint.config.js",
+                "node_modules/.bin/stylelint",
+              }
+            end,
+          },
+
+          formatting.prettier.with { prefer_local = "node_modules/.bin" },
+          formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+          formatting.stylua,
+          formatting.trim_whitespace,
+        },
       }
     end,
   },

@@ -27,9 +27,7 @@ function! BufferInfo() abort
 
     let current = bufnr("%")
     let count_buffers = len(buffers)
-
     let index_current = index(buffers, current) + 1
-    let modified = getbufvar(current, "&modified") ? "+" : ""
 
     return index_current isnot# 0 && count_buffers ># 1
                 \ ? printf("%s/%s", index_current, count_buffers)
@@ -64,8 +62,13 @@ function! JaminTabLine()
 
         let s .= "%" . tab . "T"
         let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
-        let s .= " " . tab .":"
-        let s .= (bufname != "" ? "[". fnamemodify(bufname, ":t") . "] " : "[No Name] ")
+        let s .= " " . tab . ":"
+        let s .= "[" . (bufname == "" ? "No Name" : fnamemodify(bufname, ":t")) . "]:" . bufnr
+        let s .= (bufmodified ? " [+] " : " ")
+
+        if tab != tabpagenr("$") && tab != tabpagenr() && tab + 1 != tabpagenr() 
+            let s .= "│" "▕
+        endif
     endfor
 
     let s .= "%#TabLineFill#"

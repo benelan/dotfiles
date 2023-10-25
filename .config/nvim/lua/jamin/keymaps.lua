@@ -82,6 +82,9 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
   desc = "Visually select changed text",
 })
 
+keymap("n", "<leader>i", "<CMD>Inspect<CR>", "Inspect")
+keymap("n", "<leader>I", "<CMD>InspectTree<CR>", "InspectTree")
+
 -------------------------------------------------------------------------------
 ----> LSP
 -------------------------------------------------------------------------------
