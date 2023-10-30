@@ -370,6 +370,19 @@
     ; list of local branches and their most recent commit
     blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 
+    # Sync with origin's default branch by rebasing, then commit and push all changes.
+    # The first argument is the path to the git repo, defaults to the current directory.
+    # The second argument is the globs to add or any `git add` flags, defaults to "--all".
+    # The third argument is the commit message, defaults to "chore: sync changes".
+    sync-changes =  "!f() { \
+        branch=\"$(git -C \"${1:-$PWD}\" bdefault)\" && \
+        git -C \"${1:-$PWD}\" fetch origin \"$branch\" && \
+        git -C \"${1:-$PWD}\" rebase --autostash --autosquash \"origin/$branch\" && \
+        git -C \"${1:-$PWD}\" update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
+        git -C \"${1:-$PWD}\" add ${2:---all} && \
+        git -C \"${1:-$PWD}\" commit -m \"${3:-chore: sync changes}\" && \
+        git -C \"${1:-$PWD}\" push; }; f"
+
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
     ;----------------------------------------------------------------------------

@@ -22,11 +22,7 @@ extension = "md"
 template = "default.md"
 
 # Path globs ignored while indexing existing notes.
-ignore = [
-  ".git/",
-  ".obsidian/",
-  ".task/"
-]
+ignore = [".git/", ".obsidian/", ".task/"]
 
 # Configure random ID generation.
 # The charset used for random IDs. You can use:
@@ -93,7 +89,7 @@ link-format = "wiki"
 # link-encode-path = true
 # Indicates whether a link's path file extension will be removed.
 # Defaults to true.
-link-drop-extension = false
+# link-drop-extension = false
 
 # Enable support for #hashtags.
 hashtags = true
@@ -130,9 +126,9 @@ fzf-line = '{{style "title" title-or-path}} {{#each tags}} {{style "cyan" "#"}}{
 # Each diagnostic can have for value: none, hint, info, warning, error
 
 # Report titles of wiki-links as hints.
-wiki-title = "hint"
+wiki-title = "none"
 # Warn for dead links between notes.
-dead-link = "error"
+dead-link = "warning"
 
 [lsp.completion]
 # Customize the completion pop-up of your LSP client.
@@ -200,3 +196,6 @@ conf = '$EDITOR "~.config/zk/config.toml"'
 
 daily = 'zk new --no-input daily'
 # weekly = 'zk new --no-input weekly'
+
+# Syncs notes with origin
+s = 'git sync-changes "$NOTES"'

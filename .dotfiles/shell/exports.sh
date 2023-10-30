@@ -80,9 +80,7 @@ elif is-supported google-chrome; then
 fi
 
 ALTBROWSER="sensible-browser"
-if is-supported firefox && [ $BROWSER != "firefox" ]; then
-    ALTBROWSER="firefox"
-elif is-supported vivaldi && [ $BROWSER != "vivaldi" ]; then
+if is-supported vivaldi && [ $BROWSER != "vivaldi" ]; then
     ALTBROWSER="vivaldi"
 elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ]; then
     ALTBROWSER="chromium-browser"
@@ -93,13 +91,14 @@ elif is-supported google-chrome && [ $BROWSER != "google-chrome" ]; then
 fi
 
 WORKBROWSER="sensible-browser"
-if is-supported brave-browser && [ $BROWSER != "brave-browser" ] && [ $ALTBROWSER != "brave-browser" ]; then
+if is-supported brave-browser && [ $BROWSER != "brave-browser" ] &&
+    [ $ALTBROWSER != "brave-browser" ]; then
     WORKBROWSER="brave-browser"
-elif is-supported vivaldi && [ $BROWSER != "vivaldi" ] && [ $ALTBROWSER != "brave-browser" ]; then
-    WORKBROWSER="vivaldi"
-elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ] && [ $ALTBROWSER != "chromium-browser" ]; then
+elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ] &&
+    [ $ALTBROWSER != "chromium-browser" ]; then
     WORKBROWSER="chromium-browser"
-elif is-supported google-chrome && [ $BROWSER != "google-chrome" ] && [ $ALTBROWSER != "google-chrome" ]; then
+elif is-supported google-chrome && [ $BROWSER != "google-chrome" ] &&
+    [ $ALTBROWSER != "google-chrome" ]; then
     WORKBROWSER="google-chrome"
 fi
 
@@ -152,7 +151,7 @@ is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
 # https://taskwarrior.org/docs/configuration
 is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 
-# https://github.com/jschlatow/taskopen/tree/v1.2-devel
+# https://github.com/jschlatow/taskopen
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 # https://github.com/dylanaraps/fff

@@ -406,6 +406,12 @@ return {
             accept_word = "<M-l>",
           },
         },
+        filetypes = {
+          [""] = false,
+          mail = false,
+          markdown = false,
+          text = false,
+        },
       }
     end,
     keys = {
@@ -425,6 +431,7 @@ return {
         mode = "i",
         desc = "Copilot accept",
       },
+      { "<leader>C", "<CMD>Copilot toggle<CR><CMD>Copilot status<CR>", desc = "Copilot toggle" },
     },
   },
   -----------------------------------------------------------------------------

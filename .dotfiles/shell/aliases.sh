@@ -3,9 +3,7 @@
 # General                                                               {{{
 # --------------------------------------------------------------------- {|}
 
-alias c='clear'
-alias q='exit'
-
+alias -- :q='exit'
 alias x="tmux"
 
 # rerun last command as sudo
@@ -34,7 +32,7 @@ TIMESTYLEISO_SUPPORTED=$(is-supported "ls --time-style=long-iso" --time-style=lo
 GROUPDIRSFIRST_SUPPORTED=$(is-supported "ls --group-directories-first" --group-directories-first)
 
 # shellcheck disable=2139
-alias ls="ls $COLORS_SUPPORTED"
+alias ls="ls $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
 
 # list all files/dirs, short format, sort by time
 # shellcheck disable=2139
@@ -84,6 +82,7 @@ alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput s
 # Navigation                                                            {{{
 # --------------------------------------------------------------------- {|}
 
+alias -- -="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -164,22 +163,20 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 alias ipt='sudo /sbin/iptables'
 alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
 
-if is-supported ps; then
-    # searchable process list
-    alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
+# searchable process list
+alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
-    # get top processes eating memory
-    alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
+# get top processes eating memory
+alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
 
-    # get top processes eating cpu
-    alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
-fi
+# get top processes eating cpu
+alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 
 # -----------------------------------------------------------------------------
 # Web Development
 # -----------------------------------------------------------------------------
 
-alias chrome_debug="google-chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile"
+alias chromium_debug='$WORKBROWSER --remote-debugging-port=9222 --user-data-dir=remote-debug-profile'
 
 # node/npm
 if is-supported npm; then
@@ -231,10 +228,7 @@ if is-supported task; then
     is-supported tasksh && alias tsh="tasksh"
 
     # shellcheck disable=2154
-    [ -d "$NOTES" ] && alias ts='git -C "$NOTES" add .task &&
-      git -C "$NOTES" commit -m "chore(task): sync" || true &&
-      git -C "$NOTES" pull || true &&
-      git -C "$NOTES" push'
+    [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task" "chore(task): sync changes"'
 fi
 
 # --------------------------------------------------------------------- }}}
