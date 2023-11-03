@@ -1,4 +1,4 @@
-local res = require("jamin.resources")
+local res = require "jamin.resources"
 
 return {
   {
@@ -49,6 +49,13 @@ return {
           mode = "cursor",
           -- separator = "─",
         },
+        config = function(_, opts)
+          require("treesitter-context").setup(opts)
+
+          vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+          vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
+          vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
+        end,
         keys = {
           {
             "[C",
@@ -116,8 +123,8 @@ return {
               ["ic"] = { query = "@class.inner", desc = "inner class" },
               ["ai"] = { query = "@conditional.outer", desc = "conditional" }, -- if
               ["ii"] = { query = "@conditional.inner", desc = "inner conditional" },
-              ["as"] = { query = "@scope", query_group = "locals", "scope" },
-              ["is"] = { query = "@scope", query_group = "locals", "inner scope" },
+              ["ags"] = { query = "@scope", query_group = "locals", "scope" },
+              ["igs"] = { query = "@scope", query_group = "locals", "inner scope" },
               ["agc"] = { query = "@comment.*", desc = "comment" },
               ["igc"] = { query = "@comment.*", desc = "comment" },
             },

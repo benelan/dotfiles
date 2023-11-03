@@ -69,11 +69,8 @@ post_prompt+="\[${RESET}\]" # reset styling
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # setup git prompt                              {{{
-if command -v __git_ps1 >/dev/null 2>&1; then
-    PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
-else
-    PROMPT_COMMAND='export PS1=${pre_prompt}${post_prompt}'
-fi
+# shellcheck disable=2089
+PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # setup fasd                                    {{{
@@ -97,4 +94,5 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - --}}}
 
+# shellcheck disable=2090
 export PROMPT_COMMAND PS2="\[${YELLOW}\]… \[${RESET}\] "

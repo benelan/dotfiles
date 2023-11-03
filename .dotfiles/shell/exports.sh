@@ -183,7 +183,7 @@ is-supported matpat && export MATPAT_OPEN_CMD="$BROWSER"
 # https://github.com/benelan/git-mux
 if is-supported git-mux; then
     # shellcheck disable=2155
-    export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user)"
+    export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user || echo "benelan")"
     export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"

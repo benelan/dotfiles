@@ -1,4 +1,4 @@
-local res = require("jamin.resources")
+local res = require "jamin.resources"
 
 return {
   {
@@ -83,27 +83,20 @@ return {
       -- calculate the width and height of the floating window
       local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
       local width = math.floor(ui.width / 2)
-      local height = ui.height - 7
 
       -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      local glow_opts = {}
-
-      if vim.fn.executable "glow" == 1 then
-        glow_opts = {
-          previewer_cmd = "glow",
-          picker_cmd = true,
-          cmd_args = { "-s", "dark", "-w", width },
-          picker_cmd_args = { "-s", "dark" },
-          cmd_ignore = { "javascript", "dom", "html", "css" },
-        }
-      end
-
-      return vim.tbl_deep_extend("force", glow_opts, {
-        mappings = { open_in_browser = "<C-b>" },
+      return vim.tbl_deep_extend("force", vim.fn.executable "glow" == 1 and {
+        previewer_cmd = "glow",
+        picker_cmd = true,
+        cmd_args = { "-s", "dark", "-w", width },
+        picker_cmd_args = { "-s", "dark" },
+        cmd_ignore = { "javascript", "dom", "html", "css" },
+      } or {}, {
+        mappings = { open_in_browser = "<C-o>" },
         float_win = {
           relative = "editor",
           width = width,
-          height = height,
+          height =  ui.height - 7,
           col = ui.width - 1,
           row = ui.height - 3,
           anchor = "SE",

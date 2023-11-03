@@ -213,6 +213,7 @@ M.mason_packages = {
   -- "cspell", -- code spell checker
   -- "delve", -- golang debug adapter
   -- "eslint", -- web dev linter
+  "fixjson", -- json formatter
   "hadolint", -- dockerfile linter
   "markdownlint", -- markdown linter and formatter
   "prettier", -- everything formatter
@@ -339,12 +340,12 @@ M.path = {
 }
 
 M.art = {
-  bender_ascii = [[  
+  bender_ascii = [[
               _
              ( )
               H
               H
-             _H_ 
+             _H_
           .-'-.-'-.
          /         \
         |           |

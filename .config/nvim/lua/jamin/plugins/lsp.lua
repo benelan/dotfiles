@@ -274,6 +274,7 @@ return {
 
           formatting.prettier.with { prefer_local = "node_modules/.bin" },
           formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+          formatting.fixjson,
           formatting.stylua,
           formatting.trim_whitespace,
         },

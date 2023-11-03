@@ -4,21 +4,27 @@
 # --------------------------------------------------------------------- {|}
 
 alias -- :q='exit'
-alias x="tmux"
 
 # rerun last command as sudo
 alias plz='sudo $(fc -ln -1)'
 
-# Enable aliases to be sudo’ed
+# sudo with aliases
 alias sudo='sudo '
 
 alias mkd='mkdir -p'
-alias rr='rm -rf'
 
-# copy to clipboard from file
-alias cbf="xclip -se c <"
+# delete to trashcan if possible
+if is-supported gio; then
+    alias r='gio trash'
+elif is-supported trash-put; then
+    alias r='trash-put'
+else
+    alias r='rm -rf'
+fi
 
-alias f="vifm ."
+alias x="tmux"
+
+alias -- -="vifm ."
 
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
@@ -82,7 +88,7 @@ alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput s
 # Navigation                                                            {{{
 # --------------------------------------------------------------------- {|}
 
-alias -- -="cd -"
+alias -- --="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -139,8 +145,6 @@ alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 # --------------------------------------------------------------------- {|}
 
 alias hosts='sudo $EDITOR /etc/hosts'
-
-alias speedtest="wget -O /dev/null http://speed.transip.nl/10mb.bin"
 
 alias vpn="protonvpn-cli"
 
@@ -236,10 +240,12 @@ fi
 # --------------------------------------------------------------------- {|}
 
 alias g='git'
+
+# https://github.com/benelan/git-mux
 alias gx="git-mux"
 alias gxt="git-mux task"
 alias gxp="git-mux project"
-alias xs="git-mux project ~"
+alias xs='git-mux project $PWD'
 
 # --------------------------------------------------------------------- }}}
 # Dotfiles                                                              {{{
@@ -300,7 +306,7 @@ if is-supported docker; then
         cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
 
         # shellcheck disable=2139
-        alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components-start calcite-components npm --workspace=@esri/calcite-components start"
+        alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm start"
 
         # shellcheck disable=2139
         alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watchAll"

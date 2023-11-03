@@ -1,5 +1,7 @@
 local res = require "jamin.resources"
 
+local floating_term_height, floating_term_width
+
 ---Toggles a persistent floating terminal window
 local function floating_term()
   local term_bufnr = vim.fn.bufnr "term://"
@@ -13,8 +15,8 @@ local function floating_term()
   -- positioned in the bottom right corner of the editor
   local winopts = {
     relative = "editor",
-    width = math.floor(ui.width / 3),
-    height = math.floor(ui.height / 4),
+    width = floating_term_width and floating_term_width or math.floor(ui.width / 3),
+    height = floating_term_height and floating_term_height or math.floor(ui.height / 4),
     col = ui.width - 1,
     row = ui.height - 3,
     anchor = "SE",
@@ -38,8 +40,7 @@ end
 
 vim.api.nvim_create_user_command("TermToggle", floating_term, { desc = "Toggle floating terminal" })
 
-keymap("n", "<M-t>", "<CMD>TermToggle<CR>", "Open floating terminal")
-keymap("t", "<M-t>", "<CMD>TermToggle<CR>", "Close floating terminal")
+keymap({ "n", "t" }, "<M-t>", "<CMD>TermToggle<CR>", "Floating terminal")
 
 -----------------------------------------------------------------------------
 
@@ -47,15 +48,34 @@ keymap("t", "<M-t>", "<CMD>TermToggle<CR>", "Close floating terminal")
 local function toggle_term_height()
   local ui = vim.api.nvim_list_uis()[1]
   local default_size = math.floor(ui.height / 4)
+  local maximized_size = ui.height - 7
 
   if vim.api.nvim_win_get_height(0) == default_size then
-    vim.api.nvim_win_set_height(0, ui.height - 7)
+    vim.api.nvim_win_set_height(0, maximized_size)
+    floating_term_height = maximized_size
   else
     vim.api.nvim_win_set_height(0, default_size)
+    floating_term_height = default_size
   end
 end
 
-keymap("t", "<M-m>", toggle_term_height, "Toggle floating terminal height")
+---Toggles between the default and maximized width of the floating terminal
+local function toggle_term_width()
+  local ui = vim.api.nvim_list_uis()[1]
+  local default_size = math.floor(ui.width / 3)
+  local maximized_size = ui.width - 4
+
+  if vim.api.nvim_win_get_width(0) == default_size then
+    vim.api.nvim_win_set_width(0, maximized_size)
+    floating_term_width = maximized_size
+  else
+    vim.api.nvim_win_set_width(0, default_size)
+    floating_term_width = default_size
+  end
+end
+
+keymap("t", "<M-h>", toggle_term_height, "Toggle floating terminal height")
+keymap("t", "<M-w>", toggle_term_width, "Toggle floating terminal width")
 
 -----------------------------------------------------------------------------
 

@@ -58,9 +58,6 @@ return {
         hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 
         -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
-        vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
-        vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
-        vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
         vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
 
         vim.cmd "highlight ErrorMsg cterm=bold gui=bold"

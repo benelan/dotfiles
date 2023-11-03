@@ -150,13 +150,13 @@ if ((BASH_VERSINFO[0] >= 4)); then
     # Warn me about stopped jobs when exiting
     # Available since 4.0, but only set it if >=4.1 due to bug:
     # <https://lists.gnu.org/archive/html/bug-bash/2009-02/msg00176.html>
-    if ((BASH_VERSINFO[1] >= 1)); then
+    if ((BASH_VERSINFO[0] >= 5)) || ((BASH_VERSINFO[1] >= 1)); then
         shopt -s checkjobs
     fi
 
     # Expand variables in directory completion
     # Only available since 4.3
-    if ((BASH_VERSINFO[1] >= 3)); then
+    if ((BASH_VERSINFO[0] >= 5)) || ((BASH_VERSINFO[1] >= 3)); then
         shopt -s direxpand
     fi
 
