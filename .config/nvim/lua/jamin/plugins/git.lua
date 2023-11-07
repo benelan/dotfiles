@@ -126,9 +126,98 @@ return {
   -----------------------------------------------------------------------------
   {
     "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
+    dev = true,
     cond = vim.fn.executable "gh" == 1,
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "Octo",
+    opts = {
+      enable_builtin = true,
+      pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
+      file_panel = { use_icons = vim.g.use_devicons },
+      -- right_bubble_delimiter = res.icons.ui.block,
+      -- left_bubble_delimiter = res.icons.ui.block,
+      reaction_viewer_hint_icon = res.icons.ui.circle,
+      timeline_marker = res.icons.ui.prompt,
+      user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
+      picker_config = {
+        mappings = { open_in_browser = { lhs = "<C-o>" }, checkout_pr = { lhs = "<C-]>" } },
+      },
+      mappings = {
+        issue = { open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" } },
+        pull_requests = { open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" } },
+      },
+    },
+    config = function(_, opts)
+      require("octo").setup(opts)
+
+      vim.treesitter.language.register("markdown", "octo")
+      vim.api.nvim_set_hl(0, "OctoBubble", { link = "TabLineFill" })
+
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = "octo",
+        group = vim.api.nvim_create_augroup("jamin_octo_settings", { clear = true }),
+        callback = function()
+          vim.keymap.set(
+            "n",
+            "<leader>pC",
+            "<CD>Octo pr checks<CR>",
+            { desc = "Show pull request checks (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<leader>t<CR>",
+            "<CD>Octo thread resolve<CR>",
+            { desc = "Resolve pull request review thread (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<leader>t<Backspace>",
+            "<CD>Octo thread unresolve<CR>",
+            { desc = "Unresolve pull request review thread (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set("n", "<leader>vc", "<CD>Octo review comments<CR>", {
+            desc = "Show pending pull request review comments (octo)",
+            silent = true,
+            buffer = true,
+          })
+
+          vim.keymap.set(
+            "n",
+            "<leader>vr",
+            "<CD>Octo review resume<CR>",
+            { desc = "Resume pull requeset review (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<leader>vs",
+            "<CD>Octo review start<CR>",
+            { desc = "Start pull request review (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<leader>v<CR>",
+            "<CD>Octo review submit<CR>",
+            { desc = "Submit pull request review (octo)", silent = true, buffer = true }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<leader>v<Delete>",
+            "<CD>Octo review discard<CR>",
+            { desc = "Discard pull request review (octo)", silent = true, buffer = true }
+          )
+
+          -- Add issue number and user completion to octo buffers
+          vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true })
+          vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true })
+        end,
+      })
+    end,
     -- stylua: ignore
     keys = {
       -- Find possible actions
@@ -163,45 +252,9 @@ return {
       { "<leader>opa", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
       { "<leader>opc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
 
-      -- Reviews
-      { "<leader>o.", "<CMD>Octo review resume<CR>", desc = "Resume review (octo)" },
-      { "<leader>o<Tab>", "<CMD>Octo review start<CR>", desc = "Start review (octo)" },
-      { "<leader>o<CR>", "<CMD>Octo review submit<CR>", desc = "Submit review (octo)" },
-      { "<leader>o<Delete>", "<CMD>Octo review discard<CR>", desc = "Discard review (octo)" },
-      { "<leader>o<leader>", "<CMD>Octo review comments<CR>", desc = "Show pending review comments (octo)" },
-
       -- My repos and gists
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },
       { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
     },
-    opts = {
-      enable_builtin = true,
-      pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
-      file_panel = { use_icons = vim.g.use_devicons },
-      -- right_bubble_delimiter = res.icons.ui.block,
-      -- left_bubble_delimiter = res.icons.ui.block,
-      reaction_viewer_hint_icon = res.icons.ui.circle,
-      user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
-      timeline_marker = res.icons.ui.prompt,
-      mappings = {
-        issue = { open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" } },
-        pull_requests = { open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" } },
-      },
-    },
-    config = function(_, opts)
-      require("octo").setup(opts)
-
-      vim.treesitter.language.register("markdown", "octo")
-
-      vim.api.nvim_create_autocmd({ "FileType" }, {
-        pattern = "octo",
-        group = vim.api.nvim_create_augroup("jamin_octo_settings", { clear = true }),
-        callback = function()
-          -- Add issue number and user completion to octo buffers
-          vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true })
-          vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true })
-        end,
-      })
-    end,
   },
 }

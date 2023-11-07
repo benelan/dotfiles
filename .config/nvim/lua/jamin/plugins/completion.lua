@@ -18,6 +18,18 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "petertriho/cmp-git", -- completes git commits and github issues/pull requests
+    dependencies = { "nvim-lua/plenary.nvim" },
+    ft = { "", "gitcommit", "markdown", "octo", "text" },
+    config = function()
+      require("cmp_git").setup {
+        filetypes = { "", "gitcommit", "markdown", "octo", "text" },
+        github = { issues = { state = "all" }, pull_requests = { state = "all" } },
+      }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  {
     "hrsh7th/cmp-nvim-lsp", -- completes API info from attached langauge servers
     event = "LspAttach",
   },
@@ -211,6 +223,7 @@ return {
           { name = "nvim_lsp_signature_help", group_index = 1 },
           { name = "luasnip", group_index = 2 },
           { name = "copilot", group_index = 2 },
+          { name = "git", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "tmux", keyword_length = 2, group_index = 2 },
           { name = "buffer", keyword_length = 2, group_index = 2 },

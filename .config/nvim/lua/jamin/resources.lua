@@ -152,8 +152,6 @@ M.filetypes = {
     "gitcommit",
     "mail",
     "markdown",
-    "markdown.mdx",
-    "mdx",
     "octo",
     "rst",
     "text",

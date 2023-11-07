@@ -1,0 +1,8 @@
+git_protocol: ssh
+# pager: cat
+aliases:
+    co: pr checkout
+
+    runs: run list --json 'updatedAt,event,name,displayTitle,headBranch,databaseId,conclusion' --template '{{range .}}{{tablerow .displayTitle (.name | autocolor "green") (.event | autocolor "magenta") (.headBranch | autocolor "cyan") (.conclusion | autocolor "red") ((timeago .updatedAt) | autocolor  "yellow") .databaseId}}{{end}}'
+
+    log-failed: "!gh run view --log-failed \"$(gh runs -L 69 -s failure $* | fzf | awk '{print $NF}')\""

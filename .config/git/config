@@ -119,10 +119,10 @@
 [mergetool "fugitive"]
     ; https://github.com/tpope/vim-fugitive
     cmd = nvim -f +DiagnosticToggle! \
-        +'nnoremap <leader>mh :diffget //2<CR> \
-        | nnoremap <leader>ml :diffget //3<CR> \
-        | nnoremap <leader>mH :%diffget //2<CR> \
-        | nnoremap <leader>mL :%diffget //3<CR> \
+        +'nnoremap <leader>h :diffget //2<CR> \
+        | nnoremap <leader>l :diffget //3<CR> \
+        | nnoremap <leader>H :%diffget //2<CR> \
+        | nnoremap <leader>L :%diffget //3<CR> \
         | Gvdiffsplit!' $MERGED
 
 [status]
@@ -376,12 +376,14 @@
     # The third argument is the commit message, defaults to "chore: sync changes".
     sync-changes =  "!f() { \
         branch=\"$(git -C \"${1:-$PWD}\" bdefault)\" && \
-        git -C \"${1:-$PWD}\" fetch origin \"$branch\" && \
-        git -C \"${1:-$PWD}\" rebase --autostash --autosquash \"origin/$branch\" && \
-        git -C \"${1:-$PWD}\" update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
-        git -C \"${1:-$PWD}\" add ${2:---all} && \
-        git -C \"${1:-$PWD}\" commit -m \"${3:-chore: sync changes}\" && \
-        git -C \"${1:-$PWD}\" push; }; f"
+        path=\"${1:-$PWD}\"  && \
+        echo "repo path: $path" && echo "default branch: $branch" && \
+        git -C \"$path\" fetch origin \"$branch\" && \
+        git -C \"$path\" rebase --autostash --autosquash \"origin/$branch\" && \
+        git -C \"$path\" update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
+        git -C \"$path\" add ${2:---all} && \
+        git -C \"$path\" commit -m \"${3:-chore: sync changes}\" && \
+        git -C \"$path\" push; }; f"
 
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
