@@ -131,7 +131,7 @@
 
 [help]
     ; Correct and execute mistyped commands.
-    autocorrect = 1
+    ; autocorrect = 1
 
 [advice]
     addIgnoredFile = false
@@ -283,6 +283,8 @@
 
     t = tag
     tnext = name-rev --tags --name-only
+    treset = !git tag -l | xargs git tag -d && git fetch --tags
+
     tf = !git tag --sort -version:refname | fzf --reverse --multi \
         --bind='ctrl-x:execute(git tag -d {})+accept' \
         --bind='ctrl-o:execute(git checkout {})+accept' \

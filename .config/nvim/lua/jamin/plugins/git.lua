@@ -125,10 +125,10 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
+    "benelan/octo.nvim", -- GitHub integration, requires https://cli.github.com
     dev = true,
     cond = vim.fn.executable "gh" == 1,
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     cmd = "Octo",
     opts = {
       enable_builtin = true,

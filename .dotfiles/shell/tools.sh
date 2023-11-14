@@ -45,7 +45,7 @@ if is-supported fzf; then
     fi
 
     # fzf default window options
-    FZF_DEFAULT_OPTS='--preview-window "right:57%" --cycle --exit-0 --select-1 --reverse'
+    FZF_DEFAULT_OPTS='--preview-window "right:69%" --cycle --reverse'
     # fzf default keybingings
     FZF_DEFAULT_OPTS+=' --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down"'
     # fzf colorscheme (gruvbox)

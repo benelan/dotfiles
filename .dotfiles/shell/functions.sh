@@ -442,7 +442,7 @@ if is-supported fzf; then
 
     fcd() {
         cd "$(
-            fzf +m -q "$*" \
+            fzf --no-multi --query="$*" --select-1 --exit-0 \
                 --preview="${FZF_PREVIEW_CMD}" \
                 --preview-window='right:hidden:wrap' \
                 --bind=ctrl-v:toggle-preview \
@@ -461,27 +461,27 @@ if is-supported fzf; then
             # shellcheck disable=2016
             cd "$(
                 fasd -dl |
-                    fzf \
-                        --tac \
-                        --reverse \
-                        --no-sort \
-                        --no-multi \
-                        --tiebreak=index \
-                        --query "$*" \
+                    fzf --tac --reverse --no-sort --no-multi --exit-0 --select-1 \
+                        --tiebreak=index --query="$*" \
                         --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
                         --preview-window='right:hidden:wrap' \
                         --bind=ctrl-v:toggle-preview \
                         --bind=ctrl-x:toggle-sort \
                         --header='(view:ctrl-v) (sort:ctrl-x)'
-            )" || return
+            )" || return 1
         }
 
         # open best matched file using fasd
         # filter output of fasd using fzf when no arg is provided
         fze() {
             [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
-            file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" &&
-                "${EDITOR:-vim}" "${file}" || return 1
+
+            file="$(
+                fasd -Rfl "$1" |
+                    fzf --select-1 --exit-0 --no-sort --no-multi
+            )" &&
+                ${EDITOR:-vim} "${file}" || return 1
+
             unset file
         }
     fi
@@ -492,18 +492,13 @@ if is-supported fzf; then
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
-        IFS=$'\n' out=("$(fzf --query="$1" --expect=ctrl-o,ctrl-e)")
-        # shellcheck disable=2128
-        key=$(head -1 <<<"$out")
-        # shellcheck disable=2128
-        file=$(head -2 <<<"$out" | tail -1)
-        if [ -n "$file" ]; then
-            if [ "$key" = ctrl-o ]; then
-                open "$file"
-            else
-                ${EDITOR:-vim} "$file"
-            fi
-        fi
+        fzf --exit-0 --select-1 --multi --query="$*" --preview="${FZF_PREVIEW_CMD}" \
+            --bind="ctrl-o:execute(o {+} >/dev/null 2>&1)" \
+            --bind="ctrl-e:execute(${EDITOR:-vim} {+})+abort" \
+            --bind="enter:execute(${EDITOR:-vim} {+})+abort" \
+            --bind=ctrl-v:toggle-preview \
+            --bind=ctrl-x:toggle-sort \
+            --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)'
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -515,12 +510,12 @@ if is-supported fzf; then
             return 1
         fi
         rg --files-with-matches --no-messages "$1" |
-            fzf \
+            fzf --multi --select-1 --exit-0 --ansi \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
                 --bind "ctrl-o:execute(o {})" \
                 --bind "ctrl-y:execute(echo {} | cb)" \
-                --bind "ctrl-e:execute($EDITOR {})" \
+                --bind "ctrl-e:execute(${EDITOR:-vim} {+})" \
                 --header='(edit:ctrl-e) (open:ctrl-o) (copy:ctrl-y) (view:ctrl-v) (sort:ctrl-x)' \
                 --preview="bat --color=always {} 2> /dev/null |
                     rg --colors 'match:bg:green' --colors 'match:fg:black' \

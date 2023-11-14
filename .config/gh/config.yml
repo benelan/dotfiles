@@ -3,6 +3,23 @@ git_protocol: ssh
 aliases:
     co: pr checkout
 
-    runs: run list --json 'updatedAt,event,name,displayTitle,headBranch,databaseId,conclusion' --template '{{range .}}{{tablerow .displayTitle (.name | autocolor "green") (.event | autocolor "magenta") (.headBranch | autocolor "cyan") (.conclusion | autocolor "red") ((timeago .updatedAt) | autocolor  "yellow") .databaseId}}{{end}}'
+    format-runs: run list --json 'updatedAt,event,name,displayTitle,headBranch,databaseId,conclusion' --template '{{range .}}{{tablerow (.name | autocolor "blue") (.displayTitle | autocolor "green") (.headBranch | autocolor "cyan") (.event | autocolor "magenta") (.conclusion | autocolor "red") ((timeago .updatedAt) | autocolor  "yellow") .databaseId}}{{end}}'
 
-    log-failed: "!gh run view --log-failed \"$(gh runs -L 69 -s failure $* | fzf | awk '{print $NF}')\""
+    runs: "!FZF_DEFAULT_COMMAND=\"GH_FORCE_TTY=true gh run list -L69 $*\" fzf \
+            --preview-window='right:40%,wrap' --preview 'gh run view {-3}' \
+            --ansi --header-lines=1 --no-sort --no-multi --no-exit-0 --no-select-1 \
+            --header='(enter:watch) (ctrl-o:open) (ctrl-r:reload) (alt-l:logs) (alt-r:rerun) (alt-x:cancel) (alt-f:failures) (alt-b:branch) (alt-u:user)' \
+            --bind='enter:execute(gh run watch {-3})' \
+            --bind='ctrl-o:execute-silent(gh run view --web {-3})' \
+            --bind='ctrl-r:reload(eval \"$FZF_DEFAULT_COMMAND\")' \
+            --bind='alt-1:reload(eval \"$FZF_DEFAULT_COMMAND -L100\")' \
+            --bind='alt-2:reload(eval \"$FZF_DEFAULT_COMMAND -L200\")' \
+            --bind='alt-3:reload(eval \"$FZF_DEFAULT_COMMAND -L300\")' \
+            --bind='alt-4:reload(eval \"$FZF_DEFAULT_COMMAND -L400\")' \
+            --bind='alt-5:reload(eval \"$FZF_DEFAULT_COMMAND -L500\")' \
+            --bind='alt-f:reload(eval \"$FZF_DEFAULT_COMMAND -s failure\")' \
+            --bind='alt-b:reload(eval \"$FZF_DEFAULT_COMMAND -b $(git symbolic-ref --short HEAD)\")' \
+            --bind='alt-u:reload(eval \"$FZF_DEFAULT_COMMAND -u $(git config github.user)\")' \
+            --bind='alt-l:execute(gh run view --log {-3})' \
+            --bind='alt-r:execute(gh run rerun {-3})' \
+            --bind='alt-x:execute(gh run cancel {-3})'"

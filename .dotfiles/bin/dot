@@ -552,6 +552,25 @@ install_ubuntu_discord() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Signal                                              {{{
+
+_ubuntu+="signal "
+
+## https://www.signal.org/download/linux/
+install_ubuntu_signal() {
+    is-supported signal-desktop && return
+    sudo mkdir -p /etc/apt/keyrings
+
+    curl -fsSL https://updates.signal.org/desktop/apt/keys.asc | sudo gpg --dearmor -o /etc/apt/keyrings/signal-desktop.gpg
+
+    echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal-desktop.gpg] https://updates.signal.org/desktop/apt xenial main' |
+        sudo tee /etc/apt/sources.list.d/signal-xenial.list
+
+    sudo apt update && sudo apt install -y signal-desktop
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
 ## Install WezTerm                                             {{{
 
 _ubuntu+="wezterm "
@@ -683,6 +702,7 @@ _ubuntu+="glow "
 
 ## https://github.com/charmbracelet/glow
 install_ubuntu_glow() {
+    is-supported glow && return
     sudo mkdir -p /etc/apt/keyrings
 
     curl -fsSL https://repo.charm.sh/apt/gpg.key |
