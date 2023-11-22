@@ -101,11 +101,13 @@ keymap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 keymap("n", "gr", vim.lsp.buf.references, "LSP references")
 keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
 keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-
--- stylua: ignore start
-keymap("n", "gH", function() vim.lsp.inlay_hint(0, nil) end, "Toggle LSP inlay hints")
 keymap({ "n", "v" }, "gF", function() vim.lsp.buf.format { async = true } end, "LSP format")
--- stylua: ignore end
+keymap(
+  "n",
+  "gH",
+  function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
+  "Toggle LSP inlay hints"
+)
 
 -------------------------------------------------------------------------------
 ----> Lists
@@ -228,11 +230,26 @@ keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 -- three way diff for merge conflict resolution
 keymap("n", "<leader>mu", "<CMD>diffupdate<CR>", "Update diff")
 keymap("n", "<leader>mb", "<CMD>diffget BA<bar>diffupdate<CR>", "Choose hunk from base (diff)")
-keymap("n", "<leader>mB", "<CMD>%diffget BA<bar>diffupdate<CR>", "Choose all hunks from base (diff)")
+keymap(
+  "n",
+  "<leader>mB",
+  "<CMD>%diffget BA<bar>diffupdate<CR>",
+  "Choose all hunks from base (diff)"
+)
 keymap("n", "<leader>ml", "<CMD>diffget RE<bar>diffupdate<CR>", "Choose hunk from remote (diff)")
-keymap("n", "<leader>mL", "<CMD>%diffget RE<bar>diffupdate<CR>", "Choose all hunks from remote (diff)")
+keymap(
+  "n",
+  "<leader>mL",
+  "<CMD>%diffget RE<bar>diffupdate<CR>",
+  "Choose all hunks from remote (diff)"
+)
 keymap("n", "<leader>mh", "<CMD>diffget LO<bar>diffupdate<CR>", "Choose hunk from local (diff)")
-keymap("n", "<leader>mH", "<CMD>%diffget LO<bar>diffupdate<CR>", "Choose all hunks from local (diff)")
+keymap(
+  "n",
+  "<leader>mH",
+  "<CMD>%diffget LO<bar>diffupdate<CR>",
+  "Choose all hunks from local (diff)"
+)
 
 -------------------------------------------------------------------------------
 ----> Windows

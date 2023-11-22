@@ -100,4 +100,34 @@ return {
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
   },
+  -----------------------------------------------------------------------------
+  {
+    "vuki656/package-info.nvim",
+    -- enabled = false,
+    lazy = false,
+    opts = {
+      icons = { enable = not vim.g.use_devicons },
+      package_manager = "npm",
+      hide_up_to_date = true,
+      hide_unstable_versions = true,
+    },
+    config = function(_, opts)
+      require("package-info").setup(opts)
+      vim.api.nvim_set_hl(0, "PackageInfoOutdatedVersion", { link = "Grey" })
+      local has_telescope, telescope = pcall(require, "telescope")
+      if has_telescope then telescope.load_extension "package_info" end
+    end,
+    keys = function()
+      local has_pkg, pkg = pcall(require, "package-info")
+      return has_pkg
+          and {
+            { "<leader>n<CR>", pkg.update, desc = "Update dependency (package.json)" },
+            { "<leader>n<Tab>", pkg.toggle, desc = "Toggle display (package.json)" },
+            { "<leader>ni", pkg.install, desc = "Install dependency (package.json)" },
+            { "<leader>nu", pkg.delete, desc = "Uninstall dependency (package.json)" },
+            { "<leader>nf", pkg.change_version, desc = "Select dependency version (package.json)" },
+          }
+        or {}
+    end,
+  },
 }

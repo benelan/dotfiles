@@ -184,7 +184,7 @@ return {
 
           -- setup inlay hints if supported by language server
           if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
-            vim.lsp.inlay_hint(args.buf, opts.inlay_hints.enabled)
+            vim.lsp.inlay_hint.enable(args.buf, opts.inlay_hints.enabled)
           end
 
           -- setup codelens if supported by language server
@@ -217,6 +217,7 @@ return {
       })
     end,
   },
+  -----------------------------------------------------------------------------
   {
     "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },

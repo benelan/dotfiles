@@ -154,6 +154,9 @@ is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 # https://github.com/jschlatow/taskopen
 is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
+# https://github.com/charmbracelet/glamour
+is-supported glow || is-supported gh && export GLAMOUR_STYLE="dark"
+
 # https://github.com/dylanaraps/fff
 if is-supported fff; then
     export FFF_COL2=7

@@ -40,7 +40,11 @@ return {
     event = "VimEnter",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
-      { "JoosepAlviste/nvim-ts-context-commentstring" }, -- sets commentstring
+      {
+        "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
+        init = function() vim.g.skip_ts_context_commentstring_module = true end,
+        opts = {},
+      },
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         opts = {
@@ -90,7 +94,6 @@ return {
         },
         indent = { enable = true },
         query_linter = { enable = true },
-        context_commentstring = { enable = true },
         incremental_selection = {
           enable = true,
           keymaps = {

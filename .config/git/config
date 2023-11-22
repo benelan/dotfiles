@@ -123,6 +123,7 @@
         | nnoremap <leader>l :diffget //3<CR> \
         | nnoremap <leader>H :%diffget //2<CR> \
         | nnoremap <leader>L :%diffget //3<CR> \
+        | nnoremap <leader>w <CMD>w<CR><CMD>qa<CR> \
         | Gvdiffsplit!' $MERGED
 
 [status]
