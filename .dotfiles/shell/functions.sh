@@ -597,6 +597,45 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
                 unset current_branch
             fi
         }
+
+        pr_check() {
+            set -e
+            workflow="${1:-"e2e"}"
+            branch="${2:-"$(git symbolic-ref --short HEAD)"}"
+
+            run="$(
+                gh run list \
+                    --limit 1 \
+                    --branch "$branch" \
+                    --workflow "$workflow" \
+                    --json 'databaseId,conclusion' \
+                    --jq '.[].databaseId,.[].conclusion'
+            )"
+
+            id="$(echo "$run" | head -n1)"
+
+            # conclusion is an empty string if the workflow is still running
+            if [ "$(echo "$run" | wc -l)" = 1 ]; then
+                echo "Waiting for \"$workflow\" workflow run to complete..."
+                gh run watch "$id"
+                conclusion="$(gh run view "$id" --json 'conclusion' --jq '.conclusion')"
+            else
+                conclusion="$(echo "$run" | tail -n1)"
+            fi
+
+            echo "\"$workflow\" workflow run conclusion: ${conclusion}"
+
+            if [ "$conclusion" = "failure" ]; then
+                echo "Displaying logs for the failed jobs..."
+                gh run view "$id" --log-failed
+
+                read -rp " Rerun \"$workflow\" workflow? [y/N]: " choice
+                case "$choice" in
+                    y* | Y*) gh run rerun "$id" ;;
+                    *) return 1 ;;
+                esac
+            fi
+        }
     fi
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}

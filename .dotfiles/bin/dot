@@ -693,6 +693,14 @@ install_ubuntu_gh() {
         sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
 
     sudo apt update && sudo apt install -y gh
+
+    # install gh extensions
+    if [ -d "$PERSONAL/gh-fzf" ]; then
+        cd "$PERSONAL/gh-fzf"
+        gh extension install .
+    else
+        gh extension install benelan/gh-fzf
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
