@@ -70,4 +70,75 @@ return {
       end
     end,
   },
+  -----------------------------------------------------------------------------
+  {
+    "monaqa/dial.nvim", -- increment/decrement more stuffs
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local augend = require "dial.augend"
+      require("dial.config").augends:register_group {
+        default = {
+          augend.integer.alias.decimal,
+          augend.integer.alias.decimal_int,
+          augend.integer.alias.hex,
+          augend.date.alias["%Y-%m-%d"],
+          augend.date.alias["%Y/%m/%d"],
+          augend.date.alias["%m/%d/%y"],
+          augend.date.alias["%m/%d/%Y"],
+          augend.date.alias["%-m/%-d"],
+          augend.date.alias["%H:%M"],
+          augend.semver.alias.semver,
+          augend.constant.alias.bool,
+          augend.constant.new { elements = { "let", "const" } },
+          augend.constant.new { elements = { "function()", "()=>" } },
+          augend.constant.alias.alpha,
+          augend.constant.alias.Alpha,
+        },
+      }
+    end,
+    -- stylua: ignore
+    keys = {
+      { "<C-a>", function() require("dial.map").manipulate("increment", "normal") end, mode = "n", desc = "Increment" },
+      { "<C-x>", function() require("dial.map").manipulate("decrement", "normal") end, mode = "n", desc = "Decrement" },
+      { "<C-a>", function() require("dial.map").manipulate("increment", "visual") end, mode = "v", desc = "Increment" },
+      { "<C-x>", function() require("dial.map").manipulate("decrement", "visual") end, mode = "v", desc = "Decrement" },
+      { "g<C-a>", function() require("dial.map").manipulate("increment", "gnormal") end, mode = "n", desc = "Increment" },
+      { "g<C-x>", function() require("dial.map").manipulate("decrement", "gnormal") end, mode = "n", desc = "Decrement" },
+      { "g<C-a>", function() require("dial.map").manipulate("increment", "gvisual") end, mode = "v", desc = "Increment" },
+      { "g<C-x>", function() require("dial.map").manipulate("decrement", "gvisual") end, mode = "v", desc = "Decrement" },
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "folke/flash.nvim",
+    -- enabled = false,
+    opts = {
+      exclude = require("jamin.resources").filetypes.excluded,
+      modes = { search = { enabled = false }, char = { enabled = false } },
+    },
+    keys = {
+      -- default options: exact mode, multi window, all directions, with a backdrop
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Flash remote" },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function() require("flash").treesitter { label = { rainbow = { enabled = true } } } end,
+        desc = "Flash treesitter",
+      },
+      {
+        "R",
+        mode = { "n", "o", "x" },
+        -- show labeled treesitter nodes around the search matches
+        function() require("flash").treesitter_search { label = { rainbow = { enabled = true } } } end,
+        desc = "Flash treesitter search",
+      },
+      {
+        "<C-s>",
+        mode = "c",
+        function() require("flash").toggle() end,
+        desc = "Toggle flash search",
+      },
+    },
+  },
 }
