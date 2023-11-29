@@ -31,11 +31,11 @@ The `dot` script also has a `deps` command for installing various dependencies, 
 
 Put machine-specific stuff in `~/.dotfiles/shell/local.sh`, which gets sourced in [`~/.bashrc`](.bashrc) if it exists. The following environment variables are flags that accept a value of `1` or `0` (default) to turn on/off different tools:
 
-- `USE_GUI_APPS` - install tools that only work on desktop machines
-- `USE_WORK_STUFF` - setups up the environment for work
-- `USE_COPILOT` - use the GitHub Copilot plugin in neovim
-- `USE_CODEIUM` - use the Codeium (free Copilot alternative) plugin in neovim
-- `USE_DEVICONS` - use developer icons in various tools
+- `USE_GUI_APPS` - Install and use tools that only work on desktop machines.
+- `USE_WORK_STUFF` - Setup the environment for work.
+- `USE_COPILOT` - Use the GitHub Copilot plugin in Neovim.
+- `USE_CODEIUM` - Use the Codeium (free Copilot alternative) plugin in Neovim.
+- `USE_DEVICONS` - Use developer icons in various tools. The icons are displayed in Neovim/Vim/Vifm by default when using Wezterm (since it [ships with Nerd Font glyphs](https://wezfurlong.org/wezterm/config/lua/wezterm/nerdfonts.html)), but they can be disabled by setting the option to `0`. Make sure to [install a Nerd Font](https://www.nerdfonts.com/) (e.g. `dot deps -t font`) before enabling the option if you don't use Wezterm.
 
 ---
 

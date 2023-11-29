@@ -237,7 +237,7 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" buffers, tabs, and windows                                 {{{
 
-    "" close buffer 
+    "" close buffer
     nnoremap <leader>x :bdelete<CR>
 
     "" close all the buffers
@@ -429,11 +429,16 @@ endif
 " Statusline                                                            {{{
 " --------------------------------------------------------------------- {|}
 
+let g:use_devicons = expand("$USE_DEVICONS") != 0
+        \ && expand("$USE_DEVICONS") == 1
+        \ || expand("$TERM") == "wezterm" ||
+        \ system('tmux showenv | grep -c "TERM=wezterm"') > 0
+
 if has("eval") && has("statusline")
 
     let g:git_branch="" " gets set in an autocmd above
     function! DisplayGitBranch()
-        let icon = expand("$USE_DEVICONS") == "1" ? "   " : "   "
+        let icon = g:use_devicons ? "   " : "  "
         return g:git_branch != "" ? icon .. g:git_branch .. "  " : ""
     endfunction
 
@@ -470,7 +475,7 @@ endif
 
 " Fix modern terminal features
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\)'
 
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"

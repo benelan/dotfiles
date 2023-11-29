@@ -668,7 +668,7 @@ nnoremap - :qa<cr>
 
 " Devicons require a patched font (or wezterm which ships with them)
 if expand($USE_DEVICONS) != "0" &&
-    \ (expand($TMUX) != "" && system('tmux showenv | grep "TERM=wezterm"') != "")
+    \ (expand($TMUX) != "" && system('tmux showenv | grep -c "TERM=wezterm"') > 0)
     \ || expand($USE_DEVICONS) == "1"
     \ || expand($TERM) == "wezterm"
   source ~/.config/vifm/scripts/icons.vifm
