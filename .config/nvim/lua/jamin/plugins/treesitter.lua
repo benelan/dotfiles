@@ -62,7 +62,7 @@ return {
         end,
         keys = {
           {
-            "[C",
+            "[t",
             function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
           },

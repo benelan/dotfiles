@@ -17,10 +17,7 @@ root = true
     spaces_around_brackets = true
     indent_size = 2
 
-[*.{css,scss,sass,less}]
-    indent_size = 2
-
-[*.lua]
+[*.{css,scss,sass,less,lua,yml,yaml}]
     indent_size = 2
 
 [Makefile]

@@ -271,8 +271,8 @@ function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
 
-nnoremap <silent> [x :<C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]x :<C-U>call <SID>findConflict(0)<CR>
+nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
+nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{

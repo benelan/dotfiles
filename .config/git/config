@@ -18,12 +18,6 @@
     excludesfile = ~/.dotfiles/assets/templates/.gitignore
     ; Disable line endings output conversion.
     autocrlf = input
-
-    ; Treat spaces before tabs and all kinds of trailing whitespace as an error.
-    ; [default] trailing-space: looks for spaces at the end of a line
-    ; [default] space-before-tab: looks for spaces before tabs at the beginning of a line
-    whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-
     ; Speed up commands involving untracked files such as `git status`.
     ; See --untracked-cache in https://git-scm.com/docs/git-update-index
     untrackedCache = true
@@ -46,32 +40,32 @@
     sort = -committerdate
     autosetuprebase = always
 
-[color]
-    ; Use colors in Git commands when possible
-    ui = auto
-    interactive = auto
-    branch = true
-    diff = true
-    grep = true
-    log = true
-    status = true
-
 [color "branch"]
     current = yellow reverse
     local = yellow
     remote = green
+    upstream = magenta
 
 [color "status"]
     added = green
     changed = yellow
     untracked = magenta
-    removed = red
+    unmerged = brightred
+    removed = red dim
 
 [color "diff"]
-    meta = yellow bold
-    frag = magenta bold ; line info
-    old = red           ; deletions
-    new = green         ; additions
+    meta = blue bold
+    frag = magenta bold
+    func = magenta italic
+    old = red
+    new = green
+    newMoved = blue
+    newMovedDimmed = blue dim
+    newMovedAlternative = brightblue
+    oldMoved = yellow
+    oldMovedDimmed = yellow dim
+    oldMovedAlternative = brightyellow
+
 
 [color "diff-highlight"]
     oldNormal = red bold
@@ -79,14 +73,10 @@
     newNormal = green bold
     newHighlight = green bold 22
 
-[color "interactive"]
-    help = red
-    prompt = blue
-
 [diff]
     algorithm = patience
     tool = vimdiff
-    colorMoved = default
+    colorMoved = dimmed-zebra
     keepBackup = false
     ; Detect copies as well as renames.
     renames = copies
@@ -109,7 +99,7 @@
 
 [mergetool]
     keepBackup = false
-    keepTemporaries = true
+    keepTemporaries = false
 
 [mergetool "vimdiff"]
     ; https://git-scm.com/docs/vimdiff
@@ -119,11 +109,11 @@
 [mergetool "fugitive"]
     ; https://github.com/tpope/vim-fugitive
     cmd = nvim -f +DiagnosticToggle! \
-        +'nnoremap <leader>h :diffget //2<CR> \
-        | nnoremap <leader>l :diffget //3<CR> \
-        | nnoremap <leader>H :%diffget //2<CR> \
-        | nnoremap <leader>L :%diffget //3<CR> \
-        | nnoremap <leader>w <CMD>w<CR><CMD>qa<CR> \
+        +'nnoremap [x :diffget //2<CR> \
+        | nnoremap ]x :diffget //3<CR> \
+        | nnoremap [X :%diffget //2<CR> \
+        | nnoremap ]X :%diffget //3<CR> \
+        | nnoremap <leader>w <CMD>wqa<CR> \
         | Gvdiffsplit!' $MERGED
 
 [status]
@@ -132,7 +122,7 @@
 
 [help]
     ; Correct and execute mistyped commands.
-    ; autocorrect = 1
+    autocorrect = 20
 
 [advice]
     addIgnoredFile = false
@@ -166,12 +156,12 @@
     a = add
     all = add --all
     au = add --update
-    
+
     ; add unmerged files
     aum  = !"git ls-files --unmerged | cut -f2 | sort -u | xargs git add"
 
     ; interactively add unstaged files using fzf
-    af = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
+    fa = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
 
     b = branch
     bd = branch -D
@@ -217,10 +207,15 @@
     cl = clone
 
     cpk = cherry-pick
+    cpkc = cherry-pick --continue
+    cpks = cherry-pick --skip
+    cpka = cherry-pick --abort
 
     d = diff
     ds = diff --staged
     dt = difftool
+    dn = diff --name-status
+    dh = "!f() { git diff HEAD~$1; }; f"
 
     ; edit the files changed locally
     e = !$EDITOR $(git diff --name-only HEAD)
