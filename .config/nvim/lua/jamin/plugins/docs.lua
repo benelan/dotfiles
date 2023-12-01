@@ -83,7 +83,6 @@ return {
       local sources = {
         "astro",
         "bash",
-        "browser_support_tables",
         "css",
         "docker",
         "dom",
@@ -95,12 +94,15 @@ return {
         "jest",
         "jq",
         "lodash-4",
+        "lua-5.4",
+        "markdown",
         "node",
         "npm",
         "react",
         "sass",
         "sqlite",
         "svelte",
+        "svg",
         "tailwindcss",
         "typescript",
         "vite",
@@ -126,12 +128,11 @@ return {
           html = { "javascript", "dom", "html", "css" },
           javascript = { "javascript", "dom", "node" },
           typescript = { "javascript", "typescript", "dom", "node" },
-          javascriptreact = { "javascript", "dom", "node", "html", "react", "css", "tailwindcss" },
+          javascriptreact = { "javascript", "dom", "html", "react", "css", "tailwindcss" },
           typescriptreact = {
             "javascript",
             "typescript",
             "dom",
-            "node",
             "html",
             "react",
             "css",
@@ -154,6 +155,8 @@ return {
         },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
+          vim.cmd "set conceallevel=2"
+          vim.cmd "set nowrap"
         end,
       })
     end,

@@ -160,15 +160,9 @@
     ; add unmerged files
     aum  = !"git ls-files --unmerged | cut -f2 | sort -u | xargs git add"
 
-    ; interactively add unstaged files using fzf
-    fa = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
-
     b = branch
     bd = branch -D
     buoc = !git branch -u origin/$(git symbolic-ref --short HEAD)
-
-    ; delete multiple branches
-    fbd = !git branch | fzf --multi | xargs git branch -D
 
     ; list branches with author names and the most recently created at the bottom
     bc = for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes
@@ -178,27 +172,6 @@
     cm = commit --verbose -m
     ca = commit --verbose --amend
     cane = commit --verbose --amend --no-edit
-
-    ; use fzf to pick an unpushed commit to fixup and then autosquash
-    cf = "!f() { \
-        sha=$(git log @{push}.. --color=always --no-merges \
-        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
-        | fzf-tmux --no-sort --ansi \
-        | awk '{print $1}') \
-        && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
-    }; f"
-
-    ; same as above but pick an unmerged (to default branch) commit.
-    ; likely requires a force push, hence the extra 'f'
-    cff = "!f() { \
-        sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
-        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
-        | fzf-tmux --no-sort --ansi \
-        | awk '{print $1}') \
-        && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
-    }; f"
 
     co = checkout
     cob = checkout -b
@@ -230,7 +203,7 @@
     eum = !$(git var GIT_EDITOR) $(git ls-files --unmerged | cut -f2 | sort -u)
 
     ; open Fugitive's difftool
-    edf = !$EDITOR +'Git difftool -y'
+    ed = !$EDITOR +'Git difftool -y'
 
     ; sync origin's default branch and edit the changed files
     eom = "!f() { default_branch=$(git bdefault); git fetch --prune --tags; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
@@ -274,18 +247,16 @@
     stpo = stash pop
     stpu = stash push
 
+    ; delete multiple stashes, e.g. $ git stdm 5 8
+    ; would delete @stash{5}, @stash{6}, @stash{7}, and @stash{8}
+    stdr = "!f() { for _ in $(seq $1 ${2:-$1}); do git stash drop $1; done; }; f"
+
     sm = submodule
     smu = submodule update --init --recursive
 
     t = tag
     tnext = name-rev --tags --name-only
     treset = !git tag -l | xargs git tag -d && git fetch --tags
-
-    tf = !git tag --sort -version:refname | fzf --reverse --multi \
-        --bind='ctrl-x:execute(git tag -d {})+accept' \
-        --bind='ctrl-o:execute(git checkout {})+accept' \
-        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
-        --preview 'git show --color=always {} | head -'$LINES
 
     w = worktree
     wa = worktree add
@@ -316,22 +287,16 @@
     ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
 
     ; find tags containing commit
-    ft = "!f() { git describe --always --contains $1; }; f"
+    lt = "!f() { git describe --always --contains $1; }; f"
 
     ; find commits by source code
-    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+    lcc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
 
     ; find commits by commit message
-    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+    lcm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
     ; find branches containing commit
-    fb = "!f() { git branch -a --contains $1; }; f"
-
-    ; checkout commit by fuzzy finding w/ fzf
-    fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
-
-    ; get commit sha by fuzzy finding w/ fzf
-    fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+    lbc = "!f() { git branch -a --contains $1; }; f"
 
     ; Pull in remote changes for the current repository and all its submodules.
     up = !git pull --rebase --prune $@ && git submodule update --init --recursive
@@ -382,6 +347,58 @@
         git -C \"$path\" add ${2:---all} && \
         git -C \"$path\" commit -m \"${3:-chore: sync changes}\" && \
         git -C \"$path\" push; }; f"
+
+    ; FZF
+    ;----------------------------------------------------------------------------
+
+    ; interactively add unstaged files using fzf
+    fa = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
+
+    ; delete multiple branches
+    fbd = !git branch | fzf --multi | xargs git branch -D
+
+    ; use fzf to pick an unpushed commit to fixup and then autosquash
+    cf = "!f() { \
+        sha=$(git log @{push}.. --color=always --no-merges \
+        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+        | fzf-tmux --no-sort --ansi \
+        | awk '{print $1}') \
+        && git commit --fixup $sha \
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
+    }; f"
+
+    ; same as above but pick an unmerged (to default branch) commit.
+    ; likely requires a force push, hence the extra 'f'
+    cff = "!f() { \
+        sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
+        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+        | fzf-tmux --no-sort --ansi \
+        | awk '{print $1}') \
+        && git commit --fixup $sha \
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
+    }; f"
+
+    ; checkout commit by fuzzy finding w/ fzf
+    fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
+
+    ; get commit sha by fuzzy finding w/ fzf
+    fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+
+    ft = !git tag --sort -version:refname | fzf --reverse --multi \
+        --bind='ctrl-x:execute(git tag -d {})+accept' \
+        --bind='ctrl-o:execute(git checkout {})+accept' \
+        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
+        --preview 'git show --color=always {} | head -'$LINES
+
+    fst = "!f() { \
+        git -c color.ui=always stash list --pretty='%<(14)%Cgreen%cr    %Creset%gs %>(9999)%h' | \
+        fzf --ansi --no-sort --no-multi --no-hscroll \
+        --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
+        --preview='git -c color.diff=always diff {-1}' \
+        --bind='alt-a:execute(git stash apply {n})+abort' \
+        --bind='alt-x:execute(git stash drop {n})+abort' \
+        --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; \
+    }; f"
 
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias

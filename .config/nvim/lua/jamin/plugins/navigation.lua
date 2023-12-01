@@ -130,10 +130,7 @@ return {
           history = { limit = 420 },
           set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
-          git_worktrees = {
-            { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" },
-            { toplevel = vim.env.CALCITE, gitdir = vim.env.CALCITE .. "/.git" },
-          },
+          git_worktrees = { { toplevel = vim.env.CALCITE, gitdir = vim.env.CALCITE .. "/.git" } },
           mappings = { i = mappings, n = mappings },
         },
         pickers = {
