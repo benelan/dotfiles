@@ -297,42 +297,52 @@ keymap("n", "<leader>x", "<CMD>bdelete<CR>", "Close buffer")
 ----> Toggle options
 -------------------------------------------------------------------------------
 
-keymap("n", "<leader>sn", "<CMD>set relativenumber!<CR>", "Toggle relative line number")
-keymap("n", "<leader>sw", "<CMD>set wrap!<CR>", "Toggle wrap")
-keymap("n", "<leader>ss", "<CMD>set spell!<CR>", "Toggle spell")
-keymap("n", "<leader>sp", "<CMD>set paste!<CR>", "Toggle paste")
-keymap("n", "<leader>sh", "<CMD>set hlsearch!<CR>", "Toggle hlsearch")
-keymap("n", "<leader>si", "<CMD>set incsearch!<CR>", "Toggle incsearch")
-keymap("n", "<leader>sl", "<CMD>set list!<CR>", "Toggle list")
-keymap("n", "<leader>sx", "<CMD>set cursorline!<CR>", "Toggle cursorline")
-keymap("n", "<leader>sy", "<CMD>set cursorcolumn!<CR>", "Toggle cursorcolumn")
-keymap("n", "<leader>sM", "<CMD>set modifiable!<CR>", "Toggle modifiable")
+keymap("n", "<leader>sw", "<CMD>set wrap!<CR><CMD>set wrap?<CR>", "Toggle wrap")
+keymap("n", "<leader>ss", "<CMD>set spell!<CR><CMD>set spell?<CR>", "Toggle spell")
+keymap("n", "<leader>sp", "<CMD>set paste!<CR><CMD>set paste?<CR>", "Toggle paste")
+keymap("n", "<leader>sh", "<CMD>set hlsearch!<CR><CMD>set hlsearch?<CR>", "Toggle hlsearch")
+keymap("n", "<leader>si", "<CMD>set incsearch!<CR><CMD>set incsearch?<CR>", "Toggle incsearch")
+keymap("n", "<leader>sl", "<CMD>set list!<CR><CMD>set list?<CR>", "Toggle list")
+keymap("n", "<leader>sx", "<CMD>set cursorline!<CR><CMD>set cursorline?<CR>", "Toggle cursorline")
+keymap("n", "<leader>sM", "<CMD>set modifiable!<CR><CMD>set modifiable?<CR>", "Toggle modifiable")
+keymap(
+  "n",
+  "<leader>sn",
+  "<CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>",
+  "Toggle relative line number"
+)
+keymap(
+  "n",
+  "<leader>sy",
+  "<CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>",
+  "Toggle cursorcolumn"
+)
 
 keymap(
   "n",
   "<leader>sC",
-  ':execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR>',
+  ':execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR><CMD>set conceallevel?<CR>',
   "Toggle conceallevel"
 )
 
 keymap(
   "n",
   "<leader>sf",
-  ':execute "set foldcolumn=" . (&foldcolumn == "0" ? "1" : "0")<CR>',
+  ':execute "set foldcolumn=" . (&foldcolumn == "0" ? "1" : "0")<CR><CMD>set foldcolumn?<CR>',
   "Toggle foldcolumn"
 )
 
 keymap(
   "n",
   "<leader>s|",
-  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR>',
+  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR><CMD>set colorcolumn?<CR>',
   "Toggle colorcolumn"
 )
 
 keymap(
   "n",
   "<leader>sc",
-  ':execute "set clipboard=" . (&clipboard == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR>',
+  ':execute "set clipboard=" . (&clipboard == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR><CMD>set clipboard?<CR>',
   "Toggle clipboard"
 )
 

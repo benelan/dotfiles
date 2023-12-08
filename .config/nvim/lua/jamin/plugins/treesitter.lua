@@ -38,6 +38,15 @@ return {
     version = false,
     build = ":TSUpdate",
     event = "VimEnter",
+    init = function(plugin)
+      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
+      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
+      -- no longer trigger the **nvim-treeitter** module to be loaded in time.
+      -- Luckily, the only thins that those plugins need are the custom queries, which we make available
+      -- during startup.
+      require("lazy.core.loader").add_to_rtp(plugin)
+      require "nvim-treesitter.query_predicates"
+    end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
       {
@@ -62,9 +71,14 @@ return {
         end,
         keys = {
           {
-            "[t",
+            "[T",
             function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
+          },
+          {
+            "<leader>sT",
+            function() require("treesitter-context").toggle() end,
+            desc = "Toggle treesitter context",
           },
         },
       },
