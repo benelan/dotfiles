@@ -196,8 +196,17 @@ if is-supported npm; then
     alias ncu="npx npm-check-updates"
     alias npxplz='npx $(fc -ln -1)'
 
+    # select an npm script to run from package.json using fzf
     is-supported fzf && is-supported jq &&
         alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
+
+    # use work or personal npm account for a single command
+    alias nw='npm --userconfig=~/.npmrc-work'
+    alias np='npm --userconfig=~/.npmrc-personal'
+
+    # switch between work and personal npm accounts for the current shell
+    alias nW='export NPM_CONFIG_USERCONFIG=~/.npmrc-work && npm whoami'
+    alias nP='export NPM_CONFIG_USERCONFIG=~/.npmrc-personal && npm whoami'
 fi
 
 # --------------------------------------------------------------------- }}}

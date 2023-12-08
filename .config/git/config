@@ -338,15 +338,17 @@
     # The second argument is the globs to add or any `git add` flags, defaults to "--all".
     # The third argument is the commit message, defaults to "chore: sync changes".
     sync-changes =  "!f() { \
-        branch=\"$(git -C \"${1:-$PWD}\" bdefault)\" && \
-        path=\"${1:-$PWD}\"  && \
-        echo "repo path: $path" && echo "default branch: $branch" && \
-        git -C \"$path\" fetch origin \"$branch\" && \
-        git -C \"$path\" rebase --autostash --autosquash \"origin/$branch\" && \
-        git -C \"$path\" update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
-        git -C \"$path\" add ${2:---all} && \
-        git -C \"$path\" commit -m \"${3:-chore: sync changes}\" && \
-        git -C \"$path\" push; }; f"
+        path=\"${1:-$PWD}\" && \
+        cd \"$path\" && \
+        branch=\"$(git bdefault)\" && \
+        printf \"repo path: %s\ndefault branch: %s\" \"$path\" \"$branch\" && \
+        git fetch origin \"$branch\" && \
+        git rebase --autostash --autosquash \"origin/$branch\" && \
+        git update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
+        git add ${2:---all} && \
+        git commit -m \"${3:-chore: sync changes}\" && \
+        git push && \
+        cd - >/dev/null 2>&1 || true; }; f"
 
     ; FZF
     ;----------------------------------------------------------------------------
@@ -360,23 +362,21 @@
     ; use fzf to pick an unpushed commit to fixup and then autosquash
     cf = "!f() { \
         sha=$(git log @{push}.. --color=always --no-merges \
-        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+            --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
-    }; f"
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1; }; f"
 
     ; same as above but pick an unmerged (to default branch) commit.
     ; likely requires a force push, hence the extra 'f'
     cff = "!f() { \
         sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
-        --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
+            --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1 \
-    }; f"
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1; }; f"
 
     ; checkout commit by fuzzy finding w/ fzf
     fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
@@ -397,8 +397,7 @@
         --preview='git -c color.diff=always diff {-1}' \
         --bind='alt-a:execute(git stash apply {n})+abort' \
         --bind='alt-x:execute(git stash drop {n})+abort' \
-        --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; \
-    }; f"
+        --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; }; f"
 
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias

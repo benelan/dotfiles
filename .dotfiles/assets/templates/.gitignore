@@ -1,6 +1,5 @@
 
-# General #
-###########
+# General
 node_modules/
 build/
 dist/
@@ -18,8 +17,7 @@ nohup.out
 *_REMOTE_*
 *_BACKUP_*
 
-# Compiled source #
-###################
+# Compiled source
 *.com
 *.class
 *.dll
@@ -30,8 +28,7 @@ nohup.out
 *.min.js
 *.min.css
 
-# Packages #
-############
+# Packages
 *.7z
 *.dmg
 *.gz
@@ -41,10 +38,10 @@ nohup.out
 *.tar
 *.zip
 
-# Logs and databases #
-######################
+# Logs and databases
 *.sql
 *.sqlite
+*.db
 *.log
 logs
 log.txt
@@ -52,17 +49,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# OS generated files #
-######################
-.DS_Store
+# OS generated files
+.DS_Store*
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
 
-# Secrets #
-###########
-.env
-.ssh
+# Secrets
+*.env
+*.ssh
+.npmrc-*
+*.gpg

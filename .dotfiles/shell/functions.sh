@@ -492,7 +492,7 @@ if is-supported fzf; then
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
-        fzf --exit-0 --select-1 --multi --query="$*" --preview="${FZF_PREVIEW_CMD}" \
+        fzf --exit-0 --no-select-1 --multi --query="$*" --preview="${FZF_PREVIEW_CMD}" \
             --bind="ctrl-o:execute(o {+} >/dev/null 2>&1)" \
             --bind="ctrl-e:execute(${EDITOR:-vim} {+})+abort" \
             --bind="enter:execute(${EDITOR:-vim} {+})+abort" \
@@ -509,16 +509,16 @@ if is-supported fzf; then
             echo "Need a string to search for!"
             return 1
         fi
-        rg --files-with-matches --no-messages "$1" |
-            fzf --multi --select-1 --exit-0 --ansi \
+        rg --files-with-matches --no-messages "$*" |
+            fzf --multi --no-select-1 --exit-0 --ansi \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
                 --bind "ctrl-o:execute(o {})" \
                 --bind "ctrl-y:execute(echo {} | cb)" \
-                --bind "ctrl-e:execute(${EDITOR:-vim} {+})" \
+                --bind="enter:execute(${EDITOR:-vim} {+})+abort" \
                 --header='(edit:ctrl-e) (open:ctrl-o) (copy:ctrl-y) (view:ctrl-v) (sort:ctrl-x)' \
                 --preview="bat --color=always {} 2> /dev/null |
-                    rg --colors 'match:bg:green' --colors 'match:fg:black' \
+                    rg --colors 'match:bg:magenta' --colors 'match:fg:white' \
                        --ignore-case --context 10 --color always '$1' ||
                     rg --ignore-case --context 10 --pretty '$1' {}"
     }
@@ -591,10 +591,8 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
     if is-supported gh; then
         cc_visual_snapshots() {
             if [ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]; then
-                current_branch="$(git symbolic-ref --short HEAD)"
-                gh pr edit "$current_branch" --remove-label "pr ready for visual snapshots"
-                gh pr edit "$current_branch" --add-label "pr ready for visual snapshots"
-                unset current_branch
+                gh pr edit --remove-label "pr ready for visual snapshots"
+                gh pr edit --add-label "pr ready for visual snapshots"
             fi
         }
 
