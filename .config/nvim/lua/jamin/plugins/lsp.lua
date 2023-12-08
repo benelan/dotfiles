@@ -46,16 +46,12 @@ return {
         opts = function()
           local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
           return {
-            complete_function_calls = has_ts and ts.completions.completeFunctionCalls or true,
             settings = {
               tsserver_file_preferences = has_ts and ts.settings.typescript.inlayHints or {},
-              expose_as_code_action = {
-                "add_missing_imports",
-                "fix_all",
-                "organize_imports",
-                "remove_unused",
-                "remove_unused_imports",
-              },
+              expose_as_code_action = "all",
+              complete_function_calls = has_ts and ts.completions.completeFunctionCalls or true,
+              jsx_close_tag = { enable = true },
+              -- code_lens = "all",
             },
           }
         end,
@@ -240,7 +236,28 @@ return {
           hover.printenv,
 
           code_actions.gitrebase,
+          -- code_actions.gitsigns,
+          -- code_actions.refactoring,
           code_actions.shellcheck,
+
+          -- code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
+
+          -- diagnostics.cspell.with {
+          --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+          --   diagnostic_config = quiet_diagnostics,
+          --   prefer_local = "./node_modules/.bin",
+          -- },
+
+          diagnostics.codespell.with {
+            -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
+            extra_args = {
+              "--builtin",
+              "clear,rare,informal,code,names,en-GB_to_en-US",
+              "--ignore-words",
+              vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
+            },
+            diagnostic_config = quiet_diagnostics,
+          },
 
           diagnostics.hadolint,
 

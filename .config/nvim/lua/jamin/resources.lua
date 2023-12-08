@@ -207,7 +207,7 @@ M.lsp_servers = {
 
 M.mason_packages = {
   "actionlint", -- github action linter
-  -- "codespell", -- commonly misspelled English words linter
+  "codespell", -- commonly misspelled English words linter
   -- "cspell", -- code spell checker
   -- "delve", -- golang debug adapter
   -- "eslint", -- web dev linter
