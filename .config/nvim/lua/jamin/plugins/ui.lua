@@ -12,7 +12,7 @@ return {
       vim.g.gruvbox_material_diagnostic_virtual_text = "highlghted"
       vim.g.gruvbox_material_float_style = "dim"
       vim.g.gruvbox_material_current_word = "bold"
-      -- vim.g.gruvbox_material_statusline_style = "original"
+      vim.g.gruvbox_material_statusline_style = "original"
 
       vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_enable_italic = 1
@@ -106,8 +106,15 @@ return {
   {
     "rcarriga/nvim-notify",
     -- enabled = false,
-    lazy = false,
-    opts = { background_colour = "TabLineSel", stages = "slide"  },
+    event = "VeryLazy",
+    opts = {
+      stages = "slide",
+      icons = {
+        ERROR = res.icons.diagnostics[1].text,
+        WARN = res.icons.diagnostics[2].text,
+        INFO = res.icons.diagnostics[4].text,
+      },
+    },
     config = function(_, opts)
       local notify = require "notify"
       notify.setup(opts)
@@ -125,7 +132,7 @@ return {
         function()
           local has_ts, ts = pcall(require, "telescope")
           if not has_ts then
-            vim.notify "Telescope not installed"
+            vim.notify("Telescope not installed", vim.log.levels.ERROR)
             return
           end
           ts.load_extension "notify"
