@@ -1,6 +1,5 @@
-# This file controls the behaviour of line input editing for
-# programs that use the GNU Readline library.  Existing
-# programs include FTP, Bash, and GDB.
+# This file controls the behavior of line input editing for programs that use
+# the GNU Readline library, e.g. FTP, Bash, and GDB.
 # https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Readline-Init-File-Syntax
 #
 # You can re-read the inputrc file with C-x C-r.
@@ -62,9 +61,8 @@ TAB: menu-complete
 "\e[3;3~": kill-word
 
 $if Bash
-	# Expand ! history with a spacebar press
-	# Note that this makes your shell unusable if your Bash doesn't have
-	# magic-space.  It's had this feature since 2.02.
+	# Expand ! history by pressing space.
+	# Note: magic-space was introduced in Bash v2.02
 	Space: magic-space
 
   # list out matching commands from history
@@ -76,7 +74,7 @@ $if Bash
   # Open vifm in the current directory
   "\e-": "vifm .\C-m"
 
-  # Pipipe the last command to fzf and
+  # Pipe the last command to fzf and
   # pass the output to a new command
   "\C-xF": '$(!!|fzf --ansi --height 40)\C-a \C-m\C-m'
 

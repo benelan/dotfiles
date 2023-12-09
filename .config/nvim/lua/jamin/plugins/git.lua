@@ -140,7 +140,7 @@ return {
       timeline_marker = res.icons.ui.prompt,
       user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
       picker_config = {
-        mappings = { open_in_browser = { lhs = "<C-o>" }, checkout_pr = { lhs = "<C-]>" } },
+        mappings = { open_in_browser = { lhs = "<C-o>" }, checkout_pr = { lhs = "<M-o>" } },
       },
       mappings = {
         issue = { open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" } },
@@ -188,7 +188,7 @@ return {
             "n",
             "<leader>vr",
             "<CD>Octo review resume<CR>",
-            { desc = "Resume pull requeset review (octo)", silent = true, buffer = true }
+            { desc = "Resume pull request review (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(

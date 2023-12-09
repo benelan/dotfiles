@@ -24,8 +24,9 @@ function! JaminFoldText()
     let foldSize = " " . (1 + v:foldend - v:foldstart)
             \ . " lines " . repeat(".:", v:foldlevel) . "."
 
-    let separator = repeat(" ", 3) . "<~"
-    let expansion = repeat("~", w - strwidth(line.separator.foldSize))
+    let icon = "🞃 "
+    let separator = repeat(" ", 3) . icon
+    let expansion = repeat("·", w - strwidth(line.separator.foldSize) - strwidth(icon) - 1)
 
-    return line . separator . expansion . foldSize
+    return line . separator . expansion . icon . foldSize
 endfunction

@@ -178,6 +178,10 @@ if is-supported fff; then
     export FFF_FAV8="$DOTFILES"
     export FFF_FAV9="$NOTES"
 fi
+
+if is-supported gh; then 
+    export GH_BROWSER="$WORKBROWSER"
+fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # my tools                                                    {{{
 
