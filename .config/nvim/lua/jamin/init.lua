@@ -39,6 +39,7 @@ end
 require "jamin.options"
 require "jamin.keymaps"
 require "jamin.commands"
+require "jamin.statusline"
 
 -------------------------------------------------------------------------------
 ----> Plugins

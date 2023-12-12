@@ -47,4 +47,7 @@ vim.api.nvim_create_user_command("ObsidianOpen", obsidian_open, {
   nargs = "?",
   desc = "Open a note in the Obsidian GUI app",
 })
+
 keymap("n", "<leader>zO", "<CMD>ObsidianOpen<CR>", "Open note in Obsidian")
+
+return obsidian_open

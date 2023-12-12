@@ -1,9 +1,10 @@
 local res = require "jamin.resources"
+local M = {}
 
 local floating_term_height, floating_term_width
 
 ---Toggles a persistent floating terminal window
-local function floating_term()
+M.floating_term = function()
   local term_bufnr = vim.fn.bufnr "term://"
   local term_winnr = vim.fn.bufwinnr "term://"
   local curr_bufnr = vim.fn.bufnr "%"
@@ -38,14 +39,18 @@ local function floating_term()
   end
 end
 
-vim.api.nvim_create_user_command("TermToggle", floating_term, { desc = "Toggle floating terminal" })
+vim.api.nvim_create_user_command(
+  "TermToggle",
+  M.floating_term,
+  { desc = "Toggle floating terminal" }
+)
 
 keymap({ "n", "t" }, "<M-t>", "<CMD>TermToggle<CR>", "Floating terminal")
 
 -----------------------------------------------------------------------------
 
 ---Toggles between the default and maximized height of the floating terminal
-local function toggle_term_height()
+M.toggle_term_height = function()
   local ui = vim.api.nvim_list_uis()[1]
   local default_size = math.floor(ui.height / 4)
   local maximized_size = ui.height - 7
@@ -60,7 +65,7 @@ local function toggle_term_height()
 end
 
 ---Toggles between the default and maximized width of the floating terminal
-local function toggle_term_width()
+M.toggle_term_width = function()
   local ui = vim.api.nvim_list_uis()[1]
   local default_size = math.floor(ui.width / 3)
   local maximized_size = ui.width - 4
@@ -74,14 +79,14 @@ local function toggle_term_width()
   end
 end
 
-keymap("t", "<M-h>", toggle_term_height, "Toggle floating terminal height")
-keymap("t", "<M-w>", toggle_term_width, "Toggle floating terminal width")
+keymap("t", "<M-h>", M.toggle_term_height, "Toggle floating terminal height")
+keymap("t", "<M-w>", M.toggle_term_width, "Toggle floating terminal width")
 
 -----------------------------------------------------------------------------
 
 ---Toggles diagnostics for the current buffer, or globally if called with a bang
 ---@param event table The event that triggered the command. If event.bang is true
-local function diagnostic_toggle(event)
+M.diagnostic_toggle = function(event)
   local vars = event.bang and vim.g or vim.b
   vars.diagnostics_disabled = not vars.diagnostics_disabled
 
@@ -96,7 +101,7 @@ local function diagnostic_toggle(event)
   vim.schedule(function() vim.diagnostic[cmd](event.bang and nil or 0) end)
 end
 
-vim.api.nvim_create_user_command("DiagnosticToggle", diagnostic_toggle, {
+vim.api.nvim_create_user_command("DiagnosticToggle", M.diagnostic_toggle, {
   bang = true,
   desc = "Toggles diagnostics for the current buffer, or globally if called with a bang",
 })
@@ -109,7 +114,7 @@ keymap("n", "<leader>sD", "<CMD>DiagnosticToggle!<CR>", "Toggle global diagnosti
 local ui_disabled = false
 
 ---Toggle a variety of UI options to reduce noise while presenting or coding
-local function ui_toggle()
+M.ui_toggle = function()
   -- toggle options
   vim.opt.relativenumber = ui_disabled
   vim.opt.number = ui_disabled
@@ -149,8 +154,10 @@ end
 
 vim.api.nvim_create_user_command(
   "UIToggle",
-  ui_toggle,
+  M.ui_toggle,
   { desc = "Toggles a variety of UI options to reduce noise while presenting/coding" }
 )
 
 keymap("n", "<leader>su", "<CMD>UIToggle<CR>", "Toggle UI noise")
+
+return M
