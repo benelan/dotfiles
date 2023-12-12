@@ -107,3 +107,23 @@ require("lazy").setup({ "folke/lazy.nvim", import = "jamin.plugins" }, {
 })
 
 keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim")
+
+-- settings for neovim embedded in the browser
+if vim.g.started_by_firenvim then
+  keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>")
+
+  -- auto sync changes with the browser
+  vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    callback = function()
+      if vim.g.started_firenvim_timer == true then return end
+      vim.g.started_firenvim_timer = true
+      vim.fn.timer_start(10000, function()
+        vim.g.started_firenvim_timer = false
+        vim.cmd "write"
+      end)
+    end,
+  })
+
+  -- turn off UI when started by Firenvim
+  vim.cmd [[ execute 'UIToggle' ]]
+end
