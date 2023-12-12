@@ -1,5 +1,3 @@
-local res = require "jamin.resources"
-
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
@@ -101,45 +99,5 @@ return {
       require("eyeliner").setup(opts)
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
-  },
-  -----------------------------------------------------------------------------
-  {
-    "rcarriga/nvim-notify",
-    -- enabled = false,
-    event = "VeryLazy",
-    opts = {
-      stages = "slide",
-      icons = {
-        ERROR = res.icons.diagnostics[1].text,
-        WARN = res.icons.diagnostics[2].text,
-        INFO = res.icons.diagnostics[4].text,
-      },
-    },
-    config = function(_, opts)
-      local notify = require "notify"
-      notify.setup(opts)
-      vim.notify = notify
-    end,
-    keys = {
-      { "<leader>nn", "<CMD>Notifications<CR>", desc = "View notifications" },
-      {
-        "<leader>nx",
-        function() require("notify").dismiss { pending = false } end,
-        desc = "Dismiss notifications",
-      },
-      {
-        "<leader>fn",
-        function()
-          local has_ts, ts = pcall(require, "telescope")
-          if not has_ts then
-            vim.notify("Telescope not installed", vim.log.levels.ERROR)
-            return
-          end
-          ts.load_extension "notify"
-          ts.extensions.notify.notify()
-        end,
-        desc = "Find notifications (Telescope)",
-      },
-    },
   },
 }
