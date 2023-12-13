@@ -146,6 +146,41 @@ return {
     "glacambre/firenvim",
     lazy = not vim.g.started_by_firenvim,
     build = function() vim.fn["firenvim#install"](0) end,
-    init = function() vim.g.firenvim_config = { globalSettings = { cmdlineTimeout = 3000 } } end,
+    init = function()
+      vim.g.firenvim_config = {
+        globalSettings = {
+          cmdlineTimeout = 420,
+          ["<C-w>"] = "noop",
+          ["<C-t>"] = "noop",
+          ["<C-n>"] = "default",
+        },
+        localSettings = {
+          ["https?://teams.microsoft.com"] = { takeover = "never", priority = 1 },
+          ["https?://outlook.office.com"] = { takeover = "never", priority = 1 },
+        },
+      }
+    end,
+    config = function()
+      -- settings for neovim embedded in the browser
+      if vim.g.started_by_firenvim then
+        keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>")
+        keymap("n", "<C-z>", "<Cmd>call firenvim#hide_frame()<CR>")
+
+        -- auto sync changes with the browser
+        vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+          callback = function()
+            if vim.g.started_firenvim_timer == true then return end
+            vim.g.started_firenvim_timer = true
+            vim.fn.timer_start(10000, function()
+              vim.g.started_firenvim_timer = false
+              vim.cmd "write"
+            end)
+          end,
+        })
+
+        -- turn off UI when started by Firenvim
+        vim.cmd [[ execute 'UIToggle' ]]
+      end
+    end,
   },
 }

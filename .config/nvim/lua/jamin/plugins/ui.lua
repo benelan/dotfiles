@@ -19,7 +19,9 @@ return {
       vim.g.gruvbox_material_disable_terminal_colors = 1
       -- vim.g.gruvbox_material_dim_inactive_windows = 1
 
-      if not vim.g.neovide then vim.g.gruvbox_material_transparent_background = 1 end
+      if not vim.g.neovide and not vim.g.started_by_firenvim then
+        vim.g.gruvbox_material_transparent_background = 1
+      end
 
       local gruvbox_custom_colors = function()
         local alt_palette = vim.fn["gruvbox_material#get_palette"]("hard", "material", { x = {} })

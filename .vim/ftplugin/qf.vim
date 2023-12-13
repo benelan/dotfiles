@@ -31,6 +31,10 @@ nnoremap <silent> <buffer> t <C-w><CR><C-w>T
 " open entry and come back
 nnoremap <silent> <buffer> o <CR><C-w>p
 
+" move down/up, open entry and come back
+nnoremap <silent> <buffer> J j<CR><C-w>p
+nnoremap <silent> <buffer> K k<CR><C-w>p
+
 " @see: https://vi.stackexchange.com/a/21255
 " using range-aware function
 function! QFdelete(bufnr) range

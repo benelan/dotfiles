@@ -1082,8 +1082,8 @@ packages_installs() {
     install_packages_npm
     install_packages_pip
 
-    install_packages_neovim
     install_packages_vim
+    install_packages_neovim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
