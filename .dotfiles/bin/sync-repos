@@ -140,17 +140,21 @@ clone_gh_repo_bare "work" "benelan/calcite-samples"
 
 clone_gh_repo "work" "Esri/calcite-design-system.wiki"
 clone_gh_repo "work" "Esri/jsapi-resources"
-clone_gh_repo "work" "benelan/stencil-react-testing"
 clone_gh_repo "work" "benelan/build-sizes"
-clone_gh_repo "work" "benelan/github-scripts"
+clone_gh_repo "work" "benelan/calcite-codemod"
 clone_gh_repo "work" "benelan/milestone-action"
 clone_gh_repo "work" "benelan/need-info-action"
+clone_gh_repo "work" "benelan/stencil-react-testing"
+clone_gh_repo "work" "benelan/github-scripts"
 clone_gh_repo "work" "benelan/test"
 
 clone_gh_repo "personal" "benelan/git-mux"
+clone_gh_repo "personal" "benelan/gh-fzf"
 clone_gh_repo "personal" "benelan/choroator"
 clone_gh_repo "personal" "benelan/blog"
 clone_gh_repo "personal" "benelan/remix-blog"
 clone_gh_repo "personal" "benelan/benelan.github.io"
+
+clone_gh_repo "lib" "benelan/octo.nvim"
 
 clone_gh_repo "" "benelan/notes"
