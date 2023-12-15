@@ -22,7 +22,7 @@ local function fmt_hl(h) return "%#" .. h .. "#" end
 ---@field highlight string
 ---@field value number
 
----Turn a table containg state information into a string formatted for use in
+---Turn a table containing state information into a string formatted for use in
 ---a statusline. Only displays states with values greater than zero.
 ---@param data StateData
 ---@return string
@@ -48,11 +48,11 @@ end
 local function buffer_diagnostics(fallback)
   local data = {}
 
-  for _, diagnostic in ipairs(icons.diagnostics) do
+  for severity, text in ipairs(icons.diagnostics) do
     table.insert(data, {
-      highlight = "StatusLine" .. diagnostic.name,
-      icon = diagnostic.text .. (vim.g.use_devicons and "" or ":"),
-      value = vim.tbl_count(vim.diagnostic.get(0, { severity = diagnostic.severity })),
+      highlight = "StatusLineDiagnosticSev" .. severity,
+      icon = text .. (vim.g.use_devicons and "" or ":"),
+      value = vim.tbl_count(vim.diagnostic.get(0, { severity = severity })),
     })
   end
 

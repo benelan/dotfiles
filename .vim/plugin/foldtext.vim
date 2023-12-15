@@ -26,7 +26,7 @@ function! JaminFoldText()
 
     let icon = "🞃 "
     let separator = repeat(" ", 3) . icon
-    let expansion = repeat("·", w - strwidth(line.separator.foldSize) - strwidth(icon) - 1)
+    let expansion = repeat("·", w - strwidth(line.separator.foldSize))
 
-    return line . separator . expansion . icon . foldSize
+    return line . separator . expansion . foldSize
 endfunction

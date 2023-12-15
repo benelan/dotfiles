@@ -4,26 +4,10 @@ local i = function(icon, backup) return vim.g.use_devicons and icon or backup or
 
 M.icons = {
   diagnostics = {
-    {
-      name = "Error",
-      text = i("󰅜 ", "E"),
-      severity = vim.diagnostic.severity.ERROR,
-    },
-    {
-      name = "Warn",
-      text = i("󰀦 ", "W"),
-      severity = vim.diagnostic.severity.WARN,
-    },
-    {
-      name = "Hint",
-      text = i("󰬏 ", "H"),
-      severity = vim.diagnostic.severity.HINT,
-    },
-    {
-      name = "Info",
-      text = i("󰋼 ", "I"),
-      severity = vim.diagnostic.severity.INFO,
-    },
+    [vim.diagnostic.severity.ERROR] = i("󰅜 ", "E"),
+    [vim.diagnostic.severity.WARN] = i("󰀦 ", "W"),
+    [vim.diagnostic.severity.INFO] = i("󰋼 ", "I"),
+    [vim.diagnostic.severity.HINT] = i("󰬏 ", "H"),
   },
   lsp_kind = {
     Array = i " ",

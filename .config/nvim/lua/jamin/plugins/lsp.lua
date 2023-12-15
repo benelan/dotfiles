@@ -70,6 +70,7 @@ return {
           severity = { min = vim.diagnostic.severity.WARN },
           source = "if_many",
         },
+        signs = { text = res.icons.diagnostics },
         float = {
           border = res.icons.border,
           header = "",
@@ -110,15 +111,6 @@ return {
 
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
-
-      -- set the diagnostic icons
-      for _, sign in ipairs(res.icons.diagnostics) do
-        vim.fn.sign_define("DiagnosticSign" .. sign.name, {
-          texthl = "DiagnosticSign" .. sign.name,
-          text = sign.text,
-          numhl = "",
-        })
-      end
 
       -- combine default LSP client capabilities with override opts specified above
       local capabilities = vim.tbl_deep_extend(
