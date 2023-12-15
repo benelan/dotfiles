@@ -892,6 +892,47 @@ install_theme_icons() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
+# Neovim version install function                                       {{{
+# --------------------------------------------------------------------- {|}
+
+## https://github.com/neovim/neovim/releases
+## https://github.com/stevearc/dotfiles/blob/master/scripts/install_neovim.sh
+install_neovim() {
+    set -e
+
+    DEST=${DEST:-"$HOME/.local/bin"}
+    PROGRAM=${PROGRAM:-nvim}
+    mkdir -p "$DEST/man/man1"
+
+    if [ -z "$1" ]; then
+        VERSION="$(curl -s https://api.github.com/repos/neovim/neovim/releases | jq -r ".[].tag_name" | fzf --no-multi)"
+    else
+        VERSION="$1"
+    fi
+
+    echo "Installing NVIM $VERSION"
+    curl -LO "https://github.com/neovim/neovim/releases/download/$VERSION/nvim.appimage"
+    chmod +x nvim.appimage
+    if ! ./nvim.appimage --headless +qall >/dev/null 2>&1; then
+        mkdir -p ~/.appimages
+        mv nvim.appimage "$HOME/.appimages/$PROGRAM.appimage"
+        cd ~/.appimages
+        "./$PROGRAM.appimage" --appimage-extract >/dev/null
+        rm -rf "$PROGRAM-appimage"
+        mv squashfs-root "$PROGRAM-appimage"
+        ln -s -f "$HOME/.appimages/$PROGRAM-appimage/AppRun" "$DEST/$PROGRAM"
+        rm "$PROGRAM.appimage"
+        cd -
+    else
+        mv nvim.appimage "$DEST/$PROGRAM"
+    fi
+
+    curl -sL "https://raw.githubusercontent.com/neovim/neovim/$VERSION/src/man/nvim.1" \
+        -o "$DEST/man/man1/nvim.1"
+    printf "\nInstalled %s" "$("$DEST/$PROGRAM" --version | head -n 1)"
+}
+
+# --------------------------------------------------------------------- }}}
 # Git submodule install/build functions                                 {{{
 # --------------------------------------------------------------------- {|}
 
@@ -1123,7 +1164,7 @@ deps_help() {
 Install dependencies by category or name.
 
 Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>]
-                 [-s <script>]  [-t <theme>] [-u <ubuntu>]
+                 [-s <script>]  [-t <theme>] [-u <ubuntu>] [-n <neovim-version>]
 
 Flags:
   -A    Install all dependencies
@@ -1136,6 +1177,7 @@ Flags:
 
   -b    Install a locally built dependency
   -l    Install a programming language
+  -n    Install a specific version of neovim
   -p    Install a package manager dependency or (n)vim plugin
   -s    Install a shell script dependency
   -t    Install an operating system theme dependency
@@ -1184,7 +1226,7 @@ deps_parse_flags() {
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
 
-    while getopts Bb:Uu:Ll:Ss:Tt:Pp:Aho opt; do
+    while getopts Bb:Uu:Ll:Ss:Tt:Pp:n:Aho opt; do
         case $opt in
             B) build_installs ;;
             b) install_build_"${OPTARG}" ;;
@@ -1203,6 +1245,8 @@ deps_parse_flags() {
 
             U) ubuntu_installs ;;
             u) install_ubuntu_"${OPTARG}" ;;
+
+            n) install_neovim "${OPTARG}" ;;
 
             A) all_installs ;;
             o) deps_list ;;
