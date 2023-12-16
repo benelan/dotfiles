@@ -102,6 +102,13 @@ M.icons = {
 M.filetypes = {
   excluded = {
     "",
+    "DiffviewFileHistory",
+    "DiffviewFiles",
+    "NeogitCommitView",
+    "NeogitLogView",
+    "NeogitPopup",
+    "NeogitReflogView",
+    "NeogitStatus",
     "Outline",
     "TelescopePreview",
     "TelescopePrompt",

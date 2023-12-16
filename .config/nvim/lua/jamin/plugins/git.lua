@@ -4,10 +4,11 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- the GOAT git plugin
     keys = {
+      { "<leader>g", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gg", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>Git commit<CR>", desc = "Fugitive commit" },
       { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },
-      { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
+      { "<leader>gB", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
       { "<leader>gD", "<CMD>Git difftool -y<CR>", desc = "Fugitive difftool" },
       { "<leader>gM", "<CMD>Git mergetool -y<CR>", desc = "Fugitive mergetool" },
       { "<leader>gd", "<CMD>Gdiffsplit<CR>", desc = "Fugitive diff" },
@@ -111,7 +112,7 @@ return {
       { "<leader>gtw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff (gitsigns)" },
       { "<leader>gth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle line highlight (gitsigns)" },
       { "<leader>gtn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle number highlight (gitsigns)" },
-      { "<leader>gB", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame line (gitsigns)" },
+      { "<leader>gb", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame line (gitsigns)" },
     },
     opts = {
       current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
@@ -255,6 +256,92 @@ return {
       -- My repos and gists
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },
       { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "sindrets/diffview.nvim", -- diff and history viewer
+    dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
+    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+    keys = {
+      { "<leader>Gd", "<CMD>DiffviewOpen<CR>", { "n", "x" }, desc = "Git difftool (diffview)" },
+      {
+        "<leader>Gs",
+        -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md#inspecting-diffs-for-stashes
+        "<CMD>DiffviewFileHistory --walk-reflogs --range=stash<CR>",
+        desc = "Stash git history (diffview)",
+        mode = "n",
+      },
+      {
+        "<leader>GH",
+        "<CMD>DiffviewFileHistory --max-count=1000<CR>",
+        { "n", "x" },
+        desc = "Files git history (diffview)",
+      },
+      {
+        "<leader>Gh",
+        "<CMD>DiffviewFileHistory % --max-count=1000<CR>",
+        desc = "Buffer git history (diffview)",
+        mode = "n",
+      },
+      {
+        "<leader>Gh",
+        ":'<,'>DiffviewFileHistory --max-count=1000<CR>",
+        desc = "Selection git history (diffview)",
+        mode = "x",
+      },
+    },
+    opts = {
+      enhanced_diff_hl = true,
+      use_icons = vim.g.use_devicons,
+      icons = { folder_closed = "", folder_open = "" },
+      signs = {
+        fold_closed = res.icons.ui.collapsed,
+        fold_open = res.icons.ui.expanded,
+        done = res.icons.ui.checkmark,
+      },
+      default_args = {
+        DiffviewOpen = { "--imply-local" },
+        DiffviewFileHistory = { "--follow" },
+      },
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "NeogitOrg/neogit",
+    cmd = "Neogit",
+    keys = {
+      { "<leader>G", "<CMD>Neogit<CR>", desc = "Neogit status" },
+      { "<leader>Gg", "<CMD>Neogit<CR>", desc = "Neogit status" },
+      { "<leader>G?", "<CMD>Neogit help<CR>", desc = "Neogit help" },
+      { "<leader>GM", "<CMD>Neogit remote<CR>", desc = "Neogit remote" },
+      { "<leader>GP", "<CMD>Neogit push<CR>", desc = "Neogit push" },
+      { "<leader>GX", "<CMD>Neogit reset<CR>", desc = "Neogit reset" },
+      { "<leader>GZ", "<CMD>Neogit stash<CR>", desc = "Neogit stash" },
+      { "<leader>Gb", "<CMD>Neogit branch<CR>", desc = "Neogit branch" },
+      { "<leader>Gc", "<CMD>Neogit commit<CR>", desc = "Neogit commit" },
+      { "<leader>Gf", "<CMD>Neogit fetch<CR>", desc = "Neogit fetch" },
+      { "<leader>Gl", "<CMD>Neogit log<CR>", desc = "Neogit log" },
+      { "<leader>Gm", "<CMD>Neogit merge<CR>", desc = "Neogit merge" },
+      { "<leader>Gp", "<CMD>Neogit pull<CR>", desc = "Neogit pull" },
+      { "<leader>Gr", "<CMD>Neogit rebase<CR>", desc = "Neogit rebase" },
+      { "<leader>Gv", "<CMD>Neogit revert<CR>", desc = "Neogit revert" },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {
+      disable_context_highlighting = true,
+      disable_insert_on_commit = "auto",
+      graph_style = "unicode",
+      mappings = {
+        finder = {
+          ["<c-j>"] = "Next",
+          ["<c-k>"] = "Previous",
+        },
+      },
     },
   },
 }

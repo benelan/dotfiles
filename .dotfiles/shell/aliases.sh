@@ -273,6 +273,7 @@ edit_dotfiles() {
 
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias G="edit_dotfiles +G +only"
+alias N="edit_dotfiles +Neogit +tabonly"
 
 # --------------------------------------------------------------------- }}}
 # GitHub                                                                {{{
