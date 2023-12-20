@@ -179,7 +179,7 @@ if is-supported fff; then
     export FFF_FAV9="$NOTES"
 fi
 
-if is-supported gh; then 
+if is-supported gh; then
     export GH_BROWSER="$WORKBROWSER"
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -191,10 +191,21 @@ is-supported matpat && export MATPAT_OPEN_CMD="$BROWSER"
 if is-supported git-mux; then
     # shellcheck disable=2155
     export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user || echo "benelan")"
-    export GIT_MUX_NEW_WORKTREE_CMD="[ -f './package.json' ] && npm install && npm run build"
+
+    # shell commands or an executable on PATH to run after a new worktree is created
+    export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree"
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
+fi
+
+if [ -n "$(
+    find "$XDG_DATA_HOME/fonts" \
+        -type f \
+        -name "*Nerd*Font*.ttf" \
+        -readable -print -quit 2>/dev/null
+)" ]; then
+    export USE_DEVICONS=1
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

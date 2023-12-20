@@ -1,0 +1,29 @@
+#! /usr/bin/env sh
+
+# This script is a hook than runs after git-mux creates a new worktree.
+# It is used to copy files that are shared between worktrees but not committed.
+# It also runs install/build scripts that are needed for the new worktree.
+# See `man git-mux` for more information, specifically the
+# "$GIT_MUX_NEW_WORKTREE_CMD" configuration variable.
+
+_has() { command -v "$1" >/dev/null 2>&1; }
+
+# use a bash array if any of the files have spaces
+_link_files="Makefile Dockerfile compose.yaml Session*.vim .nvim.lua .nvimrc .exrc .envrc .direnv .env"
+
+for _file in $_link_files; do
+    cp "../$_file" . >/dev/null 2>&1 || true
+done
+
+if _has make && [ -f "./Makefile" ]; then
+    make
+fi
+
+if _has npm && [ -f "./package.json" ]; then
+    npm install
+    npm run build
+fi
+
+if _has cargo && [ -f "./Cargo.toml" ]; then
+    cargo build
+fi

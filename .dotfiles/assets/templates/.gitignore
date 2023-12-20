@@ -3,8 +3,14 @@
 node_modules/
 build/
 dist/
-Session.vim
+.cache/
+Session*.vim
 Quickfix.txt
+.nvim.lua
+.nvimrc
+.exrc
+.direnv
+.envrc
 nohup.out
 .*cache*
 *.tmp
@@ -37,6 +43,7 @@ nohup.out
 *.rar
 *.tar
 *.zip
+*.tgz
 
 # Logs and databases
 *.sql
@@ -50,11 +57,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # OS generated files
-.DS_Store*
-.DS_Store?
+.Trash*
+.nfs*
+.fuse_hidden*
+*~
 ._*
+.DS_Store*
 .Spotlight-V100
-.Trashes
 
 # Secrets
 *.env
