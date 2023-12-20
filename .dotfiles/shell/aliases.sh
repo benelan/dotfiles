@@ -191,7 +191,7 @@ if is-supported npm; then
     alias nt="npm test"
     alias nr="npm run"
     alias nrb="npm run build"
-    alias nib='rm -rf $(npm prefix)/{node_modules,dist,build} && npm install && npm run build'
+    alias nib='rm -rf "$(npm prefix)/{node_modules,dist,build,package-lock.json}" && npm install && npm run build'
 
     alias ncu="npx npm-check-updates"
     alias npxplz='npx $(fc -ln -1)'
@@ -199,6 +199,15 @@ if is-supported npm; then
     # select an npm script to run from package.json using fzf
     is-supported fzf && is-supported jq &&
         alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
+
+    # Complete these steps before using the aliases for switching between NPM accounts:
+    # 1. Log into your personal account: `npm login`
+    # 2. Append "-personal" to the generated file: `mv ~/.npmrc ~/.npmrc-personal`
+    # 3. Repeat steps 1 and 2 for your work account, but append "-work" instead
+
+    # You will not be logged into either account by default, and will need to use
+    # the aliases below to switch between them. This adds an extra layer of security
+    # against accidentally publishing packages.
 
     # use work or personal npm account for a single command
     alias nw='npm --userconfig=~/.npmrc-work'

@@ -1,0 +1,102 @@
+#!/usr/bin/env sh
+
+usage="
+Open Vim with Git changes as quickfix entries
+https://github.com/whiteinge/dotfiles/blob/master/bin/git-quickfix
+
+Useful for stepping through changes in one or more commits, or quickly
+picking back up where you left off after a WIP commit. The full diff for each
+quickfix entry is visible in the quickfix window.
+
+Usage: git quickfix [-xmsh] [<ref> [<file>...]]
+
+Flags:
+       -h  Show this help message.
+       -m  Show only unstaged changes.
+       -s  Show only staged changes.
+       -x  Enable shell debugging.
+
+Examples:
+    # Open current commit (HEAD)
+    git quickfix
+
+    # Open single commit three back in history.
+    git quickfix HEAD~3
+
+    # Open range of commits starting from three back to current.
+    git quickfix HEAD~3..
+
+    # Open range of outgoing commits (upstream tracking).
+    git quickfix @{u}..
+
+    # Open single commit, or range of commits, that modify specific file.
+    git quickfix abcdef -- path/to/file.foo
+
+    # Open current commit but ignore whitespace changes.
+    git quickfix -- -w
+
+    # Redirect quickfix list to text file instead of opening Vim.
+    git quickfix @{u}.. > Quickfix.txt
+"
+
+NAME=$(basename "$0")
+TEMP="${TMPDIR-/tmp}/${NAME}.${$}.$(awk \
+    'BEGIN {srand(); printf "%d\n", rand() * 10^10}')"
+
+QFLIST="${TEMP}/quickfix.txt"
+
+# shellcheck disable=2154
+trap '
+    excode=$?; trap - EXIT;
+    rm -rf -- '"$TEMP"'
+    exit $excode
+' INT TERM EXIT
+
+mode='commit'
+while getopts xmsh opt; do
+    case $opt in
+        s) mode="staged" ;;
+        m) mode="modified" ;;
+        x) set -x ;;
+        h | *) echo "$usage" && exit 1 ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+# shellcheck disable=2174
+mkdir -p -m 700 "$TEMP"
+
+{
+    if [ "$mode" = 'modified' ]; then
+        git diff -p -U0 --diff-filter=AM "$@"
+    elif [ "$mode" = 'staged' ]; then
+        git diff --cached -p -U0 --diff-filter=AM "$@"
+    else
+        if [ $# -gt 0 ]; then
+            ref="$1"
+            shift 1
+        else
+            ref='HEAD'
+        fi
+
+        case "$ref" in
+            *..*) git diff -p -U0 --diff-filter=AM -r "$ref" "$@" ;;
+            *) git show --first-parent -m -p -U0 --diff-filter=AM "$ref" "$@" ;;
+        esac
+
+    fi
+} | diff-to-quickfix >"$QFLIST"
+
+if [ ! -s "$QFLIST" ]; then
+    printf 'No %s changes.\n' "$mode" 1>&2
+    exit 1
+fi
+
+# Open with Vim if outputting to a tty, otherwise just output directly.
+if [ -t 1 ]; then
+    # bd1 deletes the initial "[No Name]" buffer.
+    $EDITOR +bd1 -q "$QFLIST"
+else
+    cat "$QFLIST"
+fi
