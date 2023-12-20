@@ -764,7 +764,7 @@ install_ubuntu_vivaldi() {
 
 ## Install the four common font weights of Iosevka             {{{
 
-_themes+="font "
+_themes+="font-minimal "
 
 ## https://github.com/ryanoasis/nerd-fonts
 install_theme_font() {
@@ -782,6 +782,24 @@ install_theme_font() {
 
     curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
+}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install all weights of Iosevka                              {{{
+
+_themes+="font-complete "
+
+## https://github.com/ryanoasis/nerd-fonts
+install_theme_font-complete() {
+    FONTS_DIR="$XDG_DATA_HOME/fonts"
+    mkdir -p "$FONTS_DIR"
+
+    curl -Lo "$FONTS_DIR/Iosevka.zip" \
+        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Iosevka.zip
+    unzip "$FONTS_DIR/Iosevka.zip" -d "$FONTS_DIR"
+
+    rm -rf "$FONTS_DIR/Iosevka.zip"
+    rm -rf "$FONTS_DIR/README.md"
+    rm -rf "$FONTS_DIR/LICENSE.md"
 
     # reload the font cache
     fc-cache -rf
@@ -1082,7 +1100,7 @@ ubuntu_installs() {
 ## Operating system stylings                                   {{{
 
 theme_installs() {
-    install_theme_font
+    install_theme_font-minimal
     install_theme_wallpaper
     install_theme_gtk
     install_theme_icons
