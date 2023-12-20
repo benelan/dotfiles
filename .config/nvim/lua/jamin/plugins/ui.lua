@@ -14,7 +14,7 @@ return {
 
       vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_enable_italic = 1
-      vim.g.gruvbox_material_enable_bold = 0
+      vim.g.gruvbox_material_enable_bold = 1
       vim.g.gruvbox_material_diagnostic_text_highlight = 0
       vim.g.gruvbox_material_disable_terminal_colors = 1
       -- vim.g.gruvbox_material_dim_inactive_windows = 1

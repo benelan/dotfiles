@@ -264,31 +264,25 @@ return {
     dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
-      { "<leader>Gd", "<CMD>DiffviewOpen<CR>", { "n", "x" }, desc = "Git difftool (diffview)" },
+      { "<leader>nd", "<CMD>DiffviewOpen<CR>", { "n", "x" }, desc = "Git difftool (diffview)" },
       {
-        "<leader>Gs",
+        "<leader>ns",
         -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md#inspecting-diffs-for-stashes
         "<CMD>DiffviewFileHistory --walk-reflogs --range=stash<CR>",
         desc = "Stash git history (diffview)",
         mode = "n",
       },
       {
-        "<leader>GH",
+        "<leader>nH",
         "<CMD>DiffviewFileHistory --max-count=1000<CR>",
         { "n", "x" },
         desc = "Files git history (diffview)",
       },
       {
-        "<leader>Gh",
-        "<CMD>DiffviewFileHistory % --max-count=1000<CR>",
+        "<leader>nh",
+        ":DiffviewFileHistory % --max-count=1000<CR>",
         desc = "Buffer git history (diffview)",
-        mode = "n",
-      },
-      {
-        "<leader>Gh",
-        ":'<,'>DiffviewFileHistory --max-count=1000<CR>",
-        desc = "Selection git history (diffview)",
-        mode = "x",
+        mode = { "n", "x" },
       },
     },
     opts = {
@@ -309,39 +303,54 @@ return {
   -----------------------------------------------------------------------------
   {
     "NeogitOrg/neogit",
-    cmd = "Neogit",
-    keys = {
-      { "<leader>G", "<CMD>Neogit<CR>", desc = "Neogit status" },
-      { "<leader>Gg", "<CMD>Neogit<CR>", desc = "Neogit status" },
-      { "<leader>G?", "<CMD>Neogit help<CR>", desc = "Neogit help" },
-      { "<leader>GM", "<CMD>Neogit remote<CR>", desc = "Neogit remote" },
-      { "<leader>GP", "<CMD>Neogit push<CR>", desc = "Neogit push" },
-      { "<leader>GX", "<CMD>Neogit reset<CR>", desc = "Neogit reset" },
-      { "<leader>GZ", "<CMD>Neogit stash<CR>", desc = "Neogit stash" },
-      { "<leader>Gb", "<CMD>Neogit branch<CR>", desc = "Neogit branch" },
-      { "<leader>Gc", "<CMD>Neogit commit<CR>", desc = "Neogit commit" },
-      { "<leader>Gf", "<CMD>Neogit fetch<CR>", desc = "Neogit fetch" },
-      { "<leader>Gl", "<CMD>Neogit log<CR>", desc = "Neogit log" },
-      { "<leader>Gm", "<CMD>Neogit merge<CR>", desc = "Neogit merge" },
-      { "<leader>Gp", "<CMD>Neogit pull<CR>", desc = "Neogit pull" },
-      { "<leader>Gr", "<CMD>Neogit rebase<CR>", desc = "Neogit rebase" },
-      { "<leader>Gv", "<CMD>Neogit revert<CR>", desc = "Neogit revert" },
-    },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
     opts = {
-      disable_context_highlighting = true,
       disable_insert_on_commit = "auto",
       graph_style = "unicode",
+      signs = {
+        -- { CLOSED, OPENED }
+        hunk = { "", "" },
+        item = { "", "" },
+        section = { "", "" },
+      },
       mappings = {
         finder = {
           ["<c-j>"] = "Next",
           ["<c-k>"] = "Previous",
         },
       },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd({ "ColorScheme" }, {
+        group = vim.api.nvim_create_augroup("jamin_neogit_highlights", { clear = true }),
+        callback = function()
+          vim.api.nvim_set_hl(0, "NeogitDiffContext", { link = "Normal" })
+          vim.api.nvim_set_hl(0, "NeogitDiffContextHighlight", { link = "Normal" })
+        end,
+      })
+    end,
+    cmd = "Neogit",
+    keys = {
+      { "<leader>n", "<CMD>Neogit<CR>", desc = "Neogit status" },
+      { "<leader>nn", "<CMD>Neogit<CR>", desc = "Neogit status" },
+      { "<leader>n?", "<CMD>Neogit help<CR>", desc = "Neogit help" },
+      { "<leader>nA", "<CMD>Neogit cherry_pick<CR>", desc = "Neogit cherry-pick" },
+      { "<leader>nM", "<CMD>Neogit remote<CR>", desc = "Neogit remote" },
+      { "<leader>nP", "<CMD>Neogit push<CR>", desc = "Neogit push" },
+      { "<leader>nX", "<CMD>Neogit reset<CR>", desc = "Neogit reset" },
+      { "<leader>nZ", "<CMD>Neogit stash<CR>", desc = "Neogit stash" },
+      { "<leader>nb", "<CMD>Neogit branch<CR>", desc = "Neogit branch" },
+      { "<leader>nc", "<CMD>Neogit commit<CR>", desc = "Neogit commit" },
+      { "<leader>nf", "<CMD>Neogit fetch<CR>", desc = "Neogit fetch" },
+      { "<leader>nl", "<CMD>Neogit log<CR>", desc = "Neogit log" },
+      { "<leader>nm", "<CMD>Neogit merge<CR>", desc = "Neogit merge" },
+      { "<leader>np", "<CMD>Neogit pull<CR>", desc = "Neogit pull" },
+      { "<leader>nr", "<CMD>Neogit rebase<CR>", desc = "Neogit rebase" },
+      { "<leader>nv", "<CMD>Neogit revert<CR>", desc = "Neogit revert" },
     },
   },
 }
