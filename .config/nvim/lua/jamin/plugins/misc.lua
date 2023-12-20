@@ -30,8 +30,8 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  -- adds closing brackets only when pressing enter
   {
+    -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
     init = function()
       -- setup files that can contain javascript
@@ -110,7 +110,7 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "folke/flash.nvim",
+    "folke/flash.nvim", -- jump around within buffers
     -- enabled = false,
     opts = {
       exclude = require("jamin.resources").filetypes.excluded,
@@ -143,7 +143,7 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "glacambre/firenvim",
+    "glacambre/firenvim", -- embed neovim in the browser
     lazy = not vim.g.started_by_firenvim,
     build = function() vim.fn["firenvim#install"](0) end,
     init = function()

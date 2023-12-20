@@ -28,7 +28,6 @@
   "mkdnflow.nvim": { "branch": "main", "commit": "d10908058836afe3ec2867cf3f603c1fd78dd8fb" },
   "neodev.nvim": { "branch": "main", "commit": "93ab59d5d436b36698c14d0374150a7e5e7bccb6" },
   "neogen": { "branch": "main", "commit": "70127baaff25611deaf1a29d801fc054ad9d2dc1" },
-  "neogit": { "branch": "master", "commit": "bbb3c19a9f55a36f844b862c3bea21781aef8644" },
   "none-ls.nvim": { "branch": "main", "commit": "bbd8c0c2b8a47ff2e0a97868afdf3fc640f1ad1e" },
   "nui.nvim": { "branch": "main", "commit": "c9b4de623d19a85b353ff70d2ae9c77143abe69c" },
   "nvim-cmp": { "branch": "main", "commit": "538e37ba87284942c1d76ed38dd497e54e65b891" },

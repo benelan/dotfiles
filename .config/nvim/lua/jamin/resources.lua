@@ -175,6 +175,7 @@ M.lsp_servers = {
   -- "docker_compose_language_service",
   "dockerls",
   -- "efm",
+  -- "emmet_language_server",
   "eslint",
   -- "gopls",
   -- "graphql",

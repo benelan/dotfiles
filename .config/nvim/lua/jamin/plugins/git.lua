@@ -264,22 +264,22 @@ return {
     dependencies = { "lewis6991/gitsigns.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
     keys = {
-      { "<leader>nd", "<CMD>DiffviewOpen<CR>", { "n", "x" }, desc = "Git difftool (diffview)" },
+      { "<leader>gvd", "<CMD>DiffviewOpen<CR>", { "n", "x" }, desc = "Git difftool (diffview)" },
       {
-        "<leader>ns",
+        "<leader>gvs",
         -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md#inspecting-diffs-for-stashes
         "<CMD>DiffviewFileHistory --walk-reflogs --range=stash<CR>",
         desc = "Stash git history (diffview)",
         mode = "n",
       },
       {
-        "<leader>nH",
+        "<leader>gvH",
         "<CMD>DiffviewFileHistory --max-count=1000<CR>",
         { "n", "x" },
         desc = "Files git history (diffview)",
       },
       {
-        "<leader>nh",
+        "<leader>gvh",
         ":DiffviewFileHistory % --max-count=1000<CR>",
         desc = "Buffer git history (diffview)",
         mode = { "n", "x" },
@@ -298,59 +298,6 @@ return {
         DiffviewOpen = { "--imply-local" },
         DiffviewFileHistory = { "--follow" },
       },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    opts = {
-      disable_insert_on_commit = "auto",
-      graph_style = "unicode",
-      signs = {
-        -- { CLOSED, OPENED }
-        hunk = { "", "" },
-        item = { "", "" },
-        section = { "", "" },
-      },
-      mappings = {
-        finder = {
-          ["<c-j>"] = "Next",
-          ["<c-k>"] = "Previous",
-        },
-      },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd({ "ColorScheme" }, {
-        group = vim.api.nvim_create_augroup("jamin_neogit_highlights", { clear = true }),
-        callback = function()
-          vim.api.nvim_set_hl(0, "NeogitDiffContext", { link = "Normal" })
-          vim.api.nvim_set_hl(0, "NeogitDiffContextHighlight", { link = "Normal" })
-        end,
-      })
-    end,
-    cmd = "Neogit",
-    keys = {
-      { "<leader>n", "<CMD>Neogit<CR>", desc = "Neogit status" },
-      { "<leader>nn", "<CMD>Neogit<CR>", desc = "Neogit status" },
-      { "<leader>n?", "<CMD>Neogit help<CR>", desc = "Neogit help" },
-      { "<leader>nA", "<CMD>Neogit cherry_pick<CR>", desc = "Neogit cherry-pick" },
-      { "<leader>nM", "<CMD>Neogit remote<CR>", desc = "Neogit remote" },
-      { "<leader>nP", "<CMD>Neogit push<CR>", desc = "Neogit push" },
-      { "<leader>nX", "<CMD>Neogit reset<CR>", desc = "Neogit reset" },
-      { "<leader>nZ", "<CMD>Neogit stash<CR>", desc = "Neogit stash" },
-      { "<leader>nb", "<CMD>Neogit branch<CR>", desc = "Neogit branch" },
-      { "<leader>nc", "<CMD>Neogit commit<CR>", desc = "Neogit commit" },
-      { "<leader>nf", "<CMD>Neogit fetch<CR>", desc = "Neogit fetch" },
-      { "<leader>nl", "<CMD>Neogit log<CR>", desc = "Neogit log" },
-      { "<leader>nm", "<CMD>Neogit merge<CR>", desc = "Neogit merge" },
-      { "<leader>np", "<CMD>Neogit pull<CR>", desc = "Neogit pull" },
-      { "<leader>nr", "<CMD>Neogit rebase<CR>", desc = "Neogit rebase" },
-      { "<leader>nv", "<CMD>Neogit revert<CR>", desc = "Neogit revert" },
     },
   },
 }

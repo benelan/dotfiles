@@ -61,6 +61,8 @@ return {
         { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist locations (telescope)" },
         { "<leader>fc", function() builtin.commands() end, desc = "Find commands (telescope)" },
         { "<leader>fk", function() builtin.keymaps() end, desc = "Find keymaps (telescope)" },
+        { "<leader>fh", function() builtin.help_tags() end, desc = "Find keymaps (telescope)" },
+        { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Find in buffer (telescope)" },
@@ -85,7 +87,7 @@ return {
         } end, desc = "LSP document symbols (telescope)" },
 
         -- Git keymaps
-        { "<C-p>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
+        { "<C-g>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
         { "<leader>fgf", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
         { "<leader>fgb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
         { "<leader>fgs", function() builtin.git_status() end, desc = "Git status (telescope)" },
@@ -96,6 +98,33 @@ return {
       }
     end,
     opts = function()
+      local function open_in_quickfix(...)
+        require("telescope.actions").smart_send_to_qflist(...)
+        require("telescope.actions").open_qflist(...)
+      end
+
+      local function flash_jump(prompt_bufnr)
+        local has_flash, flash = pcall(require, "flash")
+        if has_flash then
+          flash.jump {
+            pattern = "^",
+            label = { after = { 0, 0 } },
+            search = {
+              mode = "search",
+              exclude = {
+                function(win)
+                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+                end,
+              },
+            },
+            action = function(match)
+              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+              picker:set_selection(match.pos[1] - 1)
+            end,
+          }
+        end
+      end
+
       -- use the same mappings in insert and normal mode
       local mappings = {
         ["<C-c>"] = "close",
@@ -113,10 +142,8 @@ return {
         ["<M-l>"] = require("telescope.actions.layout").cycle_layout_next,
         ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
-        ["<C-q>"] = function(...)
-          require("telescope.actions").smart_send_to_qflist(...)
-          require("telescope.actions").open_qflist(...)
-        end,
+        ["<C-q>"] = open_in_quickfix,
+        ["<M-s>"] = flash_jump,
       }
 
       return {
@@ -138,7 +165,7 @@ return {
           buffers = {
             sort_lastused = true,
             sort_mru = true,
-            initial_mode = "normal",
+            -- initial_mode = "normal",
             mappings = {
               i = { ["<M-d>"] = "delete_buffer" },
               n = { ["dd"] = "delete_buffer" },
