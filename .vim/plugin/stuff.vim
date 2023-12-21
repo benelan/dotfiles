@@ -407,6 +407,13 @@ if isdirectory(expand("$LIB/fzf")) && executable("fzf")
         \    ]
         \ },<bang>0))
 
+    command! -bang Files
+        \ call fzf#run(fzf#wrap("files", {
+        \    "options": [
+        \        "--preview", "~/.vim/bin/fzf-preview.sh {}"
+        \    ]
+        \ },<bang>0))
+
     " The query history for this command will be stored as "ls" inside g:fzf_history_dir.
     " The name is ignored if g:fzf_history_dir is not defined.
     command! -bang -complete=dir -nargs=? LS

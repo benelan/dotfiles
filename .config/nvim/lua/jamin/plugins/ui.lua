@@ -1,6 +1,7 @@
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
+    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/gruvbox-material",
     lazy = false,
     priority = 42069,
     config = function()

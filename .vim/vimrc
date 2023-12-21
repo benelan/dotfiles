@@ -321,7 +321,9 @@ if has("keymap")
 
     if isdirectory(expand("$HOME/dev/lib/fzf"))
         set runtimepath+=~/dev/lib/fzf
-        nnoremap <leader>ff :FZF<CR>
+        nnoremap <C-p> :Files<CR>
+        nnoremap <C-g> :GFiles<CR>
+        nnoremap <leader>ff :Files<CR>
         nnoremap <leader>fg :GFiles<CR>
         nnoremap <leader>fb :Buffers<CR>
         nnoremap <leader>fd :LS<CR>

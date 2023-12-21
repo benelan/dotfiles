@@ -19,6 +19,8 @@ keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 -- open current directory with file explorer
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
+keymap("n", "<leader>T", "<CMD>InspectTree<CR>", "InspectTree")
+
 -- remaps to center movement in the screen
 keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
 keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
@@ -292,7 +294,7 @@ keymap({ "n", "i" }, "<M-w>", "<CMD>write<CR>", "Write buffer")
 keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
 
 keymap("n", "<leader>w", "<CMD>write<CR>", "Write buffer")
-keymap("n", "<leader>x", "<CMD>bdelete<CR>", "Close buffer")
+keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------
 ----> Toggle options

@@ -3,7 +3,9 @@ local res = require "jamin.resources"
 return {
   {
     -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
-    dir = "~/.vim/pack/foo/opt/vifm.vim",
+    dir = vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim",
+    cond = vim.fn.executable "vifm" == 1
+      and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "-", "<CMD>Vifm<CR>" } },
@@ -15,13 +17,14 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    dir = "~/dev/lib/fzf", -- fzf comes with a very minimal vim plugin
+    dir = vim.env.LIB .. "/fzf", -- fzf comes with a very minimal vim plugin
+    cond = vim.fn.executable "fzf" == 1 and vim.fn.isdirectory(vim.env.LIB .. "/fzf"),
     cmd = { "FZF" },
     keys = {
-      { "<leader>fzf", "<CMD>FZF<CR>", desc = "FZF Files" },
-      -- the following keymaps are defined in ~/.vim/plugin/stuff.vim
+      { "<leader>fzf", "<CMD>Files<CR>", desc = "FZF Files" },
       { "<leader>fzg", "<CMD>GFiles<CR>", desc = "FZF Git Files" },
       { "<leader>fzb", "<CMD>Buffers<CR>", desc = "FZF Buffers" },
+      { "<leader>fzl", "<CMD>LS<CR>", desc = "FZF LS" },
     },
   },
   -----------------------------------------------------------------------------
