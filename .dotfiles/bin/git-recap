@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# Show a summary of the commits, authors, and files in a Git repo
-# https://github.com/whiteinge/dotfiles/blob/master/bin/git-summary
+# Show a recap of the commits, authors, and files in a Git repo
+# https://github.com/whiteinge/dotfiles/blob/master/bin/git-recap
 #
 # Requires GNU datamash.
 # Omit file stats with `-f` for a substantially faster processing time for
@@ -9,8 +9,8 @@
 #
 # Usage:
 #
-#     git summary
-#     git summary -f
+#     git recap
+#     git recap -f
 
 show_files=1
 while getopts hf opt; do
@@ -98,14 +98,14 @@ git log --no-renames ${show_files:+--numstat} \
             "First Commit", sha, auth_date, reldate,
             "Last Commit", last_sha, last_date, last_reldate)
 
-        summary_cmd = "datamash transpose"
-        print "Commits", commit_count | summary_cmd
-        print "Files", alen(file_list) | summary_cmd
-        print "Lines", lines_changed_count | summary_cmd
-        print "Authors", alen(author_list) | summary_cmd
-        print "Committers", alen(committer_list) | summary_cmd
-        print "Active Days", alen(active_days) | summary_cmd
-        close(summary_cmd)
+        recap_cmd = "datamash transpose"
+        print "Commits", commit_count | recap_cmd
+        print "Files", alen(file_list) | recap_cmd
+        print "Lines", lines_changed_count | recap_cmd
+        print "Authors", alen(author_list) | recap_cmd
+        print "Committers", alen(committer_list) | recap_cmd
+        print "Active Days", alen(active_days) | recap_cmd
+        close(recap_cmd)
 
         printf("\nTop days:\n\n")
         weekday_cmd = "sort -n -r | cut -f2,3 | datamash transpose"

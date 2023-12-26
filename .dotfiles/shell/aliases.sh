@@ -180,7 +180,7 @@ alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 # Web Development
 # -----------------------------------------------------------------------------
 
-alias chromium_debug='$WORKBROWSER --remote-debugging-port=9222 --user-data-dir=remote-debug-profile'
+alias chromium_debug='$BROWSER --remote-debugging-port=9222 --user-data-dir=remote-debug-profile'
 
 # node/npm
 if is-supported npm; then

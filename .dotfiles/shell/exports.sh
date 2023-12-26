@@ -54,55 +54,59 @@ elif is-supported vi; then
     EDITOR="vi"
 fi
 
-TERMINAL="gnome-terminal"
+TERMINAL="x-terminal-emulator"
 # is-supported wezterm && TERMINAL="wezterm"
 
-TERMBROWSER="sensible-browser"
+TERM_BROWSER="sensible-browser"
 if is-supported w3m; then
-    TERMBROWSER="w3m"
+    TERM_BROWSER="w3m"
 elif is-supported lynx; then
-    TERMBROWSER="lynx"
+    TERM_BROWSER="lynx"
 elif is-supported links2; then
-    TERMBROWSER="links2"
+    TERM_BROWSER="links2"
+elif is-supported www-browser; then
+    TERM_BROWSER="www-browser"
 fi
 
 BROWSER="sensible-browser"
-if is-supported firefox; then
-    BROWSER="firefox"
+if is-supported brave-browser; then
+    BROWSER="brave-browser"
 elif is-supported vivaldi; then
     BROWSER="vivaldi"
 elif is-supported chromium-browser; then
     BROWSER="chromium-browser"
-elif is-supported brave-browser; then
-    BROWSER="brave-browser"
 elif is-supported google-chrome; then
     BROWSER="google-chrome"
+elif is-supported firefox; then
+    BROWSER="firefox"
+elif is-supported gnome-www-browser; then
+    HOME_BROWSER="gnome-www-browser"
 fi
 
-ALTBROWSER="sensible-browser"
-if is-supported vivaldi && [ $BROWSER != "vivaldi" ]; then
-    ALTBROWSER="vivaldi"
+HOME_BROWSER=$BROWSER
+if is-supported firefox && [ $BROWSER != "firefox" ]; then
+    HOME_BROWSER="firefox"
+elif is-supported vivaldi && [ $BROWSER != "vivaldi" ]; then
+    HOME_BROWSER="vivaldi"
 elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ]; then
-    ALTBROWSER="chromium-browser"
-elif is-supported brave-browser && [ $BROWSER != "brave-browser" ]; then
-    ALTBROWSER="brave-browser"
+    HOME_BROWSER="chromium-browser"
 elif is-supported google-chrome && [ $BROWSER != "google-chrome" ]; then
-    ALTBROWSER="google-chrome"
+    HOME_BROWSER="google-chrome"
 fi
 
-WORKBROWSER="sensible-browser"
-if is-supported brave-browser && [ $BROWSER != "brave-browser" ] &&
-    [ $ALTBROWSER != "brave-browser" ]; then
-    WORKBROWSER="brave-browser"
-elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ] &&
-    [ $ALTBROWSER != "chromium-browser" ]; then
-    WORKBROWSER="chromium-browser"
-elif is-supported google-chrome && [ $BROWSER != "google-chrome" ] &&
-    [ $ALTBROWSER != "google-chrome" ]; then
-    WORKBROWSER="google-chrome"
+ALT_BROWSER=$HOME_BROWSER
+if is-supported vivaldi &&
+    [ $HOME_BROWSER != "vivaldi" ] && [ $BROWSER != "vivaldi" ]; then
+    ALT_BROWSER="vivaldi"
+elif is-supported chromium-browser &&
+    [ $HOME_BROWSER != "chromium-browser" ] && [ $BROWSER != "chromium-browser" ]; then
+    ALT_BROWSER="chromium-browser"
+elif is-supported google-chrome &&
+    [ $HOME_BROWSER != "google-chrome" ] && [ $BROWSER != "google-chrome" ]; then
+    ALT_BROWSER="google-chrome"
 fi
 
-export EDITOR TERMINAL BROWSER TERMBROWSER ALTBROWSER WORKBROWSER
+export EDITOR TERMINAL BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
@@ -179,9 +183,6 @@ if is-supported fff; then
     export FFF_FAV9="$NOTES"
 fi
 
-if is-supported gh; then
-    export GH_BROWSER="$WORKBROWSER"
-fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # my tools                                                    {{{
 
@@ -194,6 +195,7 @@ if is-supported git-mux; then
 
     # shell commands or an executable on PATH to run after a new worktree is created
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree"
+    export GIT_MUX_NEW_SESSION_CMD='git fetch --all --prune 2>/dev/null'
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"

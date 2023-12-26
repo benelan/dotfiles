@@ -115,9 +115,6 @@ if has("keymap")
 
     "" general keymaps                                            {{{
 
-    nnoremap <leader>q :q<cr>
-    nnoremap <leader>w :w<cr>
-
     nnoremap Y y$
     vnoremap Y y
 
@@ -238,10 +235,10 @@ if has("keymap")
     "" buffers, tabs, and windows                                 {{{
 
     "" close buffer
-    nnoremap <leader>x :bdelete<CR>
+    nnoremap <leader><Delete> :bdelete<CR>
+    nnoremap <leader>q :q<CR>
+    nnoremap <leader>w :w<CR>
 
-    "" close all the buffers
-    nnoremap <leader>xa :bufdo bdelete<CR>
 
     "" picks buffer
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
@@ -257,8 +254,8 @@ if has("keymap")
     au TabLeave * let s:last_tab = tabpagenr()
 
     " Create splits
-    nnoremap <leader>- :split<cr>
-    nnoremap <leader>\ :vsplit<cr>
+    nnoremap <leader>- :split<CR>
+    nnoremap <leader>\ :vsplit<CR>
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -329,22 +326,22 @@ if has("keymap")
         nnoremap <leader>fd :LS<CR>
     endif
 
-    nnoremap <leader>u <CMD>packadd undotree<CR><cmd>UndotreeToggle<cr>
+    nnoremap <leader>u <CMD>packadd undotree<CR><CMD>UndotreeToggle<CR>
 
-    nnoremap - <CMD>packadd vifm.vim<CR><cmd>Vifm<cr>
+    nnoremap - <CMD>packadd vifm.vim<CR><CMD>Vifm<CR>
 
-    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><cmd>G<cr>
-    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><cmd>G commit<cr>
-    nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><cmd>G blame<cr>
-    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><cmd>Gdiffsplit<cr>
-    nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><cmd>0Gclog --follow<cr>
+    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><CMD>G<CR>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>G commit<CR>
+    nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><CMD>G blame<CR>
+    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gdiffsplit<CR>
+    nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><CMD>0Gclog --follow<CR>
     xnoremap <leader>gl :Gclog --follow<CR>
 
-    nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><cmd>G difftool -y<cr>
-    nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><cmd>G mergetool -y<cr>
+    nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><CMD>G difftool -y<CR>
+    nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><CMD>G mergetool -y<CR>
 
-    nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><cmd>Gwrite<cr>
-    nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><cmd>Gread<cr>
+    nnoremap <leader>gW <CMD>packadd vim-fugitive<CR><CMD>Gwrite<CR>
+    nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><CMD>Gread<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif

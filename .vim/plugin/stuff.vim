@@ -8,7 +8,7 @@ let g:loaded_jamin_stuff = 1
 let g:qf_disable_statusline = 1
 let g:markdown_recommended_style = 0
 
-" Helps with syntax highlighting by specififying filetypes
+" Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
     \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
@@ -95,11 +95,11 @@ onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
 " Line text objects including spaces/newlines
 xnoremap al $o0
-onoremap al <cmd>normal val<CR>
+onoremap al <CMD>normal val<CR>
 
 " Line text objects excluding spaces/newlines
 xnoremap il <Esc>^vg_
-onoremap il <cmd>normal! ^vg_<CR>
+onoremap il <CMD>normal! ^vg_<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
@@ -193,7 +193,7 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 "" toggle quickfix list open/close                            {{{
 
 com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif"
-nnoremap <C-q> <cmd>QfToggle<CR>
+nnoremap <C-q> <CMD>QfToggle<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" quickfix list to/from file for later access                {{{
@@ -314,7 +314,7 @@ command! -bang -complete=buffer -nargs=? Bdelete
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
 
-nnoremap <silent> <leader><Delete> :Bdelete<CR>
+nnoremap <silent> <leader>x :Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fugitive open commit's diff per file                       {{{
@@ -473,8 +473,8 @@ if has("autocmd")
 
     augroup jamin_global_marks
         autocmd!
-        " Clear actively used marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks WQAZ
+        " Clear actively used file marks to prevent jumping to other projects
+        autocmd VimEnter *  delmarks QWEASD
 
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave \(//:\)\@<!*.css,
@@ -488,7 +488,7 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.svelte,
                         \\(//:\)\@<!*.vue,
                         \\(//:\)\@<!*.astro
-                            \ normal! mE
+                            \ normal! mF
 
         autocmd BufLeave \(//:\)\@<!*.js,
                             \ normal! mJ
@@ -512,7 +512,7 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.sh,
                         \\(//:\)\@<!*.bash,
                         \\(//:\)\@<!$DOTFILES/bin/*
-                            \ normal! mS
+                            \ normal! mB
 
         autocmd BufLeave \(//:\)\@<!*.lua
                             \ normal! mL
@@ -524,7 +524,7 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.csv,
                         \\(//:\)\@<!*.json,
                         \\(//:\)\@<!*.toml
-                            \ normal! mD
+                            \ normal! mI
 
         autocmd BufLeave \(//:\)\@<!*.yml,
                         \\(//:\)\@<!*.yaml

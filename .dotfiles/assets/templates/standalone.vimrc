@@ -86,7 +86,7 @@ hi! link TabLineFill Statusline
 "" markdown settings                                          {{{
 let g:markdown_recommended_style = 0
 
-" Helps with syntax highlighting by specififying filetypes
+" Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
     \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
@@ -98,8 +98,8 @@ let g:markdown_fenced_languages = [
     \ ]
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
 "" netrw settings                                             {{{
+
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
 " let g:netrw_keepdir = 0
@@ -124,11 +124,18 @@ if has("keymap")
     let maplocalleader = "\\"
 
     "" general keymaps                                            {{{
+
     nnoremap Y y$
     vnoremap Y y
 
     nnoremap q: :
-    nnoremap Q gq
+
+    " Format the entire buffer preserving cursor location.
+    " Requires the 'B' text object defined below.
+    nmap Q mFgqBg`F
+
+    " Format selected text maintaining the selection.
+    xmap Q gq`[v`]
 
     nnoremap <Backspace> <C-^>
 
@@ -149,7 +156,7 @@ if has("keymap")
     " Use the repeat operator with a visual selection. This is useful for
     " performing an edit on a single line, then highlighting a visual block
     " on a number of lines to repeat the edit.
-    vnoremap . :normal .<cr>
+    vnoremap . :normal .<CR>
 
     " Repeat a macro on a visual selection of lines. Complete the command by
     " choosing the register containing the macro.
@@ -176,7 +183,7 @@ if has("keymap")
     cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
     " expand the buffer's directory
-    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
     " use last changed or yanked text as an object
     onoremap V :<C-U>execute "normal! `[v`]"<CR>
@@ -184,10 +191,19 @@ if has("keymap")
     " use entire buffer as an object
     onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
+    " Line text objects including spaces/newlines
+    xnoremap al $o0
+    onoremap al <CMD>normal val<CR>
+
+    " Line text objects excluding spaces/newlines
+    xnoremap il <Esc>^vg_
+    onoremap il <CMD>normal! ^vg_<CR>
+
     tnoremap <Esc><Esc> <C-\><C-n>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" system clipboard                                           {{{
+
     nnoremap <leader>y "+y
     vnoremap <leader>y "+y
     nnoremap <leader>Y "+y$
@@ -200,10 +216,11 @@ if has("keymap")
 
     nnoremap x "_x
 
-    nnoremap gy <cmd>let @+=@*<cr>
+    nnoremap gY <CMD>let @+=@*<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" clear search highlights and reset syntax                   {{{
+
     nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>
                 \:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 
@@ -215,22 +232,22 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
-    nnoremap <leader>gw :diffget <bar> diffupdate<CR>
-    vnoremap <leader>gw :diffget <bar> diffupdate<CR>
+
+    nnoremap <leader>gw :diffget<BAR>diffupdate<CR>
+    vnoremap <leader>gw :diffget<BAR>diffupdate<CR>
     nnoremap <leader>gr :diffget<CR>
     vnoremap <leader>gr :diffget<CR>
 
-    nnoremap <leader>mu :diffupdate<CR>
-    nnoremap <leader>mb :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>mB :%diffget BA <bar> diffupdate<CR>
+    nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
+    nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
-    nnoremap <leader>mh :diffget LO <bar> diffupdate<CR>
-    nnoremap <leader>mH :%diffget LO <bar> diffupdate<CR>
+    nnoremap [x :diffget LO<BAR>diffupdate<CR>
+    nnoremap [X :%diffget LO<BAR>diffupdate<CR>
 
     " REMOTE is the rightmost buffer
-    nnoremap <leader>ml :diffget RE <bar> diffupdate<CR>
-    nnoremap <leader>mL :%diffget RE <bar> diffupdate<CR>
+    nnoremap ]x :diffget RE<BAR>diffupdate<CR>
+    nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{
@@ -264,9 +281,18 @@ if has("keymap")
     nnoremap [T :tlast<CR>
     nnoremap ]T :tfirst<CR>
 
-    "" Fix next/prev spelling error
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" spelling                                                   {{{
+
+    " fix the next/previous misspelled word
     nnoremap [S [s1z=
     nnoremap ]S ]s1z=
+
+    " fix the misspelled word under the cursor
+    nnoremap <M-z> 1z=
+
+    " fix the previous misspelled word w/o moving cursor
+    inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" buffers, tabs, and windows                                 {{{
@@ -274,16 +300,18 @@ if has("keymap")
     "" pick buffer to jump to
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
-    "" delete buffer
-    nnoremap <silent> <leader>bd :bdelete<CR>
+    "" delete/quit/save buffer
+    nnoremap <leader><Delete> :bdelete<CR>
+    nnoremap <leader>q :quit<CR>
+    nnoremap <leader>w :write<CR>
 
     " Open a new tab of the current buffer and cursor position
-    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<cr>
+    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<CR>
 
     "" Managing tabs
-    nnoremap <leader>tn :tabnew<cr>
-    nnoremap <leader>to :tabonly<cr>
-    nnoremap <leader>tc :tabclose<cr>
+    nnoremap <leader>tn :tabnew<CR>
+    nnoremap <leader>to :tabonly<CR>
+    nnoremap <leader>tc :tabclose<CR>
 
     "" toggles between this and the last accessed tab
     let s:last_tab = 1
@@ -291,8 +319,8 @@ if has("keymap")
     au TabLeave * let s:last_tab = tabpagenr()
 
     " Create splits
-    nnoremap <leader>- :split<cr>
-    nnoremap <leader>\ :vsplit<cr>
+    nnoremap <leader>- :split<CR>
+    nnoremap <leader>\ :vsplit<CR>
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -310,45 +338,56 @@ if has("keymap")
     "" toggle options                                             {{{
 
     "" toggles highlighted cursor row; doesn't work in visual mode
-    nnoremap <leader>sx <CMD>set cursorline!<CR>
+    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
 
     "" toggles highlighted cursor column; works in visual mode
-    noremap <leader>sy <CMD>set cursorcolumn!<CR>
+    noremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
     "" toggles highlighting search results
-    nnoremap <leader>sh <CMD>set hlsearch!<CR>
+    nnoremap <leader>sh <CMD>set hlsearch!<CR><CMD>set hlsearch?<CR>
 
     "" toggles showing matches as I enter my pattern
-    nnoremap <leader>si <CMD>set incsearch!<CR>
+    nnoremap <leader>si <CMD>set incsearch!<CR><CMD>set incsearch?<CR>
 
     "" toggles spell checking
-    nnoremap <leader>ss <CMD>set spell!<CR>
+    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
 
     "" toggles paste
-    nnoremap <leader>sp <CMD>set paste!<CR>
+    nnoremap <leader>sp <CMD>set paste!<CR><CMD>set paste?<CR>
 
     "" toggles showing tab, end-of-line, and trailing white space
-    noremap <leader>sl <CMD>set list!<CR>
+    nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
 
     "" toggles line number display
-    noremap <leader>sn <CMD>set relativenumber!<CR>
+    nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
+
+    "" toggles ability to modify buffer
+    nnoremap <leader>sM <CMD>set modifiable!<CR><CMD>set modifiable?<CR>
 
     "" toggles soft wrapping
-    noremap <leader>sw <CMD>set wrap!<CR>
+    nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
+
+    "" toggles conceal
+    nnoremap <leader>sC <CMD>execute "set conceallevel="
+                \ . (&conceallevel == "0" ? "2" : "0")<CR>
+                \ <CMD>set conceallevel?<CR>
 
     "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                     \ . (&colorcolumn == "" ? "80" : "")<CR>
+                    \ <CMD>set colorcolumn?<CR>
 
     "" toggle foldcolumn
     nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
                     \ . (&foldcolumn == "0" ? "1" : "0")<CR>
+                    \ <CMD>set foldcolumn?<CR>
 
     "" toggle system clipboard
     nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
                     \ . (&clipboard == "umnamed"
                         \ ? "unnamed,unnamedplus"
                         \ : "unnamed")<CR>
+                        \ <CMD>set clipboard?<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
@@ -358,15 +397,18 @@ endif
 " --------------------------------------------------------------------- {|}
 
 if has("eval")
-    "" :W sudo saves the file
+    "" sudo save the file                                         {{{
     command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle quickfix list open/close                            {{{
+
     command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
-    nnoremap <C-q> <cmd>QfToggle<cr>
+    nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" system grep function and user command                      {{{
+
     function! Grep(...)
         return system(join([&grepprg] + [expandcmd(join(a:000, " "))], " "))
     endfunction
@@ -375,6 +417,7 @@ if has("eval")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle netrw open/close                                    {{{
+
     function! s:NetrwToggle()
     try | Rexplore
     catch | Explore
@@ -386,11 +429,12 @@ if has("eval")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" save the value of the last visual selection                {{{
+
     function! VisualSelection(...) range
         let l:saved_reg = @"
         execute "normal! vgvy"
 
-        let l:pattern = escape(@", " \\/.'`~!@#$%^&*+()[]{}|")
+        let l:pattern = escape(@", " \\/.'`~!@#$%^&*+[]{}|")
         let l:pattern = substitute(l:pattern, "\n$", "", "")
 
         if a:0 > 0 && a:1 == "replace"
@@ -408,6 +452,7 @@ if has("eval")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" delete buffer without closing window                       {{{
+
     function s:BgoneHeathen(action, bang)
     let l:cur = bufnr("%")
     let l:alt = bufnr("#")
@@ -422,10 +467,23 @@ if has("eval")
     command! -bang -complete=buffer -nargs=? Bwipeout
         \ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
-    nnoremap <silent> <leader><Delete> :Bdelete<CR>
+    nnoremap <silent> <leader>x :Bdelete<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" go to next/previous merge conflict hunks                   {{{
+
+    "" from https://github.com/tpope/vim-unimpaired
+    function! s:findConflict(reverse) abort
+    call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
+    endfunction
+
+    nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
+    nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
 endif
+
 " --------------------------------------------------------------------- }}}
 " Autocommands                                                          {{{
 " --------------------------------------------------------------------- {|}
@@ -459,6 +517,9 @@ if has("autocmd")
               \ endif
         endif
 
+        " Clear actively used file marks to prevent jumping to other projects
+        autocmd VimEnter *  delmarks QWEASD
+
         " Set up formatters
         autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
@@ -469,9 +530,9 @@ if has("autocmd")
     augroup END
 endif
 
-"----------------------------------------------------------------------}}}
-"  Text objects                                                        {|}
-"----------------------------------------------------------------------{|}
+"-----------------------------------------------------------------------}}}
+" Text objects                                                          {{{
+"-----------------------------------------------------------------------{|}
 
 if has("eval")
     "" Indentation                                                 {{{
@@ -538,11 +599,11 @@ endif
 " --------------------------------------------------------------------- {|}
 
 if has("eval")
-    "" Replace operator                                           {{{
-    "" Replace text selected with a motion with the contents
+    "" Substitute operator                                        {{{
+    "" Substitute text selected with a motion with the contents
     "" of a register in a repeatable way.
     "" https://dev.sanctum.geek.nz/cgit/vim-replace-operator
-    function! ReplaceOperator(type) abort
+    function! SubstituteOperator(type) abort
         " Save the current value of the unnamed register and the current value of
         " the 'clipboard' and 'selection' options into a dictionary for restoring
         " after this is all done
@@ -585,14 +646,14 @@ if has("eval")
     endfunction
 
     " Helper function for normal mode map
-    function! s:operators_replace(register) abort
+    function! s:operatorssubstitute(register) abort
         let s:register = a:register
-        set operatorfunc=ReplaceOperator
+        set operatorfunc=SubstituteOperator
         return 'g@'
     endfunction
 
-    nnoremap <expr> <leader>r <SID>operators_replace(v:register)
-    vnoremap <expr> <leader>r <SID>operators_replace(v:register)
+    nnoremap <expr> gs <SID>operatorssubstitute(v:register)
+    vnoremap <expr> gs <SID>operatorssubstitute(v:register)
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Colon operator                                             {{{

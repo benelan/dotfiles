@@ -21,7 +21,7 @@ return {
     ft = { "markdown" },
     keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
     config = function()
-      vim.g.mkdp_browser = vim.env.ALTBROWSER or vim.env.BROWSER or "o"
+      vim.g.mkdp_browser = vim.env.ALT_BROWSER or vim.env.BROWSER or "o"
       vim.g.mkdp_auto_close = false
     end,
   },

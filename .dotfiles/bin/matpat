@@ -113,7 +113,7 @@ if [ -z "$MATPAT_OPEN_CMD" ]; then
         MATPAT_OPEN_CMD="xdg-open" # Linux
     elif has open; then
         MATPAT_OPEN_CMD="open" # OSX
-    elif [ -z "$BROWSER" ]; then
+    else
         MATPAT_OPEN_CMD="$BROWSER" # Fallback
     fi
     logger "INFO " "MATPAT_OPEN_CMD environment variable is not set, defaulting to \"$MATPAT_OPEN_CMD\""

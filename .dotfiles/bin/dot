@@ -1176,9 +1176,10 @@ all_installs() {
 
 deps_help() {
     if [ -n "$*" ]; then
-        printf "Error: %s\n\n" "$*" >&2
+        printf "Error: %s\n" "$*" >&2
     fi
     cat <<EOF
+
 Install dependencies by category or name.
 
 Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>]
@@ -1244,7 +1245,7 @@ deps_parse_flags() {
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
 
-    while getopts Bb:Uu:Ll:Ss:Tt:Pp:n:Aho opt; do
+    while getopts Bb:Uu:Ll:Ss:Tt:Pp:n:Ao opt; do
         case $opt in
             B) build_installs ;;
             b) install_build_"${OPTARG}" ;;
@@ -1268,8 +1269,7 @@ deps_parse_flags() {
 
             A) all_installs ;;
             o) deps_list ;;
-            h) deps_help ;;
-            *) deps_help "invalid flag: \"$opt\"" ;;
+            *) deps_help ;;
         esac
     done
 

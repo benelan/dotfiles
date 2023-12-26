@@ -12,7 +12,7 @@ help() {
         printf "Error: %s\nTry -h for more info.\n" "$*" >&2
     else
         cat <<EOF
-Open Miscrosoft Teams with a prefilled message to a user or group chat.
+Open Microsoft Teams with a prefilled message to a user or group chat.
 
 Usage:           $CMD [-m MESSAGE] [-u USER]...
 
@@ -31,7 +31,7 @@ Examples:
 Environment Variables:
   TEAMS_USER_LIST
       Path to a list for selecting user(s) with fzf, defaults to ~/.teamsbook
-      One user per line and the user's email must be first. Additional info 
+      One user per line and the user's email must be first. Additional info
       can optionally be added after the email for fuzzy finding. Fuzzy
       selecting does not occur when users are specified via the -u flag.
 
@@ -39,9 +39,9 @@ Troubleshooting:
   If you are using the Teams desktop application, try adding the following line
   under [Default Applications] in ~/.config/mimeapps.list
       x-scheme-handler/msteams=teams.desktop
-    
+
   If using the Teams web application (e.g. the PWA), you can specify the browser
-  to use via the "\$WORKBROWSER" or "\$BROWSER" environment variables.
+  to use via the "\$TEAMZ_BROWSER" or "\$BROWSER" environment variables.
 
 EOF
     fi
@@ -78,13 +78,13 @@ create_msg() {
 
     # Use the desktop app if installed, otherwise open in browser
     if has teams; then
-        TEAMS_URI="msteams:/l/chat/0/0"
+        TEAMS_URI="msteams:"
     else
-        TEAMS_URI="https://teams.microsoft.com/l/chat/0/0"
+        TEAMS_URI="https://teams.microsoft.com"
 
-        # Use a browser if set via environment variables if present
-        if has "$WORKBROWSER"; then
-            OPEN_CMD="$WORKBROWSER"
+        # Use a browser if set via environment variables
+        if has "$TEAMZ_BROWSER"; then
+            OPEN_CMD="$TEAMZ_BROWSER"
         elif has "$BROWSER"; then
             OPEN_CMD="$BROWSER"
         fi
@@ -99,11 +99,13 @@ create_msg() {
     fi
 
     # shellcheck disable=2086
-    printf "%s?users=%s&message=%s" \
-        "$TEAMS_URI" \
-        "$TEAMS_USERS" \
-        "$TEAMS_MESSAGE" |
-        xargs $OPEN_CMD 2>/dev/null
+
+    $OPEN_CMD "$(
+        printf "%s/l/chat/0/0?users=%s&message=%s" \
+            "$TEAMS_URI" \
+            "$TEAMS_USERS" \
+            "$TEAMS_MESSAGE"
+    )" 2>/dev/null
 }
 
 uri_encode_msg() {
@@ -124,15 +126,14 @@ main() {
         [ -z "$*" ] && help
     fi
 
-    while getopts m:u:h opt; do
+    while getopts m:u: opt; do
         case $opt in
             m) [ -n "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
             u)
                 [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$OPTARG" ||
                     TEAMS_USERS="$TEAMS_USERS,$OPTARG"
                 ;;
-            h) help ;;
-            *) help "invalid flag: \"$opt\"" ;;
+            *) help ;;
         esac
     done
 
