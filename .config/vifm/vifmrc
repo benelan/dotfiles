@@ -126,13 +126,13 @@ set tuioptions=psuv
 
 " :mark mark /full/directory/path [filename]
 mark h ~/
-mark d expand($DOTFILES)
-mark n expand($NOTES)
-mark p expand($PERSONAL)
-mark l expand($LIB)
-mark w expand($WORK)
-mark c expand($CALCITE)
 mark v ~/.config/nvim/
+execute 'mark d' fnameescape($DOTFILES)
+execute 'mark n' fnameescape($NOTES)
+execute 'mark p' fnameescape($PERSONAL)
+execute 'mark l' fnameescape($LIB)
+execute 'mark w' fnameescape($WORK)
+execute 'mark c' fnameescape($CALCITE)
 
 " --------------------------------------------------------------------- }}}
 " Commands                                                              {{{
