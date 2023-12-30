@@ -19,7 +19,6 @@ keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 -- open current directory with file explorer
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
-keymap("n", "<leader>T", "<CMD>InspectTree<CR>", "InspectTree")
 
 -- remaps to center movement in the screen
 keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
@@ -51,9 +50,6 @@ keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
-
--- directory navigation
-keymap("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", "Change directory to buffer")
 
 -- Search visually selected text
 -- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])

@@ -1,5 +1,4 @@
---------------------------------------------------------------------------------
---  Project root finder
+--  Git (worktree) and Project (lsp) root finders, adopted from:
 -- https://github.com/akinsho/dotfiles/blob/main/.config/nvim/plugin/rooter.lua
 --------------------------------------------------------------------------------
 
@@ -49,8 +48,8 @@ local function set_root(args)
       stop = vim.loop.os_homedir(),
     })[1]
 
-    -- swapping the order will prefer matches to root_names vs lsp roots
-    root = get_lsp_root(args.buf, ignored_lsps) or vim.fs.dirname(root_file)
+    -- swapping the order will prefer matches to lsp roots vs root_names
+    root = vim.fs.dirname(root_file) or get_lsp_root(args.buf, ignored_lsps)
   end
 
   if not root or root == vim.fn.getcwd() then return end
@@ -59,34 +58,39 @@ local function set_root(args)
   vim.fn.chdir(root)
 end
 
+-- Change directory to project root using LSP or file markers in `root_names`
+vim.api.nvim_create_user_command(
+  "Pcd",
+  function() set_root { buf = 0, file = vim.api.nvim_buf_get_name(0) } end,
+  { desc = "Change directory to project (lsp) root" }
+)
+
+-- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
+-- This is useful when working with monorepos, where the project root is not always the git root.
+vim.api.nvim_create_user_command("Wcd", function()
+  local worktree_root = vim.fn.trim(
+    vim.fn.system(
+      "git -C "
+        ---@diagnostic disable-next-line: param-type-mismatch
+        .. vim.fn.shellescape(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+        .. " rev-parse --show-toplevel"
+    )
+  )
+
+  if vim.v.shell_error == 0 and vim.fn.isdirectory(worktree_root) == 1 then
+    vim.fn.chdir(worktree_root)
+  else
+    vim.fn.chdir(vim.env.HOME)
+  end
+end, { desc = "Change directory to git (worktree) root" })
+
+-- keymaps for the user commands
+vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
+vim.keymap.set("n", "cp", "<CMD>Pcd<CR>", { desc = "Change directory to project (lsp) root" })
+vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
+
+-- automatically change directory to project root
 vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
   group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
   callback = set_root,
 })
-
--- Change directory to project root using LSP or file markers in `root_names`
-vim.api.nvim_create_user_command("Pcd", function()
-  set_root { buf = 0, file = vim.api.nvim_buf_get_name(0) }
-  vim.cmd "pwd"
-end, { desc = "Change directory to project root" })
-
-vim.keymap.set("n", "cp", "<CMD>Pcd<CR>", { desc = "Change directory to project (lsp) root" })
-
--- Change directory to the git worktree's root.
--- This is useful when working with monorepos, where the project root is not always the git root.
-vim.api.nvim_create_user_command("Gcd", function()
-  local worktree_root = vim.g.loaded_fugitive and vim.fn.FugitiveFind ":/"
-    or vim.fn.trim(
-      vim.fn.system(
-        "git -C "
-          .. vim.fn.shellescape(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) ---@diagnostic disable-line: param-type-mismatch
-          .. " rev-parse --show-toplevel"
-      )
-    )
-
-  if vim.v.shell_error == 0 and vim.fn.isdirectory(worktree_root) == 1 then
-    vim.cmd("chdir " .. worktree_root)
-  end
-end, { desc = "Change directory to the git repo root" })
-
-vim.keymap.set("n", "c/", "<CMD>Gcd<CR>", { desc = "Change directory to git worktree root" })

@@ -200,57 +200,141 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    -- NOTE: forked from https://github.com/ThePrimeagen/harpoon to add support
-    -- for setting marks/cmds specific to the root directory of a git worktree
-    "benelan/harpoon",
-    event = "VeryLazy",
-    -- dependencies = "vim-fugitive",
-    dev = true,
+    "ThePrimeagen/harpoon",
+    -- event = "VeryLazy",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
-      global_settings = {
-        mark_git_root = true, -- the option I added in the fork
+      settings = {
         save_on_toggle = true,
-        enter_on_sendcmd = true,
-        excluded_filetypes = res.filetypes.excluded,
-      },
-      projects = {
-        -- Docker commands for running StencilJS demos or e2e tests (Puppeteer and Jest)
-        -- They are mostly a workaround for: https://github.com/ionic-team/stencil/issues/3853
-        ["$WORK/calcite-design-system/main"] = {
-          term = {
-            cmds = {
-              -- symlink the Dockerfile to the cwd, which should be the root of a git worktree
-              "ln -f $WORK/calcite-design-system/Dockerfile",
-              -- builds the image
-              "docker build --tag calcite-components .",
-              -- runs e2e tests
-              "docker run --init --interactive --rm "
-                .. "--cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) "
-                .. "--name calcite-components_test calcite-components "
-                .. "npm --workspace=@esri/calcite-components run test -- -- --watchAll",
-              -- starts the dev server
-              "docker run --init --interactive --rm "
-                .. "--cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g) "
-                .. "--name calcite-components-start --publish 3333:3333 calcite-components "
-                .. "npm --workspace=@esri/calcite-components start",
-            },
-          },
-        },
+        sync_on_ui_close = true,
+        key = function()
+          -- Use a git remote url as the key for projects, falling back to the
+          -- git (worktree) root, project (lsp) root, or current directory
+          local git_remotes = { "origin", "upstream" }
+
+          for _, remote in ipairs(git_remotes) do
+            local remote_url = vim.fn.system("git remote get-url " .. remote)
+            if vim.v.shell_error == 0 then return remote_url end
+          end
+
+          vim.cmd "Wcd" -- change to the git (worktree) root
+          return vim.loop.cwd()
+        end,
       },
     },
-    -- stylua: ignore
+    ---@diagnostic disable-next-line: redundant-parameter
+    config = function(_, opts)
+      local harpoon = require "harpoon"
+
+      harpoon:setup(opts)
+      harpoon:extend {
+        UI_CREATE = function(cx)
+          vim.keymap.set(
+            "n",
+            "<M-v>",
+            function() harpoon.ui:select_menu_item { vsplit = true } end,
+            { buffer = cx.bufnr }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<M-s>",
+            function() harpoon.ui:select_menu_item { split = true } end,
+            { buffer = cx.bufnr }
+          )
+
+          vim.keymap.set(
+            "n",
+            "<M-t>",
+            function() harpoon.ui:select_menu_item { tabedit = true } end,
+            { buffer = cx.bufnr }
+          )
+        end,
+      }
+    end,
     keys = {
-      { "<M-h>", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon mark menu" },
-      { "<M-m>", function() require("harpoon.mark").add_file() end, desc = "Harpoon add file" },
-      { "<M-a>", function() require("harpoon.ui").nav_file(1) end, desc = "Harpoon mark 1" },
-      { "<M-s>", function() require("harpoon.ui").nav_file(2) end, desc = "Harpoon mark 2" },
-      { "<M-d>", function() require("harpoon.ui").nav_file(3) end, desc = "Harpoon mark 3" },
-      { "<M-f>", function() require("harpoon.ui").nav_file(4) end, desc = "Harpoon mark 4" },
-      { "<M-c>", function() require("harpoon.cmd-ui").toggle_quick_menu() end, desc = "Harpoon command menu" },
-      { "<M-1>", function() require("harpoon.tmux").sendCommand("{top-right}", 1) end, desc = "Harpoon send command 1" },
-      { "<M-2>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 2) end, desc = "Harpoon send command 2" },
-      { "<M-3>", function() require("harpoon.tmux").sendCommand("{top-right}", 3) end, desc = "Harpoon send command 3" },
-      { "<M-4>", function() require("harpoon.tmux").sendCommand("{bottom-right}", 4) end, desc = "Harpoon send command 4" },
+      {
+        "<M-h>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon toggle mark menu",
+      },
+      {
+        "<M-m>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():append()
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon append file",
+      },
+      {
+        "<M-S-m>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():prepend()
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon prepend file",
+      },
+      {
+        "<M-n>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():next()
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select next mark",
+      },
+      {
+        "<M-p>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():prev()
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select previous mark",
+      },
+      {
+        "<M-a>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():select(1)
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select mark 1",
+      },
+      {
+        "<M-s>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():select(2)
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select mark 2",
+      },
+      {
+        "<M-d>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():select(3)
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select mark 3",
+      },
+      {
+        "<M-f>",
+        function()
+          vim.cmd "Wcd"
+          require("harpoon"):list():select(4)
+          vim.cmd "Pcd"
+        end,
+        desc = "Harpoon select mark 4",
+      },
     },
   },
 }
