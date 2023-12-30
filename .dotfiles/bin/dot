@@ -910,15 +910,19 @@ install_theme_icons() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
-# Neovim version install function                                       {{{
+# Miscellaneous install functions                                       {{{
 # --------------------------------------------------------------------- {|}
+
+## Install Neovim                                              {{{
+
+_misc+="neovim "
 
 ## https://github.com/neovim/neovim/releases
 ## https://github.com/stevearc/dotfiles/blob/master/scripts/install_neovim.sh
-install_neovim() {
+install_misc_neovim() {
     set -e
 
-    DEST=${DEST:-"$HOME/.local/bin"}
+    DEST=${DEST:-"$BIN_DIR"}
     PROGRAM=${PROGRAM:-nvim}
     mkdir -p "$DEST/man/man1"
 
@@ -949,6 +953,23 @@ install_neovim() {
         -o "$DEST/man/man1/nvim.1"
     printf "\nInstalled %s" "$("$DEST/$PROGRAM" --version | head -n 1)"
 }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Vifm                                                {{{
+
+_misc+="vifm "
+
+install_misc_vifm() {
+    curl -Lo "$BIN_DIR/vifm" \
+        "https://github.com/vifm/vifm/releases/latest/download/vifm-v$(
+            curl -s "https://api.github.com/repos/vifm/vifm/releases/latest" |
+                grep '"tag_name":' |
+                sed -E 's/.*"v*([^"]+)".*/\1/'
+        )-x86_64.AppImage" &&
+        chmod +x "$BIN_DIR/vifm"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Git submodule install/build functions                                 {{{
@@ -1156,6 +1177,14 @@ build_installs() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Miscellaneous dependencies                                  {{{
+
+misc_installs() {
+    install_misc_neovim nightly
+    install_misc_vifm
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## All install groups                                          {{{
 
 all_installs() {
@@ -1189,6 +1218,7 @@ Flags:
   -A    Install all dependencies
   -B    Install all locally built dependencies
   -L    Install all programming languages
+  -M    Install all miscellaneous dependencies
   -P    Install all package manager dependencies
   -S    Install all shell script dependencies
   -T    Install all operating system theme dependencies
@@ -1196,6 +1226,7 @@ Flags:
 
   -b    Install a locally built dependency
   -l    Install a programming language
+  -m    Install a miscellaneous dependency
   -n    Install a specific version of neovim
   -p    Install a package manager dependency or (n)vim plugin
   -s    Install a shell script dependency
@@ -1212,7 +1243,7 @@ EOF
 ## Print list of installable dependencies                      {{{
 
 deps_list() {
-    printf "\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
+    printf "\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
         "PROGRAMMING LANGUAGES" \
         "$(echo "$_languages" | tr ' ' '\n' | sort)" \
         "PACKAGE MANAGER DEPENDENCIES" \
@@ -1222,7 +1253,9 @@ deps_list() {
         "UBUNTU-SPECIFIC DEPENDENCIES" \
         "$(echo "$_ubuntu" | tr ' ' '\n' | sort)" \
         "SHELL SCRIPT DEPENDENCIES" \
-        "$(echo "$_scripts" | tr ' ' '\n' | sort)"
+        "$(echo "$_scripts" | tr ' ' '\n' | sort)" \
+        "MISCELLANEOUS DEPENDENCIES" \
+        "$(echo "$_misc" | tr ' ' '\n' | sort)"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1245,13 +1278,16 @@ deps_parse_flags() {
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
 
-    while getopts Bb:Uu:Ll:Ss:Tt:Pp:n:Ao opt; do
+    while getopts Bb:Uu:Ll:Mm:Ss:Tt:Pp:n:Ao opt; do
         case $opt in
             B) build_installs ;;
             b) install_build_"${OPTARG}" ;;
 
             L) language_installs ;;
             l) install_language_"${OPTARG}" ;;
+
+            m) install_misc_"${OPTARG}" ;;
+            M) misc_installs ;;
 
             P) packages_installs ;;
             p) install_packages_"${OPTARG}" ;;
@@ -1265,7 +1301,7 @@ deps_parse_flags() {
             U) ubuntu_installs ;;
             u) install_ubuntu_"${OPTARG}" ;;
 
-            n) install_neovim "${OPTARG}" ;;
+            n) install_misc_neovim "${OPTARG}" ;;
 
             A) all_installs ;;
             o) deps_list ;;
