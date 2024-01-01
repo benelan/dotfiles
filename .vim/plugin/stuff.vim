@@ -5,6 +5,7 @@ let g:loaded_jamin_stuff = 1
 "  Settings                                                            {{{
 "----------------------------------------------------------------------{|}
 
+"" markdown/qf                                                {{{
 let g:qf_disable_statusline = 1
 let g:markdown_recommended_style = 0
 
@@ -19,8 +20,8 @@ let g:markdown_fenced_languages = [
     \ 'js=javascript', 'jsx=javascriptreact'
     \ ]
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  {|}
-"" netrw settings                                             {{{
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" netrw                                                      {{{
 
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
@@ -36,12 +37,15 @@ if exists("*netrw_gitignore#Hide")
 endif
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" tmux integration                                           {{{
 
 " Intelligently navigate tmux panes and Vim splits using the same keys.
 " See https://sunaku.github.io/tmux-select-pane.html
 let progname = substitute($VIM, '.*[/\\]', '', '')
 set title titlestring=%{progname}\ %f\ +%l\ #%{tabpagenr()}.%{winnr()}
 if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 "----------------------------------------------------------------------}}}
 "  Keymaps                                                             {{{
@@ -167,7 +171,7 @@ function! s:warn(msg)
   echohl WarningMsg | echom a:msg | echohl None
 endfunction
 
-"" Open GitHub PR in browser for <arg> or current             {{{
+"" open GitHub PR in browser for <arg> or current             {{{
 "" See $ gh pr view --help
 function! s:GitHubPR(bang, args) abort
     if !executable("gh")
@@ -556,7 +560,7 @@ if has("autocmd")
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" Use skeletons when creating specific new files         {{{
+    "" use skeletons when creating specific new files         {{{
 
     augroup jamin_skeletons
         autocmd!

@@ -174,10 +174,9 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>dd", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open Devdocs (filetype)" },
-      { "<leader>ddD", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs (filetype, floating)" },
+      { "<leader>dD", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs (filetype, floating)" },
       { "<leader>do", "<CMD>DevdocsOpen<CR>", desc = "Open Devdocs" },
       { "<leader>dO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open Devdocs (floating)" },
-      { "<leader>dU", "<CMD>DevdocsUpdateAll<CR>", desc = "Update Devdocs" },
     },
   },
 }

@@ -1,6 +1,11 @@
 return {
   -- keymaps/autocmds/utils/etc. shared with the vim config
-  { dir = "~/.vim", cond = vim.fn.isdirectory "~/.vim", lazy = false },
+  {
+    dir = "~/.vim",
+    priority = 420,
+    cond = vim.fn.isdirectory "~/.vim",
+    lazy = false,
+  },
   -----------------------------------------------------------------------------
   -- tpope plugins
   {
@@ -161,8 +166,8 @@ return {
     config = function()
       -- settings for neovim embedded in the browser
       if vim.g.started_by_firenvim then
-      keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>")
-      keymap("n", "<C-z>", "<Cmd>call firenvim#hide_frame()<CR>")
+        keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>")
+        keymap("n", "<C-z>", "<Cmd>call firenvim#hide_frame()<CR>")
 
         -- turn off some UI options
         vim.opt.showtabline = 0

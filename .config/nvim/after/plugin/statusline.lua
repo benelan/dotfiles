@@ -56,8 +56,8 @@ local function buffer_diagnostics(fallback)
     })
   end
 
-  local diag = format_numeric_state(data)
-  return diag ~= "" and string.format("  %s  ", diag) or fallback and fallback() or ""
+  local diagnostics = format_numeric_state(data)
+  return diagnostics ~= "" and string.format("  %s  ", diagnostics) or fallback and fallback() or ""
 end
 
 ---Show added/removed/changed line count via Gitsigns.

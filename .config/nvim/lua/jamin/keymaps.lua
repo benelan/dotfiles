@@ -19,7 +19,6 @@ keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 -- open current directory with file explorer
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
-
 -- remaps to center movement in the screen
 keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
 keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
@@ -82,31 +81,6 @@ vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
 
 keymap("n", "<leader>i", "<CMD>Inspect<CR>", "Inspect")
 keymap("n", "<leader>I", "<CMD>InspectTree<CR>", "InspectTree")
-
--------------------------------------------------------------------------------
-----> LSP
--------------------------------------------------------------------------------
-
-keymap("n", "K", vim.lsp.buf.hover, "LSP hover")
-keymap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
-keymap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
-keymap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-keymap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-keymap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
-keymap("i", "<C-k>", vim.lsp.buf.signature_help, "LSP signature help")
-keymap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
-keymap("n", "gr", vim.lsp.buf.references, "LSP references")
-keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
-keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-keymap({ "n", "v" }, "gF", function() vim.lsp.buf.format { async = true } end, "LSP format")
-keymap(
-  "n",
-  "gH",
-  function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
-  "Toggle LSP inlay hints"
-)
 
 -------------------------------------------------------------------------------
 ----> Lists
@@ -268,11 +242,7 @@ keymap("n", "<M-Down>", "<C-w>J", "Move window down")
 keymap("n", "<M-Up>", "<C-w>K", "Move window up")
 keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
--- close
 keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
-
-keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit")
-keymap("n", "<leader>q", "<CMD>quit<CR>", "Quit")
 
 -------------------------------------------------------------------------------
 ----> Tabs
@@ -288,8 +258,11 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 
 keymap({ "n", "i" }, "<M-w>", "<CMD>write<CR>", "Write buffer")
 keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
+keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit buffer")
 
+keymap("n", "<leader>q", "<CMD>quit<CR>", "Quit buffer")
 keymap("n", "<leader>w", "<CMD>write<CR>", "Write buffer")
+keymap("n", "<leader>W", "<CMD>wq<CR>", "Write and Quit buffer")
 keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------

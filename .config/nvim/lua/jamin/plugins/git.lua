@@ -6,7 +6,7 @@ return {
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
     keys = {
       { "<leader>g", "<CMD>Git<CR>", desc = "Fugitive status" },
-      { "<leader>gg", "<CMD>Git<CR>", desc = "Fugitive status" },
+      { "<leader>gs", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>Git commit<CR>", desc = "Fugitive commit" },
       { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },
       { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
@@ -99,6 +99,28 @@ return {
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
+      {
+        "]c",
+        function()
+          if vim.wo.diff then return "]c" end
+          vim.schedule(function() require("gitsigns").next_hunk() end)
+          return "<Ignore>"
+        end,
+        expr = true,
+        mode = "n",
+        desc = "Next hunk (gitsigns)",
+      },
+      {
+        "[c",
+        function()
+          if vim.wo.diff then return "[c" end
+          vim.schedule(function() require("gitsigns").prev_hunk() end)
+          return "<Ignore>"
+        end,
+        expr = true,
+        mode = "n",
+        desc = "Previous hunk (gitsigns)",
+      },
       { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk (gitsigns)", mode = { "o", "x" } },
       { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk (gitsigns)" },
       { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk (gitsigns)" },
@@ -106,8 +128,8 @@ return {
       { "[H", function() require("gitsigns").prev_hunk { wrap = false, preview = true } end, desc = "Previous hunk (gitsigns)" },
       { "<leader>hl", function() require("gitsigns").setloclist() end, desc = "Hunks to location list (gitsigns)" },
       { "<leader>hq", function() require("gitsigns").setqflist "all" end, desc = "Hunks to quickfix list (gitsigns)" },
-      { "<leader>hp", function() require("gitsigns").preview_hunk_inline() end, desc = "Preview hunk (gitsigns)" },
-      { "<leader>hP", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk (gitsigns)" },
+      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk (gitsigns)" },
+      { "<leader>hP", function() require("gitsigns").preview_hunk_inline() end, desc = "Preview hunk (gitsigns)" },
       { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk (gitsigns)", mode = "v" },
       { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk (gitsigns)", mode = "v" },
       { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk (gitsigns)", mode = "n" },
@@ -166,55 +188,56 @@ return {
           vim.keymap.set(
             "n",
             "<leader>pC",
-            "<CD>Octo pr checks<CR>",
+            "<CMD>Octo pr checks<CR>",
             { desc = "Show pull request checks (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
             "<leader>t<CR>",
-            "<CD>Octo thread resolve<CR>",
+            "<CMD>Octo thread resolve<CR>",
             { desc = "Resolve pull request review thread (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
             "<leader>t<Backspace>",
-            "<CD>Octo thread unresolve<CR>",
+            "<CMD>Octo thread unresolve<CR>",
             { desc = "Unresolve pull request review thread (octo)", silent = true, buffer = true }
           )
 
-          vim.keymap.set("n", "<leader>vc", "<CD>Octo review comments<CR>", {
-            desc = "Show pending pull request review comments (octo)",
-            silent = true,
-            buffer = true,
-          })
+          vim.keymap.set(
+            "n",
+            "<leader>vc",
+            "<CMD>Octo review comments<CR>",
+            { desc = "Show pending PR review comments (octo)", silent = true, buffer = true }
+          )
 
           vim.keymap.set(
             "n",
             "<leader>vr",
-            "<CD>Octo review resume<CR>",
+            "<CMD>Octo review resume<CR>",
             { desc = "Resume pull request review (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
             "<leader>vs",
-            "<CD>Octo review start<CR>",
+            "<CMD>Octo review start<CR>",
             { desc = "Start pull request review (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
             "<leader>v<CR>",
-            "<CD>Octo review submit<CR>",
+            "<CMD>Octo review submit<CR>",
             { desc = "Submit pull request review (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
             "<leader>v<Delete>",
-            "<CD>Octo review discard<CR>",
+            "<CMD>Octo review discard<CR>",
             { desc = "Discard pull request review (octo)", silent = true, buffer = true }
           )
 

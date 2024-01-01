@@ -201,6 +201,33 @@ return {
               }
             end
           end
+
+          -- lsp keymaps
+          keymap("n", "K", vim.lsp.buf.hover, "LSP hover")
+          keymap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
+          keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
+          keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
+          keymap("n", "gQ", vim.diagnostic.setqflist, "Quickfix diagnostics")
+          keymap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+          keymap("n", "gd", vim.lsp.buf.definition, "LSP definition")
+          keymap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
+          keymap("i", "<C-k>", vim.lsp.buf.signature_help, "LSP signature help")
+          keymap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
+          keymap("n", "gr", vim.lsp.buf.references, "LSP references")
+          keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
+          keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+          keymap(
+            { "n", "v" },
+            "gF",
+            function() vim.lsp.buf.format { async = true } end,
+            "LSP format"
+          )
+          keymap(
+            "n",
+            "gh",
+            function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
+            "Toggle LSP inlay hints"
+          )
         end,
       })
     end,

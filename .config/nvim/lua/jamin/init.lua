@@ -61,7 +61,6 @@ _G.R = function(name) require("plenary.reload").reload_module(name) end
 require "jamin.options"
 require "jamin.keymaps"
 require "jamin.commands"
-require "jamin.statusline"
 
 -- Neovim embedded in VSCode
 if vim.g.vscode then

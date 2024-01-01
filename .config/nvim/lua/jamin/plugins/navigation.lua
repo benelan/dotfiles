@@ -64,30 +64,27 @@ return {
         { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist locations (telescope)" },
         { "<leader>fc", function() builtin.commands() end, desc = "Find commands (telescope)" },
         { "<leader>fk", function() builtin.keymaps() end, desc = "Find keymaps (telescope)" },
-        { "<leader>fh", function() builtin.help_tags() end, desc = "Find keymaps (telescope)" },
-        { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
+        { "<leader>fh", function() builtin.help_tags() end, desc = "Find help tags (telescope)" },
+        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
+        { "<leader>f:", function() builtin.command_history() end, desc = "Find command history (telescope)" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Find in buffer (telescope)" },
-        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
-        { "<leader>f:", function() builtin.keymaps() end, desc = "Find command history (telescope)" },
+        { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
+        { "<M-g>", function() builtin.grep_string({ search = vim.fn.input("Grep > "), hidden = true}) end, desc = "Find text (telescope)" },
 
         -- LSP keymaps
-        { "<leader>lr", function() builtin.lsp_references() end, desc = "LSP references (telescope)" },
+        { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
         { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
         { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Quickfix history (telescope)" },
         { "<leader>ly", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
         { "<leader>li", function() builtin.lsp_implementations() end, desc = "LSP implementations (telescope)" },
 
         { "<leader>lD", function() builtin.diagnostics() end, desc = "LSP workspace diagnostics (telescope)" },
-        { "<leader>ld", function() builtin.diagnostics { bufnr = 0, theme = themes.get_ivy() } end, desc = "LSP document diagnostics (telescope)" },
+        { "<leader>ld", function() builtin.diagnostics { bufnr = 0 } end, desc = "LSP document diagnostics (telescope)" },
 
-        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols {
-          ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" },
-        } end, desc = "LSP workspace symbols (telescope)" },
-        { "<leader>ls", function() builtin.lsp_document_symbols {
-          ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" },
-        } end, desc = "LSP document symbols (telescope)" },
+        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols { ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" } } end, desc = "LSP workspace symbols (telescope)" },
+        { "<leader>ls", function() builtin.lsp_document_symbols { ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" } } end, desc = "LSP document symbols (telescope)" },
 
         -- Git keymaps
         { "<C-g>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
@@ -136,8 +133,6 @@ return {
         ["<C-u>"] = "results_scrolling_up",
         ["<C-f>"] = "preview_scrolling_down",
         ["<C-b>"] = "preview_scrolling_up",
-        ["<PageDown>"] = "preview_scrolling_down",
-        ["<PageUp>"] = "preview_scrolling_up",
         ["<C-j>"] = "move_selection_next",
         ["<C-k>"] = "move_selection_previous",
         ["<C-n>"] = "cycle_history_next",
