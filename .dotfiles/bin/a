@@ -3,6 +3,8 @@
 # Aligns lines of text on CHAR (useful in vim)
 # For example, align selected text on commas:
 # :'<,'>!a ,
+# Same thing but right aligned:
+# :'<,'>!a , -R0
 
 CHAR=${1:-=}
 [ -n "$1" ] && shift

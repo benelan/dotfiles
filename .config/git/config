@@ -54,18 +54,10 @@
     removed = red dim
 
 [color "diff"]
-    meta = blue bold
-    frag = magenta bold
-    func = magenta italic
-    old = red
-    new = green
-    newMoved = blue
-    newMovedDimmed = blue dim
-    newMovedAlternative = brightblue
-    oldMoved = yellow
-    oldMovedDimmed = yellow dim
-    oldMovedAlternative = brightyellow
-
+    meta = yellow bold
+    frag = magenta bold ; line info
+    old = red           ; deletions
+    new = green         ; additions
 
 [color "diff-highlight"]
     oldNormal = red bold
@@ -122,7 +114,7 @@
 
 [help]
     ; Correct and execute mistyped commands.
-    autocorrect = 20
+    autocorrect = 15
 
 [advice]
     addIgnoredFile = false
@@ -133,7 +125,7 @@
 
 [format]
     ; man --pager='less -p "^PRETTY FORMATS"' git-log
-    pretty = format:"%C(green)%h %C(yellow)%ad %C(cyan)%an %C(reset)%s %C(auto)%d%C(reset)"
+    pretty = format:"%C(green)%h %C(yellow)%ad %C(cyan)%an %C(reset)- %s %C(auto)%d%C(reset)"
     ; pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
 
 [init]
@@ -378,11 +370,15 @@
         && git commit --fixup $sha \
         && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1; }; f"
 
-    ; checkout commit by fuzzy finding w/ fzf
-    fcoc = !git log --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e | sed "s/ .*//" | xargs git checkout
-
-    ; get commit sha by fuzzy finding w/ fzf
-    fsha = !git log --color=always --pretty=oneline --abbrev-commit --reverse | fzf --tac +s +m -e --ansi --reverse | sed "s/ .*//"
+    fc = !git log --graph --color=always \
+            --format='%C(cyan)%ad %C(auto)%d %s %C(black) %C(auto)%h ' \"$@\" \
+        | fzf --ansi --no-sort --reverse --tiebreak=index \
+            --header='(enter: print sha) (alt-y: copy sha) (alt-o: checkout)' \
+            --preview 'git show --color=always {-1}' \
+            --bind 'ctrl-o:execute(git checkout {-1})+abort' \
+            --bind 'ctrl-y:execute(echo {-1} | cb)+abort' \
+            --bind 'enter:execute(echo {-1})+abort' \
+        || true
 
     ft = !git tag --sort -version:refname | fzf --reverse --multi \
         --bind='ctrl-x:execute(git tag -d {})+accept' \

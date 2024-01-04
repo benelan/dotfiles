@@ -6,17 +6,6 @@ is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
     . ~/.config/broot/launcher/bash/br
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# forgit - https://github.com/wfxr/forgit                     {{{
-if is-supported git-forgit; then
-    # Aliases
-    [ -f ~/dev/lib/forgit/forgit.plugin.sh ] &&
-        . ~/dev/lib/forgit/forgit.plugin.sh
-
-    # Settings
-    export FORGIT_COPY_CMD="cb"
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # fzf - https://github.com/junegunn/fzf                       {{{
 if is-supported fzf; then
     # Auto-completion

@@ -146,6 +146,9 @@ fi
 # https://github.com/clvv/fasd#tweaks
 is-supported fasd && export _FASD_DATA="$DOTFILES/cache/fasd"
 
+# https://github.com/wfxr/forgit
+is-supported git-forgit && export FORGIT_COPY_CMD="cb"
+
 # https://github.com/sharkdp/bat#highlighting-theme
 is-supported bat && export BAT_THEME="gruvbox-dark"
 
