@@ -1,3 +1,11 @@
+" conceal wikilinks, copied from:
+" https://github.com/jakewvincent/mkdnflow.nvim/blob/main/lua/mkdnflow/conceal.lua
+call matchadd('Conceal', '\zs\[\[[^[]\{-}[|]\ze[^[]\{-}\]\]')
+call matchadd('Conceal', '\[\[[^[\{-}[|][^[]\{-}\zs\]\]\ze')
+call matchadd('Conceal', '\zs\[\[\ze[^[]\{-}\]\]')
+call matchadd('Conceal', '\[\[[^[]\{-}\zs\]\]\ze')
+highlight Conceal ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+
 " markdownWikiLink is a new region
 syn region markdownWikiLink matchgroup=markdownLinkDelimiter start="\[\[" end="\]\]" contains=markdownUrl keepend oneline concealends
 

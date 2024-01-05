@@ -89,7 +89,7 @@ return {
           a = "@parameter.inner",
           f = "@function.outer",
           e = "@element",
-          -- v = "@variable",
+          v = "@variable",
         }
         local n, p = {}, {}
         for key, obj in pairs(swap_objects) do

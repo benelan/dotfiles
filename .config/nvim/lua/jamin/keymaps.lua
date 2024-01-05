@@ -192,6 +192,19 @@ keymap(
   "Previous diagnostic warning"
 )
 
+keymap(
+  "n",
+  "gQ",
+  function()
+    vim.fn.setqflist(
+      {},
+      vim.fn.getqflist({ title = 0 }).title == "All Diagnostics" and "r" or " ",
+      { title = "All Diagnostics", items = vim.diagnostic.toqflist(vim.diagnostic.get()) }
+    )
+  end,
+  "Add all diagnostics to quickfix"
+)
+
 -------------------------------------------------------------------------------
 ----> Git difftool and mergetool
 -------------------------------------------------------------------------------

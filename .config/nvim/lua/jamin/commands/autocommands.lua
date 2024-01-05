@@ -107,7 +107,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
     vim.opt.listchars = {
       tab = "|->",
-      -- eol = res.icons.ui.eol,
+      eol = res.icons.ui.eol,
       extends = res.icons.ui.extends,
       precedes = res.icons.ui.precedes,
       trail = res.icons.ui.dot,
@@ -116,5 +116,34 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       leadmultispace = res.icons.ui.separator
         .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
     }
+  end,
+})
+
+-----------------------------------------------------------------------------
+
+-- https://github.com/neovim/nvim-lspconfig/issues/69#issuecomment-1877781941
+vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "LspAttach", "TextChanged" }, {
+  callback = function(ctx)
+    if vim.g.started_qf_diagnostics_timer == true then return end
+    vim.g.started_qf_diagnostics_timer = true
+
+    -- debounce the diagnostics list update
+    vim.fn.timer_start(1000, function()
+      vim.g.started_qf_diagnostics_timer = false
+      local qflist = vim.fn.getqflist { title = 0, id = 0, items = 0 }
+      local diagnostics = vim.diagnostic.toqflist(vim.diagnostic.get())
+
+      if ctx.event == "TextChanged" and #qflist.items == #diagnostics then return end
+
+      vim.schedule(function()
+        vim.fn.setqflist({}, qflist.title == "All Diagnostics" and "r" or " ", {
+          title = "All Diagnostics",
+          items = diagnostics,
+        })
+
+        -- don't steal focus from other qf lists
+        if qflist.id ~= 0 and qflist.title ~= "All Diagnostics" then vim.cmd "colder" end
+      end)
+    end)
   end,
 })

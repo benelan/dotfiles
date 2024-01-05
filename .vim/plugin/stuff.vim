@@ -196,7 +196,7 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" toggle quickfix list open/close                            {{{
 
-com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif"
+com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif|norm <C-W><C-W>"
 nnoremap <C-q> <CMD>QfToggle<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -204,7 +204,7 @@ nnoremap <C-q> <CMD>QfToggle<CR>
 
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
-command! SaveQf call getqflist()
+command! QfSave call getqflist()
     \ ->map({i, x -> (
     \     x.bufnr != 0
     \         ? bufname(x.bufnr) .":". x.lnum .":". x.col .":"
@@ -213,7 +213,7 @@ command! SaveQf call getqflist()
     \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
 
 " Save all open buffers to a file that can be loaded as a quickfix list (-q).
-command! SaveBufsAsQf call getbufinfo()
+command! QfSaveBufs call getbufinfo()
     \ ->filter({i, x -> x.listed && x.name != ''})
     \ ->map({i, x -> fnamemodify(x.name, ':~') .':'. string(x.lnum) .': '})
     \ ->writefile(input('Write? ', 'Buffers.txt'), 's')
@@ -265,7 +265,7 @@ function! s:NetrwToggle()
 endfunction
 
 command! Netrw call <sid>NetrwToggle()
-nnoremap <silent> <leader>e :Netrw<CR>
+nnoremap <silent> <leader>e <CMD>Netrw<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" go to next/previous merge conflict hunks                   {{{
@@ -275,8 +275,8 @@ function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
 
-nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
+nnoremap <silent> [C <CMD><C-U>call <SID>findConflict(1)<CR>
+nnoremap <silent> ]C <CMD><C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{
@@ -318,7 +318,7 @@ command! -bang -complete=buffer -nargs=? Bdelete
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
 
-nnoremap <silent> <leader>x :Bdelete<CR>
+nnoremap <silent> <leader>x <CMD>Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fugitive open commit's diff per file                       {{{

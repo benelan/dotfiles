@@ -10,8 +10,7 @@ return {
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "-", "<CMD>Vifm<CR>" } },
     init = function()
-      -- there is a weird lazy loading related startup error unless I define
-      -- the keymap in init too
+      -- define keymap here to fix lazy loading related startup error
       keymap("n", "-", "<CMD>Vifm<CR>")
     end,
   },
@@ -67,6 +66,8 @@ return {
         { "<leader>fh", function() builtin.help_tags() end, desc = "Find help tags (telescope)" },
         { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
         { "<leader>f:", function() builtin.command_history() end, desc = "Find command history (telescope)" },
+        { "<leader>fw", function() builtin.grep_string({ search = vim.fn.expand "<cword>", hidden = true }) end, desc = "Find word under cursor (telescope)" },
+        { "<leader>fW", function() builtin.grep_string({ search = vim.fn.expand "<cWORD>", hidden = true }) end, desc = "Find WORD under cursor (telescope)" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Find in buffer (telescope)" },
@@ -75,16 +76,25 @@ return {
 
         -- LSP keymaps
         { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
-        { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
-        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Quickfix history (telescope)" },
         { "<leader>ly", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
         { "<leader>li", function() builtin.lsp_implementations() end, desc = "LSP implementations (telescope)" },
+
+        { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
+        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Quickfix history (telescope)" },
 
         { "<leader>lD", function() builtin.diagnostics() end, desc = "LSP workspace diagnostics (telescope)" },
         { "<leader>ld", function() builtin.diagnostics { bufnr = 0 } end, desc = "LSP document diagnostics (telescope)" },
 
-        { "<leader>lS", function() builtin.lsp_dynamic_workspace_symbols { ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" } } end, desc = "LSP workspace symbols (telescope)" },
-        { "<leader>ls", function() builtin.lsp_document_symbols { ignore_symbols = { "Object", "Array", "String", "Boolean", "Number" } } end, desc = "LSP document symbols (telescope)" },
+        {
+          "<leader>lS",
+          function() builtin.lsp_dynamic_workspace_symbols { ignore_symbols = { "Boolean", "Number" } } end,
+          desc = "LSP workspace symbols (telescope)",
+        },
+        {
+          "<leader>ls",
+          function() builtin.lsp_document_symbols { ignore_symbols = { "Boolean", "Number" } } end,
+          desc = "LSP document symbols (telescope)",
+        },
 
         -- Git keymaps
         { "<C-g>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
@@ -155,7 +165,6 @@ return {
           history = { limit = 420 },
           set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
-          git_worktrees = { { toplevel = vim.env.CALCITE, gitdir = vim.env.CALCITE .. "/.git" } },
           mappings = { i = mappings, n = mappings },
         },
         pickers = {
@@ -165,7 +174,7 @@ return {
             sort_mru = true,
             -- initial_mode = "normal",
             mappings = {
-              i = { ["<M-d>"] = "delete_buffer" },
+              i = { ["<M-x>"] = "delete_buffer" },
               n = { ["dd"] = "delete_buffer" },
             },
           },
