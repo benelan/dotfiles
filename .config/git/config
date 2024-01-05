@@ -224,11 +224,10 @@
     rbc = rebase --continue
     rbs = rebase --skip
     rbu = rebase --autostash --autosquash --interactive @{upstream}
-    rbom = "!f() { \
-        default_branch="$(git bdefault)" && \
-        git fetch origin "$default_branch" && \
-        git rebase --autostash --autosquash "origin/$default_branch" && \
-        git update-ref "refs/heads/$default_branch" "origin/$default_branch"; }; f"
+    rbom = !default_branch=$(git bdefault) \
+        && git fetch origin $default_branch \
+        && git rebase --autostash --autosquash origin/$default_branch \
+        && git update-ref refs/heads/$default_branch origin/$default_branch
 
     s = status --short
 
@@ -276,19 +275,21 @@
     new = log HEAD@{1}..HEAD@{0}
 
     ; log the last n commits, e.g. $ git ln 69
-    ln = "!f() { git log -n \"$1\" --graph --abbrev-commit; }; f"
+    ln = !git log --graph --abbrev-commit -n
 
     ; find tags containing commit
-    lt = "!f() { git describe --always --contains $1; }; f"
-
-    ; find commits by source code
-    lcc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
-
-    ; find commits by commit message
-    lcm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+    lt = !git describe --always --contains
 
     ; find branches containing commit
-    lbc = "!f() { git branch -a --contains $1; }; f"
+    lbc = !git branch -a --contains
+
+    ; find commits by source code
+    lcc = !git log --decorate \
+            --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' -S
+
+    ; find commits by commit message
+    lcm = !git log --decorate --date=short \
+            --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --grep
 
     ; Pull in remote changes for the current repository and all its submodules.
     up = !git pull --rebase --prune $@ && git submodule update --init --recursive
@@ -318,9 +319,16 @@
     contributors = shortlog --summary --numbered
 
     ; get the default branch
-    bdefault = "!f() { echo $(if [ $(git config --get core.bare) = 'true' ]; then git bdefault-bare; else git bdefault-fast; fi); }; f"
-    bdefault-fast = "!f() { basename $(git rev-parse --abbrev-ref origin/HEAD);}; f"
-    bdefault-bare = "!f() { git remote show $(git remote | grep -Eo '(upstream|origin)' | tail -1) | grep 'HEAD branch' | cut -d' ' -f5; }; f"
+    bdefault = "!if [ $(git config --get core.bare) = 'true' ]; then \
+                    git bdefault-bare; \
+                else \
+                    git bdefault-fast; \
+                fi"
+    bdefault-fast = !basename $(git rev-parse --abbrev-ref origin/HEAD)
+    bdefault-bare = !git remote show \
+                    $(git remote | grep -Eo '(upstream|origin)' | tail -1) \
+                    | grep 'HEAD branch' \
+                    | cut -d' ' -f5
 
     ; list of local branches and their most recent commit
     blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
@@ -346,33 +354,41 @@
     ;----------------------------------------------------------------------------
 
     ; interactively add unstaged files using fzf
-    fa = !git ls-files --modified | fzf --height 20% --reverse -m --ansi | xargs git add --verbose
+    fa = !git ls-files --modified \
+        | fzf --multi --no-sort \
+            --header='(enter: add) (alt-r: reset) (ctrl-e: edit) (ctrl-o: open) (ctrl-y: copy)' \
+            --preview='git diff --color=always {}' \
+            --bind='ctrl-e:become($EDITOR {+})+abort' \
+            --bind='ctrl-o:execute(o {+})+abort' \
+            --bind='ctrl-y:execute(echo {} | cb)+abort' \
+            --bind='enter:execute(git add -- {+})+abort' \
+            --bind='alt-r:execute(git reset -- {+})+abort'
 
     ; delete multiple branches
-    fbd = !git branch | fzf --multi | xargs git branch -D
+    fbd = !git for-each-ref refs/heads --format='%(refname)' \
+        | fzf --multi \
+        | xargs git branch -D
 
     ; use fzf to pick an unpushed commit to fixup and then autosquash
-    cf = "!f() { \
-        sha=$(git log @{push}.. --color=always --no-merges \
+    cf = !sha=$(git log @{push}.. --color=always --no-merges \
             --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1; }; f"
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1
 
     ; same as above but pick an unmerged (to default branch) commit.
     ; likely requires a force push, hence the extra 'f'
-    cff = "!f() { \
-        sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
+    cff = !sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
             --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
         | fzf-tmux --no-sort --ansi \
         | awk '{print $1}') \
         && git commit --fixup $sha \
-        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1; }; f"
+        && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1
 
     fc = !git log --graph --color=always \
             --format='%C(cyan)%ad %C(auto)%d %s %C(black) %C(auto)%h ' \"$@\" \
-        | fzf --ansi --no-sort --reverse --tiebreak=index \
+        | fzf --ansi --no-sort --tiebreak=index \
             --header='(enter: print sha) (alt-y: copy sha) (alt-o: checkout)' \
             --preview 'git show --color=always {-1}' \
             --bind 'ctrl-o:execute(git checkout {-1})+abort' \
@@ -380,20 +396,21 @@
             --bind 'enter:execute(echo {-1})+abort' \
         || true
 
-    ft = !git tag --sort -version:refname | fzf --reverse --multi \
-        --bind='ctrl-x:execute(git tag -d {})+accept' \
-        --bind='ctrl-o:execute(git checkout {})+accept' \
-        --header='(delete:ctrl-x) (checkout:ctrl-o)' \
-        --preview 'git show --color=always {} | head -'$LINES
+    ft = !git tag --sort -version:refname | fzf --no-sort --multi \
+        --bind='alt-x:execute(git tag -d {})+accept' \
+        --bind='alt-o:execute(git checkout {})+accept' \
+        --header='(alt-x: delete) (alt-o: checkout)' \
+        --preview='git show --color=always {}'
 
     fst = "!f() { \
-        git -c color.ui=always stash list --pretty='%<(14)%Cgreen%cr    %Creset%gs %>(9999)%h' | \
+        git -c color.ui=always stash list \
+            --pretty='%<(14)%Cgreen%cr    %Creset%gs %>(9999)%h' | \
         fzf --ansi --no-sort --no-multi --no-hscroll \
-        --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
-        --preview='git -c color.diff=always diff {-1}' \
-        --bind='alt-a:execute(git stash apply {n})+abort' \
-        --bind='alt-x:execute(git stash drop {n})+abort' \
-        --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; }; f"
+            --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
+            --preview='git -c color.diff=always diff {-1}' \
+            --bind='alt-a:execute(git stash apply {n})+abort' \
+            --bind='alt-x:execute(git stash drop {n})+abort' \
+            --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; }; f"
 
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
