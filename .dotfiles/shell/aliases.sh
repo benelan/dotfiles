@@ -325,10 +325,10 @@ if is-supported docker; then
         cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
 
         # shellcheck disable=2139
-        alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm start"
+        alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
 
         # shellcheck disable=2139
-        alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run test -- -- --watchAll"
+        alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
 
         # shellcheck disable=2139
         alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"

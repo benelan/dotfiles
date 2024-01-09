@@ -629,6 +629,11 @@ install_ubuntu_docker-desktop() {
 
     sudo apt install -y "$CACHE_DIR/$deb" || true
     unset deb
+
+    sudo groupadd docker
+    sudo usermod -aG docker "$USER"
+    is-supported systemctl && sudo systemctl restart docker
+    # sudo chown $USER /var/run/docker.sock
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
