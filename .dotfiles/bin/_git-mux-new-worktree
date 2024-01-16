@@ -15,6 +15,10 @@ for _file in $_link_files; do
     cp "../$_file" . >/dev/null 2>&1 || true
 done
 
+if [ -f "../calcite-components.projections.json" ]; then
+    cp ../calcite-components.projections.json packages/calcite-components/.projections.json >/dev/null 2>&1 || true
+fi
+
 if _has make && [ -f "./Makefile" ]; then
     make
 fi

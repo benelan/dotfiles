@@ -263,7 +263,7 @@ return {
         function()
           vim.cmd "Wcd"
           require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon toggle mark menu",
       },
@@ -272,7 +272,7 @@ return {
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():append()
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon append file",
       },
@@ -281,7 +281,7 @@ return {
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():prepend()
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon prepend file",
       },
@@ -290,7 +290,7 @@ return {
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():next()
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select next mark",
       },
@@ -299,45 +299,54 @@ return {
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():prev()
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select previous mark",
       },
       {
-        "<M-a>",
+        "<M-1>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():select(1)
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select mark 1",
       },
       {
-        "<M-s>",
+        "<M-2>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():select(2)
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select mark 2",
       },
       {
-        "<M-d>",
+        "<M-3>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():select(3)
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select mark 3",
       },
       {
-        "<M-f>",
+        "<M-4>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():select(4)
-          vim.cmd "Pcd"
+          vim.cmd "Rcd"
         end,
         desc = "Harpoon select mark 4",
+        {
+          "<M-5>",
+          function()
+            vim.cmd "Wcd"
+            require("harpoon"):list():select(5)
+            vim.cmd "Rcd"
+          end,
+          desc = "Harpoon select mark 5",
+        },
       },
     },
   },

@@ -60,9 +60,9 @@ end
 
 -- Change directory to project root using LSP or file markers in `root_names`
 vim.api.nvim_create_user_command(
-  "Pcd",
+  "Rcd",
   function() set_root { buf = 0, file = vim.api.nvim_buf_get_name(0) } end,
-  { desc = "Change directory to project (lsp) root" }
+  { desc = "Change directory to project/lsp root" }
 )
 
 -- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
@@ -82,11 +82,11 @@ vim.api.nvim_create_user_command("Wcd", function()
   else
     vim.fn.chdir(vim.env.HOME)
   end
-end, { desc = "Change directory to git (worktree) root" })
+end, { desc = "Change directory to git work tree root" })
 
 -- keymaps for the user commands
 vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
-vim.keymap.set("n", "cp", "<CMD>Pcd<CR>", { desc = "Change directory to project (lsp) root" })
+vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project (lsp) root" })
 vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
 
 -- automatically change directory to project root

@@ -40,6 +40,37 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "tpope/vim-projectionist",
+    lazy = false,
+    init = function()
+      vim.g.projectionist_heuristics = {
+        ["/.git/"] = { ["README.md"] = { type = "docs" } },
+        ["/.github/workflows/"] = { ["/.github/workflows/*.yml"] = { type = "ci" } },
+        ["package.json"] = { ["package.json"] = { type = "run" } },
+        ["Makefile"] = { ["Makefile"] = { type = "run" } },
+        ["Cargo.toml"] = { ["Cargo.toml"] = { type = "run" } },
+      }
+    end,
+    keys = {
+      { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
+      { "<M-a>", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
+      { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
+      { "<leader>ad", "<CMD>Edocs<CR>", desc = "Related: docs (projectionist)" },
+      { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },
+      { "<leader>am", "<CMD>Emain<CR>", desc = "Related: main (projectionist)" },
+      { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
+      { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
+      { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
+      {
+        "<leader>a<CR>",
+        "<CMD>Console<CR><C-w><C-w>",
+        desc = "Console (projectionist)",
+        silent = true,
+      },
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
     -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-closer",
