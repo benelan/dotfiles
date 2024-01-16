@@ -2,30 +2,6 @@ local res = require "jamin.resources"
 
 return {
   {
-    "ThePrimeagen/refactoring.nvim", -- common refactor actions and automated debug print statement generation
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
-    --stylua: ignore
-    keys = {
-      { "<leader>ref", function() require("refactoring").refactor "Extract Function" end, desc = "Extract function (refactor)", mode = "x" },
-      { "<leader>reF", function() require("refactoring").refactor "Extract Function To File" end, desc = "Extract function to file (refactor)", mode = "x" },
-      { "<leader>rev", function() require("refactoring").refactor "Extract Variable" end, desc = "Extract variable (refactor)", mode = "x" },
-      { "<leader>reb", function() require("refactoring").refactor "Extract Block" end, desc = "Extract block (refactor)", mode = "n" },
-      { "<leader>reB", function() require("refactoring").refactor "Extract Block To File" end, desc = "Extract block to file (refactor)", mode = "n" },
-      { "<leader>riv", function() require("refactoring").refactor "Inline Variable" end, desc = "Inline variable (refactor)", mode = { "x", "n" } },
-      { "<leader>rif", function() require("refactoring").refactor "Inline Function" end, desc = "Inline function (refactor)", mode = "n" },
-      { "<leader>rr", function() require("refactoring").select_refactor {} end, desc = "Select refactor", mode = "v" },
-      {"<leader>rps", function() require("refactoring").debug.printf {below = true} end, desc = "Print scope (refactor)", mode = "n"},
-      {"<leader>rpv", function() require("refactoring").debug.print_var {normal = true} end, desc = "Print variable (refactor)", mode = "n"},
-      {"<leader>rpv", function() require("refactoring").debug.print_var {} end, desc = "Print variable (refactor)", mode = "v"},
-      {"<leader>rpc", function() require("refactoring").debug.cleanup {} end, desc = "Cleanup prints (refactor)", mode = "n"},
-    },
-    opts = {
-      prompt_func_return_type = { go = true },
-      prompt_func_param_type = { go = true },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
     "Wansmer/treesj", -- split/join treesitter nodes to multiple/single line(s)
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<CMD>TSJToggle<CR>", desc = "SplitJoin" } },
