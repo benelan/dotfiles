@@ -194,12 +194,6 @@ endfunction
 command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" toggle quickfix list open/close                            {{{
-
-com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif|norm <C-W><C-W>"
-nnoremap <C-q> <CMD>QfToggle<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" quickfix list to/from file for later access                {{{
 
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc

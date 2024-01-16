@@ -113,6 +113,19 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- qickfix/location list helper
+  {
+    "stevearc/qf_helper.nvim",
+    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
+    opts = { quickfix = { default_bindings = false }, loclist = { default_bindings = false } },
+    keys = {
+      { "]q", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
+      { "[q", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
+      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
+      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
+    },
+  },
+  -----------------------------------------------------------------------------
   {
     "monaqa/dial.nvim", -- increment/decrement more stuffs
     dependencies = { "nvim-lua/plenary.nvim" },

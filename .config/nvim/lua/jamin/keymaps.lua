@@ -99,8 +99,8 @@ keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
 keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
 
 -- quickfix
-keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
-keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
+-- keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
+-- keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
 keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
 keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 
@@ -271,7 +271,7 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 
 keymap({ "n", "i" }, "<M-w>", "<CMD>write<CR>", "Write buffer")
 keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
-keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit buffer")
+-- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit buffer")
 
 keymap("n", "<leader>q", "<CMD>quit<CR>", "Quit buffer")
 keymap("n", "<leader>w", "<CMD>write<CR>", "Write buffer")

@@ -422,6 +422,13 @@ if has("eval")
     tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" toggle quickfix list open/close                            {{{
+
+    com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif|norm <C-W><C-W>"
+    nnoremap <C-q> <CMD>QfToggle<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
 endif
 
 " --------------------------------------------------------------------- }}}
