@@ -3,7 +3,6 @@ local has_res, res = pcall(require, "jamin.resources")
 vim.opt.clipboard = "unnamed"
 vim.opt.updatetime = 169
 vim.opt.confirm = true
-vim.opt.modeline = false
 vim.opt.virtualedit:append "block"
 vim.opt.foldlevelstart = 99
 
@@ -34,6 +33,7 @@ vim.opt.laststatus = 3
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.signcolumn = "yes"
+vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 

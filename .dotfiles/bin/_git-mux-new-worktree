@@ -9,7 +9,7 @@
 _has() { command -v "$1" >/dev/null 2>&1; }
 
 # use a bash array if any of the files have spaces
-_link_files="Makefile Dockerfile compose.yaml Session*.vim .nvim.lua .nvimrc .exrc .envrc .direnv .env"
+_link_files="Makefile Dockerfile compose.yaml Session*.vim .nvim.lua .nvimrc .exrc .envrc .direnv .env .marksman.toml"
 
 for _file in $_link_files; do
     cp "../$_file" . >/dev/null 2>&1 || true

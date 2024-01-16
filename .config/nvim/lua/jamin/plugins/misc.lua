@@ -8,27 +8,36 @@ return {
   },
   -----------------------------------------------------------------------------
   -- tpope plugins
+  -- makes a lot more keymaps dot repeatable
   {
-    -- makes a lot more keymaps dot repeatable
     dir = "~/.vim/pack/foo/start/vim-repeat",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-repeat",
     event = "CursorHold",
   },
+  -----------------------------------------------------------------------------
+  -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
-    -- adds keymaps for surrounding text objects with quotes, brackets, etc.
     dir = "~/.vim/pack/foo/start/vim-surround",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-surround",
+    config = function()
+      vim.cmd [[
+        let g:surround_{char2nr('8')} = "/* \r */"
+        let g:surround_{char2nr('e')} = "\r\n}"
+      ]]
+    end,
     keys = { "cs", "ds", "ys" },
   },
+  -----------------------------------------------------------------------------
+  -- adds keymap for toggling comments on text objects
   {
-    -- adds keymap for toggling comments on text objects
     dir = "~/.vim/pack/foo/start/vim-commentary",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-commentary",
     keys = { { mode = { "n", "v", "o" }, "gc" } },
     cmd = "Commentary",
   },
+  -----------------------------------------------------------------------------
+  -- adds basic filesystem commands and some shebang utils
   {
-    -- adds basic filesystem commands and some shebang utils
     dir = "~/.vim/pack/foo/start/vim-eunuch",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-eunuch",
     event = "BufNewFile",
@@ -74,43 +83,28 @@ return {
     -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-closer",
-    init = function()
-      -- setup files that can contain javascript
-      vim.cmd [[
-        au FileType svelte,astro,html,vue
-        \ let b:closer = 1 |
-        \ let b:closer_flags = '([{;' |
-        \ let b:closer_no_semi = '^\s*\(function\|class\|if\|else\)' |
-        \ let b:closer_semi_ctx = ')\s*{$'
-    ]]
+    config = function()
+      -- setup files that can contain javascript which aren't included by default
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("jamin_closer_javascript", { clear = true }),
+        pattern = { "svelte", "astro", "html" },
+        callback = function()
+          vim.b.closer = 1
+          vim.b.closer_flags = "([{;"
+          vim.b.closer_no_semi = "^\\s*\\(function\\|class\\|if\\|else\\)"
+          vim.b.closer_semi_ctx = ")\\s*{$"
+        end,
+      })
     end,
   },
   -----------------------------------------------------------------------------
+  -- helps visualize and navigate the undo tree - see :h undo-tree
   {
-    -- helps visualize and navigate the undo tree - see :h undo-tree
     dir = "~/.vim/pack/foo/opt/undotree",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/undotree",
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
-    init = function()
-      vim.g.undotree_SetFocusWhenToggle = 1
-
-      vim.g.Undotree_CustomMap = function()
-        vim.keymap.set("n", "]", "<Plug>UndotreeNextSavedState", {
-          desc = "Next saved state",
-          silent = true,
-          noremap = true,
-          buffer = true,
-        })
-
-        vim.keymap.set("n", "[", "<Plug>UndotreePreviousSavedState", {
-          desc = "Previous saved state",
-          silent = true,
-          noremap = true,
-          buffer = true,
-        })
-      end
-    end,
+    init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
   },
   -----------------------------------------------------------------------------
   -- qickfix/location list helper
@@ -119,15 +113,16 @@ return {
     cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
     opts = { quickfix = { default_bindings = false }, loclist = { default_bindings = false } },
     keys = {
-      { "]q", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
-      { "[q", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
+      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
+      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
       { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
       { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
     },
   },
   -----------------------------------------------------------------------------
+  -- increment/decrement more stuffs
   {
-    "monaqa/dial.nvim", -- increment/decrement more stuffs
+    "monaqa/dial.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       local augend = require "dial.augend"
@@ -164,8 +159,9 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- jump around within buffers
   {
-    "folke/flash.nvim", -- jump around within buffers
+    "folke/flash.nvim",
     -- enabled = false,
     opts = {
       exclude = require("jamin.resources").filetypes.excluded,
@@ -197,8 +193,9 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- embed neovim in the browser
   {
-    "glacambre/firenvim", -- embed neovim in the browser
+    "glacambre/firenvim",
     lazy = not vim.g.started_by_firenvim,
     build = function() vim.fn["firenvim#install"](0) end,
     init = function()
@@ -220,18 +217,6 @@ return {
         vim.opt.ruler = false
         vim.opt.fillchars:append "eob: "
         vim.opt.shortmess:append "aoW"
-
-        -- auto sync changes with the browser
-        -- vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-        --   callback = function()
-        --     if vim.g.started_firenvim_timer == true then return end
-        --     vim.g.started_firenvim_timer = true
-        --     vim.fn.timer_start(10000, function()
-        --       vim.g.started_firenvim_timer = false
-        --       vim.cmd "write"
-        --     end)
-        --   end,
-        -- })
       end
     end,
   },

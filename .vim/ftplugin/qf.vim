@@ -10,13 +10,19 @@ endif
 let b:qf_isLoc = get(get(getwininfo(win_getid()), 0, {}), 'loclist', 0)
 
 if b:qf_isLoc == 1
-    nnoremap <silent> <buffer> <Left> :lolder<CR>
-    nnoremap <silent> <buffer> <Right> :lnewer<CR>
+    nnoremap <silent> <buffer> H :lolder<CR>
+    nnoremap <silent> <buffer> L :lnewer<CR>
     nnoremap <silent> <buffer> O <CR>:lclose<CR>
+    " begin search and replace
+    nnoremap <buffer> r :ldo s/// \| update<C-Left><C-Left><Left><Left><Left>
 else
-    nnoremap <silent> <buffer> <Left> :colder<CR>
-    nnoremap <silent> <buffer> <Right> :cnewer<CR>
+    nnoremap <silent> <buffer> H :colder<CR>
+    nnoremap <silent> <buffer> L :cnewer<CR>
+    nnoremap <buffer> ]f :cnfile<CR>
+    nnoremap <buffer> [f :cpfile<CR>
     nnoremap <silent> <buffer> O <CR>:cclose<CR>
+    " begin search and replace
+    nnoremap <buffer> r :cdo s/// \| update<C-Left><C-Left><Left><Left><Left>
 endif
 
 " open entry in a new vertical window
@@ -60,4 +66,3 @@ function! AdjustWindowHeight(minheight, maxheight)
 endfunction
 
 call AdjustWindowHeight(3, 10)
-

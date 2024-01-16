@@ -99,8 +99,8 @@ keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
 keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
 
 -- quickfix
--- keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
--- keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
+keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
+keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
 keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
 keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 
@@ -192,19 +192,6 @@ keymap(
   "Previous diagnostic warning"
 )
 
-keymap(
-  "n",
-  "gQ",
-  function()
-    vim.fn.setqflist(
-      {},
-      vim.fn.getqflist({ title = 0 }).title == "All Diagnostics" and "r" or " ",
-      { title = "All Diagnostics", items = vim.diagnostic.toqflist(vim.diagnostic.get()) }
-    )
-  end,
-  "Add all diagnostics to quickfix"
-)
-
 -------------------------------------------------------------------------------
 ----> Git difftool and mergetool
 -------------------------------------------------------------------------------
@@ -214,12 +201,27 @@ keymap({ "n", "v" }, "<leader>gr", ":diffget<BAR>diffupdate<CR>", "Get hunk (dif
 keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 
 -- three way diff for merge conflict resolution
-keymap("n", "\\x", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
-keymap("n", "\\X", "<CMD>%diffget BA<BAR>diffupdate<CR>", "Choose all hunks from base (diff)")
-keymap("n", "]x", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
-keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from remote (diff)")
-keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
-keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from local (diff)")
+keymap("n", "<leader>g\\", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
+keymap(
+  "n",
+  "<leader>g|",
+  "<CMD>%diffget BA<BAR>diffupdate<CR>",
+  "Choose all hunks from base (diff)"
+)
+keymap("n", "<leader>g]", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
+keymap(
+  "n",
+  "<leader>g}",
+  "<CMD>%diffget RE<BAR>diffupdate<CR>",
+  "Choose all hunks from remote (diff)"
+)
+keymap("n", "<leader>g[", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
+keymap(
+  "n",
+  "<leader>g{",
+  "<CMD>%diffget LO<BAR>diffupdate<CR>",
+  "Choose all hunks from local (diff)"
+)
 
 -------------------------------------------------------------------------------
 ----> Windows

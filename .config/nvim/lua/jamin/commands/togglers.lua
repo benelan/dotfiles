@@ -125,6 +125,7 @@ M.ui_toggle = function()
   -- vim.bo.modifiable = ui_disabled
 
   vim.opt.signcolumn = ui_disabled and "yes" or "no"
+  vim.opt.colorcolumn = ui_disabled and 80 or 0
   vim.opt.laststatus = ui_disabled and 3 or 0
   vim.opt.showtabline = ui_disabled and 2 or 0
 

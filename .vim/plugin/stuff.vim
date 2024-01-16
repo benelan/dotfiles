@@ -5,7 +5,9 @@ let g:loaded_jamin_stuff = 1
 "  Settings                                                            {{{
 "----------------------------------------------------------------------{|}
 
-"" markdown/qf                                                {{{
+"" misc globals                                               {{{
+
+let g:rust_recommended_style = 0
 let g:qf_disable_statusline = 1
 let g:markdown_recommended_style = 0
 
@@ -87,6 +89,9 @@ nnoremap & :&&<CR>
 " Add a line above/below the cursor from insert mode
 inoremap <C-Down> <C-O>O
 inoremap <C-Up> <C-O>o
+
+cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
+cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
 
 " Expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
@@ -269,8 +274,8 @@ function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
 
-nnoremap <silent> [C <CMD><C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]C <CMD><C-U>call <SID>findConflict(0)<CR>
+nnoremap <silent> [x <CMD><C-U>call <SID>findConflict(1)<CR>
+nnoremap <silent> ]x <CMD><C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{
@@ -472,7 +477,7 @@ if has("autocmd")
     augroup jamin_global_marks
         autocmd!
         " Clear actively used file marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks QWEASD
+        autocmd VimEnter *  delmarks QWERAZ
 
         " Create marks for specific filetypes when leaving buffer
         autocmd BufLeave \(//:\)\@<!*.css,
@@ -501,8 +506,8 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.go
                             \ normal! mG
 
-        autocmd BufLeave \(//:\)\@<!*.rs
-                            \ normal! mR
+        " autocmd BufLeave \(//:\)\@<!*.rs
+        "                     \ normal! mR
 
         autocmd BufLeave \(//:\)\@<!*.py
                             \ normal! mP
@@ -510,7 +515,7 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.sh,
                         \\(//:\)\@<!*.bash,
                         \\(//:\)\@<!$DOTFILES/bin/*
-                            \ normal! mB
+                            \ normal! mS
 
         autocmd BufLeave \(//:\)\@<!*.lua
                             \ normal! mL
@@ -522,7 +527,7 @@ if has("autocmd")
         autocmd BufLeave \(//:\)\@<!*.csv,
                         \\(//:\)\@<!*.json,
                         \\(//:\)\@<!*.toml
-                            \ normal! mI
+                            \ normal! mD
 
         autocmd BufLeave \(//:\)\@<!*.yml,
                         \\(//:\)\@<!*.yaml
@@ -579,7 +584,6 @@ if has("autocmd")
         autocmd BufNew *.{test,spec,e2e}.[jt]s{,x} compiler jest
         autocmd BufNew {support,scripts}/*.ts compiler ts-node
 
-        " There are builtin tsc and go compilers but a few tweaks are needed
         " https://github.com/fatih/vim-go/blob/master/compiler/go.vim
         autocmd FileType go
                 \ if filereadable("makefile") || filereadable("Makefile")
@@ -594,11 +598,6 @@ if has("autocmd")
                 \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
                 \ | setlocal errorformat+=%C%*\\s%m
                 \ | setlocal errorformat+=%-G%.%#
-
-        " https://github.com/leafgarland/typescript-vim/blob/master/compiler/typescript.vim
-        autocmd FileType typescript{,react} compiler tsc
-                " \ setlocal makeprg=tsc\ $*\ %
-                " \ | setlocal errorformat+=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 
         " Set up formatters
         autocmd FileType json,yaml,markdown,mdx,css,scss,html,

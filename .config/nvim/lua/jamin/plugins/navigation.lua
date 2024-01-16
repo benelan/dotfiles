@@ -1,8 +1,8 @@
 local res = require "jamin.resources"
 
 return {
+  -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
   {
-    -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
     dir = vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim",
     cond = vim.fn.executable "vifm" == 1
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
@@ -15,8 +15,9 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- fzf comes with a very minimal vim plugin
   {
-    dir = vim.env.LIB .. "/fzf", -- fzf comes with a very minimal vim plugin
+    dir = vim.env.LIB .. "/fzf",
     cond = vim.fn.executable "fzf" == 1 and vim.fn.isdirectory(vim.env.LIB .. "/fzf"),
     cmd = { "FZF" },
     keys = {
@@ -27,8 +28,9 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- fuzzy finding
   {
-    "nvim-telescope/telescope.nvim", -- fuzzy finding tool
+    "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -40,10 +42,9 @@ return {
     },
     keys = function()
       local has_builtin, builtin = pcall(require, "telescope.builtin")
-      local has_themes, themes = pcall(require, "telescope.themes")
 
       -- fix errors on initial neovim install
-      if not has_themes or not has_builtin then return end
+      if not has_builtin then return end
 
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
@@ -70,7 +71,7 @@ return {
         { "<leader>fW", function() builtin.grep_string({ search = vim.fn.expand "<cWORD>", hidden = true }) end, desc = "Find WORD under cursor (telescope)" },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
-        { "<leader>/", function() builtin.current_buffer_fuzzy_find(themes.get_dropdown { previewer = false }) end, desc = "Find in buffer (telescope)" },
+        { "<leader>/", function() builtin.current_buffer_fuzzy_find() end, desc = "Find in buffer (telescope)" },
         { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<M-g>", function() builtin.grep_string({ search = vim.fn.input("Grep > "), hidden = true}) end, desc = "Find text (telescope)" },
 
@@ -104,7 +105,7 @@ return {
         { "<leader>fgS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
         { "<leader>fgH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
         { "<leader>fgh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
-        { "<leader>fgh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope", mode = "v" },
+        { "<leader>fgh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
       }
     end,
     opts = function()
@@ -145,10 +146,10 @@ return {
         ["<C-b>"] = "preview_scrolling_up",
         ["<C-j>"] = "move_selection_next",
         ["<C-k>"] = "move_selection_previous",
-        ["<C-n>"] = "cycle_history_next",
-        ["<C-p>"] = "cycle_history_prev",
+        ["<M-n>"] = "cycle_history_next",
+        ["<M-p>"] = "cycle_history_prev",
         ["<M-l>"] = require("telescope.actions.layout").cycle_layout_next,
-        ["<M-p>"] = require("telescope.actions.layout").toggle_preview,
+        ["<M-v>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = open_in_quickfix,
         ["<M-s>"] = flash_jump,
@@ -286,7 +287,7 @@ return {
         desc = "Harpoon prepend file",
       },
       {
-        "<M-n>",
+        "<M-]>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():next()
@@ -295,7 +296,7 @@ return {
         desc = "Harpoon select next mark",
       },
       {
-        "<M-p>",
+        "<M-[>",
         function()
           vim.cmd "Wcd"
           require("harpoon"):list():prev()

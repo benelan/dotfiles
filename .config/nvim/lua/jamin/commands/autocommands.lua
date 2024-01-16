@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function() vim.highlight.on_yank { higroup = "Visual", timeout = 269 } end,
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- check if file changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   command = "checktime",
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- set the OSC7 escape code when changing directories
 -- https://wezfurlong.org/wezterm/shell-integration.html
@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
   command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = res.filetypes.writing,
@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- workaround for: https://github.com/nvim-telescope/telescope.nvim/issues/699
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
   end,
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
@@ -99,7 +99,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- use listchars like an indentline plugin
 vim.api.nvim_create_autocmd("BufWinEnter", {
@@ -119,31 +119,22 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- https://github.com/neovim/nvim-lspconfig/issues/69#issuecomment-1877781941
-vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "LspAttach", "TextChanged" }, {
-  callback = function(ctx)
-    if vim.g.started_qf_diagnostics_timer == true then return end
-    vim.g.started_qf_diagnostics_timer = true
-
-    -- debounce the diagnostics list update
-    vim.fn.timer_start(1000, function()
-      vim.g.started_qf_diagnostics_timer = false
-      local qflist = vim.fn.getqflist { title = 0, id = 0, items = 0 }
+vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "LspAttach" }, {
+  callback = function()
+    vim.schedule(function()
+      local qflist = vim.fn.getqflist { title = 0, id = 0 }
       local diagnostics = vim.diagnostic.toqflist(vim.diagnostic.get())
 
-      if ctx.event == "TextChanged" and #qflist.items == #diagnostics then return end
+      vim.fn.setqflist({}, qflist.title == "All Diagnostics" and "r" or " ", {
+        title = "All Diagnostics",
+        items = diagnostics,
+      })
 
-      vim.schedule(function()
-        vim.fn.setqflist({}, qflist.title == "All Diagnostics" and "r" or " ", {
-          title = "All Diagnostics",
-          items = diagnostics,
-        })
-
-        -- don't steal focus from other qf lists
-        if qflist.id ~= 0 and qflist.title ~= "All Diagnostics" then vim.cmd "colder" end
-      end)
+      -- don't steal focus from other qf lists
+      if qflist.id ~= 0 and qflist.title ~= "All Diagnostics" then vim.cmd "colder" end
     end)
   end,
 })

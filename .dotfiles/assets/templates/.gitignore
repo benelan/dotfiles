@@ -6,6 +6,7 @@ dist/
 .cache/
 Session*.vim
 Quickfix.txt
+.marksman.toml
 .nvim.lua
 .nvimrc
 .exrc

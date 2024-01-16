@@ -162,4 +162,4 @@ endfunction
 " --------------------------------------------------------------------- }}}
 
 nnoremap <Plug>SystemOpen <CMD>call <SID>HandleSystemOpen()<CR>
-nnoremap <Plug>SystemOpenCWD <CMD>execute <SID>ExecuteOpen(shellescape(expand('%:h'))<CR>
+nnoremap <Plug>SystemOpenCWD <CMD>execute <SID>ExecuteOpen(shellescape(expand('%:h')))<CR>

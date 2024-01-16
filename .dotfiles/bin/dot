@@ -975,6 +975,17 @@ install_misc_vifm() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install yq                                                  {{{
+
+_misc+="yq "
+
+install_misc_yq() {
+    curl -Lo "$BIN_DIR/yq" \
+        https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+    chmod +x "$BIN_DIR/yq"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Git submodule install/build functions                                 {{{
@@ -1187,6 +1198,7 @@ build_installs() {
 misc_installs() {
     install_misc_neovim nightly
     install_misc_vifm
+    install_misc_yq
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

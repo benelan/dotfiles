@@ -5,7 +5,6 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- the GOAT git plugin
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
     keys = {
-      { "<leader>g", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gs", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>Git commit<CR>", desc = "Fugitive commit" },
       { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },

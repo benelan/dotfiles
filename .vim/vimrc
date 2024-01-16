@@ -174,10 +174,6 @@ if has("keymap")
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
 
-    cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
-    cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
-
-
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
     nnoremap <leader>gw :diffget <bar> diffupdate<CR>
@@ -185,17 +181,16 @@ if has("keymap")
     nnoremap <leader>gr :diffget<CR>
     vnoremap <leader>gr :diffget<CR>
 
-    nnoremap <leader>mu :diffupdate<CR>
-    nnoremap <leader>mb :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>mB :%diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>g+ :diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>g= :%diffget BA <bar> diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
-    nnoremap <leader>mh :diffget LO <bar> diffupdate<CR>
-    nnoremap <leader>mH :%diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>g[ :diffget LO <bar> diffupdate<CR>
+    nnoremap <leader>g{ :%diffget LO <bar> diffupdate<CR>
 
     " REMOTE is the rightmost buffer
-    nnoremap <leader>ml :diffget RE <bar> diffupdate<CR>
-    nnoremap <leader>mL :%diffget RE <bar> diffupdate<CR>
+    nnoremap <leader>g] :diffget RE <bar> diffupdate<CR>
+    nnoremap <leader>g} :%diffget RE <bar> diffupdate<CR>
 
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

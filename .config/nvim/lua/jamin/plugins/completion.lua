@@ -11,9 +11,12 @@ return {
       local has_dict, dict = pcall(require, "cmp_dictionary")
       if not has_dict then return end
 
-      dict.setup { first_case_insensitive = true }
-      dict.switcher { spelllang = { en = "/usr/share/dict/words" } }
-      dict.update()
+      dict.setup {
+        paths = { "/usr/share/dict/words" },
+        document = { enable = true, command = { "dict", "${label}" } },
+        external = { enable = true, command = { "look", "${prefix}", "${path}" } },
+        first_case_insensitive = true,
+      }
     end,
   },
   -----------------------------------------------------------------------------

@@ -208,7 +208,7 @@ return {
           keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
           keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
           keymap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
-          -- keymap("n", "gQ", vim.diagnostic.setqfilist, "Quickfix list diagnostics")
+          keymap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
           keymap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           keymap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           keymap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
