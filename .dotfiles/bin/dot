@@ -285,6 +285,24 @@ install_packages_cargo() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+
+## Cargo extra global packages - https://crates.io             {{{
+
+_packages+="cargo-extras "
+
+install_packages_cargo-extras() {
+    ! [ -f "$DEPS_DIR/cargo-extras" ] && return
+
+    if ! is-supported cargo || ! is-supported rustup; then
+        install_language_rust
+    else
+        rustup update
+    fi
+
+    cargo install $(cat "$DEPS_DIR/cargo-extras")
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Go global packages    - https://pkg.go.dev                  {{{
 
 _packages+="go "
@@ -1174,6 +1192,7 @@ language_installs() {
 
 packages_installs() {
     install_packages_cargo
+    install_packages_cargo-extras
     install_packages_go
     install_packages_npm
     install_packages_pip

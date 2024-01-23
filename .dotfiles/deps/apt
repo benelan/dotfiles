@@ -14,6 +14,14 @@ cron
 curl
 datamash
 ddgr
+dict
+dict-devil
+dict-folddoc
+dict-gcide
+dict-jargon
+dict-vera
+dict-wn
+dictd
 diffutils
 dnsutils
 doxygen
@@ -81,7 +89,6 @@ unzip
 urlview
 vifm
 vim
-vim-gui-common
 w3m
 w3m-img
 wget
