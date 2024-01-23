@@ -15,6 +15,27 @@ return {
     event = "CursorHold",
   },
   -----------------------------------------------------------------------------
+  -- readline mappings for insert and command modes
+  {
+    "tpope/vim-rsi",
+    keys = {
+      { "<C-x><C-a>", mode = { "c", "i" } },
+      { "<C-a>", mode = { "c", "i" } },
+      { "<C-b>", mode = { "c", "i" } },
+      { "<C-d>", mode = { "c", "i" } },
+      { "<C-f>", mode = { "c", "i" } },
+      { "<M-b>", mode = { "c", "i" } },
+      { "<M-d>", mode = { "c", "i" } },
+      { "<M-f>", mode = { "c", "i" } },
+      { "<M-n>", mode = { "c", "i" } },
+      { "<M-p>", mode = { "c", "i" } },
+      { "<M-BS>", mode = { "c", "i" } },
+      { "<C-e>", mode = { "i" } },
+      { "<C-y>", mode = { "c" } },
+      { "<C-u>", mode = { "c" } },
+      { "<C-t>", mode = { "c" } },
+    },
+  },
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",

@@ -9,34 +9,19 @@
 # assignments from /etc/Inputrc
 $include /etc/inputrc
 
-set keymap vi-command
-"\ee": emacs-editing-mode
-i: emacs-editing-mode
-
-set keymap vi-insert
-"\ee": emacs-editing-mode
-"jk": vi-movement-mode
-
-set keymap emacs
-"\ee": vi-editing-mode
-ESC: "\eejk"
-
-set editing-mode emacs
 set bell-style none
-set keyseq-timeout 1200
-
 set colored-completion-prefix on
 set colored-stats on
 set completion-ignore-case on
 set completion-map-case on
-set completion-query-items 420
+set completion-query-items 169
 set enable-bracketed-paste on
 set expand-tilde on
 set history-preserve-point on
+set keyseq-timeout 1337
 set mark-symlinked-directories on
 set match-hidden-files off
 set menu-complete-display-prefix on
-set page-completions off
 set page-completions off
 set print-completions-horizontally on
 set show-all-if-ambiguous on
@@ -44,28 +29,46 @@ set show-all-if-unmodified on
 set skip-completed-text on
 set visible-stats on
 
+set keymap vi-command
+"\ee": emacs-editing-mode
+
+set keymap vi-insert
+"\ee": emacs-editing-mode
+"\C-xc": vi-movement-mode
+
 TAB: menu-complete
 "\e[Z": menu-complete-backward
-
-# Use the string that has already been typed as the prefix for searching
-"\e[B": history-search-forward
-"\e[A": history-search-backward
-"\C-p": history-search-backward
 "\C-n": history-search-forward
+"\C-p": history-search-backward
 
-# use Alt+Left/Right to move word by word in command
-"\e[1;5C": forward-word
-"\e[1;5D": backward-word
+"\ef": forward-word
+"\eb": backward-word
+"\ed": kill-word
+"\C-w": backward-kill-word
+"\C-k": kill-line
+"\C-u": backward-kill-line
+"\C-d": delete-char
+"\C-f": forward-char
+"\C-b": backward-char
+"\C-e": end-of-line
+"\C-a": beginning-of-line
+"\C-l": clear-screen
+"\C-y": yank
 
-# Use Alt+Delete to delete the following word
-"\e[3;3~": kill-word
+set keymap emacs
+"\ee": vi-editing-mode
+ESC: "\ee\C-xc"
+
+TAB: menu-complete
+"\e[Z": menu-complete-backward
+"\C-n": history-search-forward
+"\C-p": history-search-backward
 
 $if Bash
-	# Expand ! history by pressing space.
-	# Note: magic-space was introduced in Bash v2.02
+	# Expand ! history by pressing space. Introduced in Bash v2.02
 	Space: magic-space
 
-  # list out matching commands from history
+  # List out matching commands from history
   "\C-]": dabbrev-expand
 
   # Wrap a command in $( ... )
@@ -74,8 +77,7 @@ $if Bash
   # Open vifm in the current directory
   "\e-": "vifm .\C-m"
 
-  # Pipe the last command to fzf and
-  # pass the output to a new command
+  # Pipe the last command to fzf and pass the output to a new command
   "\C-xF": '$(!!|fzf --ansi --height 40)\C-a \C-m\C-m'
 
   # Wrap the current command in $( .... | fzf)

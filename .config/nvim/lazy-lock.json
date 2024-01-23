@@ -46,5 +46,6 @@
   "typescript-tools.nvim": { "branch": "master", "commit": "c43d9580c3ff5999a1eabca849f807ab33787ea7" },
   "vim-flog": { "branch": "master", "commit": "bb1fda0cac110aef3f1c0ac00be813377b2b9bf0" },
   "vim-projectionist": { "branch": "master", "commit": "a57b9bf11ecfef16f767034550472830b48ad3e2" },
+  "vim-rsi": { "branch": "master", "commit": "45540637ead22f011e8215f1c90142e49d946a54" },
   "zk-nvim": { "branch": "main", "commit": "fb0962b75a680561f94cae0588b8da92ea8d2fae" }
 }
