@@ -137,7 +137,7 @@ ip_address() {
 }
 
 git_sha() {
-    grep -oE '\b[0-9a-f]{5,40}\b'
+    grep -oE '\b[0-9a-fA-F]{5,40}\b'
 }
 
 git_sha_range() {
