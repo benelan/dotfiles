@@ -36,6 +36,7 @@ return {
       { "<C-t>", mode = { "c" } },
     },
   },
+  -----------------------------------------------------------------------------
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
@@ -128,7 +129,7 @@ return {
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
   },
   -----------------------------------------------------------------------------
-  -- qickfix/location list helper
+  -- quickfix/location list helper
   {
     "stevearc/qf_helper.nvim",
     cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },

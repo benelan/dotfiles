@@ -210,11 +210,8 @@ return {
               end
             end,
 
-            ---@diagnostic disable: assign-type-mismatch
             cmp.config.compare.recently_used,
             cmp.config.compare.locality,
-            ---@diagnostic enable: assign-type-mismatch
-
             cmp.config.compare.sort_text,
             cmp.config.compare.kind,
             cmp.config.compare.length,
@@ -488,8 +485,8 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>cc", "<cmd>ChatGPT<CR>", "ChatGPT" },
-      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", "ChatGPT select prompt" },
+      { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
+      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
       { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
       { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
       { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },

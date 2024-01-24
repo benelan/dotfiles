@@ -59,14 +59,18 @@ return {
     "mickael-menu/zk-nvim", -- Tool for writing markdown notes or a personal wiki
     ft = { "markdown" },
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
-    -- stylua: ignore
     keys = {
       { "<leader>zn", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note (zk)" },
       { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags (zk)" },
       { "<leader>zo", "<CMD>ZkNotes { sort = { 'modified' } }<CR>", desc = "Open notes (zk)" },
-      { "<leader>zf", "<CMD>ZkNotes { sort = { 'modified' }, match = { vim.fn.input 'Search: ' } }<CR>", desc = "Find notes (zk)", mode = "n" },
+      {
+        "<leader>zf",
+        "<CMD>ZkNotes { sort = { 'modified' }, match = { vim.fn.input 'Search: ' } }<CR>",
+        desc = "Find query in notes (zk)",
+        mode = "n",
+      },
       -- Search for the notes matching the current visual selection.
-      { "<leader>zf", ":'<,'>ZkMatch<CR>", desc = "Find notes (zk)", mode = "v" },
+      { "<leader>zf", ":ZkMatch<CR>", desc = "Find selection in notes (zk)", mode = "v" },
     },
     config = function()
       require("zk").setup { picker = "telescope" }
@@ -91,7 +95,7 @@ return {
             vim.keymap.set(
               "v",
               "<leader>znt",
-              ":'<,'>ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>",
+              ":ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>",
               {
                 buffer = true,
                 silent = true,
@@ -104,7 +108,7 @@ return {
             vim.keymap.set(
               "v",
               "<leader>znc",
-              ":'<,'>ZkNewFromContentSelection { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
+              ":ZkNewFromContentSelection { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
               {
                 buffer = true,
                 silent = true,
@@ -132,7 +136,7 @@ return {
             vim.keymap.set(
               "v",
               "<leader>z<CR>",
-              "'<,'>ZkInsertLinkAtSelection {matchSelected = true}<CR>",
+              ":ZkInsertLinkAtSelection<CR>",
               { buffer = true, silent = true, noremap = true, desc = "Insert link (zk)" }
             )
 
@@ -150,7 +154,6 @@ return {
   -----------------------------------------------------------------------------
   {
     "luckasRanarison/nvim-devdocs", -- Read https://devdocs.io directly in neovim
-    dev = true,
     build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
     dependencies = {
       "nvim-lua/plenary.nvim",

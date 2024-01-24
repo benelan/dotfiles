@@ -214,17 +214,37 @@ return {
         save_on_toggle = true,
         sync_on_ui_close = true,
         key = function()
-          -- Use a git remote url as the key for projects, falling back to the
-          -- git (worktree) root, project (lsp) root, or current directory
+          -- Use a git remote url as the key for projects
           local git_remotes = { "origin", "upstream" }
 
+          -- Fallback to the current working directory as the key
+          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or ""
+
           for _, remote in ipairs(git_remotes) do
-            local remote_url = vim.fn.system("git remote get-url " .. remote)
-            if vim.v.shell_error == 0 then return remote_url end
+            local remote_url = vim.fn.trim(vim.fn.system("git remote get-url " .. remote))
+
+            if
+              vim.v.shell_error == 0
+              and remote_url
+              and not string.match(remote_url, "dotfiles")
+            then
+              if
+                -- Calcite Design System is a monorepo, so I append the basename
+                -- of cwd so I can mark files per package within the monorepo.
+                string.match(remote_url, "calcite%-design%-system")
+                -- Don't append cwd's basename if we're in the top level.
+                -- This ensures the marked files apply to all git worktrees,
+                -- which are in differently named directories.
+                and cwd ~= vim.fn.trim(vim.fn.system "git rev-parse --show-toplevel")
+              then
+                return remote_url .. "~" .. vim.fs.basename(cwd)
+              end
+
+              return remote_url
+            end
           end
 
-          vim.cmd "Wcd" -- change to the git (worktree) root
-          return vim.loop.cwd()
+          return cwd
         end,
       },
     },
@@ -261,93 +281,53 @@ return {
     keys = {
       {
         "<M-h>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end,
         desc = "Harpoon toggle mark menu",
       },
       {
         "<M-m>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():append()
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():append() end,
         desc = "Harpoon append file",
       },
       {
         "<M-S-m>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():prepend()
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():prepend() end,
         desc = "Harpoon prepend file",
       },
       {
         "<M-]>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():next()
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():next() end,
         desc = "Harpoon select next mark",
       },
       {
         "<M-[>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():prev()
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():prev() end,
         desc = "Harpoon select previous mark",
       },
       {
         "<M-1>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():select(1)
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():select(1) end,
         desc = "Harpoon select mark 1",
       },
       {
         "<M-2>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():select(2)
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():select(2) end,
         desc = "Harpoon select mark 2",
       },
       {
         "<M-3>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():select(3)
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():select(3) end,
         desc = "Harpoon select mark 3",
       },
       {
         "<M-4>",
-        function()
-          vim.cmd "Wcd"
-          require("harpoon"):list():select(4)
-          vim.cmd "Rcd"
-        end,
+        function() require("harpoon"):list():select(4) end,
         desc = "Harpoon select mark 4",
-        {
-          "<M-5>",
-          function()
-            vim.cmd "Wcd"
-            require("harpoon"):list():select(5)
-            vim.cmd "Rcd"
-          end,
-          desc = "Harpoon select mark 5",
-        },
+      },
+      {
+        "<M-5>",
+        function() require("harpoon"):list():select(5) end,
+        desc = "Harpoon select mark 5",
       },
     },
   },

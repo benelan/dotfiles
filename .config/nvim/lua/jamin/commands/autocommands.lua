@@ -35,6 +35,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.wo.spell = true
     vim.wo.cursorline = false
     vim.wo.wrap = true
+    vim.wo.conceallevel = 2
     vim.b.editorconfig = false
 
     keymap("n", "$", "g$", "Move to end of line")
@@ -67,7 +68,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
   group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", { clear = true }),
   callback = function()
-    if vim.wo.diff then return end
+    if vim.wo.diff or vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype) then return end
 
     if vim.tbl_contains(res.filetypes.marker_folds, vim.bo.filetype) then
       vim.wo.foldmethod = "marker"
