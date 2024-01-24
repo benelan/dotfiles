@@ -90,7 +90,7 @@ vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project 
 vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
 
 -- automatically change directory to project root
-vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
-  group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
-  callback = set_root,
-})
+-- vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
+--   group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
+--   callback = set_root,
+-- })

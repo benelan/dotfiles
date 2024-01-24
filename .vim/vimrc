@@ -176,13 +176,13 @@ if has("keymap")
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
-    nnoremap <leader>gw :diffget <bar> diffupdate<CR>
-    vnoremap <leader>gw :diffget <bar> diffupdate<CR>
-    nnoremap <leader>gr :diffget<CR>
-    vnoremap <leader>gr :diffget<CR>
+    nnoremap <leader>gr :diffget <BAR> diffupdate<CR>
+    vnoremap <leader>gr :diffget <BAR> diffupdate<CR>
+    nnoremap <leader>gw :diffput<CR>
+    vnoremap <leader>gw :diffput<CR>
 
-    nnoremap <leader>g+ :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>g= :%diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>g- :diffget BA <bar> diffupdate<CR>
+    nnoremap <leader>g_ :%diffget BA <bar> diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
     nnoremap <leader>g[ :diffget LO <bar> diffupdate<CR>

@@ -68,7 +68,7 @@
 [diff]
     algorithm = patience
     tool = vimdiff
-    colorMoved = dimmed-zebra
+    colorMoved = zebra
     keepBackup = false
     ; Detect copies as well as renames.
     renames = copies
@@ -86,26 +86,35 @@
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
-    keepBackup = false
-    tool = vimdiff ; alternatives: nvimdiff or fugitive
-
-[mergetool]
-    keepBackup = false
-    keepTemporaries = false
+    ; options: nvimdiff, diffconflicts, fugitive
+    tool = diffconflicts
 
 [mergetool "vimdiff"]
+    trustExitCode = true
+    keepBackup = false
+    keepTemporaries = false
     ; https://git-scm.com/docs/vimdiff
     ; The layout option is available since git v2.37
     layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
 
+[mergetool "diffconflicts"]
+    trustExitCode = true
+    keepBackup = false
+    keepTemporaries = false
+    ; $DOTFILES/bin/diffconflicts
+	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+
 [mergetool "fugitive"]
+    trustExitCode = true
+    keepBackup = false
+    keepTemporaries = false
     ; https://github.com/tpope/vim-fugitive
-    cmd = nvim -f +DiagnosticToggle! \
-        +'nnoremap [x :diffget //2<CR> \
-        | nnoremap ]x :diffget //3<CR> \
-        | nnoremap [X :%diffget //2<CR> \
-        | nnoremap ]X :%diffget //3<CR> \
-        | nnoremap <leader>w <CMD>wqa<CR> \
+    cmd = vim -f +'packadd vim-fugitive         \
+        | nnoremap <leader>g[ :diffget //2<CR>  \
+        | nnoremap <leader>g] :diffget //3<CR>  \
+        | nnoremap <leader>g{ :%diffget //2<CR> \
+        | nnoremap <leader>g} :%diffget //3<CR> \
+        | nnoremap <leader>w <CMD>wqa<CR>       \
         | Gvdiffsplit!' $MERGED
 
 [status]
@@ -206,7 +215,7 @@
     m = merge
     mm = !git merge "$(git bdefault)"
     mom = !git fetch && git merge "origin/$(git bdefault)"
-    mt = mergetool --tool=fugitive
+    mt = mergetool
 
     p = push
     puoc = !git push --set-upstream origin $(git symbolic-ref --short HEAD)

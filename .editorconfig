@@ -12,7 +12,6 @@ root = true
     spaces_around_brackets = false
     spaces_around_operators = true
     indent_brace_style = K&R
-    max_line_length = 80
 
 [*.{js,jsx,json,jsonc,ts,tsx,html,vue,svelte}]
     spaces_around_brackets = true
