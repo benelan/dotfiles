@@ -167,6 +167,48 @@ return {
           set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
           mappings = { i = mappings, n = mappings },
+          file_ignore_patterns = {
+            -- dev directories
+            "%.git/",
+            "node_modules/",
+            "dist/",
+            "build/",
+            -- home directories
+            "%.cache/",
+            "%.var/",
+            "%.mozilla/",
+            "%.pki/",
+            "%.cert/",
+            "%.gnupg/",
+            "%.ssh/",
+            "~/Music",
+            "~/Videos",
+            "~/Steam",
+            "~/Pictures",
+            -- media files
+            "%.mp3",
+            "%.mp4",
+            "%.mkv",
+            "%.m4a",
+            "%.m4p",
+            "%.png",
+            "%.jpeg",
+            "%.avi",
+            "%.ico",
+            -- packages
+            "%.7z",
+            "%.dmg%",
+            "%.gz",
+            "%.iso",
+            "%.jar",
+            "%.rar",
+            "%.tar",
+            "%.zip",
+            -- auto-generated files
+            -- "%.tmp", "%.orig", "%.lock", "%.bak",
+            -- compiled
+            -- "%.com", "%.class", "%.dll", "%.exe", "%.o", "%.so", "%.map", "%.min.js",
+          },
         },
         pickers = {
           live_grep = { only_sort_text = true },
@@ -330,5 +372,146 @@ return {
         desc = "Harpoon select mark 5",
       },
     },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    cmd = "Neotree",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    keys = {
+      {
+        "<leader>e",
+        function() require("neo-tree.command").execute { toggle = true, dir = vim.loop.cwd() } end,
+        desc = "Explorer NeoTree (cwd)",
+      },
+      {
+        "<leader>ge",
+        function() require("neo-tree.command").execute { source = "git_status", toggle = true } end,
+        desc = "Git explorer",
+      },
+      {
+        "<leader>b",
+        function() require("neo-tree.command").execute { source = "buffers", toggle = true } end,
+        desc = "Buffer explorer",
+      },
+      {
+        "<leader>le",
+        function()
+          require("neo-tree.command").execute { source = "document_symbols", toggle = true }
+        end,
+        desc = "Document symbols explorer",
+      },
+    },
+    deactivate = function() vim.cmd [[Neotree close]] end,
+    opts = {
+      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+      source_selector = {
+        winbar = true,
+        sources = {
+          { source = "filesystem" },
+          { source = "buffers" },
+          { source = "git_status" },
+          { source = "document_symbols" },
+        },
+      },
+      enable_refresh_on_write = false,
+      open_files_do_not_replace_types = res.filetypes.excluded,
+      document_symbols = {
+        follow_cursor = true,
+        client_filters = { ignore = { "eslint", "null-ls" } },
+      },
+      filesystem = {
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+      },
+      window = {
+        mappings = {
+          ["<space>"] = "none",
+          ["<tab>"] = "toggle_node",
+          ["h"] = "close_node",
+          ["l"] = "open",
+          ["Z"] = "expand_all_nodes",
+          ["W"] = "focus_preview",
+        },
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true,
+          expander_collapsed = res.icons.ui.collapsed,
+          expander_expanded = res.icons.ui.expanded,
+        },
+        git_status = {
+          symbols = {
+            added = res.icons.git.added,
+            deleted = res.icons.git.removed,
+            modified = res.icons.git.changed,
+            renamed = res.icons.git.renamed,
+            ignored = res.icons.git.ignored,
+            untracked = res.icons.git.untracked,
+            unstaged = res.icons.git.unstaged,
+            staged = res.icons.git.staged,
+            conflict = res.icons.git.conflict,
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      local function on_move(data)
+        local ret = {} ---@type lsp.Client[]
+        if vim.lsp.get_clients then
+          ret = vim.lsp.get_clients()
+        else
+          ---@diagnostic disable-next-line: deprecated
+          ret = vim.lsp.get_active_clients()
+          if opts and opts.method then
+            ret = vim.tbl_filter(
+              function(client) return client.supports_method(opts.method, { bufnr = opts.bufnr }) end,
+              ret
+            )
+          end
+        end
+
+        local clients = opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+        for _, client in ipairs(clients) do
+          if client.supports_method "workspace/willRenameFiles" then
+            local resp = client.request_sync("workspace/willRenameFiles", {
+              files = {
+                {
+                  oldUri = vim.uri_from_fname(data.source),
+                  newUri = vim.uri_from_fname(data.destination),
+                },
+              },
+            }, 1000, 0)
+
+            if resp and resp.result ~= nil then
+              vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
+            end
+          end
+        end
+      end
+
+      local events = require "neo-tree.events"
+      opts.event_handlers = opts.event_handlers or {}
+      vim.list_extend(opts.event_handlers, {
+        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
+      })
+
+      require("neo-tree").setup(opts)
+
+      vim.api.nvim_create_autocmd("BufDelete", {
+        pattern = "fugitive",
+        callback = function()
+          if package.loaded["neo-tree.sources.git_status"] then
+            require("neo-tree.sources.git_status").refresh()
+          end
+        end,
+      })
+    end,
   },
 }

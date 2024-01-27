@@ -53,9 +53,15 @@ M.icons = {
     Variable = i " ",
   },
   git = {
-    added = i("󰐖 ", "+"),
-    changed = i("󰏬 ", "*"),
-    removed = i("󰍵 ", "-"),
+    added = i(" ", "+"),
+    changed = i(" ", "*"),
+    removed = i(" ", "-"),
+    renamed = i(" ", "R"),
+    ignored = i(" ", "I"),
+    untracked = i("󰘥 ", "?"),
+    unstaged = i("󱨧 ", "U"),
+    staged = i("󰗡 ", "S"),
+    conflict = i("󰗖 ", "!"),
     branch = i " ",
   },
   border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
@@ -63,7 +69,7 @@ M.icons = {
     -- utf8 icons so no fallbacks required
     prompt = "❱ ",
     select = "➤  ",
-    checkmark = "🗸 ",
+    checkmark = "✔ ",
     box = "☐ ",
     box_checked = "☑ ",
     box_crossed = "☒ ",
@@ -104,7 +110,6 @@ M.icons = {
 
 M.filetypes = {
   excluded = {
-    "ObsidianLocationList",
     "DiffviewFileHistory",
     "DiffviewFiles",
     "NeogitCommitView",
@@ -112,6 +117,7 @@ M.filetypes = {
     "NeogitPopup",
     "NeogitReflogView",
     "NeogitStatus",
+    "ObsidianLocationList",
     "Outline",
     "TelescopePreview",
     "TelescopePrompt",
@@ -133,6 +139,7 @@ M.filetypes = {
     "lspinfo",
     "man",
     "mason",
+    "neo-tree",
     "neotest-output",
     "neotest-output-panel",
     "neotest-summary",

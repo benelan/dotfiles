@@ -7,6 +7,8 @@ return {
     lazy = false,
   },
   -----------------------------------------------------------------------------
+  { "wellle/targets.vim", event = "VeryLazy" },
+  -----------------------------------------------------------------------------
   -- tpope plugins
   -- makes a lot more keymaps dot repeatable
   {

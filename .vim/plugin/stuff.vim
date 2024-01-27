@@ -264,7 +264,7 @@ function! s:NetrwToggle()
 endfunction
 
 command! Netrw call <sid>NetrwToggle()
-nnoremap <silent> <leader>e <CMD>Netrw<CR>
+nnoremap <silent> <localleader>- <CMD>Netrw<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" go to next/previous merge conflict hunks                   {{{

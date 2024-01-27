@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
@@ -81,6 +83,13 @@ return {
     -- enabled = false,
     lazy = true,
     cond = vim.g.use_devicons == true,
+    opts = {
+      default = true,
+      override = {
+        ["md"] = { icon = "", color = "#ffffff", cterm_color = "231", name = "Md" },
+        ["mdx"] = { icon = "", color = "#519aba", cterm_color = "74", name = "Mdx" },
+      },
+    },
   },
   -----------------------------------------------------------------------------
   {
@@ -102,5 +111,23 @@ return {
       require("eyeliner").setup(opts)
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "j-hui/fidget.nvim",
+    -- enabled = false,
+    event = "LspAttach",
+    opts = {
+      progress = {
+        poll_rate = 0.5,
+        ignore_done_already = true,
+        ignore = { "null-ls" },
+        display = { done_icon = res.icons.ui.checkmark },
+      },
+      notification = {
+        override_vim_notify = true,
+        window = { winblend = 0, x_padding = 0 },
+      },
+    },
   },
 }

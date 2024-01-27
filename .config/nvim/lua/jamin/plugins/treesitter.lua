@@ -10,6 +10,12 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    ft = { "astro", "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml" },
+  },
+  -----------------------------------------------------------------------------
+  {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
@@ -83,6 +89,7 @@ return {
           -- disable = { "markdown", },
         },
         indent = { enable = true },
+        autotag = { enable = true },
         query_linter = { enable = true },
         incremental_selection = {
           enable = true,
