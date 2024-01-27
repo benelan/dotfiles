@@ -35,6 +35,7 @@ return {
         -- style = "wiki",
         transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
       },
+      to_do = { symbols = { " ", ">", "x" } },
       perspective = { priority = "current", fallback = "first" },
       new_file_template = { use_template = true },
       mappings = {
@@ -150,6 +151,97 @@ return {
         end,
       })
     end,
+  },
+  -----------------------------------------------------------------------------
+  {
+    "epwalsh/obsidian.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    -- event = { "BufReadPre " .. vim.env.NOTES .. "**.md", "BufNewFile " .. vim.env.NOTES .. "**.md" },
+    ft = "markdown",
+    cmd = {
+      "ObsidianNew",
+      "ObsidianOpen",
+      "ObsidianQuickSwitch",
+      "ObsidianSearch",
+      "ObsidianTags",
+      "ObsidianToday",
+      "ObsidianTomorrow",
+      "ObsidianYesterday",
+    },
+    keys = {
+      {
+        "<leader>nn",
+        "<CMD>exe 'ObsidianNew ' . input('Title: ')<CR>",
+        desc = "New note (obsidian)",
+      },
+      {
+        "<leader>nt",
+        "<CMD>exe 'ObsidianTags ' . input('Tag: ')<CR>",
+        desc = "Find tag (obsidian)",
+      },
+      { "<leader>nO", "<CMD>ObsidianOpen<CR>", desc = "Open note (obsidian)" },
+      { "<leader>no", "<CMD>ObsidianQuickSwitch<CR>", desc = "Quick switch (obsidian)" },
+      { "<leader>nf", "<CMD>ObsidianSearch<CR>", desc = "Search notes (obsidian)" },
+      { "<leader>ndt", "<CMD>ObsidianToday<CR>", desc = "Open today's note (obsidian)" },
+      { "<leader>ndp", "<CMD>ObsidianYesterday<CR>", desc = "Open yesterday's note (obsidian)" },
+      { "<leader>ndn", "<CMD>ObsidianTomorrow<CR>", desc = "Open tomorrow's note (obsidian)" },
+      { "<leader>nl", ":ObsidianLink<CR>", desc = "Insert link to note (obsidian)", mode = "v" },
+      {
+        "<leader>nL",
+        ":ObsidianLinkNew<CR>",
+        desc = "Insert link to new note (obsidian)",
+        mode = "v",
+      },
+    },
+    opts = {
+      prepend_note_path = true,
+      disable_frontmatter = true,
+      workspaces = { { name = "notes", path = vim.env.NOTES } },
+      daily_notes = { folder = "daily" },
+      follow_url_func = function(url) vim.fn.jobstart { "o", url } end,
+      note_id_func = function(title)
+        return title and title:gsub(" ", "-"):lower() or tostring(os.time())
+      end,
+      mappings = {
+        ["gf"] = {
+          action = function() return require("obsidian").util.gf_passthrough() end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
+        ["<leader>n<Tab>"] = {
+          action = function() return require("obsidian").util.toggle_checkbox() end,
+          opts = { buffer = true, desc = "Toggle checkbox (obsidian)" },
+        },
+        ["<leader>ni"] = {
+          action = function() return vim.cmd.ObsidianPasteImg() end,
+          opts = { buffer = true, silent = true, desc = "Paste image from clipboard (obsidian)" },
+        },
+        ["<leader>nb"] = {
+          action = function() return vim.cmd.ObsidianBacklinks() end,
+          opts = { buffer = true, silent = true, desc = "Backlinks (obsidian)" },
+        },
+        ["<leader>nT"] = {
+          action = function() return vim.cmd.ObsidianTags(vim.fn.expand "<cword>") end,
+          opts = { buffer = true, silent = true, desc = "Find tag under cursor (obsidian)" },
+        },
+        ["<leader>nR"] = {
+          action = function() return vim.cmd.ObsidianRename(vim.fn.input "Name: ") end,
+          opts = { buffer = true, silent = true, desc = "Rename note (obsidian)" },
+        },
+      },
+      ui = {
+        hl_groups = { ObsidianBullet = { link = "@markup.list" } },
+        tags = { hl_group = "@keyword" },
+        reference_text = { hl_group = "@markup.link.url" },
+        highlight_text = { hl_group = "@comment.warning" },
+        external_link_icon = { char = res.icons.lsp_kind.Reference, hl_group = "@markup.link.url" },
+        checkboxes = {
+          [" "] = { char = res.icons.ui.box, hl_group = "@markup.list.unchecked" },
+          [">"] = { char = res.icons.ui.box_dot, hl_group = "@markup.list" },
+          ["x"] = { char = res.icons.ui.box_checked, hl_group = "@markup.list.checked" },
+          ["~"] = { char = res.icons.ui.box_crossed, hl_group = "@diff.minus" },
+        },
+      },
+    },
   },
   -----------------------------------------------------------------------------
   {

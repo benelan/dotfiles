@@ -59,12 +59,15 @@ M.icons = {
     branch = i " ",
   },
   border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
-  ui = { -- utf8 icons so no fallbacks required
+  ui = {
+    -- utf8 icons so no fallbacks required
     prompt = "❱ ",
     select = "➤  ",
     checkmark = "🗸 ",
     box = "☐ ",
     box_checked = "☑ ",
+    box_crossed = "☒ ",
+    box_dot = "🞔 ",
     circle = "● ",
     collapsed = "🞂",
     expanded = "🞃",
@@ -101,6 +104,7 @@ M.icons = {
 
 M.filetypes = {
   excluded = {
+    "ObsidianLocationList",
     "DiffviewFileHistory",
     "DiffviewFiles",
     "NeogitCommitView",
