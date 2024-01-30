@@ -198,7 +198,7 @@ if is-supported git-mux; then
 
     # shell commands or an executable on PATH to run after a new worktree is created
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree"
-    export GIT_MUX_NEW_SESSION_CMD='git fetch --all --prune 2>/dev/null'
+    export GIT_MUX_NEW_SESSION_CMD="_git-mux-new-session"
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"

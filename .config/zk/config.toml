@@ -198,4 +198,4 @@ daily = 'zk new --no-input daily'
 # weekly = 'zk new --no-input weekly'
 
 # Syncs notes with origin
-s = 'git sync-changes "$NOTES"'
+s = 'git sync-changes "$NOTES" "**/*.md" "chore(notes): sync"'

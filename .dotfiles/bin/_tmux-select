@@ -18,7 +18,7 @@ use constant TMUX_WINDOW_ID => 9999;
 use constant HIDE_WINDOW => 1;
 
 use constant PROMPT_COLOR => "\033[42;30m";
-use constant ACTIVE_LINK_HIGHLIGHT => "\033[44;4m";
+use constant ACTIVE_LINK_HIGHLIGHT => "\033[94;7;1m";
 use constant NORMAL_LINK_HIGHLIGHT => "\033[94;1;4m";
 
 # other options:
@@ -33,7 +33,7 @@ use constant NORMAL_LINK_HIGHLIGHT => "\033[94;1;4m";
 my $url_pattern = qr{(
     (?:https?://|\bwww\.|s?ftp://|wss?:|ssh://|udp://|vnc://|ldaps?://|dns://|payto://|mailto:|callto:|tel:|magnet:|maps:|geo:|slack://|msteams://|news://|steam://|obsidian://|s3://|rediss?://|git://|svn://|cvs://|nfs://|file://|data:|localhost)
     [\w\-\@;\/?:&=%\$_.+!*\x27(),~#\x1b\[\]]+[\w\-\@;\/?&=%\$_+!*\x27(~]
-    |(\b[0-9a-fA-F]{5,40}\b)
+    |([0-9a-fA-F]{5,40})
 )}x;
 
 ### config end

@@ -36,7 +36,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.wo.cursorline = false
     vim.wo.wrap = true
     vim.wo.conceallevel = 2
-    vim.b.editorconfig = false
 
     keymap("n", "$", "g$", "Move to end of line")
     keymap("n", "^", "g^", "Move to start of line")

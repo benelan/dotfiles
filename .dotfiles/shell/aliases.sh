@@ -250,7 +250,7 @@ if is-supported task; then
     is-supported tasksh && alias tsh="tasksh"
 
     # shellcheck disable=2154
-    [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task" "chore(task): sync changes"'
+    [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
 fi
 
 # --------------------------------------------------------------------- }}}

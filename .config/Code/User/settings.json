@@ -17,8 +17,8 @@
   "editor.fontLigatures": true,
   "editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
   "editor.fontFamily": "'Iosevka Nerd Font', 'JetBrainsMono Nerd Font', 'SauceCodePro Nerd Font', 'Ubuntu Mono', 'Fira Mono', 'monospace', monospace",
   "explorer.confirmDelete": false,

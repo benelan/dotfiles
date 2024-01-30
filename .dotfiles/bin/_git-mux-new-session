@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if [ -n "$TMUX" ]; then
+    tmux rename-window scratch
+fi
+
+git fetch --all --prune 2>/dev/null

@@ -51,7 +51,6 @@ return {
               expose_as_code_action = "all",
               complete_function_calls = has_ts and ts.completions.completeFunctionCalls or true,
               -- jsx_close_tag = { enable = true },
-              -- code_lens = "all",
             },
           }
         end,

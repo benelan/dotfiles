@@ -82,6 +82,11 @@ surfraw-extras
 taskwarrior
 tcpdump
 telnet
+texlive-extra-utils
+texlive-fonts-recommended
+texlive-latex-base
+texlive-latex-extra
+texlive-xetex
 tmux
 trash-cli
 tree

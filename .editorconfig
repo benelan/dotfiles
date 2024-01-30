@@ -22,6 +22,7 @@ root = true
 
 [*.{md,mail}]
     max_line_length = 80
+    indent_size = 2
 
 [COMMIT_EDITMSG]
     max_line_length = 72

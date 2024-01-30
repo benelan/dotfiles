@@ -1,8 +1,9 @@
 local res = require "jamin.resources"
 
 return {
+  -- Generates doc annotations for a variety of filetypes
   {
-    "danymat/neogen", -- Generates doc annotations for a variety of filetypes
+    "danymat/neogen",
     dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
     opts = { snippet_engine = "luasnip" },
     cmd = "Neogen",
@@ -15,10 +16,11 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- Opens markdown preview in browser
   {
-    "iamcco/markdown-preview.nvim", -- Opens markdown preview in browser
+    "iamcco/markdown-preview.nvim",
     build = "cd app && npm install && git reset --hard",
-    ft = { "markdown" },
+    ft = "markdown",
     keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
     config = function()
       vim.g.mkdp_browser = vim.env.ALT_BROWSER or vim.env.BROWSER or "o"
@@ -26,16 +28,16 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- Keymaps and utils for editing markdown files
   {
-    "jakewvincent/mkdnflow.nvim", -- Keymaps and utils for editing markdown files
-    ft = { "markdown" },
+    "jakewvincent/mkdnflow.nvim",
+    ft = "markdown",
     opts = {
       filetypes = { md = true, rmd = true, mdx = true, markdown = true },
       links = {
         -- style = "wiki",
         transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
       },
-      to_do = { symbols = { " ", ">", "x" } },
       perspective = { priority = "current", fallback = "first" },
       new_file_template = { use_template = true },
       mappings = {
@@ -56,9 +58,10 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- Tool for writing markdown notes or a personal wiki
   {
-    "mickael-menu/zk-nvim", -- Tool for writing markdown notes or a personal wiki
-    ft = { "markdown" },
+    "mickael-menu/zk-nvim",
+    ft = "markdown",
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
     keys = {
       { "<leader>zn", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note (zk)" },
@@ -84,7 +87,7 @@ return {
           -- Add the key mappings only for Markdown files in a zk notebook.
           ---@diagnostic disable-next-line: param-type-mismatch
           if has_zk_util and zk_util.notebook_root(vim.fn.expand "%:p") ~= nil then
-            -- Override the global kemap to create the new note in the same directory as the current buffer.
+            -- Override the global keymap to create the new note in the same directory as the current buffer.
             vim.keymap.set(
               "n",
               "<leader>zn",
@@ -153,8 +156,9 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- Read https://devdocs.io directly in neovim
   {
-    "luckasRanarison/nvim-devdocs", -- Read https://devdocs.io directly in neovim
+    "luckasRanarison/nvim-devdocs",
     build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
     dependencies = {
       "nvim-lua/plenary.nvim",

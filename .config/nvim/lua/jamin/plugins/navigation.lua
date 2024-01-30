@@ -73,7 +73,7 @@ return {
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find() end, desc = "Find in buffer (telescope)" },
         { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
-        { "<M-g>", function() builtin.grep_string({ search = vim.fn.input("Grep > "), hidden = true}) end, desc = "Find text (telescope)" },
+        { "<M-g>", function() builtin.grep_string({ search = vim.fn.input("Grep > ", vim.fn.expand("<cword>")), hidden = true}) end, desc = "Find text (telescope)" },
 
         -- LSP keymaps
         { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
@@ -99,13 +99,13 @@ return {
 
         -- Git keymaps
         { "<C-g>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
-        { "<leader>fgf", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
-        { "<leader>fgb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
-        { "<leader>fgs", function() builtin.git_status() end, desc = "Git status (telescope)" },
-        { "<leader>fgS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
-        { "<leader>fgH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
-        { "<leader>fgh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
-        { "<leader>fgh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
+        { "<leader>gff", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
+        { "<leader>gfb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
+        { "<leader>gfs", function() builtin.git_status() end, desc = "Git status (telescope)" },
+        { "<leader>gfS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
+        { "<leader>gfH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
+        { "<leader>gfh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
+        { "<leader>gfh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
       }
     end,
     opts = function()

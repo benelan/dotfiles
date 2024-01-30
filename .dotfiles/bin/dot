@@ -1192,7 +1192,6 @@ language_installs() {
 
 packages_installs() {
     install_packages_cargo
-    install_packages_cargo-extras
     install_packages_go
     install_packages_npm
     install_packages_pip
