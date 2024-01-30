@@ -1,4 +1,3 @@
-local has_dap, dap = pcall(require, "dap")
 local has_navic, navic = pcall(require, "nvim-navic")
 local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
@@ -121,11 +120,15 @@ end
 
 ---Show debug info.
 local function debug_state(fallback)
-  if has_dap then
-    local dap_status = dap.status()
+  if vim.g.loaded_dap == true then
+    local has_dap, dap = pcall(require, "dap")
 
-    if not vim.tbl_contains({ "", nil }, dap_status) then
-      return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
+    if has_dap then
+      local dap_status = dap.status()
+
+      if not vim.tbl_contains({ "", nil }, dap_status) then
+        return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
+      end
     end
   end
 

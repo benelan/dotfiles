@@ -52,6 +52,32 @@ M.icons = {
     Value = i " ",
     Variable = i " ",
   },
+  debug = {
+    breakpoint = i("󰆤 ", "B"),
+    breakpoint_condition = i("󱄶 ", "?"),
+    breakpoint_rejected = i("󰽅 ", "R"),
+    logpoint = i("󰆣 ", "L"),
+    stopped = i("󰿅 ", "X"),
+    -- dapui
+    pause = i("󰏦 ", "⏸︎ "),
+    play = i("󰐍 ", "⯈ "),
+    terminate = i("󰙧 ", "◼ "),
+    disconnect = i("󰐥 ", "⏻︎ "), -- ⏏
+    skip = i("󰙢 ", "⏭︎ "),
+    run_last = i("󰙤 ", "⏮︎ "),
+    step_back = i(" ", "🡸 "),
+    step_over = i(" ", "🡺 "),
+    step_into = i(" ", "🡻 "),
+    step_out = i(" ", "🡹 "),
+  },
+  test = {
+    passed = i("󰗡 ", "✔ "),
+    running = i("󰁚 ", "⯈ "),
+    skipped = i("󰍷 ", "⏩︎"),
+    failed = i("󰅚 ", "✘ "),
+    unknown = i("󰘥 ", "？"),
+    running_animated = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+  },
   git = {
     added = i(" ", "+"),
     changed = i(" ", "*"),
