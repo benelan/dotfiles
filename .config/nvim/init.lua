@@ -1,2 +1,2 @@
--- do all setup in a lua module so stuff can be cached
-require "jamin"
+-- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.lazy")

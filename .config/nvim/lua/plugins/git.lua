@@ -1,9 +1,7 @@
-local res = require "jamin.resources"
-
 return {
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive", -- the GOAT git plugin
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     keys = {
       { "<leader>gs", "<CMD>Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>Git commit<CR>", desc = "Fugitive commit" },
@@ -52,7 +50,7 @@ return {
   -----------------------------------------------------------------------------
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-rhubarb",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
     keys = {
@@ -94,67 +92,9 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
-    event = "VeryLazy",
-    -- stylua: ignore
-    keys = {
-      {
-        "]c",
-        function()
-          if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").next_hunk() end)
-          return "<Ignore>"
-        end,
-        expr = true,
-        mode = "n",
-        desc = "Next hunk (gitsigns)",
-      },
-      {
-        "[c",
-        function()
-          if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").prev_hunk() end)
-          return "<Ignore>"
-        end,
-        expr = true,
-        mode = "n",
-        desc = "Previous hunk (gitsigns)",
-      },
-      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk (gitsigns)", mode = { "o", "x" } },
-      { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk (gitsigns)" },
-      { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk (gitsigns)" },
-      { "]H", function() require("gitsigns").next_hunk { wrap = false, preview = true } end, desc = "Next hunk (gitsigns)" },
-      { "[H", function() require("gitsigns").prev_hunk { wrap = false, preview = true } end, desc = "Previous hunk (gitsigns)" },
-      { "<leader>hl", function() require("gitsigns").setloclist() end, desc = "Hunks to location list (gitsigns)" },
-      { "<leader>hq", function() require("gitsigns").setqflist "all" end, desc = "Hunks to quickfix list (gitsigns)" },
-      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk (gitsigns)" },
-      { "<leader>hP", function() require("gitsigns").preview_hunk_inline() end, desc = "Preview hunk (gitsigns)" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk (gitsigns)", mode = "v" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk (gitsigns)", mode = "v" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk (gitsigns)", mode = "n" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk (gitsigns)", mode = "n" },
-      { "<leader>hu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk (gitsigns)" },
-      { "<leader>hR", function() require("gitsigns").reset_buffer() end, desc = "Reset buffer (gitsigns)" },
-      { "<leader>hW", function() require("gitsigns").stage_buffer() end, desc = "Stage buffer (gitsigns)" },
-      { "<leader>hts", function() require("gitsigns").toggle_signs() end, desc = "Toggle signs (gitsigns)" },
-      { "<leader>htd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display (gitsigns)" },
-      { "<leader>htw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff (gitsigns)" },
-      { "<leader>hth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle line highlight (gitsigns)" },
-      { "<leader>htn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle number highlight (gitsigns)" },
-      { "<leader>htb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle blame (gitsigns)" },
-      { "<leader>hb", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame line (gitsigns)" },
-    },
-    opts = {
-      current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
-      current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
-      preview_config = { border = res.icons.border },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
     "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
     -- dev = true,
-    cond = vim.fn.executable "gh" == 1,
+    cond = vim.fn.executable("gh") == 1,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     cmd = "Octo",
     opts = {
@@ -163,9 +103,9 @@ return {
       file_panel = { use_icons = vim.g.use_devicons },
       -- right_bubble_delimiter = res.icons.ui.block,
       -- left_bubble_delimiter = res.icons.ui.block,
-      reaction_viewer_hint_icon = res.icons.ui.circle,
-      timeline_marker = res.icons.ui.prompt,
-      user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
+      -- reaction_viewer_hint_icon = res.icons.ui.circle,
+      -- timeline_marker = res.icons.ui.prompt,
+      -- user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
       picker_config = {
         mappings = { open_in_browser = { lhs = "<C-o>" }, checkout_pr = { lhs = "<M-o>" } },
       },

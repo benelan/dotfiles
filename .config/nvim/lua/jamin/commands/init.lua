@@ -1,6 +1,0 @@
-require "jamin.commands.autocommands"
-require "jamin.commands.rooter"
-require "jamin.commands.togglers"
-require "jamin.commands.async_make"
-require "jamin.commands.auto_format"
-require "jamin.commands.notes"

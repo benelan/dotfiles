@@ -1,9 +1,8 @@
-local res = require "jamin.resources"
-
 return {
+
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/gruvbox-material",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/gruvbox-material"),
     lazy = false,
     priority = 42069,
     config = function()
@@ -28,33 +27,17 @@ return {
 
       local gruvbox_custom_colors = function()
         local alt_palette = vim.fn["gruvbox_material#get_palette"]("hard", "material", { x = {} })
-        local palette = vim.fn["gruvbox_material#get_palette"](
-          vim.g.gruvbox_material_background,
-          vim.g.gruvbox_material_foreground,
-          {
+        local palette =
+          vim.fn["gruvbox_material#get_palette"](vim.g.gruvbox_material_background, vim.g.gruvbox_material_foreground, {
             bg_visual_yellow = { "#7a380b", "208" },
             bg_orange = { "#5A3B0A", "130" },
-          }
-        )
+          })
 
         local hl = vim.fn["gruvbox_material#highlight"]
 
         hl("DiffDelete", palette.bg5, palette.bg_diff_red)
         hl("DiffChange", palette.none, palette.bg_orange)
         hl("DiffText", palette.fg0, palette.bg_visual_yellow)
-
-        hl("StatusLineState", palette.none, palette.bg3)
-        hl("StatusLineLazy", palette.purple, palette.bg3)
-        hl("StatusLineDap", palette.aqua, palette.bg3)
-
-        hl("StatusLineDiagnosticSev1", palette.red, palette.bg3) -- error
-        hl("StatusLineDiagnosticSev2", palette.yellow, palette.bg3) -- warning
-        hl("StatusLineDiagnosticSev3", palette.blue, palette.bg3) -- info
-        hl("StatusLineDiagnosticSev4", palette.green, palette.bg3) -- hint
-
-        hl("StatusLineGitChange", alt_palette.orange, palette.bg3)
-        hl("StatusLineGitAdd", alt_palette.green, palette.bg3)
-        hl("StatusLineGitDelete", alt_palette.red, palette.bg3)
 
         hl("GitSignsChange", alt_palette.orange, palette.none)
         hl("GitSignsChangeNr", alt_palette.orange, palette.none)
@@ -65,7 +48,7 @@ return {
         -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
         vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
 
-        vim.cmd "highlight ErrorMsg cterm=bold gui=bold"
+        vim.cmd("highlight ErrorMsg cterm=bold gui=bold")
       end
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
@@ -74,21 +57,13 @@ return {
         callback = gruvbox_custom_colors,
       })
 
-      vim.cmd "colorscheme gruvbox-material"
+      vim.cmd("colorscheme gruvbox-material")
     end,
   },
-  -----------------------------------------------------------------------------
   {
-    "nvim-tree/nvim-web-devicons", -- filetype icons
-    -- enabled = false,
-    lazy = true,
-    cond = vim.g.use_devicons == true,
+    "LazyVim/LazyVim",
     opts = {
-      default = true,
-      override = {
-        ["md"] = { icon = "", color = "#ffffff", cterm_color = "231", name = "Md" },
-        ["mdx"] = { icon = "", color = "#519aba", cterm_color = "74", name = "Mdx" },
-      },
+      colorscheme = "gruvbox-material",
     },
   },
   -----------------------------------------------------------------------------
@@ -122,7 +97,6 @@ return {
         poll_rate = 0.5,
         ignore_done_already = true,
         ignore = { "null-ls" },
-        display = { done_icon = res.icons.ui.checkmark },
       },
       notification = {
         override_vim_notify = true,

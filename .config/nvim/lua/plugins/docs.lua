@@ -1,5 +1,3 @@
-local res = require "jamin.resources"
-
 return {
   -- Generates doc annotations for a variety of filetypes
   {
@@ -36,7 +34,9 @@ return {
       filetypes = { md = true, rmd = true, mdx = true, markdown = true },
       links = {
         -- style = "wiki",
-        transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
+        transform_explicit = function(text)
+          return text:gsub(" ", "-"):lower()
+        end,
       },
       perspective = { priority = "current", fallback = "first" },
       new_file_template = { use_template = true },
@@ -77,7 +77,7 @@ return {
       { "<leader>zf", ":ZkMatch<CR>", desc = "Find selection in notes (zk)", mode = "v" },
     },
     config = function()
-      require("zk").setup { picker = "telescope" }
+      require("zk").setup({ picker = "telescope" })
       local has_zk_util, zk_util = pcall(require, "zk.util")
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -86,7 +86,7 @@ return {
         callback = function()
           -- Add the key mappings only for Markdown files in a zk notebook.
           ---@diagnostic disable-next-line: param-type-mismatch
-          if has_zk_util and zk_util.notebook_root(vim.fn.expand "%:p") ~= nil then
+          if has_zk_util and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil then
             -- Override the global keymap to create the new note in the same directory as the current buffer.
             vim.keymap.set(
               "n",
@@ -96,17 +96,12 @@ return {
             )
 
             -- Create a new note using the current selection for the title.
-            vim.keymap.set(
-              "v",
-              "<leader>znt",
-              ":ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>",
-              {
-                buffer = true,
-                silent = true,
-                noremap = true,
-                desc = "New note using selected title (zk)",
-              }
-            )
+            vim.keymap.set("v", "<leader>znt", ":ZkNewFromTitleSelection { dir = vim.fn.expand('%:p:h') }<CR>", {
+              buffer = true,
+              silent = true,
+              noremap = true,
+              desc = "New note using selected title (zk)",
+            })
 
             -- Use the current selection for the new note's content and prompt for the title.
             vim.keymap.set(
@@ -200,7 +195,7 @@ return {
       local width = math.floor(ui.width / 2)
 
       -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      return vim.tbl_deep_extend("force", vim.fn.executable "glow" == 1 and {
+      return vim.tbl_deep_extend("force", vim.fn.executable("glow") == 1 and {
         previewer_cmd = "glow",
         picker_cmd = true,
         cmd_args = { "-s", "dark", "-w", width },
@@ -237,12 +232,12 @@ return {
           row = ui.height - 3,
           anchor = "SE",
           style = "minimal",
-          border = res.icons.border,
+          border = "rounded",
         },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
-          vim.cmd "set conceallevel=2"
-          vim.cmd "set nowrap"
+          vim.cmd("set conceallevel=2")
+          vim.cmd("set nowrap")
         end,
       })
     end,
