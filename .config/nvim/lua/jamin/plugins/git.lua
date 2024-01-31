@@ -148,6 +148,7 @@ return {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
       preview_config = { border = res.icons.border },
+      worktrees = { { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" } },
     },
   },
   -----------------------------------------------------------------------------

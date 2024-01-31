@@ -2,8 +2,9 @@ local res = require "jamin.resources"
 
 return {
   -----------------------------------------------------------------------------
+  -- completes words from a dictionary file
   {
-    "uga-rosa/cmp-dictionary", -- completes words from a dictionary file
+    "uga-rosa/cmp-dictionary",
     -- only use source if a dict file exists in the usual place
     cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
     ft = res.filetypes.writing,
@@ -20,8 +21,9 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- completes git commits and github issues/pull requests
   {
-    "petertriho/cmp-git", -- completes git commits and github issues/pull requests
+    "petertriho/cmp-git",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = { "gitcommit", "markdown", "octo" },
     config = function()
@@ -32,35 +34,22 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  {
-    "hrsh7th/cmp-nvim-lsp", -- completes API info from attached language servers
-    event = "LspAttach",
-  },
-  {
-    "hrsh7th/cmp-nvim-lsp-signature-help", -- completes function signatures via LSP
-    event = "LspAttach",
-  },
+  -- completes API info from attached language servers
+  { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
   -----------------------------------------------------------------------------
-  {
-    "hrsh7th/cmp-cmdline", -- completes (neo)vim APIs in command mode
-    event = "CmdlineEnter",
-  },
+  -- completes function signatures via LSP
+  { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
   -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
-    event = { "InsertEnter", "CmdlineEnter" },
+    event = { "InsertEnter" },
     dependencies = {
-      "L3MON4D3/LuaSnip", -- snippet engine
-      "hrsh7th/cmp-buffer", -- completes text in the current buffer
-      "hrsh7th/cmp-path", -- completes filesystem paths
-      {
-        "andersevenrud/cmp-tmux", -- completes text visible in other tmux panes
-        cond = vim.env.TMUX ~= nil,
-      },
-      {
-        "lukas-reineke/cmp-rg", -- completes text from other files in the project
-        cond = vim.fn.executable "rg" == 1,
-      },
+      "L3MON4D3/LuaSnip",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
+      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 },
+      -------------------------------------------------------------------------
     },
     config = function()
       local cmp = require "cmp"
@@ -149,7 +138,6 @@ return {
             -- show the item's completion source in the results
             vim_item.menu = ({
               buffer = i " BUF",
-              -- cmdline = "",
               copilot = i " SNIP",
               luasnip = i " SNIP",
               dictionary = i " DICT",
@@ -245,16 +233,6 @@ return {
       }
 
       cmp.setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
-
-      cmp.setup.cmdline(":", {
-        sources = {
-          { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "cmdline", group_index = 1 },
-          { name = "buffer", keyword_length = 2, group_index = 2 },
-          { name = "rg", keyword_length = 3, group_index = 3 },
-          { name = "dictionary", keyword_length = 2, group_index = 3 },
-        },
-      })
     end,
   },
   -----------------------------------------------------------------------------
@@ -445,60 +423,6 @@ return {
         desc = "Copilot accept",
       },
       { "<leader>C", "<CMD>Copilot toggle<CR><CMD>Copilot status<CR>", desc = "Copilot toggle" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  {
-    -- https://platform.openai.com/docs/guides/gpt-best-practices
-    "jackMort/ChatGPT.nvim",
-    cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
-    cmd = {
-      "ChatGPT",
-      "ChatGPTActAs",
-      "ChatGPTEditWithInstruction",
-      "ChatGPTRun",
-    },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    opts = {
-      api_key_cmd = string.format("gpg --decrypt %s/cache/openai.txt.gpg", vim.env.DOTFILES),
-      show_quickfixes_cmd = "copen",
-      chat = {
-        welcome_message = res.art.bender_dots,
-        question_sign = res.icons.ui.speech_bubble,
-        answer_sign = res.icons.ui.select,
-        border_left_sign = res.icons.ui.fill_solid,
-        border_right_sign = res.icons.ui.fill_solid,
-        sessions_window = {
-          inactive_sign = string.format(" %s ", res.icons.ui.box),
-          active_sign = string.format(" %s ", res.icons.ui.box_checked),
-          current_line_sign = res.icons.ui.collapsed,
-        },
-      },
-      popup_input = { prompt = string.format(" %s ", res.icons.ui.prompt) },
-      settings_window = { setting_sign = string.format(" %s ", res.icons.ui.dot_outline) },
-      popup_window = { win_options = { foldcolumn = "0" } },
-      system_window = { win_options = { foldcolumn = "0" } },
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
-      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
-      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
-      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
-      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
-      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
-      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
-      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
-      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
-      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
-      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
-      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
-      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
     },
   },
 }

@@ -1,4 +1,9 @@
 return {
+  {
+    "folke/lazy.nvim",
+    init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
+  },
+  -----------------------------------------------------------------------------
   -- keymaps/autocmds/utils/etc. shared with the vim config
   {
     dir = "~/.vim",

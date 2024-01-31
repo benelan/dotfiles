@@ -20,7 +20,7 @@ vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.wildignorecase = true
-vim.opt.wildmode = "longest,full"
+vim.opt.wildmode = "longest:full,full"
 vim.opt.wildignore = res.path.ignore
 vim.opt.path = res.path.include
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
@@ -39,8 +39,8 @@ vim.opt.termguicolors = true
 
 -- vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
 vim.opt.linebreak = true
-vim.opt.scrolloff = 8
-vim.opt.sidescrolloff = 15
+vim.opt.scrolloff = 4
+vim.opt.sidescrolloff = 8
 
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4

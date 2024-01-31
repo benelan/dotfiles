@@ -116,79 +116,34 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 -- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
 -- keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
-keymap(
-  "n",
-  "]d",
-  function()
-    vim.diagnostic.goto_next {
-      wrap = true,
-      float = true,
-    }
-  end,
-  "Next diagnostic"
-)
-
-keymap(
-  "n",
-  "[d",
-  function()
-    vim.diagnostic.goto_prev {
-      wrap = true,
-      float = true,
-    }
-  end,
-  "Previous diagnostic"
-)
+keymap("n", "]d", function() vim.diagnostic.goto_next { float = true } end, "Next diagnostic")
+keymap("n", "[d", function() vim.diagnostic.goto_prev { float = true } end, "Previous diagnostic")
 
 keymap(
   "n",
   "]e",
-  function()
-    vim.diagnostic.goto_next {
-      severity = "Error",
-      wrap = true,
-      float = true,
-    }
-  end,
+  function() vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR, float = true } end,
   "Next diagnostic error"
 )
 
 keymap(
   "n",
   "[e",
-  function()
-    vim.diagnostic.goto_prev {
-      severity = "Error",
-      wrap = true,
-      float = true,
-    }
-  end,
+  function() vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR, float = true } end,
   "Previous diagnostic error"
 )
 
 keymap(
   "n",
   "]w",
-  function()
-    vim.diagnostic.goto_next {
-      severity = "Warn",
-      wrap = true,
-      float = true,
-    }
-  end,
+  function() vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN, float = true } end,
   "Next diagnostic warning"
 )
 
 keymap(
   "n",
   "[w",
-  function()
-    vim.diagnostic.goto_prev {
-      severity = "Warn",
-      wrap = true,
-      float = true,
-    }
-  end,
+  function() vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN, float = true } end,
   "Previous diagnostic warning"
 )
 
@@ -271,7 +226,7 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 ----> Buffers
 -------------------------------------------------------------------------------
 
-keymap({ "n", "i" }, "<M-w>", "<CMD>write<CR>", "Write buffer")
+keymap({ "n", "i", "v" }, "<C-s>", "<CMD>write<CR>", "Write buffer")
 keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
 -- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit buffer")
 

@@ -1,27 +1,11 @@
-local res = require "jamin.resources"
-
 return {
-  -- Generates doc annotations for a variety of filetypes
-  {
-    "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
-    opts = { snippet_engine = "luasnip" },
-    cmd = "Neogen",
-    -- stylua: ignore
-    keys = {
-      { "<leader>df", function() require("neogen").generate { type = "func" } end, desc = "Annotate function (neogen)" },
-      { "<leader>dc", function() require("neogen").generate { type = "class" } end, desc = "Annotate class (neogen)" },
-      { "<leader>dt", function() require("neogen").generate { type = "type" } end, desc = "Annotate type (neogen)" },
-      { "<leader>db", function() require("neogen").generate { type = "file" } end, desc = "Annotate buffer (neogen)" },
-    },
-  },
   -----------------------------------------------------------------------------
   -- Opens markdown preview in browser
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && npm install && git reset --hard",
     ft = "markdown",
-    keys = { { "<leader>dp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
+    keys = { { "<leader>zp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
     config = function()
       vim.g.mkdp_browser = vim.env.ALT_BROWSER or vim.env.BROWSER or "o"
       vim.g.mkdp_auto_close = false
@@ -43,7 +27,7 @@ return {
       mappings = {
         MkdnEnter = { { "i", "n", "v" }, "<CR>" },
         MkdnToggleToDo = { { "n", "v" }, "<leader><Tab>" },
-        MkdnMoveSource = { "n", "<leader>dR" },
+        MkdnMoveSource = { "n", "<leader>zR" },
         MkdnTab = { "i", "<Tab>" },
         MkdnSTab = { "i", "<S-Tab>" },
         MkdnIncreaseHeading = { "n", "[<Tab>" },
@@ -154,115 +138,5 @@ return {
         end,
       })
     end,
-  },
-  -----------------------------------------------------------------------------
-  -- Read https://devdocs.io directly in neovim
-  {
-    "luckasRanarison/nvim-devdocs",
-    build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    opts = function()
-      local sources = {
-        "astro",
-        "bash",
-        "css",
-        "docker",
-        "dom",
-        "gnu_make",
-        "go",
-        "html",
-        "http",
-        "javascript",
-        "jest",
-        "jq",
-        "lodash-4",
-        "lua-5.4",
-        "markdown",
-        "node",
-        "npm",
-        "react",
-        "sass",
-        "sqlite",
-        "svelte",
-        "svg",
-        "tailwindcss",
-        "typescript",
-        "vite",
-        "vue-3",
-      }
-
-      -- calculate the width and height of the floating window
-      local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
-      local width = math.floor(ui.width / 2)
-
-      -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      return vim.tbl_deep_extend("force", vim.fn.executable "glow" == 1 and {
-        previewer_cmd = "glow",
-        picker_cmd = true,
-        cmd_args = { "-s", "dark", "-w", width },
-        picker_cmd_args = { "-s", "dark" },
-        cmd_ignore = sources,
-      } or {}, {
-        mappings = { open_in_browser = "<C-o>" },
-        filetypes = {
-          scss = { "sass", "css", "tailwindcss" },
-          css = { "css", "tailwindcss" },
-          html = { "javascript", "dom", "html", "css" },
-          javascript = { "javascript", "dom", "node" },
-          typescript = { "javascript", "typescript", "dom", "node" },
-          javascriptreact = { "javascript", "dom", "html", "react", "css", "tailwindcss" },
-          typescriptreact = {
-            "javascript",
-            "typescript",
-            "dom",
-            "html",
-            "react",
-            "css",
-            "tailwindcss",
-          },
-          vue = { "javascript", "dom", "html", "vue", "css", "tailwindcss" },
-          svelte = { "javascript", "dom", "html", "svelte", "css", "tailwindcss" },
-          astro = { "javascript", "dom", "node", "html", "astro", "css", "tailwindcss" },
-          json = { "jq", "npm" },
-        },
-        float_win = {
-          relative = "editor",
-          width = width,
-          height = ui.height - 7,
-          col = ui.width - 1,
-          row = ui.height - 3,
-          anchor = "SE",
-          style = "minimal",
-          border = res.icons.border,
-        },
-        after_open = function(bufnr)
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
-          vim.cmd "set conceallevel=2"
-          vim.cmd "set nowrap"
-        end,
-      })
-    end,
-    cmd = {
-      "DevdocsFetch",
-      "DevdocsInstall",
-      "DevdocsUninstall",
-      "DevdocsOpen",
-      "DevdocsOpenFloat",
-      "DevdocsOpenCurrent",
-      "DevdocsOpenCurrentFloat",
-      "DevdocsUpdate",
-      "DevdocsUpdateAll",
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>dd", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open Devdocs (filetype)" },
-      { "<leader>dD", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open Devdocs (filetype, floating)" },
-      { "<leader>do", "<CMD>DevdocsOpen<CR>", desc = "Open Devdocs" },
-      { "<leader>dO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open Devdocs (floating)" },
-    },
   },
 }

@@ -54,29 +54,10 @@ M.icons = {
   },
   debug = {
     breakpoint = i("󰆤 ", "B"),
-    breakpoint_condition = i("󱄶 ", "?"),
+    breakpoint_condition = i("󱄶 ", "C"),
     breakpoint_rejected = i("󰽅 ", "R"),
     logpoint = i("󰆣 ", "L"),
-    stopped = i("󰿅 ", "X"),
-    -- dapui
-    pause = i("󰏦 ", "⏸︎ "),
-    play = i("󰐍 ", "⯈ "),
-    terminate = i("󰙧 ", "◼ "),
-    disconnect = i("󰐥 ", "⏻︎ "), -- ⏏
-    skip = i("󰙢 ", "⏭︎ "),
-    run_last = i("󰙤 ", "⏮︎ "),
-    step_back = i(" ", "🡸 "),
-    step_over = i(" ", "🡺 "),
-    step_into = i(" ", "🡻 "),
-    step_out = i(" ", "🡹 "),
-  },
-  test = {
-    passed = i("󰗡 ", "✔ "),
-    running = i("󰁚 ", "⯈ "),
-    skipped = i("󰍷 ", "⏩︎"),
-    failed = i("󰅚 ", "✘ "),
-    unknown = i("󰘥 ", "？"),
-    running_animated = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+    stopped = i("󰿅 ", "S"),
   },
   git = {
     added = i(" ", "+"),
@@ -90,12 +71,17 @@ M.icons = {
     conflict = i("󰗖 ", "!"),
     branch = i " ",
   },
+  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
   border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
   ui = {
     -- utf8 icons so no fallbacks required
     prompt = "❱ ",
     select = "➤  ",
+    play = "⯈ ",
+    skip = "⏩︎",
+    x = "✘ ",
     checkmark = "✔ ",
+    question_mark = "？",
     box = "☐ ",
     box_checked = "☑ ",
     box_crossed = "☒ ",
@@ -134,6 +120,15 @@ M.icons = {
   },
 }
 
+M.icons.test = {
+  passed = i("󰗡 ", M.icons.ui.checkmark),
+  running = i("󰁚 ", M.icons.ui.play),
+  skipped = i("󰍷 ", M.icons.ui.skip),
+  failed = i("󰅚 ", M.icons.ui.x),
+  unknown = i("󰘥 ", M.icons.ui.question_mark),
+  running_animated = M.icons.progress,
+}
+
 M.filetypes = {
   excluded = {
     "DiffviewFileHistory",
@@ -152,10 +147,15 @@ M.filetypes = {
     "chatgpt-input",
     "checkhealth",
     "cmp_menu",
+    "dap-preview",
     "dap-repl",
     "dap-terminal",
+    "dapui_breakpoints",
     "dapui_console",
     "dapui_hover",
+    "dapui_scopes",
+    "dapui_stacks",
+    "dapui_watches",
     "floggraph",
     "fugitive",
     "fugitiveblame",

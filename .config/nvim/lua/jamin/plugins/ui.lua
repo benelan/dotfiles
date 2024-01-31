@@ -117,6 +117,21 @@ return {
     "j-hui/fidget.nvim",
     -- enabled = false,
     event = "LspAttach",
+    keys = {
+      { "<leader>nn", "<CMD>Fidget history<CR>", desc = "View notification history (fidget)" },
+      { "<leader>nt", "<CMD>Fidget suppress<CR>", desc = "Toggle notifications (fidget)" },
+      { "<leader>nx", "<CMD>Fidget clear<CR>", desc = "Clear notifications (fidget)" },
+      {
+        "<leader>np",
+        "<CMD>Fidget lsp_suppress<CR>",
+        desc = "Toggle LSP progress notifications (fidget)",
+      },
+      {
+        "<leader>nX",
+        "<CMD>Fidget clear_history<CR>",
+        desc = "Clear notification history (fidget)",
+      },
+    },
     opts = {
       progress = {
         poll_rate = 0.5,

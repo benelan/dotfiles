@@ -3,65 +3,12 @@ local res = require "jamin.resources"
 return {
   {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    dependencies = {
-      {
-        "williamboman/mason-lspconfig.nvim", -- integrates mason and lspconfig
-        build = ":MasonUpdate",
-        opts = {
-          ensure_installed = res.lsp_servers,
-          automatic_installation = true,
-        },
-        dependencies = {
-          "williamboman/mason.nvim", -- language server installer/manager
-          build = ":MasonUpdate",
-          opts = {
-            ensure_installed = res.mason_packages,
-            ui = { border = res.icons.border, height = 0.8 },
-          },
-          config = function(_, opts)
-            require("mason").setup(opts)
-            local mr = require "mason-registry"
-
-            -- make sure all of the Mason tools are installed
-            local function ensure_installed()
-              for _, tool in ipairs(opts.ensure_installed) do
-                local p = mr.get_package(tool)
-
-                if not p:is_installed() then p:install() end
-              end
-            end
-
-            if mr.refresh then
-              mr.refresh(ensure_installed)
-            else
-              ensure_installed()
-            end
-          end,
-        },
-      },
-      -----------------------------------------------------------------------------
-      {
-        "pmizio/typescript-tools.nvim", -- Lua implementation of typescript-language-server
-        dependencies = { "nvim-lua/plenary.nvim" },
-        opts = function()
-          local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
-          return {
-            settings = {
-              tsserver_file_preferences = has_ts and ts.settings.typescript.inlayHints or {},
-              expose_as_code_action = "all",
-              complete_function_calls = has_ts and ts.completions.completeFunctionCalls or true,
-              -- jsx_close_tag = { enable = true },
-            },
-          }
-        end,
-      },
-      -----------------------------------------------------------------------------
-      {
-        "folke/neodev.nvim", -- Enhances the lua language server with neovim APIs
-        ft = "lua",
-        opts = {},
-      },
-      -----------------------------------------------------------------------------
+    lazy = false,
+    dependencies = { "williamboman/mason-lspconfig.nvim" },
+    keys = {
+      { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
+      { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
+      { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
     },
     opts = {
       diagnostics = {
@@ -150,7 +97,7 @@ return {
           vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
           -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier, shfmt, stylua (using null-ls.nvim or efm-langserver)
+          -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
           if
             vim.tbl_contains(
               { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
@@ -234,7 +181,51 @@ return {
   },
   -----------------------------------------------------------------------------
   {
+    -- Installer/manager for language servers, linters, formatters, and debuggers
+    "williamboman/mason.nvim",
+    lazy = true,
+    build = ":MasonUpdate",
+    keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
+    opts = {
+      ensure_installed = res.mason_packages,
+      ui = { border = res.icons.border, height = 0.8 },
+    },
+    config = function(_, opts)
+      require("mason").setup(opts)
+      local mr = require "mason-registry"
+
+      -- make sure all of the Mason tools are installed
+      local function ensure_installed()
+        for _, tool in ipairs(opts.ensure_installed) do
+          local p = mr.get_package(tool)
+
+          if not p:is_installed() then p:install() end
+        end
+      end
+
+      if mr.refresh then
+        mr.refresh(ensure_installed)
+      else
+        ensure_installed()
+      end
+    end,
+  },
+  -----------------------------------------------------------------------------
+  -- integrates mason and lspconfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+    lazy = true,
+    dependencies = { "williamboman/mason.nvim" },
+    build = ":MasonUpdate",
+    opts = {
+      ensure_installed = res.lsp_servers,
+      automatic_installation = true,
+    },
+  },
+  -----------------------------------------------------------------------------
+  {
     "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
+    event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
       local nls = require "null-ls"
@@ -317,5 +308,39 @@ return {
         },
       }
     end,
+  },
+  -----------------------------------------------------------------------------
+  -- JSON and YAML schema store for autocompletion and validation
+  {
+    "b0o/SchemaStore.nvim",
+    lazy = true,
+    cond = vim.tbl_contains(res.lsp_servers, "yamlls")
+      or vim.tbl_contains(res.lsp_servers, "jsonls"),
+  },
+  -----------------------------------------------------------------------------
+  -- Lua implementation of typescript-language-server
+  {
+    "pmizio/typescript-tools.nvim",
+    ft = res.filetypes.webdev,
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = function()
+      local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
+      return {
+        settings = {
+          expose_as_code_action = "all",
+          tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
+          complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
+            or true,
+          -- jsx_close_tag = { enable = true },
+        },
+      }
+    end,
+  },
+  -----------------------------------------------------------------------------
+  -- Enhances the lua language server with neovim APIs
+  {
+    "folke/neodev.nvim",
+    lazy = true,
+    opts = { setup_jsonls = false },
   },
 }

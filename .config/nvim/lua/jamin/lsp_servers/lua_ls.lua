@@ -1,4 +1,8 @@
 return {
+  before_init = function(...)
+    local has_neodev, neodev = pcall(require, "neodev.lsp")
+    if has_neodev then neodev.before_init(...) end
+  end,
   settings = {
     Lua = {
       runtime = { version = "LuaJIT" },
