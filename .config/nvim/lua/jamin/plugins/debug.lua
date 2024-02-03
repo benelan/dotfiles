@@ -289,15 +289,6 @@ return {
     end,
     dependencies = {
       { "theHamsta/nvim-dap-virtual-text", opts = {} },
-      { "leoluz/nvim-dap-go", enabled = false, opts = {} },
-      -------------------------------------------------------------------------
-      {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-          opts.ensure_installed = opts.ensure_installed or {}
-          table.insert(opts.ensure_installed, "js-debug-adapter")
-        end,
-      },
       -------------------------------------------------------------------------
       {
         "rcarriga/nvim-dap-ui",
@@ -350,6 +341,31 @@ return {
           dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
           dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
           dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
+        end,
+      },
+      -------------------------------------------------------------------------
+      {
+        "leoluz/nvim-dap-go",
+        enabled = false,
+        opts = {},
+        dependencies = {
+          {
+            "williamboman/mason.nvim",
+            optional = true,
+            opts = function(_, opts)
+              opts.ensure_installed = opts.ensure_installed or {}
+              table.insert(opts.ensure_installed, "delve")
+            end,
+          },
+        },
+      },
+      -------------------------------------------------------------------------
+      {
+        "williamboman/mason.nvim",
+        optional = true,
+        opts = function(_, opts)
+          opts.ensure_installed = opts.ensure_installed or {}
+          table.insert(opts.ensure_installed, "js-debug-adapter")
         end,
       },
     },

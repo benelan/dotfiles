@@ -1,7 +1,31 @@
 return {
+  -----------------------------------------------------------------------------
   {
-    "folke/lazy.nvim",
-    init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
+    -- adds closing brackets only when pressing enter
+    dir = "~/.vim/pack/foo/start/vim-closer",
+    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-closer",
+    config = function()
+      -- setup files that can contain javascript which aren't included by default
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("jamin_closer_javascript", { clear = true }),
+        pattern = { "svelte", "astro", "html" },
+        callback = function()
+          vim.b.closer = 1
+          vim.b.closer_flags = "([{;"
+          vim.b.closer_no_semi = "^\\s*\\(function\\|class\\|if\\|else\\)"
+          vim.b.closer_semi_ctx = ")\\s*{$"
+        end,
+      })
+    end,
+  },
+  -----------------------------------------------------------------------------
+  -- helps visualize and navigate the undo tree - see :h undo-tree
+  {
+    dir = "~/.vim/pack/foo/opt/undotree",
+    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/undotree",
+    cmd = "UndotreeToggle",
+    keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
+    init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
   },
   -----------------------------------------------------------------------------
   -- keymaps/autocmds/utils/etc. shared with the vim config
@@ -11,8 +35,6 @@ return {
     cond = vim.fn.isdirectory "~/.vim",
     lazy = false,
   },
-  -----------------------------------------------------------------------------
-  { "wellle/targets.vim", event = "VeryLazy" },
   -----------------------------------------------------------------------------
   -- tpope plugins
   -- makes a lot more keymaps dot repeatable
@@ -24,7 +46,8 @@ return {
   -----------------------------------------------------------------------------
   -- readline mappings for insert and command modes
   {
-    "tpope/vim-rsi",
+    dir = "~/.vim/pack/foo/start/vim-rsi",
+    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-rsi",
     keys = {
       { "<C-x><C-a>", mode = { "c", "i" } },
       { "<C-a>", mode = { "c", "i" } },
@@ -108,32 +131,11 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  {
-    -- adds closing brackets only when pressing enter
-    dir = "~/.vim/pack/foo/start/vim-closer",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-closer",
-    config = function()
-      -- setup files that can contain javascript which aren't included by default
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("jamin_closer_javascript", { clear = true }),
-        pattern = { "svelte", "astro", "html" },
-        callback = function()
-          vim.b.closer = 1
-          vim.b.closer_flags = "([{;"
-          vim.b.closer_no_semi = "^\\s*\\(function\\|class\\|if\\|else\\)"
-          vim.b.closer_semi_ctx = ")\\s*{$"
-        end,
-      })
-    end,
-  },
+  { "wellle/targets.vim", event = "VeryLazy" },
   -----------------------------------------------------------------------------
-  -- helps visualize and navigate the undo tree - see :h undo-tree
   {
-    dir = "~/.vim/pack/foo/opt/undotree",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/undotree",
-    cmd = "UndotreeToggle",
-    keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
-    init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
+    "folke/lazy.nvim",
+    init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
   },
   -----------------------------------------------------------------------------
   -- quickfix/location list helper

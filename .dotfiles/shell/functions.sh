@@ -30,6 +30,10 @@ goog() {
         "http://www.google.com/search?nfpr=\&q=$(echo "$*" | tr ' ' '+')" |
         grep -oP '\/url\?q=.+?&amp' |
         sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
+
+    if [ -n "$TMUX" ] && is-supported _tmux-select; then
+        _tmux-select
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -298,7 +302,7 @@ ips() {
 
 ## checkout a branch based on fuzzy search term               {{{
 
-# If installed, use a fuzzy finder (fzf) to pick when there are multiple matches.
+# If installed, use fuzzy finder (fzf) to pick when there are multiple matches.
 # Otherwise, checkout the most recently committed branch that matches the query
 # git (find|fuzzy) checkout
 fgco() {
@@ -323,8 +327,10 @@ fgco() {
     fi
 
     # remote and local branches sorted by commit date
-    git for-each-ref refs/remotes refs/heads --sort=-committerdate --format='%(refname:short)' |
-        # filter by search term, remove 'origin/' prefix from branch names, and dedupe
+    git for-each-ref refs/remotes refs/heads \
+        --sort=-committerdate \
+        --format='%(refname:short)' |
+        # filter by search term, remove 'origin/' prefix from refs, and dedupe
         awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","")};!x[$0]++' |
         # pick -> checkout branch
         $PICK_BRANCH_CMD "$@" | xargs git checkout
@@ -340,7 +346,9 @@ gbprune() {
     TARGET_BRANCH="${1:-$(g bdefault)}" &&
         git checkout -q "$TARGET_BRANCH" &&
         git for-each-ref refs/heads/ "--format=%(refname:short)" |
-        while read -r branch; do mergeBase=$(git merge-base "$TARGET_BRANCH" "$branch") &&
+        while read -r branch; do mergeBase=$(
+            git merge-base "$TARGET_BRANCH" "$branch"
+        ) &&
             [[ $(
                 # shellcheck disable=2046,1083,1001
                 git cherry "$TARGET_BRANCH" $(git commit-tree $(
@@ -461,8 +469,8 @@ if is-supported fzf; then
             # shellcheck disable=2016
             cd "$(
                 fasd -dl |
-                    fzf --tac --reverse --no-sort --no-multi --exit-0 --select-1 \
-                        --tiebreak=index --query="$*" \
+                    fzf --tac --reverse --no-sort --no-multi --exit-0 \
+                        --select-1 --tiebreak=index --query="$*" \
                         --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
                         --preview-window='right:hidden:wrap' \
                         --bind=ctrl-v:toggle-preview \
@@ -492,13 +500,14 @@ if is-supported fzf; then
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
-        fzf --exit-0 --no-select-1 --multi --query="$*" --preview="${FZF_PREVIEW_CMD}" \
+        fzf --exit-0 --no-select-1 --multi --query="$*" \
+            --preview="${FZF_PREVIEW_CMD}" \
+            --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)' \
             --bind="ctrl-o:execute(o {+} >/dev/null 2>&1)" \
             --bind="ctrl-e:execute(${EDITOR:-vim} {+})+abort" \
             --bind="enter:execute(${EDITOR:-vim} {+})+abort" \
             --bind=ctrl-v:toggle-preview \
-            --bind=ctrl-x:toggle-sort \
-            --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)'
+            --bind=ctrl-x:toggle-sort
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -576,7 +585,9 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
 
     if is-supported gh; then
         cc_visual_snapshots() {
-            if [ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ]; then
+            if [ "$(
+                gh repo view --json name -q ".name"
+            )" = "calcite-design-system" ]; then
                 gh pr edit --remove-label "pr ready for visual snapshots"
                 gh pr edit --add-label "pr ready for visual snapshots"
             fi
@@ -602,7 +613,9 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             if [ "$(echo "$run" | wc -l)" = 1 ]; then
                 echo "Waiting for \"$workflow\" workflow run to complete..."
                 gh run watch "$id"
-                conclusion="$(gh run view "$id" --json 'conclusion' --jq '.conclusion')"
+                conclusion="$(
+                    gh run view "$id" --json 'conclusion' --jq '.conclusion'
+                )"
             else
                 conclusion="$(echo "$run" | tail -n1)"
             fi
@@ -649,7 +662,7 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             --workspace "packages/calcite-components" \
             --pack-destination "$npm_root"
 
-        # pack calcite-components-react if the test project has react as a dependency
+        # pack calcite-components-react if the test project has react as a dep
         if is-supported jq && [ "$(
             jq '.dependencies | has("react")' "$npm_root/package.json"
         )" = "true" ]; then
@@ -666,8 +679,8 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## copy CC/CCR dists to a test app's node_modules             {{{
 
-    # NOTE: make sure to build the calcite monorepo first, then run the
-    #       script from anywhere in the example app's directory.
+    # NOTE: make sure to build the calcite monorepo first, then run the script
+    # from anywhere in the example app's directory.
     cc_install_copy() {
         calcite_worktree="${1:-main}"
 
@@ -681,7 +694,7 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
         cp "$CALCITE/$calcite_worktree/packages/calcite-components/dist" \
             "$example_cc_path"
 
-        # copy calcite-components-react dist if the test aapp has react as a dependency
+        # copy calcite-components-react dist if the test app has react as a dep
         if is-supported jq && [ "$(
             jq '.dependencies | has("react")' "$example_npm_root/package.json"
         )" = "true" ]; then

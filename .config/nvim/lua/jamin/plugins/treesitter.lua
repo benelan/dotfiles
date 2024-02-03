@@ -85,6 +85,12 @@ return {
         ensure_installed = res.treesitter_parsers,
         highlight = {
           enable = true,
+          disable = function(lang, buf)
+            local max_filesize = 420 * 1024 -- 420 KB
+            local bufname = vim.api.nvim_buf_get_name(buf)
+            local ok, stats = pcall(vim.loop.fs_stat, bufname)
+            if ok and stats and stats.size > max_filesize then return true end
+          end,
           -- additional_vim_regex_highlighting = { "markdown" },
           -- disable = { "markdown", },
         },

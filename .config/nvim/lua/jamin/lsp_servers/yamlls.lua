@@ -5,7 +5,7 @@ return {
     if not has_schemastore then return end
 
     new_config.settings.yaml.schemas = vim.tbl_deep_extend(
-      "force",
+      "keep",
       new_config.settings.yaml.schemas or {},
       schemastore.yaml.schemas()
     )

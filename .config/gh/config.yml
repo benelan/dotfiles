@@ -2,22 +2,23 @@ version: "1"
 git_protocol: ssh
 # pager: cat
 aliases:
-  co: pr checkout
-  r: fzf run
   i: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       --bind='alt-+:execute(gh issue edit --add-assignee @me {1})'
       --bind='alt--:execute(gh issue edit --remove-assignee @me {1})'
       --bind='alt-n:execute<nvim +\"Octo issue edit \$(echo {1} | cut -c 2-)\">'
-    " gh fzf issue
+    " gh fzf issue $*
   p: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       --bind='alt-n:execute<nvim +\"Octo pr edit \$(echo {1} | cut -c 2-)\">'
-      --bind='alt-m:execute(gh pr merge --delete-branch {1})'
+      --bind='alt-m:execute(gh pr merge --delete-branch --squash {1})'
       --bind='alt-v:execute(gh pr edit --add-label \"pr ready for visual snapshots\" {1})'
       --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})'
       --bind='ctrl-alt-v:execute(gh pr edit --remove-label \"pr ready for visual snapshots\" {1})'
-      --bind='ctrl-alt-a:execute(gh pr review --approve --body \":+1:\" {1})'
-      " gh fzf pr
-  mi: fzf issue --assignee @me
-  mp: fzf pr --assignee @me
+      --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})'
+      --bind='alt--:execute(gh pr review --request-changes {1})'
+      " gh fzf pr $*
+  mi: i --assignee @me
+  mp: p --assignee @me
+  r: fzf run
+  co: pr checkout

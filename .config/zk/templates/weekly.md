@@ -1,8 +1,10 @@
 ---
 title: Review week {{week}} / {{year}}
-tags: []
 type: journal
+tags: []
 ---
+
+# Review week {{week}} / {{year}}
 
 {{content}}
 

@@ -47,6 +47,10 @@ keymap("i", "<M-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
 keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", "Move line down")
 keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 
+-- up/down movement that handles wrapped lines better
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
 

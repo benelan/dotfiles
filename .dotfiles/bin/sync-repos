@@ -152,9 +152,6 @@ clone_gh_repo "personal" "benelan/git-mux"
 clone_gh_repo "personal" "benelan/gh-fzf"
 clone_gh_repo "personal" "benelan/choroator"
 clone_gh_repo "personal" "benelan/blog"
-clone_gh_repo "personal" "benelan/remix-blog"
 clone_gh_repo "personal" "benelan/benelan.github.io"
-
-clone_gh_repo "lib" "benelan/octo.nvim"
 
 clone_gh_repo "" "benelan/notes"

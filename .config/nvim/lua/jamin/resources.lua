@@ -1,134 +1,5 @@
 local M = {}
 
-local i = function(icon, backup) return vim.g.use_devicons and icon or backup or "" end
-
-M.icons = {
-  diagnostics = {
-    [vim.diagnostic.severity.ERROR] = i("󰅜 ", "E"),
-    [vim.diagnostic.severity.WARN] = i("󰀦 ", "W"),
-    [vim.diagnostic.severity.INFO] = i("󰋼 ", "I"),
-    [vim.diagnostic.severity.HINT] = i("󰬏 ", "H"),
-  },
-  lsp_kind = {
-    Array = i " ",
-    Boolean = i " ", -- ◩
-    Class = i " ", -- 󰠱
-    Color = i " ",
-    Comment = i " ",
-    Component = i " ",
-    Conditional = i " ",
-    Constant = i "󰭸 ",
-    Constructor = i " ",
-    Copilot = i " ",
-    Enum = i " ",
-    EnumMember = i " ",
-    Error = i "󰛉 ",
-    Event = i " ",
-    Field = i "󰓽 ",
-    File = i " ",
-    Folder = i " ",
-    Fragment = i " ",
-    Function = i " ", -- 󰡱
-    Interface = i " ", -- 
-    Key = i "󰷖 ", -- 󰌋
-    Keyword = i "󰷖 ",
-    Method = i " ",
-    Module = i "󰶮 ",
-    Namespace = i " ",
-    Null = i "󰟢 ",
-    Number = i "󰎠 ",
-    Object = i "󰅩 ",
-    Operator = i " ",
-    Package = i " ", -- " ",
-    Property = i "󰓽 ",
-    Reference = i " ",
-    Snippet = i " ",
-    Spell = i "󰓆 ",
-    String = i "󱀍 ",
-    Struct = i " ",
-    Text = i "󰦨 ", -- 󰈍
-    TypeParameter = i " ",
-    Unit = i " ",
-    Value = i " ",
-    Variable = i " ",
-  },
-  debug = {
-    breakpoint = i("󰆤 ", "B"),
-    breakpoint_condition = i("󱄶 ", "C"),
-    breakpoint_rejected = i("󰽅 ", "R"),
-    logpoint = i("󰆣 ", "L"),
-    stopped = i("󰿅 ", "S"),
-  },
-  git = {
-    added = i(" ", "+"),
-    changed = i(" ", "*"),
-    removed = i(" ", "-"),
-    renamed = i(" ", "R"),
-    ignored = i(" ", "I"),
-    untracked = i("󰘥 ", "?"),
-    unstaged = i("󱨧 ", "U"),
-    staged = i("󰗡 ", "S"),
-    conflict = i("󰗖 ", "!"),
-    branch = i " ",
-  },
-  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-  border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
-  ui = {
-    -- utf8 icons so no fallbacks required
-    prompt = "❱ ",
-    select = "➤  ",
-    play = "⯈ ",
-    skip = "⏩︎",
-    x = "✘ ",
-    checkmark = "✔ ",
-    question_mark = "？",
-    box = "☐ ",
-    box_checked = "☑ ",
-    box_crossed = "☒ ",
-    box_dot = "🞔 ",
-    circle = "● ",
-    collapsed = "🞂",
-    expanded = "🞃",
-    eol = "⤶",
-    nbsp = "␣",
-    extends = "»",
-    precedes = "«",
-    ellipses = "…  ",
-    dot = "·",
-    dot_outline = "◦",
-    separator = "┊",
-    fill_slash = "╱",
-    fill_shade = "░",
-    fill_solid = "█",
-    speech_bubble = "🗩 ",
-    lightening_bubble = "🗱 ",
-  },
-  lazy = {
-    plugin = "",
-    cmd = "",
-    config = "",
-    event = "",
-    ft = "",
-    import = "",
-    init = "",
-    keys = "",
-    lazy = "",
-    runtime = "",
-    source = "",
-    start = "",
-    task = "",
-  },
-}
-
-M.icons.test = {
-  passed = i("󰗡 ", M.icons.ui.checkmark),
-  running = i("󰁚 ", M.icons.ui.play),
-  skipped = i("󰍷 ", M.icons.ui.skip),
-  failed = i("󰅚 ", M.icons.ui.x),
-  unknown = i("󰘥 ", M.icons.ui.question_mark),
-  running_animated = M.icons.progress,
-}
-
 M.filetypes = {
   excluded = {
     "DiffviewFileHistory",
@@ -227,6 +98,7 @@ M.lsp_servers = {
   "svelte",
   -- "tailwindcss",
   "taplo",
+  "typos_lsp",
   -- "tsserver",
   "vimls",
   "volar",
@@ -236,19 +108,15 @@ M.lsp_servers = {
 
 M.mason_packages = {
   "actionlint", -- github action linter
-  "codespell", -- commonly misspelled English words linter
-  -- "cspell", -- code spell checker
-  -- "delve", -- golang debug adapter
-  -- "eslint", -- web dev linter
   "fixjson", -- json formatter
   "hadolint", -- dockerfile linter
   "markdownlint", -- markdown linter and formatter
   "prettier", -- everything formatter
+  "proselint", -- prose linter
   "shellcheck", -- shell linter
   "shfmt", -- shell formatter
   "stylelint", -- css/scss linter
   "stylua", -- lua formatter
-  -- "write-good", -- English grammar linter
 }
 
 M.treesitter_parsers = {
@@ -256,10 +124,9 @@ M.treesitter_parsers = {
   "bash",
   "css",
   "diff",
-  "dockerfile",
-  "git_rebase",
+  -- "dockerfile",
+  -- "git_rebase",
   "gitcommit",
-  "gitignore",
   "go",
   "gomod",
   "gosum",
@@ -267,14 +134,14 @@ M.treesitter_parsers = {
   "graphql",
   "html",
   "http",
-  "ini",
+  -- "ini",
   "javascript",
-  "jq",
+  -- "jq",
   "jsdoc",
   "json",
   "json5",
   "jsonc",
-  "latex",
+  -- "latex",
   "lua",
   "luadoc",
   "luap",
@@ -285,7 +152,7 @@ M.treesitter_parsers = {
   "python",
   "query",
   "regex",
-  "rst",
+  -- "rst",
   "rust",
   "scss",
   "sql",
@@ -369,6 +236,120 @@ M.path = {
     "*.xz",
     "*.zip",
   },
+}
+
+local i = function(icon, backup) return vim.g.use_devicons and icon or backup or "" end
+
+M.icons = {
+  ui = {
+    -- utf8 icons so no fallbacks required
+    prompt = "❱ ",
+    select = "➤  ",
+    play = "⯈ ",
+    skip = "⏩︎",
+    x = "✘ ",
+    checkmark = "✔ ",
+    question_mark = "？",
+    box = "☐ ",
+    box_checked = "☑ ",
+    box_crossed = "☒ ",
+    box_dot = "🞔 ",
+    circle = "● ",
+    collapsed = "🞂",
+    expanded = "🞃",
+    eol = "⤶",
+    nbsp = "␣",
+    extends = "»",
+    precedes = "«",
+    ellipses = "…  ",
+    dot = "·",
+    dot_outline = "◦",
+    separator = "┊",
+    fill_slash = "╱",
+    fill_shade = "░",
+    fill_solid = "█",
+    speech_bubble = "🗩 ",
+    pencil = "🖉 ",
+    pin = "🖈 ",
+    bell = "🕭 ",
+    map = "🗺 ",
+    key = "🗝 ",
+  },
+  lsp_kind = {
+    Array = i " ",
+    Boolean = i " ", -- ◩
+    Class = i " ", -- 󰠱
+    Codeium = i "󰘦 ",
+    Color = i " ",
+    Comment = i " ",
+    Control = " ",
+    Component = i " ",
+    Conditional = i " ",
+    Constant = i "󰭸 ",
+    Constructor = i " ",
+    Copilot = i " ",
+    Enum = i " ",
+    EnumMember = i " ",
+    Error = i "󰛉 ",
+    Event = i " ",
+    Field = i "󰓽 ",
+    File = i " ",
+    Folder = i " ",
+    Fragment = i " ",
+    Function = i " ", -- 󰡱
+    Interface = i " ", -- 
+    Key = i "󰷖 ", -- 󰌋
+    Keyword = i "󰷖 ",
+    Method = i " ",
+    Module = i " ", -- 󰶮
+    Namespace = i "󰦮 ", -- 
+    Null = i "󰟢 ",
+    Number = i "󰎠 ",
+    Object = i "󰅩 ",
+    Operator = i " ",
+    Package = i " ", -- 
+    Property = i "󰓽 ",
+    Reference = i " ", -- 
+    Snippet = i " ",
+    Spell = i "󰓆 ",
+    String = i " ", -- 󱀍
+    Struct = i " ",
+    Text = i "󰈍 ", -- 󰦨
+    TypeParameter = i " ",
+    Unit = i " ",
+    Value = i " ",
+    Variable = i " ",
+  },
+  diagnostics = {
+    [vim.diagnostic.severity.ERROR] = i("󰅝 ", "E"),
+    [vim.diagnostic.severity.WARN] = i("󰀪 ", "W"),
+    [vim.diagnostic.severity.INFO] = i("󰋽 ", "I"),
+    [vim.diagnostic.severity.HINT] = i("󰰀 ", "H"),
+  },
+  debug = {
+    breakpoint = i("󰆤 ", "B"),
+    breakpoint_condition = i("󱄶 ", "C"),
+    breakpoint_rejected = i("󰽅 ", "R"),
+    logpoint = i("󰆣 ", "L"),
+    stopped = i("󰿅 ", "S"),
+  },
+  git = {
+    branch = i " ",
+    added = i("󰜄 ", "+"),
+    changed = i("󱗝 ", "*"),
+    removed = i("󰛲 ", "-"),
+  },
+  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+  border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
+}
+
+M.icons.test = {
+  passed = i("󰗡 ", M.icons.ui.checkmark),
+  running = i("󰁚 ", M.icons.ui.play),
+  skipped = i("󰍷 ", M.icons.ui.skip),
+  failed = i("󰅚 ", M.icons.ui.x),
+  unknown = i("󰘥 ", M.icons.ui.question_mark),
+  running_animated = M.icons.progress,
 }
 
 M.art = {

@@ -179,7 +179,7 @@ return {
       require("octo").setup(opts)
 
       vim.treesitter.language.register("markdown", "octo")
-      vim.api.nvim_set_hl(0, "OctoBubble", { link = "TabLineFill" })
+      vim.api.nvim_set_hl(0, "OctoBubble", { link = "DiagnosticVirtualTextInfo" })
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = "octo",
@@ -208,21 +208,21 @@ return {
 
           vim.keymap.set(
             "n",
-            "<leader>vc",
+            "<leader>vp",
             "<CMD>Octo review comments<CR>",
             { desc = "Show pending PR review comments (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
-            "<leader>vr",
+            "<leader>v.",
             "<CMD>Octo review resume<CR>",
             { desc = "Resume pull request review (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
-            "<leader>vs",
+            "<leader>v<Tab>",
             "<CMD>Octo review start<CR>",
             { desc = "Start pull request review (octo)", silent = true, buffer = true }
           )

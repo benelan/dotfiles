@@ -93,24 +93,10 @@ vim.opt.rtp:prepend(lazypath)
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
-  change_detection = {
-    notify = false,
-  },
-  checker = {
-    enabled = true,
-    notify = false,
-  },
-  dev = {
-    path = vim.env.LIB,
-    fallback = true,
-  },
-  install = {
-    colorscheme = {
-      "gruvbox-material",
-      "retrobox",
-      "habamax",
-    },
-  },
+  change_detection = { notify = false },
+  checker = { enabled = true, notify = false },
+  dev = { path = vim.env.LIB, fallback = true },
+  install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
     border = "rounded",
     icons = vim.g.use_devicons and {} or {

@@ -189,25 +189,29 @@
     ds = diff --staged
     dt = difftool
     dn = diff --name-status
-    dh = "!f() { git diff HEAD~$1; }; f"
+    dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)); }; f"
 
     ; edit the files changed locally
-    e = !$EDITOR $(git diff --name-only HEAD)
+    e = !$(git var GIT_EDITOR) $(git diff --name-only HEAD | sort -u)
 
     ; edit modified (unstaged) files
-    em = !$(git var GIT_EDITOR) $(git ls-files --modified | sort -u)
+    eu = !$(git var GIT_EDITOR) $(git diff --name-only | sort -u)
 
     ; edit staged files
-    es = !$(git var GIT_EDITOR) $(git ls-files --stage    | cut -f2 | sort -u)
+    es = !$(git var GIT_EDITOR) $(git diff --name-only --staged | sort -u)
 
     ; edit unmerged files (usually due to a merge conflict)
-    eum = !$(git var GIT_EDITOR) $(git ls-files --unmerged | cut -f2 | sort -u)
+    ex = !$(git var GIT_EDITOR) $(git ls-files --unmerged | cut -f2 | sort -u)
 
     ; open Fugitive's difftool
-    ed = !$EDITOR +'Git difftool -y'
+    ed = !$(git var GIT_EDITOR) +'Git difftool -y'
 
     ; sync origin's default branch and edit the changed files
-    eom = "!f() { default_branch=$(git bdefault); git fetch --prune --tags; git merge origin/$default_branch; $EDITOR $(git diff --name-only HEAD origin/$default_branch); }; f"
+    eom = "!default_branch=$(git bdefault); \
+            git fetch --prune --tags; \
+            git merge origin/$default_branch; \
+            $(git var GIT_EDITOR) \
+            $(git diff --name-only HEAD origin/$default_branch)"
 
     f = fetch --all --prune --tags
     g = grep
@@ -314,12 +318,14 @@
     ; arg1: tag name to recreate on different commit (required)
     ; arg2: commit to tag (optional, defaults to HEAD)
     ; arg3: message for the tag (optional, defaults to arg1)
-    retag = "!f() { [ -z "$1" ] && echo 'Error: provide a tag name' && return || \
-      git tag -d \"$1\" && \
-      git tag -a \"$1\" -m \"${3:-$1}\" \"${2:-HEAD}\" && \
-      printf \"\nDo you want to 'git push origin %s --force'?\n[y/N]: \" \"$1\" && \
-      read -r should_push && \
-      case \"$should_push\" in [yY]*) git push origin \"$1\" --force ;; esac; }; f"
+    retag = "!f() { \
+        [ -z "$1" ] && echo 'Error: provide a tag name' && return; \
+        git tag -d \"$1\"; \
+        git tag -a \"$1\" -m \"${3:-$1}\" \"${2:-HEAD}\"; \
+        printf \"\nDo you want to 'git push origin %s --force'?\n[y/N]: \" \"$1\"; \
+        read -r should_push; \
+        case \"$should_push\" in [yY]*) git push origin \"$1\" --force ;; esac; \
+        }; f"
 
     ; credit an author on the latest commit.
     credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
@@ -347,17 +353,18 @@
     # The second argument is the globs to add or any `git add` flags, defaults to "--all".
     # The third argument is the commit message, defaults to "chore: sync changes".
     sync-changes =  "!f() { \
-        path=\"${1:-$PWD}\" && \
-        cd \"$path\" && \
-        branch=\"$(git bdefault)\" && \
-        printf \"repo path: %s\ndefault branch: %s\" \"$path\" \"$branch\" && \
-        git fetch origin \"$branch\" && \
-        git rebase --autostash --autosquash \"origin/$branch\" && \
-        git update-ref \"refs/heads/$branch\" \"origin/$branch\" && \
-        git add ${2:---all} && \
-        git commit -m \"${3:-chore: sync changes}\" && \
-        git push && \
-        cd - >/dev/null 2>&1 || true; }; f"
+            path=\"${1:-$PWD}\"; \
+            cd \"$path\"; \
+            branch=\"$(git bdefault)\"; \
+            printf \"repo path: %s\ndefault branch: %s\" \"$path\" \"$branch\"; \
+            git fetch origin \"$branch\"; \
+            git rebase --autostash --autosquash \"origin/$branch\"; \
+            git update-ref \"refs/heads/$branch\" \"origin/$branch\"; \
+            git add ${2:---all}; \
+            git commit -m \"${3:-chore: sync changes}\"; \
+            git push; \
+            cd - >/dev/null 2>&1 || true; \
+        }; f"
 
     ; FZF
     ;----------------------------------------------------------------------------
@@ -411,15 +418,14 @@
         --header='(alt-x: delete) (alt-o: checkout)' \
         --preview='git show --color=always {}'
 
-    fst = "!f() { \
-        git -c color.ui=always stash list \
+    fst = "!git -c color.ui=always stash list \
             --pretty='%<(14)%Cgreen%cr    %Creset%gs %>(9999)%h' | \
         fzf --ansi --no-sort --no-multi --no-hscroll \
             --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
             --preview='git -c color.diff=always diff {-1}' \
             --bind='alt-a:execute(git stash apply {n})+abort' \
             --bind='alt-x:execute(git stash drop {n})+abort' \
-            --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'; }; f"
+            --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'"
 
     ;----------------------------------------------------------------------------
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias

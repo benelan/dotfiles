@@ -70,7 +70,7 @@ return {
 
       for _, server in pairs(res.lsp_servers) do
         -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
-        if not vim.tbl_contains({ "zk", "tsserver" }, server) then
+        if not vim.tbl_contains({ "zk" }, server) then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -246,30 +246,11 @@ return {
           hover.printenv,
 
           code_actions.gitrebase,
-          -- code_actions.gitsigns,
-          -- code_actions.refactoring,
           code_actions.shellcheck,
-
-          -- code_actions.cspell.with { prefer_local = "./node_modules/.bin" },
-
-          -- diagnostics.cspell.with {
-          --   -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-          --   diagnostic_config = quiet_diagnostics,
-          --   prefer_local = "./node_modules/.bin",
-          -- },
-
-          diagnostics.codespell.with {
-            -- method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-            extra_args = {
-              "--builtin",
-              "clear,rare,informal,code,names,en-GB_to_en-US",
-              "--ignore-words",
-              vim.fn.expand "~/.dotfiles/assets/codespell_ignore.txt",
-            },
-            diagnostic_config = quiet_diagnostics,
-          },
+          code_actions.proselint.with { extra_filetypes = { "text" } },
 
           diagnostics.hadolint,
+          diagnostics.proselint,
 
           diagnostics.actionlint.with {
             runtime_condition = function()
@@ -280,7 +261,15 @@ return {
           },
 
           diagnostics.markdownlint.with {
-            extra_args = { "--disable", "MD031", "MD024", "MD013", "MD041", "MD033" },
+            extra_args = {
+              "--disable",
+              "blanks-around-fences",
+              "no-duplicate-heading",
+              "line-length",
+              "first-line-heading",
+              "no-inline-html",
+              "single-title",
+            },
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
           },
@@ -300,9 +289,9 @@ return {
             end,
           },
 
+          formatting.fixjson,
           formatting.prettier.with { prefer_local = "node_modules/.bin" },
           formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
-          formatting.fixjson,
           formatting.stylua,
           formatting.trim_whitespace,
         },
@@ -321,7 +310,7 @@ return {
   -- Lua implementation of typescript-language-server
   {
     "pmizio/typescript-tools.nvim",
-    ft = res.filetypes.webdev,
+    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     opts = function()
       local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
@@ -329,8 +318,6 @@ return {
         settings = {
           expose_as_code_action = "all",
           tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
-          complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
-            or true,
           -- jsx_close_tag = { enable = true },
         },
       }

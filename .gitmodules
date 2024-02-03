@@ -34,3 +34,6 @@
 [submodule ".vim/pack/foo/opt/vim-rhubarb"]
 	path = .vim/pack/foo/opt/vim-rhubarb
 	url = https://github.com/tpope/vim-rhubarb
+[submodule ".vim/pack/foo/start/vim-rsi"]
+	path = .vim/pack/foo/start/vim-rsi
+	url = https://github.com/tpope/vim-rsi

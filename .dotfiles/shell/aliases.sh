@@ -180,7 +180,7 @@ alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 # Web Development
 # -----------------------------------------------------------------------------
 
-alias chromium_debug='$BROWSER --remote-debugging-port=9222 --user-data-dir=remote-debug-profile'
+alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
 
 # node/npm
 if is-supported npm; then
@@ -224,7 +224,7 @@ fi
 
 if is-supported apt; then
     alias apti='sudo apt install'
-    alias aptup='sudo apt update && sudo apt upgrade && sudo apt autoremove'
+    alias aptup='sudo apt update && sudo apt upgrade && sudo apt autoremove && sudo apt autoclean && sudo apt autopurge'
 fi
 
 # Locks the session.
@@ -238,9 +238,6 @@ is-supported gnome-screensaver-command &&
 if is-supported task; then
     alias t="task"
     alias ta="task add"
-    alias tcw="task context work"
-    alias tch="task context home"
-    alias tcn="task context none"
 
     if is-supported taskopen; then
         alias to="taskopen"
@@ -263,7 +260,7 @@ alias g='git'
 alias gx="git-mux"
 alias gxt="git-mux task"
 alias gxp="git-mux project"
-alias xs='git-mux project $PWD'
+alias gxs='git-mux project $PWD'
 
 # --------------------------------------------------------------------- }}}
 # Dotfiles                                                              {{{
@@ -282,7 +279,6 @@ edit_dotfiles() {
 
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias G="edit_dotfiles +G +only"
-alias N="edit_dotfiles +Neogit +tabonly"
 
 # --------------------------------------------------------------------- }}}
 # GitHub                                                                {{{
@@ -315,33 +311,35 @@ if is-supported docker; then
     # prune everything
     alias dkrprune='docker system prune -a'
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    ## work docker aliases for calcite-components             {{{
+fi
 
-    if [ "$USE_WORK_STUFF" = "1" ]; then
-        # workaround to run e2e tests on ubuntu due to a Stencil bug
-        # https://github.com/ionic-team/stencil/issues/3853
-        # Uses a bind mount so works for local development
-        cc_docker_cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
+# --------------------------------------------------------------------- }}}
+# Work                                                                  {{{
+# --------------------------------------------------------------------- {|}
 
-        # shellcheck disable=2139
-        alias cc_start_in_docker="$cc_docker_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
+if [ "$USE_WORK_STUFF" = "1" ]; then
+    # I need to link these files to the current worktree
+    alias cc_link_files='ln -f $WORK/calcite-design-system/Dockerfile &&
+                             ln -f $WORK/calcite-design-system/.marksman.toml &&
+                             ln -f $WORK/calcite-design-system/calcite-components.projections.json \
+                                                   ./packages/calcite-components/.projections.json'
 
-        # shellcheck disable=2139
-        alias cc_test_in_docker="$cc_docker_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
+    alias cc_build_docker_image="docker build --tag calcite-components ."
 
-        # shellcheck disable=2139
-        alias cc_run_in_docker="$cc_docker_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
+    # Create containers to run tests and the the dev server at the same time
+    # Use a bind mount so building/testing on file changes works correctly
+    _cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
 
-        alias cc_build_docker_image="docker build --tag calcite-components ."
+    # shellcheck disable=2139
+    alias cc_start_in_docker="$_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
 
-        # I need to link the Dockerfile to the current git worktree
-        alias cc_link_dockerfile='ln -f $WORK/calcite-design-system/Dockerfile'
+    # shellcheck disable=2139
+    alias cc_test_in_docker="$_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
 
-        unset cc_docker_cmd
-    fi
+    # shellcheck disable=2139
+    alias cc_run_in_docker="$_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
 
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    unset _cmd
 fi
 
 # --------------------------------------------------------------------- }}}

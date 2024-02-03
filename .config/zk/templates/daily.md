@@ -1,7 +1,9 @@
 ---
 title: {{format-date now "%F"}}
-tags: []
 type: journal
+tags: []
 ---
+
+# {{format-date now "%F"}}
 
 {{content}}
