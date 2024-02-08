@@ -15,19 +15,6 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
-  -- fzf comes with a very minimal vim plugin
-  {
-    dir = vim.env.LIB .. "/fzf",
-    cond = vim.fn.executable "fzf" == 1 and vim.fn.isdirectory(vim.env.LIB .. "/fzf"),
-    cmd = { "FZF" },
-    keys = {
-      { "<leader>fzf", "<CMD>Files<CR>", desc = "FZF Files" },
-      { "<leader>fzg", "<CMD>GFiles<CR>", desc = "FZF Git Files" },
-      { "<leader>fzb", "<CMD>Buffers<CR>", desc = "FZF Buffers" },
-      { "<leader>fzl", "<CMD>LS<CR>", desc = "FZF LS" },
-    },
-  },
-  -----------------------------------------------------------------------------
   -- fuzzy finding
   {
     "nvim-telescope/telescope.nvim",

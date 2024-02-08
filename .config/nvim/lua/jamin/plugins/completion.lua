@@ -51,14 +51,15 @@ return {
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 },
       -------------------------------------------------------------------------
     },
-    config = function()
+    opts = function()
       local cmp = require "cmp"
       local has_ls, ls = pcall(require, "luasnip")
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
       local has_copilot_cmp, copilot_comparators = pcall(require, "copilot_cmp.comparators")
 
-      cmp.setup {
+      return {
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
+        preselect = cmp.PreselectMode.None,
 
         -- setup LuaSnip with the completion engine
         snippet = {
@@ -139,6 +140,7 @@ return {
             vim_item.menu = ({
               buffer = i " BUF",
               copilot = i " SNIP",
+              codeium = i " SNIP",
               luasnip = i " SNIP",
               dictionary = i " DICT",
               nvim_lsp = i " LSP",
@@ -209,30 +211,30 @@ return {
 
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
+          { name = "copilot", group_index = 2, priority = 99999 },
+          { name = "codeium", group_index = 2, priority = 99999 },
           { name = "luasnip", group_index = 2 },
-          { name = "copilot", group_index = 2 },
           { name = "git", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "tmux", keyword_length = 2, group_index = 2 },
           { name = "buffer", keyword_length = 2, group_index = 2 },
-          { name = "path", keyword_length = 3, group_index = 2 },
+          { name = "path", keyword_length = 2, group_index = 2 },
           -- only show ripgrep and dictioinary if there are no results from other sources
           { name = "rg", keyword_length = 3, group_index = 3 },
           {
             name = "dictionary",
             group_index = 3,
             keyword_length = 3,
-            entry_filter = function(_, ctx)
-              for _, ft in ipairs(res.filetypes.writing) do
-                if ft == ctx.filetype then return true end
-              end
-              return false
-            end,
+            -- entry_filter = function(_, ctx)
+            --   return vim.tbl_contains(res.filetypes.writing, ctx.filetype)
+            -- end,
           },
         },
       }
-
-      cmp.setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
+    end,
+    config = function(_, opts)
+      require("cmp").setup(opts)
+      require("cmp").setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
     end,
   },
   -----------------------------------------------------------------------------
@@ -347,20 +349,37 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- Codeium is a free Copilot alternative - https://codeium.com/
   {
-    "Exafunction/codeium.vim", -- free Copilot alternative - https://codeium.com/
+    "Exafunction/codeium.vim",
     cond = vim.env.USE_CODEIUM == "1",
     init = function()
-      vim.g.codeium_enabled = true
-      vim.g.codeium_no_map_tab = true
-      vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
-      -- vim.g.codeium_manual = true
-      vim.g.codeium_filetypes = { text = false }
+      -- vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
+      vim.g.codeium_filetypes = {
+        gitcommit = false,
+        mail = false,
+        markdown = false,
+        octo = false,
+        rst = false,
+        text = false,
+      }
+    end,
+  },
+  {
+    "Exafunction/codeium.nvim", -- integrates Codeium with cmp
+    enabled = false,
+    cond = vim.env.USE_CODEIUM == "1",
+    cmd = "Codeium",
+    event = "InsertEnter",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      vim.api.nvim_set_hl(0, "CmpItemKindCodeium", { link = "Blue" })
+      require("codeium").setup()
     end,
   },
   -----------------------------------------------------------------------------
+  -- "github/copilot.vim", -- official Copilot plugin
   {
-    -- "github/copilot.vim", -- official Copilot plugin
     "https://github.com/zbirenbaum/copilot.lua", -- alternative written in Lua
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
@@ -399,8 +418,11 @@ return {
         },
         filetypes = {
           [""] = false,
+          gitcommit = false,
           mail = false,
           markdown = false,
+          octo = false,
+          rst = false,
           text = false,
         },
       }

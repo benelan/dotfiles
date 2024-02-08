@@ -134,8 +134,6 @@ return {
     },
     opts = {
       progress = {
-        poll_rate = 0.5,
-        ignore_done_already = true,
         ignore = { "null-ls" },
         display = { done_icon = res.icons.ui.checkmark },
       },

@@ -145,7 +145,7 @@ dead-link = "warning"
 #    A named filter is a set of note filtering options used frequently together.
 #
 [filter]
-# Matches the notes created the last two weeks. For example:
+# Matches the notes created in the last two weeks. For example:
 #    $ zk list recents --limit 15
 #    $ zk edit recents --interactive
 recents = "--sort created- --created-after 'last two weeks'"
@@ -166,7 +166,7 @@ ls = "zk list $@"
 bl = "zk list --link-to $@"
 e = "zk edit $@"
 f = "zk edit --interactive $@"
-elm = "zk edit --limit 1 --sort modified- $@"
+last = "zk edit --limit 1 --sort modified- $@"
 
 unlinked-mentions = "zk list --mentioned-by $1 --no-linked-by $1"
 wc = "zk list --format '{{word-count}}\t{{title}}' --sort word-count $@"

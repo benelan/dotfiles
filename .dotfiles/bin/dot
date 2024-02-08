@@ -787,7 +787,7 @@ install_ubuntu_vivaldi() {
 
 ## Install the four common font weights of Iosevka             {{{
 
-_themes+="font-minimal "
+_themes+="font "
 
 ## https://github.com/ryanoasis/nerd-fonts
 install_theme_font() {
@@ -1155,7 +1155,7 @@ ubuntu_installs() {
 ## Operating system stylings                                   {{{
 
 theme_installs() {
-    install_theme_font-minimal
+    install_theme_font
     install_theme_wallpaper
     install_theme_gtk
     install_theme_icons

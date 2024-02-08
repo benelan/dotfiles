@@ -344,21 +344,20 @@ return {
         end,
       },
       -------------------------------------------------------------------------
-      {
-        "leoluz/nvim-dap-go",
-        enabled = false,
-        opts = {},
-        dependencies = {
-          {
-            "williamboman/mason.nvim",
-            optional = true,
-            opts = function(_, opts)
-              opts.ensure_installed = opts.ensure_installed or {}
-              table.insert(opts.ensure_installed, "delve")
-            end,
-          },
-        },
-      },
+      -- {
+      --   "leoluz/nvim-dap-go",
+      --   opts = {},
+      --   dependencies = {
+      --     {
+      --       "williamboman/mason.nvim",
+      --       optional = true,
+      --       opts = function(_, opts)
+      --         opts.ensure_installed = opts.ensure_installed or {}
+      --         table.insert(opts.ensure_installed, "delve")
+      --       end,
+      --     },
+      --   },
+      -- },
       -------------------------------------------------------------------------
       {
         "williamboman/mason.nvim",

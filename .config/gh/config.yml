@@ -18,7 +18,9 @@ aliases:
       --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})'
       --bind='alt--:execute(gh pr review --request-changes {1})'
       " gh fzf pr $*
-  mi: i --assignee @me
-  mp: p --assignee @me
+  im: i --assignee @me
+  pm: p --assignee @me
+  it: "!GH_FZF_TRUNCATE_FIELDS=true gh i"
+  pt: "!GH_FZF_TRUNCATE_FIELDS=true gh p"
   r: fzf run
   co: pr checkout
