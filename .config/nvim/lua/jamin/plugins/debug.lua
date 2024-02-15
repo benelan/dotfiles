@@ -24,7 +24,7 @@ return {
           local has_rooter, rooter = pcall(require, "jamin.commands.rooter")
           local vscode = require "dap.ext.vscode"
 
-          local launch_file = ".vscode/launch.json"
+          local cwd_launch = ".vscode/launch.json"
           local adapter_fts = {
             ["chrome"] = res.filetypes.webdev,
             ["node"] = res.filetypes.webdev,
@@ -35,16 +35,20 @@ return {
             ["pwa-node"] = res.filetypes.webdev,
           }
 
-          if vim.fn.filereadable(launch_file) == 1 then
-            vscode.load_launchjs(launch_file, adapter_fts)
-          elseif has_rooter then
-            local worktree = string.format("%s/%s", rooter.worktree(), launch_file)
-            local project = string.format("%s/%s", rooter.project(), launch_file)
+          if vim.fn.filereadable(cwd_launch) == 1 then
+            vscode.load_launchjs(cwd_launch, adapter_fts)
+          end
 
-            if vim.fn.filereadable(project) == 1 then
-              vscode.load_launchjs(project, adapter_fts)
-            elseif vim.fn.filereadable(worktree) == 1 then
-              vscode.load_launchjs(worktree, adapter_fts)
+          if has_rooter then
+            local worktree_launch = string.format("%s/%s", rooter.worktree(), cwd_launch)
+            local project_launch = string.format("%s/%s", rooter.project(), cwd_launch)
+
+            if vim.fn.filereadable(project_launch) == 1 then
+              vscode.load_launchjs(project_launch, adapter_fts)
+            end
+
+            if vim.fn.filereadable(worktree_launch) == 1 then
+              vscode.load_launchjs(worktree_launch, adapter_fts)
             end
           end
 
@@ -84,11 +88,11 @@ return {
         desc = "List breakpoints (debug)",
       },
       { "<leader>dh", function() require("dap").step_back() end, desc = "Step back (debug)" },
-      { "<leader>dj", function() require("dap").down() end, desc = "Down (debug)" },
-      { "<leader>dk", function() require("dap").up() end, desc = "Up (debug)" },
+      { "<leader>dj", function() require("dap").step_into() end, desc = "Step into (debug)" },
+      { "<leader>dk", function() require("dap").step_out() end, desc = "Step out (debug)" },
       { "<leader>dl", function() require("dap").step_over() end, desc = "Step over (debug)" },
-      { "<leader>di", function() require("dap").step_into() end, desc = "Step into (debug)" },
-      { "<leader>do", function() require("dap").step_out() end, desc = "Step out (debug)" },
+      { "<leader>dd", function() require("dap").down() end, desc = "Down (debug)" },
+      { "<leader>du", function() require("dap").up() end, desc = "Up (debug)" },
       { "<leader>d.", function() require("dap").run_last() end, desc = "Run last (debug)" },
       { "<leader>dg", function() require("dap").goto_() end, desc = "Go to line (debug)" },
       {
@@ -204,7 +208,7 @@ return {
           },
 
           {
-            name = "Attach to node process",
+            name = "Attach to Node process",
             type = "pwa-node",
             request = "attach",
             processId = require("dap.utils").pick_process,
@@ -293,7 +297,7 @@ return {
       {
         "rcarriga/nvim-dap-ui",
         keys = {
-          { "<leader>du", function() require("dapui").toggle() end, desc = "Toggle UI (debug)" },
+          { "<leader>dU", function() require("dapui").toggle() end, desc = "Toggle UI (debug)" },
           {
             "<leader>de",
             function() require("dapui").eval() end,

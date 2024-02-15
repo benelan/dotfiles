@@ -24,6 +24,7 @@ return {
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
         build = "make",
+        enabled = vim.fn.executable "make" == 1,
         config = function() require("telescope").load_extension "fzf" end,
       },
     },
@@ -120,6 +121,8 @@ return {
               picker:set_selection(match.pos[1] - 1)
             end,
           }
+        else
+          return false
         end
       end
 
@@ -206,7 +209,7 @@ return {
           local git_remotes = { "origin", "upstream" }
 
           -- Fallback to the current working directory as the key
-          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or ""
+          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or "" ---@diagnostic disable-line: undefined-field
 
           for _, remote in ipairs(git_remotes) do
             local remote_url = vim.fn.trim(vim.fn.system("git remote get-url " .. remote))
@@ -269,52 +272,92 @@ return {
     keys = {
       {
         "<M-h>",
-        function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end,
+        function()
+          vim.cmd.Wcd()
+          require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon toggle mark menu",
       },
       {
         "<M-m>",
-        function() require("harpoon"):list():append() end,
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():append()
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon append file",
       },
       {
         "<M-S-m>",
-        function() require("harpoon"):list():prepend() end,
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():prepend()
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon prepend file",
       },
       {
-        "<M-]>",
-        function() require("harpoon"):list():next() end,
+        "<M-S-n>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():next()
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select next mark",
       },
       {
-        "<M-[>",
-        function() require("harpoon"):list():prev() end,
+        "<M-S-p>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():prev()
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select previous mark",
       },
       {
-        "<M-1>",
-        function() require("harpoon"):list():select(1) end,
+        "<M-a>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():select(1)
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select mark 1",
       },
       {
-        "<M-2>",
-        function() require("harpoon"):list():select(2) end,
+        "<M-s>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():select(2)
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select mark 2",
       },
       {
-        "<M-3>",
-        function() require("harpoon"):list():select(3) end,
+        "<M-d>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():select(3)
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select mark 3",
       },
       {
-        "<M-4>",
-        function() require("harpoon"):list():select(4) end,
+        "<M-f>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():select(4)
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select mark 4",
       },
       {
-        "<M-5>",
-        function() require("harpoon"):list():select(5) end,
+        "<M-g>",
+        function()
+          vim.cmd.Wcd()
+          require("harpoon"):list():select(5)
+          vim.cmd.Rcd()
+        end,
         desc = "Harpoon select mark 5",
       },
     },

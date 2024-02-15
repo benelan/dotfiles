@@ -2,14 +2,6 @@ local M = {}
 
 M.filetypes = {
   excluded = {
-    "DiffviewFileHistory",
-    "DiffviewFiles",
-    "NeogitCommitView",
-    "NeogitLogView",
-    "NeogitPopup",
-    "NeogitReflogView",
-    "NeogitStatus",
-    "ObsidianLocationList",
     "Outline",
     "TelescopePreview",
     "TelescopePrompt",
@@ -36,7 +28,6 @@ M.filetypes = {
     "lspinfo",
     "man",
     "mason",
-    "neo-tree",
     "neotest-output",
     "neotest-output-panel",
     "neotest-summary",
@@ -136,7 +127,6 @@ M.treesitter_parsers = {
   "http",
   -- "ini",
   "javascript",
-  -- "jq",
   "jsdoc",
   "json",
   "json5",
@@ -188,35 +178,37 @@ M.path = {
     "config",
     "public",
   },
+  suffixes = {
+    ".db",
+    ".doc",
+    ".gif",
+    ".gpg",
+    ".ico",
+    ".jpeg",
+    ".jpg",
+    ".lock",
+    ".odt",
+    ".orig",
+    ".pdf",
+    ".png",
+    ".tmp",
+  },
   ignore = {
-    ".git/*",
-    "node_modules/*",
-    "dist/*",
-    "build/*",
     "*.7z",
     "*.avi",
-    "*.db",
     "*.docx",
     "*.filepart",
     "*.flac",
-    "*.gif",
     "*.gifv",
-    "*.gpg",
     "*.gz",
-    "*.ico",
     "*.iso",
-    "*.jpeg",
-    "*.jpg",
     "*.m4a",
     "*.mkv",
     "*.mp3",
     "*.mp4",
     "*.min.*",
-    "*.odt",
     "*.ogg",
     "*.pbm",
-    "*.pdf",
-    "*.png",
     "*.ppt",
     "*.psd",
     "*.pyc",
@@ -235,6 +227,10 @@ M.path = {
     "*.xpm",
     "*.xz",
     "*.zip",
+    ".git/*",
+    "build/*",
+    "dist/*",
+    "node_modules/*",
   },
 }
 
@@ -278,7 +274,7 @@ M.icons = {
   lsp_kind = {
     Array = i " ",
     Boolean = i " ", -- ◩
-    Class = i " ", -- 󰠱
+    Class = i " ", --     
     Codeium = i "󰘦 ",
     Color = i " ",
     Comment = i " ",
@@ -287,37 +283,41 @@ M.icons = {
     Conditional = i " ",
     Constant = i "󰭸 ",
     Constructor = i " ",
-    Copilot = i " ",
+    Copilot = i " ", --   
     Enum = i " ",
     EnumMember = i " ",
-    Error = i "󰛉 ",
+    Error = i "󰛉 ", -- 
     Event = i " ",
-    Field = i "󰓽 ",
+    Field = i " ", -- 󰓽
     File = i " ",
     Folder = i " ",
     Fragment = i " ",
     Function = i " ", -- 󰡱
-    Interface = i " ", -- 
-    Key = i "󰷖 ", -- 󰌋
-    Keyword = i "󰷖 ",
+    Interface = i " ",
+    Key = i "󰷖 ", -- 󰌋   🗝
+    Keyword = i " ",
+    Macro = i " ",
+    TypeAlias = i " ",
     Method = i " ",
+    StaticMethod = i " ",
     Module = i " ", -- 󰶮
-    Namespace = i "󰦮 ", -- 
+    Namespace = i " ", -- 󰦮  
     Null = i "󰟢 ",
-    Number = i "󰎠 ",
+    Number = i " ",
     Object = i "󰅩 ",
     Operator = i " ",
-    Package = i " ", -- 
-    Property = i "󰓽 ",
+    Package = i " ", -- 
+    Property = i "󰓽 ", -- 
     Reference = i " ", -- 
     Snippet = i " ",
     Spell = i "󰓆 ",
-    String = i " ", -- 󱀍
+    String = i " ", --   󱀍
     Struct = i " ",
     Text = i "󰈍 ", -- 󰦨
     TypeParameter = i " ",
+    Parameter = i " ",
     Unit = i " ",
-    Value = i " ",
+    Value = i " ", -- 󰠱
     Variable = i " ",
   },
   diagnostics = {

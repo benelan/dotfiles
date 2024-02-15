@@ -1,14 +1,13 @@
-if true then return {} end
-
 return {
   {
     "nvim-neotest/neotest",
     dependencies = {
-      { "nvim-lua/plenary.nvim" },
-      { "nvim-treesitter/nvim-treesitter" },
-      { "nvim-neotest/neotest-jest" },
-      { "marilari88/neotest-vitest", enabled = false },
-      { "nvim-neotest/neotest-go", enabled = false },
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      -- "nvim-neotest/neotest-go",
+      -- "nvim-neotest/neotest-jest",
+      -- "marilari88/neotest-vitest",
+      { "benelan/neotest-stenciljs", dev = true },
     },
     config = function()
       local has_jest, jest = pcall(require, "neotest-jest")
@@ -32,55 +31,71 @@ return {
         output = { open_on_run = true },
         icons = require("jamin.resources").icons.test,
         adapters = {
+          require "neotest-stenciljs" { no_build = true },
+          has_vitest and vitest or nil,
           has_jest and jest or nil,
           has_go and go or nil,
-          has_vitest and vitest or nil,
         },
       }
     end,
     keys = {
-      { "<leader>T<CR>", function() require("neotest").run.run() end, desc = "Run nearest test" },
-      { "<leader>T<BS>", function() require("neotest").run.stop() end, desc = "Stop test" },
-      { "<leader>T.", function() require("neotest").run.run_last() end, desc = "Rerun last test" },
+      { "<leader>n<CR>", function() require("neotest").run.run() end, desc = "Run nearest test" },
+      { "<leader>n<BS>", function() require("neotest").run.stop() end, desc = "Stop test" },
+      { "<leader>n.", function() require("neotest").run.run_last() end, desc = "Rerun last test" },
       {
-        "<leader>Tf",
+        "<leader>nw",
+        function() require("neotest").run.run { watch = true, no_build = false } end,
+        desc = "Watch nearest test",
+      },
+      {
+        "<leader>nf",
         function() require("neotest").run.run(vim.fn.expand "%") end,
         desc = "Test file",
       },
       {
-        "<leader>Ta",
-        function() require("neotest").run.run(vim.loop.cwd()) end,
+        "<leader>na",
+        function() require("neotest").run.run(vim.fn.getcwd()) end,
         desc = "Test all files",
       },
       {
-        "<leader>Ts",
+        "<leader>ns",
         function() require("neotest").summary.toggle() end,
         desc = "Toggle test summary",
       },
       {
-        "<leader>To",
+        "<leader>no",
         function()
           require("neotest").output.open { enter = true, auto_close = true, short = false }
         end,
         desc = "Open test output",
       },
       {
-        "<leader>TO",
+        "<leader>np",
         function() require("neotest").output_panel.toggle() end,
         desc = "Toggle test output panel",
       },
       {
-        "<leader>Td",
+        "<leader>nd",
         function() require("neotest").run.run { strategy = "dap" } end,
         desc = "Debug nearest test",
       },
       {
         "]n",
+        function() require("neotest").jump.next {} end,
+        desc = "Next test",
+      },
+      {
+        "[n",
+        function() require("neotest").jump.prev {} end,
+        desc = "Previous test",
+      },
+      {
+        "]N",
         function() require("neotest").jump.next { status = "failed" } end,
         desc = "Next failed test",
       },
       {
-        "[n",
+        "[N",
         function() require("neotest").jump.prev { status = "failed" } end,
         desc = "Previous failed test",
       },

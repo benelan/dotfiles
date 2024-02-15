@@ -6,23 +6,13 @@ vim.opt.confirm = true
 vim.opt.virtualedit:append "block"
 vim.opt.foldlevelstart = 99
 
-if vim.fn.executable "rg" == 1 then
-  vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --smart-case --glob '!{.git,node_modules}'"
-  vim.opt.grepformat = {
-    "%f:%l:%c:%m",
-    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.",
-    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect.",
-    "%-GRunning with --debug will show why files are being skipped.",
-  }
-end
-
-vim.opt.hlsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.suffixes:append(res.path.suffixes)
+vim.opt.path = res.path.include
+vim.opt.wildignore = res.path.ignore
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
-vim.opt.wildignore = res.path.ignore
-vim.opt.path = res.path.include
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
 
 local ui = vim.api.nvim_list_uis() or {}
@@ -38,27 +28,41 @@ vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
 -- vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
-vim.opt.linebreak = true
-vim.opt.scrolloff = 4
-vim.opt.sidescrolloff = 8
+-- vim.opt.splitbelow = true
+-- vim.opt.splitright = true
 
-vim.opt.softtabstop = 4
+vim.opt.scrolloff = 3
+vim.opt.sidescrolloff = 5
+vim.opt.linebreak = true
+
 vim.opt.shiftwidth = 4
+vim.opt.softtabstop = -1
 vim.opt.expandtab = true
 vim.opt.shiftround = true
 vim.opt.smartindent = true
-
-vim.opt.spelloptions:append "camel"
-vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
-
-vim.opt.splitbelow = true
-vim.opt.splitright = true
 
 vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 
+vim.opt.spelloptions:append "camel"
+vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
+
+if vim.fn.isdirectory "/usr/share/dict/words" == 1 then
+  vim.opt.dictionary:append "/usr/share/dict/words"
+end
+
 if has_res then
   vim.opt.showbreak = res.icons.ui.ellipses
   vim.opt.fillchars = { eob = res.icons.ui.fill_shade, diff = res.icons.ui.fill_slash }
+end
+
+if vim.fn.executable "rg" == 1 then
+  vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --smart-case --glob '!{.git,node_modules}'"
+  vim.opt.grepformat = {
+    "%f:%l:%c:%m",
+    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.",
+    "%-GNo files were searched\\, which means ripgrep probably applied a filter you didn't expect.",
+    "%-GRunning with --debug will show why files are being skipped.",
+  }
 end

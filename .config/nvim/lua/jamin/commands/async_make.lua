@@ -57,6 +57,6 @@ vim.api.nvim_create_user_command("Make", async_make, {
   nargs = "?",
   desc = "Run make asynchronously",
 })
-keymap("n", "gm", "<CMD>Make<CR>", "Async make")
+keymap("n", "gM", "<CMD>Make<CR>", "Async make")
 
 return async_make

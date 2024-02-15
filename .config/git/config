@@ -39,6 +39,7 @@
     ; Show most recently changed branches first.
     sort = -committerdate
     autosetuprebase = always
+    autosetupmerge = always
 
 [color "branch"]
     current = yellow reverse
@@ -67,7 +68,7 @@
 
 [diff]
     algorithm = patience
-    tool = vimdiff
+    tool = fugitive
     colorMoved = zebra
     keepBackup = false
     ; Detect copies as well as renames.
@@ -79,35 +80,40 @@
     ; Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
+[difftool]
+    trustExitCode = true
+    prompt = false
+
 [difftool "fugitive"]
     cmd = vim -f +'packadd vim-fugitive | Gvdiffsplit!' $MERGED
-    prompt = false
 
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
+    summary = true
     ; options: nvimdiff, diffconflicts, fugitive
     tool = diffconflicts
 
-[mergetool "vimdiff"]
-    trustExitCode = true
+[mergetool]
+    hideResolved = true
+    writeToTemp = true
     keepBackup = false
     keepTemporaries = false
+    prompt = false
+
+[mergetool "vimdiff"]
+    trustExitCode = true
     ; https://git-scm.com/docs/vimdiff
     ; The layout option is available since git v2.37
     layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
 
 [mergetool "diffconflicts"]
     trustExitCode = true
-    keepBackup = false
-    keepTemporaries = false
     ; $DOTFILES/bin/diffconflicts
 	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
 
 [mergetool "fugitive"]
     trustExitCode = true
-    keepBackup = false
-    keepTemporaries = false
     ; https://github.com/tpope/vim-fugitive
     cmd = vim -f +'packadd vim-fugitive         \
         | nnoremap <leader>g[ :diffget //2<CR>  \
@@ -320,8 +326,7 @@
     ; arg3: message for the tag (optional, defaults to arg1)
     retag = "!f() { \
         [ -z "$1" ] && echo 'Error: provide a tag name' && return; \
-        git tag -d \"$1\"; \
-        git tag -a \"$1\" -m \"${3:-$1}\" \"${2:-HEAD}\"; \
+        git tag -fa \"$1\" -m \"${3:-$1}\" \"${2:-HEAD}\"; \
         printf \"\nDo you want to 'git push origin %s --force'?\n[y/N]: \" \"$1\"; \
         read -r should_push; \
         case \"$should_push\" in [yY]*) git push origin \"$1\" --force ;; esac; \
@@ -334,16 +339,9 @@
     contributors = shortlog --summary --numbered
 
     ; get the default branch
-    bdefault = "!if [ $(git config --get core.bare) = 'true' ]; then \
-                    git bdefault-bare; \
-                else \
-                    git bdefault-fast; \
-                fi"
-    bdefault-fast = !basename $(git rev-parse --abbrev-ref origin/HEAD)
-    bdefault-bare = !git remote show \
+    bdefault = !git remote show \
                     $(git remote | grep -Eo '(upstream|origin)' | tail -1) \
-                    | grep 'HEAD branch' \
-                    | cut -d' ' -f5
+                    | sed -n '/HEAD branch/s/.*: //p'
 
     ; list of local branches and their most recent commit
     blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
@@ -388,7 +386,7 @@
     ; use fzf to pick an unpushed commit to fixup and then autosquash
     cf = !sha=$(git log @{push}.. --color=always --no-merges \
             --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
-        | fzf-tmux --no-sort --ansi \
+        | fzf-tmux --no-sort --ansi --preview 'git show --color=always {1}' \
         | awk '{print $1}') \
         && git commit --fixup $sha \
         && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1
@@ -397,7 +395,7 @@
     ; likely requires a force push, hence the extra 'f'
     cff = !sha=$(git log $(git bdefault)..HEAD --color=always --no-merges \
             --pretty=format:'%C(green)%h% C(yellow)%ad %C(auto)%d %C(reset)%s %C(blue)<%an>%C(reset)' \
-        | fzf-tmux --no-sort --ansi \
+        | fzf-tmux --no-sort --ansi --preview 'git show --color=always {1}' \
         | awk '{print $1}') \
         && git commit --fixup $sha \
         && git -c sequence.editor=: rebase --autosquash --autostash -i $sha~1

@@ -2,25 +2,46 @@
 " --------------------------------------------------------------------- {|}
 
 set nocompatible
+
 if has("autocmd")
     filetype plugin indent on
 endif
+
 if has("syntax") && !exists("syntax_on")
     syntax enable
 endif
 
-set number relativenumber linebreak backspace=indent,eol,start
-set clipboard=unnamed autoread confirm hidden
+set autoread confirm hidden lazyredraw t_vb= ttimeout ttimeoutlen=100
+set smarttab expandtab shiftround softtabstop=4 shiftwidth=4
 set ignorecase smartcase autoindent smartindent formatoptions+=l
-set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
-set wildmenu wildmode=list:longest,full
+set backspace=indent,eol,start clipboard=unnamed nrformats-=octal
+set number relativenumber foldmethod=indent foldlevel=99 display+=lastline
+set laststatus=2 showtabline=2 wildmenu wildmode=list:longest,full 
 set complete-=i completeopt=noselect,menuone,menuone
-set laststatus=2 showtabline=2 display+=lastline
-set splitbelow splitright scrolloff=8 sidescrolloff=8
+set splitbelow splitright scrolloff=5 sidescrolloff=5 linebreak
 set path-=/usr/include path+=** define= include=
-set noswapfile t_vb= nrformats-=octal
-set foldmethod=indent foldlevel=99
-set ttimeout ttimeoutlen=100
+
+if has("persistent_undo")
+    set undofile
+    set undodir=$HOME/.vim/undos
+    if ! isdirectory(&undodir)
+        :silent !mkdir -p $HOME/.vim/undos > /dev/null 2>&1
+    endif
+endif
+
+if &swapfile
+    set directory=$HOME/.vim/swaps
+    if ! isdirectory(&directory)
+        :silent !mkdir -p $HOME/.vim/swaps > /dev/null 2>&1
+    endif
+endif
+
+if &backup || has("writebackup") && &writebackup
+    set backupdir=$HOME/.vim/backups
+    if ! isdirectory(&backupdir)
+        :silent !mkdir -p $HOME/.vim/backups > /dev/null 2>&1
+    endif
+endif
 
 if filereadable("/usr/share/dict/words")
     set dictionary=/usr/share/dict/words
@@ -61,8 +82,6 @@ if has("cmdline_hist")
     set history=1000
 endif
 
-set tabpagemax=50
-
 if has("virtualedit")
     set virtualedit+=block
 endif
@@ -71,19 +90,17 @@ if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
-if has("persistent_undo")
-    set undofile
-endif
-
-set statusline=\ [%n]%m%r%h%w%q%y\ %f\ %=\ %c:[%l/%L]\ \
 if exists("+termguicolors")
     set termguicolors
 endif
+
+set statusline=\ [%n]%m%r%h%w%q%y\ %f\ %=\ %c:[%l/%L]\ 
 
 colorscheme desert
 hi! link TabLineFill Statusline
 
 "" markdown settings                                          {{{
+
 let g:markdown_recommended_style = 0
 
 " Helps with syntax highlighting by specifying filetypes
@@ -128,8 +145,6 @@ if has("keymap")
     nnoremap Y y$
     vnoremap Y y
 
-    nnoremap q: :
-
     " Format the entire buffer preserving cursor location.
     " Requires the 'B' text object defined below.
     nmap Q mFgqBg`F
@@ -146,12 +161,12 @@ if has("keymap")
     nnoremap <C-d> <C-d>zz
 
     " move line(s) up and down
-    nnoremap <S-Down> <CMD>m .+1<CR>==
-    nnoremap <S-Up> <CMD>m .-2<CR>==
-    inoremap <S-Down> <esc><CMD>m .+1<CR>==gi
-    inoremap <S-Up> <esc><CMD>m .-2<CR>==gi
-    vnoremap <S-Down> :m '>+1<CR>gv=gv
-    vnoremap <S-Up> :m '<-2<CR>gv=gv
+    nnoremap <Down> <CMD>m .+1<CR>==
+    nnoremap <Up> <CMD>m .-2<CR>==
+    inoremap <Down> <esc><CMD>m .+1<CR>==gi
+    inoremap <Up> <esc><CMD>m .-2<CR>==gi
+    vnoremap <Down> :m '>+1<CR>gv=gv
+    vnoremap <Up> :m '<-2<CR>gv=gv
 
     " Use the repeat operator with a visual selection. This is useful for
     " performing an edit on a single line, then highlighting a visual block
@@ -167,8 +182,8 @@ if has("keymap")
     vnoremap > >gv
 
     " Create a new line above/below the cursor
-    nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
-    nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+    nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
     " Search in the selection
     xnoremap g/ <esc>/\\%V
@@ -179,8 +194,8 @@ if has("keymap")
     " Change pwd to the buffer's directory
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
-    cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
-    cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
+    cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
+    cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
 
     " expand the buffer's directory
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
@@ -193,12 +208,30 @@ if has("keymap")
 
     " Line text objects including spaces/newlines
     xnoremap al $o0
-    onoremap al <CMD>normal val<CR>
+    onoremap al :<C-U>normal val<CR>
 
     " Line text objects excluding spaces/newlines
-    xnoremap il <Esc>^vg_
-    onoremap il <CMD>normal! ^vg_<CR>
+    xnoremap il g_o0
+    onoremap il :<C-U>normal! vil<CR>
 
+    " Special character text objects
+    for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
+        execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
+        execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
+        execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
+        execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
+    endfor
+
+    " add closing brackets
+    inoremap (<CR> (<CR>)<Esc>O
+    inoremap {<CR> {<CR>}<Esc>O
+    inoremap {; {<CR>};<Esc>O
+    inoremap {, {<CR>},<Esc>O
+    inoremap [<CR> [<CR>]<Esc>O
+    inoremap [; [<CR>];<Esc>O
+    inoremap [, [<CR>],<Esc>O
+
+    " exit insert mode in terminal buffers
     tnoremap <Esc><Esc> <C-\><C-n>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -329,10 +362,10 @@ if has("keymap")
     nnoremap <C-l> <C-W>l
 
     " Resize splits
-    nnoremap <Left> :vertical resize -5<CR>
-    nnoremap <Down> :resize -5<CR>
-    nnoremap <Up> :resize +5<CR>
-    nnoremap <Right> :vertical resize +5<CR>
+    nnoremap <C-Left> :vertical resize -5<CR>
+    nnoremap <C-Down> :resize -5<CR>
+    nnoremap <C-Up> :resize +5<CR>
+    nnoremap <C-Right> :vertical resize +5<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
@@ -398,12 +431,13 @@ endif
 
 if has("eval")
     "" sudo save the file                                         {{{
+
     command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle quickfix list open/close                            {{{
 
-    command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif"
+    command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif|normal <C-W><C-W>"
     nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -419,9 +453,9 @@ if has("eval")
     "" toggle netrw open/close                                    {{{
 
     function! s:NetrwToggle()
-    try | Rexplore
-    catch | Explore
-    endtry
+        try | Rexplore
+        catch | Explore
+        endtry
     endfunction
 
     command! Netrw call <sid>NetrwToggle()
@@ -454,11 +488,11 @@ if has("eval")
     "" delete buffer without closing window                       {{{
 
     function s:BgoneHeathen(action, bang)
-    let l:cur = bufnr("%")
-    let l:alt = bufnr("#")
-    if buflisted(l:alt) | buffer # | else | bnext | endif
-    if bufnr("%") == l:cur | new | endif
-    if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
+        let l:cur = bufnr("%")
+        let l:alt = bufnr("#")
+        if buflisted(l:alt) | buffer # | else | bnext | endif
+        if bufnr("%") == l:cur | new | endif
+        if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
     endfunction
 
     command! -bang -complete=buffer -nargs=? Bdelete
@@ -474,7 +508,7 @@ if has("eval")
 
     "" from https://github.com/tpope/vim-unimpaired
     function! s:findConflict(reverse) abort
-    call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
+        call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
     endfunction
 
     nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
@@ -521,12 +555,21 @@ if has("autocmd")
         autocmd VimEnter *  delmarks QWEASD
 
         " Set up formatters
-        autocmd FileType json,yaml,markdown,mdx,css,scss,html,
+        if executable("npx")
+            autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
                 \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+        endif
 
-        autocmd FileType {,ba,da,k,z}sh
+        if executable("shfmt")
+            autocmd FileType {,ba,da,k,z}sh
                 \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+        endif
+
+        if executable("stylua")
+            autocmd FileType lua
+                \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
+        endif
     augroup END
 endif
 
@@ -646,14 +689,14 @@ if has("eval")
     endfunction
 
     " Helper function for normal mode map
-    function! s:operatorssubstitute(register) abort
+    function! s:operator_substitute(register) abort
         let s:register = a:register
         set operatorfunc=SubstituteOperator
         return 'g@'
     endfunction
 
-    nnoremap <expr> gs <SID>operatorssubstitute(v:register)
-    vnoremap <expr> gs <SID>operatorssubstitute(v:register)
+    nnoremap <expr> gs <SID>operator_substitute(v:register)
+    vnoremap <expr> gs <SID>operator_substitute(v:register)
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Colon operator                                             {{{

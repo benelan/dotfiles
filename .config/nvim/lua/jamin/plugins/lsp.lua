@@ -51,12 +51,27 @@ return {
       -- set the diagnostic opts specified above
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-      -- remove border characters from hover and signature help
+      -- set border characters for hover and signature help
       vim.lsp.handlers["textDocument/hover"] =
         vim.lsp.with(vim.lsp.handlers.hover, { border = opts.diagnostics.float.border })
 
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
+
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
+        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, opts.diagnostics)(...)
+
+        local qflist = vim.fn.getqflist { title = 0, id = 0 }
+        local diagnostics = vim.diagnostic.toqflist(vim.diagnostic.get())
+
+        pcall(vim.fn.setqflist({}, qflist.title == "All Diagnostics" and "r" or " ", {
+          title = "All Diagnostics",
+          items = diagnostics,
+        }))
+
+        -- don't steal focus from other qf lists
+        if qflist.id ~= 0 and qflist.title ~= "All Diagnostics" then vim.cmd "colder" end
+      end
 
       -- combine default LSP client capabilities with override opts specified above
       local capabilities = vim.tbl_deep_extend(
@@ -70,7 +85,7 @@ return {
 
       for _, server in pairs(res.lsp_servers) do
         -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
-        if not vim.tbl_contains({ "zk" }, server) then
+        if not vim.tbl_contains({ "zk", "tsserver" }, server) then
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
           local server_opts = vim.tbl_deep_extend(
             "force",
@@ -96,6 +111,79 @@ return {
           vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
           vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
+          local bufmap = function(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, {
+              buffer = args.buf,
+              silent = true,
+              noremap = true,
+              desc = desc,
+            })
+          end
+
+          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
+          bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
+          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
+
+          -- lsp keymaps
+          if client.supports_method "textDocument/hover" then
+            bufmap("n", "K", vim.lsp.buf.hover, "LSP hover")
+          end
+
+          if client.supports_method "textDocument/declaration" then
+            bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
+          end
+
+          if client.supports_method "textDocument/implementation" then
+            bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
+          end
+
+          if client.supports_method "textDocument/rename" then
+            bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+          end
+
+          if client.supports_method "textDocument/definition" then
+            bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
+          end
+
+          if client.supports_method "textDocument/signatureHelp" then
+            bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
+            bufmap("i", "<C-k>", vim.lsp.buf.signature_help, "LSP signature help")
+          end
+
+          if client.supports_method "textDocument/references" then
+            bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
+          end
+
+          if client.supports_method "textDocument/typeDefinition" then
+            bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
+          end
+
+          if client.supports_method "textDocument/codeAction" then
+            bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+          end
+
+          -- setup inlay hints if supported by language server
+          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
+            vim.lsp.inlay_hint.enable(args.buf, opts.inlay_hints.enabled)
+            bufmap(
+              "n",
+              "gh",
+              function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
+              "Toggle LSP inlay hints"
+            )
+          end
+
+          -- setup codelens if supported by language server
+          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
+          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
+          --     buffer = args.buf,
+          --     callback = function() vim.lsp.codelens.refresh() end,
+          --   })
+
+          --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
+          -- end
+
           -- disable formatting for some LSP servers in favor of better standalone programs
           -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
           if
@@ -114,20 +202,13 @@ return {
               "v:lua.vim.lsp.formatexpr()",
               { buf = args.buf }
             )
-          end
 
-          -- setup inlay hints if supported by language server
-          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
-            vim.lsp.inlay_hint.enable(args.buf, opts.inlay_hints.enabled)
-          end
-
-          -- setup codelens if supported by language server
-          if client.supports_method "textDocument/codeLens" then
-            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-              group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
-              buffer = args.buf,
-              callback = function() vim.lsp.codelens.refresh() end,
-            })
+            bufmap(
+              { "n", "v" },
+              "gF",
+              function() vim.lsp.buf.format { async = true } end,
+              "LSP format"
+            )
           end
 
           -- workaround for gopls not supporting semanticTokensProvider
@@ -139,42 +220,14 @@ return {
             if semantic then
               client.server_capabilities.semanticTokensProvider = {
                 full = true,
+                range = true,
                 legend = {
                   tokenTypes = semantic.tokenTypes,
                   tokenModifiers = semantic.tokenModifiers,
                 },
-                range = true,
               }
             end
           end
-
-          -- lsp keymaps
-          keymap("n", "K", vim.lsp.buf.hover, "LSP hover")
-          keymap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-          keymap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-          keymap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
-          keymap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
-          keymap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
-          keymap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-          keymap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-          keymap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
-          keymap("i", "<C-k>", vim.lsp.buf.signature_help, "LSP signature help")
-          keymap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
-          keymap("n", "gr", vim.lsp.buf.references, "LSP references")
-          keymap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
-          keymap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-          keymap(
-            { "n", "v" },
-            "gF",
-            function() vim.lsp.buf.format { async = true } end,
-            "LSP format"
-          )
-          keymap(
-            "n",
-            "gh",
-            function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
-            "Toggle LSP inlay hints"
-          )
         end,
       })
     end,
@@ -225,6 +278,8 @@ return {
   -----------------------------------------------------------------------------
   {
     "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
+    -- pinned commit due to https://github.com/nvimtools/none-ls.nvim/issues/58
+    commit = "bb680d752cec37949faca7a1f509e2fe67ab418a",
     event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()

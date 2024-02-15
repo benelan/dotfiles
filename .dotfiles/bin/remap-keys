@@ -4,11 +4,12 @@
 # Press both Shift keys for CapsLock
 # Control-Alt-Backspace restarts the shell in case gnome freezes up
 
+# use 'localectl list-x11-keymap-options' to see all options
 if is-supported setxkbmap; then
     setxkbmap -option \
-        -option caps:escape \
-        -option terminate:ctrl_alt_bksp
-        # -option shift:both_capslock_cancel
+        -option terminate:ctrl_alt_bksp \
+        -option caps:swapescape \
+        -option shift:both_capslock
 else
     echo "Error: missing a required dependency: setxkbmap"
     exit 1

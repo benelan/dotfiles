@@ -22,6 +22,8 @@
 # Aliases in ~/.config/git/config work with `dot` too. For example, `dot cm` is:
 #   $ git --git-dir="$HOME/.git/" --work-tree="$HOME" commit -m
 
+_has() { command -v "$1" >/dev/null 2>&1; }
+
 # Setup dotfiles                                                        {{{
 # --------------------------------------------------------------------- {|}
 setup_dotfiles() {
@@ -36,17 +38,17 @@ setup_dotfiles() {
     fi
 
     # any current, conflicting dotfiles will be moved here
-    DOTFILES_BACKUP_DIR="$HOME/.dotfiles-backup"
+    backup_dir="${DOTFILES:-$HOME/.dotfiles}-backup"
 
     # Don't use SSH to clone if there is no SSH key on the machine
     # This is for when I spin up a new VM and don't want to login to GitHub
     if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
-        GIT_URL=https://github.com/benelan/dotfiles
+        repo_url=https://github.com/benelan/dotfiles
     else
-        GIT_URL=git@github.com:benelan/dotfiles
+        repo_url=git@github.com:benelan/dotfiles
     fi
 
-    git clone --bare "$GIT_URL" "$HOME/.git"
+    git clone --bare "$repo_url" "$HOME/.git"
 
     dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
 
@@ -63,7 +65,7 @@ setup_dotfiles() {
     if dot checkout >/dev/null 2>&1; then
         printf "\nChecked out dotfiles\n" >&2
     else
-        printf "\n> Backing up conflicting dotfiles to %s\n" "$DOTFILES_BACKUP_DIR" >&2
+        printf "\n> Backing up conflicting dotfiles to %s\n" "$backup_dir" >&2
         # Get the list of files that need to be backed up
         files=$(dot checkout 2>&1 | grep -e "^\s")
         printf "%s\n" "$files" >&2
@@ -79,14 +81,14 @@ setup_dotfiles() {
         # dirs=$(echo "$files" | xargs dirname)
 
         # Create the directories in $DOTFILES_BACKUP_DIR
-        mkdir -p "$DOTFILES_BACKUP_DIR"
-        echo "$dirs" | xargs -I{} mkdir -p "$DOTFILES_BACKUP_DIR/{}"
+        mkdir -p "$backup_dir"
+        echo "$dirs" | xargs -I{} mkdir -p "$backup_dir/{}"
 
         # Move the conflicting files to the new directories
-        echo "$files" | xargs -I{} mv {} "$DOTFILES_BACKUP_DIR/{}"
+        echo "$files" | xargs -I{} mv {} "$backup_dir/{}"
 
         # Checkout the dotfiles now that there are no conflicts.
-        # Move the files from $DOTFILES_BACKUP_DIR to $HOME to undo the script:
+        # Move the files from the backup dir to $HOME to undo the script:
         # $ mv ~/.dotfiles-backup/* ~/
         if ! dot checkout; then
             printf "\nError: unable to setup the dotfiles\n" >&2
@@ -96,26 +98,23 @@ setup_dotfiles() {
         fi
     fi
 
-    unset files
-    unset GIT_URL
-    unset DOTFILES_BACKUP_DIR
-
     # Make the bins and scripts executable
     printf "\n> Making scripts and bins executable\n" >&2
     [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
     [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
-    if [ -d /usr/share/bash-completion/completions ]; then
+    completions_dir=/usr/share/bash-completion/completions
+    if [ -d "$completions_dir" ]; then
         printf "\n>  Copying completion scripts to system\n\n" >&2
 
         sudo cp ~/.dotfiles/shell/completions/0_tmux.completion.sh \
-            /usr/share/bash-completion/completions/tmux
+            "$completions_dir/tmux"
 
         sudo cp ~/.dotfiles/shell/completions/0_fasd.completion.sh \
-            /usr/share/bash-completion/completions/fasd
+            "$completions_dir/fasd"
 
         sudo cp ~/.dotfiles/shell/completions/0_npm.completion.sh \
-            /usr/share/bash-completion/completions/npm
+            "$completions_dir/npm"
     fi
 
     # Must install libs before they can be pwn'd
@@ -123,12 +122,14 @@ setup_dotfiles() {
     cd && dot submodule update --init --recursive
 
     # fzf install script
-    [ ! "$(command -v fzf)" ] &&
-        ~/dev/lib/fzf/install \
-            --bin --key-bindings --completion --no-update-rc
+    fzf_install_file="${LIB:-${DEV:-$HOME/dev}/lib}/fzf/install"
+    ! _has fzf && [ -f "$fzf_install_file" ] &&
+        $fzf_install_file --bin --key-bindings --completion --no-update-rc
 
     printf "\n+ Setup complete!\n" >&2
     cd -
+
+    unset files repo_url backup_dir completions_dir fzf_install_file
 }
 
 # --------------------------------------------------------------------- }}}
@@ -163,7 +164,7 @@ install_language_go() {
     # checksum will need to be updated when using a new go version
     checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
     outfile="go1.20.5.linux-amd64.tar.gz"
-    curl -sSLo "$outfile" "https://go.dev/dl/$outfile"
+    curl -Lo "$outfile" "https://go.dev/dl/$outfile"
 
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
         sudo rm -rf /usr/local/go
@@ -205,7 +206,7 @@ install_bun() {
 _languages+="lua "
 
 install_language_lua() {
-    is-supported lua && return
+    _has lua && return
 
     curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
     tar -zxf lua-5.4.6.tar.gz
@@ -221,7 +222,7 @@ install_language_lua() {
 _languages+="luajit "
 
 install_language_luajit() {
-    is-supported luajit && return
+    _has luajit && return
 
     if ! [ -d "$LIB/luajit" ]; then
         git clone https://luajit.org/git/luajit.git "$LIB/luajit"
@@ -241,7 +242,7 @@ install_language_luajit() {
 _languages+="luarocks "
 
 install_language_luarocks() {
-    is-supported luarocks && return
+    _has luarocks && return
 
     wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
     tar zxpf luarocks-3.9.2.tar.gz
@@ -267,7 +268,7 @@ _packages+="cargo "
 install_packages_cargo() {
     ! [ -f "$DEPS_DIR/cargo" ] && return
 
-    if ! is-supported cargo || ! is-supported rustup; then
+    if ! _has cargo || ! _has rustup; then
         install_language_rust
     else
         rustup update
@@ -276,11 +277,11 @@ install_packages_cargo() {
     cargo install $(cat "$DEPS_DIR/cargo")
 
     # link batcat to bat due to package name conflict
-    ! is-supported bat && is-supported batcat &&
+    ! _has bat && _has batcat &&
         ln -s "$(command -v batcat)" "$BIN_DIR/bat"
 
     # link fdfind to fd
-    ! is-supported fd && is-supported fdfind &&
+    ! _has fd && _has fdfind &&
         ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
 }
 
@@ -293,7 +294,7 @@ _packages+="cargo-extras "
 install_packages_cargo-extras() {
     ! [ -f "$DEPS_DIR/cargo-extras" ] && return
 
-    if ! is-supported cargo || ! is-supported rustup; then
+    if ! _has cargo || ! _has rustup; then
         install_language_rust
     else
         rustup update
@@ -308,7 +309,7 @@ install_packages_cargo-extras() {
 _packages+="go "
 
 install_packages_go() {
-    ! is-supported go && install_language_go
+    ! _has go && install_language_go
     ! [ -f "$DEPS_DIR/golang" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
@@ -338,7 +339,7 @@ _packages+="npm "
 
 install_packages_npm() {
     # NOTE: volta only works on x86_64 architectures for now
-    ! is-supported volta && ! is-supported node && install_language_node
+    ! _has volta && ! _has node && install_language_node
 
     ! [ -f "$DEPS_DIR/node" ] && return
     npm install -g $(cat "$DEPS_DIR/node")
@@ -355,15 +356,15 @@ install_packages_npm() {
 _scripts+="taskopen "
 
 install_script_taskopen() {
-    is-supported taskopen && return
+    _has taskopen && return
 
-    curl -sSLo "$BIN_DIR/taskopen" \
+    curl -Lo "$BIN_DIR/taskopen" \
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/taskopen
 
-    curl -sSLo "$MAN_DIR/man1/taskopen.1" \
+    curl -Lo "$MAN_DIR/man1/taskopen.1" \
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopen.1
 
-    curl -sSLo "$MAN_DIR/man5/taskopenrc.5" \
+    curl -Lo "$MAN_DIR/man5/taskopenrc.5" \
         https://raw.githubusercontent.com/jschlatow/taskopen/v1.2-devel/doc/man/taskopenrc.5
 
     sudo chmod +x "$BIN_DIR/taskopen"
@@ -375,12 +376,12 @@ install_script_taskopen() {
 _scripts+="fasd "
 
 install_script_fasd() {
-    is-supported fasd && return
+    _has fasd && return
 
-    curl -sSLo "$BIN_DIR/fasd" \
+    curl -Lo "$BIN_DIR/fasd" \
         https://raw.githubusercontent.com/clvv/fasd/master/fasd
 
-    curl -sSLo "$MAN_DIR/man1/fasd.1" \
+    curl -Lo "$MAN_DIR/man1/fasd.1" \
         https://raw.githubusercontent.com/clvv/fasd/master/fasd.1
 
     sudo chmod +x "$BIN_DIR/fasd"
@@ -392,12 +393,12 @@ install_script_fasd() {
 _scripts+="fff "
 
 install_script_fff() {
-    is-supported fff && return
+    _has fff && return
 
-    curl -sSLo "$BIN_DIR/fff" \
+    curl -Lo "$BIN_DIR/fff" \
         https://raw.githubusercontent.com/dylanaraps/fff/master/fff
 
-    curl -sSLo "$MAN_DIR/man1/fff.1" \
+    curl -Lo "$MAN_DIR/man1/fff.1" \
         https://raw.githubusercontent.com/clvv/fff/master/fff.1
 
     sudo chmod +x "$BIN_DIR/fff"
@@ -409,7 +410,7 @@ install_script_fff() {
 _scripts+="git-open "
 
 install_script_git-open() {
-    curl -sSLo "$BIN_DIR/git-o" \
+    curl -Lo "$BIN_DIR/git-o" \
         https://raw.githubusercontent.com/paulirish/git-open/master/git-open
 
     sudo chmod +x "$BIN_DIR/git-o"
@@ -433,7 +434,7 @@ install_script_git-jump() {
         cp -p "$loc2" "$BIN_DIR"
     else
         # otherwise download it
-        curl -sSLo "$BIN_DIR/git-jump" \
+        curl -Lo "$BIN_DIR/git-jump" \
             https://raw.githubusercontent.com/git/git/master/contrib/git-jump/git-jump
     fi
 
@@ -447,11 +448,11 @@ install_script_git-jump() {
 _scripts+="git-forgit "
 
 install_script_git-forgit() {
-    curl -sSLo "$BIN_DIR/git-forgit" \
+    curl -Lo "$BIN_DIR/git-forgit" \
         https://raw.githubusercontent.com/wfxr/forgit/master/bin/git-forgit
 
     if [ -d /usr/share/bash-completion/completions ]; then
-        curl -sSLo "$DOTFILES/shell/completions/4_git-forgit.completion.sh" \
+        curl -Lo "$DOTFILES/shell/completions/4_git-forgit.completion.sh" \
             https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
     fi
 
@@ -465,7 +466,7 @@ _scripts+="git-extras "
 
 ## Install helpful bash scripts for git workflows
 install_script_git-extras() {
-    if is-supported git-extras; then
+    if _has git-extras; then
         sudo git extras update
     else
         dir=$(mktemp -t -d git-extras-install.XXXXXXXXXX) &&
@@ -495,8 +496,24 @@ install_ubuntu_apt() {
     ! [ -f "$DEPS_DIR/apt" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install -y "$pkg" >/dev/null || true
+        sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install CLI apt packages                                    {{{
+
+_ubuntu+="apt-i3 "
+
+## https://i3wm.org/
+install_ubuntu_apt-i3() {
+    ! [ -f "$DEPS_DIR/apt-i3" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt install -y "$pkg" || true
+    done <"$DEPS_DIR/apt-i3"
 
     unset pkg
 }
@@ -510,7 +527,7 @@ install_ubuntu_apt-gui() {
     ! [ -f "$DEPS_DIR/apt-gui" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt install -y "$pkg" >/dev/null || true
+        sudo apt install -y "$pkg" || true
     done <"$DEPS_DIR/apt-gui"
 
     unset pkg
@@ -523,7 +540,7 @@ _ubuntu+="vscode "
 
 ## https://code.visualstudio.com/docs/setup/linux
 install_ubuntu_vscode() {
-    is-supported code && return
+    _has code && return
     deb="$CACHE_DIR/vscode.deb"
 
     curl -ssLo "$deb" \
@@ -540,11 +557,11 @@ _ubuntu+="protonvpn "
 
 ## https://protonvpn.com/support/linux-vpn-tool/#debian
 install_ubuntu_protonvpn() {
-    is-supported protonvpn-cli && return
+    _has protonvpn-cli && return
     checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
     deb="protonvpn-stable-release_1.0.3_all.deb"
 
-    curl -sSLo "$CACHE_DIR/$deb" \
+    curl -Lo "$CACHE_DIR/$deb" \
         "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
     echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
 
@@ -559,10 +576,10 @@ _ubuntu+="discord "
 
 ## https://discord.com/download
 install_ubuntu_discord() {
-    is-supported discord && return
+    _has discord && return
     deb="$CACHE_DIR/discord.deb"
 
-    curl -sSLo "$deb" \
+    curl -Lo "$deb" \
         https://discord.com/api/download?platform=linux\&format=deb
 
     sudo apt install -y "$deb"
@@ -576,7 +593,7 @@ _ubuntu+="signal "
 
 ## https://www.signal.org/download/linux/
 install_ubuntu_signal() {
-    is-supported signal-desktop && return
+    _has signal-desktop && return
     sudo mkdir -p /etc/apt/keyrings
 
     curl -fsSL https://updates.signal.org/desktop/apt/keys.asc | sudo gpg --dearmor -o /etc/apt/keyrings/signal-desktop.gpg
@@ -597,7 +614,7 @@ _ubuntu+="wezterm "
 install_ubuntu_wezterm() {
     deb="wezterm-nightly.Ubuntu22.04.deb"
 
-    curl -sSLo "$CACHE_DIR/$deb" \
+    curl -Lo "$CACHE_DIR/$deb" \
         "https://github.com/wez/wezterm/releases/download/nightly/$deb"
 
     sudo apt install -y "$CACHE_DIR/$deb" || true
@@ -618,10 +635,10 @@ _ubuntu+="taskwarrior-tui "
 
 ## https://github.com/kdheepak/taskwarrior-tui
 install_ubuntu_taskwarrior-tui() {
-    is-supported taskwarrior-tui && return
+    _has taskwarrior-tui && return
     deb="taskwarrior-tui.deb"
 
-    curl -sSLo "$CACHE_DIR/$deb" \
+    curl -Lo "$CACHE_DIR/$deb" \
         "https://github.com/kdheepak/taskwarrior-tui/releases/latest/download/$deb"
 
     sudo apt install -y "$CACHE_DIR/$deb" || true
@@ -635,14 +652,14 @@ _ubuntu+="docker-desktop "
 
 ## https://docs.docker.com/desktop/install/ubuntu/
 install_ubuntu_docker-desktop() {
-    is-supported docker-desktop && return
+    _has docker-desktop && return
     deb="docker-desktop-4.16.2-amd64.deb"
 
     rm -r ~/.docker/desktop || true
     sudo rm /usr/local/bin/com.docker.cli || true
     sudo apt purge docker-desktop || true
 
-    curl -sSLo "$CACHE_DIR/$deb" \
+    curl -Lo "$CACHE_DIR/$deb" \
         "https://desktop.docker.com/linux/main/amd64/$deb"
 
     sudo apt install -y "$CACHE_DIR/$deb" || true
@@ -650,7 +667,7 @@ install_ubuntu_docker-desktop() {
 
     sudo groupadd docker
     sudo usermod -aG docker "$USER"
-    is-supported systemctl && sudo systemctl restart docker
+    _has systemctl && sudo systemctl restart docker
     # sudo chown $USER /var/run/docker.sock
 }
 
@@ -661,7 +678,7 @@ _ubuntu+="docker "
 
 ## https://docs.docker.com/engine/install/ubuntu/
 install_ubuntu_docker() {
-    is-supported docker && return
+    _has docker && return
 
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
@@ -705,7 +722,7 @@ _ubuntu+="gh "
 
 ## https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 install_ubuntu_gh() {
-    is-supported gh && return
+    _has gh && return
 
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
         sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
@@ -733,7 +750,7 @@ _ubuntu+="glow "
 
 ## https://github.com/charmbracelet/glow
 install_ubuntu_glow() {
-    is-supported glow && return
+    _has glow && return
     sudo mkdir -p /etc/apt/keyrings
 
     curl -fsSL https://repo.charm.sh/apt/gpg.key |
@@ -752,9 +769,9 @@ _ubuntu+="brave "
 
 ## https://brave.com/linux/#debian-ubuntu-mint
 install_ubuntu_brave() {
-    is-supported brave-browser && return
+    _has brave-browser && return
 
-    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+    sudo curl -fLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
@@ -770,10 +787,10 @@ install_ubuntu_brave() {
 _ubuntu+="vivaldi "
 
 install_ubuntu_vivaldi() {
-    is-supported vivaldi && return
+    _has vivaldi && return
     deb="vivaldi-stable_amd64.deb"
 
-    curl -sSLo "$CACHE_DIR/$deb" "https://downloads.vivaldi.com/stable//$deb"
+    curl -Lo "$CACHE_DIR/$deb" "https://downloads.vivaldi.com/stable//$deb"
 
     sudo apt install -y "$CACHE_DIR/$deb" || true
     unset deb
@@ -794,16 +811,16 @@ install_theme_font() {
     FONTS_DIR="$XDG_DATA_HOME/fonts"
 
     # Iosevka
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
+    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
 
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
+    curl -Lo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
 
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
+    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
 
-    curl -sSLo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
+    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
 }
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -840,17 +857,17 @@ install_theme_wallpaper() {
         return 0
     fi
 
-    curl -sSLo "$wallpaper" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+    curl -Lo "$wallpaper" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
-            if is-supported gsettings; then
+            if _has gsettings; then
                 gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper"
                 gsettings set org.gnome.desktop.background picture-uri-dark "file://$wallpaper"
             fi
             ;;
         *)
-            if is-supported feh; then
+            if _has feh; then
                 feh --no-fehbg --bg-center --image-bg "#3c3836" "$wallpaper"
             fi
             ;;
@@ -919,7 +936,7 @@ install_theme_icons() {
     if ! [ -d "$HOME/.icons/FlatbedCursors-Orange" ]; then
         cursors="FlatbedCursors-0.5.2.tar.bz2"
 
-        curl -sSLo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
+        curl -Lo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
         extract "$cursors"
 
         mkdir -p ~/.icons/FlatbedCursors-Orange/
@@ -949,10 +966,10 @@ install_misc_neovim() {
     PROGRAM=${PROGRAM:-nvim}
     mkdir -p "$DEST/man/man1"
 
-    if [ -z "$1" ]; then
+    if _has fzf && [ -z "$1" ]; then
         VERSION="$(curl -s https://api.github.com/repos/neovim/neovim/releases | jq -r ".[].tag_name" | fzf --no-multi)"
     else
-        VERSION="$1"
+        VERSION="${1:-nightly}"
     fi
 
     echo "Installing NVIM $VERSION"
@@ -972,8 +989,8 @@ install_misc_neovim() {
         mv nvim.appimage "$DEST/$PROGRAM"
     fi
 
-    curl -sL "https://raw.githubusercontent.com/neovim/neovim/$VERSION/src/man/nvim.1" \
-        -o "$DEST/man/man1/nvim.1"
+    curl -Lo "$DEST/man/man1/nvim.1" \
+        "https://raw.githubusercontent.com/neovim/neovim/$VERSION/src/man/nvim.1"
     printf "\nInstalled %s" "$("$DEST/$PROGRAM" --version | head -n 1)"
 }
 
@@ -1246,8 +1263,9 @@ deps_help() {
 
 Install dependencies by category or name.
 
-Usage:  dot deps [-ABLPSTUo] [-b <build>] [-l <language>] [-p <package>]
-                 [-s <script>]  [-t <theme>] [-u <ubuntu>] [-n <neovim-version>]
+Usage: 
+  dot deps [-ABLMPSTUho] [-b <build>] [-l <language>] [-m <misc>] [-p <package>]
+           [-s <script>] [-t <theme>] [-u <ubuntu>] [-n <neovim-version>]
 
 Flags:
   -A    Install all dependencies
@@ -1268,7 +1286,7 @@ Flags:
   -t    Install an operating system theme dependency
   -u    Install an Ubuntu-specific dependency
 
-  -o    Output a list of the dependencies that can be installed
+  -o    Output the list of installable dependencies for each flag
   -h    Show this message
 EOF
     exit 1
@@ -1278,19 +1296,21 @@ EOF
 ## Print list of installable dependencies                      {{{
 
 deps_list() {
-    printf "\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n%s:\n%s\n\n" \
-        "PROGRAMMING LANGUAGES" \
+    printf "\n%s:%s\n\n%s:%s\n\n%s:%s\n\n%s:%s\n\n%s:%s\n\n%s:%s\n\n%s:%s\n" \
+        "PROGRAMMING [L]ANGUAGES" \
         "$(echo "$_languages" | tr ' ' '\n' | sort)" \
-        "PACKAGE MANAGER DEPENDENCIES" \
+        "[P]ACKAGE MANAGER DEPENDENCIES" \
         "$(echo "$_packages" | tr ' ' '\n' | sort)" \
-        "LOCALLY BUILT DEPENDENCIES" \
+        "LOCALLY [B]UILT DEPENDENCIES" \
         "$(echo "$_builds" | tr ' ' '\n' | sort)" \
-        "UBUNTU-SPECIFIC DEPENDENCIES" \
+        "[U]BUNTU-SPECIFIC DEPENDENCIES" \
         "$(echo "$_ubuntu" | tr ' ' '\n' | sort)" \
-        "SHELL SCRIPT DEPENDENCIES" \
+        "[S]HELL SCRIPT DEPENDENCIES" \
         "$(echo "$_scripts" | tr ' ' '\n' | sort)" \
-        "MISCELLANEOUS DEPENDENCIES" \
-        "$(echo "$_misc" | tr ' ' '\n' | sort)"
+        "[M]ISCELLANEOUS DEPENDENCIES" \
+        "$(echo "$_misc" | tr ' ' '\n' | sort)" \
+        "[T]HEME DEPENDENCIES" \
+        "$(echo "$_themes" | tr ' ' '\n' | sort)"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1353,7 +1373,7 @@ deps_parse_flags() {
 main() {
     case $1 in
         # clone and setup the dotfiles repo
-        setup) setup_dotfiles ;;
+        init) setup_dotfiles ;;
 
         # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
@@ -1364,7 +1384,7 @@ main() {
         # change the 'all' git alias to not add untracked files
         all) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" add --update ;;
 
-        # all other commands are passed directly go git
+        # all other commands are passed directly to git
         *) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@" ;;
     esac
 }

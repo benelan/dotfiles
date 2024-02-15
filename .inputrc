@@ -16,9 +16,8 @@ set completion-ignore-case on
 set completion-map-case on
 set completion-query-items 169
 set enable-bracketed-paste on
-set expand-tilde on
 set history-preserve-point on
-set keyseq-timeout 1337
+set keyseq-timeout 69
 set mark-symlinked-directories on
 set match-hidden-files off
 set menu-complete-display-prefix on
@@ -30,56 +29,66 @@ set skip-completed-text on
 set visible-stats on
 
 set keymap vi-command
-"\ee": emacs-editing-mode
+    "\ee": emacs-editing-mode
+    k: history-search-backward
+    j: history-search-forward
 
 set keymap vi-insert
-"\ee": emacs-editing-mode
-"\C-xc": vi-movement-mode
+    "\ee": emacs-editing-mode
+    "\C-xc": vi-movement-mode
 
-TAB: menu-complete
-"\e[Z": menu-complete-backward
-"\C-n": history-search-forward
-"\C-p": history-search-backward
+    Tab: menu-complete
+    "\e[Z": menu-complete-backward
+    "\C-n": history-search-forward
+    "\C-p": history-search-backward
 
-"\ef": forward-word
-"\eb": backward-word
-"\ed": kill-word
-"\C-w": backward-kill-word
-"\C-k": kill-line
-"\C-u": backward-kill-line
-"\C-d": delete-char
-"\C-f": forward-char
-"\C-b": backward-char
-"\C-e": end-of-line
-"\C-a": beginning-of-line
-"\C-l": clear-screen
-"\C-y": yank
+    # add some common emacs mappings to vi insert mode
+    "\ef": forward-word
+    "\eb": backward-word
+    "\ed": kill-word
+    "\C-w": backward-kill-word
+    "\C-k": kill-line
+    "\C-u": backward-kill-line
+    "\C-d": delete-char
+    "\C-f": forward-char
+    "\C-b": backward-char
+    "\C-e": end-of-line
+    "\C-a": beginning-of-line
+    "\C-l": clear-screen
+    "\C-y": yank
 
 set keymap emacs
-"\ee": vi-editing-mode
-ESC: "\ee\C-xc"
+    "\ee": vi-editing-mode
+    Esc: "\ee\C-xc"
 
-TAB: menu-complete
-"\e[Z": menu-complete-backward
-"\C-n": history-search-forward
-"\C-p": history-search-backward
+    # step through list of completions
+    Tab: menu-complete
+    "\e[Z": menu-complete-backward
 
-$if Bash
-	# Expand ! history by pressing space. Introduced in Bash v2.02
-	Space: magic-space
+    # search history starting with chars up to cursor position
+    "\C-n": history-search-forward
+    "\C-p": history-search-backward
 
-  # List out matching commands from history
-  "\C-]": dabbrev-expand
+    # Expand ! history by pressing space. Introduced in Bash v2.02
+    Space: magic-space
 
-  # Wrap a command in $( ... )
-  "\C-xq": "\C-a\$(\C-e)"
+    # Open vifm in the current directory
+    "\e-": "vifm .\C-m"
 
-  # Open vifm in the current directory
-  "\e-": "vifm .\C-m"
+    # List out matching commands from history
+    "\C-]": dabbrev-expand
 
-  # Pipe the last command to fzf and pass the output to a new command
-  "\C-xF": '$(!!|fzf --ansi --height 40)\C-a \C-m\C-m'
+    # Expand variables like ~ and $USER to their values
+    "\C-xv": shell-expand-line
 
-  # Wrap the current command in $( .... | fzf)
-  "\C-xf": "\C-e | fzf --ansi --height 40)\C-a $(\C-a"
-$endif
+    # perform pathname expansion on the word before point
+    "\C-xp": glob-expand-word
+
+    # Wrap a command in $( ... )
+    "\C-xq": "\C-a\$(\C-e)"
+
+    # Wrap the current command in $( .... | fzf)
+    "\C-xf": "\C-e | fzf --ansi --height 40)\C-a $(\C-a"
+
+    # Pipe the last command to fzf and pass the output to a new command
+    "\C-xF": '$(!!|fzf --ansi --height 40)\C-a \C-m\C-m'

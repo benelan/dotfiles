@@ -118,18 +118,18 @@ return {
     -- enabled = false,
     event = "LspAttach",
     keys = {
-      { "<leader>nn", "<CMD>Fidget history<CR>", desc = "View notification history (fidget)" },
-      { "<leader>nt", "<CMD>Fidget suppress<CR>", desc = "Toggle notifications (fidget)" },
-      { "<leader>nx", "<CMD>Fidget clear<CR>", desc = "Clear notifications (fidget)" },
+      { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View notification history (fidget)" },
+      { "<leader>vn", "<CMD>Fidget suppress<CR>", desc = "Toggle notifications (fidget)" },
       {
-        "<leader>np",
+        "<leader>vp",
         "<CMD>Fidget lsp_suppress<CR>",
         desc = "Toggle LSP progress notifications (fidget)",
       },
+      { "<leader>vx", "<CMD>Fidget clear<CR>", desc = "Clear notifications (fidget)" },
       {
-        "<leader>nX",
+        "<leader>vd",
         "<CMD>Fidget clear_history<CR>",
-        desc = "Clear notification history (fidget)",
+        desc = "Delete notification history (fidget)",
       },
     },
     opts = {

@@ -33,6 +33,7 @@ return {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
+        dependencies = "vim-commentary",
         init = function() vim.g.skip_ts_context_commentstring_module = true end,
         opts = {},
       },
@@ -88,7 +89,7 @@ return {
           disable = function(lang, buf)
             local max_filesize = 420 * 1024 -- 420 KB
             local bufname = vim.api.nvim_buf_get_name(buf)
-            local ok, stats = pcall(vim.loop.fs_stat, bufname)
+            local ok, stats = pcall(vim.uv.fs_stat, bufname) ---@diagnostic disable-line: undefined-field
             if ok and stats and stats.size > max_filesize then return true end
           end,
           -- additional_vim_regex_highlighting = { "markdown" },

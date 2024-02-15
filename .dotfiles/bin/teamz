@@ -2,7 +2,7 @@
 set -o errexit
 
 CMD="$(basename "$0")"
-USER_LIST="${TEAMS_USER_LIST:-$HOME/.teamsbook}"
+TEAMS_USER_LIST="${TEAMS_USER_LIST:-"$HOME/.$CMD-users"}"
 
 # Usage info                                                            {{{
 # --------------------------------------------------------------------- {|}
@@ -10,42 +10,52 @@ USER_LIST="${TEAMS_USER_LIST:-$HOME/.teamsbook}"
 help() {
     if [ -n "$*" ]; then
         printf "Error: %s\nTry -h for more info.\n" "$*" >&2
+        exit 1
     else
         cat <<EOF
 Open Microsoft Teams with a prefilled message to a user or group chat.
 
-Usage:           $CMD [-m MESSAGE] [-u USER]...
+Usage:      $CMD [-eh] [-m MESSAGE]... [-u USER]...
 
 Flags:
-  -m             Message to send user(s). If omitted, stdin is used.
-  -u             User to message. Repeat the flag to create a group chat.
-  -h             Show this message.
+  -u        The user to message. Repeat the flag to create a group chat.
+  -m        The message to send user(s). Repeatable. If omitted, stdin is used.
+  -e        Open your text editor to write the message.
+  -h        Show this message.
 
 Examples:
-  # Use build errors as the prefilled message, and select user(s) with fzf.
-  npm --no-color run build 2>&1 >/dev/null | $CMD
+  # Use build errors as the prefilled message to your engineering lead.
+  npm --no-color run build 2>&1 >/dev/null | $CMD -m "Error:" -u "lead@acme.com"
 
-  # Say good morning to a group chat.
-  $CMD -m "Good morning!" -u "boss@acme.com" -u "colleague@acme.com"
+  # Write to a group chat. Message flag arguments are separated by newlines.
+  $CMD -m "Hey!" -m "How's the meeting?" -u "janitor@acme.com" -u "ceo@acme.com"
+
+  # Open your text editor to write the message and select user(s) with fzf.
+  $CMD -e
 
 Environment Variables:
   TEAMS_USER_LIST
-      Path to a list for selecting user(s) with fzf, defaults to ~/.teamsbook
-      One user per line and the user's email must be first. Additional info
-      can optionally be added after the email for fuzzy finding. Fuzzy
-      selecting does not occur when users are specified via the -u flag.
+      Path to a list for selecting user(s) with fzf, defaults to ~/.$CMD-users
+      One user per line and the user's email must be first. Additional info can
+      optionally be added after the email for fuzzy finding. Fuzzy selecting
+      does not occur when users are specified via the -u flag.
+
+  TEAMS_EDITOR
+      The text editor to open for writing the message when using the -e flag.
+      Defaults to "\$EDITOR".
+
+  TEAMS_BROWSER
+      The browser to use for opening the Teams web application. Only used when
+      the desktop app is not installed. Defaults to "\$BROWSER".
 
 Troubleshooting:
   If you are using the Teams desktop application, try adding the following line
   under [Default Applications] in ~/.config/mimeapps.list
       x-scheme-handler/msteams=teams.desktop
 
-  If using the Teams web application (e.g. the PWA), you can specify the browser
-  to use via the "\$TEAMZ_BROWSER" or "\$BROWSER" environment variables.
-
 EOF
     fi
-    exit 1
+    exit 0
 }
 
 # --------------------------------------------------------------------- }}}
@@ -59,14 +69,46 @@ has() { command -v "$1" >/dev/null 2>&1; }
 
 select_users() {
     ! has fzf && help "fzf is required to select users"
-    [ ! -f "$USER_LIST" ] && help "user list not found at \"$USER_LIST\"."
+    ! [ -f "$TEAMS_USER_LIST" ] && help "user list not found at \"$TEAMS_USER_LIST\"."
 
-    fzf --multi \
-        --prompt="Select user(s): " \
-        --preview="echo {}" \
-        <"$USER_LIST" |
+    fzf --multi --prompt="Select user(s): " <"$TEAMS_USER_LIST" |
         cut -d' ' -f1 |
         tr '\n' ','
+}
+
+append_user() {
+    [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$1" || TEAMS_USERS="$TEAMS_USERS,$1"
+}
+
+append_msg() {
+    [ -z "$TEAMS_MESSAGE" ] && TEAMS_MESSAGE="$1" || TEAMS_MESSAGE="$TEAMS_MESSAGE
+$1"
+}
+
+uri_encode_msg() {
+    ! has jq && help "jq is required to URI encode the message"
+    TEAMS_MESSAGE="$(printf "%s" "$TEAMS_MESSAGE" | jq -sRr @uri)"
+}
+
+editor_msg() {
+    [ -n "$TEAMS_EDITOR" ] && EDITOR="$TEAMS_EDITOR"
+
+    ! has "$EDITOR" &&
+        help "set 'TEAMS_EDITOR' or 'EDITOR' environment variables to specify the text editor to use for writing the message"
+
+    tmp_file="$(mktemp --suffix='.md')"
+
+    # shellcheck disable=2064
+    trap "rm -f $tmp_file" INT TERM EXIT
+
+    $EDITOR "$tmp_file"
+    tmp_msg="$(cat "$tmp_file")"
+
+    if [ -n "$tmp_msg" ]; then
+        append_msg "$tmp_msg"
+    else
+        help "the editor returned an empty message"
+    fi
 }
 
 create_msg() {
@@ -74,31 +116,36 @@ create_msg() {
         OPEN_CMD="xdg-open"
     elif has open; then
         OPEN_CMD="open"
+    elif has wslview; then
+        OPEN_CMD="wslview"
     fi
 
     # Use the desktop app if installed, otherwise open in browser
     if has teams; then
         TEAMS_URI="msteams:"
+
+        if [ -z "$OPEN_CMD" ]; then
+            help "One of 'xdg-open', 'open', or 'wslview' executables is required to open the desktop Microsoft Teams app"
+        fi
     else
         TEAMS_URI="https://teams.microsoft.com"
 
         # Use a browser if set via environment variables
-        if has "$TEAMZ_BROWSER"; then
-            OPEN_CMD="$TEAMZ_BROWSER"
+        if has "$TEAMS_BROWSER"; then
+            OPEN_CMD="$TEAMS_BROWSER"
         elif has "$BROWSER"; then
             OPEN_CMD="$BROWSER"
         fi
-    fi
 
-    if [ -z "$OPEN_CMD" ]; then
-        help "xdg-open or open is required to open Microsoft Teams"
+        if [ -z "$OPEN_CMD" ]; then
+            help "One of 'xdg-open', 'open', 'wslview' executables or 'TEAMS_BROWSER', 'BROWSER' environment variables is required to open the Microsoft Teams web app"
+        fi
     fi
 
     if has nohup; then
         OPEN_CMD="nohup $OPEN_CMD"
+        trap "rm -f ./nohup.out ~/nohup.out" INT TERM EXIT
     fi
-
-    # shellcheck disable=2086
 
     $OPEN_CMD "$(
         printf "%s/l/chat/0/0?users=%s&message=%s" \
@@ -108,11 +155,6 @@ create_msg() {
     )" 2>/dev/null
 }
 
-uri_encode_msg() {
-    ! has jq && help "jq is required to encode the message"
-    TEAMS_MESSAGE="$(printf "%s" "$TEAMS_MESSAGE" | jq -sRr @uri)"
-}
-
 # --------------------------------------------------------------------- }}}
 # Parse args                                                            {{{
 # --------------------------------------------------------------------- {|}
@@ -120,26 +162,26 @@ uri_encode_msg() {
 main() {
     # If stdin is piped, use it as the message
     if stdin_is_pipe_like; then
-        TEAMS_MESSAGE="$(cat)"
+        stdin_msg="$(cat)"
     else
         # Print help message if stdin is not piped and there are no args
         [ -z "$*" ] && help
     fi
 
-    while getopts m:u: opt; do
+    while getopts m:u:eh opt; do
         case $opt in
-            m) [ -n "$OPTARG" ] && TEAMS_MESSAGE="$OPTARG" ;;
-            u)
-                [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$OPTARG" ||
-                    TEAMS_USERS="$TEAMS_USERS,$OPTARG"
-                ;;
-            *) help ;;
+            m) append_msg "$OPTARG" ;;
+            u) append_user "$OPTARG" ;;
+            e) editor_msg ;;
+            h) help ;;
+            *) help "invalid option" ;;
         esac
     done
 
     shift "$((OPTIND - 1))"
 
-    uri_encode_msg
+    [ -n "$stdin_msg" ] && append_msg "$stdin_msg"
+    [ -n "$TEAMS_MESSAGE" ] && uri_encode_msg
 
     [ -z "$TEAMS_USERS" ] && TEAMS_USERS="$(select_users)"
     [ -z "$TEAMS_USERS" ] && help "no users specified"

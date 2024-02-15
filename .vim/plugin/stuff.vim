@@ -8,31 +8,26 @@ let g:loaded_jamin_stuff = 1
 "" misc globals                                               {{{
 
 let g:rust_recommended_style = 0
-let g:qf_disable_statusline = 1
 let g:markdown_recommended_style = 0
+let g:qf_disable_statusline = 1
 
 " Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
-    \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
-    \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
-    \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
-    \ 'yml=yaml', 'shell=sh', 'py=python',
-    \ 'ts=typescript', 'tsx=typescriptreact',
-    \ 'js=javascript', 'jsx=javascriptreact'
-    \ ]
+    \ 'html', 'toml', 'yaml', 'json', 'sql', 'diff', 'vim', 'lua', 'go', 'rust',
+    \ 'python', 'css', 'scss', 'sass', 'sh', 'awk', 'yml=yaml', 'py=python',
+    \ 'shell=sh', 'bash=sh', 'ts=typescript', 'js=javascript',
+    \ 'tsx=typescriptreact', 'jsx=javascriptreact'
+\ ]
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" netrw                                                      {{{
 
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
-" let g:netrw_keepdir = 0
-" let g:netrw_liststyle = 3
-let g:netrw_usetab = 1
-let g:netrw_winsize = 25
 let g:netrw_preview = 1
 let g:netrw_special_syntax = 1
+let g:netrw_winsize = 25
 
 if exists("*netrw_gitignore#Hide")
     let g:netrw_list_hide = netrw_gitignore#Hide()
@@ -54,7 +49,6 @@ if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
 "----------------------------------------------------------------------{|}
 
 "" general keymaps                                            {{{
-nnoremap q: :
 
 nnoremap <Backspace> <C-^>
 
@@ -84,14 +78,14 @@ vnoremap & :&&<CR>
 nnoremap & :&&<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" insert, command, and operator  keymaps                     {{{
+"" insert, command, and operator keymaps                      {{{
 
 " Add a line above/below the cursor from insert mode
 inoremap <C-Down> <C-O>O
 inoremap <C-Up> <C-O>o
 
-cnoremap <expr> <c-n> wildmenumode() ? "\<c-n>" : "\<down>"
-cnoremap <expr> <c-p> wildmenumode() ? "\<c-p>" : "\<up>"
+cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
+cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
 
 " Expand the buffer's directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
@@ -104,17 +98,25 @@ onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
 " Line text objects including spaces/newlines
 xnoremap al $o0
-onoremap al <CMD>normal val<CR>
+onoremap al :<C-U>normal val<CR>
 
 " Line text objects excluding spaces/newlines
-xnoremap il <Esc>^vg_
-onoremap il <CMD>normal! ^vg_<CR>
+xnoremap il g_o0
+onoremap il :<C-U>normal! vil<CR>
+
+" Special character text objects
+" for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
+"     execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
+"     execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
+"     execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
+"     execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
+" endfor
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" system clipboard                                           {{{
 
 nnoremap x "_x
-vnoremap <leader>d "_d
+vnoremap x "_x
 
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
@@ -264,7 +266,7 @@ function! s:NetrwToggle()
 endfunction
 
 command! Netrw call <sid>NetrwToggle()
-nnoremap <silent> <localleader>- <CMD>Netrw<CR>
+nnoremap <silent> <leader>e <CMD>Netrw<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" go to next/previous merge conflict hunks                   {{{
@@ -284,7 +286,12 @@ function! VisualSelection(...) range
     let l:saved_reg = @"
     execute "normal! vgvy"
 
-    let l:pattern = escape(@", " \\/.'`~!@#$%^&*+[]{}|")
+    if a:0 > 0 && a:1 == "pcre"
+        let l:pattern = escape(@", " \\/.-~!=?$^*+()[]{}|")
+    else
+        let l:pattern = escape(@", "\\/.*'$^~[]")
+    endif
+
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
     if a:0 > 0 && a:1 == "replace"
@@ -391,61 +398,77 @@ if has("autocmd")
     augroup jamin_global_marks
         autocmd!
         " Clear actively used file marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks QWERAZ
+        autocmd VimEnter *  delmarks REWQAZ
 
         " Create marks for specific filetypes when leaving buffer
-        autocmd BufLeave \(//:\)\@<!*.css,
-                        \\(//:\)\@<!*.scss,
-                        \\(//:\)\@<!*.sass
-                            \ normal! mC
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.html
+                    \ normal! mH
 
-        autocmd BufLeave \(//:\)\@<!*.html
-                            \ normal! mH
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(css\|scss\|sass\)
+                    \ normal! mC
 
-        autocmd BufLeave \(//:\)\@<!*.svelte,
-                        \\(//:\)\@<!*.vue,
-                        \\(//:\)\@<!*.astro
-                            \ normal! mF
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.js
+                    \ normal! mJ
 
-        autocmd BufLeave \(//:\)\@<!*.js,
-                            \ normal! mJ
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.ts
+                    \ normal! mT
 
-        autocmd BufLeave \(//:\)\@<!*.ts,
-                            \ normal! mT
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(jsx\|tsx\|mdx\)
+                    \ normal! mX
 
-        autocmd BufLeave \(//:\)\@<!*.jsx,
-                        \\(//:\)\@<!*.tsx
-                            \ normal! mX
+        " Web [F]rameworks
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(svelte\|vue\|astro\)
+                    \ normal! mF
 
-        autocmd BufLeave \(//:\)\@<!*.go
-                            \ normal! mG
+        " [S]hell scripts
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(sh\|bash\),
+                    \\(//:\)\@<!$DOTFILES/bin/*,
+                    \\(//:\)\@<!$HOME/.\(profile\|bashrc\|bash_profile\|bash_logout\|bash_login\)
+                    \ normal! mS
 
-        " autocmd BufLeave \(//:\)\@<!*.rs
-        "                     \ normal! mR
+        " [D]ata/metadata files
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(csv\|tsv\|json\|toml\)
+                    \ normal! mD
 
-        autocmd BufLeave \(//:\)\@<!*.py
-                            \ normal! mP
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.\(yml\|yaml\)
+                    \ normal! mY
 
-        autocmd BufLeave \(//:\)\@<!*.sh,
-                        \\(//:\)\@<!*.bash,
-                        \\(//:\)\@<!$DOTFILES/bin/*
-                            \ normal! mS
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.md
+                    \ normal! mM
 
-        autocmd BufLeave \(//:\)\@<!*.lua
-                            \ normal! mL
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.go
+                    \ normal! mG
 
-        autocmd BufLeave \(//:\)\@<!*.vim,
-                        \\(//:\)\@<!*vimrc
-                            \ normal! mV
+        " autocmd BufLeave,BufWinLeave,BufFilePost
+        "             \ \(//:\)\@<!*.rs
+        "             \ normal! mR
 
-        autocmd BufLeave \(//:\)\@<!*.csv,
-                        \\(//:\)\@<!*.json,
-                        \\(//:\)\@<!*.toml
-                            \ normal! mD
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.py
+                    \ normal! mP
 
-        autocmd BufLeave \(//:\)\@<!*.yml,
-                        \\(//:\)\@<!*.yaml
-                            \ normal! mY
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*.lua
+                    \ normal! mL
+
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!*\(.vim\|vimrc\)
+                    \ normal! mV
+
+        autocmd BufLeave,BufWinLeave,BufFilePost
+                    \ \(//:\)\@<!$NOTES/**.md
+                    \ normal! mN
     augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -487,6 +510,7 @@ if has("autocmd")
     "" set makeprg or use a builtin compiler when possible    {{{
     augroup jamin_compilers_formatters
         autocmd!
+
         " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler
         autocmd FileType python compiler pylint
         autocmd FileType rust compiler cargo
@@ -514,18 +538,22 @@ if has("autocmd")
                 \ | setlocal errorformat+=%-G%.%#
 
         " Set up formatters
-        autocmd FileType json,yaml,markdown,mdx,css,scss,html,
+        if executable("npx")
+            autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
                 \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+        endif
 
-        autocmd FileType {,ba,da,k,z}sh
+        if executable("shfmt")
+            autocmd FileType {,ba,da,k,z}sh
                 \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+        endif
 
-        autocmd FileType lua
+        if executable("stylua")
+            autocmd FileType lua
                 \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
+        endif
     augroup END
-
-        command! Lint silent make % | silent redraw!
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif

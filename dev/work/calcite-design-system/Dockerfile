@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Container for running StencilJS demos or e2e tests (Puppeteer and Jest)
-# This is mostly a workaround for:
+# This was originally a workaround for:
 # - https://github.com/ionic-team/stencil/issues/3853
 
 # Resources:
@@ -19,17 +19,10 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 COPY package*.json ./
 
 RUN apk add --no-cache \
-    ca-certificates \
-    chromium \
-    freetype \
-    harfbuzz \
-    nodejs \
-    npm \
-    nss \
-    ttf-freefont \
-    # Install npm packages
+    chromium=121.0.6167.184-r0 \
+    nodejs=20.11.1-r0 \
+    npm=10.2.5-r0 \
     && npm install \
-    # Create non-root user to fix filesystem permission issues
     && addgroup -S runner && adduser -S -G runner runner \
     && mkdir -p /home/runner/Downloads /app \
     && chown -R runner:runner /home/runner \
@@ -41,7 +34,7 @@ USER runner
 # You can test/start/etc directly with these two lines (useful in CI):
 
 #   COPY . .
-#   CMD [ "npm", "run", "test:watch" ]
+#   CMD [ "npm", "test" ]
 
 # Or test/start/etc after the image is created (useful for local development):
 

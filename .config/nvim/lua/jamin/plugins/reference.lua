@@ -41,68 +41,61 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = function()
-      local sources = {
-        "astro",
-        "bash",
-        "css",
-        "docker",
-        "dom",
-        "gnu_make",
-        "go",
-        "html",
-        "http",
-        "javascript",
-        "jest",
-        "jq",
-        "lodash-4",
-        "lua-5.4",
-        "markdown",
-        "node",
-        "npm",
-        "react",
-        "sass",
-        "sqlite",
-        "svelte",
-        "svg",
-        "tailwindcss",
-        "typescript",
-        "vite",
-        "vue-3",
-      }
-
       -- calculate the width and height of the floating window
       local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
       local width = math.floor(ui.width / 2)
 
       -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      return vim.tbl_deep_extend("force", vim.fn.executable "glow" == 1 and {
-        previewer_cmd = "glow",
-        picker_cmd = true,
-        cmd_args = { "-s", "dark", "-w", width },
-        picker_cmd_args = { "-s", "dark" },
-        cmd_ignore = sources,
-      } or {}, {
+      local glow_opts = vim.fn.executable "glow" ~= 1 and {}
+        or {
+          previewer_cmd = "glow",
+          picker_cmd = true,
+          cmd_args = { "-s", "dark", "-w", width },
+          picker_cmd_args = { "-s", "dark" },
+          cmd_ignore = {
+            "astro",
+            "bash",
+            "css",
+            "docker",
+            "dom",
+            "gnu_make",
+            "go",
+            "html",
+            "http",
+            "javascript",
+            "jest",
+            "jq",
+            "lodash-4",
+            "lua-5.4",
+            "markdown",
+            "node",
+            "npm",
+            "react",
+            "sass",
+            "sqlite",
+            "svelte",
+            "svg",
+            "tailwindcss",
+            "typescript",
+            "vite",
+            "vue-3",
+          },
+        }
+
+      return vim.tbl_deep_extend("force", glow_opts, {
         mappings = { open_in_browser = "<C-o>" },
+        -- stylua: ignore
         filetypes = {
-          scss = { "sass", "css", "tailwindcss" },
           css = { "css", "tailwindcss" },
+          scss = { "css", "sass", "tailwindcss" },
           html = { "javascript", "dom", "html", "css" },
           javascript = { "javascript", "dom", "node" },
           typescript = { "javascript", "typescript", "dom", "node" },
           javascriptreact = { "javascript", "dom", "html", "react", "css", "tailwindcss" },
-          typescriptreact = {
-            "javascript",
-            "typescript",
-            "dom",
-            "html",
-            "react",
-            "css",
-            "tailwindcss",
-          },
+          typescriptreact = { "javascript", "typescript", "dom", "html", "react", "css", "tailwindcss" },
           vue = { "javascript", "dom", "html", "vue", "css", "tailwindcss" },
           svelte = { "javascript", "dom", "html", "svelte", "css", "tailwindcss" },
           astro = { "javascript", "dom", "node", "html", "astro", "css", "tailwindcss" },
-          json = { "jq", "npm" },
         },
         float_win = {
           relative = "editor",
@@ -132,15 +125,12 @@ return {
       "DevdocsUpdate",
       "DevdocsUpdateAll",
     },
+    -- stylua: ignore
     keys = {
       { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
       { "<leader>rO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
       { "<leader>rr", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
-      {
-        "<leader>rR",
-        "<CMD>DevdocsOpenCurrentFloat<CR>",
-        desc = "Open floating ref by filetype (devdocs)",
-      },
+      { "<leader>rR", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open floating ref by filetype (devdocs)" },
     },
   },
   -----------------------------------------------------------------------------

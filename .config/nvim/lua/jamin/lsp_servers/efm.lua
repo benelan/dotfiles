@@ -201,7 +201,7 @@ return {
     documentFormatting = true,
     documentRangeFormatting = true,
   },
-  root_dir = vim.loop.cwd,
+  root_dir = vim.uv.cwd, ---@diagnostic disable-line: undefined-field
   filetypes = vim.tbl_keys(languages),
   settings = {
     rootMarkers = { ".git", "Dockerfile", "Makefile" },

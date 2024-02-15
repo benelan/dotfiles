@@ -79,7 +79,7 @@ end
 
 -- bootstrap lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then ---@diagnostic disable-line: undefined-field
   vim.fn.system {
     "git",
     "clone",

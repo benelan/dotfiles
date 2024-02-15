@@ -1,5 +1,13 @@
 return {
   -----------------------------------------------------------------------------
+  -- keymaps/autocmds/utils/etc. shared with the vim config
+  {
+    dir = "~/.vim",
+    priority = 420,
+    cond = vim.fn.isdirectory "~/.vim",
+    lazy = false,
+  },
+  -----------------------------------------------------------------------------
   {
     -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
@@ -26,14 +34,6 @@ return {
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
-  },
-  -----------------------------------------------------------------------------
-  -- keymaps/autocmds/utils/etc. shared with the vim config
-  {
-    dir = "~/.vim",
-    priority = 420,
-    cond = vim.fn.isdirectory "~/.vim",
-    lazy = false,
   },
   -----------------------------------------------------------------------------
   -- tpope plugins
@@ -95,8 +95,8 @@ return {
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {
-      "Cfind", "Chmod", "Clocate", "Delete", "Lfind", "Llocate",
-      "Mkdir", "Move", "Remove", "Rename", "SudoEdit", "SudoWrite", "Wall"
+      "Cfind", "Chmod", "Clocate", "Delete", "Lfind", "Llocate", "Mkdir",
+      "Move", "Remove", "Rename", "SudoEdit", "SudoWrite", "Wall"
     },
   },
   -----------------------------------------------------------------------------
@@ -114,7 +114,6 @@ return {
     end,
     keys = {
       { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
-      { "<M-a>", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
       { "<leader>ad", "<CMD>Edocs<CR>", desc = "Related: docs (projectionist)" },
       { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },
@@ -122,12 +121,7 @@ return {
       { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
       { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
       { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
-      {
-        "<leader>a<CR>",
-        "<CMD>Console<CR><C-w><C-w>",
-        desc = "Console (projectionist)",
-        silent = true,
-      },
+      { "<leader>a<CR>", "<CMD>Console<CR><C-w><C-w>", desc = "Console (projectionist)" },
     },
   },
   -----------------------------------------------------------------------------

@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   group = vim.api.nvim_create_augroup("jamin_resize_splits", { clear = true }),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
+    vim.cmd "tabdo wincmd ="
     vim.cmd("tabnext " .. current_tab)
   end,
 })
@@ -102,7 +102,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function(event)
     if event.match:match "^%w%w+://" then return end
 
-    local file = vim.loop.fs_realpath(event.match) or event.match
+    local file = vim.uv.fs_realpath(event.match) or event.match ---@diagnostic disable-line: undefined-field
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 
     local backup = vim.fn.fnamemodify(file, ":p:~:h")

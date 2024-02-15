@@ -33,7 +33,7 @@ local function get_marker_root(path)
   local root_file = vim.fs.find(root_markers, {
     path = path,
     upward = true,
-    stop = vim.loop.os_homedir(),
+    stop = vim.uv.os_homedir(), ---@diagnostic disable-line: undefined-field
   })[1]
 
   return vim.fs.dirname(root_file)
@@ -58,6 +58,10 @@ function M.project(args)
 
   if not root then return end
   root_cache[path] = root
+
+  -- change directory if args are given (e.g., when called via an autocmd callback)
+  if args then vim.fn.chdir(root) end
+
   return root
 end
 
@@ -76,7 +80,7 @@ end
 
 -- Change directory to project root using LSP or file markers in `root_names`
 vim.api.nvim_create_user_command("Rcd", function()
-  local root = M.project { buf = 0, file = vim.api.nvim_buf_get_name(0) }
+  local root = M.project()
   if root then vim.fn.chdir(root) end
 end, { desc = "Change directory to project/lsp root" })
 
@@ -93,9 +97,9 @@ vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project 
 vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
 
 -- automatically change directory to project root
--- vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
---   group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
---   callback = M.project,
--- })
+vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
+  group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
+  callback = M.project,
+})
 
 return M

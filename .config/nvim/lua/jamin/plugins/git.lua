@@ -1,8 +1,9 @@
 local res = require "jamin.resources"
 
 return {
+  -- the GOAT git plugin
   {
-    dir = "~/.vim/pack/foo/opt/vim-fugitive", -- the GOAT git plugin
+    dir = "~/.vim/pack/foo/opt/vim-fugitive",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
     keys = {
       { "<leader>gs", "<CMD>Git<CR>", desc = "Fugitive status" },
@@ -27,11 +28,6 @@ return {
         mode = { "n" },
       },
       {
-        "<leader>gQ",
-        [[ <CMD>execute 'bdelete '.join(filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^fugitive://.*"'), ' ')<CR> ]],
-        desc = "Delete all fugitive buffers",
-      },
-      {
         "<leader>gl",
         "<CMD>0Gclog --follow<CR>",
         desc = "Buffer history in quickfix (fugitive)",
@@ -41,17 +37,19 @@ return {
     },
     -- stylua: ignore
     cmd = {
-      "G", "Git", "GDelete", "GMove", "GRename", "Gdrop", "Gcd", "Glcd", "Gclog", "Gllog",
-      "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep", "Gread", "Gwrite", "Gwq",
-      "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit", "Gsplit", "Gvsplit",
+      "G", "Git", "GDelete", "GMove", "GRename", "Gdrop", "Gcd", "Glcd",
+      "Gclog", "Gllog", "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep",
+      "Gread", "Gwrite", "Gwq", "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit",
+      "Gsplit", "Gvsplit",
     },
     -- init = function()
     --   vim.g.fugitive_dynamic_colors = 0
     -- end,
   },
   -----------------------------------------------------------------------------
+  -- Open file/selection in GitHub repo
   {
-    dir = "~/.vim/pack/foo/opt/vim-rhubarb", -- Open file/selection in GitHub repo
+    dir = "~/.vim/pack/foo/opt/vim-rhubarb",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-rhubarb",
     cmd = "GBrowse",
     dependencies = "vim-fugitive",
@@ -71,8 +69,9 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- [F]ugitive extension for viewing commit history [log]
   {
-    "rbong/vim-flog", -- [F]ugitive extension for viewing commit history [log]
+    "rbong/vim-flog",
     dependencies = "vim-fugitive",
     cmd = { "Flog", "Flogsplit", "Floggit" },
     keys = {
@@ -86,17 +85,17 @@ return {
       { "<leader>gh", ":Flog<CR>", desc = "Git history (flog)", mode = "v" },
       {
         "<leader>gH",
-        ":<C-u>call VisualSelection('')<CR>:<C-R>=@/<CR><C-b>Flog -patch-search=<CR>",
+        ":<C-u>call VisualSelection('pcre')<CR>:<C-R>=@/<CR><C-b>Flog -patch-search=<CR>",
         desc = "Find selected text in git patch history (flog)",
         mode = "v",
       },
     },
   },
   -----------------------------------------------------------------------------
+  -- git change indicators, blame, and hunk utils
   {
-    "lewis6991/gitsigns.nvim", -- git change indicators, blame, and hunk utils
+    "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
-    -- stylua: ignore
     keys = {
       {
         "]c",
@@ -120,29 +119,118 @@ return {
         mode = "n",
         desc = "Previous hunk (gitsigns)",
       },
-      { "ih", function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "inner git hunk (gitsigns)", mode = { "o", "x" } },
       { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk (gitsigns)" },
       { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk (gitsigns)" },
-      { "]H", function() require("gitsigns").next_hunk { wrap = false, preview = true } end, desc = "Next hunk (gitsigns)" },
-      { "[H", function() require("gitsigns").prev_hunk { wrap = false, preview = true } end, desc = "Previous hunk (gitsigns)" },
-      { "<leader>hl", function() require("gitsigns").setloclist() end, desc = "Hunks to location list (gitsigns)" },
-      { "<leader>hq", function() require("gitsigns").setqflist "all" end, desc = "Hunks to quickfix list (gitsigns)" },
-      { "<leader>hp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk (gitsigns)" },
-      { "<leader>hP", function() require("gitsigns").preview_hunk_inline() end, desc = "Preview hunk (gitsigns)" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Reset hunk (gitsigns)", mode = "v" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, desc = "Stage hunk (gitsigns)", mode = "v" },
-      { "<leader>hr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk (gitsigns)", mode = "n" },
-      { "<leader>hw", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk (gitsigns)", mode = "n" },
-      { "<leader>hu", function() require("gitsigns").undo_stage_hunk() end, desc = "Unstage hunk (gitsigns)" },
-      { "<leader>hR", function() require("gitsigns").reset_buffer() end, desc = "Reset buffer (gitsigns)" },
-      { "<leader>hW", function() require("gitsigns").stage_buffer() end, desc = "Stage buffer (gitsigns)" },
-      { "<leader>hts", function() require("gitsigns").toggle_signs() end, desc = "Toggle signs (gitsigns)" },
-      { "<leader>htd", function() require("gitsigns").toggle_deleted() end, desc = "Toggle deleted line display (gitsigns)" },
-      { "<leader>htw", function() require("gitsigns").toggle_word_diff() end, desc = "Toggle word diff (gitsigns)" },
-      { "<leader>hth", function() require("gitsigns").toggle_linehl() end, desc = "Toggle line highlight (gitsigns)" },
-      { "<leader>htn", function() require("gitsigns").toggle_numhl() end, desc = "Toggle number highlight (gitsigns)" },
-      { "<leader>htb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle blame (gitsigns)" },
-      { "<leader>hb", function() require("gitsigns").blame_line { full = true } end, desc = "Git blame line (gitsigns)" },
+      {
+        "]H",
+        function() require("gitsigns").next_hunk { wrap = false, preview = true } end,
+        desc = "Next hunk (gitsigns)",
+      },
+      {
+        "[H",
+        function() require("gitsigns").prev_hunk { wrap = false, preview = true } end,
+        desc = "Previous hunk (gitsigns)",
+      },
+      {
+        "ih",
+        function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        desc = "inner git hunk (gitsigns)",
+        mode = { "o", "x" },
+      },
+      {
+        "<leader>hl",
+        function() require("gitsigns").setloclist() end,
+        desc = "Hunks to location list (gitsigns)",
+      },
+      {
+        "<leader>hq",
+        function() require("gitsigns").setqflist "all" end,
+        desc = "Hunks to quickfix list (gitsigns)",
+      },
+      {
+        "<leader>hp",
+        function() require("gitsigns").preview_hunk() end,
+        desc = "Preview hunk (gitsigns)",
+      },
+      {
+        "<leader>hP",
+        function() require("gitsigns").preview_hunk_inline() end,
+        desc = "Preview hunk (gitsigns)",
+      },
+      {
+        "<leader>hr",
+        function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        desc = "Reset hunk (gitsigns)",
+        mode = "v",
+      },
+      {
+        "<leader>hw",
+        function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        desc = "Stage hunk (gitsigns)",
+        mode = "v",
+      },
+      {
+        "<leader>hr",
+        function() require("gitsigns").reset_hunk() end,
+        desc = "Reset hunk (gitsigns)",
+        mode = "n",
+      },
+      {
+        "<leader>hw",
+        function() require("gitsigns").stage_hunk() end,
+        desc = "Stage hunk (gitsigns)",
+        mode = "n",
+      },
+      {
+        "<leader>hu",
+        function() require("gitsigns").undo_stage_hunk() end,
+        desc = "Unstage hunk (gitsigns)",
+      },
+      {
+        "<leader>hR",
+        function() require("gitsigns").reset_buffer() end,
+        desc = "Reset buffer (gitsigns)",
+      },
+      {
+        "<leader>hW",
+        function() require("gitsigns").stage_buffer() end,
+        desc = "Stage buffer (gitsigns)",
+      },
+      {
+        "<leader>hb",
+        function() require("gitsigns").blame_line { full = true } end,
+        desc = "Git blame line (gitsigns)",
+      },
+      {
+        "<leader>htb",
+        function() require("gitsigns").toggle_current_line_blame() end,
+        desc = "Toggle blame (gitsigns)",
+      },
+      {
+        "<leader>hts",
+        function() require("gitsigns").toggle_signs() end,
+        desc = "Toggle signs (gitsigns)",
+      },
+      {
+        "<leader>htd",
+        function() require("gitsigns").toggle_deleted() end,
+        desc = "Toggle deleted line display (gitsigns)",
+      },
+      {
+        "<leader>htw",
+        function() require("gitsigns").toggle_word_diff() end,
+        desc = "Toggle word diff (gitsigns)",
+      },
+      {
+        "<leader>hth",
+        function() require("gitsigns").toggle_linehl() end,
+        desc = "Toggle line highlight (gitsigns)",
+      },
+      {
+        "<leader>htn",
+        function() require("gitsigns").toggle_numhl() end,
+        desc = "Toggle number highlight (gitsigns)",
+      },
     },
     opts = {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
@@ -152,8 +240,9 @@ return {
     },
   },
   -----------------------------------------------------------------------------
+  -- GitHub integration, requires https://cli.github.com
   {
-    "pwntester/octo.nvim", -- GitHub integration, requires https://cli.github.com
+    "pwntester/octo.nvim",
     -- dev = true,
     cond = vim.fn.executable "gh" == 1,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
@@ -211,34 +300,6 @@ return {
             "<leader>vp",
             "<CMD>Octo review comments<CR>",
             { desc = "Show pending PR review comments (octo)", silent = true, buffer = true }
-          )
-
-          vim.keymap.set(
-            "n",
-            "<leader>v.",
-            "<CMD>Octo review resume<CR>",
-            { desc = "Resume pull request review (octo)", silent = true, buffer = true }
-          )
-
-          vim.keymap.set(
-            "n",
-            "<leader>v<Tab>",
-            "<CMD>Octo review start<CR>",
-            { desc = "Start pull request review (octo)", silent = true, buffer = true }
-          )
-
-          vim.keymap.set(
-            "n",
-            "<leader>v<CR>",
-            "<CMD>Octo review submit<CR>",
-            { desc = "Submit pull request review (octo)", silent = true, buffer = true }
-          )
-
-          vim.keymap.set(
-            "n",
-            "<leader>v<Delete>",
-            "<CMD>Octo review discard<CR>",
-            { desc = "Discard pull request review (octo)", silent = true, buffer = true }
           )
 
           -- Add issue number and user completion to octo buffers
