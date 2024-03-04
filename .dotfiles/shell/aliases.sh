@@ -3,8 +3,6 @@
 # General                                                               {{{
 # --------------------------------------------------------------------- {|}
 
-alias -- :q='exit'
-
 # rerun last command as sudo
 alias plz='sudo $(fc -ln -1)'
 
@@ -33,40 +31,36 @@ alias se='sudo ${EDITOR:-vim}'
 alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar scs ic et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
-COLORS_SUPPORTED=$(is-supported "ls --color" --color -G)
-TIMESTYLEISO_SUPPORTED=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
-GROUPDIRSFIRST_SUPPORTED=$(is-supported "ls --group-directories-first" --group-directories-first)
+_color=$(is-supported "ls --color" --color -G)
+_time_style=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
+_group_dirs=$(is-supported "ls --group-directories-first" --group-directories-first)
 
 # shellcheck disable=2139
-alias ls="ls $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+alias ls="ls $_color $_group_dirs"
 
 # list all files/dirs, short format, sort by time
 # shellcheck disable=2139
-alias l="ls -Art $COLORS_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+alias l="ls -Art $_color $_group_dirs"
 
 # list all files/dirs, long format, sort by time
 # shellcheck disable=2139
-alias ll="ls -hogArt $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+alias ll="ls -hogArt $_color $_time_style $_group_dirs"
 
 # List directories, long format, sort by time
 # shellcheck disable=2139
-alias lsd="ls -radgoth */ $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED"
+alias lsd="ls -radgoth */ $_color $_time_style"
 
 # Lists hidden files, long format, sort by time
 # shellcheck disable=2139
-alias lsh="ls -radgoth .?* $COLORS_SUPPORTED $TIMESTYLEISO_SUPPORTED $GROUPDIRSFIRST_SUPPORTED"
+alias lsh="ls -radgoth .?* $_color $_time_style $_group_dirs"
+
+unset _color _time_style _group_dirs
 
 # Always enable colored `grep` output (`GREP_OPTIONS="--color=auto"` is deprecated)
 alias grep='grep --color=auto'
 
-# Colorizes diff output,if possible
+# Colorizes diff output, if possible
 is-supported colordiff && alias diff='colordiff'
-
-# Finds directories.
-alias fdd='find . -type d -name'
-
-# Finds files.
-alias fdf='find . -type f -name'
 
 # List declared aliases and functions
 # shellcheck disable=2139
@@ -74,11 +68,6 @@ alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
 
 # shellcheck disable=2139
 alias functions="declare -f | awk '/^[a-z].* ()/{gsub(\" .*$\",\"\"); print $1};'"
-
-# Intuitive map function
-# For example, to list all directories that contain a certain file:
-# find . -name .gitattributes | map dirname
-alias map="xargs -n1"
 
 # Show 256 TERM colors
 # shellcheck disable=2154
@@ -132,19 +121,12 @@ if is-supported date; then
 fi
 
 # Displays detailed weather and forecast.
-if is-supported curl; then
-    wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
-elif is-supported wget; then
-    wttr() { wget -qO- --compression=auto --timeout=10 "https://wttr.in/$*"; }
-fi
-
+wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
 alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 # --------------------------------------------------------------------- }}}
 # Networking                                                            {{{
 # --------------------------------------------------------------------- {|}
-
-alias hosts='sudo $EDITOR /etc/hosts'
 
 alias vpn="protonvpn-cli"
 
@@ -157,14 +139,10 @@ alias fping='ping -c 30 -i.2'
 # resume by default
 alias wget='wget -c'
 
-# systemd shortcuts (Linux)
-alias sctl='systemctl'
-
 # view HTTP traffic
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # display iptables rules
-alias ipt='sudo /sbin/iptables'
 alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
 
 # searchable process list
@@ -209,11 +187,11 @@ if is-supported npm; then
     # the aliases below to switch between them. This adds an extra layer of security
     # against accidentally publishing packages.
 
-    # use work or personal npm account for a single command
+    # use work or personal npm account for a single command, e.g., `nw publish`
     alias nw='npm --userconfig=~/.npmrc-work'
     alias np='npm --userconfig=~/.npmrc-personal'
 
-    # switch between work and personal npm accounts for the current shell
+    # switch between work/personal npm accounts persisting for the current shell
     alias nW='export NPM_CONFIG_USERCONFIG=~/.npmrc-work && npm whoami'
     alias nP='export NPM_CONFIG_USERCONFIG=~/.npmrc-personal && npm whoami'
 fi
@@ -228,8 +206,7 @@ if is-supported apt; then
 fi
 
 # Locks the session.
-is-supported gnome-screensaver-command &&
-    alias afk='gnome-screensaver-command --lock'
+is-supported gnome-screensaver-command && alias afk='gnome-screensaver-command --lock'
 
 # --------------------------------------------------------------------- }}}
 # Taskwarrior                                                           {{{
@@ -239,12 +216,9 @@ if is-supported task; then
     alias t="task"
     alias ta="task add"
 
-    if is-supported taskopen; then
-        alias to="taskopen"
-    fi
-
-    is-supported taskwarrior-tui && alias tui="taskwarrior-tui"
+    is-supported taskopen && alias to="taskopen"
     is-supported tasksh && alias tsh="tasksh"
+    is-supported taskwarrior-tui && alias tui="taskwarrior-tui"
 
     # shellcheck disable=2154
     [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
@@ -297,19 +271,16 @@ if is-supported docker; then
     ## general docker aliases                                 {{{
 
     # display names of running containers
-    alias dkrls="docker container ls | awk 'NR > 1 {print \$NF}'"
+    alias dkls="docker container ls | awk 'NR > 1 {print \$NF}'"
 
     # delete all containers / images
-    alias dkrR='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
+    alias dkrm='docker rm $(docker ps -a -q) && docker rmi $(docker images -q)'
 
     # stats on images
-    alias dkrstats='docker stats $(docker ps -q)'
-
-    # list images installed
-    alias dkrimg='docker images'
+    alias dkstat='docker stats $(docker ps -q)'
 
     # prune everything
-    alias dkrprune='docker system prune -a'
+    alias dkprune='docker system prune -a'
 
 fi
 
@@ -319,10 +290,7 @@ fi
 
 if [ "$USE_WORK_STUFF" = "1" ]; then
     # I need to link these files to the current worktree
-    alias cc_link_files='ln -f $WORK/calcite-design-system/Dockerfile &&
-                             ln -f $WORK/calcite-design-system/.marksman.toml &&
-                             ln -f $WORK/calcite-design-system/calcite-components.projections.json \
-                                                   ./packages/calcite-components/.projections.json'
+    alias cc_link_files='ln -f $CALCITE/Dockerfile && ln -f $CALCITE/.marksman.toml && ln -f $CALCITE/calcite-components.projections.json ./packages/calcite-components/.projections.json'
 
     alias cc_build_docker_image="docker build --tag calcite-components ."
 

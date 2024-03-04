@@ -1,12 +1,11 @@
 # This file controls the behavior of line input editing for programs that use
-# the GNU Readline library, e.g. FTP, Bash, and GDB.
+# the GNU readline(3) library, e.g. FTP, Bash, and GDB.
 # https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Readline-Init-File-Syntax
 #
 # You can re-read the inputrc file with C-x C-r.
 # Lines beginning with '#' are comments.
 #
-# First, include any system-wide bindings and variable
-# assignments from /etc/Inputrc
+# First, include system-wide bindings and variable assignments in /etc/inputrc
 $include /etc/inputrc
 
 set bell-style none

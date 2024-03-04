@@ -37,6 +37,7 @@ gzip
 handbrake-cli
 htop
 imagemagick
+inotify-tools
 jq
 libfontconfig1-dev
 libfreetype6-dev

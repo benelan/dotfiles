@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+# shellcheck disable=2086
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+# # configure display
+# if has xrandr; then
+#     xrandr --output eDP-1 --mode 2048x1152 --rate 60 --primary --scale 1
+# fi
+
+# change touchpad settings
+if has xinput && has grep && has cut; then
+    touchpad_id=$(xinput list | grep -i "Touchpad" | cut -d '=' -f2 | cut -d '[' -f1)
+
+    # natural scrolling
+    natural_scrolling_id=$(xinput list-props $touchpad_id |
+        grep -i "Natural Scrolling Enabled (" |
+        cut -d '(' -f2 | cut -d ')' -f1)
+    xinput --set-prop $touchpad_id $natural_scrolling_id 1
+
+    # acceleration
+    acceleration_id=$(xinput list-props $touchpad_id |
+        grep -i "Accel Speed (" |
+        cut -d '(' -f2 | cut -d ')' -f1)
+    xinput --set-prop $touchpad_id $acceleration_id 0.25
+fi
+
+# # change keyboard settings, to see options: $ localectl list-x11-keymap-options
+# if has setxkbmap; then
+#     setxkbmap -option \
+#         -option terminate:ctrl_alt_bksp \
+#         -option caps:swapescape \
+#         -option shift:both_capslock
+# fi
+
+# set wallpaper
+if has feh; then
+    feh --bg-center ~/Pictures/Wallpapers/gruvbox_coffee.png --image-bg "#3c3836"
+fi

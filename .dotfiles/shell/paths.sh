@@ -4,17 +4,17 @@
 # --------------------------------------------------------------------- {|}
 
 # expand arg1 to an environment variable                      {{{
-# Usage: indirect_expand PATH -> $PATH
-indirect_expand() { env | sed -n "s/^$1=//p"; }
+# Usage: _expand_var PATH -> $PATH
+_expand_var() { env | sed -n "s/^$1=//p"; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # remove an entry from PATH                                   {{{
 # Usage: path_remove /path/to/bin [PATH]
-path_remove() {
+pathremove() {
     IFS=':'
     path_var=${2:-PATH}
     # Bash has ${!path_var}, but this is not portable.
-    for path_dir in $(indirect_expand "${path_var}"); do
+    for path_dir in $(_expand_var "${path_var}"); do
         IFS=''
         if [ "${path_dir}" != "${1}" ]; then
             new_path=${new_path}:${path_dir}
@@ -27,13 +27,13 @@ path_remove() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # prepend an entry to PATH                                    {{{
 # Usage: path_prepend /path/to/bin [PATH]
-path_prepend() {
+pathprepend() {
     # if the path is already in the path_variable,
     # remove it so we can move it to the front
-    path_remove "${1}" "${2}"
+    pathremove "${1}" "${2}"
     [ -d "${1}" ] || return
     path_var="${2:-PATH}"
-    path_value=$(indirect_expand "$path_var")
+    path_value=$(_expand_var "$path_var")
     export "${path_var}"="${1}${path_value:+:${path_value}}"
     unset path_var path_value
 }
@@ -41,33 +41,13 @@ path_prepend() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # append an entry to PATH                                     {{{
 # Usage: path_append /path/to/bin [PATH]
-path_append() {
-    path_remove "${1}" "${2}"
+pathappend() {
+    pathremove "${1}" "${2}"
     [ -d "${1}" ] || return
     path_var=${2:-PATH}
-    path_value=$(indirect_expand "$path_var")
+    path_value=$(_expand_var "$path_var")
     export "${path_var}"="${path_value:+${path_value}:}${1}"
     unset path_var path_value
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# print `path` usage info                                     {{{
-path_help() {
-    cat <<EOF
-Append, prepend, or remove entries from \$PATH.
-
-Usage:  path [(-a | -p | -r) <path>]...
-
-Flags:
-  -a    Add or move <path> to the front of \$PATH.
-  -p    Add or move <path> to the end of \$PATH.
-  -r    Remove <path> from \$PATH.
-  -h    Show this message.
-
-If no flags are given, print \$PATH.
-
-EOF
-    exit 1
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -84,13 +64,12 @@ path() {
         return
     fi
 
-    while getopts r:a:p:h opt; do
+    while getopts r:a:p: opt; do
         case $opt in
-            h) path_help ;;
-            a) path_append "$OPTARG" ;;
-            r) path_remove "$OPTARG" ;;
-            p) path_prepend "$OPTARG" ;;
-            *) path_help ;;
+            a) pathappend "$OPTARG" ;;
+            r) pathremove "$OPTARG" ;;
+            p) pathprepend "$OPTARG" ;;
+            *) return 1 ;;
         esac
     done
 }

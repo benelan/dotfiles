@@ -54,7 +54,12 @@ elif is-supported vi; then
     EDITOR="vi"
 fi
 
-TERMINAL="x-terminal-emulator"
+export EDITOR
+export VISUAL=$EDITOR
+export PAGER="less"
+export MANPAGER=$PAGER
+
+is-supported x-terminal-emulator && export TERMINAL="x-terminal-emulator"
 # is-supported wezterm && TERMINAL="wezterm"
 
 TERM_BROWSER="sensible-browser"
@@ -80,7 +85,7 @@ elif is-supported google-chrome; then
 elif is-supported firefox; then
     BROWSER="firefox"
 elif is-supported gnome-www-browser; then
-    HOME_BROWSER="gnome-www-browser"
+    BROWSER="gnome-www-browser"
 fi
 
 HOME_BROWSER=$BROWSER
@@ -106,10 +111,7 @@ elif is-supported google-chrome &&
     ALT_BROWSER="google-chrome"
 fi
 
-export EDITOR TERMINAL BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
-export VISUAL=$EDITOR
-export PAGER="less"
-export MANPAGER=$PAGER
+export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # golang                                                      {{{
@@ -164,6 +166,21 @@ is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 # https://github.com/charmbracelet/glamour
 is-supported glow || is-supported gh && export GLAMOUR_STYLE="dark"
 
+if is-supported fzf; then
+    export FZF_COMPLETION_TRIGGER='~~'
+    export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window "right:50%"
+    --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down,ctrl-v:toggle-preview,ctrl-x:toggle-sort,ctrl-h:toggle-header"
+    --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,hl:#d3869b:bold,hl+:#d3869b,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#928374,label:#83a598"'
+
+    # alternative gruvbox colorscheme
+    # --color "bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934"'
+
+    # Use fd (https://github.com/sharkdp/fd) instead of the default find
+    # command for listing path candidates.
+    is-supported fd &&
+        export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git --exclude node_modules'
+fi
+
 # https://github.com/dylanaraps/fff
 if is-supported fff; then
     export FFF_COL2=7
@@ -172,12 +189,9 @@ if is-supported fff; then
     # use the OS trashcan
     export FFF_TRASH="$XDG_DATA_HOME/Trash/files"
 
-    # common work projects
     export FFF_FAV1="$WORK/calcite-design-system"
-    export FFF_FAV2="$WORK/calcite-design-system.wiki"
-    export FFF_FAV3="$WORK/arcgis-esm-samples/"
-
-    # the usual suspects
+    export FFF_FAV2="$WORK/arcgis-esm-samples"
+    export FFF_FAV3="$PERSONAL/gh-fzf"
     export FFF_FAV4="$XDG_CONFIG_HOME/nvim"
     export FFF_FAV5="$LIB"
     export FFF_FAV6="$WORK"
@@ -190,15 +204,17 @@ fi
 # my tools                                                    {{{
 
 is-supported matpat && export MATPAT_OPEN_CMD="$BROWSER"
+is-supported _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
 # https://github.com/benelan/git-mux
 if is-supported git-mux; then
     # shellcheck disable=2155
     export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user || echo "benelan")"
 
-    # shell commands or an executable on PATH to run after a new worktree is created
-    export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree"
-    export GIT_MUX_NEW_SESSION_CMD="_git-mux-new-session"
+    # shell commands or an executable on PATH to run after a new worktree or session is created
+    export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
+    # shellcheck disable=2016
+    export GIT_MUX_NEW_SESSION_CMD='[ -n "$TMUX" ] && tmux rename-window scratch; git fetch --all --prune 2>/dev/null; history -d -1 >/dev/null 2>&1; clear -x'
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"

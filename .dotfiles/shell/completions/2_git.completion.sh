@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=1090,1091
 
 if [ -f /usr/share/bash-completion/completions/git ] && [ -r /usr/share/bash-completion/completions/git ]; then
     source /usr/share/bash-completion/completions/git

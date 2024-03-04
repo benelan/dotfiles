@@ -11,7 +11,6 @@ hist() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## search for text within the current directory               {{{
 
 s() {
@@ -21,7 +20,6 @@ s() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
 ## google from the command line                               {{{
 
 # https://leahneukirchen.org/dotfiles/bin/goog
@@ -51,21 +49,6 @@ vipe() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## jump to search pattern in man page(s)                      {{{
-
-## Example: jump to the examples heading in two git man pages
-## mans ^examples git-log git-checkout
-mans() {
-    if [ -z "$2" ]; then
-        man "$1"
-    else
-        man_pager="less -p \"$1\""
-        shift
-        man --pager="$man_pager" "$@"
-    fi
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## use vifm to cd                                             {{{
 
 vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
@@ -73,7 +56,7 @@ vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## make one or more directories and cd into the last one      {{{
 
-mcd() { mkdir -p -- "$1" && cd "$_" || return 1; }
+mcd() { mkdir -p -- "$@" && cd "$_" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## add surfraw bookmark                                       {{{
@@ -125,7 +108,7 @@ fmtjson() {
 
 if is-supported pandoc; then
     # Open a markdown file in the less pager
-    mdless() {
+    mdp() {
         pandoc -s -f markdown -t man "$@" | man -l -
         # use groff on mac: . . . . . . . | groff -T utf8 -man | less
     }
@@ -142,15 +125,21 @@ fi
 
 # $ onmodify note.md md2html note
 if is-supported inotifywait; then
-    onmodify() {
-        TARGET=${1:-.}
+    onchange() {
+        target=${1:-.}
         shift
-        echo "$TARGET" "$*"
-        while inotifywait --exclude '.git' -qq -r -e modify,close_write,moved_to,move_self "$TARGET"; do
-            sleep 0.2
-            bash -c "$*"
+        printf "Watching %s for changes...\n" "$target"
+
+        notify_cmd="echo"
+        is-supported notify-send && notify_cmd="notify-send"
+
+        while inotifywait -qqre modify,close_write,moved_to,move_self \
+            --exclude '.git|node_modules|dist' "$target"; do
+            bash -c "${*:-$notify_cmd 'changes detected' $target}"
             echo
+            sleep 1
         done
+        unset target
     }
 fi
 
@@ -158,25 +147,27 @@ fi
 ## get gzipped file size                                      {{{
 
 gz() {
-    ORIGSIZE=$(wc -c <"$1")
-    GZIPSIZE=$(gzip -c "$1" | wc -c)
-    RATIO=$(echo "$GZIPSIZE * 100/ $ORIGSIZE" | bc -l)
-    SAVED=$(echo "($ORIGSIZE - $GZIPSIZE) * 100/ $ORIGSIZE" | bc -l)
+    orig=$(wc -c <"$1")
+    gzip=$(gzip -c "$1" | wc -c)
+    ratio=$(echo "$gzip * 100/ $orig" | bc -l)
+    saved=$(echo "($orig - $gzip) * 100/ $orig" | bc -l)
+
     printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" \
-        "$ORIGSIZE" "$GZIPSIZE" "$SAVED" "$RATIO"
-    unset ORIGSIZE GZIPSIZE RATIO SAVED
+        "$orig" "$gzip" "$saved" "$ratio"
+    unset orig gzip ratio saved
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## create a data URL from a file                              {{{
 
 dataurl() {
-    MIMETYPE=$(file --mime-type "$1" | cut -d ' ' -f2)
-    if [ "$MIMETYPE" = "text/*" ]; then
-        MIMETYPE="${MIMETYPE};charset=utf-8"
+    mimetype=$(file --mime-type "$1" | cut -d ' ' -f2)
+    if [ "$mimetype" = "text/*" ]; then
+        mimetype="${mimetype};charset=utf-8"
     fi
-    echo "data:${MIMETYPE};base64,$(openssl base64 -in "$1" | tr -d '\n')"
-    unset MIMETYPE
+
+    echo "data:${mimetype};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+    unset mimetype
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -190,13 +181,6 @@ parent_find() {
     [ '/' = "${2:-$PWD}" ] && return 1
     parent-find "$1" "$(dirname "${2:-$PWD}")"
 }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## remove duplicate lines from a file                         {{{
-
-# param: file to dedup
-# example: $ dedup-lines deps.txt > unique_deps.txt
-dedup_lines() { awk '!visited[$0]++' "$@"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
@@ -236,36 +220,21 @@ unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
 
 crt() {
     openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
-        -subj "/CN=$1\/emailAddress=ben@$1/C=US/ST=California/L=San Francisco/O=Jamin, Inc."
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## add entry to ssh config                                    {{{
-
-add_ssh() {
-    [ $# -ne 3 ] && echo "add_ssh host hostname user" && return 1
-
-    [ ! -d ~/.ssh ] && mkdir -m 700 ~/.ssh
-    [ ! -e ~/.ssh/config ] && touch ~/.ssh/config && chmod 600 ~/.ssh/config
-
-    printf "\n\n%s\n %s\n %s\n %s\n %s" \
-        "Host $1" \
-        "HostName $2" \
-        "User $3" \
-        "ServerAliveInterval 30" \
-        "ServerAliveCountMax 120" \
-        >>~/.ssh/config
+        -subj "/CN=$1\/emailAddress=${2:-ben}@$1/C=US/ST=Oregon/L=Portland/O=Jamin, Inc."
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## list hosts defined in ssh config                           {{{
 
-ssh_list() { awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config; }
+ssh-list() {
+    [ -f ~/.ssh/config ] &&
+        awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
+}
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## add all ssh private keys to agent                          {{{
 
-ssh_add_all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
+ssh-add-all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## display all ip addresses for this host                     {{{
@@ -291,6 +260,17 @@ ips() {
             curl -s smart-ip.net/myip ||
             (curl -s pasteip.me/api/cli/ && echo) ||
             curl -s http://checkip.dyndns.org | grep -o '[[:digit:].]\+'
+    )"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## search https://github.com/chubin/cheat.sh                  {{{
+
+# $ cht :help
+cht() {
+    curl -L "cht.sh/$(
+        IFS=/
+        echo "$*"
     )"
 }
 
@@ -362,68 +342,13 @@ gbprune() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
-# Arrays                                                                {{{
-# --------------------------------------------------------------------- {|}
-
-## searches an array for an exact match against arg1          {{{
-
-# exits as soon as a match is found
-#
-# Returns:
-#   0 when a match is found, otherwise 1.
-#
-# Examples:
-#   $ declare -a fruits=(apple orange pear mandarin)
-#
-#   $ _array_contains_element apple "@{fruits[@]}" && echo 'contains apple'
-#   contains apple
-#
-#   $ if _array_contains_element pear "${fruits[@]}"; then
-#       echo "contains pear!"
-#     fi
-#   contains pear!
-#
-#
-_array_contains_element() {
-    element="${1?}"
-    shift
-    for e in "$@"; do
-        [ "$e" = "${element}" ] && return 0
-    done
-    unset element e
-    return 1
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## dedupe an array (without embedded newlines)                {{{
-
-array_dedup() {
-    printf '%s\n' "$@" | sort -u
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
-# --------------------------------------------------------------------- }}}
-# Cheatsheets                                                           {{{
-# --------------------------------------------------------------------- {|}
-
-## search https://github.com/chubin/cheat.sh                  {{{
-
-# $ cht :help
-cht() { curl "https://cheat.sh/$1"; }
-chtjs() { curl "https://cheat.sh/javascript/""$(echo "$*" | tr ' ' '+')"; }
-chtts() { curl "https://cheat.sh/typescript/""$(echo "$*" | tr ' ' '+')"; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-
-# --------------------------------------------------------------------- }}}
 # FZF                                                                   {{{
 # --------------------------------------------------------------------- {|}
 
-# functions from fzf's wiki --> https://github.com/junegunn/fzf/wiki/Examples
-
+# https://github.com/junegunn/fzf/wiki/Examples
 if is-supported fzf; then
-    # fzf --preview command for file and directory
+    ## setup the preview command for files and directories    {{{
+
     if type bat >/dev/null 2>&1; then
         # shellcheck disable=2016
         FZF_PREVIEW_CMD='bat --color=always --plain --line-range :$FZF_PREVIEW_LINES {}'
@@ -434,6 +359,25 @@ if is-supported fzf; then
         # shellcheck disable=2016
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
     fi
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## setup completion to use fd instead of find             {{{
+
+    if is-supported fd; then
+        # - The first argument to the function ($1) is the base path to start traversal
+        # - See the source code (completion.{bash,zsh}) for the details.
+        _fzf_compgen_path() {
+            fd --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+        }
+
+        # Use fd to generate the list for directory completion
+        _fzf_compgen_dir() {
+            fd --type d --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+        }
+    fi
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## open bookmark with surfraw                             {{{
 
     fob() {
         bookmark="$(awk NF "$XDG_CONFIG_HOME/surfraw/bookmarks" | fzf -e)"
@@ -446,6 +390,7 @@ if is-supported fzf; then
         unset bookmark bookmark_name bookmark_gui_flag
     }
 
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## cd into the directory of the selected file             {{{
 
     fcd() {
@@ -533,12 +478,6 @@ if is-supported fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-    ## Select multiple files to run a command on              {{{
-
-    # e.g. $ fmr vlc
-    fmr() { fzf -m -x | xargs -d'\n' -r "$@"; }
-
-    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## finds and kills a process pid                          {{{
 
     fkill() {
@@ -559,17 +498,17 @@ if is-supported fzf; then
     # usage: $ find_emoji | cb
     if is-supported jq; then
         function femoji() {
-            emoji_cache="$DOTFILES/cache/emoji.json"
-            if [ ! -r "$emoji_cache" ]; then
-                curl -sSLo "$emoji_cache" \
+            emojis="$DOTFILES/cache/emoji.json"
+            if [ ! -r "$emojis" ]; then
+                curl -sSLo "$emojis" \
                     https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json
             fi
 
-            jq <"$emoji_cache" -r '.[] | [
-            .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
+            jq <"$emojis" -r '.[] | [
+                .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
             ] | @tsv
-            ' | fzf --prompt 'Search emojis > ' | cut -f1
-            unset emoji_cache
+            ' | fzf --no-hscroll --prompt 'Search emojis > ' | cut -f1
+            unset emojis
         }
     fi
 

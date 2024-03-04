@@ -8,6 +8,7 @@ gnome-tweaks
 gtk2-engines-murrine
 handbrake
 lollypop
+notify-send
 peek
 thunderbird
 vim-gui-common

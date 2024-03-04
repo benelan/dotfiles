@@ -9,7 +9,7 @@ use warnings;
 
 ### config
 
-our $tmux_command = $ENV{TMUX_URL_SELECT_TMUX_CMD} || 'tmux';
+our $tmux_command = $ENV{TMUX_SELECT_TMUX_CMD} || 'tmux';
 
 use constant SHOW_STATUS_BAR => 1;
 use constant VERBOSE_MESSAGES => 0;
@@ -28,12 +28,12 @@ use constant NORMAL_LINK_HIGHLIGHT => "\033[94;1;4m";
 # - bright blue background: \033[104;4m
 # - just underlined: \033[4m
 
-# https://en.wikipedia.org/wiki/List_of_URI_schemes
 # regex stolen from urxvtperls url-select.pl
+# URI scheme list extended via https://en.wikipedia.org/wiki/List_of_URI_schemes
 my $url_pattern = qr{(
     (?:https?://|\bwww\.|s?ftp://|wss?:|ssh://|udp://|vnc://|ldaps?://|dns://|payto://|mailto:|callto:|tel:|magnet:|maps:|geo:|slack://|msteams://|news://|steam://|obsidian://|s3://|rediss?://|git://|svn://|cvs://|nfs://|file://|data:|localhost)
     [\w\-\@;\/?:&=%\$_.+!*\x27(),~#\x1b\[\]]+[\w\-\@;\/?&=%\$_+!*\x27(~]
-    |([0-9a-fA-F]{5,40})
+    |[0-9a-fA-F]{5,40}
 )}x;
 
 ### config end
@@ -146,7 +146,7 @@ sub launch_url {
 
     my $command = sprintf(
         "%s %s",
-        $ENV{TMUX_URL_SELECT_OPEN_CMD} || 'xdg-open',
+        $ENV{TMUX_SELECT_OPEN_CMD} || 'xdg-open',
         single_quote_escape($url)
     );
     safe_exec($command, "Launched ". $url);
@@ -158,7 +158,7 @@ sub yank_url {
     my $command = sprintf(
         "echo %s | %s",
         single_quote_escape($url),
-        $ENV{TMUX_URL_SELECT_CLIP_CMD} || 'xclip -i'
+        $ENV{TMUX_SELECT_COPY_CMD} || 'xclip -selection clipboard'
     );
     safe_exec($command, "Yanked ". $url);
 }

@@ -3,7 +3,7 @@
 # Gruvbox colors from:
 # https://github.com/morhetz/gruvbox-contrib/blob/master/color.table
 {
-    if [ "$(tput colors)" -gt 254 ]; then
+    if [ "$(tput colors)" -ge 256 ] 2>/dev/null; then
         RESET=$(tput sgr0)
         BOLD=$(tput bold)
         UNDERLINE=$(tput smul)
@@ -47,8 +47,8 @@
     fi
 } >/dev/null 2>&1
 
-export BOLD UNDERLINE RESET BLACK RED GREEN YELLOW BLUE \
-    MAGENTA CYAN ORANGE WHITE GREY
+export BLACK RED GREEN YELLOW BLUE MAGENTA CYAN ORANGE WHITE GREY \
+    BOLD UNDERLINE RESET
 
 export HISTFILESIZE=42069
 
@@ -154,11 +154,10 @@ if ((BASH_VERSINFO[0] >= 4)); then
         shopt -s checkjobs
     fi
 
-    # Expand variables in directory completion
-    # Only available since 4.3
-    if ((BASH_VERSINFO[0] >= 5)) || ((BASH_VERSINFO[1] >= 3)); then
-        shopt -s direxpand
-    fi
+    # # Expand variables in directory completion. Only available since 4.3
+    # if ((BASH_VERSINFO[0] >= 5)) || ((BASH_VERSINFO[1] >= 3)); then
+    #     shopt -s direxpand
+    # fi
 
     # toggle sudo at the beginning of the current or the
     # previous command by hitting the ESC key twice

@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=1090
-
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# See /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
 
 # Make sure the shell is interactive                                    {{{
 # --------------------------------------------------------------------- {|}
@@ -18,10 +15,7 @@ esac
 ! shopt -q restricted_shell 2>/dev/null || return
 
 # --------------------------------------------------------------------- }}}
-
-# Then start sourcing startup scripts from ~/.dotfiles/shell
-
-# SHELL- ALIASES/FUNCTIONS                                              {{{
+# Source shell aliases and functions                                    {{{
 # --------------------------------------------------------------------- {|}
 
 [ -r ~/.dotfiles/shell/aliases.sh ] && . ~/.dotfiles/shell/aliases.sh
@@ -32,18 +26,32 @@ esac
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
 # --------------------------------------------------------------------- }}}
-# BASH - OPTIONS/PROMPT                                                 {{{
+# Source bash options, prompt, and local settings                       {{{
 # --------------------------------------------------------------------- {|}
 
 # Add any environment-specific stuff to local.sh (it's gitignored).
-# The source order matters!
-for stuffs in ~/.dotfiles/shell/{options,prompt,tools,local}.sh; do
-    [ -r "$stuffs" ] && . "$stuffs"
+# The source order for the following scripts matters!
+for file in ~/.dotfiles/shell/{options,prompt,local}.sh; do
+    [ -r "$file" ] && . "$file"
 done
-unset stuffs
+unset file
 
 # --------------------------------------------------------------------- }}}
-# BASH - COMPLETIONS                                                    {{{
+# Source tool shell integrations                                        {{{
+# --------------------------------------------------------------------- {|}
+
+is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
+    . ~/.config/broot/launcher/bash/br
+
+if is-supported fzf; then
+    [ -f ~/dev/lib/fzf/shell/completion.bash ] &&
+        . ~/dev/lib/fzf/shell/completion.bash
+    [ -f ~/dev/lib/fzf/shell/key-bindings.bash ] &&
+        . ~/dev/lib/fzf/shell/key-bindings.bash
+fi
+
+# --------------------------------------------------------------------- }}}
+# Source bash completions                                               {{{
 # --------------------------------------------------------------------- {|}
 
 # The completions are sourced alphabetically so a number
@@ -53,13 +61,13 @@ unset stuffs
 # Completions go last because some require their tools/plugins
 # to have already loaded
 # shellcheck disable=1001
-for completions in ~/.dotfiles/shell/completions/[!\0]*.sh; do
-    [ -r "$completions" ] && . "$completions"
+for file in ~/.dotfiles/shell/completions/[!\0]*.sh; do
+    [ -r "$file" ] && . "$file"
 done
-unset completions
+unset file
 
 # --------------------------------------------------------------------- }}}
-# TMUX - ATTACH                                                         {{{
+# Attach to tmux                                                        {{{
 # --------------------------------------------------------------------- {|}
 
 # ensure tmux is running

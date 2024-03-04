@@ -4,7 +4,6 @@
 # Ben Elan's dotfiles and dependency management script.
 #
 # The `setup` command clones the dotfiles as a bare git repo in $HOME.
-# It also does some minor setup like moving bash completion scripts.
 # Any conflicting dotfiles are moved to ~/.dotfiles-backup.
 
 # The `deps` command installs/updates dependencies. For usage information, see:
@@ -103,20 +102,6 @@ setup_dotfiles() {
     [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
     [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
-    completions_dir=/usr/share/bash-completion/completions
-    if [ -d "$completions_dir" ]; then
-        printf "\n>  Copying completion scripts to system\n\n" >&2
-
-        sudo cp ~/.dotfiles/shell/completions/0_tmux.completion.sh \
-            "$completions_dir/tmux"
-
-        sudo cp ~/.dotfiles/shell/completions/0_fasd.completion.sh \
-            "$completions_dir/fasd"
-
-        sudo cp ~/.dotfiles/shell/completions/0_npm.completion.sh \
-            "$completions_dir/npm"
-    fi
-
     # Must install libs before they can be pwn'd
     printf "\n> Installing git submodules\n\n" >&2
     cd && dot submodule update --init --recursive
@@ -129,7 +114,7 @@ setup_dotfiles() {
     printf "\n+ Setup complete!\n" >&2
     cd -
 
-    unset files repo_url backup_dir completions_dir fzf_install_file
+    unset files repo_url backup_dir fzf_install_file
 }
 
 # --------------------------------------------------------------------- }}}
@@ -143,6 +128,13 @@ _languages+="rust "
 install_language_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     export PATH="${PATH}:${HOME}/.cargo/bin"
+
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        rustup completions bash |
+            sudo tee "$COMPLETIONS_DIR/rustup" >/dev/null
+        rustup completions bash cargo |
+            sudo tee "$COMPLETIONS_DIR/cargo" >/dev/null
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -188,6 +180,11 @@ install_language_node() {
     export PATH="${PATH}:${VOLTA_HOME}/bin"
 
     volta install node
+
+    if _has npm && [ -d "$COMPLETIONS_DIR" ]; then
+        npm completion | sudo tee "$COMPLETIONS_DIR/npm" >/dev/null
+    fi
+
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -206,54 +203,48 @@ install_bun() {
 _languages+="lua "
 
 install_language_lua() {
-    _has lua && return
-
     curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
     tar -zxf lua-5.4.6.tar.gz
     cd lua-5.4.6 || return
 
     make linux test
     sudo make install
-}
 
-### LuaJIT (compiler)              {{{
-### https://luajit.org/download.html
+    cd ..
+    rm -rf lua-5.4.6 lua-5.4.6.tar.gz
 
-_languages+="luajit "
+    ### LuaJIT (compiler)              {{{
+    ### https://luajit.org/download.html
+    if ! _has luajit; then
+        if ! [ -d "$LIB/luajit" ]; then
+            git clone https://luajit.org/git/luajit.git "$LIB/luajit"
+        fi
 
-install_language_luajit() {
-    _has luajit && return
+        cd "$LIB/luajit" || return
+        git pull
 
-    if ! [ -d "$LIB/luajit" ]; then
-        git clone https://luajit.org/git/luajit.git "$LIB/luajit"
+        sudo make
+        sudo make install
     fi
 
-    cd "$LIB/luajit" || return
-    git pull
+    ###}}}
+    ### Luarocks (Lua package manager) {{{
+    ### https://luarocks.org#quick-start
+    if ! _has luarocks; then
+        wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
+        tar zxpf luarocks-3.9.2.tar.gz
+        cd luarocks-3.9.2 || return
 
-    sudo make
-    sudo make install
+        ./configure --lua-version=5.4
+        make
+        sudo make install
+
+        cd ..
+        rm -rf luarocks-3.9.2 luarocks-3.9.2.tar.gz
+    fi
+
+    ###}}}
 }
-
-###}}}
-### Luarocks (Lua package manager) {{{
-### https://luarocks.org#quick-start
-
-_languages+="luarocks "
-
-install_language_luarocks() {
-    _has luarocks && return
-
-    wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
-    tar zxpf luarocks-3.9.2.tar.gz
-    cd luarocks-3.9.2 || return
-
-    ./configure --lua-version=5.4
-    make
-    sudo make install
-}
-
-###}}}
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
@@ -339,10 +330,13 @@ _packages+="npm "
 
 install_packages_npm() {
     # NOTE: volta only works on x86_64 architectures for now
-    ! _has volta && ! _has node && install_language_node
+    if ! _has volta || ! _has node; then
+        install_language_node
+    fi
 
-    ! [ -f "$DEPS_DIR/node" ] && return
-    npm install -g $(cat "$DEPS_DIR/node")
+    if [ -f "$DEPS_DIR/node" ]; then
+        npm install -g $(cat "$DEPS_DIR/node")
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -351,6 +345,64 @@ install_packages_npm() {
 # Shell script install functions                                        {{{
 # --------------------------------------------------------------------- {|}
 
+## dircolors                                                  {{{
+
+_scripts+="dircolors "
+
+install_script_dircolors() {
+    sudo curl -Lo "$HOME/.dircolors" \
+        https://raw.githubusercontent.com/trapd00r/LS_COLORS/master/LS_COLORS
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## bash completion                                             {{{
+
+_scripts+="completion "
+
+install_script_completion() {
+    ! [ -d "$COMPLETIONS_DIR" ] && return
+
+    if _has make; then
+        sudo curl -Lo "$COMPLETIONS_DIR/make" \
+            https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/makefile.completion.bash
+    fi
+
+    if _has tmux; then
+        sudo curl -Lo "$COMPLETIONS_DIR/tmux" \
+            https://raw.githubusercontent.com/Bash-it/bash-it/master/completion/available/tmux.completion.bash
+    fi
+
+    if _has git-forgit; then
+        sudo curl -Lo "$COMPLETIONS_DIR/git-forgit" \
+            https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
+    fi
+
+    if _has broot; then
+        sudo curl -Lo "$COMPLETIONS_DIR/broot" \
+            https://dystroy.org/broot/download/completion/broot.bash
+        sudo curl -Lo "$COMPLETIONS_DIR/br" \
+            https://dystroy.org/broot/download/completion/br.bash
+    fi
+
+    if _has gh; then
+        gh completion -s bash | sudo tee "$COMPLETIONS_DIR/gh" >/dev/null
+    fi
+
+    if _has npm; then
+        npm completion | sudo tee "$COMPLETIONS_DIR/npm" >/dev/null
+    fi
+
+    if _has rustup; then
+        rustup completions bash |
+            sudo tee "$COMPLETIONS_DIR/rustup" >/dev/null
+        if _has cargo; then
+            rustup completions bash cargo |
+                sudo tee "$COMPLETIONS_DIR/cargo" >/dev/null
+        fi
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## taskopen   - https://github.com/jschlatow/taskopen          {{{
 
 _scripts+="taskopen "
@@ -385,6 +437,11 @@ install_script_fasd() {
         https://raw.githubusercontent.com/clvv/fasd/master/fasd.1
 
     sudo chmod +x "$BIN_DIR/fasd"
+
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        sudo cp "$DOTFILES/shell/completions/0_fasd.completion.sh" \
+            "$COMPLETIONS_DIR/fasd"
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -451,8 +508,8 @@ install_script_git-forgit() {
     curl -Lo "$BIN_DIR/git-forgit" \
         https://raw.githubusercontent.com/wfxr/forgit/master/bin/git-forgit
 
-    if [ -d /usr/share/bash-completion/completions ]; then
-        curl -Lo "$DOTFILES/shell/completions/4_git-forgit.completion.sh" \
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        sudo curl -Lo "$COMPLETIONS_DIR/git-forgit" \
             https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
     fi
 
@@ -734,6 +791,11 @@ install_ubuntu_gh() {
 
     sudo apt update && sudo apt install -y gh
 
+    # install bash completion
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        gh completion -s bash | sudo tee "$COMPLETIONS_DIR/gh" >/dev/null
+    fi
+
     # install gh extensions
     if [ -d "$PERSONAL/gh-fzf" ]; then
         cd "$PERSONAL/gh-fzf"
@@ -799,7 +861,7 @@ install_ubuntu_vivaldi() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
-# Operating system theme                                                {{{
+# Operating system theme install functions                              {{{
 # --------------------------------------------------------------------- {|}
 
 ## Install the four common font weights of Iosevka             {{{
@@ -822,7 +884,11 @@ install_theme_font() {
 
     curl -Lo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
+
+    # reload the font cache
+    fc-cache -rf
 }
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install all weights of Iosevka                              {{{
 
@@ -853,11 +919,10 @@ _themes+="wallpaper "
 install_theme_wallpaper() {
     wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
 
-    if [ -f "$wallpaper" ]; then
-        return 0
+    if ! [ -f "$wallpaper" ]; then
+        curl -Lo "$wallpaper" \
+            https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
     fi
-
-    curl -Lo "$wallpaper" https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
@@ -1021,6 +1086,24 @@ install_misc_yq() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install broot                                               {{{
+
+_misc+="broot "
+
+install_misc_broot() {
+    curl -Lo "$BIN_DIR/broot" \
+        https://dystroy.org/broot/download/x86_64-linux/broot
+    chmod +x "$BIN_DIR/broot"
+
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        sudo curl -Lo "$COMPLETIONS_DIR/broot" \
+            https://dystroy.org/broot/download/completion/broot.bash
+        sudo curl -Lo "$COMPLETIONS_DIR/br" \
+            https://dystroy.org/broot/download/completion/br.bash
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Git submodule install/build functions                                 {{{
@@ -1134,7 +1217,7 @@ install_packages_neovim() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
-# Create dependency group functions                                     {{{
+# Dependency group install functions                                    {{{
 # --------------------------------------------------------------------- {|}
 
 ## Ubuntu-specific packages                                    {{{
@@ -1169,7 +1252,7 @@ ubuntu_installs() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Operating system stylings                                   {{{
+## Operating system theming                                    {{{
 
 theme_installs() {
     install_theme_font
@@ -1182,6 +1265,8 @@ theme_installs() {
 ## Shell scripts                                               {{{
 
 script_installs() {
+    install_script_completion
+    install_script_dircolors
     install_script_fasd
     install_script_fff
     install_script_taskopen
@@ -1212,7 +1297,6 @@ packages_installs() {
     install_packages_go
     install_packages_npm
     install_packages_pip
-
     install_packages_vim
     install_packages_neovim
 }
@@ -1234,6 +1318,7 @@ misc_installs() {
     install_misc_neovim nightly
     install_misc_vifm
     install_misc_yq
+    instal_misc_broot
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1263,7 +1348,7 @@ deps_help() {
 
 Install dependencies by category or name.
 
-Usage: 
+Usage:
   dot deps [-ABLMPSTUho] [-b <build>] [-l <language>] [-m <misc>] [-p <package>]
            [-s <script>] [-t <theme>] [-u <ubuntu>] [-n <neovim-version>]
 
@@ -1331,7 +1416,15 @@ deps_parse_flags() {
     DEPS_DIR="$DOTFILES/deps"
     CACHE_DIR="$DOTFILES/cache"
 
-    mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR"
+    if [ -d /usr/share/bash-completion/completions ]; then
+        COMPLETIONS_DIR="/usr/share/bash-completion/completions"
+    elif [ -d /etc/bash_completion.d ]; then
+        COMPLETIONS_DIR="/etc/bash_completion.d"
+    else
+        COMPLETIONS_DIR="$DOTFILES/shell/completions"
+    fi
+
+    mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR" "$COMPLETIONS_DIR"
 
     while getopts Bb:Uu:Ll:Mm:Ss:Tt:Pp:n:Ao opt; do
         case $opt in
