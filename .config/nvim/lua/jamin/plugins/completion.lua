@@ -21,6 +21,9 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- completes from neovim's builtin spell checker
+  -- { "f3fora/cmp-spell", ft = res.filetypes.writing },
+  -----------------------------------------------------------------------------
   -- completes git commits and github issues/pull requests
   {
     "petertriho/cmp-git",
@@ -36,9 +39,8 @@ return {
   -----------------------------------------------------------------------------
   -- completes API info from attached language servers
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
-  -----------------------------------------------------------------------------
-  -- completes function signatures via LSP
   { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
+  -- { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" },
   -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
@@ -131,6 +133,7 @@ return {
           -- completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
+
         formatting = {
           format = function(entry, vim_item)
             local i = function(str) return string.format("%s %s", res.icons.ui.dot, str) end
@@ -144,6 +147,7 @@ return {
               dictionary = i "DICT",
               git = i "GIT",
               nvim_lsp = i "LSP",
+              nvim_lsp_document_symbol = i "SYMB",
               nvim_lsp_signature_help = i "SIG",
               path = i "PATH",
               rg = i "GREP",
@@ -223,19 +227,33 @@ return {
           -- only show ripgrep/spell/dictionary if there are no results from other sources
           { name = "rg", keyword_length = 3, group_index = 3 },
           {
-            name = "dictionary",
+            name = "spell",
             group_index = 3,
             keyword_length = 3,
-            -- entry_filter = function(_, ctx)
-            --   return vim.tbl_contains(res.filetypes.writing, ctx.filetype)
-            -- end,
+            entry_filter = function(entry)
+              return string.match(entry:get_insert_text(), "%s") == nil
+            end,
+            option = {
+              enable_in_context = function()
+                return require("cmp.config.context").in_treesitter_capture "spell"
+                  or require("cmp.config.context").in_syntax_group "Comment"
+                  or vim.tbl_contains(res.filetypes.writing, vim.bo.filetype)
+              end,
+            },
           },
+          { name = "dictionary", group_index = 3, keyword_length = 3 },
         },
       }
     end,
     config = function(_, opts)
       require("cmp").setup(opts)
-      require("cmp").setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
+      require("cmp").setup.cmdline({ "/", "?" }, {
+        -- mapping = require("cmp").mapping.preset.cmdline(),
+        sources = {
+          { name = "nvim_lsp_document_symbol" },
+          { name = "buffer" },
+        },
+      })
     end,
   },
   -----------------------------------------------------------------------------

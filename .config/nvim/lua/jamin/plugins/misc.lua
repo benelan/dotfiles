@@ -44,29 +44,6 @@ return {
     event = "CursorHold",
   },
   -----------------------------------------------------------------------------
-  -- readline mappings for insert and command modes
-  {
-    dir = "~/.vim/pack/foo/start/vim-rsi",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-rsi",
-    keys = {
-      { "<C-x><C-a>", mode = { "c", "i" } },
-      { "<C-a>", mode = { "c", "i" } },
-      { "<C-b>", mode = { "c", "i" } },
-      { "<C-d>", mode = { "c", "i" } },
-      { "<C-f>", mode = { "c", "i" } },
-      { "<M-b>", mode = { "c", "i" } },
-      { "<M-d>", mode = { "c", "i" } },
-      { "<M-f>", mode = { "c", "i" } },
-      { "<M-n>", mode = { "c", "i" } },
-      { "<M-p>", mode = { "c", "i" } },
-      { "<M-BS>", mode = { "c", "i" } },
-      { "<C-e>", mode = { "i" } },
-      { "<C-y>", mode = { "c" } },
-      { "<C-u>", mode = { "c" } },
-      { "<C-t>", mode = { "c" } },
-    },
-  },
-  -----------------------------------------------------------------------------
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
@@ -125,8 +102,6 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  { "wellle/targets.vim", event = "VeryLazy" },
-  -----------------------------------------------------------------------------
   {
     "folke/lazy.nvim",
     init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
@@ -142,45 +117,6 @@ return {
       { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
       { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
       { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
-    },
-  },
-  -----------------------------------------------------------------------------
-  -- increment/decrement more stuffs
-  {
-    "monaqa/dial.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local augend = require "dial.augend"
-      require("dial.config").augends:register_group {
-        default = {
-          augend.integer.alias.decimal,
-          augend.integer.alias.decimal_int,
-          augend.integer.alias.hex,
-          augend.date.alias["%Y-%m-%d"],
-          augend.date.alias["%Y/%m/%d"],
-          augend.date.alias["%m/%d/%y"],
-          augend.date.alias["%m/%d/%Y"],
-          augend.date.alias["%-m/%-d"],
-          augend.date.alias["%H:%M"],
-          augend.semver.alias.semver,
-          augend.constant.alias.bool,
-          augend.constant.new { elements = { "let", "const" } },
-          augend.constant.new { elements = { "function()", "()=>" } },
-          augend.constant.alias.alpha,
-          augend.constant.alias.Alpha,
-        },
-      }
-    end,
-    -- stylua: ignore
-    keys = {
-      { "<C-a>", function() require("dial.map").manipulate("increment", "normal") end, mode = "n", desc = "Increment" },
-      { "<C-x>", function() require("dial.map").manipulate("decrement", "normal") end, mode = "n", desc = "Decrement" },
-      { "<C-a>", function() require("dial.map").manipulate("increment", "visual") end, mode = "v", desc = "Increment" },
-      { "<C-x>", function() require("dial.map").manipulate("decrement", "visual") end, mode = "v", desc = "Decrement" },
-      { "g<C-a>", function() require("dial.map").manipulate("increment", "gnormal") end, mode = "n", desc = "Increment" },
-      { "g<C-x>", function() require("dial.map").manipulate("decrement", "gnormal") end, mode = "n", desc = "Decrement" },
-      { "g<C-a>", function() require("dial.map").manipulate("increment", "gvisual") end, mode = "v", desc = "Increment" },
-      { "g<C-x>", function() require("dial.map").manipulate("decrement", "gvisual") end, mode = "v", desc = "Decrement" },
     },
   },
   -----------------------------------------------------------------------------

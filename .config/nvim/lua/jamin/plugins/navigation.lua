@@ -15,6 +15,35 @@ return {
     end,
   },
   -----------------------------------------------------------------------------
+  -- show vim's undo history tree in telescope, with searchable diffs
+  {
+    "debugloop/telescope-undo.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    keys = { { "<leader>fu", "<CMD>silent Telescope undo<CR>", desc = "Undo history (telescope)" } },
+    opts = {
+      extensions = {
+        undo = {
+          use_delta = false,
+          -- side_by_side = true,
+          -- layout_strategy = "vertical",
+          layout_config = {
+            height = 0.95,
+            width = 0.95,
+            preview_height = 0.69,
+            preview_width = 0.75,
+            preview_cutoff = 0,
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      local has_ts, ts = pcall(require, "telescope")
+      if not has_ts then return end
+      ts.setup(opts)
+      ts.load_extension "undo"
+    end,
+  },
+  -----------------------------------------------------------------------------
   -- fuzzy finding
   {
     "nvim-telescope/telescope.nvim",

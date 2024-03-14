@@ -1,13 +1,17 @@
--- Available Debug Adapters:
---   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
--- Adapter configuration and installation instructions:
---   https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
--- Debug Adapter protocol:
---   https://microsoft.github.io/debug-adapter-protocol/
-
 local res = require "jamin.resources"
 
 return {
+  {
+    "andrewferrier/debugprint.nvim", -- add print statements for debugging
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "DeleteDebugPrints",
+    keys = {
+      { "g?", mode = { "n", "v", "o" } },
+      { "g?d", "<CMD>DeleteDebugPrints<CR>" },
+    },
+    opts = {},
+  },
+  ------------------------------------------------------------------------------
   {
     "mfussenegger/nvim-dap", -- debug adapter protocol
     cmd = {
@@ -142,6 +146,12 @@ return {
       -------------------------------------------------------------------------
       -- Adapters
       -------------------------------------------------------------------------
+      -- Available Debug Adapters:
+      --   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
+      -- Adapter configuration and installation instructions:
+      --   https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+      -- Debug Adapter protocol:
+      --   https://microsoft.github.io/debug-adapter-protocol/
 
       for _, adapter in ipairs {
         "chrome",
