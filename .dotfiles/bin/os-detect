@@ -25,7 +25,7 @@
 # SOFTWARE.
 
 # detects the operating system
-if [ -f /proc/version ] && grep -iq Microsoft /proc/version; then
+if [ -r /proc/version ] && grep -iq Microsoft /proc/version; then
     os="windows_wsl"
 elif [ -n "$OSTYPE" ]; then
     case "$OSTYPE" in
@@ -51,7 +51,7 @@ fi
 # attempt to detect linux distro
 if [ "$os" = "linux" ]; then
     # get the id from the standard "/etc/os-release" location
-    if [ -f /etc/os-release ]; then
+    if [ -r /etc/os-release ]; then
         distro="$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')"
     else
         # old distro versions may not follow the "os-release"

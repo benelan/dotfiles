@@ -1,4 +1,5 @@
 acpi
+blueman
 brightnessctl
 compton
 conky-all
@@ -21,7 +22,6 @@ playerctl
 powertop
 rofi
 wmctrl
-xclip
 xdotool
 xinput
 xss-lock

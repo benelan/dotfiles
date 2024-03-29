@@ -77,6 +77,9 @@ vnoremap > >gv
 vnoremap & :&&<CR>
 nnoremap & :&&<CR>
 
+" When joining, do the right thing to join up function definitions
+vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
+
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" insert, command, and operator keymaps                      {{{
 
@@ -304,8 +307,6 @@ endfunction
 
 " Use the function to search/replace visually selected text
 xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
-xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" delete buffer without closing window                       {{{

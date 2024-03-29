@@ -26,49 +26,22 @@ esac
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
 # --------------------------------------------------------------------- }}}
-# Source bash options, prompt, and local settings                       {{{
+# Source bash options, prompt, completion, and local settings           {{{
 # --------------------------------------------------------------------- {|}
 
 # Add any environment-specific stuff to local.sh (it's gitignored).
-# The source order for the following scripts matters!
-for file in ~/.dotfiles/shell/{options,prompt,local}.sh; do
+# The source order matters!
+for file in ~/.dotfiles/shell/{options,prompt,completion,local}.sh; do
     [ -r "$file" ] && . "$file"
 done
 unset file
 
 # --------------------------------------------------------------------- }}}
-# Source tool shell integrations                                        {{{
+# Setup miscellaneous tools and integrations                            {{{
 # --------------------------------------------------------------------- {|}
 
-supports broot && [ -f ~/.config/broot/launcher/bash/br ] &&
-    . ~/.config/broot/launcher/bash/br
-
-if supports fzf; then
-    [ -f ~/dev/lib/fzf/shell/completion.bash ] &&
-        . ~/dev/lib/fzf/shell/completion.bash
-    [ -f ~/dev/lib/fzf/shell/key-bindings.bash ] &&
-        . ~/dev/lib/fzf/shell/key-bindings.bash
-fi
-
-# --------------------------------------------------------------------- }}}
-# Source bash completions                                               {{{
-# --------------------------------------------------------------------- {|}
-
-# The completions are sourced alphabetically so a number
-# from 1-9 can be prepended to filenames to ensure an order.
-# Prepend 0_ to file names to skip them.
-
-# Completions go last because some require their tools/plugins
-# to have already loaded
-# shellcheck disable=1001
-for file in ~/.dotfiles/shell/completions/[!\0]*.sh; do
-    [ -r "$file" ] && . "$file"
-done
-unset file
-
-# --------------------------------------------------------------------- }}}
-# Attach to tmux                                                        {{{
-# --------------------------------------------------------------------- {|}
+# setup broot shell integration so `cd` works
+[ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 
 # ensure tmux is running
 [ -z "$TMUX" ] && supports git-mux && git-mux project "$PWD"

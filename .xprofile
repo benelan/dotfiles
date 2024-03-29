@@ -34,7 +34,7 @@ fi
 
 # set wallpaper
 wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
-if [ -f "$wallpaper" ]; then
+if [ -r "$wallpaper" ]; then
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
             if has gsettings; then

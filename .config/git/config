@@ -76,8 +76,10 @@
     renameLimit = 9328
     compactionHeuristic = true
 
+[diff "gpg"]
+    textconv = gpg -q --no-tty --decrypt
+
 [diff "bin"]
-    ; Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
 [difftool]

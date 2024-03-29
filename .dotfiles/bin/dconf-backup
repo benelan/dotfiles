@@ -36,8 +36,7 @@ dump() {
 load() {
     for i in "${backup_settings[@]}"; do
         backup_file="$(sanitize_filename "$i")"
-        [ -f "$backup_file" ] && [ -r "$backup_file" ] &&
-            dconf load "/$i/" <"$backup_file"
+        [ -r "$backup_file" ] && dconf load "/$i/" <"$backup_file"
     done
 }
 

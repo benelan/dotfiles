@@ -154,11 +154,26 @@ alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
 # get top processes eating cpu
 alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 
+if supports systemctl; then
+    alias sc='systemctl'
+    alias scu='systemctl --user'
+    alias scdr='systemctl daemon-reload'
+    alias scdru='systemctl --user daemon-reload'
+    alias scr='systemctl restart'
+    alias scru='systemctl --user restart'
+    alias sce='systemctl stop'
+    alias sceu='systemctl --user stop'
+    alias scs='systemctl start'
+    alias scsu='systemctl --user start'
+fi
+
 # -----------------------------------------------------------------------------
 # Web Development
 # -----------------------------------------------------------------------------
 
-alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
+if supports chromium-browser; then
+    alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
+fi
 
 # node/npm
 if supports npm; then

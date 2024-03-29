@@ -31,6 +31,11 @@ set keymap vi-command
     "\ee": emacs-editing-mode
     k: history-search-backward
     j: history-search-forward
+    "\C-e": vi-append-eol
+    "\C-a": vi-insert-beg
+    "\C-w": unix-word-rubout
+    "\C-u": backward-kill-line
+    "\C-d": delete-char
 
 set keymap vi-insert
     "\ee": emacs-editing-mode

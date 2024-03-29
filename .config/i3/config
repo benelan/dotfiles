@@ -24,11 +24,8 @@ exec_always --no-startup-id killall conky || true && \
 
 exec_always --no-startup-id killall dunst || true && sleep 5 && dunst
 
-exec_always --no-startup-id killall i3-battery-popup || true && \
-    sleep 5 && i3-battery-popup -nL 15 -t 2m -v 100 \
-        -s /usr/share/sounds/freedesktop/stereo/dialog-warning.oga \
-        -m "$(acpi -b 2>/dev/null | awk -F, '{print $2}') Battery warning.$( \
-              acpi -b 2>/dev/null | awk -F, '{print $3}')"
+exec --no-startup-id i3-battery-popup -nL 15 \
+        -s /usr/share/sounds/freedesktop/stereo/dialog-warning.oga
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -41,11 +38,11 @@ exec --no-startup-id xidlehook \
     --not-when-audio \
     `# Dim the screen after 7 minutes, undim if user becomes active` \
     --timer 420 \
-        'brightnessctl --class=backlight get >/tmp/xidlehook_brightness; brightnessctl --class=backlight set 30%-' \
+        'brightnessctl --class=backlight get >/tmp/xidlehook_brightness; brightnessctl --class=backlight set 33%-' \
         'brightnessctl --class=backlight set $(cat /tmp/xidlehook_brightness)' \
     `# Undim & lock 1 minute and 9 seconds later` \
     --timer 69 \
-        'brightnessctl --class=backlight set $(cat /tmp/xidlehook_brightness); i3lock -efc 000000' \
+        'brightnessctl --class=backlight set $(cat /tmp/xidlehook_brightness); loginctl lock-session' \
         '' \
     `# Finally, suspend 22 minutes and 17 seconds after it locks` \
     --timer 1337 \

@@ -181,6 +181,11 @@ if has("keymap")
 
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
+    "" VisualSelection() defined in ./plugin/stuff.vim
+    "" Neovim has this built-in
+    xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
+    xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
+
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" misc input/terminal/command mode keymaps                   {{{
 

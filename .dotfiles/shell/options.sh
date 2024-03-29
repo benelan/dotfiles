@@ -50,7 +50,8 @@
 export BLACK RED GREEN YELLOW BLUE MAGENTA CYAN ORANGE WHITE GREY \
     BOLD UNDERLINE RESET
 
-export HISTFILESIZE=42069
+export HISTSIZE=10000000
+export HISTFILESIZE=$HISTSIZE
 
 # Omit duplicates and commands that begin with a space from history.
 export HISTCONTROL='ignoreboth:erasedups'
@@ -65,6 +66,10 @@ export LESS_TERMCAP_us="$UNDERLINE$YELLOW"
 export LESS_TERMCAP_ue="$RESET"
 export LESS_TERMCAP_so="$MAGENTA"
 export LESS_TERMCAP_se="$RESET"
+
+# see `man gpg-agent`
+GPG_TTY=$(tty)
+export GPG_TTY
 
 # generate LS_COLORS
 [ -r ~/.dircolors ] && eval "$(dircolors ~/.dircolors)"

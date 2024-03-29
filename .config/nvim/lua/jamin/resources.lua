@@ -103,7 +103,6 @@ M.mason_packages = {
   "hadolint", -- dockerfile linter
   "markdownlint", -- markdown linter and formatter
   "prettier", -- everything formatter
-  "proselint", -- prose linter
   "shellcheck", -- shell linter
   "shfmt", -- shell formatter
   "stylelint", -- css/scss linter

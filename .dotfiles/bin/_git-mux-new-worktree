@@ -15,19 +15,19 @@ for _file in $_link_files; do
     cp "../$_file" . >/dev/null 2>&1 || true
 done
 
-if [ -f ../calcite-components.projections.json ] && [ -d packages/calcite-components ]; then
+if [ -r ../calcite-components.projections.json ] && [ -d packages/calcite-components ]; then
     cp ../calcite-components.projections.json packages/calcite-components/.projections.json >/dev/null 2>&1 || true
 fi
 
-if _has make && [ -f Makefile ]; then
+if _has make && [ -r Makefile ]; then
     make
 fi
 
-if _has npm && [ -f package.json ]; then
+if _has npm && [ -r package.json ]; then
     npm install
     npm run build
 fi
 
-if _has cargo && [ -f Cargo.toml ]; then
+if _has cargo && [ -r Cargo.toml ]; then
     cargo build
 fi

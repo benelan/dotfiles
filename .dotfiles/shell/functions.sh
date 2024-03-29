@@ -227,7 +227,7 @@ crt() {
 ## list hosts defined in ssh config                           {{{
 
 ssh-list() {
-    [ -f ~/.ssh/config ] &&
+    [ -r ~/.ssh/config ] &&
         awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
 }
 

@@ -19,11 +19,11 @@ keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 -- open current directory with file explorer
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
--- remaps to center movement in the screen
-keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
-keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
-keymap("n", "n", "nzzzv", "Next search result")
-keymap("n", "N", "Nzzzv", "Previous search result")
+-- -- remaps to center movement in the screen
+-- keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
+-- keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
+-- keymap("n", "n", "nzzzv", "Next search result")
+-- keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- Clear search highlight and escape
 keymap({ "i", "n" }, "<esc>", "<CMD>noh<CR><esc>", "Clear hls and escape")
@@ -47,19 +47,19 @@ keymap("i", "<M-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
 keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", "Move line down")
 keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 
--- up/down movement that handles wrapped lines better
-vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- up/down home/end movement that handles wrapped lines better
+local opts = { expr = true, silent = true }
+vim.keymap.set("n", "$", "(&wrap == 1 ? 'g$' : '$')", opts)
+vim.keymap.set("n", "^", "(&wrap == 1 ? 'g^' : '^')", opts)
+vim.keymap.set("n", "g$", "(&wrap == 1 ? '$' : 'g$')", opts)
+vim.keymap.set("n", "g^", "(&wrap == 1 ? '^' : 'g^')", opts)
+vim.keymap.set("n", "gj", "(v:count == 0 ? 'j' : 'gj')", opts)
+vim.keymap.set("n", "gk", "(v:count == 0 ? 'k' : 'gk')", opts)
+vim.keymap.set("n", "j", "(v:count == 0 ? 'gj' : 'j')", opts)
+vim.keymap.set("n", "k", "(v:count == 0 ? 'gk' : 'k')", opts)
 
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
-
--- Search visually selected text
--- keymap("x", "*", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]])
--- keymap("x", "#", [[y?\V<C-R>=escape(@", '?\')<CR><CR>]])
-
--- Search inside visually highlighted text
-keymap("x", "g/", "<esc>/\\%V", "Search inside visual selection")
 
 -- Add empty lines before and after cursor line
 keymap(
@@ -168,19 +168,9 @@ keymap(
   "Choose all hunks from base (diff)"
 )
 keymap("n", "]x", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
-keymap(
-  "n",
-  "]X",
-  "<CMD>%diffget RE<BAR>diffupdate<CR>",
-  "Choose all hunks from remote (diff)"
-)
+keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from remote (diff)")
 keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
-keymap(
-  "n",
-  "[X",
-  "<CMD>%diffget LO<BAR>diffupdate<CR>",
-  "Choose all hunks from local (diff)"
-)
+keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from local (diff)")
 
 -------------------------------------------------------------------------------
 ----> Windows
@@ -215,7 +205,6 @@ keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
 keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
 -- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit window")
-
 
 -------------------------------------------------------------------------------
 ----> Tabs

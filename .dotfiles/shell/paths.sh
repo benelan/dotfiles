@@ -10,7 +10,7 @@ _expand_var() { env | sed -n "s/^$1=//p"; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # remove an entry from PATH                                   {{{
 # Usage: path_remove /path/to/bin [PATH]
-pathremove() {
+_pathremove() {
     IFS=':'
     path_var=${2:-PATH}
     # Bash has ${!path_var}, but this is not portable.
@@ -27,10 +27,10 @@ pathremove() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # prepend an entry to PATH                                    {{{
 # Usage: path_prepend /path/to/bin [PATH]
-pathprepend() {
+_pathprepend() {
     # if the path is already in the path_variable,
     # remove it so we can move it to the front
-    pathremove "${1}" "${2}"
+    _pathremove "${1}" "${2}"
     [ -d "${1}" ] || return
     path_var="${2:-PATH}"
     path_value=$(_expand_var "$path_var")
@@ -41,8 +41,8 @@ pathprepend() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # append an entry to PATH                                     {{{
 # Usage: path_append /path/to/bin [PATH]
-pathappend() {
-    pathremove "${1}" "${2}"
+_pathappend() {
+    _pathremove "${1}" "${2}"
     [ -d "${1}" ] || return
     path_var=${2:-PATH}
     path_value=$(_expand_var "$path_var")
@@ -61,44 +61,44 @@ pathappend() {
 path() {
     if [ -z "$1" ]; then
         echo "$PATH" | tr ':' '\n'
-        return
+        return 0
     fi
 
-    while getopts r:a:p: opt; do
-        case $opt in
-            a) pathappend "$OPTARG" ;;
-            r) pathremove "$OPTARG" ;;
-            p) pathprepend "$OPTARG" ;;
-            *) return 1 ;;
-        esac
-    done
+    case $1 in
+        a | -a | append | --append) _pathappend "$2" "$3" ;;
+        r | -r | remove | --remove) _pathremove "$2" "$3" ;;
+        p | -p | prepend | --prepend) _pathprepend "$2" "$3" ;;
+        *)
+            printf "Usage: path [append|prepend|remove] [PATH]" >&2
+            return 1
+            ;;
+    esac
 }
 
 # --------------------------------------------------------------------- }}}
 # Set path                                                              {{{
 # --------------------------------------------------------------------- {|}
 
-path \
-    -p "$HOME/.dotfiles/bin" \
-    -p "$HOME/.local/share/nvim/mason/bin" \
-    -a "$HOME/dev/personal/git-mux/bin" \
-    -a "$HOME/dev/lib/fzf/bin" \
-    -a "$HOME/.luarocks/bin" \
-    -a "$HOME/.nimble/bin" \
-    -a "$HOME/.volta/bin" \
-    -a "$HOME/.cargo/bin" \
-    -a "$HOME/.bun/bin" \
-    -a "$HOME/go/bin" \
-    -a "$HOME/.local/bin" \
-    -a "/snap/bin" \
-    -a "/usr/local/go/bin" \
-    -a "/usr/local/games" \
-    -a "/usr/local/sbin" \
-    -a "/usr/local/bin" \
-    -a "/usr/games" \
-    -a "/usr/sbin" \
-    -a "/usr/bin" \
-    -a "/sbin" \
-    -a "/bin"
+path -p "$HOME/.dotfiles/bin"
+path -p "$HOME/.local/share/nvim/mason/bin"
+path -a "$HOME/dev/personal/git-mux/bin"
+path -a "$HOME/dev/lib/fzf/bin"
+path -a "$HOME/.luarocks/bin"
+path -a "$HOME/.nimble/bin"
+path -a "$HOME/.volta/bin"
+path -a "$HOME/.cargo/bin"
+path -a "$HOME/.bun/bin"
+path -a "$HOME/go/bin"
+path -a "$HOME/.local/bin"
+path -a "/snap/bin"
+path -a "/usr/local/go/bin"
+path -a "/usr/local/games"
+path -a "/usr/local/sbin"
+path -a "/usr/local/bin"
+path -a "/usr/games"
+path -a "/usr/sbin"
+path -a "/usr/bin"
+path -a "/sbin"
+path -a "/bin"
 
 # --------------------------------------------------------------------- }}}

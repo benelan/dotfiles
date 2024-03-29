@@ -92,11 +92,11 @@ playerctl_get_source() {
     players_count="$(wc -l <<<"$players")"
 
     if [ "$players_count" -gt 1 ]; then
-        if ! [ -f "$cached_player" ] ||
-            ! grep -q "$(cat $cached_player)" <<<"$players"; then
+        if ! [ -r "$cached_player" ] ||
+            ! grep -q "$(cat "$cached_player")" <<<"$players"; then
             playerctl_cache_source
         fi
-        source="$(cat $cached_player)"
+        source="$(cat "$cached_player")"
     else
         echo "$players" >"$cached_player"
     fi
@@ -199,7 +199,7 @@ view_lyrics() {
         help "Lyrics not found"
     else
         echo "${lyrics_raw//'\n'/$'\n'}" >"$lyrics_file"
-        [ -f "$lyrics_file" ] && $TERMINAL -e "$EDITOR" "$lyrics_file"
+        [ -r "$lyrics_file" ] && $TERMINAL -e "$EDITOR" "$lyrics_file"
     fi
 }
 
@@ -261,7 +261,7 @@ EOF
 }
 
 rofi_picker() {
-    if ! [ -f "$rofi_config_path" ]; then
+    if ! [ -r "$rofi_config_path" ]; then
         rofi_create_config
     fi
 

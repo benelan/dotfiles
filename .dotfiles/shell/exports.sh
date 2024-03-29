@@ -21,8 +21,6 @@ export CALCITE="$WORK/calcite-design-system"
 export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
-export HISTSIZE=42069
-
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr
 export PYTHONIOENCODING="UTF-8"
 
@@ -190,12 +188,12 @@ if supports fzf; then
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
     supports fd &&
-        export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git --exclude node_modules'
+        export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --exclude node_modules'
 fi
 
 # https://github.com/dylanaraps/fff
 if supports fff; then
-    export FFF_COL2=7
+    export FFF_COL4=5
     export FFF_COL5=0
 
     # use the OS trashcan

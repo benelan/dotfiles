@@ -69,7 +69,7 @@ has() { command -v "$1" >/dev/null 2>&1; }
 
 select_users() {
     ! has fzf && help "fzf is required to select users"
-    ! [ -f "$TEAMS_USER_LIST" ] && help "user list not found at \"$TEAMS_USER_LIST\"."
+    ! [ -r "$TEAMS_USER_LIST" ] && help "user list not found at \"$TEAMS_USER_LIST\"."
 
     fzf --multi --prompt="Select user(s): " <"$TEAMS_USER_LIST" |
         cut -d' ' -f1 |

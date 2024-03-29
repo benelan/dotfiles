@@ -251,8 +251,7 @@ return {
       local function ensure_installed()
         for _, tool in ipairs(opts.ensure_installed) do
           local p = mr.get_package(tool)
-
-          if not p:is_installed() then p:install() end
+          if not p:is_installed() and vim.fn.executable(tool) == 0 then p:install() end
         end
       end
 
@@ -302,11 +301,8 @@ return {
 
           code_actions.gitrebase,
           code_actions.shellcheck,
-          code_actions.proselint.with { extra_filetypes = { "text" } },
 
           diagnostics.hadolint,
-          diagnostics.proselint,
-
           diagnostics.actionlint.with {
             runtime_condition = function()
               return vim.api
