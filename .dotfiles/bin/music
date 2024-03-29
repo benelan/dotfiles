@@ -21,11 +21,14 @@
 # source="MPD"
 
 music_dir=~/Music
-rofi_theme="gruvbox-dark"
-rofi_config_path="/tmp/music_rofi_config"
-cached_player="/tmp/music_current_player"
-lyrics_file="/tmp/lyrics"
-album_cover="/tmp/music_album_cover.png"
+data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/music"
+mkdir -p "$data_dir" "$music_dir"
+
+rofi_theme=gruvbox-dark
+rofi_config_path="$data_dir/rofi_config.rasi"
+cached_player="$data_dir/current_player.txt"
+lyrics_file="$data_dir/lyrics.txt"
+album_cover="$data_dir/album_cover.png"
 album_cover_backup="/usr/share/icons/Adwaita/scalable/emblems/emblem-music-symbolic.svg"
 
 focus_icon=" "

@@ -8,9 +8,11 @@ feh
 i3
 i3lock
 libpulse-dev
+libx11-dev
 libxcb-screensaver0-dev
 libxcb-util-dev
 libxcb1-dev
+libxfixes-dev
 lm-sensors
 lshw
 lxappearance

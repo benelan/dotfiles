@@ -1045,8 +1045,10 @@ install_theme_rofi-config() {
         git clone https://github.com/benelan/rofi-scripts.git "$LIB/rofi-scripts"
     fi
 
+    pushd "$LIB/rofi-scripts/"
     "$LIB/rofi-scripts/setup.sh"
-    cp --no-clobber "$HOME/.config/rofi.$USER" "$HOME/.config/rofi"
+    cp -r --no-clobber "$HOME/.config/rofi.$USER/"* "$HOME/.config/rofi/"
+    popd
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1257,8 +1259,8 @@ install_misc_conky() {
 INSTALL_MISC_I3_DOC="Install dependencies and setup configs for i3wm"
 install_misc_i3() {
     install_ubuntu_apt-i3
-    install_misc_rofi-config
-    install_misc_conky-config
+    install_theme_rofi-config
+    install_theme_conky-config
     # install_misc_clipcat
     install_misc_clipmenu
     install_script_i3-volume
