@@ -95,4 +95,4 @@ vim
 w3m
 w3m-img
 wget
-xclip
+xsel

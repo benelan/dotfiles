@@ -1,0 +1,22 @@
+configuration {
+    modi: "drun,run,filebrowser,window,ssh,combi";
+    combi-modi: "drun,run,window";
+    font: "Isoevka Nerd Font 13";
+    show-icons: true;
+    normalize-match: true;
+    display-window: "Windows";
+    display-windowcd: "Window CD";
+    display-run: "Run";
+    display-ssh: "SSH";
+    display-drun: "Apps";
+    display-combi: "Combi";
+    display-keys: "Keys";
+    display-filebrowser: "Files";
+    window-match-fields: "title,class,role,name,desktop";
+    kb-cancel: "Escape,Control+g,Control+c,Control+bracketleft";
+    drun {
+        application-fallback-icon: "application-x-addon";
+    }
+}
+
+@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"

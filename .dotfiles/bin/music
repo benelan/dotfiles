@@ -1,0 +1,337 @@
+#!/usr/bin/env bash
+
+# Adopted from:
+# https://github.com/niraj998/dotfiles/blob/454fe793e8960a024945fc93134ee810a30fe0d6/.config/rofi/music/music
+
+# The following core dependencies are required: sed, curl, grep, cut, wc
+
+# Dependencies for at least one of the music sources is required:
+#   - [playerctl source]: playerctl, wmctrl
+#   - [mpd source]: mpd, mpc, ncmpcpp, ffmpeg
+
+# The following commands use additional dependencies:
+#   - [rofi command]: rofi, notify-send (optional)
+#   - [lyrics command]: jq
+
+# --------------------------------------------------------------------- {|}
+# Configuration variables                                               {{{
+# --------------------------------------------------------------------- {|}
+
+# # uncomment to use mpd instead of playerctl
+# source="MPD"
+
+music_dir=~/Music
+rofi_theme="gruvbox-dark"
+rofi_config_path="/tmp/music_rofi_config"
+cached_player="/tmp/music_current_player"
+lyrics_file="/tmp/lyrics"
+album_cover="/tmp/music_album_cover.png"
+album_cover_backup="/usr/share/icons/Adwaita/scalable/emblems/emblem-music-symbolic.svg"
+
+focus_icon=" "
+toggle_icon="󰓛"
+play_icon="󰐊"
+pause_icon="󰏤"
+previous_icon="󰒮"
+next_icon="󰒭"
+lyrics_icon=" "
+player_icon="󰍂 "
+
+# --------------------------------------------------------------------- }}}
+# Usage info                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+_src="$0"
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+help() {
+    if [ -n "$*" ]; then
+        if [ "$command" = "rofi" ] && has notify-send; then
+            notify-send -i "$album_cover_backup" "Music player error" "$*\n"
+        else
+            printf "Error: %s\nTry -h for more info.\n" "$*" >&2
+        fi
+        exit 1
+    else
+        cat <<EOF
+Control music playback using playerctl or mpd.
+
+Usage:       $(basename "$_src") COMMAND
+
+Commands:
+  focus      Focus the window of the current player
+  previous   Play previous track
+  toggle     Play/pause the current track
+  next       Play next track
+  lyrics     View lyrics for the current track
+  player     Select a player (playerctl only)
+  rofi       Open rofi and select a command
+EOF
+        exit 0
+    fi
+}
+
+# --------------------------------------------------------------------- }}}
+# Playerctl source                                                      {{{
+# --------------------------------------------------------------------- {|}
+
+playerctl_cache_source() {
+    rm -f "$album_cover" "$lyrics_file" "$cached_player"
+    echo "${players:-$(playerctl -l 2>/dev/null | cut -d. -f1)}" |
+        rofi -dmenu -i -p "Select player" -l "${players_count:-5}" \
+            -theme-str 'window { width: 420; }' \
+            >"$cached_player"
+}
+
+playerctl_get_source() {
+    players="$(playerctl -l 2>/dev/null | cut -d. -f1)"
+    players_count="$(wc -l <<<"$players")"
+
+    if [ "$players_count" -gt 1 ]; then
+        if ! [ -f "$cached_player" ] ||
+            ! grep -q "$(cat $cached_player)" <<<"$players"; then
+            playerctl_cache_source
+        fi
+        source="$(cat $cached_player)"
+    else
+        echo "$players" >"$cached_player"
+    fi
+
+    source="$(cat "$cached_player")"
+    if [ -z "$source" ]; then
+        rm -f "$cached_player"
+        help "Player not found"
+    fi
+}
+
+playerctl_get_metadata() {
+    album_art="$(
+        playerctl --player="$source" metadata mpris:artUrl 2>/dev/null |
+            sed -e 's/open.spotify.com/i.scdn.co/g'
+    )"
+
+    if [ -n "$album_art" ]; then
+        curl -Lso "$album_cover" "$album_art"
+    else
+        cp "$album_cover_backup" "$album_cover"
+    fi
+
+    title="$(playerctl --player="$source" metadata --format "{{title}}" | cut -c1-35)"
+    title="${title:-"Nothing Playing"}"
+
+    artist="$(playerctl --player="$source" metadata --format "{{artist}}" | cut -c1-35)"
+    album="$(playerctl --player="$source" metadata --format "{{album}}" | cut -c1-35)"
+
+    status="$(playerctl --player="$source" status)"
+    status="${status:-"Stopped"}"
+
+    [ "$status" = "Playing" ] && toggle_icon="$pause_icon"
+    [ "$status" = "Paused" ] && toggle_icon="$play_icon"
+
+    playlist="$(playerctl --player="$source" metadata xesam:trackNumber)"
+    [ -n "$playlist" ] && playlist="($playlist)"
+}
+
+# --------------------------------------------------------------------- }}}
+# MPD source                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+mpd_get_metadata() {
+    ffmpeg -i "$music_dir/$(mpc current -f %file%)" \
+        -vf scale=500:500 "${album_cover}" -y ||
+        cp "$album_cover_backup" "$album_cover"
+
+    title="$(mpc -f %title% current | cut -c1-35)"
+    artist="$(mpc -f %artist% current | cut -c1-35)"
+    album="$(mpc -f %album% current | cut -c1-35)"
+
+    stat="$(mpc status | head -2 | head -n1 | cut -c2-7)"
+    status="Stopped"
+
+    [ "$stat" = "playin" ] && status="Playing" && toggle_icon="$pause_icon"
+    [ "$stat" = "paused" ] && status="Paused" && toggle_icon="$play_icon"
+
+    playlist="$(mpc status %songpos%/%length%)"
+    [ -n "$playlist" ] && playlist="($playlist)"
+}
+
+# --------------------------------------------------------------------- }}}
+# Lyrics command                                                        {{{
+# --------------------------------------------------------------------- {|}
+
+view_lyrics() {
+    if ! has jq; then
+        help "jq is required for the lyrics feature"
+    fi
+
+    if [ "$source" = "MPD" ]; then
+        Title="$(mpc -f %title% current)"
+        Artist="$(mpc -f %artist% current)"
+    else
+        Title="$(playerctl --player="$source" metadata --format "{{title}}")"
+        Artist="$(playerctl --player="$source" metadata --format "{{artist}}")"
+    fi
+
+    lyrics_raw=$(
+        curl -s "$(
+            echo "https://api.lyrics.ovh/v1/$Artist/$Title" |
+                sed s/" "/%20/g |
+                sed s/"&"/%26/g |
+                sed s/,/%2C/g |
+                sed s/-/%2D/g
+        )" | jq -r '.lyrics' 2>/dev/null |
+            sed -re 's/^Paroles de la chanson (.*) par (.*).*\r/\1 - \2\n/'
+    )
+
+    if [ -z "$lyrics_raw" ] || [ "$(wc -l <<<"$lyrics_raw")" -le 3 ]; then
+        lyrics_raw=$(
+            curl -Ls --get "https://makeitpersonal.co/lyrics" \
+                --data-urlencode "artist=$Artist" \
+                --data-urlencode "title=$Title"
+        )
+    fi
+
+    if [ -z "$lyrics_raw" ] || [ "$(wc -l <<<"$lyrics_raw")" -le 3 ]; then
+        help "Lyrics not found"
+    else
+        echo "${lyrics_raw//'\n'/$'\n'}" >"$lyrics_file"
+        [ -f "$lyrics_file" ] && $TERMINAL -e "$EDITOR" "$lyrics_file"
+    fi
+}
+
+# --------------------------------------------------------------------- }}}
+# Rofi command                                                          {{{
+# --------------------------------------------------------------------- {|}
+
+rofi_create_config() {
+    cat >"$rofi_config_path" <<EOF
+@theme "/usr/share/rofi/themes/$rofi_theme.rasi"
+
+window {
+    transparency:  "real";
+    width:         500px;
+    height:        525px;
+    border:        0;
+    border-radius: 8px;
+}
+
+prompt {
+    padding:       15px;
+    border-radius: 10px;
+   expand:        false;
+}
+
+inputbar {
+    children:         [ prompt ];
+    background-color: @alternate-normal-background;
+    background-image: url("$album_cover",width);
+    expand:           false;
+    border-radius:    8px 8px 0px 0px;
+    padding:          290px 15px 15px 15px;
+    border:           1px 1px 0 1px;
+    border-color:     @alternate-normal-background;
+}
+
+listview {
+    cycle:         false;
+    layout:        horizontal;
+    padding:       10px 30px 0px 30px;
+    border-radius: 0 0 8px 8px;
+    border:        0 1px 1px 1px;
+    border-color:  @alternate-normal-background;
+}
+
+mainbox { children: [ inputbar, listview ]; }
+
+element {
+    padding:       0px 10px 0px 10px;
+    border-radius: 8px;
+}
+
+element-text {
+    margin:  5px 18px 5px 18px;
+    padding: 0px 0px 0px 0px;
+    font:    "Iosevka Nerd Font 30";
+}
+EOF
+}
+
+rofi_picker() {
+    if ! [ -f "$rofi_config_path" ]; then
+        rofi_create_config
+    fi
+
+    rofi_list="$focus_icon;$previous_icon;$toggle_icon;$next_icon;$lyrics_icon"
+    if [ "$players_count" -gt 1 ]; then
+        rofi_list="$rofi_list;$player_icon"
+    fi
+
+    rofi_metadata="$status: $playlist
+$title
+$album
+$artist"
+
+    selected="$(
+        echo "$rofi_list" |
+            rofi -i -dmenu -sep ';' -selected-row 2 -hover-select \
+                -config "$rofi_config_path" -p "$rofi_metadata"
+    )"
+}
+
+# --------------------------------------------------------------------- }}}
+# Parse args                                                            {{{
+# --------------------------------------------------------------------- {|}
+
+main() {
+    command="$1"
+    if [ -z "$command" ]; then
+        help "a command is required."
+    fi
+    shift
+
+    if [ "$source" = "MPD" ]; then
+        mpd_get_metadata 2>/dev/null
+    else
+        playerctl_get_source
+        playerctl_get_metadata 2>/dev/null
+    fi
+
+    case $command in
+        focus) selected="$focus_icon" ;;
+        previous) selected="$previous_icon" ;;
+        toggle) selected="$toggle_icon" ;;
+        next) selected="$next_icon" ;;
+        lyrics) selected="$lyrics_icon" ;;
+        player) selected="$player_icon" ;;
+        rofi) rofi_picker ;;
+        -h | --help | h | help) help ;;
+        *) help "\"$command\" is not a valid command." ;;
+    esac
+
+    if [ "$source" = "MPD" ]; then
+        case $selected in
+            "$focus_icon") $TERMINAL -c music -e ncmpcpp ;;
+            "$previous_icon") mpc -q prev ;;
+            "$toggle_icon") mpc -q toggle ;;
+            "$next_icon") mpc -q next ;;
+            "$lyrics_icon") view_lyrics ;;
+        esac
+    else
+        case "$selected" in
+            "$focus_icon") wmctrl -a "$source" || "$source" ;;
+            "$previous_icon") playerctl --player="$source" previous ;;
+            "$toggle_icon") playerctl --player="$source" play-pause ;;
+            "$next_icon") playerctl --player="$source" next ;;
+            "$lyrics_icon") view_lyrics ;;
+            "$player_icon")
+                playerctl_cache_source
+                [ "$command" = "rofi" ] && "$_src" rofi
+                ;;
+        esac
+    fi
+}
+
+# --------------------------------------------------------------------- }}}
+
+main "$@"

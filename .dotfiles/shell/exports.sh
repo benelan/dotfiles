@@ -163,6 +163,18 @@ supports task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 # https://github.com/jschlatow/taskopen
 supports taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
+# https://github.com/cdown/clipmenu
+if supports clipmenu; then
+    export CM_SELECTIONS="clipboard"
+    export CM_DIR="$XDG_STATE_HOME"
+    export CM_IGNORE_WINDOW="^(seahorse|Item Properties.*|Proton Pass.*)$"
+    if supports rofi; then
+        export CM_LAUNCHER="rofi"
+    elif supports fzf; then
+        export CM_LAUNCHER="fzf"
+    fi
+fi
+
 # https://github.com/charmbracelet/glamour
 supports glow || is-supported gh && export GLAMOUR_STYLE="dark"
 
