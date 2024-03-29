@@ -221,7 +221,7 @@ return {
           { name = "luasnip", group_index = 2 },
           { name = "git", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
-          { name = "path", keyword_length = 2, group_index = 2 },
+          { name = "path", group_index = 2 },
           { name = "tmux", keyword_length = 2, group_index = 2 },
           { name = "buffer", keyword_length = 2, group_index = 2 },
           -- only show ripgrep/spell/dictionary if there are no results from other sources
@@ -229,7 +229,7 @@ return {
           {
             name = "spell",
             group_index = 3,
-            keyword_length = 3,
+            keyword_length = 2,
             entry_filter = function(entry)
               return string.match(entry:get_insert_text(), "%s") == nil
             end,
@@ -241,7 +241,7 @@ return {
               end,
             },
           },
-          { name = "dictionary", group_index = 3, keyword_length = 3 },
+          { name = "dictionary", group_index = 3, keyword_length = 2 },
         },
       }
     end,

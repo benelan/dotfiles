@@ -9,7 +9,7 @@ that fit your workflows.
 To install the dotfiles in your `$HOME` directory, run:
 
 ```sh
-curl -sSL benelan.dev/d | sh
+curl -sSL benelan.dev/dotfiles | sh
 ```
 
 If the link above dies, use the [`dot`](../.dotfiles/bin/dot) script's `init`

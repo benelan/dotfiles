@@ -109,16 +109,16 @@ keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
 keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
 
 -- -- location
--- keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
--- keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
--- keymap("n", "]L", "<CMD>llast<CR>", "Last location")
--- keymap("n", "[L", "<CMD>lfirst<CR>", "First location")
+keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
+keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
+keymap("n", "]L", "<CMD>llast<CR>", "Last location")
+keymap("n", "[L", "<CMD>lfirst<CR>", "First location")
 
 -- argument
--- keymap("n", "]a", "<CMD>next<CR>", "Next argument")
--- keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
--- keymap("n", "]A", "<CMD>last<CR>", "Last argument")
--- keymap("n", "[A", "<CMD>first<CR>", "First argument")
+keymap("n", "]a", "<CMD>next<CR>", "Next argument")
+keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
+keymap("n", "]A", "<CMD>last<CR>", "Last argument")
+keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
 keymap("n", "]d", function() vim.diagnostic.goto_next { float = true } end, "Next diagnostic")
 keymap("n", "[d", function() vim.diagnostic.goto_prev { float = true } end, "Previous diagnostic")
@@ -160,24 +160,24 @@ keymap({ "n", "v" }, "<leader>gr", ":diffget<BAR>diffupdate<CR>", "Get hunk (dif
 keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 
 -- three way diff for merge conflict resolution
-keymap("n", "<leader>g\\", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
+keymap("n", "<localleader>x", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
 keymap(
   "n",
-  "<leader>g|",
+  "<localleader>X",
   "<CMD>%diffget BA<BAR>diffupdate<CR>",
   "Choose all hunks from base (diff)"
 )
-keymap("n", "<leader>g]", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
+keymap("n", "]x", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
 keymap(
   "n",
-  "<leader>g}",
+  "]X",
   "<CMD>%diffget RE<BAR>diffupdate<CR>",
   "Choose all hunks from remote (diff)"
 )
-keymap("n", "<leader>g[", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
+keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
 keymap(
   "n",
-  "<leader>g{",
+  "[X",
   "<CMD>%diffget LO<BAR>diffupdate<CR>",
   "Choose all hunks from local (diff)"
 )
@@ -187,11 +187,8 @@ keymap(
 -------------------------------------------------------------------------------
 
 -- create splits
-keymap("n", "<M-\\>", "<C-w>v", "Vertical split")
-keymap("n", "<M-->", "<C-w>s", "Horizontal split")
-
-keymap("n", "<leader>\\", "<C-w>v", "Vertical split")
-keymap("n", "<leader>-", "<C-w>s", "Horizontal split")
+keymap("n", "<M-v>", "<C-w>v", "Vertical split")
+keymap("n", "<M-s>", "<C-w>s", "Horizontal split")
 
 ---- navigate
 keymap("n", "<C-h>", "<C-w>h", "Focus window left")
@@ -217,6 +214,8 @@ keymap("n", "<M-Up>", "<C-w>K", "Move window up")
 keymap("n", "<M-Right>", "<C-w>L", "Move window right")
 
 keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
+-- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit window")
+
 
 -------------------------------------------------------------------------------
 ----> Tabs
@@ -232,11 +231,7 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 
 keymap({ "n", "i", "v" }, "<C-s>", "<CMD>write<CR>", "Write buffer")
 keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
--- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit buffer")
 
-keymap("n", "<leader>q", "<CMD>quit<CR>", "Quit buffer")
-keymap("n", "<leader>w", "<CMD>write<CR>", "Write buffer")
-keymap("n", "<leader>W", "<CMD>wq<CR>", "Write and Quit buffer")
 keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------

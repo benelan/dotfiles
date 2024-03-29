@@ -14,7 +14,7 @@ set number relativenumber linebreak backspace=indent,eol,start
 set mouse=a ttymouse=sgr mousehide clipboard=unnamed
 set ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
-set nomodeline nostartofline t_vb= nrformats-=octal
+set nomodeline nostartofline t_vb= nrformats-=octal nrformats+=unsigned
 set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
 set wildmenu wildmode=list:longest,full
 set complete-=i completeopt=noselect,menuone,menuone
@@ -197,22 +197,21 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
 
-    nnoremap <leader>gr :diffget <BAR> diffupdate<CR>
-    vnoremap <leader>gr :diffget <BAR> diffupdate<CR>
+    nnoremap <leader>gr :diffget<BAR>diffupdate<CR>
+    vnoremap <leader>gr :diffget<BAR>diffupdate<CR>
     nnoremap <leader>gw :diffput<CR>
     vnoremap <leader>gw :diffput<CR>
 
-    nnoremap <leader>g- :diffget BA <bar> diffupdate<CR>
-    nnoremap <leader>g_ :%diffget BA <bar> diffupdate<CR>
+    nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
+    nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
-    nnoremap <leader>g[ :diffget LO <bar> diffupdate<CR>
-    nnoremap <leader>g{ :%diffget LO <bar> diffupdate<CR>
+    nnoremap [x :diffget LO<BAR>diffupdate<CR>
+    nnoremap [X :%diffget LO<BAR>diffupdate<CR>
 
     " REMOTE is the rightmost buffer
-    nnoremap <leader>g] :diffget RE <bar> diffupdate<CR>
-    nnoremap <leader>g} :%diffget RE <bar> diffupdate<CR>
-
+    nnoremap ]x :diffget RE<BAR>diffupdate<CR>
+    nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{
@@ -252,8 +251,6 @@ if has("keymap")
 
     "" close buffer
     nnoremap <leader><Delete> :bdelete<CR>
-    nnoremap <leader>q :q<CR>
-    nnoremap <leader>w :w<CR>
 
     "" picks buffer
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
@@ -269,8 +266,8 @@ if has("keymap")
     au TabLeave * let s:last_tab = tabpagenr()
 
     " Create splits
-    nnoremap <leader>- :split<CR>
-    nnoremap <leader>\ :vsplit<CR>
+    nnoremap <leader>s <C-w>s
+    nnoremap <leader>v <C-w>v
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -345,10 +342,10 @@ if has("keymap")
 
     nnoremap - <CMD>packadd vifm.vim<CR><CMD>Vifm<CR>
 
-    nnoremap <leader>gg <CMD>packadd vim-fugitive<CR><CMD>G<CR>
+    nnoremap <leader>gs <CMD>packadd vim-fugitive<CR><CMD>G<CR>
     nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>G commit<CR>
     nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><CMD>G blame<CR>
-    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gdiffsplit<CR>
+    nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gvdiffsplit<CR>
     nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><CMD>0Gclog --follow<CR>
     xnoremap <leader>gl :Gclog --follow<CR>
 
@@ -615,11 +612,11 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\)'
     let &t_PE = "\e[201~"
 
     " Cursor control
-    if exists("+cursorshape")
-        let &t_RS = "\eP$q q\e\\"
-        let &t_RC = "\e[?12$p"
-        let &t_VS = "\e[?12l"
-        let &t_SH = "\e[%d q"
+    if has("cursorshape")
+        " let &t_RS = "\eP$q q\e\\"
+        " let &t_RC = "\e[?12$p"
+        " let &t_VS = "\e[?12l"
+        " let &t_SH = "\e[%d q"
         let &t_SI = "\e[6 q"
         let &t_SR = "\e[4 q"
         let &t_EI = "\e[2 q"

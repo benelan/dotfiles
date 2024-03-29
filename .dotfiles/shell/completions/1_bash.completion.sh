@@ -4,7 +4,9 @@
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix && [ -z "$BASH_COMPLETION_VERSIONINFO" ]; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
+    if [ -f /etc/profile.d/bash_completion.sh ]; then
+        . /etc/profile.d/bash_completion.sh
+    elif [ -f /usr/share/bash-completion/bash_completion ]; then
         . /usr/share/bash-completion/bash_completion
     elif [ -f /etc/bash_completion ]; then
         . /etc/bash_completion

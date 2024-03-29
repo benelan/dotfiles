@@ -7,7 +7,7 @@
 # https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
 
 quiet() {
-    if is-supported nohup; then
+    if supports nohup; then
         nohup "$@" >/dev/null 2>&1 </dev/null &
     else
         "$@"

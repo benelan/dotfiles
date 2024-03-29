@@ -129,37 +129,37 @@ return {
             bufmap("n", "K", vim.lsp.buf.hover, "LSP hover")
           end
 
-          if client.supports_method "textDocument/declaration" then
-            bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-          end
-
-          if client.supports_method "textDocument/implementation" then
-            bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
-          end
-
-          if client.supports_method "textDocument/rename" then
-            bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
-          end
-
           if client.supports_method "textDocument/definition" then
             bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           end
 
-          if client.supports_method "textDocument/signatureHelp" then
-            bufmap("n", "gK", vim.lsp.buf.signature_help, "LSP signature help")
-            bufmap("i", "<C-k>", vim.lsp.buf.signature_help, "LSP signature help")
+          if client.supports_method "textDocument/declaration" then
+            bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
           end
 
           if client.supports_method "textDocument/references" then
             bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           end
 
+          if client.supports_method "textDocument/rename" then
+            bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+          end
+
           if client.supports_method "textDocument/typeDefinition" then
             bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
           end
 
+          if client.supports_method "textDocument/implementation" then
+            bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
+          end
+
           if client.supports_method "textDocument/codeAction" then
             bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
+          end
+
+          if client.supports_method "textDocument/signatureHelp" then
+            bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
+            bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
           -- setup inlay hints if supported by language server
@@ -167,7 +167,7 @@ return {
             vim.lsp.inlay_hint.enable(args.buf, opts.inlay_hints.enabled)
             bufmap(
               "n",
-              "gh",
+              "gH",
               function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
               "Toggle LSP inlay hints"
             )

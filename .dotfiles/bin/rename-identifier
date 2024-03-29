@@ -72,23 +72,23 @@ shift
 shift
 search_files=$*
 
-is-supported rg && search_cmd='rg' ||
+supports rg && search_cmd='rg' ||
     {
-        is-supported ag && search_cmd='ag'
+        supports ag && search_cmd='ag'
     } ||
     {
-        is-supported grep && search_cmd='grep'
+        supports grep && search_cmd='grep'
     } ||
     {
         echo "Error: missing required dependency - install rg, ag, or grep" && exit 1
     }
 
-is-supported nvim && edit_cmd='nvim' ||
+supports nvim && edit_cmd='nvim' ||
     {
-        is-supported vim && edit_cmd='vim'
+        supports vim && edit_cmd='vim'
     } ||
     {
-        is-supported vi && edit_cmd='vi'
+        supports vi && edit_cmd='vi'
     } ||
     {
         echo "Error: missing required dependency - install nvim, vim, or vi" && exit 1

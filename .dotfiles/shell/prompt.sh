@@ -104,7 +104,7 @@ PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 # - - - - - - - - - - - - - - - - - - - - - - - }}}
 # setup fasd                                    {{{
 
-if is-supported fasd; then
+if supports fasd; then
     _fasd_prompt_func() {
         eval "fasd --proc $(fasd --sanitize "$(history 1 |
             sed "s/^[ ]*[0-9]*[ ]*//")")" >>"/dev/null" 2>&1

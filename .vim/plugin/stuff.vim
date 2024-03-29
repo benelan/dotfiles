@@ -101,8 +101,8 @@ xnoremap al $o0
 onoremap al :<C-U>normal val<CR>
 
 " Line text objects excluding spaces/newlines
-xnoremap il g_o0
-onoremap il :<C-U>normal! vil<CR>
+xnoremap il <Esc>^vg_
+onoremap il <CMD>normal! ^vg_<CR>
 
 " Special character text objects
 for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
@@ -276,8 +276,8 @@ function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
 
-nnoremap <silent> [x :<C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]x :<C-U>call <SID>findConflict(0)<CR>
+nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
+nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" save the value of the last visual selection                {{{
@@ -324,7 +324,7 @@ command! -bang -complete=buffer -nargs=? Bdelete
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
 
-nnoremap <silent> <leader>x <CMD>Bdelete<CR>
+nnoremap <silent> <leader><Backspace> <CMD>Bdelete<CR>
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 "" fugitive open commit's diff per file                       {{{
@@ -382,14 +382,17 @@ if has("autocmd")
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
 
-      " When editing a file, always jump to the last known cursor position.
-      " Don't do it when the position is invalid, when inside an event handler
-      " (happens when dropping a file on gvim) and for a commit message (it's
-      " likely a different one than last time).
-      autocmd BufReadPost *
-        \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-        \ |   exe "normal! g`\""
-        \ | endif
+        " When editing a file, always jump to the last known cursor position.
+        " Don't do it when the position is invalid, when inside an event handler
+        " (happens when dropping a file on gvim) and for a commit message (it's
+        " likely a different one than last time).
+        autocmd BufReadPost *
+            \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+            \ |   exe "normal! g`\""
+            \ | endif
+
+        autocmd QuickFixCmdPost [^l]* nested cwindow
+        autocmd QuickFixCmdPost l* nested lwindow
       augroup END
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -500,9 +503,9 @@ if has("autocmd")
 
     augroup jamin_skeletons
         autocmd!
-        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
-        autocmd BufNewFile .gitignore 0r ~/.dotfiles/assets/templates/.gitignore
+        autocmd BufNewFile .gitignore 0r ~/.config/git/ignore
         autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
+        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
     augroup END
 

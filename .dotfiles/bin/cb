@@ -21,26 +21,26 @@ logger() {
 }
 
 linux_copy() {
-    if is-supported xclip; then
+    if supports xclip; then
         logger "INFO " "copy > using xclip"
         cat | xclip -selection clipboard
-    elif is-supported xsel; then
+    elif supports xsel; then
         logger "INFO " "copy > using xsel"
         cat | xsel -bi
-    elif is-supported wl-copy; then
+    elif supports wl-copy; then
         logger "INFO " "copy > using wl-copy"
         cat | wl-copy
     fi
 }
 
 linux_paste() {
-    if is-supported xclip; then
+    if supports xclip; then
         logger "INFO " "paste > using xclip"
         xclip -selection clipboard -o
-    elif is-supported xsel; then
+    elif supports xsel; then
         logger "INFO " "paste > using xsel"
         xsel -bo
-    elif is-supported wl-copy; then
+    elif supports wl-copy; then
         logger "INFO " "paste > using wl-copy"
         wl-paste
     fi

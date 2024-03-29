@@ -120,6 +120,9 @@ set rulerformat='%2l-%S%[ +%x%]'
 set tablabel=%[(%n)%]%[%[%T{tree}%]%[{%c}%]@%]%p:t
 set tuioptions=psuv
 
+" make filter cmd behave like vim's Cfilter and favor <c-i> over <tab> binding
+set cpoptions=s
+
 " --------------------------------------------------------------------- }}}
 " Bookmarks                                                             {{{
 " --------------------------------------------------------------------- {|}

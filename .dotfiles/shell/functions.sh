@@ -29,7 +29,7 @@ goog() {
         grep -oP '\/url\?q=.+?&amp' |
         sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
 
-    if [ -n "$TMUX" ] && is-supported _tmux-select; then
+    if [ -n "$TMUX" ] && supports _tmux-select; then
         _tmux-select
     fi
 }
@@ -84,7 +84,7 @@ bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
 
 ## fff wrapper that changes to directory on exit              {{{
 
-if is-supported fff; then
+if supports fff; then
     ff() {
         fff "$@"
         cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
@@ -106,7 +106,7 @@ fmtjson() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## pandoc functions for converting between text filetypes     {{{
 
-if is-supported pandoc; then
+if supports pandoc; then
     # Open a markdown file in the less pager
     mdp() {
         pandoc -s -f markdown -t man "$@" | man -l -
@@ -124,14 +124,14 @@ fi
 ## run a command when a target file is modified               {{{
 
 # $ onmodify note.md md2html note
-if is-supported inotifywait; then
+if supports inotifywait; then
     onchange() {
         target=${1:-.}
         shift
         printf "Watching %s for changes...\n" "$target"
 
         notify_cmd="echo"
-        is-supported notify-send && notify_cmd="notify-send"
+        supports notify-send && notify_cmd="notify-send"
 
         while inotifywait -qqre modify,close_write,moved_to,move_self \
             --exclude '.git|node_modules|dist' "$target"; do
@@ -294,7 +294,7 @@ fgco() {
     # $ gfco slot --exact --reverse --header='Checkout Branch' --height=10
 
     SEARCH_TERM="$1"
-    if is-supported fzf; then
+    if supports fzf; then
         PICK_BRANCH_CMD="fzf"
         [ "$#" -gt 0 ] && shift
     else
@@ -346,7 +346,7 @@ gbprune() {
 # --------------------------------------------------------------------- {|}
 
 # https://github.com/junegunn/fzf/wiki/Examples
-if is-supported fzf; then
+if supports fzf; then
     ## setup the preview command for files and directories    {{{
 
     if type bat >/dev/null 2>&1; then
@@ -363,7 +363,7 @@ if is-supported fzf; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## setup completion to use fd instead of find             {{{
 
-    if is-supported fd; then
+    if supports fd; then
         # - The first argument to the function ($1) is the base path to start traversal
         # - See the source code (completion.{bash,zsh}) for the details.
         _fzf_compgen_path() {
@@ -408,7 +408,7 @@ if is-supported fzf; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## fasd fzf integration functions                         {{{
 
-    if is-supported fasd; then
+    if supports fasd; then
         # selectable cd to frecency directory using fasd
         fz() {
             # shellcheck disable=2016
@@ -496,7 +496,7 @@ if is-supported fzf; then
     ## find an emoji                                          {{{
 
     # usage: $ find_emoji | cb
-    if is-supported jq; then
+    if supports jq; then
         function femoji() {
             emojis="$DOTFILES/cache/emoji.json"
             if [ ! -r "$emojis" ]; then
@@ -522,7 +522,7 @@ fi
 if [ "$USE_WORK_STUFF" = "1" ]; then
     ## toggle a label used to run CC visual snapshots on PRs      {{{
 
-    if is-supported gh; then
+    if supports gh; then
         cc_visual_snapshots() {
             if [ "$(
                 gh repo view --json name -q ".name"
@@ -602,7 +602,7 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             --pack-destination "$npm_root"
 
         # pack calcite-components-react if the test project has react as a dep
-        if is-supported jq && [ "$(
+        if supports jq && [ "$(
             jq '.dependencies | has("react")' "$npm_root/package.json"
         )" = "true" ]; then
             npm pack \
@@ -634,7 +634,7 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
             "$example_cc_path"
 
         # copy calcite-components-react dist if the test app has react as a dep
-        if is-supported jq && [ "$(
+        if supports jq && [ "$(
             jq '.dependencies | has("react")' "$example_npm_root/package.json"
         )" = "true" ]; then
             cp "$CALCITE/$calcite_worktree/packages/calcite-components-react/dist" \

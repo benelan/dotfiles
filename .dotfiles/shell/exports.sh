@@ -46,11 +46,11 @@ unset -v MAILCHECK
 # default applications                                        {{{
 
 EDITOR="nano"
-if is-supported nvim; then
+if supports nvim; then
     EDITOR="nvim"
-elif is-supported vim; then
+elif supports vim; then
     EDITOR="vim"
-elif is-supported vi; then
+elif supports vi; then
     EDITOR="vi"
 fi
 
@@ -59,54 +59,54 @@ export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
 
-is-supported x-terminal-emulator && export TERMINAL="x-terminal-emulator"
-# is-supported wezterm && TERMINAL="wezterm"
+supports x-terminal-emulator && export TERMINAL="x-terminal-emulator"
+# supports wezterm && TERMINAL="wezterm"
 
 TERM_BROWSER="sensible-browser"
-if is-supported w3m; then
+if supports w3m; then
     TERM_BROWSER="w3m"
-elif is-supported lynx; then
+elif supports lynx; then
     TERM_BROWSER="lynx"
-elif is-supported links2; then
+elif supports links2; then
     TERM_BROWSER="links2"
-elif is-supported www-browser; then
+elif supports www-browser; then
     TERM_BROWSER="www-browser"
 fi
 
 BROWSER="sensible-browser"
-if is-supported brave-browser; then
+if supports brave-browser; then
     BROWSER="brave-browser"
-elif is-supported vivaldi; then
+elif supports vivaldi; then
     BROWSER="vivaldi"
-elif is-supported chromium-browser; then
+elif supports chromium-browser; then
     BROWSER="chromium-browser"
-elif is-supported google-chrome; then
+elif supports google-chrome; then
     BROWSER="google-chrome"
-elif is-supported firefox; then
+elif supports firefox; then
     BROWSER="firefox"
-elif is-supported gnome-www-browser; then
+elif supports gnome-www-browser; then
     BROWSER="gnome-www-browser"
 fi
 
 HOME_BROWSER=$BROWSER
-if is-supported firefox && [ $BROWSER != "firefox" ]; then
+if supports firefox && [ $BROWSER != "firefox" ]; then
     HOME_BROWSER="firefox"
-elif is-supported vivaldi && [ $BROWSER != "vivaldi" ]; then
+elif supports vivaldi && [ $BROWSER != "vivaldi" ]; then
     HOME_BROWSER="vivaldi"
-elif is-supported chromium-browser && [ $BROWSER != "chromium-browser" ]; then
+elif supports chromium-browser && [ $BROWSER != "chromium-browser" ]; then
     HOME_BROWSER="chromium-browser"
-elif is-supported google-chrome && [ $BROWSER != "google-chrome" ]; then
+elif supports google-chrome && [ $BROWSER != "google-chrome" ]; then
     HOME_BROWSER="google-chrome"
 fi
 
 ALT_BROWSER=$HOME_BROWSER
-if is-supported vivaldi &&
+if supports vivaldi &&
     [ $HOME_BROWSER != "vivaldi" ] && [ $BROWSER != "vivaldi" ]; then
     ALT_BROWSER="vivaldi"
-elif is-supported chromium-browser &&
+elif supports chromium-browser &&
     [ $HOME_BROWSER != "chromium-browser" ] && [ $BROWSER != "chromium-browser" ]; then
     ALT_BROWSER="chromium-browser"
-elif is-supported google-chrome &&
+elif supports google-chrome &&
     [ $HOME_BROWSER != "google-chrome" ] && [ $BROWSER != "google-chrome" ]; then
     ALT_BROWSER="google-chrome"
 fi
@@ -116,7 +116,7 @@ export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # golang                                                      {{{
 
-if is-supported go; then
+if supports go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/go"
     export GOFLAGS="-buildvcs=false -trimpath"
@@ -125,10 +125,10 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # javascript                                                  {{{
 
-is-supported volta && export VOLTA_HOME="$HOME/.volta"
-is-supported bun && export BUN_INSTALL="$HOME/.bun"
+supports volta && export VOLTA_HOME="$HOME/.volta"
+supports bun && export BUN_INSTALL="$HOME/.bun"
 
-if is-supported node; then
+if supports node; then
     # Enable persistent REPL history for `node`.
     export NODE_REPL_HISTORY="$HOME/.node_history"
 
@@ -146,27 +146,27 @@ fi
 # misc tools                                                  {{{
 
 # https://github.com/clvv/fasd#tweaks
-is-supported fasd && export _FASD_DATA="$DOTFILES/cache/fasd"
+supports fasd && export _FASD_DATA="$DOTFILES/cache/fasd"
 
 # https://github.com/wfxr/forgit
-is-supported git-forgit && export FORGIT_COPY_CMD="cb"
+supports git-forgit && export FORGIT_COPY_CMD="cb"
 
 # https://github.com/sharkdp/bat#highlighting-theme
-is-supported bat && export BAT_THEME="gruvbox-dark"
+supports bat && export BAT_THEME="gruvbox-dark"
 
 # https://github.com/mickael-menu/zk/blob/main/docs/notebook.md
-is-supported zk && export ZK_NOTEBOOK_DIR="$NOTES"
+supports zk && export ZK_NOTEBOOK_DIR="$NOTES"
 
 # https://taskwarrior.org/docs/configuration
-is-supported task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
+supports task && export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 
 # https://github.com/jschlatow/taskopen
-is-supported taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
+supports taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 # https://github.com/charmbracelet/glamour
-is-supported glow || is-supported gh && export GLAMOUR_STYLE="dark"
+supports glow || is-supported gh && export GLAMOUR_STYLE="dark"
 
-if is-supported fzf; then
+if supports fzf; then
     export FZF_COMPLETION_TRIGGER='~~'
     export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window "right:50%"
     --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down,ctrl-v:toggle-preview,ctrl-x:toggle-sort,ctrl-h:toggle-header"
@@ -177,12 +177,12 @@ if is-supported fzf; then
 
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
-    is-supported fd &&
+    supports fd &&
         export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git --exclude node_modules'
 fi
 
 # https://github.com/dylanaraps/fff
-if is-supported fff; then
+if supports fff; then
     export FFF_COL2=7
     export FFF_COL5=0
 
@@ -203,11 +203,11 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 # my tools                                                    {{{
 
-is-supported matpat && export MATPAT_OPEN_CMD="$BROWSER"
-is-supported _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
+supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
+supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
 # https://github.com/benelan/git-mux
-if is-supported git-mux; then
+if supports git-mux; then
     # shellcheck disable=2155
     export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user || echo "benelan")"
 

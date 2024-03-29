@@ -84,13 +84,22 @@ return {
         { "<leader>fh", function() builtin.help_tags() end, desc = "Find help tags (telescope)" },
         { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
         { "<leader>f:", function() builtin.command_history() end, desc = "Find command history (telescope)" },
-        { "<leader>fw", function() builtin.grep_string({ search = vim.fn.expand "<cword>", hidden = true }) end, desc = "Find word under cursor (telescope)" },
-        { "<leader>fW", function() builtin.grep_string({ search = vim.fn.expand "<cWORD>", hidden = true }) end, desc = "Find WORD under cursor (telescope)" },
         { "<leader>/", function() builtin.current_buffer_fuzzy_find() end, desc = "Find in buffer (telescope)" },
+
+        {
+          "<leader>fw",
+          function() telescope_cwd("grep_string", { search = vim.fn.expand "<cword>", hidden = true }) end,
+          desc = "Find word under cursor (telescope)",
+        },
+        {
+          "<leader>fW",
+          function() telescope_cwd("grep_string", { search = vim.fn.expand "<cWORD>", hidden = true }) end,
+          desc = "Find WORD under cursor (telescope)",
+        },
         { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
         { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
         { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
-        { "<C-/>", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
+        { "<C-\\>", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
 
         -- LSP keymaps
         { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
@@ -120,9 +129,9 @@ return {
         { "<leader>gfb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
         { "<leader>gfs", function() builtin.git_status() end, desc = "Git status (telescope)" },
         { "<leader>gfS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
-        { "<leader>gfC", function() builtin.git_commits() end, desc = "Git history (telescope)" },
-        { "<leader>gfc", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
-        { "<leader>gfc", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
+        { "<leader>gfH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
+        { "<leader>gfh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
+        { "<leader>gfh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
       }
     end,
     opts = function()

@@ -254,6 +254,7 @@ M.icons = {
     collapsed = "🞂",
     expanded = "🞃",
     eol = "⤶",
+    linebreak = "↳ ",
     nbsp = "␣",
     extends = "»",
     precedes = "«",

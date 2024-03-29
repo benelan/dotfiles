@@ -15,7 +15,7 @@
     gpgSign = true
 
 [core]
-    excludesfile = ~/.dotfiles/assets/templates/.gitignore
+    excludesfile = ~/.config/git/ignore
     ; Disable line endings output conversion.
     autocrlf = input
     ; Speed up commands involving untracked files such as `git status`.

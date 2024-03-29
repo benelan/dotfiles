@@ -47,7 +47,7 @@ keymap_file keymap
 bgextviewer 1
 
 extbrowser8 url=%s && printf %s "$url" | xargs tmux set-buffer
-extbrowser9 url=%s && printf %s "$url" | os-cb
+extbrowser9 url=%s && printf %s "$url" | cb
 
 editor vim -c "set filetype=html"
 

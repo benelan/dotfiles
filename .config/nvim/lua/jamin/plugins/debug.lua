@@ -1,8 +1,9 @@
 local res = require "jamin.resources"
 
 return {
+  -- add print statements for debugging
   {
-    "andrewferrier/debugprint.nvim", -- add print statements for debugging
+    "andrewferrier/debugprint.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "DeleteDebugPrints",
     keys = {
@@ -12,8 +13,9 @@ return {
     opts = {},
   },
   ------------------------------------------------------------------------------
+  -- Debug Adapter Protocol: https://microsoft.github.io/debug-adapter-protocol/
   {
-    "mfussenegger/nvim-dap", -- debug adapter protocol
+    "mfussenegger/nvim-dap",
     cmd = {
       "DapContinue",
       "DapLoadLaunchFromJSON",
@@ -148,10 +150,6 @@ return {
       -------------------------------------------------------------------------
       -- Available Debug Adapters:
       --   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
-      -- Adapter configuration and installation instructions:
-      --   https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
-      -- Debug Adapter protocol:
-      --   https://microsoft.github.io/debug-adapter-protocol/
 
       for _, adapter in ipairs {
         "chrome",
@@ -178,6 +176,8 @@ return {
       -------------------------------------------------------------------------
       -- Configurations
       -------------------------------------------------------------------------
+      -- Adapter configuration and installation instructions:
+      --   https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
 
       local function url_prompt(default)
         default = default or "http://localhost:3000"

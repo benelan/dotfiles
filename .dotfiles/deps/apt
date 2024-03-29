@@ -49,9 +49,6 @@ libtool-bin
 libxcb-xfixes0-dev
 libxkbcommon-dev
 lsb-release
-lua5.4
-luajit
-luarocks
 lynx
 make
 mount

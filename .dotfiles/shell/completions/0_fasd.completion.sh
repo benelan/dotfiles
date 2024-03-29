@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # fasd - https://github.com/clvv/fasd
-if is-supported fasd; then
+if supports fasd; then
     # bash command mode completion
     _fasd_bash_cmd_complete() {
         # complete command after "-e"

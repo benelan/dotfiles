@@ -40,10 +40,10 @@ unset file
 # Source tool shell integrations                                        {{{
 # --------------------------------------------------------------------- {|}
 
-is-supported broot && [ -f ~/.config/broot/launcher/bash/br ] &&
+supports broot && [ -f ~/.config/broot/launcher/bash/br ] &&
     . ~/.config/broot/launcher/bash/br
 
-if is-supported fzf; then
+if supports fzf; then
     [ -f ~/dev/lib/fzf/shell/completion.bash ] &&
         . ~/dev/lib/fzf/shell/completion.bash
     [ -f ~/dev/lib/fzf/shell/key-bindings.bash ] &&
@@ -71,6 +71,6 @@ unset file
 # --------------------------------------------------------------------- {|}
 
 # ensure tmux is running
-[ -z "$TMUX" ] && is-supported git-mux && git-mux project "$PWD"
+[ -z "$TMUX" ] && supports git-mux && git-mux project "$PWD"
 
 # --------------------------------------------------------------------- }}}

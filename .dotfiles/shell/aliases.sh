@@ -12,9 +12,9 @@ alias sudo='sudo '
 alias mkd='mkdir -p'
 
 # delete to trashcan if possible
-if is-supported gio; then
+if supports gio; then
     alias r='gio trash'
-elif is-supported trash-put; then
+elif supports trash-put; then
     alias r='trash-put'
 else
     alias r='rm -rf'
@@ -31,9 +31,9 @@ alias se='sudo ${EDITOR:-vim}'
 alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar scs ic et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
-_color=$(is-supported "ls --color" --color -G)
-_time_style=$(is-supported "ls --time-style=long-iso" --time-style=long-iso)
-_group_dirs=$(is-supported "ls --group-directories-first" --group-directories-first)
+_color=$(supports "ls --color" --color -G)
+_time_style=$(supports "ls --time-style=long-iso" --time-style=long-iso)
+_group_dirs=$(supports "ls --group-directories-first" --group-directories-first)
 
 # shellcheck disable=2139
 alias ls="ls $_color $_group_dirs"
@@ -60,7 +60,7 @@ unset _color _time_style _group_dirs
 alias grep='grep --color=auto'
 
 # Colorizes diff output, if possible
-is-supported colordiff && alias diff='colordiff'
+supports colordiff && alias diff='colordiff'
 
 # List declared aliases and functions
 # shellcheck disable=2139
@@ -83,7 +83,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-if is-supported fasd; then
+if supports fasd; then
     alias za='fasd -a'
     alias zs='fasd -si'
     alias zsd='fasd -sid'
@@ -115,7 +115,7 @@ fi
 # --------------------------------------------------------------------- {|}
 
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
-if is-supported date; then
+if supports date; then
     alias now='date +"%Y-%m-%dT%H:%M:%S"'
     alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
 fi
@@ -161,7 +161,7 @@ alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
 
 # node/npm
-if is-supported npm; then
+if supports npm; then
     alias ni="npm install"
     alias nu="npm uninstall"
     alias ns="npm start"
@@ -175,7 +175,7 @@ if is-supported npm; then
     alias npxplz='npx $(fc -ln -1)'
 
     # select an npm script to run from package.json using fzf
-    is-supported fzf && is-supported jq &&
+    supports fzf && supports jq &&
         alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
 
     # Complete these steps before using the aliases for switching between NPM accounts:
@@ -200,25 +200,25 @@ fi
 # Ubuntu/GNOME                                                          {{{
 # --------------------------------------------------------------------- {|}
 
-if is-supported apt; then
+if supports apt; then
     alias apti='sudo apt install'
     alias aptup='sudo apt update && sudo apt upgrade && sudo apt autoremove && sudo apt autoclean && sudo apt autopurge'
 fi
 
 # Locks the session.
-is-supported gnome-screensaver-command && alias afk='gnome-screensaver-command --lock'
+supports gnome-screensaver-command && alias afk='gnome-screensaver-command --lock'
 
 # --------------------------------------------------------------------- }}}
 # Taskwarrior                                                           {{{
 # --------------------------------------------------------------------- {|}
 
-if is-supported task; then
+if supports task; then
     alias t="task"
     alias ta="task add"
 
-    is-supported taskopen && alias to="taskopen"
-    is-supported tasksh && alias tsh="tasksh"
-    is-supported taskwarrior-tui && alias tui="taskwarrior-tui"
+    supports taskopen && alias to="taskopen"
+    supports tasksh && alias tsh="tasksh"
+    supports taskwarrior-tui && alias tui="taskwarrior-tui"
 
     # shellcheck disable=2154
     [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
@@ -267,7 +267,7 @@ alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 # Docker                                                                {{{
 # --------------------------------------------------------------------- {|}
 
-if is-supported docker; then
+if supports docker; then
     ## general docker aliases                                 {{{
 
     # display names of running containers

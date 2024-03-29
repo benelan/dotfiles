@@ -325,7 +325,7 @@ keymap  ss      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN
 #### open current cursor link in new tab and hide hinting mode
 keymap  st      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; TAB_LINK"
 #### copy link to clipboard (e.g press f-SPC then 4fy to yank url)
-keymap  sy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" | os-cb 2>/dev/null ;"
+keymap  sy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" | cb 2>/dev/null ;"
 #### jump to link number and open it
 keymap  so       COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
 #### jump to link number and open it in new tab
@@ -427,7 +427,7 @@ keymap  ?     ISEARCH_BACK
 #  184:ASSIGNED>
 #  185:<NOT       Go to the previous mark (PREV_MARK)
 #  186:ASSIGNED>
-#  187:<NOT       Mark all occurences of a pattern (REG_MARK)
+#  187:<NOT       Mark all occurrences of a pattern (REG_MARK)
 #  188:ASSIGNED>
 # }}}
 

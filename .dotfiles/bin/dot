@@ -918,10 +918,16 @@ _themes+="wallpaper "
 
 install_theme_wallpaper() {
     wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
+    profile="$HOME/Pictures/Profiles/fry.png"
 
     if ! [ -f "$wallpaper" ]; then
         curl -Lo "$wallpaper" \
-            https://i.imgur.com/XCaXGFB.png >/dev/null 2>&1 || true
+            https://benelan.dev/wallpaper.png >/dev/null 2>&1 || true
+    fi
+
+    if ! [ -f "$profile" ]; then
+        curl -Lo "$profile" \
+            https://benelan.dev/profile.png >/dev/null 2>&1 || true
     fi
 
     case "$XDG_CURRENT_DESKTOP" in

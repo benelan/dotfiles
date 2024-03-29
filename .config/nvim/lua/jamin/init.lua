@@ -99,6 +99,7 @@ require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
     border = "rounded",
+    backdrop = 100,
     icons = vim.g.use_devicons and {} or {
       cmd = "",
       config = "",
