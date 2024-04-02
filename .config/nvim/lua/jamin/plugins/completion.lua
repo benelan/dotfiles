@@ -27,6 +27,7 @@ return {
   -- completes git commits and github issues/pull requests
   {
     "petertriho/cmp-git",
+    enabled = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = { "gitcommit", "markdown", "octo" },
     config = function()
@@ -141,7 +142,6 @@ return {
             -- show the item's completion source in the results
             vim_item.menu = ({
               buffer = i "BUF",
-              codeium = i "SNIP",
               copilot = i "SNIP",
               luasnip = i "SNIP",
               dictionary = i "DICT",
@@ -216,7 +216,6 @@ return {
 
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "codeium", group_index = 2, priority = 99999 },
           { name = "copilot", group_index = 2 },
           { name = "luasnip", group_index = 2 },
           { name = "git", group_index = 2 },
@@ -383,6 +382,7 @@ return {
   {
     "Exafunction/codeium.vim",
     cond = vim.env.USE_CODEIUM == "1",
+    event = "InsertEnter",
     init = function()
       local filetypes = {}
 
@@ -392,25 +392,11 @@ return {
         filetypes[ft] = false
       end
 
-      filetypes[""] = true
-
       vim.g.codeium_filetypes = filetypes
       vim.g.codeium_enabled = true
       -- vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
     end,
   },
-  -- {
-  --   "Exafunction/codeium.nvim", -- integrates Codeium with cmp
-  --   enabled = false,
-  --   cond = vim.env.USE_CODEIUM == "1",
-  --   cmd = "Codeium",
-  --   event = "InsertEnter",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   config = function()
-  --     vim.api.nvim_set_hl(0, "CmpItemKindCodeium", { link = "Blue" })
-  --     require("codeium").setup()
-  --   end,
-  -- },
   -----------------------------------------------------------------------------
   -- "github/copilot.vim", -- official Copilot plugin
   {

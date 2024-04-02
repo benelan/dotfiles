@@ -3,7 +3,7 @@ local res = require "jamin.resources"
 return {
   {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    lazy = false,
+    event = "BufReadPost",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     keys = {
       { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
@@ -378,6 +378,7 @@ return {
   -- Enhances the lua language server with neovim APIs
   {
     "folke/neodev.nvim",
+    enabled = false,
     lazy = true,
     opts = { setup_jsonls = false },
   },

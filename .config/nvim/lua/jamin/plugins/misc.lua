@@ -120,40 +120,6 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  -- jump around within buffers
-  {
-    "folke/flash.nvim",
-    -- enabled = false,
-    opts = {
-      exclude = require("jamin.resources").filetypes.excluded,
-      modes = { search = { enabled = false }, char = { enabled = false } },
-    },
-    keys = {
-      -- default options: exact mode, multi window, all directions, with a backdrop
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Flash remote" },
-      {
-        "S",
-        mode = { "n", "o", "x" },
-        function() require("flash").treesitter { label = { rainbow = { enabled = true } } } end,
-        desc = "Flash treesitter",
-      },
-      {
-        "R",
-        mode = { "n", "o", "x" },
-        -- show labeled treesitter nodes around the search matches
-        function() require("flash").treesitter_search { label = { rainbow = { enabled = true } } } end,
-        desc = "Flash treesitter search",
-      },
-      {
-        "<C-s>",
-        mode = "c",
-        function() require("flash").toggle() end,
-        desc = "Toggle flash search",
-      },
-    },
-  },
-  -----------------------------------------------------------------------------
   -- embed neovim in the browser
   {
     "glacambre/firenvim",

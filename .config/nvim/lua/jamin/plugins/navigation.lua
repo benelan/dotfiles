@@ -8,39 +8,11 @@ return {
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
-    keys = { { "-", "<CMD>Vifm<CR>" } },
+    keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "<leader>-", "<CMD>Vifm<CR>" } },
     init = function()
       -- define keymap here to fix lazy loading related startup error
-      keymap("n", "-", "<CMD>Vifm<CR>", "Vifm")
-    end,
-  },
-  -----------------------------------------------------------------------------
-  -- show vim's undo history tree in telescope, with searchable diffs
-  {
-    "debugloop/telescope-undo.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    keys = { { "<leader>fu", "<CMD>silent Telescope undo<CR>", desc = "Undo history (telescope)" } },
-    opts = {
-      extensions = {
-        undo = {
-          use_delta = false,
-          -- side_by_side = true,
-          -- layout_strategy = "vertical",
-          layout_config = {
-            height = 0.95,
-            width = 0.95,
-            preview_height = 0.69,
-            preview_width = 0.75,
-            preview_cutoff = 0,
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      local has_ts, ts = pcall(require, "telescope")
-      if not has_ts then return end
-      ts.setup(opts)
-      ts.load_extension "undo"
+      keymap("n", "<leader>-", "<CMD>Vifm<CR>", "Vifm")
+      keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
     end,
   },
   -----------------------------------------------------------------------------
@@ -192,7 +164,6 @@ return {
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",
           history = { limit = 420 },
-          set_env = { ["COLORTERM"] = "truecolor" },
           dynamic_preview_title = true,
           mappings = { i = mappings, n = mappings },
           file_ignore_patterns = { "%.git/", "node_modules/", "dist/", "build/" },
@@ -235,7 +206,7 @@ return {
   -----------------------------------------------------------------------------
   {
     "ThePrimeagen/harpoon",
-    -- event = "VeryLazy",
+    event = "VeryLazy",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
@@ -321,10 +292,10 @@ return {
         "<M-m>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():append()
+          require("harpoon"):list():add()
           vim.cmd.Rcd()
         end,
-        desc = "Harpoon append file",
+        desc = "Harpoon add file",
       },
       {
         "<M-S-m>",

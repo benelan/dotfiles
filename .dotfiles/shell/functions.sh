@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim:filetype=sh foldmethod=marker:
 
 # Utilities                                                             {{{
 # --------------------------------------------------------------------- {|}
@@ -47,11 +48,6 @@ vipe() {
     ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
     cat "$tmp"
 }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## use vifm to cd                                             {{{
-
-vcd() { cd "$(command vifm --choose-dir - "$@")" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## make one or more directories and cd into the last one      {{{
@@ -115,8 +111,30 @@ if supports pandoc; then
 
     # Convert markdown to HTML
     md2html() {
-        pandoc "$1.md" --output="$1.html" --standalone \
-            --css="$DOTFILES/assets/pandoc.css" --from=gfm --to=html5
+        mkdir -p "$DOTFILES/cache/pandoc"
+        ! [ -f "$DOTFILES/cache/pandoc/styles.css" ] &&
+            curl -Lso "$DOTFILES/cache/pandoc/styles.css" \
+                https://raw.githubusercontent.com/jez/pandoc-markdown-css-theme/master/public/css/theme.css
+        ! [ -f "$DOTFILES/cache/pandoc/highlight.css" ] &&
+            curl -Lso "$DOTFILES/cache/pandoc/highlight.css" \
+                https://raw.githubusercontent.com/jez/pandoc-markdown-css-theme/master/public/css/skylighting-paper-theme.css
+        ! [ -f "$DOTFILES/cache/pandoc/template.html" ] &&
+            curl -Lso "$DOTFILES/cache/pandoc/template.html" \
+                https://raw.githubusercontent.com/jez/pandoc-markdown-css-theme/master/template.html5
+
+        pandoc \
+            --katex \
+            --from markdown+tex_math_single_backslash \
+            --to html5+smart \
+            --template="$DOTFILES/cache/pandoc/template.html" \
+            --css="$DOTFILES/cache/pandoc/styles.css" \
+            --css="$DOTFILES/cache/pandoc/highlight.css" \
+            --toc \
+            --wrap=none \
+            --output="$DOTFILES/cache/pandoc/output.html" \
+            "$1"
+
+        o "$DOTFILES/cache/pandoc/output.html"
     }
 fi
 
@@ -214,14 +232,6 @@ killport() { wtfport "$1" | xargs kill -9; }
 ## find real from shortened url                               {{{
 
 unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## generate a certificate and key for local testing           {{{
-
-crt() {
-    openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout "$1.key" -out "$1.crt" \
-        -subj "/CN=$1\/emailAddress=${2:-ben}@$1/C=US/ST=Oregon/L=Portland/O=Jamin, Inc."
-}
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## list hosts defined in ssh config                           {{{
@@ -482,14 +492,14 @@ if supports fzf; then
 
     fkill() {
         if [ "$UID" != "0" ]; then
-            kill_pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+            pids="$(ps -f -u "$UID" | sed 1d | fzf -m | awk '{print $2}')"
         else
-            kill_pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+            pids="$(ps -ef | sed 1d | fzf -m | awk '{print $2}')"
         fi
-        if [ "x$kill_pid" != "x" ]; then
-            echo "$kill_pid" | xargs kill -"${1:-9}"
+        if [ -n "$pids" ]; then
+            echo "$pids" | xargs kill -"${1:-9}"
         fi
-        unset kill_pid
+        unset pids
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}

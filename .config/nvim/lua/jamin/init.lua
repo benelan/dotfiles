@@ -30,13 +30,6 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
   "zipPlugin",
 })
 
-if vim.g.neovide then
-  vim.g.neovide_transparency = 0.9
-  vim.g.neovide_cursor_trail_size = 0
-  vim.g.neovide_scroll_animation_length = 0
-  vim.g.neovide_cursor_animation_length = 0
-end
-
 -- icons can be turned on/off per machine using the environment variable
 vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
   and (
@@ -94,7 +87,7 @@ vim.opt.rtp:prepend(lazypath)
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   change_detection = { notify = false },
-  checker = { enabled = true, notify = false },
+  checker = { enabled = vim.g.use_devicons, notify = false },
   dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {

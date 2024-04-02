@@ -1,3 +1,4 @@
+# vim:filetype=dircolors foldmethod=marker:
 # Designed for dircolors (GNU coreutils) 5.97
 
 # Installation instructions:
@@ -9,6 +10,11 @@
 # pipes. 'all' adds color characters to all output. 'none' shuts colorization
 # off.
 COLOR tty
+
+# EIGHTBIT, followed by '1' for on, '0' for off. (8-bit output)
+# EIGHTBIT 0
+
+# TERM {{{1
 
 # Below, there should be one TERM entry for each termtype that is colorizable
 TERM alacritty
@@ -90,10 +96,8 @@ TERM xterm-debian
 TERM xterm-kitty
 TERM xterm-termite
 
-# EIGHTBIT, followed by '1' for on, '0' for off. (8-bit output)
-# EIGHTBIT 1
+# By file type {{{1
 
-#############################################################################
 # Below are the color init strings for the basic file types. A color init
 # string consists of one or more of the following numeric codes:
 #
@@ -103,27 +107,6 @@ TERM xterm-termite
 #   30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
 # Background color codes:
 #   40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
-#
-
-# For testing
-.ANSI-30-black 30
-.ANSI-01;30-brblack 01;30
-.ANSI-31-red 31
-.ANSI-01;31-brred 01;31
-.ANSI-32-green 32
-.ANSI-01;32-brgreen 01;32
-.ANSI-33-yellow 33
-.ANSI-01;33-bryellow 01;33
-.ANSI-34-blue 34
-.ANSI-01;34-brblue 01;34
-.ANSI-35-magenta 35
-.ANSI-01;35-brmagenta 01;35
-.ANSI-36-cyan 36
-.ANSI-01;36-brcyan 01;36
-.ANSI-37-white 37
-.ANSI-01;37-brwhite 01;37
-
-### By file type
 
 # global default
 NORMAL 00
@@ -131,16 +114,18 @@ NORMAL 00
 FILE 00
 # directory
 DIR 01;34
-# symbolic link
-LINK 1;33
-MULTIHARDLINK 1;4;33
+# symbolic/hard links
+LINK 4;34
+MULTIHARDLINK 3;4;34
 
-# pipe, socket, block device, character device (black bg)
 SOCK 1;4;35
+DOOR 1;4;35
+
 FIFO 36;40
-DOOR 33;40 # Solaris 2.5 and later
 BLK  35;40
 CHR  31;40
+
+# By file attributes {{{1
 
 # SETUID 30;41                    # file that is setuid (u+s)
 # SETGID 30;43                    # file that is setgid (g+s)
@@ -149,81 +134,130 @@ CHR  31;40
 # OTHER_WRITABLE 30;42            # dir that is other-writable (o+w) and not sticky
 # STICKY 37;44                    # dir with the sticky bit set (+t) and not other-writable
 
-#############################################################################
-### By file attributes
-
 # Orphaned symlinks
 ORPHAN  1;4;31
 # ... and the files that orphaned symlinks point to
-MISSING 1;4;31
+MISSING 1;3;4;31
 
 # files with execute permission
-EXEC 01;31  # Unix
-.cmd 01;31  # Win
-.exe 01;31  # Win
-.com 01;31  # Win
-.bat 01;31  # Win
-.reg 01;31  # Win
-.app 01;31  # OSX
+EXEC 01;31      # Unix
 .AppImage 01;31 # Linux
+.app 01;31      # OSX
+.bat 01;31      # Win
+.cmd 01;31      # Win
+.com 01;31      # Win
+.exe 01;31      # Win
+.reg 01;31      # Win
 
-#############################################################################
-### By extension
+# By file extensions {{{1
 
 # List any file extensions like '.gz' or '.tar' that you would like ls
 # to colorize below. Put the extension, a space, and the color init string.
 # (and any comments you want to add after a '#')
 
-### Text formats
+# Magenta {{{2
 
-# Text that we can edit with a regular editor
-.bib 32
-.md 32
-.mkd 32
-.org 32
-.rst 32
-.tex 32
-.txt 32
+# documentation text files
+.adoc 35
+.asciidoc 35
+.bib 35
+.info 35
+.md 35
+.mkd 35
+.org 35
+.rst 35
+.tex 35
+.txt 35
 
-# Source text
-.h 32
-.hpp 32
-.c 32
+# important documentation text files
+*CHANGELOG 01;35
+*CHANGELOG.md 01;35
+*CHANGES 01;35
+*CHANGES.md 01;35
+*CODEOWNERS 01;35
+*CODEOWNERS.md 01;35
+*CODE_OF_CONDUCT 01;35
+*CODE_OF_CONDUCT.md 01;35
+*CONTRIBUTING 01;35
+*CONTRIBUTING.md 01;35
+*CONTRIBUTORS 01;35
+*CONTRIBUTORS.md 01;35
+*COPYING 01;35
+*COPYING.md 01;35
+*CREDITS 01;35
+*CREDITS.md 01;35
+*FAQ.md 01;35
+*GUIDE.md 01;35
+*HISTORY 01;35
+*HISTORY.md 01;35
+*INDEX.md 01;35
+*LICENSE 01;35
+*LICENSE.md 01;35
+*MAINTAINERS 01;35
+*MAINTAINERS.md 01;35
+*README 01;35
+*README.md 01;35
+*SECURITY 01;35
+*SECURITY.md 01;35
+
+# Green {{{2
+
+# source code text
 .C 32
-.cc 32
-.cgi 32
-.cpp 32
-.cxx 32
-.objc 32
-.cl 32
 .astro 32
 .bash 32
+.c 32
+.cc 32
+.cgi 32
+.cjs 32
+.cl 32
+.clj 32
+.cljc 32
+.cljs 32
+.cljw 32
+.clojure 32
 .coffee 32
+.cpp 32
 .csh 32
 .css 32
-.csv 32
+.ctp 32
+.cxx 32
+.ejs 32
 .el 32
+.eml 32
 .erb 32
 .go 32
+.h 32
 .haml 32
 .hbs 32
+.hi 32
+.hpp 32
 .hs 32
 .htm 32
 .html 32
+.htmx 32
+.http 32
 .jade 32
 .java 32
+.jhtm 32
 .js 32
-.json 32
-.json5 32
-.jsonc 32
 .jsx 32
 .l 32
 .less 32
+.lhs 32
 .liquid 32
+.lisp 32
 .lua 32
 .man 32
 .mdx 32
+.mht 32
+.mjs 32
+.ml 32
+.mustache 32
 .n 32
+.nim 32
+.nimble 32
+.objc 32
 .p 32
 .php 32
 .pl 32
@@ -231,108 +265,121 @@ EXEC 01;31  # Unix
 .pod 32
 .pug 32
 .py 32
+.pyc 32
+.r 32
 .rb 32
 .rdf 32
-.ron 32
 .rs 32
 .sass 32
+.sc 32
+.scala 32
+.scm 32
 .scss 32
 .sh 32
-.vim 32
-.zsh 32
-.cjs 32
-.mjs 32
 .shtml 32
 .sql 32
 .sv 32
 .svelte 32
 .svh 32
-.tex 32
-.toml 32
+.swift 32
+.t 32
 .ts 32
-.tsv 32
 .tsx 32
+.twig 32
 .v 32
+.vala 32
+.vapi 32
 .vh 32
 .vhd 32
+.vim 32
 .vue 32
-.xml 32
-.yaml 32
-.yml 32
+.xhtml 32
+.zig 32
+.zsh 32
 
-.0 32
-.1 32
-.2 32
-.3 32
-.4 32
-.5 32
-.6 32
-.7 32
-.8 32
-.9 32
-
-# important text files
-*CHANGELOG 01;32
-*CHANGELOG.md 01;32
-*CHANGES 01;32
-*CONTRIBUTING.md 01;32
+# important source files
 *Cargo.toml 01;32
+*build.rs 01;32
+*configure.ac 01;32
+*go.mod 01;32
+*Containerfile 01;32
 *Dockerfile 01;32
-*HISTORY 01;32
-*LICENSE 01;32
-*LICENSE.md 01;32
 *Makefile 01;32
-*README 01;32
-*README.md 01;32
 *index.html 01;32
 *package.json 01;32
 
+# Cyan {{{2
+
+# plaintext data/config
+.csv 36
+.hjson 36
+.json 36
+.json5 36
+.jsonc 36
+.proto 36
+.protobuf 36
+.ron 36
+.rss 36
+.toml 36
+.tsv 36
+.xml 36
+.yaml 36
+.yml 36
+
 # config files
-*config 03;32
-.Xauthority 03;32
-.Xdefaults 03;32
-.Xmodmap 03;32
-.Xresources 03;32
-.bash_login 03;32
-.bash_logout 03;32
-.bash_profile 03;32
-.bashrc 03;32
-.cfg 03;32
-.conf 03;32
-.curlrc 03;32
-.dircolors 03;32
-.editorconfig 03;32
-.eslintrc 03;32
-.gitattributes 03;32
-.gitconfig 03;32
-.gitignore 03;32
-.gitmodules 03;32
-.ini 03;32
-.inputrc 03;32
-.markdownlintrc 03;32
-.npmrc 03;32
-.prettierignore 03;32
-.prettierrc 03;32
-.profile 03;32
-.taskopenrc 03;32
-.taskrc 03;32
-.vimrc 03;32
-.wgetrc 03;32
-.xinitrc 03;32
-.xprofile 03;32
-.xsession 03;32
-.xsessionrc 03;32
-.zlogin 03;32
-.zlogout 03;32
-.zprofile 03;32
-.zshenv 03;32
-.zshrc 03;32
+*authorized_keys 03;36
+*cfg 03;36
+*conf 03;36
+*config 03;36
+*known_hosts 03;36
+*rc 03;36
+.Xauthority 03;36
+.Xdefaults 03;36
+.Xmodmap 03;36
+.Xresources 03;36
+.bash_login 03;36
+.bash_logout 03;36
+.bash_profile 03;36
+.dircolors 03;36
+.ini 03;36
+.list 03;36
+.profile 03;36
+.xprofile 03;36
+.xsession 03;36
+.zlogin 03;36
+.zlogout 03;36
+.zprofile 03;36
+.zshenv 03;36
 
-### Multimedia formats
+# git
+.diff 03;36
+.git 03;36
+.gitattributes 03;36
+.github 03;36
+.gitmodules 03;36
+.patch 03;36
 
-# Image
+# systemd
+*@.service 03;36
+.automount 03;36
+.device 03;36
+.mount 03;36
+.path 03;36
+.service 03;36
+.snapshot 03;36
+.socket 03;36
+.swap 03;36
+.target 03;36
+.timer 03;36
+
+# Yellow {{{2
+
+# image
+.HEIC 33
 .JPG 33
+.NEF 33
 .PNG 33
+.avif 33
 .bmp 33
 .cgm 33
 .dl 33
@@ -340,9 +387,13 @@ EXEC 01;31  # Unix
 .emf 33
 .eps 33
 .gif 33
+.heic 33
+.icns 33
+.ico 33
 .jpeg 33
 .jpg 33
 .mng 33
+.nef 33
 .pbm 33
 .pcx 33
 .pgm 33
@@ -356,37 +407,50 @@ EXEC 01;31  # Unix
 .tga 33
 .tif 33
 .tiff 33
+.webp 33
 .xbm 33
 .xcf 33
 .xpm 33
 .xwd 33
-.xwd 33
 .yuv 33
-.NEF 33 # Nikon RAW format
-.nef 33
-.webp 33
-.heic 33
-.HEIC 33
-.avif 33
 
-# Audio
+# audio
+.3ga 33
+.S3M 33
 .aac 33
-.au  33
+.aiff 33
+.alac 33
+.amr 33
+.ape 33
+.au 33
+.cda 33
+.dat 33
+.dts 33
+.fcm 33
 .flac 33
 .m4a 33
 .mid 33
 .midi 33
 .mka 33
+.mod 33
 .mp3 33
+.mp4a 33
 .mpa 33
 .mpeg 33
 .mpg 33
-.ogg  33
+.oga 33
+.ogg 33
 .opus 33
+.pcm 33
 .ra 33
+.s3m 33
+.sid 33
 .wav 33
+.wma 33
+.wv 33
+.wvc 33
 
-# Video
+# video
 .MOV 33
 .anx 33
 .asf 33
@@ -416,106 +480,215 @@ EXEC 01;31  # Unix
 .webm 33
 .wmv 33
 
-### Misc
+# subtitles
+.ass 3;33
+.srt 3;33
+.ssa 3;33
+.sub 3;33
+.sup 3;33
+.vtt 3;33
 
-# Binary document formats and multimedia source
-.doc 31
-.docx 31
-.dot 31
-.dotx 31
-.ods 31
-.odt 31
-.ots 31
-.ott 31
-.rtf 31
-.xls 31
-.xlsx 31
-.ppt 31
-.pptx 31
-.odp 31
-.otp 31
-.fla 31
-.psd 31
-.pdf 31
+# binary document formats and multimedia source
+.ai 1;33
+.cbr 1;33
+.cbz 1;33
+.comp 1;33
+.djvu 1;33
+.doc 1;33
+.docm 1;33
+.docx 1;33
+.dot 1;33
+.dotx 1;33
+.dwg 1;33
+.epub 1;33
+.fla 1;33
+.frag 1;33
+.mobi 1;33
+.odb 1;33
+.odp 1;33
+.ods 1;33
+.odt 1;33
+.otp 1;33
+.ots 1;33
+.ott 1;33
+.pdf 1;33
+.ply 1;33
+.ppt 1;33
+.pptx 1;33
+.psd 1;33
+.rtf 1;33
+.spv 1;33
+.stl 1;33
+.vert 1;33
+.wgsl 1;33
+.wrl 1;33
+.xls 1;33
+.xlsx 1;33
 
-# Archives, compressed
-.7z   35
-.Z    35
-.apk  35
-.arj  35
-.bin  35
-.bz   35
-.bz2  35
-.cab  35  # Win
-.deb  35
-.dmg  35  # OSX
-.gem  35
-.gz   35
-.iso  35
-.jar  35
-.msi  35  # Win
-.rar  35
-.rpm  35
-.tar  35
-.tbz  35
-.tbz2 35
-.tgz  35
-.tx   35
-.war  35
-.xpi  35
-.xz   35
-.z    35
-.zip  35
-.zst  35
+# Red {{{2
 
-#############################################################################
-# Your customizations
+# archives, compressed
+.7z 31
+.WARC 31
+.Z 31
+.a 31
+.apk 31
+.arj 31
+.bin 31
+.br 31
+.bsp 31
+.bz 31
+.bz2 31
+.cab 31
+.cpio 31
+.crx 31
+.deb 31
+.dmg 31
+.gem 31
+.gz 31
+.ipa 31
+.iso 31
+.jar 31
+.lrz 31
+.lz 31
+.lzma 31
+.lzo 31
+.msi 31
+.pak 31
+.rar 31
+.rpm 31
+.s7z 31
+.sz 31
+.tar 31
+.tbz 31
+.tbz2 31
+.tgz 31
+.tx 31
+.war 31
+.warc 31
+.xpi 31
+.xz 31
+.z 31
+.zip 31
+.zipx 31
+.zoo 31
+.zpaq 31
+.zst 31
+.zstd 31
+.zz 31
 
-# For optimal on light bg (but too prominent on dark bg), use white 01;34
-# For universal scheme, use brightgreen 01;32
-# Unimportant text files
+# Blue {{{2
+
+# data
+.sqlite 34
+.db 34
+.mdb 34
+.mde 34
+.localstorage 34
+
+# security
+*id_dsa 03;34
+*id_ecdsa 03;34
+*id_ed25519 03;34
+*id_rsa 03;34
+.env 03;34
+.aes 03;34
+.asc 03;34
+.bfe 03;34
+.crt 03;34
+.enc 03;34
+.gpg 03;34
+.kbx 03;34
+.key 03;34
+.p12 03;34
+.p7s 03;34
+.pem 03;34
+.pgp 03;34
+.pub 03;34
+.sig 03;34
+.signature 03;34
+
+# Gray {{{2
+
+# Unimportant files
 *# 37
+*Quickfix.txt 37
 *Session.vim 37
+*cache 37
+*go.sum 37
+*ignore 37
+*lock 37
+*lockfile 37
 *package-lock.json 37
+*projections.json 37
 *~ 37
+.0 37
+.1 37
+.2 37
+.3 37
+.4 37
+.5 37
+.6 37
+.7 37
+.8 37
+.9 37
+.BUP 37
+.aria2 37
+.bak 37
 .bash_history 37
+.d.ts 37
+.dist 37
+.dll 37
+.dump 37
+.err 37
+.error 37
+.ics 37
 .log 37
+.mdump 37
+.o 37
+.off 37
+.old 37
+.org_archive 37
+.orig 37
+.pacnew 37
+.part 37
+.pid 37
+.r[0-9]{0,2} 37
+.rlib 37
+.sassc 37
+.stackdump 37
+.state 37
+.stderr 37
 .sudo_as_admin_successful 37
+.swo 37
+.swp 37
+.tmp 37
 .viminfo 37
 .wget-hsts 37
+.z[0-9]{0,2} 37
+.zcompdump 37
+.zwc 37
+.zx[0-9]{0,2} 37
+.db-shm 37
+.db-wal 37
+.sqlite-shm 37
+.sqlite-wal 37
 
 
-# For optimal on dark bg (but too prominent on light bg), change to 01;33
-# For universal scheme, use brightcyan 01;36
-# Unimportant non-text files
-*.v 36
-.bak 36
-.cache 36
-.dist 36
-.lock 36
-.off 36
-.old 36
-.org_archive 36
-.orig 36
-.swo 36
-.swp 36
-
-# custom file type
-.3des 34
-.aes 34
-.asc 34
-.asc 34
-.crt 34
-.env 34
-.db 34
-.npmrc* 34
-.enc 34
-.gpg 34
-.kbx 34
-.key 34
-.pem 34
-.pgp 34
-.pub 34
-.sqlite 34
-
-# vim:ft=dircolors
+# For testing {{{2
+.ANSI-30-black 30
+.ANSI-01;30-brblack 01;30
+.ANSI-31-red 31
+.ANSI-01;31-brred 01;31
+.ANSI-32-green 32
+.ANSI-01;32-brgreen 01;32
+.ANSI-33-yellow 33
+.ANSI-01;33-bryellow 01;33
+.ANSI-34-blue 34
+.ANSI-01;34-brblue 01;34
+.ANSI-35-magenta 35
+.ANSI-01;35-brmagenta 01;35
+.ANSI-36-cyan 36
+.ANSI-01;36-brcyan 01;36
+.ANSI-37-white 37
+.ANSI-01;37-brwhite 01;37

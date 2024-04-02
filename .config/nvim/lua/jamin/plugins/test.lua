@@ -18,6 +18,7 @@ return {
         virtual_text = {
           format = function(diagnostic)
             -- Replace newline and tab characters with space for more compact diagnostics
+            ---@diagnostic disable-next-line: redundant-return-value
             return diagnostic.message
               :gsub("\n", " ")
               :gsub("\t", " ")

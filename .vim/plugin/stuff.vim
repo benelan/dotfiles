@@ -1,12 +1,8 @@
 if exists('g:loaded_jamin_stuff') || &cp | finish | endif
 let g:loaded_jamin_stuff = 1
 
-"----------------------------------------------------------------------{|}
-"  Settings                                                            {{{
-"----------------------------------------------------------------------{|}
-
-"" misc globals                                               {{{
-
+" Settings {{{1
+"" misc globals {{{2
 let g:rust_recommended_style = 0
 let g:markdown_recommended_style = 0
 let g:qf_disable_statusline = 1
@@ -20,40 +16,16 @@ let g:markdown_fenced_languages = [
     \ 'tsx=typescriptreact', 'jsx=javascriptreact'
 \ ]
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" netrw                                                      {{{
-
-let g:netrw_banner = 0
-let g:netrw_altfile = 1
-let g:netrw_preview = 1
-let g:netrw_special_syntax = 1
-let g:netrw_winsize = 25
-
-if exists("*netrw_gitignore#Hide")
-    let g:netrw_list_hide = netrw_gitignore#Hide()
-endif
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" tmux integration                                           {{{
-
+"" tmux integration {{{2
 " Intelligently navigate tmux panes and Vim splits using the same keys.
 " See https://sunaku.github.io/tmux-select-pane.html
 let progname = substitute($VIM, '.*[/\\]', '', '')
 set title titlestring=%{progname}\ %f\ +%l\ #%{tabpagenr()}.%{winnr()}
 if &term =~ '^screen' && !has('nvim') | exe "set t_ts=\e]2; t_fs=\7" | endif
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-"----------------------------------------------------------------------}}}
-"  Keymaps                                                             {{{
-"----------------------------------------------------------------------{|}
-
-"" general keymaps                                            {{{
-
+" Keymaps  {{{1
+"" general keymaps {{{2
 nnoremap <Backspace> <C-^>
-
- " Open a new tab of the current buffer and cursor position.
-nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<CR>
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
@@ -80,18 +52,20 @@ nnoremap & :&&<CR>
 " When joining, do the right thing to join up function definitions
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" insert, command, and operator keymaps                      {{{
+" Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
+nnoremap <silent> - <CMD>execute (
+    \ &filetype ==# "netrw"
+        \ ? "normal! -"
+        \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
+\)<CR>
 
+"" insert, command, and operator keymaps {{{2
 " Add a line above/below the cursor from insert mode
 inoremap <C-Down> <C-O>O
 inoremap <C-Up> <C-O>o
 
 cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
 cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
-
-" Expand the buffer's directory
-cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
 " Use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
@@ -115,24 +89,22 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
     execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
 endfor
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" system clipboard                                           {{{
+"" system clipboard {{{2
+for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
+    execute 'nnoremap ' . char . ' "_' . char
+    execute 'vnoremap ' . char . ' "_' . char
+endfor
 
-nnoremap x "_x
-vnoremap x "_x
+for char in [ 'y', 'p', 'P' ]
+    execute 'nnoremap <leader>' . char . ' "+' . char
+    execute 'vnoremap <leader>' . char . ' "+' . char
+endfor
 
-nnoremap <leader>y "+y
-vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
-
-nnoremap <leader>p "+p
-vnoremap <leader>p "+p
 
 nnoremap gY <CMD>let @+=@*<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" spelling                                                   {{{
-
+"" spelling {{{2
 " fix the next/previous misspelled word
 nnoremap [S [s1z=
 nnoremap ]S ]s1z=
@@ -143,46 +115,35 @@ nnoremap <M-z> 1z=
 " fix the previous misspelled word w/o moving cursor
 inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" clear search highlights and reset syntax                   {{{
-
+"" clear search highlights and reset syntax {{{2
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
 inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" ex commands (vimgrep, search/replace, etc)                 {{{
-
+"" ex commands (vimgrep, search/replace, etc) {{{2
 " Edit contents of register
 nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
             \ .' = '. string(getreg(v:register))<CR><c-f><left>
 
 " start ex command for vimgrep
-nnoremap <leader>Eg :<C-U>vimgrep /\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>Eg :<C-U>vimgrep /\<<C-r><C-w>\>>\c/j **<S-Left><S-Left><Right>
 
-"" replace word under cursor in whole buffer
+" replace word under cursor in whole buffer
 nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" plug keymaps                                               {{{
-
+"" plug keymaps {{{2
 nnoremap g: <Plug>(ColonOperator)
-
 nnoremap gs <Plug>(SubstituteOperator)
 vnoremap gs <Plug>(SubstituteOperator)
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-"----------------------------------------------------------------------}}}
-"  Functions and user commands                                         {{{
-"----------------------------------------------------------------------{|}
-
+" Functions and user commands {{{1
+"" utility functions {{{2
 function! s:warn(msg)
   echohl WarningMsg | echom a:msg | echohl None
 endfunction
 
-"" open GitHub PR in browser for <arg> or current             {{{
-"" See $ gh pr view --help
+"" open GitHub PR in browser for <arg> or current {{{2
+" See $ gh pr view --help
 function! s:GitHubPR(bang, args) abort
     if !executable("gh")
         return s:warn("gh cli required: https://cli.github.com")
@@ -203,9 +164,7 @@ endfunction
 
 command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" quickfix list to/from file for later access                {{{
-
+"" quickfix list to/from file for later access {{{2
 " https://github.com/whiteinge/dotfiles/blob/master/.vimrc
 " Save the current quickfix list to a file.
 command! QfSave call getqflist()
@@ -227,9 +186,7 @@ command! Qf2Ll call getqflist()
     \ ->filter({i, x -> x.bufnr == bufnr()})
     \ ->setloclist(0)
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" grep all files in the quickfix, buffer, or argument lists  {{{
-
+"" grep all files in the quickfix, buffer, or argument lists {{{2
 command! -nargs=* GrepQfList call getqflist()
     \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
     \ ->sort() ->uniq() ->join(' ')
@@ -250,18 +207,7 @@ function! M(x, y)
     return a:x == '' || a:x == v:false ? '' : a:y . a:x
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" system grep function and user command                      {{{
-
-function! Grep(...)
-    return system(join([&grepprg] + [expandcmd(join(a:000, " "))], " "))
-endfunction
-
-command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" toggle netrw open/close                                    {{{
-
+"" toggle netrw open/close {{{2
 function! s:NetrwToggle()
   try | Rexplore
   catch | Explore
@@ -271,10 +217,8 @@ endfunction
 command! Netrw call <sid>NetrwToggle()
 nnoremap <silent> <leader>e <CMD>Netrw<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" go to next/previous merge conflict hunks                   {{{
-
-"" from https://github.com/tpope/vim-unimpaired
+"" go to next/previous merge conflict hunks {{{2
+" from https://github.com/tpope/vim-unimpaired
 function! s:findConflict(reverse) abort
   call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
 endfunction
@@ -282,9 +226,7 @@ endfunction
 nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
 nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" save the value of the last visual selection                {{{
-
+"" save the value of the last visual selection {{{2
 function! VisualSelection(...) range
     let l:saved_reg = @"
     execute "normal! vgvy"
@@ -308,10 +250,8 @@ endfunction
 " Use the function to search/replace visually selected text
 xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" delete buffer without closing window                       {{{
-
-"" https://stackoverflow.com/a/6271254
+"" delete buffer without closing window {{{2
+" https://stackoverflow.com/a/6271254
 function s:BGoneHeathen(action, bang)
   let l:cur = bufnr("%")
   if buflisted(bufnr("#")) | buffer # | else | bnext | endif
@@ -327,9 +267,7 @@ command! -bang -complete=buffer -nargs=? Bwipeout
 
 nnoremap <silent> <leader><Backspace> <CMD>Bdelete<CR>
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" fugitive open commit's diff per file                       {{{
-
+"" fugitive open commit's diff per file {{{2
 " https://github.com/tpope/vim-fugitive/issues/132#issuecomment-649516204
 command! DiffHistory call s:view_git_history()
 
@@ -370,14 +308,9 @@ function! s:add_mappings() abort
   wincmd p
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-"----------------------------------------------------------------------}}}
-"  Autocommands                                                        {{{
-"----------------------------------------------------------------------{|}
-
+" Autocommands {{{1
 if has("autocmd")
-    "" miscellaneous autocmds                                 {{{
+    "" miscellaneous autocmds {{{2
     augroup jamin_misc
         autocmd!
         " equalize window sizes when vim is resized
@@ -396,9 +329,7 @@ if has("autocmd")
         autocmd QuickFixCmdPost l* nested lwindow
       augroup END
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" set global marks by filetype when leaving buffers      {{{
-
+    "" set global marks by filetype when leaving buffers {{{2
     augroup jamin_global_marks
         autocmd!
         " Clear actively used file marks to prevent jumping to other projects
@@ -475,9 +406,7 @@ if has("autocmd")
                     \ normal! mN
     augroup END
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" filetype-specific options                              {{{
-
+    "" filetype-specific options {{{2
     augroup jamin_filetype_options
         autocmd!
         autocmd FileType * setlocal formatoptions-=o
@@ -487,9 +416,7 @@ if has("autocmd")
                     \ | nnoremap <silent> <buffer> q :q<CR>
     augroup END
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" automatically toggle some options on enter/leave       {{{
-
+    "" automatically toggle some options on enter/leave {{{2
     augroup jamin_toggle_options
         autocmd!
         "  autocmd BufEnter,FocusGained,WinEnter * if &number | set relativenumber | endif
@@ -499,9 +426,7 @@ if has("autocmd")
         autocmd BufLeave term://* stopinsert
     augroup END
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" use skeletons when creating specific new files         {{{
-
+    "" use skeletons when creating specific new files {{{2
     augroup jamin_skeletons
         autocmd!
         autocmd BufNewFile .gitignore 0r ~/.config/git/ignore
@@ -510,8 +435,7 @@ if has("autocmd")
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
     augroup END
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" set makeprg or use a builtin compiler when possible    {{{
+    "" set makeprg or use a builtin compiler when possible {{{2
     augroup jamin_compilers_formatters
         autocmd!
 
@@ -558,8 +482,4 @@ if has("autocmd")
                 \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
         endif
     augroup END
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
-
-"----------------------------------------------------------------------}}}

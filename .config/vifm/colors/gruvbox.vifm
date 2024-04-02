@@ -1,4 +1,6 @@
-" gruvbox color scheme approximation for vifm
+" vim:filetype=vifm foldmethod=marker:
+
+" gruvbox color scheme approximation for vifm {{{1
 
 " Reset all styles first
 highlight clear
@@ -28,3 +30,36 @@ highlight Device	cterm=none,standout	ctermfg=214	ctermbg=default
 highlight Fifo		cterm=none	ctermfg=172	ctermbg=default
 highlight Socket	cterm=bold	ctermfg=223	ctermbg=default
 
+" generated using vifm-convert-dircolors {{{1
+
+" generic file types {{{2
+highlight BrokenLink cterm=bold,underline ctermfg=red ctermbg=default
+highlight Device cterm=none ctermfg=red ctermbg=black
+highlight Directory cterm=bold ctermfg=blue ctermbg=default
+highlight Executable cterm=bold ctermfg=red ctermbg=default
+highlight Fifo cterm=none ctermfg=cyan ctermbg=black
+highlight Link cterm=bold,underline ctermfg=yellow ctermbg=default
+highlight Socket cterm=bold,underline ctermfg=magenta ctermbg=default
+highlight Win cterm=none ctermfg=default ctermbg=default
+
+" file name specific highlight {{{2
+highlight /^.*\.(ANSI-01;30-brblack)$/I cterm=bold ctermfg=black ctermbg=default
+highlight /^.*\.(ANSI-01;31-brred|AppImage|app|bat|cmd|com|exe|reg)$/I cterm=bold ctermfg=red ctermbg=default
+highlight /^.*(Cargo.toml|Containerfile|Dockerfile|Makefile|\.ANSI-01;32-brgreen|build.rs|configure.ac|go.mod|index.html|package.json)$/I cterm=bold ctermfg=green ctermbg=default
+highlight /^.*\.(ANSI-01;33-bryellow)$/I cterm=bold ctermfg=yellow ctermbg=default
+highlight /^.*\.(ANSI-01;34-brblue)$/I cterm=bold ctermfg=blue ctermbg=default
+highlight /^.*(CHANGELOG|CHANGELOG.md|CHANGES|CHANGES.md|CODEOWNERS|CODEOWNERS.md|CODE_OF_CONDUCT|CODE_OF_CONDUCT.md|CONTRIBUTING|CONTRIBUTING.md|CONTRIBUTORS|CONTRIBUTORS.md|COPYING|COPYING.md|CREDITS|CREDITS.md|FAQ.md|GUIDE.md|HISTORY|HISTORY.md|INDEX.md|LICENSE|LICENSE.md|MAINTAINERS|MAINTAINERS.md|README|README.md|SECURITY|SECURITY.md|\.ANSI-01;35-brmagenta)$/I cterm=bold ctermfg=magenta ctermbg=default
+highlight /^.*\.(ANSI-01;36-brcyan)$/I cterm=bold ctermfg=cyan ctermbg=default
+highlight /^.*\.(ANSI-01;37-brwhite)$/I cterm=bold ctermfg=white ctermbg=default
+highlight /^.*(\.aes|\.asc|\.bfe|\.crt|\.enc|\.env|\.gpg|\.kbx|\.key|\.p12|\.p7s|\.pem|\.pgp|\.pub|\.sig|\.signature|id_dsa|id_ecdsa|id_ed25519|id_rsa)$/I ctermfg=blue ctermbg=default
+highlight /^.*(@.service|\.Xauthority|\.Xdefaults|\.Xmodmap|\.Xresources|\.automount|\.bash_login|\.bash_logout|\.bash_profile|\.device|\.diff|\.dircolors|\.git|\.gitattributes|\.github|\.gitmodules|\.ini|\.list|\.mount|\.patch|\.path|\.profile|\.service|\.snapshot|\.socket|\.swap|\.target|\.timer|\.xprofile|\.xsession|\.zlogin|\.zlogout|\.zprofile|\.zshenv|authorized_keys|cfg|conf|config|known_hosts|rc)$/I ctermfg=cyan ctermbg=default
+highlight /^.*\.(ai|cbr|cbz|comp|djvu|doc|docm|docx|dot|dotx|dwg|epub|fla|frag|mobi|odb|odp|ods|odt|otp|ots|ott|pdf|ply|ppt|pptx|psd|rtf|spv|stl|vert|wgsl|wrl|xls|xlsx)$/I cterm=bold ctermfg=yellow ctermbg=default
+highlight /^.*\.(ANSI-30-black)$/I cterm=none ctermfg=black ctermbg=default
+highlight /^.*\.(7z|ANSI-31-red|WARC|Z|a|apk|arj|bin|br|bsp|bz|bz2|cab|cpio|crx|deb|dmg|gem|gz|ipa|iso|jar|lrz|lz|lzma|lzo|msi|pak|rar|rpm|s7z|sz|tar|tbz|tbz2|tgz|tx|war|warc|xpi|xz|z|zip|zipx|zoo|zpaq|zst|zstd|zz)$/I cterm=none ctermfg=red ctermbg=default
+highlight /^.*\.(ANSI-32-green|C|astro|bash|c|cc|cgi|cjs|cl|clj|cljc|cljs|cljw|clojure|coffee|cpp|csh|css|ctp|cxx|ejs|el|eml|erb|go|h|haml|hbs|hi|hpp|hs|htm|html|htmx|http|jade|java|jhtm|js|jsx|l|less|lhs|liquid|lisp|lua|man|mdx|mht|mjs|ml|mustache|n|nim|nimble|objc|p|php|pl|pm|pod|pug|py|pyc|r|rb|rdf|rs|sass|sc|scala|scm|scss|sh|shtml|sql|sv|svelte|svh|swift|t|ts|tsx|twig|v|vala|vapi|vh|vhd|vim|vue|xhtml|zig|zsh)$/I cterm=none ctermfg=green ctermbg=default
+highlight /^.*\.(3ga|ANSI-33-yellow|HEIC|JPG|MOV|NEF|PNG|S3M|aac|aiff|alac|amr|anx|ape|asf|au|avi|avif|axv|bmp|cda|cgm|dat|dl|dts|dvi|emf|eps|fcm|flac|flc|fli|flv|gif|gl|heic|icns|ico|jpeg|jpg|m2v|m4a|m4v|mid|midi|mka|mkv|mng|mod|mov|mp3|mp4|mp4a|mp4v|mpa|mpeg|mpg|nef|nuv|oga|ogg|ogm|ogv|ogx|opus|pbm|pcm|pcx|pgm|png|ppm|pps|ppsx|ps|qt|ra|rm|rmvb|s3m|sid|svg|svgz|swf|tga|tif|tiff|vob|wav|webm|webp|wma|wmv|wv|wvc|xbm|xcf|xpm|xwd|yuv)$/I cterm=none ctermfg=yellow ctermbg=default
+highlight /^.*\.(ANSI-34-blue|db|localstorage|mdb|mde|sqlite)$/I cterm=none ctermfg=blue ctermbg=default
+highlight /^.*\.(ANSI-35-magenta|adoc|asciidoc|bib|info|md|mkd|org|rst|tex|txt)$/I cterm=none ctermfg=magenta ctermbg=default
+highlight /^.*\.(ANSI-36-cyan|csv|hjson|json|json5|jsonc|proto|protobuf|ron|rss|toml|tsv|xml|yaml|yml)$/I cterm=none ctermfg=cyan ctermbg=default
+highlight /^.*(#|Quickfix.txt|Session.vim|\.0|\.1|\.2|\.3|\.4|\.5|\.6|\.7|\.8|\.9|\.ANSI-37-white|\.BUP|\.aria2|\.bak|\.bash_history|\.d.ts|\.db-shm|\.db-wal|\.dist|\.dll|\.dump|\.err|\.error|\.ics|\.log|\.mdump|\.o|\.off|\.old|\.org_archive|\.orig|\.pacnew|\.part|\.pid|\.r[0-9]{0,2}|\.rlib|\.sassc|\.sqlite-shm|\.sqlite-wal|\.stackdump|\.state|\.stderr|\.sudo_as_admin_successful|\.swo|\.swp|\.tmp|\.viminfo|\.wget-hsts|\.z[0-9]{0,2}|\.zcompdump|\.zwc|\.zx[0-9]{0,2}|cache|go.sum|ignore|lock|lockfile|package-lock.json|projections.json|~)$/I cterm=none ctermfg=white ctermbg=default
+highlight /^.*\.(ass|srt|ssa|sub|sup|vtt)$/I ctermfg=yellow ctermbg=default

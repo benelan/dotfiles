@@ -1,13 +1,11 @@
-" vim:filetype=vifm foldmethod=marker:
+" vim:filetype=vim foldmethod=marker:
 " Sample configuration file for vifm (last updated: 2 June, 2023)
 " You can edit this file by hand.
 " The " character at the beginning of a line comments out the line.
 " Blank lines are ignored.
 " The basic format for each item is shown with an example.
 
-" Main settings                                                         {{{
-" --------------------------------------------------------------------- {|}
-
+" Main settings {{{1
 " Command used to edit files in various contexts.  The default is vim.
 " If you would like to use another vi clone such as Elvis or Vile
 " you will need to change this setting.
@@ -123,10 +121,7 @@ set tuioptions=psuv
 " make filter cmd behave like vim's Cfilter and favor <c-i> over <tab> binding
 set cpoptions=s
 
-" --------------------------------------------------------------------- }}}
-" Bookmarks                                                             {{{
-" --------------------------------------------------------------------- {|}
-
+" Bookmarks {{{1
 " :mark mark /full/directory/path [filename]
 mark h ~/
 mark v ~/.config/nvim/
@@ -137,10 +132,7 @@ execute 'mark l' fnameescape($LIB)
 execute 'mark w' fnameescape($WORK)
 execute 'mark c' fnameescape($CALCITE)
 
-" --------------------------------------------------------------------- }}}
-" Commands                                                              {{{
-" --------------------------------------------------------------------- {|}
-
+" Commands {{{1
 " These are some of the macros that can be used in the action part:
 "  %a for user arguments
 "  %c for current file under the cursor
@@ -168,10 +160,7 @@ command! vgrep nvim "+grep %a"
 command! reload :write | restart full
 command! bak :clone %c.bak
 
-" --------------------------------------------------------------------- }}}
-" File types association                                                {{{
-" --------------------------------------------------------------------- {|}
-
+" File types association {{{1
 " :filetype pattern1,pattern2 defaultprogram,program2
 " :fileviewer pattern1,pattern2 consoleviewer
 "
@@ -445,10 +434,7 @@ fileviewer *[^/] bat --color always --wrap never --pager never %c -p
 "     filetype * start, explorer %"f &
 " endif
 
-" --------------------------------------------------------------------- }}}
-" Panel configuration example                                           {{{
-" --------------------------------------------------------------------- {|}
-
+" Panel configuration example {{{1
 " Customize view columns a bit (enable ellipsis for truncated file names)
 " set viewcolumns=-{name}..,6{}.
 
@@ -458,10 +444,7 @@ fileviewer *[^/] bat --color always --wrap never --pager never %c -p
 " Filter-out build and temporary files
 " filter! {*.lo,*.o,*.d,*.class,*.pyc,*.pyo,.*~}
 
-" --------------------------------------------------------------------- }}}
-" Sample keyboard mappings                                              {{{
-" --------------------------------------------------------------------- {|}
-
+" Sample keyboard mappings {{{1
 " Start shell in current directory
 nnoremap S :shell<cr>
 
@@ -615,10 +598,7 @@ nnoremap <a-o> :sync %c<cr>
 " Swap panes
 nnoremap <a-u> <c-w>x
 
-" --------------------------------------------------------------------- }}}
-" Various customization examples                                        {{{
-" --------------------------------------------------------------------- {|}
-
+" Various customization examples {{{1
 " Use ag (the silver searcher) instead of grep
 " set grepprg='ag --line-numbers %i %a %s'
 
@@ -642,10 +622,7 @@ nnoremap <a-u> <c-w>x
 "     screen
 " endif
 
-" --------------------------------------------------------------------- }}}
-" Miscellaneous                                                         {{{
-" --------------------------------------------------------------------- {|}
-
+" Miscellaneous {{{1
 command! FZFfind : set noquickview
         \| let $FZF_PICK = term('fd | fzf 2>/dev/tty')
         \| if $FZF_PICK != ''
@@ -676,5 +653,3 @@ if expand($USE_DEVICONS) != "0" &&
     \ || expand($TERM) == "wezterm"
   source ~/.config/vifm/scripts/icons.vifm
 endif
-
-" --------------------------------------------------------------------- }}}

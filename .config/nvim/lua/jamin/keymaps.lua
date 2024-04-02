@@ -15,15 +15,14 @@
 
 -- open uri/path under the cursor or line
 keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
-
 -- open current directory with file explorer
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
 -- -- remaps to center movement in the screen
--- keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
--- keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
--- keymap("n", "n", "nzzzv", "Next search result")
--- keymap("n", "N", "Nzzzv", "Previous search result")
+keymap("n", "<C-u>", "<C-u>M", "Scroll half page up")
+keymap("n", "<C-d>", "<C-d>M", "Scroll half page down")
+keymap("n", "n", "nzzzv", "Next search result")
+keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- Clear search highlight and escape
 keymap({ "i", "n" }, "<esc>", "<CMD>noh<CR><esc>", "Clear hls and escape")
@@ -61,31 +60,6 @@ vim.keymap.set("n", "k", "(v:count == 0 ? 'gk' : 'k')", opts)
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
 
--- Add empty lines before and after cursor line
-keymap(
-  "n",
-  "[<space>",
-  "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
-  "Put empty line above"
-)
-keymap(
-  "n",
-  "]<space>",
-  "<CMD>call append(line('.'), repeat([''], v:count1))<CR>",
-  "Put empty line below"
-)
-
--- Reselect latest changed, put, or yanked text
-vim.keymap.set("n", "gV", '"`[" . strpart(getregtype(), 0, 1) . "`]"', {
-  expr = true,
-  silent = true,
-  noremap = true,
-  desc = "Visually select changed text",
-})
-
-keymap("n", "<leader>i", "<CMD>Inspect<CR>", "Inspect")
-keymap("n", "<leader>I", "<CMD>InspectTree<CR>", "InspectTree")
-
 -------------------------------------------------------------------------------
 ----> Lists
 -------------------------------------------------------------------------------
@@ -94,7 +68,7 @@ keymap("n", "<leader>I", "<CMD>InspectTree<CR>", "InspectTree")
 keymap("n", "]t", "<CMD>tabnext<CR>", "Next tab")
 keymap("n", "[t", "<CMD>tabprevious<CR>", "Previous tab")
 keymap("n", "]T", "<CMD>tablast<CR>", "Last tab")
-keymap("n", "[T", "<CMD>tabfirst<CR>", "Previous tab")
+keymap("n", "[T", "<CMD>tabfirst<CR>", "First tab")
 
 -- buffer
 keymap("n", "]b", "<CMD>bnext<CR>", "Next buffer")
@@ -102,11 +76,11 @@ keymap("n", "[b", "<CMD>bprevious<CR>", "Previous buffer")
 keymap("n", "]B", "<CMD>blast<CR>", "Last buffer")
 keymap("n", "[B", "<CMD>bfirst<CR>", "First buffer")
 
--- quickfix
-keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix")
-keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix")
-keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix")
-keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix")
+-- argument
+keymap("n", "]a", "<CMD>next<CR>", "Next argument")
+keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
+keymap("n", "]A", "<CMD>last<CR>", "Last argument")
+keymap("n", "[A", "<CMD>first<CR>", "First argument")
 
 -- -- location
 keymap("n", "]l", "<CMD>lnext<CR>", "Next location")
@@ -114,11 +88,14 @@ keymap("n", "[l", "<CMD>lprevious<CR>", "Previous location")
 keymap("n", "]L", "<CMD>llast<CR>", "Last location")
 keymap("n", "[L", "<CMD>lfirst<CR>", "First location")
 
--- argument
-keymap("n", "]a", "<CMD>next<CR>", "Next argument")
-keymap("n", "[a", "<CMD>previous<CR>", "Previous argument")
-keymap("n", "]A", "<CMD>last<CR>", "Last argument")
-keymap("n", "[A", "<CMD>first<CR>", "First argument")
+-- quickfix
+keymap("n", "]q", "<CMD>cnext<CR>", "Next quickfix item")
+keymap("n", "[q", "<CMD>cprevious<CR>", "Previous quickfix item")
+keymap("n", "]Q", "<CMD>clast<CR>", "Last quickfix item")
+keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix item")
+
+keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
+keymap("n", "<M-i>", "<CMD>cnewer<CR>", "Next quickfix list")
 
 keymap("n", "]d", function() vim.diagnostic.goto_next { float = true } end, "Next diagnostic")
 keymap("n", "[d", function() vim.diagnostic.goto_prev { float = true } end, "Previous diagnostic")
@@ -176,35 +153,17 @@ keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from 
 ----> Windows
 -------------------------------------------------------------------------------
 
--- create splits
-keymap("n", "<M-v>", "<C-w>v", "Vertical split")
-keymap("n", "<M-s>", "<C-w>s", "Horizontal split")
-
----- navigate
+--- navigate
 keymap("n", "<C-h>", "<C-w>h", "Focus window left")
 keymap("n", "<C-j>", "<C-w>j", "Focus window below")
 keymap("n", "<C-k>", "<C-w>k", "Focus window above")
 keymap("n", "<C-l>", "<C-w>l", "Focus window right")
-
-keymap("v", "<C-h>", "<C-\\><C-N><C-w><C-h>", "Focus window left")
-keymap("v", "<C-j>", "<C-\\><C-N><C-w><C-j>", "Focus window below")
-keymap("v", "<C-k>", "<C-\\><C-N><C-w><C-k>", "Focus window above")
-keymap("v", "<C-l>", "<C-\\><C-N><C-w><C-l>", "Focus window right")
 
 -- resize
 keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease horizontal window size")
 keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase horizontal window size")
 keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease vertical window size")
 keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase vertical window size")
-
---  move
-keymap("n", "<M-Left>", "<C-w>H", "Move window left")
-keymap("n", "<M-Down>", "<C-w>J", "Move window down")
-keymap("n", "<M-Up>", "<C-w>K", "Move window up")
-keymap("n", "<M-Right>", "<C-w>L", "Move window right")
-
-keymap({ "n", "i" }, "<M-o>", "<C-w>o", "Close all other windows")
--- keymap({ "n", "i" }, "<M-q>", "<CMD>quit<CR>", "Quit window")
 
 -------------------------------------------------------------------------------
 ----> Tabs
@@ -218,9 +177,6 @@ keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
 ----> Buffers
 -------------------------------------------------------------------------------
 
-keymap({ "n", "i", "v" }, "<C-s>", "<CMD>write<CR>", "Write buffer")
-keymap({ "n", "i" }, "<M-x>", "<CMD>bdelete<CR>", "Close buffer")
-
 keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------
@@ -229,18 +185,8 @@ keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 keymap("n", "<leader>sw", "<CMD>set wrap!<CR><CMD>set wrap?<CR>", "Toggle wrap")
 keymap("n", "<leader>ss", "<CMD>set spell!<CR><CMD>set spell?<CR>", "Toggle spell")
-keymap("n", "<leader>sp", "<CMD>set paste!<CR><CMD>set paste?<CR>", "Toggle paste")
-keymap("n", "<leader>sh", "<CMD>set hlsearch!<CR><CMD>set hlsearch?<CR>", "Toggle hlsearch")
-keymap("n", "<leader>si", "<CMD>set incsearch!<CR><CMD>set incsearch?<CR>", "Toggle incsearch")
 keymap("n", "<leader>sl", "<CMD>set list!<CR><CMD>set list?<CR>", "Toggle list")
 keymap("n", "<leader>sx", "<CMD>set cursorline!<CR><CMD>set cursorline?<CR>", "Toggle cursorline")
-keymap("n", "<leader>sM", "<CMD>set modifiable!<CR><CMD>set modifiable?<CR>", "Toggle modifiable")
-keymap(
-  "n",
-  "<leader>sn",
-  "<CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>",
-  "Toggle relative line number"
-)
 keymap(
   "n",
   "<leader>sy",
@@ -257,15 +203,8 @@ keymap(
 
 keymap(
   "n",
-  "<leader>sf",
-  ':execute "set foldcolumn=" . (&foldcolumn == "0" ? "1" : "0")<CR><CMD>set foldcolumn?<CR>',
-  "Toggle foldcolumn"
-)
-
-keymap(
-  "n",
   "<leader>s|",
-  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR><CMD>set colorcolumn?<CR>',
+  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "79" : "")<CR><CMD>set colorcolumn?<CR>',
   "Toggle colorcolumn"
 )
 

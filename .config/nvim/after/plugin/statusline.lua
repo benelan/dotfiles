@@ -1,4 +1,3 @@
-local has_navic, navic = pcall(require, "nvim-navic")
 local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
 
@@ -106,7 +105,8 @@ end
 
 ---Show number of updatable plugins.
 local function lazy_updates(fallback)
-  return has_lazy
+  return vim.g.use_devicons
+      and has_lazy
       and lazy.has_updates()
       and string.format("  %s%s  ", fmt_hl(highlights.lazy), lazy.updates())
     or fallback and fallback()
@@ -128,13 +128,6 @@ local function debug_state(fallback)
   end
 
   return fallback and fallback() or ""
-end
-
----Show navic breadcrumb.
-local function navic_breadcrumbs(fallback)
-  return has_navic and navic.is_available() and navic.get_location()
-    or fallback and fallback()
-    or ""
 end
 
 function JaminStatusLine()

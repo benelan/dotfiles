@@ -3,10 +3,7 @@ let g:loaded_jamin_tabline = 1
 
 set tabline=%!JaminTabLine()
 
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  {|}
-"" get the current working directory                          {{{
-
+"" get the current working directory {{{1
 function! TabCWD() abort
     let cwd = fnamemodify(getcwd(), ":~")
     if cwd isnot# "~/"
@@ -17,9 +14,7 @@ function! TabCWD() abort
     endif
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" get the buffer count and current index                     {{{
-
+"" get the buffer count and current index {{{1
 function! BufferInfo() abort
     let buffers = filter(range(1, bufnr("$")), {i, v ->
                 \  buflisted(v) && getbufvar(v, "&filetype") isnot# "qf"
@@ -34,9 +29,7 @@ function! BufferInfo() abort
                 \ : ""
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" get the tab count                                          {{{
-
+"" get the tab count {{{1
 function! TabCount() abort
     let count_tabs = tabpagenr("$")
 
@@ -45,9 +38,7 @@ function! TabCount() abort
             \ : ""
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" display the tabline                                        {{{
-
+"" display the tabline {{{1
 function! JaminTabLine()
     let s = ""
 
@@ -62,8 +53,7 @@ function! JaminTabLine()
 
         let s .= "%" . tab . "T"
         let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
-        let s .= " " . tab . ":"
-        let s .= "[" . (bufname == "" ? "No Name" : fnamemodify(bufname, ":t")) . "]:" . bufnr
+        let s .= " " .bufnr . ":[" . (bufname == "" ? "No Name" : fnamemodify(bufname, ":t")) . "]"
         let s .= (bufmodified ? " [+] " : " ")
 
         if tab != tabpagenr("$") && tab != tabpagenr() && tab + 1 != tabpagenr() 
@@ -77,5 +67,3 @@ function! JaminTabLine()
     let s .= "%#TabLineFill#" . "%( %{TabCount()} %)"
     return s
 endfunction
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

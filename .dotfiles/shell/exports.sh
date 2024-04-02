@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
+# vim:filetype=sh foldmethod=marker:
 
-# directories                                                 {{{
-
+# directories {{{1
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -15,9 +15,7 @@ export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
 export CALCITE="$WORK/calcite-design-system"
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# system settings                                             {{{
-
+# system settings {{{1
 export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
@@ -40,9 +38,7 @@ fi
 # Don't warn me about new mail
 unset -v MAILCHECK
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# default applications                                        {{{
-
+# default applications {{{1
 EDITOR="nano"
 if supports nvim; then
     EDITOR="nvim"
@@ -111,18 +107,14 @@ fi
 
 export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# golang                                                      {{{
-
+# golang {{{1
 if supports go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/go"
     export GOFLAGS="-buildvcs=false -trimpath"
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# javascript                                                  {{{
-
+# javascript {{{1
 supports volta && export VOLTA_HOME="$HOME/.volta"
 supports bun && export BUN_INSTALL="$HOME/.bun"
 
@@ -135,14 +127,9 @@ if supports node; then
 
     # Use sloppy mode by default, matching web browsers.
     export NODE_REPL_MODE="sloppy"
-
-    # increase allocated memory
-    export NODE_OPTIONS="--max-old-space-size=8192"
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# misc tools                                                  {{{
-
+# misc tools {{{1
 # https://github.com/clvv/fasd#tweaks
 supports fasd && export _FASD_DATA="$DOTFILES/cache/fasd"
 
@@ -210,9 +197,7 @@ if supports fff; then
     export FFF_FAV9="$NOTES"
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# my tools                                                    {{{
-
+# my tools {{{1
 supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
 supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
@@ -238,5 +223,3 @@ if [ -n "$(
 )" ]; then
     export USE_DEVICONS=1
 fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#vim:filetype=sh foldmethod=marker:
 
 # Adopted from:
 # https://github.com/niraj998/dotfiles/blob/454fe793e8960a024945fc93134ee810a30fe0d6/.config/rofi/music/music
@@ -13,10 +14,7 @@
 #   - [rofi command]: rofi, notify-send (optional)
 #   - [lyrics command]: jq
 
-# --------------------------------------------------------------------- {|}
-# Configuration variables                                               {{{
-# --------------------------------------------------------------------- {|}
-
+# Configuration variables {{{1
 # # uncomment to use mpd instead of playerctl
 # source="MPD"
 
@@ -40,10 +38,7 @@ next_icon="󰒭"
 lyrics_icon=" "
 player_icon="󰍂 "
 
-# --------------------------------------------------------------------- }}}
-# Usage info                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Usage info {{{1
 _src="$0"
 
 has() { command -v "$1" >/dev/null 2>&1; }
@@ -75,10 +70,7 @@ EOF
     fi
 }
 
-# --------------------------------------------------------------------- }}}
-# Playerctl source                                                      {{{
-# --------------------------------------------------------------------- {|}
-
+# Playerctl source {{{1
 playerctl_cache_source() {
     rm -f "$album_cover" "$lyrics_file" "$cached_player"
     echo "${players:-$(playerctl -l 2>/dev/null | cut -d. -f1)}" |
@@ -136,10 +128,7 @@ playerctl_get_metadata() {
     [ -n "$playlist" ] && playlist="($playlist)"
 }
 
-# --------------------------------------------------------------------- }}}
-# MPD source                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# MPD source {{{1
 mpd_get_metadata() {
     ffmpeg -i "$music_dir/$(mpc current -f %file%)" \
         -vf scale=500:500 "${album_cover}" -y ||
@@ -159,10 +148,7 @@ mpd_get_metadata() {
     [ -n "$playlist" ] && playlist="($playlist)"
 }
 
-# --------------------------------------------------------------------- }}}
-# Lyrics command                                                        {{{
-# --------------------------------------------------------------------- {|}
-
+# Lyrics command {{{1
 view_lyrics() {
     if ! has jq; then
         help "jq is required for the lyrics feature"
@@ -203,10 +189,7 @@ view_lyrics() {
     fi
 }
 
-# --------------------------------------------------------------------- }}}
-# Rofi command                                                          {{{
-# --------------------------------------------------------------------- {|}
-
+# Rofi command {{{1
 rofi_create_config() {
     cat >"$rofi_config_path" <<EOF
 @theme "/usr/share/rofi/themes/$rofi_theme.rasi"
@@ -282,10 +265,7 @@ $artist"
     )"
 }
 
-# --------------------------------------------------------------------- }}}
-# Parse args                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Parse args and execute {{{1
 main() {
     command="$1"
     if [ -z "$command" ]; then

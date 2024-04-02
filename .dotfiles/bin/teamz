@@ -4,9 +4,7 @@ set -o errexit
 CMD="$(basename "$0")"
 TEAMS_USER_LIST="${TEAMS_USER_LIST:-"$HOME/.$CMD-users"}"
 
-# Usage info                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Usage info {{{1
 help() {
     if [ -n "$*" ]; then
         printf "Error: %s\nTry -h for more info.\n" "$*" >&2
@@ -58,10 +56,7 @@ EOF
     exit 0
 }
 
-# --------------------------------------------------------------------- }}}
-# Utilities                                                             {{{
-# --------------------------------------------------------------------- {|}
-
+# Utilities {{{1
 # if stdin is piped or not tty
 stdin_is_pipe_like() { [ -p /dev/stdin ] || ! [ -t 0 ]; }
 
@@ -155,10 +150,7 @@ create_msg() {
     )" 2>/dev/null
 }
 
-# --------------------------------------------------------------------- }}}
-# Parse args                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Parse args and execute {{{1
 main() {
     # If stdin is piped, use it as the message
     if stdin_is_pipe_like; then
@@ -189,6 +181,5 @@ main() {
     create_msg
 }
 
-# --------------------------------------------------------------------- }}}
 
 main "$@"

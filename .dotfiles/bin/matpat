@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+#vim:filetype=sh foldmethod=marker:
 set -o errexit
 
 # Prints, copies, or opens text matching a specified pattern.
@@ -32,10 +33,7 @@ set -o errexit
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# --------------------------------------------------------------------- }}}
-# Usage info                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Usage info {{{1
 help() {
     if [ -n "$*" ]; then
         printf "Error: %s\n\n" "$*" >&2
@@ -71,10 +69,7 @@ EOF
     exit 1
 }
 
-# --------------------------------------------------------------------- }}}
-# Configuration                                                         {{{
-# --------------------------------------------------------------------- {|}
-
+# Configuration {{{1
 if [ "$MATPAT_LOGS" = "1" ] || [ -z "$MATPAT_LOGS" ] && [ -n "$DEBUG" ]; then
     MATPAT_LOGS="$HOME/.dotfiles/cache/matpat.log"
 fi
@@ -119,10 +114,7 @@ if [ -z "$MATPAT_OPEN_CMD" ]; then
     logger "INFO " "MATPAT_OPEN_CMD environment variable is not set, defaulting to \"$MATPAT_OPEN_CMD\""
 fi
 
-# --------------------------------------------------------------------- }}}
-# Patterns                                                              {{{
-# --------------------------------------------------------------------- {|}
-
+# Patterns {{{1
 uri() {
     # https://en.wikipedia.org/wiki/List_of_URI_schemes
     _uri_network_schemes='(?:https?://|\bwww\.|s?ftp://|wss?:|ssh://|udp://|vnc://|ldaps?://|dns://'
@@ -144,10 +136,7 @@ git_sha_range() {
     grep -oE '[0-9a-fA-F]+\.\.\.?[0-9a-fA-F]+'
 }
 
-# --------------------------------------------------------------------- }}}
-# Find/select or print matches                                          {{{
-# --------------------------------------------------------------------- {|}
-
+# Find/select or print matches {{{1
 o_err="echo 'Error: open command not found, set the MATPAT_OPEN_CMD environment variable' && exit 1"
 y_err="echo 'Error: copy command not found, set the MATPAT_COPY_CMD environment variable' && exit 1"
 
@@ -196,10 +185,7 @@ match_pattern() {
     unset select_mode tmux_mode matches
 }
 
-# --------------------------------------------------------------------- }}}
-# Parse args                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Parse args and execute {{{1
 # if stdin is piped or not tty
 stdin_is_pipe_like() { [ -p /dev/stdin ] || ! [ -t 0 ]; }
 
@@ -218,7 +204,7 @@ main() {
 
     pattern="select"
 
-    while getopts p:ths opt; do
+    while getopts p:tsh opt; do
         case $opt in
             p)
                 logger "INFO " "pattern specified: $pattern"

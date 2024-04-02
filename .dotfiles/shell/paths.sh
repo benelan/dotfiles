@@ -1,14 +1,12 @@
-#!/bin/sh
+#!/usr/bin/env sh
+# vim:filetype=sh foldmethod=marker:
 
-# Util functions                                                        {{{
-# --------------------------------------------------------------------- {|}
-
-# expand arg1 to an environment variable                      {{{
+# Util functions {{{1
+# expand arg1 to an environment variable {{{2
 # Usage: _expand_var PATH -> $PATH
 _expand_var() { env | sed -n "s/^$1=//p"; }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# remove an entry from PATH                                   {{{
+# remove an entry from PATH {{{2
 # Usage: path_remove /path/to/bin [PATH]
 _pathremove() {
     IFS=':'
@@ -24,8 +22,7 @@ _pathremove() {
     unset new_path path_dir path_var IFS
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# prepend an entry to PATH                                    {{{
+# prepend an entry to PATH {{{2
 # Usage: path_prepend /path/to/bin [PATH]
 _pathprepend() {
     # if the path is already in the path_variable,
@@ -38,8 +35,7 @@ _pathprepend() {
     unset path_var path_value
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-# append an entry to PATH                                     {{{
+# append an entry to PATH {{{2
 # Usage: path_append /path/to/bin [PATH]
 _pathappend() {
     _pathremove "${1}" "${2}"
@@ -50,12 +46,7 @@ _pathappend() {
     unset path_var path_value
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
-# --------------------------------------------------------------------- }}}
-# Parse args                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Parse args {{{1
 # arg_is_flag() { case $1 in -*) true ;; *) false ;; esac }
 
 path() {
@@ -75,10 +66,8 @@ path() {
     esac
 }
 
-# --------------------------------------------------------------------- }}}
-# Set path                                                              {{{
-# --------------------------------------------------------------------- {|}
 
+# Set path {{{1
 path -p "$HOME/.dotfiles/bin"
 path -p "$HOME/.local/share/nvim/mason/bin"
 path -a "$HOME/dev/personal/git-mux/bin"
@@ -100,5 +89,3 @@ path -a "/usr/sbin"
 path -a "/usr/bin"
 path -a "/sbin"
 path -a "/bin"
-
-# --------------------------------------------------------------------- }}}

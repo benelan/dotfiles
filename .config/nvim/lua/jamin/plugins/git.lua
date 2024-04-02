@@ -5,6 +5,7 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
+    dependencies = "vim-rhubarb",
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>tab Git commit<CR>", desc = "Fugitive commit" },
@@ -12,7 +13,7 @@ return {
       { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
       { "<leader>gD", "<CMD>Git difftool -y<CR>", desc = "Fugitive difftool" },
       { "<leader>gM", "<CMD>Git mergetool -y<CR>", desc = "Fugitive mergetool" },
-      { "<leader>gd", "<CMD>tab Gvdiffsplit<CR>", desc = "Fugitive diff split" },
+      { "<leader>gd", "<CMD>Gvdiffsplit<CR>", desc = "Fugitive diff split" },
       { "<leader>gW", "<CMD>Gwrite<CR>", desc = "Fugitive write" },
       { "<leader>gR", "<CMD>Gread<CR>", desc = "Fugitive read" },
       {
@@ -37,10 +38,10 @@ return {
     },
     -- stylua: ignore
     cmd = {
-      "G", "Git", "GDelete", "GMove", "GRename", "Gdrop", "Gcd", "Glcd",
-      "Gclog", "Gllog", "Gedit", "Gtabedit", "Gpedit", "Ggrep", "Glgrep",
-      "Gread", "Gwrite", "Gwq", "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit",
-      "Gsplit", "Gvsplit",
+      "G", "Git", "GBrowse", "GDelete", "GMove", "GRename", "Gcd", "Gclog",
+      "Gdiffsplit", "Gdrop", "Gedit", "Ggrep", "Ghdiffsplit", "Glcd", "Glgrep",
+      "Gllog", "Gpedit", "Gread", "Gsplit", "Gtabedit", "Gvdiffsplit",
+      "Gvsplit", "Gwq", "Gwrite"
     },
     -- init = function()
     --   vim.g.fugitive_dynamic_colors = 0
@@ -51,8 +52,6 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb",
     cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-rhubarb",
-    cmd = "GBrowse",
-    dependencies = "vim-fugitive",
     keys = {
       {
         "<leader>go",

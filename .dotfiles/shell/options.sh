@@ -72,7 +72,7 @@ GPG_TTY=$(tty)
 export GPG_TTY
 
 # generate LS_COLORS
-[ -r ~/.dircolors ] && eval "$(dircolors ~/.dircolors)"
+[ -r ~/.dircolors ] && supports dircolors && eval "$(dircolors ~/.dircolors)"
 
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'

@@ -10,10 +10,7 @@ let loaded_jamin_operators = 1
 " Source: https://dev.sanctum.geek.nz/cgit/vim-colon-operator.git/about/
 " License: Same as Vim itself
 
-" --------------------------------------------------------------------- {|}
-" Substitute operator                                                   {{{
-" --------------------------------------------------------------------- {|}
-"
+" Substitute operator {{{1
 " Substitute text selected with a motion with the contents
 " of a register in a repeatable way.
 "
@@ -72,10 +69,7 @@ endfunction
 nnoremap <expr> <Plug>(SubstituteOperator) operators#substitute(v:register)
 xnoremap <expr> <Plug>(SubstituteOperator) operators#substitute(v:register)
 
-" --------------------------------------------------------------------- }}}
-" Colon operator                                                        {{{
-" --------------------------------------------------------------------- {|}
-
+" Colon operator {{{1
 function! ColonOperator(type) abort
   if !exists('s:command')
     let s:command = input('g:', '', 'command')
@@ -92,5 +86,3 @@ function! operators#colon() abort
 endfunction
 
 nnoremap <expr> <Plug>(ColonOperator) operators#colon()
-
-" --------------------------------------------------------------------- }}}

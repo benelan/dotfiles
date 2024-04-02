@@ -1,43 +1,34 @@
 #!/usr/bin/env bash
+# vim:filetype=sh foldmethod=marker:
 # shellcheck disable=2016
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# show readline mode                            {{{
-
+# show readline mode {{{1
 # [E]macs, vi [I]nsert, or vi [C]ommand
 bind "set show-mode-in-prompt on"
 bind "set emacs-mode-string \"E \""
 bind "set vi-cmd-mode-string \"C \""
 bind "set vi-ins-mode-string \"I \""
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# trim long paths if possible                   {{{
-
+# trim long paths if possible {{{1
 if ((BASH_VERSINFO[0] >= 4)); then
     PROMPT_DIRTRIM=4
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# highlight username when logged in as root     {{{
-
+# highlight username when logged in as root {{{1
 if [ "$EUID" -eq 0 ]; then
     userStyle="${BOLD}${RED}"
 else
     userStyle="${ORANGE}"
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# highlight hostname when connected via SSH     {{{
-
+# highlight hostname when connected via SSH {{{1
 if [ -n "${SSH_TTY}" ]; then
     hostStyle="${BOLD}${RED}"
 else
     hostStyle="${YELLOW}"
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# git prompt options                            {{{
-
+# git prompt options {{{1
 export GIT_PS1_SHOWDIRTYSTATE="yes"
 export GIT_PS1_SHOWSTASHSTATE="yes"
 export GIT_PS1_SHOWUNTRACKEDFILES="yes"
@@ -48,9 +39,7 @@ export GIT_PS1_HIDE_IF_PWD_IGNORED="yes"
 export GIT_PS1_SHOWUPSTREAM="verbose"
 export GIT_PS1_DESCRIBE_STYLE="contains"
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# set the pre_prompt                            {{{
-
+# set the pre_prompt {{{1
 pre_prompt="\[${RESET}\]\n"
 pre_prompt+="\[${BOLD}\]\[${userStyle}\]$(
     # replace username with (n)vim when using the builtin terminal
@@ -69,9 +58,7 @@ pre_prompt+="\[${RESET}\] in "
 pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w" # PWD
 pre_prompt+="\[${RESET}\]"
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# set the post_prompt                           {{{
-
+# set the post_prompt {{{1
 post_prompt="\n"
 
 # NOTE: this history number won't always be correct when ignoring duplicates
@@ -95,15 +82,11 @@ post_prompt+='$(
 
 post_prompt+="\[${RESET}\]" # reset styling
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# setup git prompt                              {{{
-
+# setup git prompt {{{1
 # shellcheck disable=2089
 PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# setup fasd                                    {{{
-
+# setup fasd {{{1
 if supports fasd; then
     _fasd_prompt_func() {
         eval "fasd --proc $(fasd --sanitize "$(history 1 |
@@ -116,18 +99,12 @@ if supports fasd; then
     esac
 fi
 
-# - - - - - - - - - - - - - - - - - - - - - - - }}}
-# append session's history lines to file        {{{
-
+# append session's history lines to file {{{1
 case $PROMPT_COMMAND in
     *"history -a"*) ;;
     *) PROMPT_COMMAND="history -a; $PROMPT_COMMAND" ;;
 esac
 
-# - - - - - - - - - - - - - - - - - - - - - - --}}}
-# setup PS2                                     {{{
-
+# setup PS2 {{{1
 # shellcheck disable=2090
-export PROMPT_COMMAND PS2="\[${YELLOW}\]… \[${RESET}\] "
-
-# - - - - - - - - - - - - - - - - - - - - - - --}}}
+export PROMPT_COMMAND PS2="\[${YELLOW}\]↳ \[${RESET}\] "

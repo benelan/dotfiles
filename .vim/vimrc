@@ -1,6 +1,4 @@
-" Settings                                                              {{{
-" --------------------------------------------------------------------- {|}
-
+" Settings {{{1
 set nocompatible
 if has("autocmd")
     filetype plugin indent on
@@ -127,16 +125,12 @@ if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
-" --------------------------------------------------------------------- }}}
-" Keymaps                                                               {{{
-" --------------------------------------------------------------------- {|}
-
+" Keymaps {{{1
 if has("keymap")
     let mapleader = " "
     let maplocalleader = "\\"
 
-    "" general keymaps                                            {{{
-
+    "" general keymaps {{{2
     nnoremap Y y$
     vnoremap Y y
 
@@ -146,7 +140,7 @@ if has("keymap")
     nnoremap <C-u> <C-u>zz
     nnoremap <C-d> <C-d>zz
 
-    " move line(s) up and down
+    "" move line(s) up and down
     nnoremap <Down> <CMD>m .+1<CR>==
     nnoremap <Up> <CMD>m .-2<CR>==
     inoremap <Down> <esc><CMD>m .+1<CR>==gi
@@ -160,21 +154,13 @@ if has("keymap")
     xnoremap g/ <esc>/\\%V
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
-    if empty(mapcheck("<C-U>", "i"))
-        inoremap <C-U> <C-G>u<C-U>
-    endif
-
-    if empty(mapcheck("<C-W>", "i"))
-        inoremap <C-W> <C-G>u<C-W>
-    endif
-
     "" https://vi.stackexchange.com/a/213
-    " move down jumping over blank lines and indents
+    "" move down jumping over blank lines and indents
     nnoremap <silent> gJ :let _=&lazyredraw<CR>
         \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
         \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
-    " move up jumping over blank lines and indents
+    "" move up jumping over blank lines and indents
     nnoremap <silent> gK :let _=&lazyredraw<CR>
         \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
         \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
@@ -186,8 +172,9 @@ if has("keymap")
     xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
     xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" misc input/terminal/command mode keymaps                   {{{
+    "" misc insert/terminal/command mode keymaps {{{2
+    inoremap <C-U> <C-G>u<C-U>
+    inoremap <C-W> <C-G>u<C-W>
 
     inoremap , ,<C-g>u
     inoremap ? ?<C-g>u
@@ -199,9 +186,7 @@ if has("keymap")
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" git difftool/mergetool keymaps for selecting hunks         {{{
-
+    "" git difftool/mergetool keymaps for selecting hunks {{{2
     nnoremap <leader>gr :diffget<BAR>diffupdate<CR>
     vnoremap <leader>gr :diffget<BAR>diffupdate<CR>
     nnoremap <leader>gw :diffput<CR>
@@ -210,17 +195,15 @@ if has("keymap")
     nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
     nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
-    " LOCAL is the left buffer when using vimdiff
+    "" LOCAL is the left buffer when using vimdiff
     nnoremap [x :diffget LO<BAR>diffupdate<CR>
     nnoremap [X :%diffget LO<BAR>diffupdate<CR>
 
-    " REMOTE is the rightmost buffer
+    "" REMOTE is the rightmost buffer
     nnoremap ]x :diffget RE<BAR>diffupdate<CR>
     nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" lists - next/prev                                          {{{
-
+    "" lists - next/prev {{{2
     "" Argument list
     nnoremap [a :previous<CR>
     nnoremap ]a :next<CR>
@@ -251,9 +234,7 @@ if has("keymap")
     nnoremap [T :tlast<CR>
     nnoremap ]T :tfirst<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" buffers, tabs, and windows                                 {{{
-
+    "" buffers, tabs, and windows {{{2
     "" close buffer
     nnoremap <leader><Delete> :bdelete<CR>
 
@@ -265,47 +246,27 @@ if has("keymap")
     nnoremap <leader>to :tabonly<CR>
     nnoremap <leader>tc :tabclose<CR>
 
-    "" toggles between this and the last accessed tab
-    let s:last_tab = 1
-    nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
-    au TabLeave * let s:last_tab = tabpagenr()
-
-    " Create splits
-    nnoremap <leader>s <C-w>s
-    nnoremap <leader>v <C-w>v
-
-    " Navigate splits
+    "" Navigate splits
     nnoremap <C-h> <C-W>h
     nnoremap <C-j> <C-W>j
     nnoremap <C-k> <C-W>k
     nnoremap <C-l> <C-W>l
 
-    " Resize splits
+    "" Resize splits
     nnoremap <C-Left> :vertical resize -5<CR>
     nnoremap <C-Down> :resize -5<CR>
     nnoremap <C-Up> :resize +5<CR>
     nnoremap <C-Right> :vertical resize +5<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle options                                             {{{
-
+    "" toggle options {{{2
     "" toggles highlighted cursor row; doesn't work in visual mode
     nnoremap <leader>sx <CMD>set cursorline!<CR>
 
     "" toggles highlighted cursor column; works in visual mode
     noremap <leader>sy <CMD>set cursorcolumn!<CR>
 
-    "" toggles highlighting search results
-    nnoremap <leader>sh <CMD>set hlsearch!<CR>
-
-    "" toggles showing matches as I enter my pattern
-    nnoremap <leader>si <CMD>set incsearch!<CR>
-
     "" toggles spell checking
     nnoremap <leader>ss <CMD>set spell!<CR>
-
-    "" toggles paste
-    nnoremap <leader>sp <CMD>set paste!<CR>
 
     "" toggles showing tab, end-of-line, and trailing white space
     noremap <leader>sl <CMD>set list!<CR>
@@ -320,19 +281,13 @@ if has("keymap")
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
             \ . (&colorcolumn == "" ? "80" : "")<CR>
 
-    "" toggle foldcolumn
-    nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
-            \ . (&foldcolumn == "0" ? "1" : "0")<CR>
-
     "" toggle system clipboard
     nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
             \ . (&clipboard == "umnamed"
                 \ ? "unnamed,unnamedplus"
                 \ : "unnamed")<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" plugins                                                    {{{
-
+    "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))
         set runtimepath+=~/dev/lib/fzf
         nnoremap <C-p> :Files<CR>
@@ -363,14 +318,10 @@ if has("keymap")
     vnoremap <leader>go <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse<CR>
     nnoremap <leader>gy <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse!<CR>
     vnoremap <leader>gy <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse!<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
-" --------------------------------------------------------------------- }}}
-" Autocommands                                                          {{{
-" --------------------------------------------------------------------- {|}
 
+" Autocommands {{1
 if has("autocmd")
     augroup jamin_vimrc
         autocmd!
@@ -393,17 +344,13 @@ if has("autocmd")
     augroup END
 endif
 
-" --------------------------------------------------------------------- }}}
-" Functions and user commands                                           {{{
-" --------------------------------------------------------------------- {|}
 
+" Functions and user commands {{{1
 if has("eval")
-    command! Src :source $MYVIMRC
-
     "" :W sudo saves the file
     command! W execute "w !sudo tee % > /dev/null" <bar> edit!
 
-    "" get the git branch for the current buffer                  {{{
+    "" get the git branch for the current buffer {{{2
     function! GitBranch()
         try
             if exists("*fugitive#Head") && FugitiveGitDir() != expand("~")."/.git"
@@ -420,38 +367,14 @@ if has("eval")
         endtry
     endfunction
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle the display of a terminal buffer                    {{{
-    let s:term_buf_nr = -1
-    function! s:TerminalToggle() abort
-        if s:term_buf_nr == -1
-            execute "botright terminal"
-            let s:term_buf_nr = bufnr("$")
-        else
-            try
-                execute "bdelete! " . s:term_buf_nr
-            catch
-                let s:term_buf_nr = -1
-                call <SID>TerminalToggle()
-                return
-            endtry
-            let s:term_buf_nr = -1
-        endif
-    endfunction
+    "" toggle quickfix/location lists open/close {{{2
+    com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
+    nnoremap <leader>q <CMD>QfToggle<CR>
 
-    command! TerminalToggle call <sid>TerminalToggle()
-    nnoremap <silent> <leader>T <CMD>TerminalToggle<CR>
-    tnoremap <silent> <leader>T <C-w>N:TerminalToggle<CR>
+    com! LlToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|lope|else|lcl|ccl|endif|norm <C-W><C-W>"
+    nnoremap <leader>l <CMD>LlToggle<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle quickfix list open/close                            {{{
-
-    com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|endif|norm <C-W><C-W>"
-    nnoremap <C-q> <CMD>QfToggle<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" fzf user commands                                          {{{
-
+    "" fzf user commands {{{2
     if isdirectory(expand("$LIB/fzf")) && executable("fzf")
         " Enable per-command history
         " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
@@ -534,15 +457,10 @@ if has("eval")
             \     "sink": "e"
             \ }, <bang>0))
     endif
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
 endif
 
-" --------------------------------------------------------------------- }}}
-" Statusline                                                            {{{
-" --------------------------------------------------------------------- {|}
 
+" Statusline {{{1
 let g:use_devicons = expand("$USE_DEVICONS") != 0
         \ && expand("$USE_DEVICONS") == 1
         \ || expand("$TERM") == "wezterm" ||
@@ -581,10 +499,8 @@ if has("eval") && has("statusline")
     set statusline+=\ \                             " Whitespace
 endif
 
-"----------------------------------------------------------------------}}}
-" Terminal options                                                      {{{
-"-----------------------------------------------------------------------{|}
 
+" Terminal options {{{1
 " :help terminal-output-codes
 
 " Fix modern terminal features
@@ -651,10 +567,8 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\)'
 
 endif
 
-" --------------------------------------------------------------------- }}}
-" Colorscheme                                                           {{{
-" --------------------------------------------------------------------- {|}
 
+" Colorscheme {{{1
 if has("eval") && has("syntax")
 
     set background=dark
@@ -709,5 +623,3 @@ if has("eval") && has("syntax")
 
     colorscheme gruvbox-material
 endif
-
-"----------------------------------------------------------------------}}}

@@ -3,8 +3,7 @@ let g:loaded_jamin_text_objects = 1
 
 " https://vimways.org/2018/transactions-pending/
 
-"" in indentation                                             {{{
-
+"" in indentation {{{1
 function! s:inIndentationTextObject()
 	let l:magic = &magic
 	set magic
@@ -30,10 +29,7 @@ function! s:inIndentationTextObject()
 	let &magic = l:magic
 endfunction
 
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" around indentation                                         {{{
-
+"" around indentation {{{1
 function! s:aroundIndentationTextObject()
 	let l:magic = &magic
 	set magic
@@ -53,9 +49,7 @@ function! s:aroundIndentationTextObject()
 	let &magic = l:magic
 endfunction
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" keymaps                                                    {{{
-
+"" keymaps {{{1
 " in indentation (indentation level without surrounding empty lines)
 xnoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
 onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
@@ -63,5 +57,3 @@ onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
 " around indentation (indentation level and any surrounding empty lines)
 xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
 onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
-
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}

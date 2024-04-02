@@ -24,7 +24,7 @@ aliases:
   pt: "!GH_FZF_TRUNCATE_FIELDS=true gh p"
   r: fzf run
   w: fzf workflow
-  rl: fzf release
-  rp: fzf repo
+  v: fzf release
+  R: fzf repo
   g: fzf gist
   co: pr checkout

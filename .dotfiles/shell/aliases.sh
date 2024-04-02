@@ -1,15 +1,12 @@
 #!/usr/bin/env sh
+# vim:filetype=sh foldmethod=marker:
 
-# General                                                               {{{
-# --------------------------------------------------------------------- {|}
-
+# General {{{1
 # rerun last command as sudo
 alias plz='sudo $(fc -ln -1)'
 
 # sudo with aliases
 alias sudo='sudo '
-
-alias mkd='mkdir -p'
 
 # delete to trashcan if possible
 if supports gio; then
@@ -21,14 +18,13 @@ else
 fi
 
 alias x="tmux"
-
-alias -- -="vifm ."
+alias f="vifm ."
 
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
 
 # minimum usable vim options
-alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar scs ic et ts=4 sw=4 | nnoremap Y y$'"
+alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
 _color=$(supports "ls --color" --color -G)
@@ -56,42 +52,25 @@ alias lsh="ls -radgoth .?* $_color $_time_style $_group_dirs"
 
 unset _color _time_style _group_dirs
 
-# Always enable colored `grep` output (`GREP_OPTIONS="--color=auto"` is deprecated)
-alias grep='grep --color=auto'
-
-# Colorizes diff output, if possible
+# Always enable colored grep/diff/tree
 supports colordiff && alias diff='colordiff'
-
-# List declared aliases and functions
-# shellcheck disable=2139
-alias aliases="alias | awk '{gsub(\"(alias |=.*)\",\"\"); print $1};'"
-
-# shellcheck disable=2139
-alias functions="declare -f | awk '/^[a-z].* ()/{gsub(\" .*$\",\"\"); print $1};'"
+alias grep='grep --color=auto'
+alias tree='tree -C'
 
 # Show 256 TERM colors
 # shellcheck disable=2154
 alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput setaf "$i"; tput setab "$i")$(printf %$((COLUMNS - 6))s | tr " " "=")$(tput op)" && i=$((i+1)); done'
 
-# --------------------------------------------------------------------- }}}
-# Navigation                                                            {{{
-# --------------------------------------------------------------------- {|}
-
-alias -- --="cd -"
+# Navigation {{{1
+alias -- -="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 if supports fasd; then
-    alias za='fasd -a'
-    alias zs='fasd -si'
-    alias zsd='fasd -sid'
-    alias zsf='fasd -sif'
-    alias zd='fasd -d'
-    alias zf='fasd -f'
-    alias ze='zf -e $EDITOR'
-    alias zo='za -e xdg-open'
+    alias ze='fasd -fe $EDITOR'
+    alias zo='fasd -ae xdg-open'
     alias z='_fasd_cd -d'
     alias zz='_fasd_cd -d -i'
 
@@ -110,10 +89,7 @@ if supports fasd; then
     }
 fi
 
-# --------------------------------------------------------------------- }}}
-# Time and weather                                                      {{{
-# --------------------------------------------------------------------- {|}
-
+# Time and weather {{{1
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
 if supports date; then
     alias now='date +"%Y-%m-%dT%H:%M:%S"'
@@ -124,10 +100,7 @@ fi
 wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
 alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
-# --------------------------------------------------------------------- }}}
-# Networking                                                            {{{
-# --------------------------------------------------------------------- {|}
-
+# Networking {{{1
 alias vpn="protonvpn-cli"
 
 # Stop after sending count ECHO_REQUEST packets
@@ -139,12 +112,6 @@ alias fping='ping -c 30 -i.2'
 # resume by default
 alias wget='wget -c'
 
-# view HTTP traffic
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-
-# display iptables rules
-alias iptlist='sudo /sbin/iptables -n -v --line-numbers -L'
-
 # searchable process list
 alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
@@ -154,23 +121,7 @@ alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
 # get top processes eating cpu
 alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
 
-if supports systemctl; then
-    alias sc='systemctl'
-    alias scu='systemctl --user'
-    alias scdr='systemctl daemon-reload'
-    alias scdru='systemctl --user daemon-reload'
-    alias scr='systemctl restart'
-    alias scru='systemctl --user restart'
-    alias sce='systemctl stop'
-    alias sceu='systemctl --user stop'
-    alias scs='systemctl start'
-    alias scsu='systemctl --user start'
-fi
-
-# -----------------------------------------------------------------------------
-# Web Development
-# -----------------------------------------------------------------------------
-
+# Web Development {{{1
 if supports chromium-browser; then
     alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
 fi
@@ -193,40 +144,42 @@ if supports npm; then
     supports fzf && supports jq &&
         alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
 
-    # Complete these steps before using the aliases for switching between NPM accounts:
+    # Complete these steps before using the aliases for switching between NPM
+    # accounts:
     # 1. Log into your personal account: `npm login`
-    # 2. Append "-personal" to the generated file: `mv ~/.npmrc ~/.npmrc-personal`
-    # 3. Repeat steps 1 and 2 for your work account, but append "-work" instead
-
-    # You will not be logged into either account by default, and will need to use
-    # the aliases below to switch between them. This adds an extra layer of security
-    # against accidentally publishing packages.
+    # 2. Change the name of the generated file: `mv ~/.npmrc ~/.personal.npmrc`
+    # 3. Repeat steps 1 and 2 for your work account, but prepend ".work" instead
+    #
+    # You will not be logged into either account by default, and will need to
+    # use the aliases below to switch between them. This adds an extra layer of
+    # protection against accidentally publishing packages.
 
     # use work or personal npm account for a single command, e.g., `nw publish`
-    alias nw='npm --userconfig=~/.npmrc-work'
-    alias np='npm --userconfig=~/.npmrc-personal'
+    alias nw='npm --userconfig=~/.work.npmrc'
+    alias np='npm --userconfig=~/.personal.npmrc'
 
     # switch between work/personal npm accounts persisting for the current shell
-    alias nW='export NPM_CONFIG_USERCONFIG=~/.npmrc-work && npm whoami'
-    alias nP='export NPM_CONFIG_USERCONFIG=~/.npmrc-personal && npm whoami'
+    alias nW='export NPM_CONFIG_USERCONFIG=~/.work.npmrc && npm whoami'
+    alias nP='export NPM_CONFIG_USERCONFIG=~/.personal.npmrc && npm whoami'
 fi
 
-# --------------------------------------------------------------------- }}}
-# Ubuntu/GNOME                                                          {{{
-# --------------------------------------------------------------------- {|}
+# Linux {{{1
+# Locks the session.
+alias afk="loginctl lock-session"
 
 if supports apt; then
-    alias apti='sudo apt install'
-    alias aptup='sudo apt update && sudo apt upgrade && sudo apt autoremove && sudo apt autoclean && sudo apt autopurge'
+    alias apti='sudo apt-get install'
+    alias aptup='sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoremove && sudo apt-get autoclean'
 fi
 
-# Locks the session.
-supports gnome-screensaver-command && alias afk='gnome-screensaver-command --lock'
+if supports systemctl; then
+    alias sc='systemctl'
+    alias scu='systemctl --user'
+    alias scdr='systemctl daemon-reload'
+    alias scdru='systemctl --user daemon-reload'
+fi
 
-# --------------------------------------------------------------------- }}}
-# Taskwarrior                                                           {{{
-# --------------------------------------------------------------------- {|}
-
+# Taskwarrior {{{1
 if supports task; then
     alias t="task"
     alias ta="task add"
@@ -239,10 +192,7 @@ if supports task; then
     [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
 fi
 
-# --------------------------------------------------------------------- }}}
-# Git                                                                   {{{
-# --------------------------------------------------------------------- {|}
-
+# Git {{{1
 alias g='git'
 
 # https://github.com/benelan/git-mux
@@ -251,10 +201,7 @@ alias gxt="git-mux task"
 alias gxp="git-mux project"
 alias gxs='git-mux project $PWD'
 
-# --------------------------------------------------------------------- }}}
-# Dotfiles                                                              {{{
-# --------------------------------------------------------------------- {|}
-
+# Dotfiles {{{1
 alias d='dot'
 
 # creates env vars so git plugins work with the bare dotfiles repo
@@ -269,21 +216,15 @@ edit_dotfiles() {
 alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
 alias G="edit_dotfiles +G +only"
 
-# --------------------------------------------------------------------- }}}
-# GitHub                                                                {{{
-# --------------------------------------------------------------------- {|}
-
+# GitHub {{{1
 # https://cli.github.com/
 # Open Octo with my issues/prs
 alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 
-# --------------------------------------------------------------------- }}}
-# Docker                                                                {{{
-# --------------------------------------------------------------------- {|}
-
+# Docker {{{1
+# general docker aliases {{{2
 if supports docker; then
-    ## general docker aliases                                 {{{
 
     # display names of running containers
     alias dkls="docker container ls | awk 'NR > 1 {print \$NF}'"
@@ -296,14 +237,10 @@ if supports docker; then
 
     # prune everything
     alias dkprune='docker system prune -a'
-
 fi
 
-# --------------------------------------------------------------------- }}}
-# Work                                                                  {{{
-# --------------------------------------------------------------------- {|}
-
-if [ "$USE_WORK_STUFF" = "1" ]; then
+# docker aliases for calcite development {{{2
+if [ "$USE_WORK_STUFF" = "1" ] && supports docker; then
     # I need to link these files to the current worktree
     alias cc_link_files='ln -f $CALCITE/Dockerfile && ln -f $CALCITE/.marksman.toml && ln -f $CALCITE/calcite-components.projections.json ./packages/calcite-components/.projections.json'
 
@@ -324,5 +261,3 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
 
     unset _cmd
 fi
-
-# --------------------------------------------------------------------- }}}

@@ -11,12 +11,12 @@ if has("syntax") && !exists("syntax_on")
     syntax enable
 endif
 
-set autoread confirm hidden lazyredraw t_vb= ttimeout ttimeoutlen=100
+set autoread confirm hidden lazyredraw ttyfast t_vb= ttimeout ttimeoutlen=100
 set smarttab expandtab shiftround softtabstop=4 shiftwidth=4
-set ignorecase smartcase autoindent smartindent formatoptions+=l
+set ignorecase smartcase autoindent smartindent formatoptions+=l formatoptions-=t
 set backspace=indent,eol,start clipboard=unnamed nrformats-=octal
 set number relativenumber foldmethod=indent foldlevel=99 display+=lastline
-set laststatus=2 showtabline=2 wildmenu wildmode=list:longest,full 
+set laststatus=2 showtabline=2 wildmenu wildmode=list:longest,full
 set complete-=i completeopt=noselect,menuone,menuone
 set splitbelow splitright scrolloff=5 sidescrolloff=5 linebreak
 set path-=/usr/include path+=** define= include=
@@ -94,7 +94,7 @@ if exists("+termguicolors")
     set termguicolors
 endif
 
-set statusline=\ [%n]%m%r%h%w%q%y\ %f\ %=\ %c:[%l/%L]\ 
+set statusline=\ [%n]%m%r%h%w%q%y\ %f\ %=\ %c:[%l/%L]\
 
 colorscheme desert
 hi! link TabLineFill Statusline
@@ -185,20 +185,11 @@ if has("keymap")
     nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
-    " Search in the selection
-    xnoremap g/ <esc>/\\%V
-
-    " Re-select the previous selection
-    nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
-
     " Change pwd to the buffer's directory
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
     cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
     cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
-
-    " expand the buffer's directory
-    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
     " use last changed or yanked text as an object
     onoremap V :<C-U>execute "normal! `[v`]"<CR>
@@ -221,6 +212,9 @@ if has("keymap")
         execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
         execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
     endfor
+
+    inoremap <C-U> <C-G>u<C-U>
+    inoremap <C-W> <C-G>u<C-W>
 
     " add closing brackets
     inoremap (<CR> (<CR>)<Esc>O
@@ -333,27 +327,11 @@ if has("keymap")
     "" pick buffer to jump to
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
-    "" delete/quit/save buffer
-    nnoremap <leader><Delete> :bdelete<CR>
-    nnoremap <leader>q :quit<CR>
-    nnoremap <leader>w :write<CR>
-
-    " Open a new tab of the current buffer and cursor position
-    nnoremap <silent> <leader>Z :exe 'tabnew +'. line('.') .' %'<CR>
-
     "" Managing tabs
     nnoremap <leader>tn :tabnew<CR>
     nnoremap <leader>to :tabonly<CR>
     nnoremap <leader>tc :tabclose<CR>
-
-    "" toggles between this and the last accessed tab
-    let s:last_tab = 1
-    nnoremap <leader>tl :exe "tabn ".g:lasttab<CR>
-    au TabLeave * let s:last_tab = tabpagenr()
-
-    " Create splits
-    nnoremap <leader>- :split<CR>
-    nnoremap <leader>\ :vsplit<CR>
+    nnoremap <leader>ts :tab split<CR>
 
     " Navigate splits
     nnoremap <C-h> <C-W>h
@@ -376,26 +354,14 @@ if has("keymap")
     "" toggles highlighted cursor column; works in visual mode
     noremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-    "" toggles highlighting search results
-    nnoremap <leader>sh <CMD>set hlsearch!<CR><CMD>set hlsearch?<CR>
-
-    "" toggles showing matches as I enter my pattern
-    nnoremap <leader>si <CMD>set incsearch!<CR><CMD>set incsearch?<CR>
-
     "" toggles spell checking
     nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
-
-    "" toggles paste
-    nnoremap <leader>sp <CMD>set paste!<CR><CMD>set paste?<CR>
 
     "" toggles showing tab, end-of-line, and trailing white space
     nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
 
     "" toggles line number display
     nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
-
-    "" toggles ability to modify buffer
-    nnoremap <leader>sM <CMD>set modifiable!<CR><CMD>set modifiable?<CR>
 
     "" toggles soft wrapping
     nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
@@ -409,11 +375,6 @@ if has("keymap")
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
                     \ . (&colorcolumn == "" ? "80" : "")<CR>
                     \ <CMD>set colorcolumn?<CR>
-
-    "" toggle foldcolumn
-    nnoremap <silent> <leader>sf <CMD>execute "set foldcolumn="
-                    \ . (&foldcolumn == "0" ? "1" : "0")<CR>
-                    \ <CMD>set foldcolumn?<CR>
 
     "" toggle system clipboard
     nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
@@ -441,16 +402,7 @@ if has("eval")
     nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" system grep function and user command                      {{{
-
-    function! Grep(...)
-        return system(join([&grepprg] + [expandcmd(join(a:000, " "))], " "))
-    endfunction
-
-    command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle netrw open/close                                    {{{
+    "" netrw keymaps                                              {{{
 
     function! s:NetrwToggle()
         try | Rexplore
@@ -461,6 +413,14 @@ if has("eval")
     command! Netrw call <sid>NetrwToggle()
     nnoremap <silent> <leader>e :Netrw<CR>
 
+
+    " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
+    nnoremap <silent> - <CMD>execute (
+        \ &filetype ==# "netrw"
+            \ ? "normal! -"
+            \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
+    \)<CR>
+
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" save the value of the last visual selection                {{{
 
@@ -468,7 +428,12 @@ if has("eval")
         let l:saved_reg = @"
         execute "normal! vgvy"
 
-        let l:pattern = escape(@", " \\/.'`~!@#$%^&*+[]{}|")
+        if a:0 > 0 && a:1 == "pcre"
+            let l:pattern = escape(@", " \\/.-~!=?$^*+()[]{}|")
+        else
+            let l:pattern = escape(@", "\\/.*'$^~[]")
+        endif
+
         let l:pattern = substitute(l:pattern, "\n$", "", "")
 
         if a:0 > 0 && a:1 == "replace"
@@ -479,9 +444,13 @@ if has("eval")
         let @" = l:saved_reg
     endfunction
 
+    " neovim has this built in now
+    if !has("nvim")
+        xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
+        xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
+    endif
+
     " Use the function to search/replace visually selected text
-    xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
-    xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
     xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -501,7 +470,8 @@ if has("eval")
     command! -bang -complete=buffer -nargs=? Bwipeout
         \ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
-    nnoremap <silent> <leader>x :Bdelete<CR>
+    nnoremap <silent> <leader><Backspace> :Bdelete<CR>
+    nnoremap <silent> <leader><Delete> :bdelete<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" go to next/previous merge conflict hunks                   {{{
@@ -728,7 +698,7 @@ endif
 
 " Fix modern terminal features
 " :help terminal-output-codes
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|gnome\)'
+if !has('gui_running') && !has('nvim') && &term =~ '^\%(screen\|tmux\|xterm\|gnome\)'
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"

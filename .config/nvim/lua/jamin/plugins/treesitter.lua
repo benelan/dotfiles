@@ -19,7 +19,7 @@ return {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     version = false,
     build = ":TSUpdate",
-    event = "VimEnter",
+    event = "BufReadPost",
     init = function(plugin)
       -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
       -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
@@ -54,7 +54,7 @@ return {
         end,
         keys = {
           {
-            "[T",
+            "<leader>T",
             function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
           },
@@ -112,8 +112,8 @@ return {
             enable = true,
             border = res.icons.border,
             peek_definition_code = {
-              ["gof"] = "@function.outer",
-              ["goc"] = "@class.outer",
+              ["<leader>vf"] = "@function.outer",
+              ["<leader>vc"] = "@class.outer",
             },
           },
           select = {
@@ -126,10 +126,10 @@ return {
               ["ic"] = { query = "@class.inner", desc = "inner class" },
               ["am"] = { query = "@function.outer", desc = "function" },
               ["im"] = { query = "@function.inner", desc = "inner function" },
-              ["agl"] = { query = "@loop.outer", desc = "loop" },
-              ["igl"] = { query = "@loop.inner", desc = "inner loop" },
-              ["agi"] = { query = "@conditional.outer", desc = "conditional" }, -- if
-              ["igi"] = { query = "@conditional.inner", desc = "inner conditional" },
+              ["ao"] = { query = "@loop.outer", desc = "loop" },
+              ["io"] = { query = "@loop.inner", desc = "inner loop" },
+              ["ay"] = { query = "@conditional.outer", desc = "conditional" },
+              ["iy"] = { query = "@conditional.inner", desc = "inner conditional" },
               ["agc"] = { query = "@comment.*", desc = "comment" },
               ["igc"] = { query = "@comment.*", desc = "comment" },
             },
@@ -139,28 +139,28 @@ return {
             set_jumps = true,
             goto_next_start = {
               ["]m"] = { query = "@function.outer", desc = "Next function start" },
-              ["]gi"] = { query = "@conditional.outer", desc = "Next conditional start" },
-              ["]gl"] = { query = "@loop.outer", desc = "Next loop start" },
+              ["]y"] = { query = "@conditional.outer", desc = "Next conditional start" },
+              ["]o"] = { query = "@loop.outer", desc = "Next loop start" },
               ["]gc"] = { query = "@comment.*", desc = "Next comment start" },
-              ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold start" },
+              ["]Z"] = { query = "@fold", query_group = "folds", desc = "Next fold start" },
             },
             goto_previous_start = {
               ["[m"] = { query = "@function.outer", desc = "Previous function start" },
-              ["[gi"] = { query = "@conditional.outer", desc = "Previous conditional start" },
-              ["[gl"] = { query = "@loop.outer", desc = "Previous loop start" },
+              ["[y"] = { query = "@conditional.outer", desc = "Previous conditional start" },
+              ["[o"] = { query = "@loop.outer", desc = "Previous loop start" },
               ["[gc"] = { query = "@comment.*", desc = "Previous comment start" },
-              ["[z"] = { query = "@fold", query_group = "folds", desc = "Previous fold start" },
+              ["[Z"] = { query = "@fold", query_group = "folds", desc = "Previous fold start" },
             },
             goto_next_end = {
               ["]M"] = { query = "@function.outer", desc = "Next function end" },
-              ["]gI"] = { query = "@conditional.outer", desc = "Next conditional end" },
-              ["]gL"] = { query = "@loop.outer", desc = "Next loop end" },
+              ["]Y"] = { query = "@conditional.outer", desc = "Next conditional end" },
+              ["]O"] = { query = "@loop.outer", desc = "Next loop end" },
               ["]gC"] = { query = "@comment.*", desc = "Next comment end" },
             },
             goto_previous_end = {
               ["[M"] = { query = "@function.outer", desc = "Previous function end" },
-              ["[gI"] = { query = "@conditional.outer", desc = "Previous conditional end" },
-              ["[gL"] = { query = "@loop.outer", desc = "Previous loop end" },
+              ["[Y"] = { query = "@conditional.outer", desc = "Previous conditional end" },
+              ["[O"] = { query = "@loop.outer", desc = "Previous loop end" },
               ["[gC"] = { query = "@comment.*", desc = "Previous comment end" },
             },
           },

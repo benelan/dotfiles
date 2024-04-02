@@ -55,10 +55,12 @@
     removed = red dim
 
 [color "diff"]
-    meta = yellow bold
-    frag = magenta bold ; line info
-    old = red           ; deletions
-    new = green         ; additions
+    meta = yellow
+    func = white bold
+    commit = magenta
+    frag = white dim
+    old = red
+    new = green
 
 [color "diff-highlight"]
     oldNormal = red bold
@@ -381,8 +383,8 @@
             --bind='alt-r:execute(git reset -- {+})+abort'
 
     ; delete multiple branches
-    fbd = !git for-each-ref refs/heads --format='%(refname)' \
-        | fzf --multi \
+    fbd = !default_branch=$(git bdefault) && git for-each-ref refs/heads --format='%(refname:short)' \
+        | fzf --ansi --multi --preview \"git diff $default_branch...{1} --color=always\" \
         | xargs git branch -D
 
     ; use fzf to pick an unpushed commit to fixup and then autosquash

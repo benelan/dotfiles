@@ -4,10 +4,7 @@ let g:loaded_jamin_system_open_handler = 1
 " System Open Handler
 " The regex can be vastly improved, but it works for the most part.
 
-" --------------------------------------------------------------------- {|}
-" Determine the system's `open` command                                 {{{
-" --------------------------------------------------------------------- {|}
-
+" Determine the system's `open` command {{{1
 if has('wsl')
     let g:opencmd = 'wslview'
 elseif (has('win32') || has('win64'))
@@ -20,10 +17,7 @@ else
     let g:opencmd = 'netrw'
 endif
 
-" --------------------------------------------------------------------- }}}
-" Execute the open command                                              {{{
-" --------------------------------------------------------------------- {|}
-
+" Execute the open command {{{1
 function! s:ExecuteOpen(text)
     if g:opencmd == 'netrw'
         if !exists('g:loaded_netrw')
@@ -41,10 +35,7 @@ function! s:ExecuteOpen(text)
     endif
 endfunction
 
-" --------------------------------------------------------------------- }}}
-" Open URI using the default system app (browser, email client, etc)    {{{
-" --------------------------------------------------------------------- {|}
-
+" Open URI using the default system app (browser, email client, etc) {{{1
 function! s:OpenURI(text)
     " TODO: This pattern can be improved
     let l:pattern='[a-z]*:\/\/[^ >,;()"'.. "'"..'{}]*'
@@ -60,10 +51,7 @@ function! s:OpenURI(text)
     endif
 endfunction
 
-" --------------------------------------------------------------------- }}}
-" Open file or path using the default system app                        {{{
-" --------------------------------------------------------------------- {|}
-
+" Open file or path using the default system app {{{1
 function! s:OpenPath(text)
     " use Vim's builtin file handler
     if isdirectory(a:text) || filereadable(a:text)
@@ -75,10 +63,7 @@ function! s:OpenPath(text)
     endif
 endfunction
 
-" --------------------------------------------------------------------- }}}
-" Open NPM dependency in the browser if the file is package.json        {{{
-" --------------------------------------------------------------------- {|}
-
+" Open NPM dependency in the browser if the file is package.json {{{1
 function! s:OpenDepNPM(text)
     " only attempt to match in package.json files
     if expand("%:t") == "package.json"
@@ -96,10 +81,7 @@ function! s:OpenDepNPM(text)
     endif
 endfunction
 
-" --------------------------------------------------------------------- }}}
-" GitHub issue/PR number for current repo                               {{{
-" --------------------------------------------------------------------- {|}
-
+" GitHub issue/PR number for current repo {{{1
 function! s:OpenGitHubIssue(text)
     if executable('gh') " requires github-cli
         " get the workspace's current repo
@@ -124,10 +106,7 @@ function! s:OpenGitHubIssue(text)
     endif
 endfunction
 
-" --------------------------------------------------------------------- }}}
-" Plug function                                                         {{{
-" --------------------------------------------------------------------- {|}
-
+" Plug function {{{1
 " equivalent to NeoVim's `vim.startswith`
 function! s:StartsWith(longer, shorter) abort
     return a:longer[0:len(a:shorter)-1] ==# a:shorter
@@ -159,7 +138,6 @@ function! s:HandleSystemOpen()
     else | echom "No openable text found"
 endif
 endfunction
-" --------------------------------------------------------------------- }}}
 
 nnoremap <Plug>SystemOpen <CMD>call <SID>HandleSystemOpen()<CR>
 nnoremap <Plug>SystemOpenCWD <CMD>execute <SID>ExecuteOpen(shellescape(expand('%:h')))<CR>

@@ -6,6 +6,7 @@ vim.opt.confirm = true
 vim.opt.virtualedit:append "block"
 vim.opt.nrformats:append "unsigned"
 vim.opt.foldlevelstart = 99
+vim.opt.formatoptions:remove "t"
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -50,7 +51,7 @@ vim.opt.undolevels = 10000
 vim.opt.spelloptions:append "camel"
 vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
 
-if vim.fn.isdirectory "/usr/share/dict/words" == 1 then
+if vim.fn.filereadable "/usr/share/dict/words" == 1 then
   vim.opt.dictionary:append "/usr/share/dict/words"
 end
 

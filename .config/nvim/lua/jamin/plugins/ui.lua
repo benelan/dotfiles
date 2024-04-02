@@ -97,20 +97,9 @@ return {
     -- enabled = false,
     cmd = "CellularAutomaton",
     keys = {
-      { "<leader>s!", "<CMD>CellularAutomaton make_it_rain<CR>", desc = "Make it rain" },
-      { "<leader>s~", "<CMD>CellularAutomaton game_of_life<CR>", desc = "Game of life" },
+      { "<leader>!", "<CMD>CellularAutomaton make_it_rain<CR>", desc = "Make it rain" },
+      { "<leader>~", "<CMD>CellularAutomaton game_of_life<CR>", desc = "Game of life" },
     },
-  },
-  -----------------------------------------------------------------------------
-  {
-    "jinh0/eyeliner.nvim", -- highlights the best character to f/F/t/T per word
-    -- enabled = false,
-    event = "CursorHold",
-    opts = { highlight_on_key = false, dim = true },
-    config = function(_, opts)
-      require("eyeliner").setup(opts)
-      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
-    end,
   },
   -----------------------------------------------------------------------------
   {
@@ -142,6 +131,17 @@ return {
         window = { winblend = 0, x_padding = 0 },
       },
     },
+  },
+  -----------------------------------------------------------------------------
+  {
+    "jinh0/eyeliner.nvim", -- highlights the best character to f/F/t/T per word
+    -- enabled = false,
+    event = "CursorHold",
+    opts = { highlight_on_key = false, dim = true },
+    config = function(_, opts)
+      require("eyeliner").setup(opts)
+      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
+    end,
   },
   -----------------------------------------------------------------------------
   {
