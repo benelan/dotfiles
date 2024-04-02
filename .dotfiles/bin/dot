@@ -960,22 +960,19 @@ install_ubuntu_vivaldi() {
 INSTALL_THEME_FONT_DOC="Install the four most common weights of Iosevka Nerd Font"
 install_theme_font() {
     FONTS_DIR="$XDG_DATA_HOME/fonts"
+    mkdir -p "$FONTS_DIR"
+    pushd "$FONTS_DIR" >/dev/null
+    VERSION="$(basename "$(curl -s -w "%{redirect_url}" \
+        https://github.com/ryanoasis/nerd-fonts/releases/latest)")"
 
-    # Iosevka
-    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Bold.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf
-
-    curl -Lo "$FONTS_DIR/IosevkaNerdFont-BoldItalic.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf
-
-    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Regular.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf
-
-    curl -Lo "$FONTS_DIR/IosevkaNerdFont-Italic.ttf" \
-        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/Bold/IosevkaNerdFont-Bold.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/Bold-Italic/IosevkaNerdFont-BoldItalic.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/Regular/IosevkaNerdFont-Regular.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/Italic/IosevkaNerdFont-Italic.ttf"
 
     # reload the font cache
     fc-cache -rf
+    popd >/dev/null
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -985,15 +982,14 @@ install_theme_font() {
 INSTALL_THEME_FONT_COMPLETE_DOC="Install all weights of Iosevka Nerd Font"
 install_theme_font-complete() {
     FONTS_DIR="$XDG_DATA_HOME/fonts"
+    VERSION="$(basename "$(curl -s -w "%{redirect_url}" \
+        https://github.com/ryanoasis/nerd-fonts/releases/latest)")"
+
     mkdir -p "$FONTS_DIR"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/releases/download/$VERSION/Iosevka.zip"
 
-    curl -Lo "$FONTS_DIR/Iosevka.zip" \
-        https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Iosevka.zip
-    unzip "$FONTS_DIR/Iosevka.zip" -d "$FONTS_DIR"
-
-    rm -rf "$FONTS_DIR/Iosevka.zip" "$FONTS_DIR/README.md" "$FONTS_DIR/LICENSE.md"
-
-    # reload the font cache
+    unzip -oqd "$FONTS_DIR" Iosevka -x "*.md"
+    rm Iosevka.zip
     fc-cache -rf
 }
 
