@@ -1,6 +1,7 @@
 # General
 *.bak
 *.bak
+*.local
 *.lock
 *.orig
 *.temp.*

@@ -19,8 +19,8 @@ exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id compton --daemon
 
 exec_always --no-startup-id killall conky || true && \
-    conky --daemonize --quiet --pause=1 --config="$HOME/.config/conky/conky.conf" || true && \
-    conky --daemonize --quiet --pause=2 --config="$HOME/.config/conky/mimosa.conf"
+    conky --daemonize --pause=1 --config="$HOME/.config/conky/conky.conf" || true && \
+    conky --daemonize --pause=2 --config="$HOME/.config/conky/mimosa.conf"
 
 exec_always --no-startup-id killall dunst || true && sleep 5 && dunst
 

@@ -98,7 +98,7 @@ fi
 
 # Displays detailed weather and forecast.
 wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
-alias weather='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
+alias wthr='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 # Networking {{{1
 alias vpn="protonvpn-cli"

@@ -51,3 +51,5 @@ if [ -r "$wallpaper" ]; then
             ;;
     esac
 fi
+
+[ -r "$HOME/.xprofile.local" ] && . "$HOME/.xprofile.local"

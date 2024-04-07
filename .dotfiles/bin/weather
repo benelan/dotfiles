@@ -1,0 +1,125 @@
+#!/usr/bin/env sh
+set -o errexit
+
+# This script is designed for use in widgets, status bars or other UI
+# For example: polybar, conky, eww, rofi, shell prompt, etc.
+
+# If WEATHER_CACHE's modified timestamp is older than the interval (in minutes),
+# the data will be re-fetched before the subcommand is executed.
+# Set this to "-1" to prevent automatically re-fetching the data. You can run 
+# `weather refresh` from a crontab or systemd timer instead.
+# NOTE: It takes OpenWeather at minimum 10 minutes to update their data
+WEATHER_REFRESH_INTERVAL="${WEATHER_REFRESH_INTERVAL:-10}"
+WEATHER_CACHE_FILE="${WEATHER_CACHE:-"$DOTFILES/cache/weather.json"}"
+mkdir -p "$(dirname "$WEATHER_CACHE_FILE")"
+
+help() {
+    if [ -n "$*" ]; then
+        printf "Error: %s\nTry -h for more info.\n" "$*" >&2
+        exit 1
+    else
+        cat >&2 <<EOF
+Get information about the weather.
+
+Usage:  weather <refresh|icon|title|description|city|wind-speed
+                 |temp|min-temp|max-temp|feels-like|humidity|pressure>
+EOF
+        exit 0
+    fi
+}
+
+get_prop() {
+    value="$(jq -r "$1" <"$WEATHER_CACHE_FILE")"
+    if [ "$value" = "null" ]; then
+        help "jq unable to find property in $WEATHER_CACHE_FILE"
+    fi
+    echo "$value"
+}
+
+get_data() {
+    [ -z "$OPENWEATHER_API_KEY" ] &&
+        help 'The environment variable "OPENWEATHER_API_KEY" must contain an API key from https://openweathermap.org/'
+
+    # Set these env vars if using a VPN or your ISP obfuscates the IP location
+    if [ -n "$LONGITUDE" ] && [ -n "$LATITUDE" ]; then
+        lat="$LATITUDE"
+        lon="$LONGITUDE"
+    elif command -v jq >/dev/null 2>&1; then
+        loc=$(curl --silent --show-error --fail --ipv4 \
+            "https://location.services.mozilla.com/v1/geolocate?key=geoclue")
+        lat=$(echo "$loc" | jq -r .location.lat)
+        lon=$(echo "$loc" | jq -r .location.lng)
+    else
+        loc="$(curl -Ls ipinfo.io/loc)"
+        lat="$(echo "$loc" | cut -d, -f 1)"
+        lon="$(echo "$loc" | cut -d, -f 2)"
+    fi
+
+    curl -Lso "$WEATHER_CACHE_FILE" \
+        "https://api.openweathermap.org/data/2.5/weather?cnt=5&lang=en&units=imperial&lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}"
+}
+
+get_icon() {
+    icon=$(get_prop '.weather[0].icon')
+
+    # Nerd Font icons for openweathermap.org data
+    # https://openweathermap.org/weather-conditions
+    ICON_01D="󰖙 "
+    ICON_01N="󰖔 "
+    ICON_02D="󰖕 "
+    ICON_02N="󰼱 "
+    ICON_03="󰖐 "
+    ICON_04="󰖞 "
+    ICON_09="󰖖 "
+    ICON_10="󰖗 "
+    ICON_11="󰖓 "
+    ICON_13="󰖘 "
+    ICON_50="󰖑 "
+    NO_DATA=" "
+
+    case $icon in
+        *01d*) echo "${ICON_01D}" ;;
+        *01n*) echo "${ICON_01N}" ;;
+        *02d*) echo "${ICON_02D}" ;;
+        *02n*) echo "${ICON_02N}" ;;
+        *03d* | *03n*) echo "${ICON_03}" ;;
+        *04d* | *04n*) echo "${ICON_04}" ;;
+        *09d* | *09n*) echo "${ICON_09}" ;;
+        *10d* | *10n*) echo "${ICON_10}" ;;
+        *11d* | *11n*) echo "${ICON_11}" ;;
+        *13d* | *13n*) echo "${ICON_13}" ;;
+        *50d* | *50n*) echo "${ICON_50}" ;;
+        *) echo "${NO_DATA}" ;;
+    esac
+}
+
+main() {
+    [ -z "$1" ] && help "a command is required"
+    command -v jq >/dev/null 2>&1 || help "missing required dependency: jq"
+
+    if [ "$WEATHER_REFRESH_INTERVAL" != "-1" ]; then
+        # re-fetch data if the modified time isn't less than the refresh interval
+        # use '-/or' instead of '+/and' because it fails if the file doesn't exist
+        [ "$(find "$WEATHER_CACHE_FILE" -mmin "-$WEATHER_REFRESH_INTERVAL" \
+            2>/dev/null)" ] || get_data
+    fi
+
+    case "$1" in
+        refresh) get_data ;;
+        icon) get_icon ;;
+        city) get_prop ".name" ;;
+        title) get_prop ".weather[0].main" ;;
+        description) get_prop ".weather[0].description" ;;
+        temp) get_prop ".main.temp" ;;
+        humidity) get_prop ".main.humidity" ;;
+        pressure) get_prop ".main.pressure" ;;
+        min* | temp[-_]min) get_prop ".main.temp_min" ;;
+        max* | temp[_-]max) get_prop ".main.temp_max" ;;
+        feel*) get_prop ".main.feels_like" ;;
+        wind* | *speed) get_prop ".wind.speed" ;;
+        -h | h | --help | help) help ;;
+        *) help "invalid command" ;;
+    esac
+}
+
+main "$@"
