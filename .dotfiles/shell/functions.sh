@@ -52,7 +52,12 @@ vipe() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## make one or more directories and cd into the last one      {{{
 
-mcd() { mkdir -p -- "$@" && cd "$_" || return 1; }
+mcd() { mkdir -p -- "$@" && cd -- "$_" || return 1; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+# use neovim as a manpager                                   {{{
+
+vman() { nvim "+hide Man $*"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## add surfraw bookmark                                       {{{
@@ -105,7 +110,7 @@ fmtjson() {
 if supports pandoc; then
     # Open a markdown file in the less pager
     mdp() {
-        pandoc -s -f markdown -t man "$@" | man -l -
+        pandoc -s -f gfm -t man "${@:--}" | man -l -
         # use groff on mac: . . . . . . . | groff -T utf8 -man | less
     }
 
@@ -305,7 +310,7 @@ fgco() {
 
     SEARCH_TERM="$1"
     if supports fzf; then
-        PICK_BRANCH_CMD="fzf"
+        PICK_BRANCH_CMD='fzf --no-sort"'
         [ "$#" -gt 0 ] && shift
     else
         # Choose the first branch if fzf isn't installed
@@ -318,8 +323,7 @@ fgco() {
 
     # remote and local branches sorted by commit date
     git for-each-ref refs/remotes refs/heads \
-        --sort=-committerdate \
-        --format='%(refname:short)' |
+        --sort=-committerdate --format='%(refname:short)' |
         # filter by search term, remove 'origin/' prefix from refs, and dedupe
         awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","")};!x[$0]++' |
         # pick -> checkout branch

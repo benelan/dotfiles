@@ -348,40 +348,23 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle options                                             {{{
 
-    "" toggles highlighted cursor row; doesn't work in visual mode
-    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
-
-    "" toggles highlighted cursor column; works in visual mode
-    noremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
-
-    "" toggles spell checking
-    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
-
-    "" toggles showing tab, end-of-line, and trailing white space
     nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
-
-    "" toggles line number display
     nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
-
-    "" toggles soft wrapping
+    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
     nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
+    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
+    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-    "" toggles conceal
-    nnoremap <leader>sC <CMD>execute "set conceallevel="
-                \ . (&conceallevel == "0" ? "2" : "0")<CR>
-                \ <CMD>set conceallevel?<CR>
-
-    "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
-                    \ . (&colorcolumn == "" ? "80" : "")<CR>
-                    \ <CMD>set colorcolumn?<CR>
+            \ . (&colorcolumn == "" ? "79" : "")<CR>
 
-    "" toggle system clipboard
-    nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
-                    \ . (&clipboard == "umnamed"
-                        \ ? "unnamed,unnamedplus"
-                        \ : "unnamed")<CR>
-                        \ <CMD>set clipboard?<CR>
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" 
+                \ . (&conceallevel == "0" ? "2" : "0")<CR>
+
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
+            \ . (&clipboard == "unnamed"
+                \ ? "unnamed,unnamedplus"
+                \ : "unnamed")<CR><CMD>set clipboard?<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif

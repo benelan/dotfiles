@@ -2,6 +2,7 @@ local M = {}
 
 M.filetypes = {
   excluded = {
+    "-",
     "Outline",
     "TelescopePreview",
     "TelescopePrompt",
@@ -278,45 +279,45 @@ M.icons = {
   },
   lsp_kind = {
     Array = i " ",
-    Boolean = i " ", -- ◩
+    Boolean = i " ", -- 󰨙 ◩
     Class = i " ", --     
     Codeium = i "󰘦 ",
     Color = i " ",
     Comment = i " ",
-    Control = " ",
+    Control = i " ",
     Component = i " ",
     Conditional = i " ",
     Constant = i "󰭸 ",
-    Constructor = i " ",
+    Constructor = i " ", -- 
     Copilot = i " ", --   
     Enum = i " ",
     EnumMember = i " ",
     Error = i "󰛉 ", -- 
     Event = i " ",
-    Field = i " ", -- 󰓽
+    Field = i "󰓽 ", -- 
     File = i " ",
     Folder = i " ",
     Fragment = i " ",
     Function = i " ", -- 󰡱
-    Interface = i " ",
+    Interface = i " ", -- 
     Key = i "󰷖 ", -- 󰌋   🗝
-    Keyword = i " ",
+    Keyword = i " ", -- 
     Macro = i " ",
     TypeAlias = i " ",
     Method = i " ",
     StaticMethod = i " ",
     Module = i " ", -- 󰶮
-    Namespace = i " ", -- 󰦮  
+    Namespace = i "󰦮 ", --   
     Null = i "󰟢 ",
     Number = i " ",
     Object = i "󰅩 ",
     Operator = i " ",
-    Package = i " ", -- 
+    Package = i " ", -- 
     Property = i "󰓽 ", -- 
     Reference = i " ", -- 
     Snippet = i " ",
     Spell = i "󰓆 ",
-    String = i " ", --   󱀍
+    String = i "󱀍 ", --   
     Struct = i " ",
     Text = i "󰈍 ", -- 󰦨
     TypeParameter = i " ",
@@ -324,6 +325,7 @@ M.icons = {
     Unit = i " ",
     Value = i " ", -- 󰠱
     Variable = i " ",
+    Fallback = i " ", -- 󰒅  󰒉
   },
   diagnostics = {
     [vim.diagnostic.severity.ERROR] = i("󰅝 ", "E"),
@@ -368,22 +370,20 @@ M.art = {
          /         \
         |           |
         |   .-------'._
-        |  / /  '.' '. \          .---------------.
-        |  \ \ @   @ / /         |  Hey sexy mama, |
-        |   '---------'          |  wanna kill all |
-        |    _______|            |     humans?     |
-        |  .'-+-+-+|             ,----------------'
-        |  '.-+-+-+|          --'
+        |  / /  '.' '. \    .------------------------.
+        |  \ \ @   @ / /    | Hey lazy dev, want me  |
+        |   '---------'     | to replace all humans? |
+        |  .'-+-+-+|        ;------------------------'
+        |  `.-+-+-+|    ---'
         |    """""" |
         '-.__   __.-'
              """
   ]],
-
   bender_dots = [[
-               ⠘⡀⠀  Hey⠀sexy mama,    ⠀⡜
-               ⠀⠑⡀⠀  wanna kill all⠀⠀⠀⡔
-               ⠀⠀⠈⠢⢄⠀⠀⠀humans?⠀ ⠀⠀⠀⣀⠴⠊
-               ⠀⠀⠀⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⣀⡀⠤⠄⠒⠈
+                ⠘⡀ Hey⠀lazy dev, want ⡜
+               ⠀ ⠑⡀⠀ me to replace   ⡜
+               ⠀⠀ ⠈⠢⢄⠀all humans? ⣀⠴⠊
+               ⠀⠀⠀⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⡀⠤⠄⠒⠈
                ⠀⠀⠀⠀⠀⠘⣀⠄⠊⠁
    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⣵
    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡀

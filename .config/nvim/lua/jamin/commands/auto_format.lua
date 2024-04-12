@@ -51,7 +51,7 @@ end
 
 -- formatting needs to happen before the file saves
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("jamin_auto_format", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_auto_format", {}),
   callback = function(event)
     if not format_is_enabled then return end
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# shellcheck disable=2139
 # vim:filetype=sh foldmethod=marker:
 
 # General {{{1
@@ -23,31 +24,27 @@ alias f="vifm ."
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
 
+alias v="vim --noplugin  -u $DOTFILES/assets/templates/standalone.vimrc"
 # minimum usable vim options
-alias v="vim -u DEFAULTS --noplugin +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
+alias vm="vim --no-plugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
 _color=$(supports "ls --color" --color -G)
 _time_style=$(supports "ls --time-style=long-iso" --time-style=long-iso)
 _group_dirs=$(supports "ls --group-directories-first" --group-directories-first)
 
-# shellcheck disable=2139
 alias ls="ls $_color $_group_dirs"
 
 # list all files/dirs, short format, sort by time
-# shellcheck disable=2139
 alias l="ls -Art $_color $_group_dirs"
 
 # list all files/dirs, long format, sort by time
-# shellcheck disable=2139
 alias ll="ls -hogArt $_color $_time_style $_group_dirs"
 
 # List directories, long format, sort by time
-# shellcheck disable=2139
 alias lsd="ls -radgoth */ $_color $_time_style"
 
 # Lists hidden files, long format, sort by time
-# shellcheck disable=2139
 alias lsh="ls -radgoth .?* $_color $_time_style $_group_dirs"
 
 unset _color _time_style _group_dirs
@@ -69,10 +66,10 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 if supports fasd; then
+    alias z='_fasd_cd -id'
+    alias zd='_fasd_cd -d'
     alias ze='fasd -fe $EDITOR'
     alias zo='fasd -ae xdg-open'
-    alias z='_fasd_cd -d'
-    alias zz='_fasd_cd -d -i'
 
     # function to execute built-in cd
     _fasd_cd() {
@@ -100,7 +97,7 @@ fi
 wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
 alias wthr='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
-# Networking {{{1
+# Network/System {{{1
 alias vpn="protonvpn-cli"
 
 # Stop after sending count ECHO_REQUEST packets
@@ -188,7 +185,6 @@ if supports task; then
     supports tasksh && alias tsh="tasksh"
     supports taskwarrior-tui && alias tui="taskwarrior-tui"
 
-    # shellcheck disable=2154
     [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
 fi
 
@@ -223,7 +219,6 @@ alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 
 # Docker {{{1
-# general docker aliases {{{2
 if supports docker; then
 
     # display names of running containers
@@ -237,27 +232,23 @@ if supports docker; then
 
     # prune everything
     alias dkprune='docker system prune -a'
-fi
 
-# docker aliases for calcite development {{{2
-if [ "$USE_WORK_STUFF" = "1" ] && supports docker; then
-    # I need to link these files to the current worktree
-    alias cc_link_files='ln -f $CALCITE/Dockerfile && ln -f $CALCITE/.marksman.toml && ln -f $CALCITE/calcite-components.projections.json ./packages/calcite-components/.projections.json'
+    # docker aliases for Calcite development {{{2
+    if [ "$USE_WORK_STUFF" = "1" ]; then
+        # I need to link these files to the current worktree
+        alias cc_link_files='pushd "$(npm prefix)" >/dev/null && ln -f "$CALCITE/Dockerfile" && ln -f f"$CALCITE/.marksman.toml" && ln -f "$CALCITE/calcite-components.projections.json" "./packages/calcite-components/.projections.json" && popd >/dev/null'
 
-    alias cc_build_docker_image="docker build --tag calcite-components ."
+        alias cc_build_docker_image="docker build --tag calcite-components ."
 
-    # Create containers to run tests and the the dev server at the same time
-    # Use a bind mount so building/testing on file changes works correctly
-    _cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
+        # Create containers to run tests and the the dev server at the same time
+        # Use a bind mount so building/testing on file changes works correctly
+        _cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
 
-    # shellcheck disable=2139
-    alias cc_start_in_docker="$_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
+        alias cc_start_in_docker="$_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
+        alias cc_test_in_docker="$_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
+        alias cc_run_in_docker="$_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
 
-    # shellcheck disable=2139
-    alias cc_test_in_docker="$_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
-
-    # shellcheck disable=2139
-    alias cc_run_in_docker="$_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
-
-    unset _cmd
+        unset _cmd
+    fi
+    #}}}
 fi

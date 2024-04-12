@@ -259,33 +259,23 @@ if has("keymap")
     nnoremap <C-Right> :vertical resize +5<CR>
 
     "" toggle options {{{2
-    "" toggles highlighted cursor row; doesn't work in visual mode
-    nnoremap <leader>sx <CMD>set cursorline!<CR>
+    nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
+    nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
+    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
+    nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
+    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
+    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-    "" toggles highlighted cursor column; works in visual mode
-    noremap <leader>sy <CMD>set cursorcolumn!<CR>
-
-    "" toggles spell checking
-    nnoremap <leader>ss <CMD>set spell!<CR>
-
-    "" toggles showing tab, end-of-line, and trailing white space
-    noremap <leader>sl <CMD>set list!<CR>
-
-    "" toggles line number display
-    noremap <leader>sn <CMD>set relativenumber!<CR>
-
-    "" toggles soft wrapping
-    noremap <leader>sw <CMD>set wrap!<CR>
-
-    "" toggle colorcolumn
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
-            \ . (&colorcolumn == "" ? "80" : "")<CR>
+            \ . (&colorcolumn == "" ? "79" : "")<CR>
 
-    "" toggle system clipboard
-    nnoremap <silent> <leader>sc <CMD>execute "set clipboard="
-            \ . (&clipboard == "umnamed"
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" 
+                \ . (&conceallevel == "0" ? "2" : "0")<CR>
+
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
+            \ . (&clipboard == "unnamed"
                 \ ? "unnamed,unnamedplus"
-                \ : "unnamed")<CR>
+                \ : "unnamed")<CR><CMD>set clipboard?<CR>
 
     "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))

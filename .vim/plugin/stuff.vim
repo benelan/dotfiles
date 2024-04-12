@@ -29,7 +29,7 @@ nnoremap <Backspace> <C-^>
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
-nmap Q mFgqBg`F
+nmap Q mtgqBg`t
 
 " Format selected text maintaining the selection.
 xmap Q gq`[v`]
@@ -186,7 +186,7 @@ command! Qf2Ll call getqflist()
     \ ->filter({i, x -> x.bufnr == bufnr()})
     \ ->setloclist(0)
 
-"" grep all files in the quickfix, buffer, or argument lists {{{2
+"" grep all files in the quickfix/buffer/argument lists {{{2
 command! -nargs=* GrepQfList call getqflist()
     \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
     \ ->sort() ->uniq() ->join(' ')
@@ -206,6 +206,9 @@ command! -nargs=* GrepArgList grep <args> ##
 function! M(x, y)
     return a:x == '' || a:x == v:false ? '' : a:y . a:x
 endfunction
+
+"" wipe all registers {{{2
+command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 "" toggle netrw open/close {{{2
 function! s:NetrwToggle()
@@ -429,7 +432,6 @@ if has("autocmd")
     "" use skeletons when creating specific new files {{{2
     augroup jamin_skeletons
         autocmd!
-        autocmd BufNewFile .gitignore 0r ~/.config/git/ignore
         autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
         autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
         autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
@@ -469,17 +471,17 @@ if has("autocmd")
         if executable("npx")
             autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
-                \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+                \ setlocal formatprg=npx\ prettier\ --stdin-filepath=%\ 2>/dev/null
         endif
 
         if executable("shfmt")
             autocmd FileType {,ba,da,k,z}sh
-                \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+                \ setlocal formatprg=shfmt\ -i=4\ -ci\ --filename=%\ 2>/dev/null
         endif
 
         if executable("stylua")
             autocmd FileType lua
-                \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
+                \ setlocal formatprg=stylua\ --color=Never\ --stdin-filepath=%\ -\ 2>/dev/null
         endif
     augroup END
 endif

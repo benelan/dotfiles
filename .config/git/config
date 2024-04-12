@@ -164,6 +164,9 @@
     pushInsteadOf = "git://gist.github.com/"
 
 [alias]
+    o = !git open &
+    y = !git o -p | cb
+
     a = add
     all = add --all
     au = add --update
@@ -199,7 +202,7 @@
     ds = diff --staged
     dt = difftool
     dn = diff --name-status
-    dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)); }; f"
+    dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)) -- . ':(exclude)package-lock.json'; }; f"
 
     ; edit the files changed locally
     e = !$(git var GIT_EDITOR) $(git diff --name-only HEAD | sort -u)
@@ -383,8 +386,11 @@
             --bind='alt-r:execute(git reset -- {+})+abort'
 
     ; delete multiple branches
-    fbd = !default_branch=$(git bdefault) && git for-each-ref refs/heads --format='%(refname:short)' \
-        | fzf --ansi --multi --preview \"git diff $default_branch...{1} --color=always\" \
+    fbd = !default_branch=$(git bdefault) \
+        && git for-each-ref refs/heads --sort=-committerdate \
+            --format='%(refname:short)' \
+        | fzf --ansi --multi --no-sort \
+            --preview \"git diff $default_branch...{1} --color=always\" \
         | xargs git branch -D
 
     ; use fzf to pick an unpushed commit to fixup and then autosquash
@@ -424,7 +430,7 @@
             --pretty='%<(14)%Cgreen%cr    %Creset%gs %>(9999)%h' | \
         fzf --ansi --no-sort --no-multi --no-hscroll \
             --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
-            --preview='git -c color.diff=always diff {-1}' \
+            --preview='git -c color.diff=always show {-1}' \
             --bind='alt-a:execute(git stash apply {n})+abort' \
             --bind='alt-x:execute(git stash drop {n})+abort' \
             --bind='alt-o:execute(git stash branch stash-{-1} {n})+abort'"

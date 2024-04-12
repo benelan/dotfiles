@@ -271,7 +271,7 @@ return {
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = "octo",
-        group = vim.api.nvim_create_augroup("jamin_octo_settings", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin_octo_settings", {}),
         callback = function()
           vim.keymap.set(
             "n",

@@ -1,11 +1,17 @@
 # General
 *.bak
-*.bak
+*.dump
 *.local
 *.lock
+*.mdump
+*.old
 *.orig
+*.pid
+*.swp
 *.temp.*
 *.tmp
+*Quickfix.txt
+*Session.vim
 *_BACKUP_*
 *_BASE_*
 *_LOCAL_*
@@ -16,10 +22,6 @@
 .exrc
 .nvim.lua
 .nvimrc
-Quickfix.txt
-Session*.vim
-build/
-dist/
 node_modules/
 nohup.out
 
@@ -38,7 +40,6 @@ nohup.out
 *.o
 *.reg
 *.so
-
 
 # Packages
 *.7z  
@@ -106,5 +107,6 @@ yarn-error.log*
 *.pem
 *.pgp
 *.pub
+*.sig
 *.ssh
 .npmrc-*

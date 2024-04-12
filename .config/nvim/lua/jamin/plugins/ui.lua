@@ -70,7 +70,7 @@ return {
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
         pattern = "gruvbox-material",
-        group = vim.api.nvim_create_augroup("jamin_gruvbox_custom_colors", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin_gruvbox_custom_colors", {}),
         callback = gruvbox_custom_colors,
       })
 
@@ -152,42 +152,7 @@ return {
     opts = {
       outline_window = { hide_cursor = true },
       outline_items = { show_symbol_lineno = true },
-      symbols = {
-        icons = {
-          Array = { icon = res.icons.lsp_kind.Array, hl = "@constant" },
-          Boolean = { icon = res.icons.lsp_kind.Boolean, hl = "@boolean" },
-          Class = { icon = res.icons.lsp_kind.Class, hl = "@type" },
-          Component = { icon = res.icons.lsp_kind.Component, hl = "@function" },
-          Constant = { icon = res.icons.lsp_kind.Constant, hl = "@constant" },
-          Constructor = { icon = res.icons.lsp_kind.Constructor, hl = "@constructor" },
-          Enum = { icon = res.icons.lsp_kind.Enum, hl = "@type" },
-          EnumMember = { icon = res.icons.lsp_kind.EnumMember, hl = "@field" },
-          Event = { icon = res.icons.lsp_kind.Event, hl = "@type" },
-          Field = { icon = res.icons.lsp_kind.Field, hl = "@field" },
-          File = { icon = res.icons.lsp_kind.File, hl = "@text.uri" },
-          Fragment = { icon = res.icons.lsp_kind.Fragment, hl = "@constant" },
-          Function = { icon = res.icons.lsp_kind.Function, hl = "@function" },
-          Interface = { icon = res.icons.lsp_kind.Interface, hl = "@type" },
-          Key = { icon = res.icons.lsp_kind.Key, hl = "@type" },
-          Macro = { icon = res.icons.lsp_kind.Macro, hl = "@method" },
-          Method = { icon = res.icons.lsp_kind.Method, hl = "@method" },
-          Module = { icon = res.icons.lsp_kind.Module, hl = "@namespace" },
-          Namespace = { icon = res.icons.lsp_kind.Namespace, hl = "@namespace" },
-          Null = { icon = res.icons.lsp_kind.Null, hl = "@type" },
-          Number = { icon = res.icons.lsp_kind.Number, hl = "@number" },
-          Object = { icon = res.icons.lsp_kind.Object, hl = "@type" },
-          Operator = { icon = res.icons.lsp_kind.Operator, hl = "@operator" },
-          Package = { icon = res.icons.lsp_kind.Package, hl = "@namespace" },
-          Parameter = { icon = res.icons.lsp_kind.Parameter, hl = "@parameter" },
-          Property = { icon = res.icons.lsp_kind.Property, hl = "@method" },
-          StaticMethod = { icon = res.icons.lsp_kind.StaticMethod, hl = "@method" },
-          String = { icon = res.icons.lsp_kind.String, hl = "@string" },
-          Struct = { icon = res.icons.lsp_kind.Struct, hl = "@type" },
-          TypeAlias = { icon = res.icons.lsp_kind.TypeAlias, hl = "@type" },
-          TypeParameter = { icon = res.icons.lsp_kind.TypeParameter, hl = "@parameter" },
-          Variable = { icon = res.icons.lsp_kind.Variable, hl = "@constant" },
-        },
-      },
+      symbols = { icon_fetcher = function(kind) return res.icons.lsp_kind[kind] end },
     },
   },
 }

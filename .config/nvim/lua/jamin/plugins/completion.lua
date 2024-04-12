@@ -25,18 +25,18 @@ return {
   -- { "f3fora/cmp-spell", ft = res.filetypes.writing },
   -----------------------------------------------------------------------------
   -- completes git commits and github issues/pull requests
-  {
-    "petertriho/cmp-git",
-    enabled = false,
-    dependencies = { "nvim-lua/plenary.nvim" },
-    ft = { "gitcommit", "markdown", "octo" },
-    config = function()
-      require("cmp_git").setup {
-        filetypes = { "gitcommit", "markdown", "octo" },
-        github = { issues = { state = "all" }, pull_requests = { state = "all" } },
-      }
-    end,
-  },
+  -- {
+  --   "petertriho/cmp-git",
+  --   enabled = false,
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   ft = { "gitcommit", "markdown", "octo" },
+  --   config = function()
+  --     require("cmp_git").setup {
+  --       filetypes = { "gitcommit", "markdown", "octo" },
+  --       github = { issues = { state = "all" }, pull_requests = { state = "all" } },
+  --     }
+  --   end,
+  -- },
   -----------------------------------------------------------------------------
   -- completes API info from attached language servers
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
@@ -176,7 +176,7 @@ return {
               -- use LSP kind icons for non-path completion items and specify a fallback icon
               vim_item.kind = string.format(
                 " %s %s",
-                res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Text,
+                res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback,
                 vim_item.kind
               )
             end
@@ -282,12 +282,6 @@ return {
       -- loads snippets in the luasnippets dir of my neovim config
       lua_loader.lazy_load()
 
-      vim.api.nvim_create_user_command(
-        "LuaSnipEdit",
-        function() lua_loader.edit_snippet_files() end,
-        {}
-      )
-
       ls.filetype_extend("typescript", { "javascript" })
       ls.filetype_extend("javascriptreact", { "javascript" })
       ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
@@ -382,8 +376,9 @@ return {
   {
     "Exafunction/codeium.vim",
     cond = vim.env.USE_CODEIUM == "1",
-    event = "InsertEnter",
-    init = function()
+    event = "VimEnter",
+    cmd = "Codeium",
+    config = function()
       local filetypes = {}
 
       for _, ft in
@@ -463,7 +458,6 @@ return {
         mode = "i",
         desc = "Copilot accept",
       },
-      { "<leader>C", "<CMD>Copilot toggle<CR><CMD>Copilot status<CR>", desc = "Copilot toggle" },
     },
   },
 }

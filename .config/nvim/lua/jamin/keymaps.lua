@@ -150,34 +150,28 @@ keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local 
 keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from local (diff)")
 
 -------------------------------------------------------------------------------
-----> Windows
+----> Buffers, windows, tabs
 -------------------------------------------------------------------------------
 
---- navigate
+-- buffers
+keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
+
+-- navigate windows
 keymap("n", "<C-h>", "<C-w>h", "Focus window left")
 keymap("n", "<C-j>", "<C-w>j", "Focus window below")
 keymap("n", "<C-k>", "<C-w>k", "Focus window above")
 keymap("n", "<C-l>", "<C-w>l", "Focus window right")
 
--- resize
+-- resize windows
 keymap("n", "<C-Up>", "<CMD>resize +5<CR>", "Decrease horizontal window size")
 keymap("n", "<C-Down>", "<CMD>resize -5<CR>", "Increase horizontal window size")
 keymap("n", "<C-Left>", "<CMD>vertical resize -5<CR>", "Decrease vertical window size")
 keymap("n", "<C-Right>", "<CMD>vertical resize +5<CR>", "Increase vertical window size")
 
--------------------------------------------------------------------------------
-----> Tabs
--------------------------------------------------------------------------------
-
+-- tabs
 keymap("n", "<leader>tn", "<CMD>tabnew<CR>", "New tab")
 keymap("n", "<leader>to", "<CMD>tabonly<CR>", "Close other tabs")
 keymap("n", "<leader>tc", "<CMD>tabclose<CR>", "Close tab")
-
--------------------------------------------------------------------------------
-----> Buffers
--------------------------------------------------------------------------------
-
-keymap("n", "<leader><Delete>", "<CMD>bdelete<CR>", "Close buffer")
 
 -------------------------------------------------------------------------------
 ----> Toggle options
@@ -196,7 +190,7 @@ keymap(
 
 keymap(
   "n",
-  "<leader>sC",
+  "<leader>sc",
   ':execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR><CMD>set conceallevel?<CR>',
   "Toggle conceallevel"
 )
@@ -210,8 +204,8 @@ keymap(
 
 keymap(
   "n",
-  "<leader>sc",
-  ':execute "set clipboard=" . (&clipboard == "umnamed" ? "unnamed,unnamedplus" : "unnamed")<CR><CMD>set clipboard?<CR>',
+  "<leader>sY",
+  ':execute "set clipboard=" . (&clipboard == "unnamed" ? "unnamed,unnamedplus" : "unnamed")<CR><CMD>set clipboard?<CR>',
   "Toggle clipboard"
 )
 
@@ -219,15 +213,28 @@ local virtual_text_enabled = true
 keymap("n", "<leader>sv", function()
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config { virtual_text = virtual_text_enabled }
+  print(
+    string.format(
+      "%s %s",
+      "diagnostic virtual text",
+      virtual_text_enabled and "enabled" or "disabled"
+    )
+  )
 end, "Toggle diagnostic virtual text")
 
 keymap("n", "<leader>st", function()
   if vim.b.ts_highlight then
     vim.treesitter.stop()
+    print "treesitter stopped"
   else
     vim.treesitter.start()
+    print "treesitter started"
   end
 end, "Toggle treesitter")
+
+-------------------------------------------------------------------------------
+----> VSC*de
+-------------------------------------------------------------------------------
 
 if vim.g.vscode then
   -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary

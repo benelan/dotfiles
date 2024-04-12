@@ -60,12 +60,11 @@ path() {
         r | -r | remove | --remove) _pathremove "$2" "$3" ;;
         p | -p | prepend | --prepend) _pathprepend "$2" "$3" ;;
         *)
-            printf "Usage: path [append|prepend|remove] [PATH]" >&2
+            printf "Usage: path [append|prepend|remove PATH] [VARIABLE]" >&2
             return 1
             ;;
     esac
 }
-
 
 # Set path {{{1
 path -p "$HOME/.dotfiles/bin"

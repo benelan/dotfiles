@@ -16,7 +16,6 @@ set timeout            = 300
 set history            = 256
 set save_history       = $history
 set history_file       = ~/.cache/mutt/history
-set signature          = ~/.config/mutt/signature
 set attach_save_dir    = ~/Downloads
 set realname           = "Ben Elan"
 set forward_format     = "Fw: %s"

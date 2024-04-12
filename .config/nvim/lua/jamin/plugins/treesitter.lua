@@ -17,7 +17,6 @@ return {
   -----------------------------------------------------------------------------
   {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
-    version = false,
     build = ":TSUpdate",
     event = "BufReadPost",
     init = function(plugin)
@@ -33,7 +32,6 @@ return {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
-        dependencies = "vim-commentary",
         init = function() vim.g.skip_ts_context_commentstring_module = true end,
         opts = {},
       },
@@ -54,12 +52,12 @@ return {
         end,
         keys = {
           {
-            "<leader>T",
+            "<leader>C",
             function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
           },
           {
-            "<leader>sT",
+            "<leader>sC",
             function() require("treesitter-context").toggle() end,
             desc = "Toggle treesitter context",
           },

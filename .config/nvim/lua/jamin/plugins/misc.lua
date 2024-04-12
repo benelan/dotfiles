@@ -15,7 +15,7 @@ return {
     config = function()
       -- setup files that can contain javascript which aren't included by default
       vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("jamin_closer_javascript", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin_closer_javascript", {}),
         pattern = { "svelte", "astro", "html" },
         callback = function()
           vim.b.closer = 1
@@ -60,7 +60,9 @@ return {
   -- adds keymap for toggling comments on text objects
   {
     dir = "~/.vim/pack/foo/start/vim-commentary",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-commentary",
+    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-commentary"
+      -- neovim added builtin support for commenting, see :h commenting
+      and vim.fn.has "nvim-0.10.0-dev-2930+g47ba96a6b" == 0,
     keys = { { mode = { "n", "v", "o" }, "gc" } },
     cmd = "Commentary",
   },
@@ -101,6 +103,9 @@ return {
       { "<leader>a<CR>", "<CMD>Console<CR><C-w><C-w>", desc = "Console (projectionist)" },
     },
   },
+  -----------------------------------------------------------------------------
+  -- transparently edit gpg encrypted files
+  { "jamessan/vim-gnupg", event = { "BufReadPre *.asc,*.gpg,*.pgp" } },
   -----------------------------------------------------------------------------
   {
     "folke/lazy.nvim",

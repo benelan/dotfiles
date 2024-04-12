@@ -150,9 +150,11 @@ supports taskopen && export TASKOPENRC="$XDG_CONFIG_HOME/task/taskopenrc"
 
 # https://github.com/cdown/clipmenu
 if supports clipmenu; then
-    export CM_SELECTIONS="clipboard"
     export CM_DIR="$XDG_STATE_HOME"
+    export CM_HISTLENGTH="10"
+    export CM_SELECTIONS="clipboard"
     export CM_IGNORE_WINDOW="^(seahorse|Item Properties.*|Proton Pass.*)$"
+
     if supports rofi; then
         export CM_LAUNCHER="rofi"
     elif supports fzf; then

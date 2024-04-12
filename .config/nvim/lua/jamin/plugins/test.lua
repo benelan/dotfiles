@@ -3,6 +3,7 @@ return {
     "nvim-neotest/neotest",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "nvim-neotest/nvim-nio",
       "nvim-treesitter/nvim-treesitter",
       -- "nvim-neotest/neotest-go",
       -- "nvim-neotest/neotest-jest",
@@ -41,7 +42,7 @@ return {
     end,
     keys = {
       { "<leader>n<CR>", function() require("neotest").run.run() end, desc = "Run nearest test" },
-      { "<leader>n<BS>", function() require("neotest").run.stop() end, desc = "Stop test" },
+      { "<leader>n<Delete>", function() require("neotest").run.stop() end, desc = "Stop test" },
       { "<leader>n.", function() require("neotest").run.run_last() end, desc = "Rerun last test" },
       {
         "<leader>nw",

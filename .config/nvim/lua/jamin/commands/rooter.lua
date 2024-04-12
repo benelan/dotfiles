@@ -5,6 +5,7 @@ local M = {}
 
 local root_markers = { "package.json", "Dockerfile", "Makefile" }
 local ignored_lsps = { "null-ls", "copilot", "eslint" }
+local ignored_paths = { "~/.local/share/nvim/lazy" }
 
 -- Cache to use for speed up (at cost of possibly outdated results)
 local root_cache = {}
@@ -56,7 +57,19 @@ function M.project(args)
     root = get_marker_root(path) or get_lsp_root(buf, ignored_lsps)
   end
 
-  if not root then return end
+  if
+    not root
+    or #vim.tbl_filter(
+        function(p)
+          return string.match(root, ("^" .. p:gsub("~", vim.env.HOME):gsub("%.", "%%.") .. ".*$"))
+        end,
+        ignored_paths
+      )
+      > 0
+  then
+    return
+  end
+
   root_cache[path] = root
 
   -- change directory if args are given (e.g., when called via an autocmd callback)
@@ -98,7 +111,7 @@ vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directo
 
 -- automatically change directory to project root
 vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
-  group = vim.api.nvim_create_augroup("jamin_rooter", { clear = true }),
+  group = vim.api.nvim_create_augroup("jamin_rooter", {}),
   callback = M.project,
 })
 

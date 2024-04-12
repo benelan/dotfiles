@@ -343,6 +343,7 @@ EXEC 01;31      # Unix
 .dircolors 03;36
 .ini 03;36
 .list 03;36
+.local 03;36
 .profile 03;36
 .xprofile 03;36
 .xsession 03;36
@@ -620,7 +621,7 @@ EXEC 01;31      # Unix
 *lock 37
 *lockfile 37
 *package-lock.json 37
-*projections.json 37
+.projections.json 37
 *~ 37
 .0 37
 .1 37

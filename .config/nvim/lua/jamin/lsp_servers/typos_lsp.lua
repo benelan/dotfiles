@@ -1,1 +1,1 @@
-return { init_options = { diagnosticSeverity = "warning" } }
+return { init_options = { diagnosticSeverity = "information" } }

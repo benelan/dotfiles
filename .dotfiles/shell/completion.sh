@@ -32,3 +32,4 @@ __git_complete dot git
 
 # branch completion for alias for `git-mux task` from https://github.com/benelan/git-mux
 __git_complete gxt git_checkout
+__git_complete git-mux git_checkout

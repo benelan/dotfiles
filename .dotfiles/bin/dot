@@ -22,8 +22,6 @@
 # Aliases in ~/.config/git/config work with `dot` too. For example, `dot cm` is:
 #   $ git --git-dir="$HOME/.git/" --work-tree="$HOME" commit -m
 
-_has() { command -v "$1" >/dev/null 2>&1; }
-
 # Setup dotfiles                                                        {{{
 # --------------------------------------------------------------------- {|}
 setup_dotfiles() {
@@ -45,14 +43,14 @@ setup_dotfiles() {
     # Don't use SSH to clone if there is no SSH key on the machine
     # This is for when I spin up a new VM and don't want to login to GitHub
     if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
-        repo_url=https://github.com/benelan/dotfiles
+        repo_url="https://github.com/benelan/dotfiles"
     else
-        repo_url=git@github.com:benelan/dotfiles
+        repo_url="git@github.com:benelan/dotfiles"
     fi
 
     git clone --bare "$repo_url" "$HOME/.git"
 
-    dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
+    dot() { /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" "$@"; }
 
     # Make sure fetching works correctly for all branches
     dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
@@ -1476,7 +1474,7 @@ install_build_clipmenu() {
     if [ -d "$LIB/clipmenu" ]; then
         git -C "$LIB/clipmenu" pull
     else
-        git clone https://github.com/cdown/clipmenu.git "$LIB/clipmenu"
+        git clone -b master https://github.com/cdown/clipmenu.git "$LIB/clipmenu"
     fi
 
     pushd "$LIB/clipnotify" >/dev/null
@@ -1499,6 +1497,7 @@ install_build_clipmenu() {
     rm -rf ~/.local/lib/systemd/
 
     systemctl --user daemon-reload
+    systemctl --user enable --now clipmenud
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1643,7 +1642,7 @@ are printed when no argument is provided to a lowercase flag.
 
 Usage:
   dot deps [-ABLPSTUh] [-b <build>] [-l <language>] [-m <misc>] [-p <package>]
-           [-s <script>] [-t <theme>] [-u <ubuntu>] [-n <neovim-version>]
+           [-s <script>] [-t <theme>] [-u <ubuntu>] [-n [<neovim-version>]]
 
 Flags:
   -A    Install all dependency groups
@@ -1659,7 +1658,7 @@ Flags:
   -l    Install a programming language
   -m    Install a miscellaneous dependency
   -n    Install a specific version of neovim
-  -p    Install a package manager dependency or (n)vim plugin
+  -p    Install a package manager's dependencies
   -s    Install a shell script dependency
   -t    Install an operating system theme dependency
   -u    Install an Ubuntu-specific dependency
@@ -1699,7 +1698,7 @@ list_dependency_options() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install a dep if supported, otherwise print help message   {{{
+## Install a dep if supported, otherwise print help message    {{{
 
 install_dependency() {
     [ -z "$2" ] && deps_help
@@ -1778,6 +1777,17 @@ main() {
         # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
 
+        # toggle git env vars so I can use `git` instead of `dot`
+        toggle)
+            if [ "$GIT_WORK_TREE" = "$HOME" ]; then
+                unset GIT_DIR
+                unset GIT_WORK_TREE
+            else
+                export GIT_DIR="${HOME}/.git"
+                export GIT_WORK_TREE="$HOME"
+            fi
+            ;;
+
         # prevent usage of git commands 'clean' and 'clear' (from git-extras)
         clea*) echo "Don't delete your home directory, dumbass" && return 1 ;;
 
@@ -1791,6 +1801,8 @@ main() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
-# --------------------------------------------------------------------- }}}
+_has() { command -v "$1" >/dev/null 2>&1; }
 
 main "$@"
+
+# --------------------------------------------------------------------- }}}

@@ -58,21 +58,6 @@ return {
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
 
-      vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
-        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, opts.diagnostics)(...)
-
-        local qflist = vim.fn.getqflist { title = 0, id = 0 }
-        local diagnostics = vim.diagnostic.toqflist(vim.diagnostic.get())
-
-        pcall(vim.fn.setqflist({}, qflist.title == "All Diagnostics" and "r" or " ", {
-          title = "All Diagnostics",
-          items = diagnostics,
-        }))
-
-        -- don't steal focus from other qf lists
-        if qflist.id ~= 0 and qflist.title ~= "All Diagnostics" then vim.cmd "colder" end
-      end
-
       -- combine default LSP client capabilities with override opts specified above
       local capabilities = vim.tbl_deep_extend(
         "force",
@@ -101,15 +86,11 @@ return {
       ----> On attach
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {}),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client == nil then return end
-
-          -- sync up OG vim features with language server
-          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
-          vim.api.nvim_set_option_value("tagfunc", "v:lua.vim.lsp.tagfunc", { buf = args.buf })
 
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
@@ -162,21 +143,26 @@ return {
             bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
+          local function toggle_inlay_hints(bufnr)
+            local enabled = not vim.lsp.inlay_hint.is_enabled(bufnr)
+            -- breaking change to the arguments of vim.lsp.inlay_hint.enable
+            if vim.fn.has "nvim-0.10.0-dev-2968+g344906a08" then
+              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
+            else
+              vim.lsp.inlay_hint.enable(bufnr, enabled) ---@diagnostic disable-line: param-type-mismatch
+            end
+          end
+
           -- setup inlay hints if supported by language server
           if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
-            vim.lsp.inlay_hint.enable(args.buf, opts.inlay_hints.enabled)
-            bufmap(
-              "n",
-              "gH",
-              function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled(0)) end,
-              "Toggle LSP inlay hints"
-            )
+            if opts.inlay_hints.enabled == true then toggle_inlay_hints(args.buf) end
+            bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
 
           -- setup codelens if supported by language server
           -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
           --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", { clear = true }),
+          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
           --     buffer = args.buf,
           --     callback = function() vim.lsp.codelens.refresh() end,
           --   })
@@ -197,11 +183,7 @@ return {
             client.server_capabilities.documentHighlightProvider = false
           elseif client.supports_method "textDocument/formatting" then
             -- if the LSP server has formatting capabilities, use it for formatexpr
-            vim.api.nvim_set_option_value(
-              "formatexpr",
-              "v:lua.vim.lsp.formatexpr()",
-              { buf = args.buf }
-            )
+            vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
 
             bufmap(
               { "n", "v" },
@@ -378,8 +360,7 @@ return {
   -- Enhances the lua language server with neovim APIs
   {
     "folke/neodev.nvim",
-    enabled = false,
     lazy = true,
-    opts = { setup_jsonls = false },
+    opts = { setup_jsonls = false, lspconfig = false },
   },
 }
