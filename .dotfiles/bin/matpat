@@ -141,8 +141,7 @@ o_err="echo 'Error: open command not found, set the MATPAT_OPEN_CMD environment 
 y_err="echo 'Error: copy command not found, set the MATPAT_COPY_CMD environment variable' && exit 1"
 
 select_match() {
-    echo "$1" |
-        uniq |
+    echo "$*" |
         fzf --no-multi --no-exit-0 --no-select-1 \
             --header='(ctrl-y:copy) (ctrl-o:open) (enter:stdout) (ctrl-c:close)' \
             --bind "ctrl-y:execute(if [ -z \"$MATPAT_COPY_CMD\" ]; then $o_err; else echo {} | $MATPAT_COPY_CMD >/dev/null; fi)+abort" \
@@ -151,28 +150,48 @@ select_match() {
 
 select_pattern() {
     logger "INFO " "no pattern specified, interactively selecting one"
-    printf "%s\\n%s\\n%s\\n%s" \
+    printf "%s\\n%s\\n%s\\n%s\\n%s" \
+        'all' \
         'uri' \
         'ip_address' \
         'git_sha_range' \
         'git_sha' |
-        fzf --no-multi --header "select the pattern"
+        fzf --multi --header "select the pattern(s) to match"
 }
 
 match_pattern() {
-    if [ -z "$1" ]; then
+    if [ -z "$*" ]; then
         help "no pattern specified or selected"
     fi
+
     if [ -n "$tmux_mode" ]; then
-        logger "DEBUG" "finding matches in all open tmux panes"
-        matches=$(for pane in $(tmux list-pane -a -F "#S:#I.#P"); do
-            tmux capture-pane -t "$pane" -p
-        done | $1)
-    else
-        logger "DEBUG" "finding matches from stdin"
-        # shellcheck disable=2086
-        matches=$(eval $1)
+        logger "DEBUG" "gathering the content of all open tmux panes"
+        pane_content=$(
+            for pane in $(tmux list-pane -a -F "#S:#I.#P"); do
+                tmux capture-pane -t "$pane" -p
+            done
+        )
     fi
+
+    for pattern in "$@"; do
+        if [ -n "$tmux_mode" ]; then
+            logger "DEBUG" "finding matches to \"$pattern\" pattern from tmux panes"
+            pattern_matches=$(echo "$pane_content" | $pattern | awk '!x[$0]++' || true)
+        else
+            logger "DEBUG" "finding matches to \"$pattern\" from stdin"
+            # shellcheck disable=2086
+            pattern_matches=$(eval $pattern | awk '!x[$0]++' || true)
+        fi
+
+        if [ -z "$matches" ]; then
+            matches="$pattern_matches"
+        elif [ -n "$pattern_matches" ]; then
+            matches="$(printf "%s\n%s" "$matches" "$pattern_matches")"
+            unset pattern_matches
+        fi
+    done
+
+    logger "DEBUG" "found $(echo "$matches" | wc -l) matches to pattern(s) \"$*\""
 
     if [ -n "$select_mode" ]; then
         logger "DEBUG" "interactively selecting a match"
@@ -226,11 +245,15 @@ main() {
     shift "$((OPTIND - 1))"
 
     case $pattern in
+        a | all) match_pattern uri ip_address git_sha_range git_sha ;;
         i | ip | ip_address) match_pattern ip_address ;;
         r | range | git_sha_range) match_pattern git_sha_range ;;
         s | sha | git_sha) match_pattern git_sha ;;
         u | uri | url) match_pattern uri ;;
-        select) match_pattern "$(select_pattern)" ;;
+        select)
+            # shellcheck disable=2046
+            match_pattern $(select_pattern)
+            ;;
         *) help "unknown pattern: \"$pattern\"" ;;
     esac
 }
