@@ -143,6 +143,13 @@ return {
     },
     config = function()
       local dap = require "dap"
+      local has_overseer, overseer = pcall(require, "overseer")
+
+      if has_overseer then
+        overseer.patch_dap(true)
+        require("dap.ext.vscode").json_decode = require("overseer.json").decode
+      end
+
       vim.g.loaded_dap = true
 
       -------------------------------------------------------------------------

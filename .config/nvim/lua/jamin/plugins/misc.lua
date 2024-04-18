@@ -1,3 +1,5 @@
+local res = require "jamin.resources"
+
 return {
   -----------------------------------------------------------------------------
   -- keymaps/autocmds/utils/etc. shared with the vim config
@@ -112,19 +114,6 @@ return {
     init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
   },
   -----------------------------------------------------------------------------
-  -- quickfix/location list helper
-  {
-    "stevearc/qf_helper.nvim",
-    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
-    opts = { quickfix = { default_bindings = false }, loclist = { default_bindings = false } },
-    keys = {
-      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
-      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
-      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
-      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
-    },
-  },
-  -----------------------------------------------------------------------------
   -- embed neovim in the browser
   {
     "glacambre/firenvim",
@@ -150,6 +139,200 @@ return {
         vim.opt.fillchars:append "eob: "
         vim.opt.shortmess:append "aoW"
       end
+    end,
+  },
+  -----------------------------------------------------------------------------
+  -- quickfix/location list helper
+  {
+    "stevearc/qf_helper.nvim",
+    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
+    opts = { quickfix = { default_bindings = false }, loclist = { default_bindings = false } },
+    keys = {
+      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
+      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
+      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
+      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
+    },
+  },
+  -----------------------------------------------------------------------------
+  -- task runner
+  {
+    "stevearc/overseer.nvim",
+    cmd = { "OverseerRun", "OverseerToggle", "OverseerTaskAction", "OverseerQuickAction" },
+    keys = {
+      { "<leader>O<CR>", "<CMD>OverseerRun<CR>", "Run task (overseer)" },
+      { "<leader>O<Space>", "<CMD>OverseerToggle<CR>", "Toggle task list (overseer)" },
+      { "<leader>Oa", "<CMD>OverseerTaskAction<CR>", "Select task/action (overseer)" },
+      { "<leader>O.", "<CMD>OverseerQuickAction<CR>", "Select action (overseer)" },
+      { "<leader>Ow", "<CMD>OverseerQuickAction watch<CR>", "Watch task (overseer)" },
+      { "<leader>Or", "<CMD>OverseerQuickAction restart<CR>", "Restart task (overseer)" },
+      { "<leader>Oo", "<CMD>OverseerQuickAction open float<CR>", "Open task output (overseer)" },
+    },
+    opts = {
+      dap = false,
+      task_list = {
+        max_width = { 100, 0.25 },
+        bindings = {
+          ["<C-b>"] = "ScrollOutputUp",
+          ["<C-f>"] = "ScrollOutputDown",
+          ["O"] = "OpenFloat",
+          ["K"] = "PrevTask",
+          ["J"] = "NextTask",
+          ["L"] = "IncreaseDetail",
+          ["H"] = "DecreaseDetail",
+          ["]"] = "IncreaseAllDetail",
+          ["["] = "DecreaseAllDetail",
+          ["<"] = "DecreaseWidth",
+          [">"] = "IncreaseWidth",
+          [")"] = function() vim.cmd.norm "HHJL" end,
+          ["("] = function() vim.cmd.norm "HHKL" end,
+        },
+      },
+    },
+  },
+  -----------------------------------------------------------------------------
+  -- save/restore sessions
+  {
+    "stevearc/resession.nvim",
+    cmd = { "Sesh" },
+    event = "VeryLazy",
+    keys = {
+      { "<leader>S.", "<CMD>Sesh<CR>", desc = "Load cwd session" },
+      { "<leader>Sp", "<CMD>Sesh!<CR>", desc = "Load previous session" },
+      { "<leader>Sl", function() require("resession").load() end, desc = "Load session" },
+      { "<leader>Sx", function() require("resession").delete() end, desc = "Delete named session" },
+      {
+        "<leader>Sd",
+        function() require("resession").delete(nil, { dir = "dirsession" }) end,
+        desc = "Delete cwd session",
+      },
+      {
+        "<leader>Sn",
+        function() require("resession").save(vim.fn.input "Session name: ", { attach = false }) end,
+        desc = "Save named session",
+      },
+      { "<leader>Ss", desc = "Save cwd session" },
+    },
+    opts = {
+      extensions = { overseer = {}, quickfix = {} },
+      buf_filter = function(bufnr)
+        local ft = vim.bo[bufnr].filetype
+        if vim.tbl_contains({ "qf", "help", "man", "netrw" }, ft) then return true end
+        if vim.tbl_contains(res.filetypes.excluded, ft) then return false end
+        return require("resession").default_buf_filter(bufnr)
+      end,
+    },
+    config = function(_, opts)
+      local resession = require "resession"
+      resession.setup(opts)
+
+      resession.add_hook("post_load", function()
+        -- redraw treesitter context which gets messed up
+        local has_ts_context, _ = pcall(require, "treesitter-context")
+        if has_ts_context then
+          vim.cmd "TSContextToggle"
+          vim.cmd "TSContextToggle"
+        end
+      end)
+
+      local function get_session_name()
+        -- Use a git remote url as the key for projects
+        local git_remotes = { "origin", "upstream" }
+        -- Fallback to the current working directory as the key
+        local cwd = vim.uv.cwd() or vim.uv.os_homedir() or "" ---@diagnostic disable-line: undefined-field
+
+        for _, remote in ipairs(git_remotes) do
+          local remote_url = vim.trim(vim.fn.system("git remote get-url " .. remote))
+
+          if vim.v.shell_error == 0 and remote_url then
+            local sanitized_remote_url =
+              remote_url:gsub("^%a+://", ""):gsub("^%a+@", ""):gsub(".git$", ""):gsub("[/:]", "__")
+
+            local branch = vim.trim(vim.fn.system "git branch --show-current")
+            if vim.v.shell_error == 0 and branch ~= "" then
+              return sanitized_remote_url .. "__" .. branch:gsub("/", "__")
+            end
+
+            return sanitized_remote_url
+          end
+        end
+
+        return cwd
+      end
+
+      keymap(
+        "n",
+        "<leader>Ss",
+        function() resession.save(get_session_name(), { dir = "dirsession" }) end,
+        "Save cwd session"
+      )
+
+      vim.api.nvim_create_user_command("Sesh", function(event)
+        local name, dir
+        if event.args == "" and not event.bang then
+          name = get_session_name()
+          dir = "dirsession"
+        else
+          name = event.args ~= "" and event.args or "previous"
+          dir = "session"
+        end
+        if vim.tbl_contains(resession.list { dir = dir }, name) then
+          vim.api.nvim_echo({ { "Loading " .. name .. " session...", "Normal" } }, true, {})
+          resession.load(name, { dir = dir, silence_errors = true })
+        else
+          vim.api.nvim_echo({ { "Session " .. name .. " not found", "ErrorMsg" } }, true, {})
+        end
+      end, {
+        bang = true,
+        nargs = "?",
+        desc = "Load cwd (default), previous (bang), or named (arg) session",
+        complete = function(arglead)
+          return vim
+            .iter(resession.list { dir = "session" })
+            :filter(function(name) return name:match(arglead .. ".*") end)
+            :totable()
+        end,
+      })
+
+      -- vim.api.nvim_create_autocmd("UIEnter", {
+      --   group = vim.api.nvim_create_augroup("jamin_load_session", {}),
+      --   callback = function()
+      --     -- Don't load session if nvim was started with args
+      --     if vim.fn.argc(-1) == 0 then
+      --       local session_name = get_session_name()
+      --       -- Only autoload sessions for git repos, excluding the dotfiles
+      --       if string.match(session_name, "__") and not string.match(session_name, "dotfiles") then
+      --         resession.load(session_name, { dir = "dirsession", silence_errors = true })
+      --       end
+      --     end
+      --   end,
+      -- })
+
+      vim.api.nvim_create_autocmd({ "VimLeavePre", "BufEnter" }, {
+        group = vim.api.nvim_create_augroup("jamin_save_session", {}),
+        callback = function(args)
+          -- Don't save empty sessions
+          if
+            #vim.fn.getbufinfo { buflisted = 1 } <= 1
+            and (
+              vim.fn.bufname() == "" or vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype)
+            )
+          then
+            return
+          end
+
+          if args.event == "VimLeavePre" then
+            -- I think the fidget progress window caused inconsistent hanging when leaving
+            local has_fidget, fidget = pcall(require, "fidget.progress")
+            if has_fidget then fidget.suppress(true) end
+          end
+
+          -- Always save a special session named "previous"
+          resession.save("previous", { notify = false })
+          -- Save the session for the current git remote+branch or directory
+          resession.save(get_session_name(), { dir = "dirsession", notify = false })
+        end,
+      })
     end,
   },
 }

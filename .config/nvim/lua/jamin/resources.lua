@@ -4,6 +4,8 @@ M.filetypes = {
   excluded = {
     "-",
     "Outline",
+    "OverseerList",
+    "OversserForm",
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
