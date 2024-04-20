@@ -28,7 +28,7 @@ local function async_make(ctx)
         efm = errorformat,
       })
 
-      vim.api.nvim_command "doautocmd QuickFixCmdPost"
+      vim.api.nvim_command("doautocmd QuickFixCmdPost")
 
       local error_count = vim.fn.getqflist({ size = 0 }).size
       vim.notify(

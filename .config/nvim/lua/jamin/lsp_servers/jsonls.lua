@@ -7,11 +7,11 @@ return {
     new_config.settings.json.schemas = vim.tbl_deep_extend(
       "keep",
       new_config.settings.json.schemas or {},
-      schemastore.json.schemas {
+      schemastore.json.schemas({
         ignore = {
           "Expo SDK",
         },
-      }
+      })
     )
   end,
 

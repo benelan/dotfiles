@@ -30,13 +30,13 @@ function M.obsidian_open(event)
       end
     end
   else
-    absolute_filepath = vim.fn.expand "%:p"
+    absolute_filepath = vim.fn.expand("%:p")
   end
 
   -- https://help.obsidian.md/Advanced+topics/Using+Obsidian+URI#Shorthand%20formats
   local uri = "obsidian://open?path=" .. absolute_filepath
 
-  if vim.fn.exists "*netrw#BrowseX" then
+  if vim.fn.exists("*netrw#BrowseX") then
     vim.fn["netrw#BrowseX"](uri, 0)
     return
   end

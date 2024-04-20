@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   {
@@ -26,7 +26,7 @@ return {
       -- Luckily, the only thins that those plugins need are the custom queries, which we make available
       -- during startup.
       require("lazy.core.loader").add_to_rtp(plugin)
-      require "nvim-treesitter.query_predicates"
+      require("nvim-treesitter.query_predicates")
     end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
@@ -80,7 +80,7 @@ return {
         return n, p
       end)()
 
-      require("nvim-treesitter.configs").setup {
+      require("nvim-treesitter.configs").setup({
         ensure_installed = res.treesitter_parsers,
         highlight = {
           enable = true,
@@ -168,7 +168,7 @@ return {
             swap_previous = swap_prev,
           },
         },
-      }
+      })
     end,
   },
 }

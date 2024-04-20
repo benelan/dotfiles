@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -- Generates doc annotations for a variety of filetypes
@@ -10,22 +10,22 @@ return {
     keys = {
       {
         "<leader>rf",
-        function() require("neogen").generate { type = "func" } end,
+        function() require("neogen").generate({ type = "func" }) end,
         desc = "Add function reference comment (neogen)",
       },
       {
         "<leader>rc",
-        function() require("neogen").generate { type = "class" } end,
+        function() require("neogen").generate({ type = "class" }) end,
         desc = "Add class reference comment (neogen)",
       },
       {
         "<leader>rt",
-        function() require("neogen").generate { type = "type" } end,
+        function() require("neogen").generate({ type = "type" }) end,
         desc = "Add type reference comment (neogen)",
       },
       {
         "<leader>rb",
-        function() require("neogen").generate { type = "file" } end,
+        function() require("neogen").generate({ type = "file" }) end,
         desc = "Add buffer reference comment (neogen)",
       },
     },
@@ -46,7 +46,7 @@ return {
       local width = math.floor(ui.width / 2)
 
       -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      local glow_opts = vim.fn.executable "glow" ~= 1 and {}
+      local glow_opts = vim.fn.executable("glow") ~= 1 and {}
         or {
           previewer_cmd = "glow",
           picker_cmd = true,
@@ -109,8 +109,8 @@ return {
         },
         after_open = function(bufnr)
           vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<CMD>bd!<CR>", {})
-          vim.cmd "set conceallevel=2"
-          vim.cmd "set nowrap"
+          vim.cmd.set("conceallevel=2")
+          vim.cmd.set("nowrap")
         end,
       })
     end,

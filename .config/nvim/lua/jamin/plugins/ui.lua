@@ -1,9 +1,9 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/gruvbox-material",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/gruvbox-material"),
     lazy = false,
     priority = 42069,
     config = function()
@@ -65,7 +65,7 @@ return {
         -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
         vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
 
-        vim.cmd "highlight ErrorMsg cterm=bold gui=bold"
+        vim.cmd.highlight("ErrorMsg cterm=bold gui=bold")
       end
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
@@ -74,7 +74,7 @@ return {
         callback = gruvbox_custom_colors,
       })
 
-      vim.cmd "colorscheme gruvbox-material"
+      vim.cmd.colorscheme("gruvbox-material")
     end,
   },
   -----------------------------------------------------------------------------
@@ -182,10 +182,10 @@ return {
       {
         "]d",
         function()
-          if require("trouble").is_open { mode = "diagnostics" } then
-            require("trouble").next { mode = "diagnostics", jump = true }
+          if require("trouble").is_open({ mode = "diagnostics" }) then
+            require("trouble").next({ mode = "diagnostics", jump = true })
           else
-            vim.diagnostic.goto_next { float = true }
+            vim.diagnostic.goto_next({ float = true })
           end
         end,
         desc = "Next diagnostic (trouble)",
@@ -193,10 +193,10 @@ return {
       {
         "[d",
         function()
-          if require("trouble").is_open { mode = "diagnostics" } then
-            require("trouble").prev { mode = "diagnostics", jump = true }
+          if require("trouble").is_open({ mode = "diagnostics" }) then
+            require("trouble").prev({ mode = "diagnostics", jump = true })
           else
-            vim.diagnostic.goto_prev { float = true }
+            vim.diagnostic.goto_prev({ float = true })
           end
         end,
         desc = "Previous diagnostic (trouble)",

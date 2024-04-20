@@ -3,10 +3,10 @@ local has_res, res = pcall(require, "jamin.resources")
 vim.opt.clipboard = "unnamed"
 vim.opt.updatetime = 169
 vim.opt.confirm = true
-vim.opt.virtualedit:append "block"
-vim.opt.nrformats:append "unsigned"
+vim.opt.virtualedit:append("block")
+vim.opt.nrformats:append("unsigned")
 vim.opt.foldlevelstart = 99
-vim.opt.formatoptions:remove "t"
+vim.opt.formatoptions:remove("t")
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -48,11 +48,11 @@ vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 
-vim.opt.spelloptions:append "camel"
-vim.opt.spellfile:append(vim.fn.stdpath "config" .. "/spell/en.utf-8.add")
+vim.opt.spelloptions:append("camel")
+vim.opt.spellfile:append(vim.fn.stdpath("config") .. "/spell/en.utf-8.add")
 
-if vim.fn.filereadable "/usr/share/dict/words" == 1 then
-  vim.opt.dictionary:append "/usr/share/dict/words"
+if vim.fn.filereadable("/usr/share/dict/words") == 1 then
+  vim.opt.dictionary:append("/usr/share/dict/words")
 end
 
 if has_res then
@@ -60,7 +60,7 @@ if has_res then
   vim.opt.fillchars = { eob = res.icons.ui.fill_shade, diff = res.icons.ui.fill_slash }
 end
 
-if vim.fn.executable "rg" == 1 then
+if vim.fn.executable("rg") == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --smart-case --glob '!{.git,node_modules}'"
   vim.opt.grepformat = {
     "%f:%l:%c:%m",

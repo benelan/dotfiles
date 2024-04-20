@@ -37,7 +37,7 @@ vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
     -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
     or vim.env.TERM == "wezterm"
     -- tmux changes TERM so you need to check this way too
-    or string.match(vim.fn.system "tmux showenv" or "", "TERM=wezterm") ~= nil
+    or string.match(vim.fn.system("tmux showenv") or "", "TERM=wezterm") ~= nil
   )
 
 -- global functions
@@ -51,17 +51,17 @@ _G.R = function(name) require("plenary.reload").reload_module(name) end
 ----> Modules
 -------------------------------------------------------------------------------
 
-require "jamin.options"
-require "jamin.keymaps"
-require "jamin.commands"
+require("jamin.options")
+require("jamin.keymaps")
+require("jamin.commands")
 
 -- Neovim embedded in VSCode
 if vim.g.vscode then
-  vim.cmd [[
+  vim.cmd([[
     source ~/.vim/plugin/stuff.vim
     source ~/.vim/plugin/operators.vim
     source ~/.vim/plugin/system_open_handler.vim
-  ]]
+  ]])
 
   return -- skip loading neovim plugins
 end
@@ -71,16 +71,16 @@ end
 -------------------------------------------------------------------------------
 
 -- bootstrap lazy.nvim if it isn't installed
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then ---@diagnostic disable-line: undefined-field
-  vim.fn.system {
+  vim.fn.system({
     "git",
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
     lazypath,
-  }
+  })
 end
 vim.opt.rtp:prepend(lazypath)
 

@@ -63,7 +63,7 @@ local function gitsigns_state(fallback)
   return vim.b.gitsigns_status_dict
       and string.format(
         "  %s  ",
-        format_numeric_state {
+        format_numeric_state({
           {
             highlight = highlights.git_added,
             icon = icons.git.added,
@@ -79,7 +79,7 @@ local function gitsigns_state(fallback)
             icon = icons.git.changed,
             value = vim.b.gitsigns_status_dict.changed,
           },
-        }
+        })
       )
     or fallback and fallback()
     or ""
@@ -94,7 +94,7 @@ end
 
 ---Show HEAD ref name via Fugitive.
 local function fugitive_head(fallback)
-  if vim.g.loaded_fugitive and vim.fn.exists "*fugitive#Head" then
+  if vim.g.loaded_fugitive and vim.fn.exists("*fugitive#Head") then
     local head = vim.fn["fugitive#Head"]()
 
     if head ~= "" then return string.format("  %s%s  ", icons.git.branch, head) end

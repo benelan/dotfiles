@@ -15,7 +15,7 @@ local root_cache = {}
 ---@return string?
 ---@return string?
 local function get_lsp_root(buf, ignore)
-  local clients = vim.lsp.get_clients { bufnr = buf }
+  local clients = vim.lsp.get_clients({ bufnr = buf })
   if not next(clients) then return end
 
   for _, client in pairs(clients) do

@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   {
@@ -43,7 +43,7 @@ return {
       },
     },
     config = function(_, opts)
-      local lspconfig = require "lspconfig"
+      local lspconfig = require("lspconfig")
 
       -------------------------------------------------------------------------------
       --> Diagnostics and capabilities
@@ -106,39 +106,39 @@ return {
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
           -- lsp keymaps
-          if client.supports_method "textDocument/hover" then
+          if client.supports_method("textDocument/hover") then
             bufmap("n", "K", vim.lsp.buf.hover, "LSP hover")
           end
 
-          if client.supports_method "textDocument/definition" then
+          if client.supports_method("textDocument/definition") then
             bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           end
 
-          if client.supports_method "textDocument/declaration" then
+          if client.supports_method("textDocument/declaration") then
             bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
           end
 
-          if client.supports_method "textDocument/references" then
+          if client.supports_method("textDocument/references") then
             bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
           end
 
-          if client.supports_method "textDocument/rename" then
+          if client.supports_method("textDocument/rename") then
             bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
           end
 
-          if client.supports_method "textDocument/typeDefinition" then
+          if client.supports_method("textDocument/typeDefinition") then
             bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
           end
 
-          if client.supports_method "textDocument/implementation" then
+          if client.supports_method("textDocument/implementation") then
             bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
           end
 
-          if client.supports_method "textDocument/codeAction" then
+          if client.supports_method("textDocument/codeAction") then
             bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
           end
 
-          if client.supports_method "textDocument/signatureHelp" then
+          if client.supports_method("textDocument/signatureHelp") then
             bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
             bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
@@ -146,7 +146,7 @@ return {
           local function toggle_inlay_hints(bufnr)
             local enabled = not vim.lsp.inlay_hint.is_enabled(bufnr)
             -- breaking change to the arguments of vim.lsp.inlay_hint.enable
-            if vim.fn.has "nvim-0.10.0-dev-2968+g344906a08" then
+            if vim.fn.has("nvim-0.10.0-dev-2968+g344906a08") then
               vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
             else
               vim.lsp.inlay_hint.enable(bufnr, enabled) ---@diagnostic disable-line: param-type-mismatch
@@ -154,7 +154,7 @@ return {
           end
 
           -- setup inlay hints if supported by language server
-          if vim.lsp.inlay_hint and client.supports_method "textDocument/inlayHint" then
+          if vim.lsp.inlay_hint and client.supports_method("textDocument/inlayHint") then
             if opts.inlay_hints.enabled == true then toggle_inlay_hints(args.buf) end
             bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
@@ -181,14 +181,14 @@ return {
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
-          elseif client.supports_method "textDocument/formatting" then
+          elseif client.supports_method("textDocument/formatting") then
             -- if the LSP server has formatting capabilities, use it for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
 
             bufmap(
               { "n", "v" },
               "gF",
-              function() vim.lsp.buf.format { async = true } end,
+              function() vim.lsp.buf.format({ async = true }) end,
               "LSP format"
             )
           end
@@ -196,7 +196,7 @@ return {
           -- workaround for gopls not supporting semanticTokensProvider
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
           if
-            client.name == "gopls" and not client.supports_method "textDocument/semanticTokens"
+            client.name == "gopls" and not client.supports_method("textDocument/semanticTokens")
           then
             local semantic = client.config.capabilities.textDocument.semanticTokens
             if semantic then
@@ -227,7 +227,7 @@ return {
     },
     config = function(_, opts)
       require("mason").setup(opts)
-      local mr = require "mason-registry"
+      local mr = require("mason-registry")
 
       -- make sure all of the Mason tools are installed
       local function ensure_installed()
@@ -264,7 +264,7 @@ return {
     event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
     opts = function()
-      local nls = require "null-ls"
+      local nls = require("null-ls")
 
       -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
       local hover = nls.builtins.hover
@@ -285,15 +285,15 @@ return {
           code_actions.shellcheck,
 
           diagnostics.hadolint,
-          diagnostics.actionlint.with {
+          diagnostics.actionlint.with({
             runtime_condition = function()
               return vim.api
                 .nvim_buf_get_name(vim.api.nvim_get_current_buf())
-                :match "github/workflows" ~= nil
+                :match("github/workflows") ~= nil
             end,
-          },
+          }),
 
-          diagnostics.markdownlint.with {
+          diagnostics.markdownlint.with({
             extra_args = {
               "--disable",
               "blanks-around-fences",
@@ -305,26 +305,26 @@ return {
             },
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
-          },
+          }),
 
-          diagnostics.stylelint.with {
+          diagnostics.stylelint.with({
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
             condition = function(utils)
-              return utils.root_has_file {
+              return utils.root_has_file({
                 ".stylelintrc",
                 ".stylelintrc.js",
                 ".stylelintrc.json",
                 ".stylelintrc.yml",
                 "stylelint.config.js",
                 "node_modules/.bin/stylelint",
-              }
+              })
             end,
-          },
+          }),
 
           formatting.fixjson,
-          formatting.prettier.with { prefer_local = "node_modules/.bin" },
-          formatting.shfmt.with { extra_args = { "-i", "4", "-ci" } },
+          formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
+          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.stylua,
           formatting.trim_whitespace,
         },

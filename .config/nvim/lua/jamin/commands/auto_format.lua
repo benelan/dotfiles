@@ -27,13 +27,13 @@ local fix_typescript_issues = function(bufnr)
   -- only run these actions if there are diagnostics in the buffer
   if #diag > 0 then
     -- run the actions synchronously so they don't conflict with each other
-    vim.cmd "TSToolsFixAll sync"
-    vim.cmd "TSToolsAddMissingImports sync"
-    vim.cmd "TSToolsRemoveUnused sync"
+    vim.cmd.TSToolsFixAll("sync")
+    vim.cmd.TSToolsAddMissingImports("sync")
+    vim.cmd.TSToolsRemoveUnused("sync")
   end
 
   -- organize imports even when there are no diagnostics
-  vim.cmd "TSToolsOrganizeImports sync"
+  vim.cmd.TSToolsOrganizeImports("sync")
 end
 
 local fix_eslint_issues = function(bufnr)
@@ -46,7 +46,7 @@ local fix_eslint_issues = function(bufnr)
     { namespace = vim.lsp.diagnostic.get_namespace(eslint_client.id, false) }
   )
 
-  if #diag > 0 then vim.cmd "EslintFixAll" end
+  if #diag > 0 then vim.cmd.EslintFixAll() end
 end
 
 -- formatting needs to happen before the file saves
@@ -59,7 +59,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     -- are fixed by prettier. For example, organizing imports can change the indent size.
     fix_typescript_issues(event.buf)
 
-    vim.lsp.buf.format { async = false }
+    vim.lsp.buf.format({ async = false })
 
     -- the eslint command doesn't have an async option so it needs to go last
     -- so the changes aren't undone by other formatting actions.

@@ -1,5 +1,5 @@
 -- https://github.com/yutkat/dotfiles/blob/main/.config/wezterm/utils.lua
-local wezterm = require "wezterm"
+local wezterm = require("wezterm")
 local M = {}
 
 M.color_scheme = "GruvboxDark"

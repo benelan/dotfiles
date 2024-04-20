@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -- add print statements for debugging
@@ -28,7 +28,7 @@ return {
         "<leader>d<CR>",
         function()
           local has_rooter, rooter = pcall(require, "jamin.commands.rooter")
-          local vscode = require "dap.ext.vscode"
+          local vscode = require("dap.ext.vscode")
 
           local cwd_launch = ".vscode/launch.json"
           local adapter_fts = {
@@ -62,7 +62,11 @@ return {
         end,
         desc = "Start/Continue (debug)",
       },
-      { "<leader>d<Space>", function() require("dap").pause() end, desc = "Pause (debug)" },
+      {
+        "<leader>d<Space>",
+        function() require("dap").pause() end,
+        desc = "Pause (debug)",
+      },
       {
         "<leader>d<Delete>",
         function() require("dap").terminate() end,
@@ -75,12 +79,12 @@ return {
       },
       {
         "<leader>dL",
-        function() require("dap").set_breakpoint(nil, nil, vim.fn.input "Log point message: ") end,
+        function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end,
         desc = "Log breakpoint (debug)",
       },
       {
         "<leader>dC",
-        function() require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ") end,
+        function() require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: ")) end,
         desc = "Conditional breakpoint (debug)",
       },
       {
@@ -93,25 +97,65 @@ return {
         function() require("dap").list_breakpoints() end,
         desc = "List breakpoints (debug)",
       },
-      { "<leader>dh", function() require("dap").step_back() end, desc = "Step back (debug)" },
-      { "<leader>dj", function() require("dap").step_into() end, desc = "Step into (debug)" },
-      { "<leader>dk", function() require("dap").step_out() end, desc = "Step out (debug)" },
-      { "<leader>dl", function() require("dap").step_over() end, desc = "Step over (debug)" },
-      { "<leader>dd", function() require("dap").down() end, desc = "Down (debug)" },
-      { "<leader>du", function() require("dap").up() end, desc = "Up (debug)" },
-      { "<leader>d.", function() require("dap").run_last() end, desc = "Run last (debug)" },
-      { "<leader>dg", function() require("dap").goto_() end, desc = "Go to line (debug)" },
+      {
+        "<leader>dh",
+        function() require("dap").step_back() end,
+        desc = "Step back (debug)",
+      },
+      {
+        "<leader>dj",
+        function() require("dap").step_into() end,
+        desc = "Step into (debug)",
+      },
+      {
+        "<leader>dk",
+        function() require("dap").step_out() end,
+        desc = "Step out (debug)",
+      },
+      {
+        "<leader>dl",
+        function() require("dap").step_over() end,
+        desc = "Step over (debug)",
+      },
+      {
+        "<leader>dd",
+        function() require("dap").down() end,
+        desc = "Down (debug)",
+      },
+      {
+        "<leader>du",
+        function() require("dap").up() end,
+        desc = "Up (debug)",
+      },
+      {
+        "<leader>d.",
+        function() require("dap").run_last() end,
+        desc = "Run last (debug)",
+      },
+      {
+        "<leader>dg",
+        function() require("dap").goto_() end,
+        desc = "Go to line (debug)",
+      },
       {
         "<leader>d]",
         function() require("dap").run_to_cursor() end,
         desc = "Run to cursor (debug)",
       },
-      { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle repl (debug)" },
-      { "<leader>dK", function() require("dap.ui.widgets").hover() end, desc = "Hover (debug)" },
+      {
+        "<leader>dr",
+        function() require("dap").repl.toggle() end,
+        desc = "Toggle repl (debug)",
+      },
+      {
+        "<leader>dK",
+        function() require("dap.ui.widgets").hover() end,
+        desc = "Hover (debug)",
+      },
       {
         "<Leader>dt",
         function()
-          local widgets = require "dap.ui.widgets"
+          local widgets = require("dap.ui.widgets")
           widgets.centered_float(widgets.threads)
         end,
         desc = "Threads widget (debug)",
@@ -119,7 +163,7 @@ return {
       {
         "<leader>ds",
         function()
-          local widgets = require "dap.ui.widgets"
+          local widgets = require("dap.ui.widgets")
           vim.o.wrap = false
           widgets.sidebar(widgets.scopes, { width = 50 }).open()
         end,
@@ -128,7 +172,7 @@ return {
       {
         "<leader>df",
         function()
-          local widgets = require "dap.ui.widgets"
+          local widgets = require("dap.ui.widgets")
           vim.o.wrap = false
           widgets.sidebar(widgets.frames, { width = 50 }).open()
         end,
@@ -142,7 +186,7 @@ return {
       },
     },
     config = function()
-      local dap = require "dap"
+      local dap = require("dap")
       local has_overseer, overseer = pcall(require, "overseer")
 
       if has_overseer then
@@ -158,7 +202,7 @@ return {
       -- Available Debug Adapters:
       --   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
 
-      for _, adapter in ipairs {
+      for _, adapter in ipairs({
         "chrome",
         "node",
         "node-terminal",
@@ -166,7 +210,7 @@ return {
         "pwa-extensionHost",
         "pwa-msedge",
         "pwa-node",
-      } do
+      }) do
         if not dap.adapters[adapter] then
           require("dap").adapters[adapter] = {
             type = "server",
@@ -314,7 +358,11 @@ return {
       {
         "rcarriga/nvim-dap-ui",
         keys = {
-          { "<leader>dU", function() require("dapui").toggle() end, desc = "Toggle UI (debug)" },
+          {
+            "<leader>dU",
+            function() require("dapui").toggle() end,
+            desc = "Toggle UI (debug)",
+          },
           {
             "<leader>de",
             function() require("dapui").eval() end,
@@ -352,7 +400,7 @@ return {
         },
         config = function(_, opts)
           local has_dap, dap = pcall(require, "dap")
-          local dapui = require "dapui"
+          local dapui = require("dapui")
 
           dapui.setup(opts)
 

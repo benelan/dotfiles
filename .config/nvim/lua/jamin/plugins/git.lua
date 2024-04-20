@@ -1,10 +1,10 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -- the GOAT git plugin
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-fugitive",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     dependencies = "vim-rhubarb",
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
@@ -51,7 +51,7 @@ return {
   -- Open file/selection in GitHub repo
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/vim-rhubarb",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
     keys = {
       {
         "<leader>go",
@@ -118,21 +118,29 @@ return {
         mode = "n",
         desc = "Previous hunk (gitsigns)",
       },
-      { "]h", function() require("gitsigns").next_hunk() end, desc = "Next hunk (gitsigns)" },
-      { "[h", function() require("gitsigns").prev_hunk() end, desc = "Previous hunk (gitsigns)" },
+      {
+        "]h",
+        function() require("gitsigns").next_hunk() end,
+        desc = "Next hunk (gitsigns)",
+      },
+      {
+        "[h",
+        function() require("gitsigns").prev_hunk() end,
+        desc = "Previous hunk (gitsigns)",
+      },
       {
         "]H",
-        function() require("gitsigns").next_hunk { wrap = false, preview = true } end,
+        function() require("gitsigns").next_hunk({ wrap = false, preview = true }) end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[H",
-        function() require("gitsigns").prev_hunk { wrap = false, preview = true } end,
+        function() require("gitsigns").prev_hunk({ wrap = false, preview = true }) end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "ih",
-        function() require("gitsigns").select_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        function() require("gitsigns").select_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
         desc = "inner git hunk (gitsigns)",
         mode = { "o", "x" },
       },
@@ -143,7 +151,7 @@ return {
       },
       {
         "<leader>hq",
-        function() require("gitsigns").setqflist "all" end,
+        function() require("gitsigns").setqflist("all") end,
         desc = "Hunks to quickfix list (gitsigns)",
       },
       {
@@ -158,13 +166,13 @@ return {
       },
       {
         "<leader>hr",
-        function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        function() require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
         desc = "Reset hunk (gitsigns)",
         mode = "v",
       },
       {
         "<leader>hw",
-        function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end,
+        function() require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
         desc = "Stage hunk (gitsigns)",
         mode = "v",
       },
@@ -197,7 +205,7 @@ return {
       },
       {
         "<leader>hb",
-        function() require("gitsigns").blame_line { full = true } end,
+        function() require("gitsigns").blame_line({ full = true }) end,
         desc = "Git blame line (gitsigns)",
       },
       {
@@ -243,7 +251,7 @@ return {
   {
     "pwntester/octo.nvim",
     -- dev = true,
-    cond = vim.fn.executable "gh" == 1,
+    cond = vim.fn.executable("gh") == 1,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     cmd = "Octo",
     opts = {
@@ -329,7 +337,7 @@ return {
         function()
           local number = vim.fn.system "gh pr view --json number --jq .number"
           if number and not string.match(number, "request") then
-            vim.cmd("Octo pr edit " .. number)
+            vim.cmd.Octo("pr edit " .. number)
           else
             print "No pull request found for current branch"
           end

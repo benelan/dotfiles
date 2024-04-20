@@ -1,10 +1,10 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
   {
     dir = vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim",
-    cond = vim.fn.executable "vifm" == 1
+    cond = vim.fn.executable("vifm") == 1
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
@@ -25,8 +25,8 @@ return {
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
         build = "make",
-        enabled = vim.fn.executable "make" == 1,
-        config = function() require("telescope").load_extension "fzf" end,
+        enabled = vim.fn.executable("make") == 1,
+        config = function() require("telescope").load_extension("fzf") end,
       },
     },
     keys = function()
@@ -115,7 +115,7 @@ return {
       local function flash_jump(prompt_bufnr)
         local has_flash, flash = pcall(require, "flash")
         if has_flash then
-          flash.jump {
+          flash.jump({
             pattern = "^",
             label = { after = { 0, 0 } },
             search = {
@@ -130,7 +130,7 @@ return {
               local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
               picker:set_selection(match.pos[1] - 1)
             end,
-          }
+          })
         else
           return false
         end
@@ -235,7 +235,7 @@ return {
                 -- Don't append cwd's basename if we're in the top level.
                 -- This ensures the marked files apply to all git worktrees,
                 -- which are in differently named directories.
-                and cwd ~= vim.fn.trim(vim.fn.system "git rev-parse --show-toplevel")
+                and cwd ~= vim.fn.trim(vim.fn.system("git rev-parse --show-toplevel"))
               then
                 return remote_url .. "~" .. vim.fs.basename(cwd)
               end
@@ -250,33 +250,33 @@ return {
     },
     ---@diagnostic disable-next-line: redundant-parameter
     config = function(_, opts)
-      local harpoon = require "harpoon"
+      local harpoon = require("harpoon")
 
       harpoon:setup(opts)
-      harpoon:extend {
+      harpoon:extend({
         UI_CREATE = function(cx)
           vim.keymap.set(
             "n",
             "<M-v>",
-            function() harpoon.ui:select_menu_item { vsplit = true } end,
+            function() harpoon.ui:select_menu_item({ vsplit = true }) end,
             { buffer = cx.bufnr }
           )
 
           vim.keymap.set(
             "n",
             "<M-s>",
-            function() harpoon.ui:select_menu_item { split = true } end,
+            function() harpoon.ui:select_menu_item({ split = true }) end,
             { buffer = cx.bufnr }
           )
 
           vim.keymap.set(
             "n",
             "<M-t>",
-            function() harpoon.ui:select_menu_item { tabedit = true } end,
+            function() harpoon.ui:select_menu_item({ tabedit = true }) end,
             { buffer = cx.bufnr }
           )
         end,
-      }
+      })
     end,
     keys = {
       {

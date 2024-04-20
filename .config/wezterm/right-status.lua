@@ -1,5 +1,5 @@
-local wezterm = require "wezterm"
-local utils = require "utils"
+local wezterm = require("wezterm")
+local utils = require("utils")
 local M = {}
 
 -- https://wezfurlong.org/wezterm/config/lua/wezterm/format
@@ -40,7 +40,7 @@ local add_section = function(text, icon, fg, bg, separate)
 end
 
 local display_date = function()
-  local date = wezterm.strftime " %a %H:%M"
+  local date = wezterm.strftime(" %a %H:%M")
   add_section(date, "    ", colors.date_fg, colors.date_bg, true)
 end
 

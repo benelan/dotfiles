@@ -2,10 +2,10 @@
 local regular = {}
 local auto = {
   s({ trig = "ccl", name = "Cleanup commit" }, {
-    t "chore: cleanup",
+    t("chore: cleanup"),
   }),
   s({ trig = "sk", name = "Skip CI" }, {
-    t "[skip ci]",
+    t("[skip ci]"),
   }),
 }
 

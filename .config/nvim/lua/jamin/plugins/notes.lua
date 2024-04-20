@@ -67,7 +67,7 @@ return {
       { "<leader>zf", ":ZkMatch<CR>", desc = "Find selection in notes (zk)", mode = "v" },
     },
     config = function()
-      require("zk").setup { picker = "telescope" }
+      require("zk").setup({ picker = "telescope" })
       local has_zk_util, zk_util = pcall(require, "zk.util")
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -76,7 +76,7 @@ return {
         callback = function()
           -- Add the key mappings only for Markdown files in a zk notebook.
           ---@diagnostic disable-next-line: param-type-mismatch
-          if has_zk_util and zk_util.notebook_root(vim.fn.expand "%:p") ~= nil then
+          if has_zk_util and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil then
             -- Override the global keymap to create the new note in the same directory as the current buffer.
             vim.keymap.set(
               "n",

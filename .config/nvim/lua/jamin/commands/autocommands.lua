@@ -1,10 +1,10 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 -------------------------------------------------------------------------------
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),
-  callback = function() vim.highlight.on_yank { higroup = "Visual", timeout = 269 } end,
+  callback = function() vim.highlight.on_yank({ higroup = "Visual", timeout = 269 }) end,
 })
 
 -------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = vim.api.nvim_create_augroup("jamin_checktime", {}),
   callback = function()
-    if vim.o.buftype ~= "nofile" then vim.cmd "checktime" end
+    if vim.o.buftype ~= "nofile" then vim.cmd.checktime() end
   end,
 })
 
@@ -22,8 +22,8 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   group = vim.api.nvim_create_augroup("jamin_resize_splits", {}),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
-    vim.cmd "tabdo wincmd ="
-    vim.cmd("tabnext " .. current_tab)
+    vim.cmd.tabdo("wincmd =")
+    vim.cmd.tabnext(current_tab)
   end,
 })
 
@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("jamin_auto_create_dir", {}),
   callback = function(event)
-    if event.match:match "^%w%w+://" then return end
+    if event.match:match("^%w%w+://") then return end
 
     local file = vim.uv.fs_realpath(event.match) or event.match ---@diagnostic disable-line: undefined-field
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
@@ -109,7 +109,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_diagnostic_qflist", {}),
   callback = function(args)
     local diagnostics = vim.diagnostic.get()
-    local qflist = vim.fn.getqflist { title = 0, id = 0, items = 0 }
+    local qflist = vim.fn.getqflist({ title = 0, id = 0, items = 0 })
 
     if
       #args.data.diagnostics == 0

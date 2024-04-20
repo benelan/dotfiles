@@ -1,6 +1,6 @@
 if not vim.filetype then return end
 
-vim.filetype.add {
+vim.filetype.add({
   extension = {
     lock = "yaml",
     mdx = "markdown",
@@ -13,4 +13,4 @@ vim.filetype.add {
     ["^.env%..*"] = "bash",
     ["*mutt-*"] = "mail",
   },
-}
+})

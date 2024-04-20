@@ -28,32 +28,44 @@ return {
               :gsub("^%s+", "")
           end,
         },
-      }, vim.api.nvim_create_namespace "neotest")
+      }, vim.api.nvim_create_namespace("neotest"))
 
-      require("neotest").setup {
+      require("neotest").setup({
         output = { open_on_run = true },
         icons = require("jamin.resources").icons.test,
-        consumers = { overseer = has_overseer and require "neotest.consumers.overseer" or nil },
+        consumers = { overseer = has_overseer and require("neotest.consumers.overseer") or nil },
         adapters = {
-          require "neotest-stenciljs" { no_build = true },
+          require("neotest-stenciljs")({ no_build = true }),
           has_vitest and vitest or nil,
           has_jest and jest or nil,
           has_go and go or nil,
         },
-      }
+      })
     end,
     keys = {
-      { "<leader>n<CR>", function() require("neotest").run.run() end, desc = "Run nearest test" },
-      { "<leader>n<Delete>", function() require("neotest").run.stop() end, desc = "Stop test" },
-      { "<leader>n.", function() require("neotest").run.run_last() end, desc = "Rerun last test" },
+      {
+        "<leader>n<CR>",
+        function() require("neotest").run.run() end,
+        desc = "Run nearest test",
+      },
+      {
+        "<leader>n<Delete>",
+        function() require("neotest").run.stop() end,
+        desc = "Stop test",
+      },
+      {
+        "<leader>n.",
+        function() require("neotest").run.run_last() end,
+        desc = "Rerun last test",
+      },
       {
         "<leader>nw",
-        function() require("neotest").run.run { watch = true, no_build = false } end,
+        function() require("neotest").run.run({ watch = true, no_build = false }) end,
         desc = "Watch nearest test",
       },
       {
         "<leader>nf",
-        function() require("neotest").run.run(vim.fn.expand "%") end,
+        function() require("neotest").run.run(vim.fn.expand("%")) end,
         desc = "Test file",
       },
       {
@@ -69,7 +81,7 @@ return {
       {
         "<leader>no",
         function()
-          require("neotest").output.open { enter = true, auto_close = true, short = false }
+          require("neotest").output.open({ enter = true, auto_close = true, short = false })
         end,
         desc = "Open test output",
       },
@@ -80,27 +92,27 @@ return {
       },
       {
         "<leader>nd",
-        function() require("neotest").run.run { strategy = "dap" } end,
+        function() require("neotest").run.run({ strategy = "dap" }) end,
         desc = "Debug nearest test",
       },
       {
         "]n",
-        function() require("neotest").jump.next {} end,
+        function() require("neotest").jump.next({}) end,
         desc = "Next test",
       },
       {
         "[n",
-        function() require("neotest").jump.prev {} end,
+        function() require("neotest").jump.prev({}) end,
         desc = "Previous test",
       },
       {
         "]N",
-        function() require("neotest").jump.next { status = "failed" } end,
+        function() require("neotest").jump.next({ status = "failed" }) end,
         desc = "Next failed test",
       },
       {
         "[N",
-        function() require("neotest").jump.prev { status = "failed" } end,
+        function() require("neotest").jump.prev({ status = "failed" }) end,
         desc = "Previous failed test",
       },
     },

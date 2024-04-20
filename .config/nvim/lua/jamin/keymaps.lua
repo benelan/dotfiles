@@ -97,34 +97,34 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix item")
 keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
 keymap("n", "<M-i>", "<CMD>cnewer<CR>", "Next quickfix list")
 
-keymap("n", "]d", function() vim.diagnostic.goto_next { float = true } end, "Next diagnostic")
-keymap("n", "[d", function() vim.diagnostic.goto_prev { float = true } end, "Previous diagnostic")
+keymap("n", "]d", function() vim.diagnostic.goto_next({ float = true }) end, "Next diagnostic")
+keymap("n", "[d", function() vim.diagnostic.goto_prev({ float = true }) end, "Previous diagnostic")
 
 keymap(
   "n",
   "]e",
-  function() vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR, float = true } end,
+  function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR, float = true }) end,
   "Next diagnostic error"
 )
 
 keymap(
   "n",
   "[e",
-  function() vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR, float = true } end,
+  function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, float = true }) end,
   "Previous diagnostic error"
 )
 
 keymap(
   "n",
   "]w",
-  function() vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN, float = true } end,
+  function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN, float = true }) end,
   "Next diagnostic warning"
 )
 
 keymap(
   "n",
   "[w",
-  function() vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN, float = true } end,
+  function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN, float = true }) end,
   "Previous diagnostic warning"
 )
 
@@ -212,7 +212,7 @@ keymap(
 local virtual_text_enabled = true
 keymap("n", "<leader>sv", function()
   virtual_text_enabled = not virtual_text_enabled
-  vim.diagnostic.config { virtual_text = virtual_text_enabled }
+  vim.diagnostic.config({ virtual_text = virtual_text_enabled })
   print(
     string.format(
       "%s %s",
@@ -225,10 +225,10 @@ end, "Toggle diagnostic virtual text")
 keymap("n", "<leader>st", function()
   if vim.b.ts_highlight then
     vim.treesitter.stop()
-    print "treesitter stopped"
+    print("treesitter stopped")
   else
     vim.treesitter.start()
-    print "treesitter started"
+    print("treesitter started")
   end
 end, "Toggle treesitter")
 

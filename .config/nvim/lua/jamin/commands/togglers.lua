@@ -1,15 +1,15 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 local M = {}
 
 local floating_term_height, floating_term_width
 
 ---Toggles a persistent floating terminal window
 M.floating_term = function()
-  local term_bufnr = vim.fn.bufnr "term://"
-  local term_winnr = vim.fn.bufwinnr "term://"
-  local curr_bufnr = vim.fn.bufnr "%"
+  local term_bufnr = vim.fn.bufnr("term://")
+  local term_winnr = vim.fn.bufwinnr("term://")
+  local curr_bufnr = vim.fn.bufnr("%")
 
-  local win_count = vim.fn.winnr "$"
+  local win_count = vim.fn.winnr("$")
   local ui = vim.api.nvim_list_uis()[1]
 
   -- window dimensions are proportional to the editor size
@@ -29,13 +29,13 @@ M.floating_term = function()
     vim.fn.execute(term_winnr .. "wincmd c")
   elseif term_bufnr and term_bufnr > 0 and term_bufnr ~= curr_bufnr then
     vim.api.nvim_open_win(term_bufnr, true, winopts)
-    vim.fn.execute "startinsert"
+    vim.fn.execute("startinsert")
   else
     vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, winopts)
 
-    vim.fn.execute "term"
-    vim.cmd "set winfixheight nobuflisted"
-    vim.fn.execute "startinsert"
+    vim.fn.execute("term")
+    vim.cmd.set("winfixheight nobuflisted")
+    vim.fn.execute("startinsert")
   end
 end
 
@@ -140,13 +140,13 @@ M.ui_toggle = function()
   end
 
   -- redraw treesitter context which gets messed up
-  if vim.fn.exists ":TSContextToggle" then
-    vim.cmd "TSContextToggle"
-    vim.cmd "TSContextToggle"
+  if vim.fn.exists(":TSContextToggle") then
+    vim.cmd.TSContextToggle()
+    vim.cmd.TSContextToggle()
   end
 
   -- toggle eyeliner.nvim highlighting
-  if vim.fn.exists ":EyelinerEnable" then
+  if vim.fn.exists(":EyelinerEnable") then
     vim.cmd(ui_disabled and "EyelinerEnable" or "EyelinerDisable")
   end
 

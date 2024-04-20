@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -----------------------------------------------------------------------------
@@ -6,18 +6,18 @@ return {
   {
     "uga-rosa/cmp-dictionary",
     -- only use source if a dict file exists in the usual place
-    cond = vim.fn.filereadable "/usr/share/dict/words" == 1,
+    cond = vim.fn.filereadable("/usr/share/dict/words") == 1,
     ft = res.filetypes.writing,
     config = function()
       local has_dict, dict = pcall(require, "cmp_dictionary")
       if not has_dict then return end
 
-      dict.setup {
+      dict.setup({
         paths = { "/usr/share/dict/words" },
         document = { enable = true, command = { "dict", "${label}" } },
         external = { enable = true, command = { "look", "${prefix}", "${path}" } },
         first_case_insensitive = true,
-      }
+      })
     end,
   },
   -----------------------------------------------------------------------------
@@ -31,10 +31,10 @@ return {
   --   dependencies = { "nvim-lua/plenary.nvim" },
   --   ft = { "gitcommit", "markdown", "octo" },
   --   config = function()
-  --     require("cmp_git").setup {
+  --     require("cmp_git").setup({
   --       filetypes = { "gitcommit", "markdown", "octo" },
   --       github = { issues = { state = "all" }, pull_requests = { state = "all" } },
-  --     }
+  --     })
   --   end,
   -- },
   -----------------------------------------------------------------------------
@@ -51,10 +51,10 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable "rg" == 1 },
+      { "lukas-reineke/cmp-rg", cond = vim.fn.executable("rg") == 1 },
     },
     opts = function()
-      local cmp = require "cmp"
+      local cmp = require("cmp")
       local has_ls, ls = pcall(require, "luasnip")
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
       local has_copilot_cmp, copilot_comparators = pcall(require, "copilot_cmp.comparators")
@@ -72,10 +72,10 @@ return {
 
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
-          ["<CR>"] = cmp.mapping.confirm { select = false },
-          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm { select = true }, { "i", "s" }),
+          ["<CR>"] = cmp.mapping.confirm({ select = false }),
+          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
           ["<C-y>"] = cmp.mapping(
-            cmp.mapping.confirm { select = true, behavior = cmp.ConfirmBehavior.Insert },
+            cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
             { "i", "s", "c" }
           ),
 
@@ -88,7 +88,7 @@ return {
           -- go to the next/previous completion result
           ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
@@ -96,7 +96,7 @@ return {
 
           ["<C-p>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
@@ -110,7 +110,7 @@ return {
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](1)
             elseif cmp.visible() then
-              cmp.select_next_item { behavior = cmp.SelectBehavior.Insert }
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
@@ -123,7 +123,7 @@ return {
             elseif vim.g.codeium_enabled then
               return vim.fn["codeium#CycleCompletions"](-1)
             elseif cmp.visible() then
-              cmp.select_prev_item { behavior = cmp.SelectBehavior.Insert }
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
@@ -141,18 +141,18 @@ return {
 
             -- show the item's completion source in the results
             vim_item.menu = ({
-              buffer = i "BUF",
-              copilot = i "SNIP",
-              luasnip = i "SNIP",
-              dictionary = i "DICT",
-              git = i "GIT",
-              nvim_lsp = i "LSP",
-              nvim_lsp_document_symbol = i "SYMB",
-              nvim_lsp_signature_help = i "SIG",
-              path = i "PATH",
-              rg = i "GREP",
-              spell = i "SPELL",
-              tmux = i "TMUX",
+              buffer = i("BUF"),
+              copilot = i("SNIP"),
+              luasnip = i("SNIP"),
+              dictionary = i("DICT"),
+              git = i("GIT"),
+              nvim_lsp = i("LSP"),
+              nvim_lsp_document_symbol = i("SYMB"),
+              nvim_lsp_signature_help = i("SIG"),
+              path = i("PATH"),
+              rg = i("GREP"),
+              spell = i("SPELL"),
+              tmux = i("TMUX"),
             })[entry.source.name]
 
             -- use devicons when completing paths (if enabled/installed)
@@ -188,8 +188,8 @@ return {
           comparators = {
             -- move private (starts with an underscore) results to the bottom
             function(entry1, entry2)
-              local _, entry1_under = entry1.completion_item.label:find "^_+"
-              local _, entry2_under = entry2.completion_item.label:find "^_+"
+              local _, entry1_under = entry1.completion_item.label:find("^_+")
+              local _, entry2_under = entry2.completion_item.label:find("^_+")
               entry1_under = entry1_under or 0
               entry2_under = entry2_under or 0
               if entry1_under > entry2_under then
@@ -234,8 +234,8 @@ return {
             end,
             option = {
               enable_in_context = function()
-                return require("cmp.config.context").in_treesitter_capture "spell"
-                  or require("cmp.config.context").in_syntax_group "Comment"
+                return require("cmp.config.context").in_treesitter_capture("spell")
+                  or require("cmp.config.context").in_syntax_group("Comment")
                   or vim.tbl_contains(res.filetypes.writing, vim.bo.filetype)
               end,
             },
@@ -262,22 +262,22 @@ return {
     version = "v2.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
     config = function()
-      local ls = require "luasnip"
-      local lua_loader = require "luasnip.loaders.from_lua"
-      local vscode_loader = require "luasnip.loaders.from_vscode"
+      local ls = require("luasnip")
+      local lua_loader = require("luasnip.loaders.from_lua")
+      local vscode_loader = require("luasnip.loaders.from_vscode")
 
-      ls.config.set_config {
+      ls.config.set_config({
         history = false,
         region_check_events = "CursorMoved,CursorHold,InsertEnter",
         delete_check_events = "InsertLeave",
         enable_autosnippets = true,
-      }
+      })
 
       -- loads friendly_snippets
       vscode_loader.lazy_load()
 
       -- loads the snippets I created for VSCode a while ago
-      vscode_loader.lazy_load { paths = { "~/.config/Code/User" } }
+      vscode_loader.lazy_load({ paths = { "~/.config/Code/User" } })
 
       -- loads snippets in the luasnippets dir of my neovim config
       lua_loader.lazy_load()
@@ -337,7 +337,7 @@ return {
               vim.g.codeium_tab_fallback = nil
             else
               -- fallback to "redrawing" the buffer like readline's mapping
-              vim.cmd "nohlsearch | diffupdate | syntax sync fromstart"
+              vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")
             end
           end,
           mode = { "i", "s" },
@@ -419,7 +419,7 @@ return {
         filetypes[ft] = false
       end
 
-      require("copilot").setup {
+      require("copilot").setup({
         filetypes = filetypes,
         panel = {
           enabled = not has_copilot_cmp,
@@ -439,7 +439,7 @@ return {
             accept_word = "<M-l>",
           },
         },
-      }
+      })
     end,
     keys = {
       {

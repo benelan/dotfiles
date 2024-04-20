@@ -1,4 +1,4 @@
-local res = require "jamin.resources"
+local res = require("jamin.resources")
 
 return {
   -----------------------------------------------------------------------------
@@ -6,14 +6,14 @@ return {
   {
     dir = "~/.vim",
     priority = 420,
-    cond = vim.fn.isdirectory "~/.vim",
+    cond = vim.fn.isdirectory("~/.vim"),
     lazy = false,
   },
   -----------------------------------------------------------------------------
   {
     -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-closer",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
     config = function()
       -- setup files that can contain javascript which aren't included by default
       vim.api.nvim_create_autocmd("FileType", {
@@ -32,7 +32,7 @@ return {
   -- helps visualize and navigate the undo tree - see :h undo-tree
   {
     dir = "~/.vim/pack/foo/opt/undotree",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/opt/undotree",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
@@ -42,19 +42,19 @@ return {
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-repeat",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
     event = "CursorHold",
   },
   -----------------------------------------------------------------------------
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-surround",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
     config = function()
-      vim.cmd [[
+      vim.cmd([[
         let g:surround_{char2nr('8')} = "/* \r */"
         let g:surround_{char2nr('e')} = "\r\n}"
-      ]]
+      ]])
     end,
     keys = { "cs", "ds", "ys" },
   },
@@ -62,9 +62,9 @@ return {
   -- adds keymap for toggling comments on text objects
   {
     dir = "~/.vim/pack/foo/start/vim-commentary",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-commentary"
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-commentary")
       -- neovim added builtin support for commenting, see :h commenting
-      and vim.fn.has "nvim-0.10.0-dev-2930+g47ba96a6b" == 0,
+      and vim.fn.has("nvim-0.10.0-dev-2930+g47ba96a6b") == 0,
     keys = { { mode = { "n", "v", "o" }, "gc" } },
     cmd = "Commentary",
   },
@@ -72,7 +72,7 @@ return {
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
-    cond = vim.fn.isdirectory "~/.vim/pack/foo/start/vim-eunuch",
+    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {
@@ -136,8 +136,8 @@ return {
         vim.opt.laststatus = 0
         vim.opt.showmode = false
         vim.opt.ruler = false
-        vim.opt.fillchars:append "eob: "
-        vim.opt.shortmess:append "aoW"
+        vim.opt.fillchars:append("eob: ")
+        vim.opt.shortmess:append("aoW")
       end
     end,
   },
@@ -184,8 +184,8 @@ return {
           ["["] = "DecreaseAllDetail",
           ["<"] = "DecreaseWidth",
           [">"] = "IncreaseWidth",
-          [")"] = function() vim.cmd.norm "HHJL" end,
-          ["("] = function() vim.cmd.norm "HHKL" end,
+          [")"] = function() vim.cmd.norm("HHJL") end,
+          ["("] = function() vim.cmd.norm("HHKL") end,
         },
       },
     },
@@ -199,8 +199,16 @@ return {
     keys = {
       { "<leader>S.", "<CMD>Sesh<CR>", desc = "Load cwd session" },
       { "<leader>Sp", "<CMD>Sesh!<CR>", desc = "Load previous session" },
-      { "<leader>Sl", function() require("resession").load() end, desc = "Load session" },
-      { "<leader>Sx", function() require("resession").delete() end, desc = "Delete named session" },
+      {
+        "<leader>Sl",
+        function() require("resession").load() end,
+        desc = "Load session",
+      },
+      {
+        "<leader>Sx",
+        function() require("resession").delete() end,
+        desc = "Delete named session",
+      },
       {
         "<leader>Sd",
         function() require("resession").delete(nil, { dir = "dirsession" }) end,
@@ -208,7 +216,7 @@ return {
       },
       {
         "<leader>Sn",
-        function() require("resession").save(vim.fn.input "Session name: ", { attach = false }) end,
+        function() require("resession").save(vim.fn.input("Session name: "), { attach = false }) end,
         desc = "Save named session",
       },
       { "<leader>Ss", desc = "Save cwd session" },
@@ -223,15 +231,15 @@ return {
       end,
     },
     config = function(_, opts)
-      local resession = require "resession"
+      local resession = require("resession")
       resession.setup(opts)
 
       resession.add_hook("post_load", function()
         -- redraw treesitter context which gets messed up
         local has_ts_context, _ = pcall(require, "treesitter-context")
         if has_ts_context then
-          vim.cmd "TSContextToggle"
-          vim.cmd "TSContextToggle"
+          vim.cmd.TSContextToggle()
+          vim.cmd.TSContextToggle()
         end
       end)
 
@@ -248,7 +256,7 @@ return {
             local sanitized_remote_url =
               remote_url:gsub("^%a+://", ""):gsub("^%a+@", ""):gsub(".git$", ""):gsub("[/:]", "__")
 
-            local branch = vim.trim(vim.fn.system "git branch --show-current")
+            local branch = vim.trim(vim.fn.system("git branch --show-current"))
             if vim.v.shell_error == 0 and branch ~= "" then
               return sanitized_remote_url .. "__" .. branch:gsub("/", "__")
             end
@@ -276,7 +284,7 @@ return {
           name = event.args ~= "" and event.args or "previous"
           dir = "session"
         end
-        if vim.tbl_contains(resession.list { dir = dir }, name) then
+        if vim.tbl_contains(resession.list({ dir = dir }), name) then
           vim.api.nvim_echo({ { "Loading " .. name .. " session...", "Normal" } }, true, {})
           resession.load(name, { dir = dir, silence_errors = true })
         else
@@ -288,7 +296,7 @@ return {
         desc = "Load cwd (default), previous (bang), or named (arg) session",
         complete = function(arglead)
           return vim
-            .iter(resession.list { dir = "session" })
+            .iter(resession.list({ dir = "session" }))
             :filter(function(name) return name:match(arglead .. ".*") end)
             :totable()
         end,
@@ -313,7 +321,7 @@ return {
         callback = function(args)
           -- Don't save empty sessions
           if
-            #vim.fn.getbufinfo { buflisted = 1 } <= 1
+            #vim.fn.getbufinfo({ buflisted = 1 }) <= 1
             and (
               vim.fn.bufname() == "" or vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype)
             )
