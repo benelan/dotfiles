@@ -145,14 +145,83 @@ return {
   },
   -----------------------------------------------------------------------------
   {
-    "hedyhli/outline.nvim",
-    lazy = true,
-    cmd = { "Outline", "OutlineOpen" },
-    keys = { { "<leader>O", "<cmd>Outline<CR>", desc = "Toggle outline" } },
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    branch = "dev",
+    keys = {
+      {
+        "<leader>xx",
+        "<CMD>Trouble diagnostics toggle<CR>",
+        desc = "Diagnostics (trouble)",
+      },
+      {
+        "<leader>xb",
+        "<CMD>Trouble diagnostics toggle filter.buf=0<CR>",
+        desc = "Buffer diagnostics (trouble)",
+      },
+      {
+        "<leader>xs",
+        "<CMD>Trouble symbols toggle focus=false<CR>",
+        desc = "Symbols (trouble)",
+      },
+      {
+        "<leader>xl",
+        "<CMD>Trouble lsp toggle focus=false win.position=right<CR>",
+        desc = "LSP definitions/references/etc (trouble)",
+      },
+      {
+        "<leader>xL",
+        "<CMD>Trouble loclist toggle<CR>",
+        desc = "Location list (trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<CMD>Trouble qflist toggle<CR>",
+        desc = "Quickfix list (trouble)",
+      },
+      {
+        "]d",
+        function()
+          if require("trouble").is_open { mode = "diagnostics" } then
+            require("trouble").next { mode = "diagnostics", jump = true }
+          else
+            vim.diagnostic.goto_next { float = true }
+          end
+        end,
+        desc = "Next diagnostic (trouble)",
+      },
+      {
+        "[d",
+        function()
+          if require("trouble").is_open { mode = "diagnostics" } then
+            require("trouble").prev { mode = "diagnostics", jump = true }
+          else
+            vim.diagnostic.goto_prev { float = true }
+          end
+        end,
+        desc = "Previous diagnostic (trouble)",
+      },
+    },
     opts = {
-      outline_window = { hide_cursor = true },
-      outline_items = { show_symbol_lineno = true },
-      symbols = { icon_fetcher = function(kind) return res.icons.lsp_kind[kind] end },
+      keys = { H = "fold_close", J = "next", K = "prev", L = "fold_open" },
+      modes = {
+        cascade = {
+          mode = "diagnostics",
+          filter = function(items)
+            local severity = vim.diagnostic.severity.HINT
+            for _, item in ipairs(items) do
+              severity = math.min(severity, item.severity)
+            end
+            return vim.tbl_filter(function(item) return item.severity == severity end, items)
+          end,
+        },
+      },
+      icons = {
+        indent = { fold_open = res.icons.ui.expanded, fold_closed = res.icons.ui.collapsed },
+        folder_closed = res.icons.ui.folder_closed,
+        folder_open = res.icons.ui.folder_open,
+        kinds = res.icons.lsp_kind,
+      },
     },
   },
 }

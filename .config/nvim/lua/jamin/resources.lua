@@ -245,7 +245,7 @@ local i = function(icon, backup) return vim.g.use_devicons and icon or backup or
 
 M.icons = {
   ui = {
-    -- utf8 icons so no fallbacks required
+    -- utf8 icons don't need fallbacks
     prompt = "❱ ",
     select = "➤  ",
     play = "⯈ ",
@@ -258,8 +258,8 @@ M.icons = {
     box_crossed = "☒ ",
     box_dot = "🞔 ",
     circle = "● ",
-    collapsed = "🞂",
-    expanded = "🞃",
+    collapsed = "🞂 ",
+    expanded = "🞃 ",
     eol = "⤶",
     linebreak = "↳ ",
     nbsp = "␣",
@@ -272,6 +272,8 @@ M.icons = {
     fill_slash = "╱",
     fill_shade = "░",
     fill_solid = "█",
+    folder_open = "🗁 ",
+    folder_closed = "🗀 ",
     speech_bubble = "🗩 ",
     pencil = "🖉 ",
     pin = "🖈 ",
