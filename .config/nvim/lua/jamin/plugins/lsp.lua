@@ -356,11 +356,4 @@ return {
       }
     end,
   },
-  -----------------------------------------------------------------------------
-  -- Enhances the lua language server with neovim APIs
-  {
-    "folke/neodev.nvim",
-    lazy = true,
-    opts = { setup_jsonls = false, lspconfig = false },
-  },
 }

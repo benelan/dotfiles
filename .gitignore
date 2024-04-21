@@ -16,7 +16,6 @@
 .gnupg
 .icons
 .lua-rocks
-.luarc.json
 .mozilla
 .pki
 .rustup
