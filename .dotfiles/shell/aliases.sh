@@ -26,7 +26,7 @@ alias se='sudo ${EDITOR:-vim}'
 
 alias v="vim --noplugin  -u $DOTFILES/assets/templates/standalone.vimrc"
 # minimum usable vim options
-alias vm="vim --no-plugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
+alias vmin="vim --no-plugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
 
 # Directory listing/traversal
 _color=$(supports "ls --color" --color -G)
@@ -66,7 +66,7 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 if supports fasd; then
-    alias z='_fasd_cd -id'
+    alias z='_fasd_cd -i -d'
     alias zd='_fasd_cd -d'
     alias ze='fasd -fe $EDITOR'
     alias zo='fasd -ae xdg-open'
@@ -185,7 +185,7 @@ if supports task; then
     supports tasksh && alias tsh="tasksh"
     supports taskwarrior-tui && alias tui="taskwarrior-tui"
 
-    [ -d "$NOTES" ] && alias ts='git sync-changes "$NOTES" ".task/" "chore(task): sync"'
+    [ -d "$NOTES" ] && alias ts='(cd && git sync-changes "$NOTES" ".task/" "chore(task): sync")'
 fi
 
 # Git {{{1
@@ -195,22 +195,18 @@ alias g='git'
 alias gx="git-mux"
 alias gxt="git-mux task"
 alias gxp="git-mux project"
-alias gxs='git-mux project $PWD'
 
 # Dotfiles {{{1
 alias d='dot'
 
-# creates env vars so git plugins work with the bare dotfiles repo
-edit_dotfiles() {
-    # shellcheck disable=2016
-    "$EDITOR" "$@" \
-        --cmd "if len(argv()) > 0 | cd %:h | endif" \
-        --cmd 'let $GIT_WORK_TREE = expand("~")' \
-        --cmd 'let $GIT_DIR = expand("~/.git")'
-}
+# toggle git env vars so I can use `git` instead of `dot`
+alias tdot='[ "$GIT_WORK_TREE" = ~ ] && unset GIT_DIR GIT_WORK_TREE || export GIT_DIR=~/.git GIT_WORK_TREE=~'
 
-alias edot="edit_dotfiles +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
-alias G="edit_dotfiles +G +only"
+# edit dotfiles with git plugins setup correctly. Search with Telescope if no args
+alias edot="EDITOR=nvim dot edit +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
+
+# open Fugitive's status for the current or dotfiles repo
+alias G='if [ "$(git rev-parse --is-inside-work-tree)" = "false" ]; then (cd && dot edit +G +only); else $EDITOR +G +only; fi'
 
 # GitHub {{{1
 # https://cli.github.com/
@@ -236,7 +232,7 @@ if supports docker; then
     # docker aliases for Calcite development {{{2
     if [ "$USE_WORK_STUFF" = "1" ]; then
         # I need to link these files to the current worktree
-        alias cc_link_files='pushd "$(npm prefix)" >/dev/null && ln -f "$CALCITE/Dockerfile" && ln -f f"$CALCITE/.marksman.toml" && ln -f "$CALCITE/calcite-components.projections.json" "./packages/calcite-components/.projections.json" && popd >/dev/null'
+        alias cc_link_files='pushd "$(npm prefix)" >/dev/null && ln -f "$CALCITE/Dockerfile"; ln -f "$CALCITE/.marksman.toml"; ln -f "$CALCITE/calcite-components.projections.json" "./packages/calcite-components/.projections.json"; popd >/dev/null'
 
         alias cc_build_docker_image="docker build --tag calcite-components ."
 

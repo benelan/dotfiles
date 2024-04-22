@@ -10,16 +10,20 @@
 # The `deps` command installs/updates dependencies. For usage information, see:
 #   $ dot deps -h
 #
+# The `edit` command sets git environment variables in (n)vim so fugitive and
+# other git plugins use the dotfiles repo.
+#   $ dot edit ~/.bashrc
+#
 # All other commands are passed to `git` with environment variables set so it
 # always executes on the dotfiles repo. For example:
 #
 #   $ dot add .nuxtrc && dot commit -m "chore: add nuxtrc" && dot push
 #
-# The repo is set up to not show untracked files so `dot status` isn't cluttered.
-# The script also prevents `dot clean` so everything isn't deleted, and a lot of
-# unrelated directories are gitignored.
+# The repo is set up to not show untracked files so `dot status` isn't
+# cluttered. The script also prevents `dot clean` so everything isn't deleted,
+# and a lot of unrelated directories are gitignored.
 #
-# Aliases in ~/.config/git/config work with `dot` too. For example, `dot cm` is:
+# Aliases in ~/.config/git/config work with `dot` too, e.g., `dot cm` is:
 #   $ git --git-dir="$HOME/.git/" --work-tree="$HOME" commit -m
 
 # Setup dotfiles                                                        {{{
@@ -1777,15 +1781,13 @@ main() {
         # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
 
-        # toggle git env vars so I can use `git` instead of `dot`
-        toggle)
-            if [ "$GIT_WORK_TREE" = "$HOME" ]; then
-                unset GIT_DIR
-                unset GIT_WORK_TREE
-            else
-                export GIT_DIR="${HOME}/.git"
-                export GIT_WORK_TREE="$HOME"
-            fi
+        # creates env vars in (n)vim so git plugins work with the bare dotfiles repo
+        edit)
+            shift
+            # shellcheck disable=2016
+            $([ "$EDITOR" = "nvim" ] && echo "nvim" || echo "vim") "$@" \
+                --cmd 'let $GIT_WORK_TREE = expand("~")' \
+                --cmd 'let $GIT_DIR = expand("~/.git")'
             ;;
 
         # prevent usage of git commands 'clean' and 'clear' (from git-extras)
