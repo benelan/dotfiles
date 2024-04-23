@@ -11,7 +11,6 @@
     signingKey = 4675D4844DB91AC6849FF5C10E54F3EFE936CE58
 
 [commit]
-    template = ~/.config/git/message
     gpgSign = true
 
 [core]
@@ -140,12 +139,12 @@
     statusHint = false
 
 [log]
-    date = human-local
+    date = format:"%a %F %R"
 
 [format]
     ; man --pager='less -p "^PRETTY FORMATS"' git-log
-    pretty = format:"%C(green)%h %C(yellow)%ad %C(cyan)%an %C(reset)- %s %C(auto)%d%C(reset)"
-    ; pretty = format:"%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s %+b %n%n %Creset"
+    ; pretty = format:"%C(green)%h  %C(yellow)%ah  %C(cyan)%an  %C(white)%s%C(auto)% d%C(reset)"
+    pretty = format:"%C(green)%h  %C(yellow)%ah  %C(reset)%s  %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)% d"
 
 [init]
     defaultBranch = main
@@ -204,32 +203,33 @@
     dn = diff --name-status
     dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)) -- . ':(exclude)package-lock.json'; }; f"
 
-    ; edit the files changed locally
-    e = !$(git var GIT_EDITOR) $(git diff --name-only HEAD | sort -u)
+    ; edit the files changed locally (staged and unstaged)
+    e = !$EDITOR $(git diff --name-only HEAD | sort -u)
 
     ; edit modified (unstaged) files
-    eu = !$(git var GIT_EDITOR) $(git diff --name-only | sort -u)
+    eu = !$EDITOR $(git diff --name-only | sort -u)
 
     ; edit staged files
-    es = !$(git var GIT_EDITOR) $(git diff --name-only --staged | sort -u)
+    es = !$EDITOR $(git diff --name-only --staged | sort -u)
 
     ; edit unmerged files (usually due to a merge conflict)
-    ex = !$(git var GIT_EDITOR) $(git ls-files --unmerged | cut -f2 | sort -u)
+    ex = !$EDITOR $(git ls-files --unmerged | cut -f2 | sort -u)
 
     ; open Fugitive's difftool
-    ed = !$(git var GIT_EDITOR) +'Git difftool -y'
+    ed = !$EDITOR +'Git difftool -y'
 
     ; sync origin's default branch and edit the changed files
     eom = "!default_branch=$(git bdefault); \
             git fetch --prune --tags; \
             git merge origin/$default_branch; \
-            $(git var GIT_EDITOR) \
-            $(git diff --name-only HEAD origin/$default_branch)"
+            $EDITOR $(git diff --name-only HEAD origin/$default_branch)"
 
     f = fetch --all --prune --tags
     g = grep
 
     m = merge
+    mc = merge --continue
+    ma = merge --abort
     mm = !git merge "$(git bdefault)"
     mom = !git fetch && git merge "origin/$(git bdefault)"
     mt = mergetool
@@ -243,7 +243,7 @@
     r = reset
     rs = reset --soft
     rh = reset --hard
-    pristine = !git reset --hard && git clean -dfx
+    rhx = !git reset --hard && git clean -dfx
 
     rb = rebase --autostash --autosquash
     rba = rebase --abort
@@ -264,7 +264,7 @@
     stpo = stash pop
     stpu = stash push
 
-    ; delete multiple stashes, e.g. $ git stdm 5 8
+    ; delete multiple stashes, e.g. $ git stdr 5 8
     ; would delete @stash{5}, @stash{6}, @stash{7}, and @stash{8}
     stdr = "!f() { for _ in $(seq $1 ${2:-$1}); do git stash drop $1; done; }; f"
 
@@ -273,6 +273,7 @@
 
     t = tag
     tnext = name-rev --tags --name-only
+
     treset = !git tag -l | xargs git tag -d && git fetch --tags
 
     w = worktree
@@ -284,44 +285,17 @@
     ls = ls-files
 
     l = log
-    lg = log --graph
-
-    ; log graph with relative dates
-    lgr = log --graph --abbrev-commit --date=relative --pretty=format:'%C(bold)%C(blue)%h%Creset%C(auto)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset'
 
     ; log with full commit messages
-    lmsg = log --stat --pretty=format:'%C(blue)%h %Cgreen%an%Creset %C(yellow)%cd%Creset %C(auto)%d %s%+b%n%Creset'
+    ll = log --pretty=format:'%C(green)%h %C(yellow)%ad %C(black bold)- %C(white dim ul)%s%C(reset) %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)%d%+b'
 
-    ; log unpushed commits
-    lup = log --branches --not --remotes --no-walk --decorate --oneline
-
-    ; log unmerged commits
-    lum = !git log "$(git bdefault)" ^HEAD
+    ; log with full commit message and stat
+    lll = log --stat --pretty=format:'%C(green)%h %C(yellow)%ah %C(black bold)- %C(white dim ul)%s%C(reset) %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)%d%+b'
 
     new = log HEAD@{1}..HEAD@{0}
 
     ; log the last n commits, e.g. $ git ln 69
     ln = !git log --graph --abbrev-commit -n
-
-    ; find tags containing commit
-    lt = !git describe --always --contains
-
-    ; find branches containing commit
-    lbc = !git branch -a --contains
-
-    ; find commits by source code
-    lcc = !git log --decorate \
-            --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' -S
-
-    ; find commits by commit message
-    lcm = !git log --decorate --date=short \
-            --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --grep
-
-    ; Pull in remote changes for the current repository and all its submodules.
-    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
-
-    ; switch to a branch, creating it if necessary.
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
     ; add/remove file(s) to/from index
     hide = update-index --assume-unchanged
@@ -340,18 +314,13 @@
         }; f"
 
     ; credit an author on the latest commit.
-    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
-
-    ; list contributors with number of commits.
-    contributors = shortlog --summary --numbered
+    credit = "!f() { [ -z \"$2\" ] && echo 'Error: provide an author name and email' || git commit --amend --author \"$1 <$2>\" -C ${3:-HEAD}; }; f"
 
     ; get the default branch
-    bdefault = !git remote show \
-                    $(git remote | grep -Eo '(upstream|origin)' | tail -1) \
-                    | sed -n '/HEAD branch/s/.*: //p'
+    bdefault = "!f() { (git remote set-head ${1:-origin} --auto || git remote set-head upstream --auto 2>/dev/null) | awk '{print $NF}'; }; f"
 
     ; list of local branches and their most recent commit
-    blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+    blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)  %(color:reset)%(contents:subject)  %(color:magenta)(%(color:green)%(committerdate:relative)%(color:magenta))  %(color:magenta)<%(color:blue)%(authorname)%(color:magenta)>' --sort=-committerdate
 
     # Sync with origin's default branch by rebasing, then commit and push all changes.
     # The first argument is the path to the git repo, defaults to the current directory.
@@ -439,10 +408,6 @@
     ; The following aliases are yoinked from https://github.com/GitAlias/gitalias
     ;----------------------------------------------------------------------------
 
-    ll = log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset'
-
-    lll = log --graph --topo-order --date=iso8601-strict --no-abbrev-commit --abbrev=40 --decorate --all --boundary --pretty=format:'%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn <%ce>]%Creset %Cblue%G?%Creset'
-
     ; Ignore all untracked files by appending them to .gitignore:
     ignore-untracked = "!git status --short | grep -P \"^\\t\" | grep -vF .gitignore | sed \"s/^\\t//\" >> .gitignore"
 
@@ -468,10 +433,10 @@
     ;    $ git snapshot
     ;
     ; Creates this stash:
-    ;    stash@{0}: On feature/handy-git-tricks: snapshot: Mon Apr 8 12:39:06 BST 2013
+    ;    stash@{0}: On feature/handy-git-tricks: chore: SNAPSHOT @ Mon Apr 8 12:39:06 BST 2013
     ;
     ; And seemingly no changes to your working tree.
-    snapshot = !git stash push "chore: SNAPSHOT $(date)" && git stash apply "stash@{0}"
+    snapshot = !git stash push "chore: SNAPSHOT @ $(date)" && git stash apply "stash@{0}"
 
     ; List all issues mentioned in commit messages between range of commits
     ;
