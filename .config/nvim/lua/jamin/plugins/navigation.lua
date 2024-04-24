@@ -208,6 +208,8 @@ return {
     "ThePrimeagen/harpoon",
     event = "VeryLazy",
     branch = "harpoon2",
+    -- pinned commit due to: https://github.com/ThePrimeagen/harpoon/issues/577
+    commit = "e76cb03",
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       settings = {

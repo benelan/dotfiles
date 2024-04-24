@@ -9,8 +9,7 @@ if has("syntax") && !exists("syntax_on")
 endif
 
 set number relativenumber linebreak backspace=indent,eol,start
-set mouse=a ttymouse=sgr mousehide clipboard=unnamed
-set ttyfast lazyredraw autoread confirm hidden
+set mouse= clipboard=unnamed ttyfast lazyredraw autoread confirm hidden
 set ignorecase smartcase autoindent smartindent formatoptions+=l
 set nomodeline nostartofline t_vb= nrformats-=octal nrformats+=unsigned
 set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
@@ -30,6 +29,8 @@ set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
 
 if filereadable("/usr/share/dict/words")
     set dictionary=/usr/share/dict/words
+else
+    set dictionary=spell
 endif
 
 if has("persistent_undo") && exists("+undofile")
@@ -125,6 +126,20 @@ if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
+" Better indention/ hierarchy
+set formatlistpat=^\\s*                    " Optional leading whitespace
+set formatlistpat+=[                       " Start class
+set formatlistpat+=\\[({]\\?               " |  Optionally match opening punctuation
+set formatlistpat+=\\(                     " |  Start group
+set formatlistpat+=[0-9]\\+                " |  |  A number
+set formatlistpat+=\\\|[iIvVxXlLcCdDmM]\\+ " |  |  Roman numerals
+set formatlistpat+=\\\|[a-zA-Z]            " |  |  A single letter
+set formatlistpat+=\\)                     " |  End group
+set formatlistpat+=[\\]:.)}                " |  Closing punctuation
+set formatlistpat+=]                       " End class
+set formatlistpat+=\\s\\+                  " One or more spaces
+set formatlistpat+=\\\|^\\s*[-–+o*•]\\s\\+ " Or bullet points
+
 " Keymaps {{{1
 if has("keymap")
     let mapleader = " "
@@ -151,7 +166,6 @@ if has("keymap")
     nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
-    xnoremap g/ <esc>/\\%V
     nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
 
     "" https://vi.stackexchange.com/a/213
@@ -166,11 +180,6 @@ if has("keymap")
         \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
-
-    "" VisualSelection() defined in ./plugin/stuff.vim
-    "" Neovim has this built-in
-    xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
-    xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 
     "" misc insert/terminal/command mode keymaps {{{2
     inoremap <C-U> <C-G>u<C-U>
@@ -269,7 +278,7 @@ if has("keymap")
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
             \ . (&colorcolumn == "" ? "79" : "")<CR>
 
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" 
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel="
                 \ . (&conceallevel == "0" ? "2" : "0")<CR>
 
     nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
@@ -292,12 +301,12 @@ if has("keymap")
 
     nnoremap - <CMD>packadd vifm.vim<CR><CMD>Vifm<CR>
 
-    nnoremap <leader>gs <CMD>packadd vim-fugitive<CR><CMD>G<CR>
-    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>G commit<CR>
+    nnoremap <leader>gs <CMD>packadd vim-fugitive<CR><CMD>tab G<CR>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>tab G commit<CR>
     nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><CMD>G blame<CR>
     nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gvdiffsplit<CR>
     nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><CMD>0Gclog --follow<CR>
-    xnoremap <leader>gl :Gclog --follow<CR>
+    xnoremap <leader>gl :Gclog<CR>
 
     nnoremap <leader>gD <CMD>packadd vim-fugitive<CR><CMD>G difftool -y<CR>
     nnoremap <leader>gM <CMD>packadd vim-fugitive<CR><CMD>G mergetool -y<CR>
@@ -310,23 +319,20 @@ if has("keymap")
     vnoremap <leader>gy <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse!<CR>
 endif
 
-
-" Autocommands {{1
+" Autocommands {{{1
 if has("autocmd")
     augroup jamin_vimrc
         autocmd!
+        autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()
+        autocmd InsertEnter,WinLeave * setlocal nocursorline
 
-        "" setup syntax complete for filetypes that don't have their own
-        if exists("+omnifunc")
-            autocmd Filetype *
-                \ if &omnifunc == "" || ! &omnifunc |
-                \    setlocal omnifunc=syntaxcomplete#Complete |
-                \ endif
+        autocmd FileType {java,type}script{,react},vue,svelte,astro
+            \ setlocal keywordprg=sh\ -c\ 'o\ https://devdocs.io/\\#q=\$1\ '\ --
+
+        if executable("dict")
+            autocmd FileType markdown,text,gitcommit setlocal keywordprg=dict
         endif
 
-        autocmd BufNew,BufEnter * let g:git_branch = g:GitBranch()
-
-        autocmd InsertEnter,WinLeave * setlocal nocursorline
         autocmd InsertLeave,WinEnter *
                 \ if !exists("b:no_cursorline") || !b:no_cursorline
                 \ |   setlocal cursorline
@@ -495,8 +501,7 @@ endif
 
 " Fix modern terminal features
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\)'
-
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"

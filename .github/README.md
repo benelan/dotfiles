@@ -98,11 +98,10 @@ and other functionality.
 I learned and stole a lot from the following sources. There are credits/links in
 specific files as well, when relevant.
 
-- Copyright (c) 2020-2021 Bash-it `MIT`
-  [[code](https://github.com/Bash-it/bash-it)]
+- Copyright (c) 2020-2021 Bash-it `MIT` [[code](https://github.com/Bash-it/bash-it)]
 
-- Copyright (c) 2014 "Cowboy" Ben Alman `MIT`
-  [[code](https://github.com/cowboy/dotfiles)]
+- Copyright (c) LazyVim `Apache License 2.0` [[code](https://github.com/LazyVim/LazyVim)]
 
-- Tom Ryder `UNLICENSE`
-  [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]
+- Tom Ryder [[code](https://dev.sanctum.geek.nz/cgit/dotfiles.git/tree/)]
+
+- Seth House [[code](https://github.com/whiteinge/dotfiles)]

@@ -6,6 +6,7 @@ let g:loaded_jamin_stuff = 1
 let g:rust_recommended_style = 0
 let g:markdown_recommended_style = 0
 let g:qf_disable_statusline = 1
+let g:is_posix = 1
 
 " Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
@@ -56,13 +57,17 @@ vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 nnoremap <silent> - <CMD>execute (
     \ &filetype ==# "netrw"
         \ ? "normal! -"
-        \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
+        \ : ":Explore " . expand("%:h") .
+        \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
 \)<CR>
+
+" thumbs up/down diagraphs
+dig +1 128077
+dig -1 128078
 
 "" insert, command, and operator keymaps {{{2
 " Add a line above/below the cursor from insert mode
-inoremap <C-Down> <C-O>O
-inoremap <C-Up> <C-O>o
+cnoremap <C-a> <Home>
 
 cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
 cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
@@ -253,6 +258,11 @@ endfunction
 " Use the function to search/replace visually selected text
 xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
 
+if !has('nvim')
+    xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
+    xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
+endif
+
 "" delete buffer without closing window {{{2
 " https://stackoverflow.com/a/6271254
 function s:BGoneHeathen(action, bang)
@@ -318,6 +328,9 @@ if has("autocmd")
         autocmd!
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
+
+        " Clear jumplist on startup
+        autocmd VimEnter * clearjumps
 
         " When editing a file, always jump to the last known cursor position.
         " Don't do it when the position is invalid, when inside an event handler

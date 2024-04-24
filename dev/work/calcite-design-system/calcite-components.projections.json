@@ -4,63 +4,45 @@
   },
   "*.tsx": {
     "type": "main",
-    "alternate": [
-      "{}.e2e.ts",
-      "{}.spec.ts"
-    ],
-    "related": [
-      "{}.stories.ts",
-      "{}.scss",
-      "{dirname}/src/demos/{}.html"
-    ],
+    "alternate": ["{}.e2e.ts", "{}.spec.ts"],
+    "related": ["{}.stories.ts", "{}.scss", "{dirname}/src/demos/{}.html"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 5 'npx stencil test --e2e --watch -- {}.e2e'"
   },
   "*.e2e.ts": {
     "type": "test",
     "alternate": "{}.tsx",
-    "related": [
-      "{}.stories.ts",
-      "{}.scss",
-      "{dirname}/src/demos/{}.html"
-    ],
+    "related": ["{}.stories.ts", "{}.scss", "{dirname}/src/demos/{}.html"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 10 'npx stencil test --e2e --watch --no-build -- {}.e2e'"
   },
   "*.spec.ts": {
     "type": "test",
-    "alternate": [
-      "{}.ts",
-      "{}.tsx"
-    ],
+    "alternate": ["{}.ts", "{}.tsx"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 10 'npx stencil test --spec --watch -- {}.spec'"
   },
   "src/utils/*.ts": {
     "type": "util",
     "alternate": "{}.spec.ts",
+    "related": ["{dirname}/src/demos/{}.html"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 10 'npx stencil test --spec --watch -- {}.spec'"
   },
   "*.scss": {
     "type": "style",
     "alternate": "{}.tsx",
-    "related": [
-      "{}.e2e.ts",
-      "{}.stories.ts",
-      "{dirname}/src/demos/{}.html"
-    ],
+    "related": ["{}.e2e.ts", "{}.stories.ts", "{dirname}/src/demos/{}.html"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -d 'npx stencil test --e2e --watch -- {}.e2e'"
   },
   "*.stories.ts": {
     "type": "docs",
     "alternate": "{}.tsx",
-    "related": [
-      "{}.e2e.ts",
-      "{}.scss",
-      "{dirname}/src/demos/{}.html"
-    ],
+    "related": ["{}.e2e.ts", "{}.scss", "{dirname}/src/demos/{}.html"],
     "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 5 'npm run docs:preview'"
   },
   "src/demos/*.html": {
     "type": "example",
-    "alternate": "src/components/{basename}/{basename}.tsx",
+    "alternate": [
+      "src/components/{basename}/{basename}.tsx",
+      "src/utils/{basename}.ts"
+    ],
     "related": [
       "src/components/{basename}/{basename}.e2e.ts",
       "src/components/{basename}/{basename}.scss",

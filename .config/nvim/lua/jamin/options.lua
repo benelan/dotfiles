@@ -17,6 +17,9 @@ vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
 
+-- https://github.com/wez/wezterm/issues/4607
+if vim.env.WEZTERM_PANE ~= nil then vim.opt.termsync = false end
+
 local ui = vim.api.nvim_list_uis() or {}
 vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
 
@@ -53,6 +56,8 @@ vim.opt.spellfile:append(vim.fn.stdpath("config") .. "/spell/en.utf-8.add")
 
 if vim.fn.filereadable("/usr/share/dict/words") == 1 then
   vim.opt.dictionary:append("/usr/share/dict/words")
+else
+  vim.opt.dictionary:append("spell")
 end
 
 if has_res then

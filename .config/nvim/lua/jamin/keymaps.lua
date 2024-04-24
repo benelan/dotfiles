@@ -19,8 +19,8 @@ keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
 keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
 
 -- -- remaps to center movement in the screen
-keymap("n", "<C-u>", "<C-u>M", "Scroll half page up")
-keymap("n", "<C-d>", "<C-d>M", "Scroll half page down")
+keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
+keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
 keymap("n", "n", "nzzzv", "Next search result")
 keymap("n", "N", "Nzzzv", "Previous search result")
 
@@ -37,6 +37,20 @@ local undo_after_chars = { "?", ".", "!", ";", "]", ")", "}", ">" }
 for _, char in ipairs(undo_after_chars) do
   keymap("i", char, char .. "<C-g>u")
 end
+
+-- Add empty lines before and after cursor line
+keymap(
+  "n",
+  "[<space>",
+  "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
+  "Put empty line above"
+)
+keymap(
+  "n",
+  "]<space>",
+  "<CMD>call append(line('.'), repeat([''], v:count1))<CR>",
+  "Put empty line below"
+)
 
 -- Move Lines
 keymap("n", "<M-j>", "<CMD>m .+1<CR>==", "Move line down")

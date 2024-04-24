@@ -76,7 +76,7 @@ M.filetypes = {
 }
 
 M.lsp_servers = {
-  -- "astro",
+  "astro",
   "bashls",
   "cssls",
   -- "docker_compose_language_service",
@@ -97,7 +97,7 @@ M.lsp_servers = {
   "svelte",
   -- "tailwindcss",
   "taplo",
-  "typos_lsp",
+  -- "typos_lsp",
   -- "tsserver",
   "vimls",
   "volar",

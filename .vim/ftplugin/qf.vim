@@ -66,3 +66,6 @@ function! AdjustWindowHeight(minheight, maxheight)
 endfunction
 
 call AdjustWindowHeight(3, 10)
+
+" Always move the cursor to the current quickfix item when entering the buffer.
+"au BufEnter <buffer> nested exe getqflist({'id': 0, 'idx': 0}).idx

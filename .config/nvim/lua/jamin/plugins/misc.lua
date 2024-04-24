@@ -107,7 +107,7 @@ return {
   },
   -----------------------------------------------------------------------------
   -- transparently edit gpg encrypted files
-  { "jamessan/vim-gnupg", event = { "BufReadPre *.asc,*.gpg,*.pgp" } },
+  { "jamessan/vim-gnupg" },
   -----------------------------------------------------------------------------
   {
     "folke/lazy.nvim",

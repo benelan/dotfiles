@@ -45,6 +45,8 @@ endif
 
 if filereadable("/usr/share/dict/words")
     set dictionary=/usr/share/dict/words
+else
+    set dictionary=spell
 endif
 
 if has('reltime')
@@ -94,7 +96,7 @@ if exists("+termguicolors")
     set termguicolors
 endif
 
-set statusline=\ [%n]%m%r%h%w%q%y\ %f\ %=\ %c:[%l/%L]\
+set statusline=[%n]%m%r%h%w%q%y\ %f\ %=\ %v:[%l/%L]
 
 colorscheme desert
 hi! link TabLineFill Statusline
@@ -131,6 +133,14 @@ if exists("*netrw_gitignore#Hide")
 endif
 
 "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+"" misc settings                                              {{{
+
+let g:is_posix = 1
+let g:qf_disable_statusline = 1
+let g:ft_man_no_sect_fallback = 1
+let g:ft_man_folding_enable = 1
+
+"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 " --------------------------------------------------------------------- }}}
 " Keymaps                                                               {{{
@@ -147,7 +157,7 @@ if has("keymap")
 
     " Format the entire buffer preserving cursor location.
     " Requires the 'B' text object defined below.
-    nmap Q mFgqBg`F
+    nmap Q mtgqBg`t
 
     " Format selected text maintaining the selection.
     xmap Q gq`[v`]
@@ -358,7 +368,7 @@ if has("keymap")
     nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
             \ . (&colorcolumn == "" ? "79" : "")<CR>
 
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" 
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel="
                 \ . (&conceallevel == "0" ? "2" : "0")<CR>
 
     nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
@@ -468,8 +478,90 @@ if has("eval")
     nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" diff and stage hunks                                       {{{
 
-endif
+    "" from https://github.com/whiteinge/dotfiles/blob/master/.vim/autoload/stagediff.vim
+    function! s:WriteToIndex(fname)
+        try
+            let l:mode = split(system('git ls-files --stage '. a:fname), ' ')[0]
+        catch
+            let l:mode = '100644'
+        endtry
+
+        let l:ret = execute('write !git hash-object --stdin -w
+            \ | xargs -I@ git update-index --add
+            \ --cacheinfo '. l:mode .',@,'. a:fname)
+        set nomodified
+    endfu
+
+    function! s:StageDiff()
+        let s:fname = fnamemodify(expand('%'), ':~:.')
+        let l:ft = &ft
+
+        if (len(system('git ls-files --unmerged ./'. s:fname)))
+            echohl WarningMsg
+                \ | echon "Please resolve conflicts first."
+                \ | echohl None
+            return 1
+        endif
+
+        tabe %
+        diffthis
+        vnew
+
+        call system('git ls-files --error-unmatch ./'. s:fname)
+        if (!v:shell_error)
+            silent exe ':r !git show :./'. s:fname
+            1delete
+        endif
+
+        set nomodified
+        let &ft = l:ft
+        diffthis
+
+        setl buftype=acwrite bufhidden=delete nobuflisted
+        au BufWriteCmd <buffer> call <SID>WriteToIndex(s:fname)
+        exe 'file _staging_'. s:fname
+
+        redraw
+        echohl WarningMsg
+            \ | echon "Move changes leftward then write file to stage."
+            \ | echohl None
+    endfu
+
+    command! Gdiff call s:StageDiff()
+
+    nnoremap <silent> <leader>gd :Gdiff<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" Show Git blame window                                      {{{
+
+    command! Gblame :exe 'tabnew +'. line('.') .' %'
+        \| :53vnew
+        \| :setl buftype=nofile bufhidden=wipe nobuflisted
+        \| :exe 'r !git blame -f --date=relative -- '. expand('#:p:~:.')
+        \   ." | awk '{ print $1, substr($0, index($0, \"(\") + 1) }'"
+        \| 1delete
+        \| :exe line('.', win_getid(winnr('#')))
+        \| :windo setl nofoldenable nowrap
+        \| :windo setl scrollbind
+
+    nnoremap <silent> <leader>gb :Gblame<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" Show full commit for current line                          {{{
+
+    command! Gannotateline :call
+        \ printf("!git blame -l -L %s,+1 -- %s \| awk '{ print $1 }' \|
+        \ xargs git show --summary --stat --pretty=fuller --patch",
+        \     getpos('.')[1],
+        \     expand('%:p'))
+        \ ->execute("")
+    endif
+
+    nnoremap <silent> <leader>gl :Gannotateline<CR>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
 " --------------------------------------------------------------------- }}}
 " Autocommands                                                          {{{
@@ -497,31 +589,32 @@ if has("autocmd")
                     \ set nobuflisted
                     \| nnoremap <silent> <buffer> q :q<CR>
 
-        if exists("+omnifunc")
-            autocmd Filetype *
-              \ if &omnifunc == "" |
-              \     setlocal omnifunc=syntaxcomplete#Complete |
-              \ endif
-        endif
+        " Clear jumplist on startup
+        autocmd VimEnter * clearjumps
 
         " Clear actively used file marks to prevent jumping to other projects
         autocmd VimEnter *  delmarks QWEASD
+
+
+        " Set up keywordprg to open devdocs
+        autocmd FileType {java,type}script{,react},vue,svelte,astro
+            \ setl keywordprg=sh\ -c\ '$BROWSER\ https://devdocs.io/\\#q=\$1\ '\ --
 
         " Set up formatters
         if executable("npx")
             autocmd FileType json,yaml,markdown,mdx,css,scss,html,
                 \astro,svelte,vue,{java,type}script{,react}
-                \ setlocal formatprg=npx\ prettier\ --stdin-filepath\ %\ 2>/dev/null
+                \ setlocal formatprg=npx\ prettier\ --stdin-filepath=%\ 2>/dev/null
         endif
 
         if executable("shfmt")
             autocmd FileType {,ba,da,k,z}sh
-                \ setlocal formatprg=shfmt\ -i\ 4\ -ci\ --filename\ %\ 2>/dev/null
+                \ setlocal formatprg=shfmt\ -i=4\ -ci\ --filename=%\ 2>/dev/null
         endif
 
         if executable("stylua")
             autocmd FileType lua
-                \ setlocal formatprg=stylua\ --color\ Never\ --stdin-filepath\ %\ -\ 2>/dev/null
+                \ setlocal formatprg=stylua\ --color=Never\ --stdin-filepath=%\ -\ 2>/dev/null
         endif
     augroup END
 endif
@@ -673,6 +766,8 @@ if has("eval")
 
     nnoremap <expr> g: <SID>operators_colon()
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+
+    " TODO: make a surround operator via: c<motion>"<C-r><C-o>""<Esc>
 endif
 
 "-----------------------------------------------------------------------}}}

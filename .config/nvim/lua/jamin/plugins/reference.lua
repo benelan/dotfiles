@@ -5,9 +5,23 @@ return {
   {
     "danymat/neogen",
     dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
-    opts = { snippet_engine = "luasnip" },
     cmd = "Neogen",
+    opts = {
+      snippet_engine = "luasnip",
+      languages = {
+        lua = { template = { annotation_convention = "emmylua" } },
+        astro = { template = { annotation_convention = "jsdoc" } },
+        svelte = { template = { annotation_convention = "jsdoc" } },
+        typescript = { template = { annotation_convention = "jsdoc" } },
+        typescriptreact = { template = { annotation_convention = "jsdoc" } },
+      },
+    },
     keys = {
+      {
+        "<leader>r<leader>",
+        function() require("neogen").generate({}) end,
+        desc = "Add reference comment (neogen)",
+      },
       {
         "<leader>rf",
         function() require("neogen").generate({ type = "func" }) end,

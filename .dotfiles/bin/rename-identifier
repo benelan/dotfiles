@@ -18,14 +18,16 @@
 #   used).
 #
 # The script will collect all of the given files that contain the old
-# identifier, then open them all in a vim instance. Vim will have two new keys
+# identifier, then open them all in a vim instance. Vim will have three new keys
 # mapped:
 #
-#   <leader>rr to do a global search and replace from the old to the new
+#   <leader><cr> to do a global search and replace from the old to the new
 #   identifier. This uses :s///c, so it will individually confirm each change.
 #
-#   <leader>rn to write the current file and delete the buffer (going to the
+#   <leader><cr> to write the current file and delete the buffer (going to the
 #   next file). This is for when you're doing renaming in the current file.
+#   
+#   <leader>wa to accept all changes in the remaining buffers and write.
 #
 # For both file searching and vim replacing, word boundaries are used. So, if
 # you're replacing "User", and you have a file with the string "Users" but not
@@ -35,12 +37,12 @@
 # A typical session will look like this:
 #
 #       # Run script
-#   <space>rr  # Trigger rename process in first file
+#   <leader><cr>  # Trigger rename process in first file
 #   y   # Replace first identifier found
 #   n   # Don't replace second identifier
 #       # No more matches are found, so Vim drops us back in normal mode
-#   <space>rn  # Write file and go to the next one
-#   <space>rr  # Trigger rename process in second file
+#   <leader><tab>  # Write file and go to the next one
+#   <leader><cr>  # Trigger rename process in second file
 #       # Etc.
 #
 # This is much more efficient than clumsily typing the ag, then the ":%s",

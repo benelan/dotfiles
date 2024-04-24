@@ -63,7 +63,7 @@ function! JaminTabLine()
 
     let s .= "%#TabLineFill#"
     let s .= "%=" . "%( %{BufferInfo()} %)"
-    let s .= "%#TabLine#" . "%( %{TabCWD()} %)"
+    let s .= "%#TabLine#" . "%<%( %{TabCWD()} %)"
     let s .= "%#TabLineFill#" . "%( %{TabCount()} %)"
     return s
 endfunction
