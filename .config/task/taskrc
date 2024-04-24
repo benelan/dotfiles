@@ -51,7 +51,7 @@ color.calendar.due=black on color3
 color.calendar.holiday=black on color6
 
 uda.taskwarrior-tui.keyconfig.log=L
-uda.taskwarrior-tui.keyconfig.delete=D
+uda.taskwarrior-tui.keyconfig.delete=X
 uda.taskwarrior-tui.keyconfig.next-tab=l
 uda.taskwarrior-tui.keyconfig.previous-tab=h
 uda.taskwarrior-tui.task-report.next.filter=+READY
