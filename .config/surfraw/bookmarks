@@ -1,8 +1,8 @@
-
 gh https://github.com/ :github: -g
 gh-me https://github.com/benelan :github: -g
-gh-cc https://github.com/calcite-design-system :github: -g
+gh-calcite https://github.com/calcite-design-system :github: -g
 regex101 https://regex101.com/ :playground:regex: -g
+caniuse https://caniuse.com/ :frontend:cheatsheet: -g
 tsplay https://www.typescriptlang.org/play :interactive:playground:frontend:typescript: -g
 codepen https://codepen.io/ :interactive:playground:frontend: -g
 codesandbox https://codesandbox.io/dashboard :frontend:interactive:playground: -g

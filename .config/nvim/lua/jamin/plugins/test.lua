@@ -11,7 +11,6 @@ return {
       { "benelan/neotest-stenciljs", dev = true },
     },
     config = function()
-      local has_overseer, _ = pcall(require, "overseer")
       local has_jest, jest = pcall(require, "neotest-jest")
       local has_go, go = pcall(require, "neotest-go")
       local has_vitest, vitest = pcall(require, "neotest-vitest")
@@ -33,7 +32,6 @@ return {
       require("neotest").setup({
         output = { open_on_run = true },
         icons = require("jamin.resources").icons.test,
-        consumers = { overseer = has_overseer and require("neotest.consumers.overseer") or nil },
         adapters = {
           require("neotest-stenciljs")({ no_build = true }),
           has_vitest and vitest or nil,

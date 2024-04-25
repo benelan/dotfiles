@@ -1,11 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "LuaJIT"
+  },
   "diagnostics": {
+    "libraryFiles": "Disable",
     "globals": ["c", "d", "f", "fmt", "i", "r", "rep", "s", "sn", "t", "vim"]
   },
   "workspace.checkThirdParty": false,
   "workspace.library": [
-    "/usr/local/share/nvim/runtime/lua",
+    "lua",
+    "$VIMRUNTIME",
     "~/.local/share/nvim/lazy/ChatGPT.nvim/lua",
     "~/.local/share/nvim/lazy/LuaSnip/lua",
     "~/.local/share/nvim/lazy/fidget.nvim/lua",
@@ -28,12 +33,13 @@
     "~/.local/share/nvim/lazy/nvim-treesitter/lua",
     "~/.local/share/nvim/lazy/nvim-web-devicons/lua",
     "~/.local/share/nvim/lazy/octo.nvim/lua",
-    "~/.local/share/nvim/lazy/overseer.nvim/lua",
     "~/.local/share/nvim/lazy/plenary.nvim/lua",
     "~/.local/share/nvim/lazy/qf_helper.nvim/lua",
     "~/.local/share/nvim/lazy/resession.nvim/lua",
     "~/.local/share/nvim/lazy/telescope.nvim/lua",
     "~/.local/share/nvim/lazy/trouble.nvim/lua",
-    "~/.local/share/nvim/lazy/zk-nvim/lua"
+    "~/.local/share/nvim/lazy/zk-nvim/lua",
+    "${3rd}/luv/library",
+    "${3rd}/luassert/library"
   ]
 }

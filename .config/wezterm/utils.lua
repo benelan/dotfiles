@@ -1,9 +1,11 @@
--- https://github.com/yutkat/dotfiles/blob/main/.config/wezterm/utils.lua
-local wezterm = require("wezterm")
 local M = {}
 
-M.color_scheme = "GruvboxDark"
-M.colors = wezterm.get_builtin_color_schemes()[M.color_scheme]
+-- Equivalent to POSIX basename(3)
+-- Given "/foo/bar" returns "bar"
+-- Given "c:\\foo\\bar" returns "bar"
+function M.basename(s)
+  return string.gsub(s, "(.*[/\\])(.*)", "%2")
+end
 
 function M.merge_tables(t1, t2)
   for k, v in pairs(t2) do

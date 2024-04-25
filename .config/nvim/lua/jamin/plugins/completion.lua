@@ -218,11 +218,11 @@ return {
           { name = "nvim_lsp_signature_help", group_index = 1 },
           { name = "copilot", group_index = 2 },
           { name = "luasnip", group_index = 2 },
-          { name = "git", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "path", group_index = 2 },
-          { name = "tmux", keyword_length = 2, group_index = 2 },
+          { name = "git", group_index = 2 },
           { name = "buffer", keyword_length = 2, group_index = 2 },
+          { name = "tmux", keyword_length = 2, group_index = 2 },
           -- only show ripgrep/spell/dictionary if there are no results from other sources
           { name = "rg", keyword_length = 3, group_index = 3 },
           {

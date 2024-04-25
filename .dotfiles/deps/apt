@@ -13,8 +13,6 @@ colordiff
 coreutils
 cron
 curl
-datamash
-ddgr
 dict
 dict-devil
 dict-folddoc
@@ -37,8 +35,6 @@ grep
 gzip
 handbrake-cli
 htop
-imagemagick
-inotify-tools
 jq
 libfontconfig1-dev
 libfreetype6-dev
@@ -50,10 +46,8 @@ libtool-bin
 libxcb-xfixes0-dev
 libxkbcommon-dev
 lsb-release
-lynx
 make
 mount
-mplayer
 mutt
 neofetch
 net-tools
@@ -73,7 +67,6 @@ python3-venv
 qrencode
 ripgrep
 rsync
-ruby
 socat
 sqlite3
 surfraw-extras
@@ -86,13 +79,10 @@ texlive-latex-base
 texlive-latex-extra
 texlive-xetex
 tmux
-trash-cli
 tree
 unzip
-urlview
 vifm
 vim
 w3m
 w3m-img
 wget
-xsel

@@ -155,42 +155,6 @@ return {
     },
   },
   -----------------------------------------------------------------------------
-  -- task runner
-  {
-    "stevearc/overseer.nvim",
-    cmd = { "OverseerRun", "OverseerToggle", "OverseerTaskAction", "OverseerQuickAction" },
-    keys = {
-      { "<leader>O<CR>", "<CMD>OverseerRun<CR>", "Run task (overseer)" },
-      { "<leader>O<Space>", "<CMD>OverseerToggle<CR>", "Toggle task list (overseer)" },
-      { "<leader>Oa", "<CMD>OverseerTaskAction<CR>", "Select task/action (overseer)" },
-      { "<leader>O.", "<CMD>OverseerQuickAction<CR>", "Select action (overseer)" },
-      { "<leader>Ow", "<CMD>OverseerQuickAction watch<CR>", "Watch task (overseer)" },
-      { "<leader>Or", "<CMD>OverseerQuickAction restart<CR>", "Restart task (overseer)" },
-      { "<leader>Oo", "<CMD>OverseerQuickAction open float<CR>", "Open task output (overseer)" },
-    },
-    opts = {
-      dap = false,
-      task_list = {
-        max_width = { 100, 0.25 },
-        bindings = {
-          ["<C-b>"] = "ScrollOutputUp",
-          ["<C-f>"] = "ScrollOutputDown",
-          ["O"] = "OpenFloat",
-          ["K"] = "PrevTask",
-          ["J"] = "NextTask",
-          ["L"] = "IncreaseDetail",
-          ["H"] = "DecreaseDetail",
-          ["]"] = "IncreaseAllDetail",
-          ["["] = "DecreaseAllDetail",
-          ["<"] = "DecreaseWidth",
-          [">"] = "IncreaseWidth",
-          [")"] = function() vim.cmd.norm("HHJL") end,
-          ["("] = function() vim.cmd.norm("HHKL") end,
-        },
-      },
-    },
-  },
-  -----------------------------------------------------------------------------
   -- save/restore sessions
   {
     "stevearc/resession.nvim",
@@ -222,7 +186,7 @@ return {
       { "<leader>Ss", desc = "Save cwd session" },
     },
     opts = {
-      extensions = { overseer = {}, quickfix = {} },
+      extensions = { quickfix = {} },
       buf_filter = function(bufnr)
         local ft = vim.bo[bufnr].filetype
         if vim.tbl_contains({ "qf", "help", "man", "netrw" }, ft) then return true end

@@ -163,8 +163,12 @@ if supports clipmenu; then
 fi
 
 # https://github.com/charmbracelet/glamour
-supports glow || is-supported gh && export GLAMOUR_STYLE="dark"
+supports glow || supports gh && export GLAMOUR_STYLE="dark"
 
+#https://github.com/BurntSushi/ripgrep
+supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
+
+# https://github.com/junegunn/fzf
 if supports fzf; then
     export FZF_COMPLETION_TRIGGER='~~'
     export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window "right:50%"

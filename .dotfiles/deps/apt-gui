@@ -7,6 +7,8 @@ gnome-shell-extension-appindicator
 gnome-tweaks
 gtk2-engines-murrine
 handbrake
+imagemagick
+inotify-tools
 libnotify4
 #lollypop
 peek
@@ -16,3 +18,4 @@ thunderbird
 vim-gui-common
 vlc
 wireshark
+xsel

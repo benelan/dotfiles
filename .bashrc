@@ -33,4 +33,4 @@ unset file
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 
 # ensure tmux is running
-[ -z "$TMUX" ] && supports git-mux && git-mux project "$PWD"
+[ -z "$TMUX" ] && [ -z "$WEZTERM_PANE" ] && supports git-mux && git-mux project "$PWD"
