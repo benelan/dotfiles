@@ -1429,6 +1429,18 @@ install_misc_conky() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install yt-dlp                                              {{{
+# Used via mpv from a newsboat macro for the youtube feeds I follow
+
+# https://github.com/yt-dlp/yt-dlp
+INSTALL_MISC_YT_DLP_DOC="Install latest version of youtube video downloader used by mpv"
+install_misc_yt-dlp() {
+    curl -Lo "$BIN_DIR/yt-dlp" \
+        https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+    chmod +x "$BIN_DIR/yt-dlp"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Git submodule install/build functions                                 {{{
