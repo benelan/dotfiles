@@ -1,0 +1,12 @@
+arp-scan
+ca-certificates
+cron
+dnsutils
+net-tools
+nmap
+openssh-client
+openssl
+rsync
+socat
+tcpdump
+telnet

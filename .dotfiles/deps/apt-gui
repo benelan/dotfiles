@@ -1,6 +1,7 @@
 calibre
 chromium-browser
 deepin-picker
+feh
 gimp
 gir1.2-appindicator3-0.1
 gnome-shell-extension-appindicator
@@ -12,8 +13,8 @@ inotify-tools
 libnotify4
 #lollypop
 mpv
-newsboat
 peek
+rofi
 sayonara
 shotwell
 thunderbird

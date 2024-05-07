@@ -649,13 +649,13 @@ install_script_git-extras() {
 ## Install CLI apt packages                                    {{{
 
 ## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
-INSTALL_UBUNTU_APT_DOC="Install apt packages suitable for a server"
-install_ubuntu_apt() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt" ] && return
+INSTALL_UBUNTU_APT_DOC="Install essential apt packages"
+install_ubuntu_apt-core() {
+    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-core" ] && return
 
     while IFS="" read -r pkg || [ -n "$pkg" ]; do
         sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt"
+    done <"$DEPS_DIR/apt-core"
 
     unset pkg
 
@@ -666,6 +666,48 @@ install_ubuntu_apt() {
     # link fdfind to fd
     ! _has fd && _has fdfind &&
         ln -s "$(command -v fdfind)" "$BIN_DIR/fd"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install networking apt packages                             {{{
+
+INSTALL_UBUNTU_APT_NETWORK_DOC="Install networking apt packages"
+install_ubuntu_apt-network() {
+    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-network" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt-get install -qq "$pkg" || true
+    done <"$DEPS_DIR/apt-network"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install media apt packages                                  {{{
+
+INSTALL_UBUNTU_APT_MEDIA_DOC="Install media apt packages"
+install_ubuntu_apt-media() {
+    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-media" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt-get install -qq "$pkg" || true
+    done <"$DEPS_DIR/apt-media"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install build apt packages                                  {{{
+
+INSTALL_UBUNTU_APT_BUILD_DOC="Install apt packages required for building"
+install_ubuntu_apt-build() {
+    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-build" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt-get install -qq "$pkg" || true
+    done <"$DEPS_DIR/apt-build"
+
+    unset pkg
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1541,7 +1583,8 @@ ubuntu_installs() {
     ! _has apt-get && echo "Not on an Ubuntu-based system" && return 1
 
     ## CLI install scripts (suitable for servers)
-    install_ubuntu_apt
+    install_ubuntu_apt-core
+    install_ubuntu_apt-network
     install_ubuntu_docker
     install_ubuntu_gh
     install_ubuntu_git
@@ -1552,6 +1595,7 @@ ubuntu_installs() {
     ## GUI install scripts
     if [ "$USE_GUI_APPS" = "1" ]; then
         install_ubuntu_apt-gui
+        install_ubuntu_apt-media
         install_ubuntu_brave
         install_ubuntu_discord
         install_ubuntu_vscode
@@ -1634,6 +1678,7 @@ packages_installs() {
 ## Git submodules and local builds                             {{{
 
 build_installs() {
+    install_ubuntu_apt-build
     update_modules
     install_build_neovim || true
     install_build_fzf || true
