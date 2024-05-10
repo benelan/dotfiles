@@ -8,17 +8,20 @@ return {
     cmd = "TSJToggle",
     opts = { use_default_keymaps = false, max_join_length = 420 },
   },
+
   -----------------------------------------------------------------------------
   {
     "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
     dependencies = "nvim-treesitter/nvim-treesitter",
     ft = { "astro", "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml" },
   },
+
   -----------------------------------------------------------------------------
   {
     "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
     build = ":TSUpdate",
     event = "BufReadPost",
+
     init = function(plugin)
       -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
       -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
@@ -28,13 +31,16 @@ return {
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
+
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
+
       {
         "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
         init = function() vim.g.skip_ts_context_commentstring_module = true end,
         opts = {},
       },
+
       {
         "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
         opts = {
@@ -52,50 +58,55 @@ return {
         end,
         keys = {
           {
-            "<leader>C",
+            "<leader>Tc",
             function() require("treesitter-context").go_to_context() end,
             desc = "Treesitter context",
           },
           {
-            "<leader>sC",
+            "<leader>stc",
             function() require("treesitter-context").toggle() end,
             desc = "Toggle treesitter context",
           },
         },
       },
     },
+
     config = function()
       local swap_next, swap_prev = (function()
+        local n, p = {}, {}
         local swap_objects = {
           a = "@parameter.inner",
           f = "@function.outer",
           e = "@element",
           v = "@variable",
         }
-        local n, p = {}, {}
+
         for key, obj in pairs(swap_objects) do
           n[string.format("]<M-%s>", key)] = obj
           p[string.format("[<M-%s>", key)] = obj
         end
+
         return n, p
       end)()
 
       require("nvim-treesitter.configs").setup({
         ensure_installed = res.treesitter_parsers,
+        indent = { enable = true },
+        autotag = { enable = true },
+        query_linter = { enable = true },
+
         highlight = {
           enable = true,
-          disable = function(lang, buf)
+          disable = function(lang, buf) ---@diagnostic disable-line: unused-local
             local max_filesize = 420 * 1024 -- 420 KB
             local bufname = vim.api.nvim_buf_get_name(buf)
-            local ok, stats = pcall(vim.uv.fs_stat, bufname) ---@diagnostic disable-line: undefined-field
+            local ok, stats = pcall(vim.uv.fs_stat, bufname)
             if ok and stats and stats.size > max_filesize then return true end
           end,
           -- additional_vim_regex_highlighting = { "markdown" },
           -- disable = { "markdown", },
         },
-        indent = { enable = true },
-        autotag = { enable = true },
-        query_linter = { enable = true },
+
         incremental_selection = {
           enable = true,
           keymaps = {
@@ -105,6 +116,7 @@ return {
             node_decremental = "<C-p>",
           },
         },
+
         textobjects = {
           lsp_interop = {
             enable = true,
@@ -114,6 +126,7 @@ return {
               ["<leader>vc"] = "@class.outer",
             },
           },
+
           select = {
             enable = true,
             lookahead = true,
@@ -132,6 +145,7 @@ return {
               ["igc"] = { query = "@comment.*", desc = "comment" },
             },
           },
+
           move = {
             enable = true,
             set_jumps = true,
@@ -162,6 +176,7 @@ return {
               ["[gC"] = { query = "@comment.*", desc = "Previous comment end" },
             },
           },
+
           swap = {
             enable = true,
             swap_next = swap_next,

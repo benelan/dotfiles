@@ -1,5 +1,4 @@
 ---@diagnostic disable: undefined-field
-
 local res = require("jamin.resources")
 
 return {
@@ -14,6 +13,7 @@ return {
     },
     opts = {},
   },
+
   ------------------------------------------------------------------------------
   -- Debug Adapter Protocol: https://microsoft.github.io/debug-adapter-protocol/
   {
@@ -25,6 +25,7 @@ return {
       "DapToggleRepl",
       "DapShowLog",
     },
+
     keys = {
       {
         "<leader>d<CR>",
@@ -187,6 +188,7 @@ return {
         mode = { "n", "v" },
       },
     },
+
     config = function()
       local dap = require("dap")
       vim.g.loaded_dap = true
@@ -347,8 +349,10 @@ return {
         numhl = "Purple",
       })
     end,
+
     dependencies = {
       { "theHamsta/nvim-dap-virtual-text", opts = {} },
+
       -------------------------------------------------------------------------
       {
         "rcarriga/nvim-dap-ui",
@@ -365,34 +369,24 @@ return {
             mode = { "n", "v" },
           },
         },
+
         opts = {
           expand_lines = false,
           controls = { enabled = false },
           layouts = {
             {
               elements = {
-                {
-                  id = "scopes",
-                  size = 0.25,
-                },
-                {
-                  id = "breakpoints",
-                  size = 0.25,
-                },
-                {
-                  id = "stacks",
-                  size = 0.25,
-                },
-                {
-                  id = "watches",
-                  size = 0.25,
-                },
+                { id = "scopes", size = 0.25 },
+                { id = "breakpoints", size = 0.25 },
+                { id = "stacks", size = 0.25 },
+                { id = "watches", size = 0.25 },
               },
               position = "left",
               size = 50,
             },
           },
         },
+
         config = function(_, opts)
           local has_dap, dap = pcall(require, "dap")
           local dapui = require("dapui")
@@ -407,6 +401,7 @@ return {
           dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
         end,
       },
+
       -------------------------------------------------------------------------
       -- {
       --   "leoluz/nvim-dap-go",
@@ -422,6 +417,7 @@ return {
       --     },
       --   },
       -- },
+
       -------------------------------------------------------------------------
       {
         "williamboman/mason.nvim",

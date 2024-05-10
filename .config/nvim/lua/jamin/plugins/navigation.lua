@@ -15,6 +15,7 @@ return {
       keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
     end,
   },
+
   -----------------------------------------------------------------------------
   -- fuzzy finding
   {
@@ -29,6 +30,7 @@ return {
         config = function() require("telescope").load_extension("fzf") end,
       },
     },
+
     keys = function()
       local has_builtin, builtin = pcall(require, "telescope.builtin")
 
@@ -106,6 +108,7 @@ return {
         { "<leader>gfh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
       }
     end,
+
     opts = function()
       local function open_in_quickfix(...)
         require("telescope.actions").smart_send_to_qflist(...)
@@ -168,8 +171,10 @@ return {
           mappings = { i = mappings, n = mappings },
           file_ignore_patterns = { "%.git/", "node_modules/", "dist/", "build/" },
         },
+
         pickers = {
           live_grep = { only_sort_text = true },
+
           buffers = {
             sort_lastused = true,
             sort_mru = true,
@@ -179,6 +184,7 @@ return {
               n = { ["dd"] = "delete_buffer" },
             },
           },
+
           find_files = {
             mappings = {
               n = {
@@ -203,6 +209,7 @@ return {
     end,
     config = function(_, opts) require("telescope").setup(opts) end,
   },
+
   -----------------------------------------------------------------------------
   {
     "ThePrimeagen/harpoon",
@@ -211,6 +218,7 @@ return {
     -- pinned commit due to: https://github.com/ThePrimeagen/harpoon/issues/577
     commit = "e76cb03",
     dependencies = { "nvim-lua/plenary.nvim" },
+
     opts = {
       settings = {
         save_on_toggle = true,
@@ -220,7 +228,7 @@ return {
           local git_remotes = { "origin", "upstream" }
 
           -- Fallback to the current working directory as the key
-          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or "" ---@diagnostic disable-line: undefined-field
+          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or ""
 
           for _, remote in ipairs(git_remotes) do
             local remote_url = vim.fn.trim(vim.fn.system("git remote get-url " .. remote))
@@ -250,7 +258,7 @@ return {
         end,
       },
     },
-    ---@diagnostic disable-next-line: redundant-parameter
+
     config = function(_, opts)
       local harpoon = require("harpoon")
 
@@ -280,6 +288,7 @@ return {
         end,
       })
     end,
+
     keys = {
       {
         "<M-h>",

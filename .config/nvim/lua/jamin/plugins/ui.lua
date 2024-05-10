@@ -6,6 +6,7 @@ return {
     cond = vim.fn.isdirectory("~/.vim/pack/foo/start/gruvbox-material"),
     lazy = false,
     priority = 42069,
+
     config = function()
       vim.g.gruvbox_material_background = "soft"
       vim.g.gruvbox_material_foreground = "original"
@@ -77,6 +78,7 @@ return {
       vim.cmd.colorscheme("gruvbox-material")
     end,
   },
+
   -----------------------------------------------------------------------------
   {
     "nvim-tree/nvim-web-devicons", -- filetype icons
@@ -91,6 +93,7 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   {
     "Eandrju/cellular-automaton.nvim", -- best useless plugin ever
@@ -101,25 +104,18 @@ return {
       { "<leader>~", "<CMD>CellularAutomaton game_of_life<CR>", desc = "Game of life" },
     },
   },
+
   -----------------------------------------------------------------------------
   {
     "j-hui/fidget.nvim",
     -- enabled = false,
     event = "LspAttach",
     keys = {
-      { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View notification history (fidget)" },
-      { "<leader>vn", "<CMD>Fidget suppress<CR>", desc = "Toggle notifications (fidget)" },
-      {
-        "<leader>vp",
-        "<CMD>Fidget lsp_suppress<CR>",
-        desc = "Toggle LSP progress notifications (fidget)",
-      },
-      { "<leader>vx", "<CMD>Fidget clear<CR>", desc = "Clear notifications (fidget)" },
-      {
-        "<leader>vd",
-        "<CMD>Fidget clear_history<CR>",
-        desc = "Delete notification history (fidget)",
-      },
+      { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View message history (fidget)" },
+      { "<leader>vd", "<CMD>Fidget clear_history<CR>", desc = "Delete message history (fidget)" },
+      { "<leader>vx", "<CMD>Fidget clear<CR>", desc = "Clear displayed notifications (fidget)" },
+      { "<leader>vn", "<CMD>Fidget suppress<CR>", desc = "Toggle notification display (fidget)" },
+      { "<leader>vp", "<CMD>Fidget lsp_suppress<CR>", desc = "Toggle LSP progress (fidget)" },
     },
     opts = {
       progress = {
@@ -132,6 +128,7 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   {
     "jinh0/eyeliner.nvim", -- highlights the best character to f/F/t/T per word
@@ -143,9 +140,10 @@ return {
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
   },
+
   -----------------------------------------------------------------------------
   {
-    "folke/trouble.nvim",
+    "folke/trouble.nvim", -- lsp/diagnsotic lists
     cmd = "Trouble",
     branch = "dev",
     keys = {
@@ -183,6 +181,7 @@ return {
         "]d",
         function()
           if require("trouble").is_open({ mode = "diagnostics" }) then
+            ---@diagnostic disable-next-line: missing-parameter
             require("trouble").next({ mode = "diagnostics", jump = true })
           else
             vim.diagnostic.goto_next({ float = true })
@@ -194,6 +193,7 @@ return {
         "[d",
         function()
           if require("trouble").is_open({ mode = "diagnostics" }) then
+            ---@diagnostic disable-next-line: missing-parameter
             require("trouble").prev({ mode = "diagnostics", jump = true })
           else
             vim.diagnostic.goto_prev({ float = true })
@@ -202,6 +202,7 @@ return {
         desc = "Previous diagnostic (trouble)",
       },
     },
+
     opts = {
       keys = { H = "fold_close", J = "next", K = "prev", L = "fold_open" },
       modes = {

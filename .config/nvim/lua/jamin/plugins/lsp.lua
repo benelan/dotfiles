@@ -5,11 +5,13 @@ return {
     "neovim/nvim-lspconfig", -- neovim's LSP implementation
     event = "BufReadPost",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
+
     keys = {
       { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
       { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
       { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
     },
+
     opts = {
       diagnostics = {
         virtual_text = {
@@ -42,6 +44,7 @@ return {
         },
       },
     },
+
     config = function(_, opts)
       local lspconfig = require("lspconfig")
 
@@ -64,6 +67,21 @@ return {
         require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
         opts.force_capabilities
       )
+
+      local virtual_text_enabled = true
+      keymap("n", "<leader>sv", function()
+        virtual_text_enabled = not virtual_text_enabled
+        vim.diagnostic.config({
+          virtual_text = virtual_text_enabled and opts.diagnostics.virtual_text or false,
+        })
+        print(
+          string.format(
+            "%s %s",
+            "diagnostic virtual text",
+            virtual_text_enabled and "enabled" or "disabled"
+          )
+        )
+      end, "Toggle diagnostic virtual text")
 
       -------------------------------------------------------------------------------
       ----> Server setup
@@ -159,14 +177,13 @@ return {
             bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
 
-          -- setup codelens if supported by language server
+          -- -- setup codelens if supported by language server
           -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
           --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
           --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
           --     buffer = args.buf,
           --     callback = function() vim.lsp.codelens.refresh() end,
           --   })
-
           --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
           -- end
 
@@ -184,7 +201,6 @@ return {
           elseif client.supports_method("textDocument/formatting") then
             -- if the LSP server has formatting capabilities, use it for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
-
             bufmap(
               { "n", "v" },
               "gF",
@@ -214,6 +230,7 @@ return {
       })
     end,
   },
+
   -----------------------------------------------------------------------------
   {
     -- Installer/manager for language servers, linters, formatters, and debuggers
@@ -225,6 +242,7 @@ return {
       ensure_installed = res.mason_packages,
       ui = { border = res.icons.border, height = 0.8 },
     },
+
     config = function(_, opts)
       require("mason").setup(opts)
       local mr = require("mason-registry")
@@ -244,6 +262,7 @@ return {
       end
     end,
   },
+
   -----------------------------------------------------------------------------
   -- integrates mason and lspconfig
   {
@@ -256,6 +275,7 @@ return {
       automatic_installation = true,
     },
   },
+
   -----------------------------------------------------------------------------
   {
     "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
@@ -263,6 +283,7 @@ return {
     commit = "bb680d752cec37949faca7a1f509e2fe67ab418a",
     event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+
     opts = function()
       local nls = require("null-ls")
 
@@ -322,7 +343,7 @@ return {
             end,
           }),
 
-          formatting.fixjson,
+          formatting.fixjson.with({ extra_filetypes = { "jsonc", "json5" } }),
           formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
           formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.stylua,
@@ -331,6 +352,7 @@ return {
       }
     end,
   },
+
   -----------------------------------------------------------------------------
   -- JSON and YAML schema store for autocompletion and validation
   {
@@ -339,6 +361,7 @@ return {
     cond = vim.tbl_contains(res.lsp_servers, "yamlls")
       or vim.tbl_contains(res.lsp_servers, "jsonls"),
   },
+
   -----------------------------------------------------------------------------
   -- Lua implementation of typescript-language-server
   {

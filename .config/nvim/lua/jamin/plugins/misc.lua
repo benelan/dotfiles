@@ -9,9 +9,10 @@ return {
     cond = vim.fn.isdirectory("~/.vim"),
     lazy = false,
   },
+
   -----------------------------------------------------------------------------
+  -- adds closing brackets only when pressing enter
   {
-    -- adds closing brackets only when pressing enter
     dir = "~/.vim/pack/foo/start/vim-closer",
     cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
     config = function()
@@ -28,6 +29,7 @@ return {
       })
     end,
   },
+
   -----------------------------------------------------------------------------
   -- helps visualize and navigate the undo tree - see :h undo-tree
   {
@@ -37,14 +39,15 @@ return {
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
   },
+
   -----------------------------------------------------------------------------
-  -- tpope plugins
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
     cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
     event = "CursorHold",
   },
+
   -----------------------------------------------------------------------------
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
@@ -58,6 +61,7 @@ return {
     end,
     keys = { "cs", "ds", "ys" },
   },
+
   -----------------------------------------------------------------------------
   -- adds keymap for toggling comments on text objects
   {
@@ -68,6 +72,7 @@ return {
     keys = { { mode = { "n", "v", "o" }, "gc" } },
     cmd = "Commentary",
   },
+
   -----------------------------------------------------------------------------
   -- adds basic filesystem commands and some shebang utils
   {
@@ -80,10 +85,12 @@ return {
       "Move", "Remove", "Rename", "SudoEdit", "SudoWrite", "Wall"
     },
   },
+
   -----------------------------------------------------------------------------
   {
     "tpope/vim-projectionist",
     lazy = false,
+
     init = function()
       vim.g.projectionist_heuristics = {
         ["/.git/"] = { ["README.md"] = { type = "docs" } },
@@ -93,6 +100,7 @@ return {
         ["Cargo.toml"] = { ["Cargo.toml"] = { type = "run" } },
       }
     end,
+
     keys = {
       { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
@@ -105,26 +113,32 @@ return {
       { "<leader>a<CR>", "<CMD>Console<CR><C-w><C-w>", desc = "Console (projectionist)" },
     },
   },
+
   -----------------------------------------------------------------------------
   -- transparently edit gpg encrypted files
   { "jamessan/vim-gnupg" },
+
   -----------------------------------------------------------------------------
+  -- plugin manager
   {
     "folke/lazy.nvim",
     init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
   },
+
   -----------------------------------------------------------------------------
   -- embed neovim in the browser
   {
     "glacambre/firenvim",
     lazy = not vim.g.started_by_firenvim,
     build = function() vim.fn["firenvim#install"](0) end,
+
     init = function()
       vim.g.firenvim_config = {
         globalSettings = { cmdlineTimeout = 420 },
         localSettings = { [".*"] = { takeover = "never" } },
       }
     end,
+
     config = function()
       -- settings for neovim embedded in the browser
       if vim.g.started_by_firenvim then
@@ -141,6 +155,7 @@ return {
       end
     end,
   },
+
   -----------------------------------------------------------------------------
   -- quickfix/location list helper
   {
@@ -154,6 +169,7 @@ return {
       { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
     },
   },
+
   -----------------------------------------------------------------------------
   -- save/restore sessions
   {
@@ -185,23 +201,26 @@ return {
       },
       { "<leader>Ss", desc = "Save cwd session" },
     },
+
     opts = {
       extensions = { quickfix = {} },
       buf_filter = function(bufnr)
         local ft = vim.bo[bufnr].filetype
+
         if vim.tbl_contains({ "qf", "help", "man", "netrw" }, ft) then return true end
         if vim.tbl_contains(res.filetypes.excluded, ft) then return false end
+
         return require("resession").default_buf_filter(bufnr)
       end,
     },
+
     config = function(_, opts)
       local resession = require("resession")
       resession.setup(opts)
 
       resession.add_hook("post_load", function()
         -- redraw treesitter context which gets messed up
-        local has_ts_context, _ = pcall(require, "treesitter-context")
-        if has_ts_context then
+        if pcall(require, "treesitter-context") then
           vim.cmd.TSContextToggle()
           vim.cmd.TSContextToggle()
         end
@@ -210,8 +229,9 @@ return {
       local function get_session_name()
         -- Use a git remote url as the key for projects
         local git_remotes = { "origin", "upstream" }
+
         -- Fallback to the current working directory as the key
-        local cwd = vim.uv.cwd() or vim.uv.os_homedir() or "" ---@diagnostic disable-line: undefined-field
+        local cwd = vim.uv.cwd() or vim.uv.os_homedir() or ""
 
         for _, remote in ipairs(git_remotes) do
           local remote_url = vim.trim(vim.fn.system("git remote get-url " .. remote))
@@ -241,6 +261,7 @@ return {
 
       vim.api.nvim_create_user_command("Sesh", function(event)
         local name, dir
+
         if event.args == "" and not event.bang then
           name = get_session_name()
           dir = "dirsession"
@@ -248,6 +269,7 @@ return {
           name = event.args ~= "" and event.args or "previous"
           dir = "session"
         end
+
         if vim.tbl_contains(resession.list({ dir = dir }), name) then
           vim.api.nvim_echo({ { "Loading " .. name .. " session...", "Normal" } }, true, {})
           resession.load(name, { dir = dir, silence_errors = true })
@@ -294,9 +316,16 @@ return {
           end
 
           if args.event == "VimLeavePre" then
-            -- I think the fidget progress window caused inconsistent hanging when leaving
-            local has_fidget, fidget = pcall(require, "fidget.progress")
-            if has_fidget then fidget.suppress(true) end
+            -- I think the fidget window caused inconsistent hanging when leaving vim
+            local has_progress, fidget_progress = pcall(require, "fidget.progress")
+            if has_progress then fidget_progress.suppress(true) end
+
+            local has_notification, fidget_notification = pcall(require, "fidget.notification")
+            if has_notification then
+              fidget_notification.suppress(true)
+              fidget_notification.clear()
+              fidget_notification.close()
+            end
           end
 
           -- Always save a special session named "previous"

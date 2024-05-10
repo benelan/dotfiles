@@ -6,6 +6,7 @@ return {
     "danymat/neogen",
     dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
     cmd = "Neogen",
+
     opts = {
       snippet_engine = "luasnip",
       languages = {
@@ -16,6 +17,7 @@ return {
         typescriptreact = { template = { annotation_convention = "jsdoc" } },
       },
     },
+
     keys = {
       {
         "<leader>r<leader>",
@@ -44,6 +46,7 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   -- Read https://devdocs.io directly in neovim
   {
@@ -54,6 +57,27 @@ return {
       "nvim-telescope/telescope.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
+
+    cmd = {
+      "DevdocsFetch",
+      "DevdocsInstall",
+      "DevdocsUninstall",
+      "DevdocsOpen",
+      "DevdocsOpenFloat",
+      "DevdocsOpenCurrent",
+      "DevdocsOpenCurrentFloat",
+      "DevdocsUpdate",
+      "DevdocsUpdateAll",
+    },
+
+    -- stylua: ignore
+    keys = {
+      { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
+      { "<leader>rO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
+      { "<leader>rr", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
+      { "<leader>rR", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open floating ref by filetype (devdocs)" },
+    },
+
     opts = function()
       -- calculate the width and height of the floating window
       local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
@@ -128,41 +152,38 @@ return {
         end,
       })
     end,
-    cmd = {
-      "DevdocsFetch",
-      "DevdocsInstall",
-      "DevdocsUninstall",
-      "DevdocsOpen",
-      "DevdocsOpenFloat",
-      "DevdocsOpenCurrent",
-      "DevdocsOpenCurrentFloat",
-      "DevdocsUpdate",
-      "DevdocsUpdateAll",
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
-      { "<leader>rO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
-      { "<leader>rr", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
-      { "<leader>rR", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open floating ref by filetype (devdocs)" },
-    },
   },
+
   -----------------------------------------------------------------------------
   {
     -- https://platform.openai.com/docs/guides/gpt-best-practices
     "jackMort/ChatGPT.nvim",
     cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
-    cmd = {
-      "ChatGPT",
-      "ChatGPTActAs",
-      "ChatGPTEditWithInstruction",
-      "ChatGPTRun",
-    },
+    cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstruction", "ChatGPTRun" },
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
     },
+
+    -- stylua: ignore
+    keys = {
+      { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
+      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
+      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
+      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
+      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
+      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
+      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
+      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
+      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
+      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
+      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
+      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
+      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
+      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
+    },
+
     opts = {
       api_key_cmd = string.format("gpg --decrypt %s/cache/openai.txt.gpg", vim.env.DOTFILES),
       show_quickfixes_cmd = "copen",
@@ -182,23 +203,6 @@ return {
       settings_window = { setting_sign = string.format(" %s ", res.icons.ui.dot_outline) },
       popup_window = { win_options = { foldcolumn = "0" } },
       system_window = { win_options = { foldcolumn = "0" } },
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
-      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
-      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
-      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
-      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
-      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
-      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
-      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
-      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
-      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
-      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
-      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
-      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
     },
   },
 }

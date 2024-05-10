@@ -11,6 +11,7 @@ return {
       vim.g.mkdp_auto_close = false
     end,
   },
+
   -----------------------------------------------------------------------------
   -- Keymaps and utils for editing markdown files
   {
@@ -47,12 +48,14 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   -- Tool for writing markdown notes or a personal wiki
   {
-    "mickael-menu/zk-nvim",
+    "zk-org/zk-nvim",
     ft = "markdown",
     cmd = { "ZkNew", "ZkNotes", "ZkTags", "ZkkMatch" },
+
     keys = {
       { "<leader>zn", "<CMD>ZkNew { title = vim.fn.input 'Title: ' }<CR>", desc = "New note (zk)" },
       { "<leader>zt", "<CMD>ZkTags<CR>", desc = "Note tags (zk)" },
@@ -66,6 +69,7 @@ return {
       -- Search for the notes matching the current visual selection.
       { "<leader>zf", ":ZkMatch<CR>", desc = "Find selection in notes (zk)", mode = "v" },
     },
+
     config = function()
       require("zk").setup({ picker = "telescope" })
       local has_zk_util, zk_util = pcall(require, "zk.util")
@@ -75,7 +79,6 @@ return {
         group = vim.api.nvim_create_augroup("jamin_zk_keymaps", {}),
         callback = function()
           -- Add the key mappings only for Markdown files in a zk notebook.
-          ---@diagnostic disable-next-line: param-type-mismatch
           if has_zk_util and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil then
             -- Override the global keymap to create the new note in the same directory as the current buffer.
             vim.keymap.set(

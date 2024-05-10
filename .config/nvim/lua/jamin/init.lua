@@ -70,7 +70,7 @@ end
 
 -- bootstrap lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then ---@diagnostic disable-line: undefined-field
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -80,7 +80,7 @@ if not vim.uv.fs_stat(lazypath) then ---@diagnostic disable-line: undefined-fiel
     lazypath,
   })
 end
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazypath) ---@diagnostic disable-line: undefined-field
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {

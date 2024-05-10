@@ -1199,10 +1199,13 @@ install_theme_rofi-config() {
         git clone https://github.com/benelan/rofi-scripts.git "$LIB/rofi-scripts"
     fi
 
-    pushd "$LIB/rofi-scripts/"
+    pushd "$LIB/rofi-scripts/" >/dev/null
     "$LIB/rofi-scripts/setup.sh"
-    cp -r --no-clobber "$HOME/.config/rofi.$USER/"* "$HOME/.config/rofi/"
-    popd
+    popd >/dev/null
+
+    if [ -d "$HOME/.config/rofi.$USER" ]; then
+        cp -r --no-clobber "$HOME/.config/rofi.$USER/"* "$HOME/.config/rofi/"
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

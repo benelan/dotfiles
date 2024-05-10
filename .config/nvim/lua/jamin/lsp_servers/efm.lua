@@ -1,3 +1,4 @@
+---@diagnostic disable: unused-local
 -- https://github.com/mattn/efm-langserver
 
 -------------------------------------------------------------------------------
@@ -201,7 +202,7 @@ return {
     documentFormatting = true,
     documentRangeFormatting = true,
   },
-  root_dir = vim.uv.cwd, ---@diagnostic disable-line: undefined-field
+  root_dir = vim.uv.cwd,
   filetypes = vim.tbl_keys(languages),
   settings = {
     rootMarkers = { ".git", "Dockerfile", "Makefile" },

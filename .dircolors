@@ -1,6 +1,16 @@
 # vim:filetype=dircolors foldmethod=marker:
 # Designed for dircolors (GNU coreutils) 5.97
 
+# Below are the color init strings for the basic file types. A color init
+# string consists of one or more of the following numeric codes:
+#
+# Attribute codes:
+#   00=none 01=bold 03=italic 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+#   30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+#   40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+
 # Installation instructions:
 # This file goes in the /etc directory, and must be world readable.
 # You can copy this file to .dircolors in your $HOME directory to override
@@ -19,31 +29,13 @@ COLOR tty
 # Below, there should be one TERM entry for each termtype that is colorizable
 TERM alacritty
 TERM ansi
-TERM color_xterm
 TERM color-xterm
-TERM con132x25
-TERM con132x30
-TERM con132x43
-TERM con132x60
-TERM con80x25
-TERM con80x28
-TERM con80x30
-TERM con80x43
-TERM con80x50
-TERM con80x60
-TERM cons25
 TERM console
 TERM cygwin
-TERM dtterm
-TERM dvtm
-TERM dvtm-256color
-TERM Eterm
 TERM eterm-color
-TERM fbterm
 TERM foot
 TERM gnome
 TERM gnome-256color
-TERM jfbterm
 TERM kitty
 TERM konsole
 TERM konsole-256color
@@ -97,16 +89,6 @@ TERM xterm-kitty
 TERM xterm-termite
 
 # By file type {{{1
-
-# Below are the color init strings for the basic file types. A color init
-# string consists of one or more of the following numeric codes:
-#
-# Attribute codes:
-#   00=none 01=bold 03=italic 04=underscore 05=blink 07=reverse 08=concealed
-# Text color codes:
-#   30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
-# Background color codes:
-#   40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 
 # global default
 NORMAL 00
@@ -654,6 +636,7 @@ EXEC 01;31      # Unix
 .pacnew 37
 .part 37
 .pid 37
+.python_history 37
 .r[0-9]{0,2} 37
 .rlib 37
 .sassc 37
@@ -693,3 +676,82 @@ EXEC 01;31      # Unix
 .ANSI-01;36-brcyan 01;36
 .ANSI-37-white 37
 .ANSI-01;37-brwhite 01;37
+
+# Terminals that don't support italics {{{1
+TERM screen
+TERM screen-bce
+TERM screen-16color
+TERM screen-16color-bce
+TERM screen-16color-s
+TERM screen-256color
+TERM screen-256color-bce
+TERM screen-256color-s
+
+# config files
+*authorized_keys 36
+*cfg 36
+*conf 36
+*config 36
+*known_hosts 36
+*rc 36
+.Xauthority 36
+.Xdefaults 36
+.Xmodmap 36
+.Xresources 36
+.bash_login 36
+.bash_logout 36
+.bash_profile 36
+.dircolors 36
+.ini 36
+.list 36
+.local 36
+.profile 36
+.xprofile 36
+.xsession 36
+.zlogin 36
+.zlogout 36
+.zprofile 36
+.zshenv 36
+
+# git
+.diff 36
+.git 36
+.gitattributes 36
+.github 36
+.gitmodules 36
+.patch 36
+
+# systemd
+*@.service 36
+.automount 36
+.device 36
+.mount 36
+.path 36
+.service 36
+.snapshot 36
+.socket 36
+.swap 36
+.target 36
+.timer 36
+
+# security
+*id_dsa 34
+*id_ecdsa 34
+*id_ed25519 34
+*id_rsa 34
+.env 34
+.aes 34
+.asc 34
+.bfe 34
+.crt 34
+.enc 34
+.gpg 34
+.kbx 34
+.key 34
+.p12 34
+.p7s 34
+.pem 34
+.pgp 34
+.pub 34
+.sig 34
+.signature 34

@@ -34,7 +34,7 @@ local function get_marker_root(path)
   local root_file = vim.fs.find(root_markers, {
     path = path,
     upward = true,
-    stop = vim.uv.os_homedir(), ---@diagnostic disable-line: undefined-field
+    stop = vim.uv.os_homedir(),
   })[1]
 
   return vim.fs.dirname(root_file)

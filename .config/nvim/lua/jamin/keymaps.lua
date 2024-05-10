@@ -223,28 +223,15 @@ keymap(
   "Toggle clipboard"
 )
 
-local virtual_text_enabled = true
-keymap("n", "<leader>sv", function()
-  virtual_text_enabled = not virtual_text_enabled
-  vim.diagnostic.config({ virtual_text = virtual_text_enabled })
-  print(
-    string.format(
-      "%s %s",
-      "diagnostic virtual text",
-      virtual_text_enabled and "enabled" or "disabled"
-    )
-  )
-end, "Toggle diagnostic virtual text")
-
-keymap("n", "<leader>st", function()
+keymap("n", "<leader>sth", function()
   if vim.b.ts_highlight then
     vim.treesitter.stop()
-    print("treesitter stopped")
+    print("treesitter highlighting stopped")
   else
     vim.treesitter.start()
-    print("treesitter started")
+    print("treesitter highlighting started")
   end
-end, "Toggle treesitter")
+end, "Toggle treesitter highlighting")
 
 -------------------------------------------------------------------------------
 ----> VSC*de

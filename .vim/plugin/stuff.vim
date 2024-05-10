@@ -74,6 +74,8 @@ cnoremap <C-a> <Home>
 cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
 cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
 
+inoremap <C-c> <Esc>`^
+
 " Use last changed or yanked text as an object
 onoremap V :<C-U>execute "normal! `[v`]"<CR>
 

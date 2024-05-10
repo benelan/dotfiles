@@ -6,6 +6,7 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
     cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     dependencies = "vim-rhubarb",
+
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
       { "<leader>gc", "<CMD>tab Git commit<CR>", desc = "Fugitive commit" },
@@ -36,6 +37,7 @@ return {
       },
       { "<leader>gl", ":Gclog<CR>", desc = "History in quickfix (fugitive)", mode = "x" },
     },
+
     -- stylua: ignore
     cmd = {
       "G", "Git", "GBrowse", "GDelete", "GMove", "GRename", "Gcd", "Gclog",
@@ -43,10 +45,12 @@ return {
       "Gllog", "Gpedit", "Gread", "Gsplit", "Gtabedit", "Gvdiffsplit",
       "Gvsplit", "Gwq", "Gwrite"
     },
+
     -- init = function()
     --   vim.g.fugitive_dynamic_colors = 0
     -- end,
   },
+
   -----------------------------------------------------------------------------
   -- Open file/selection in GitHub repo
   {
@@ -67,6 +71,7 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   -- [F]ugitive extension for viewing commit history [log]
   {
@@ -90,11 +95,13 @@ return {
       },
     },
   },
+
   -----------------------------------------------------------------------------
   -- git change indicators, blame, and hunk utils
   {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
+
     keys = {
       {
         "]c",
@@ -239,6 +246,7 @@ return {
         desc = "Toggle number highlight (gitsigns)",
       },
     },
+
     opts = {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
@@ -246,6 +254,7 @@ return {
       worktrees = { { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" } },
     },
   },
+
   -----------------------------------------------------------------------------
   -- GitHub integration, requires https://cli.github.com
   {
@@ -254,6 +263,7 @@ return {
     cond = vim.fn.executable("gh") == 1,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     cmd = "Octo",
+
     opts = {
       enable_builtin = true,
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
@@ -271,6 +281,7 @@ return {
         pull_requests = { open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" } },
       },
     },
+
     config = function(_, opts)
       require("octo").setup(opts)
 
@@ -315,6 +326,7 @@ return {
         end,
       })
     end,
+
     -- stylua: ignore
     keys = {
       -- Find possible actions

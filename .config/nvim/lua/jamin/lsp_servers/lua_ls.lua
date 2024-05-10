@@ -1,6 +1,7 @@
 return {
   settings = {
     Lua = {
+      doc = { privateName = { "^_" } },
       runtime = { version = "LuaJIT" },
       hint = {
         enable = true,
@@ -8,10 +9,7 @@ return {
         paramName = "Disable",
         paramType = true,
       },
-      diagnostics = {
-        globals = { "vim" },
-        disable = { "missing-fields" },
-      },
+      diagnostics = { disable = { "missing-fields" } },
       telemetry = { enable = false },
       format = { enable = false },
       completion = { callSnippet = "Replace", displayContext = 4 },

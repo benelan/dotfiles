@@ -196,7 +196,7 @@ keymap  s-SPC   COMMAND "SET_OPTION display_link_number=toggle ; RESHAPE"
 #### jump to link number (e.g press 3ss) and hide hinting mode
 keymap  ss      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN"
 #### copy link to clipboard (e.g press s-SPC then 4sy to yank url)
-keymap  sy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'url=%s ; printf "%b" "$url" | cb 2>/dev/null ;"
+keymap  sy      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; EXTERN_LINK 'printf "%b" "%s" | cb 2>/dev/null'"
 #### jump to link number and open it
 keymap  so      COMMAND "SET_OPTION display_link_number=0 ; RESHAPE ; LINK_BEGIN ; GOTO_LINK"
 #### jump to link number and open it in new tab
@@ -252,11 +252,8 @@ keymap  :t      SHELL         "$EDITOR ~/.w3m/RestoreTab.txt"
 # EXTERN      = current page
 
 # yank url to clipboard
-keymap  yy      EXTERN_LINK   "(printf %s | cb)"
-keymap  yY      EXTERN        "(printf %s | cb)"
-# yank url to tmux clipboard
-keymap  yt      EXTERN_LINK   "tmux set-buffer"
-keymap  yT      EXTERN        "tmux set-buffer"
+keymap  y      EXTERN_LINK   "(printf %s | cb)"
+keymap  Y      EXTERN        "(printf %s | cb)"
 
 # open gui browser
 keymap  gx      EXTERN_LINK   "firefox"
@@ -277,7 +274,7 @@ keymap  \\\c    COMMAND       "SET_OPTION color=toggle ; RESHAPE"
 keymap  \\\l    COMMAND       "SET_OPTION display_link_number=toggle ; SET_OPTION show_lnum=toggle ; RESHAPE"
 keymap  \\\b    COMMAND       "SET_OPTION display_borders=toggle ; RESHAPE"
 keymap  \\\i    COMMAND       "SET_OPTION display_image=toggle ; RELOAD"
-keymap  \\\e    COMMAND       "SET_OPTION user_agent='' ; RELOAD"
+keymap  \\\A    COMMAND       "SET_OPTION user_agent='Lynx/2.8.8dev.3 libwww-FM/2.14 SSL-MM/1.4.1' ; RELOAD"
 keymap  \\\a    COMMAND       "SET_OPTION user_agent Mozilla/5.0 (Windows NO 10.0; rev:91.0) Gecko/20100101 Firefox91.0 ; RELOAD"
 keymap  \\\?    COMMAND       "HELP; SEARCH User-Defined; CENTER_V"
 # keymap  \\\m    COMMAND       "SHELL 'man w3m'"
@@ -286,10 +283,8 @@ keymap  \\\?    COMMAND       "HELP; SEARCH User-Defined; CENTER_V"
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # paste and go
-keymap  pp      GOTO          file:/cgi-bin/goto_clipboard.cgi
-keymap  pP      TAB_GOTO      file:/cgi-bin/goto_clipboard.cgi
-keymap  pt      GOTO          file:/cgi-bin/goto_clipboard_tmux.cgi
-keymap  pT      TAB_GOTO      file:/cgi-bin/goto_clipboard_tmux.cgi
+keymap  p       GOTO          file:/cgi-bin/goto_clipboard.cgi
+keymap  P       TAB_GOTO      file:/cgi-bin/goto_clipboard.cgi
 
 # restore closed tabs
 keymap  u       TAB_GOTO      file:/cgi-bin/restore_tab.cgi
@@ -297,14 +292,14 @@ keymap  u       TAB_GOTO      file:/cgi-bin/restore_tab.cgi
 # close tabs and save url link to file
 keymap  qq      COMMAND       "EXTERN 'echo %s >> ~/.w3m/RestoreTab.txt' ; CLOSE_TAB"
 
-# open bookmarks (surfraw) using fzf
-keymap  xo      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
-keymap  xO      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; TAB_GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
+# open surfraw bookmark using fzf
+keymap  xo      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; GOTO file:/cgi-bin/goto_clipboard.cgi"
+keymap  xO      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_bookmarks.cgi ; TAB_GOTO file:/cgi-bin/goto_clipboard.cgi"
 
-# save bookmarks (surfraw)
-keymap  xb      COMMAND       "EXTERN_LINK '(echo -n %s | xclip -selection clipboard)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
-keymap  xB      COMMAND       "EXTERN '(echo -n %s | xclip -selection clipboard)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
+# save url to surfraw bookmarks
+keymap  xb      COMMAND       "EXTERN_LINK '(printf %s | cb)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
+keymap  xB      COMMAND       "EXTERN '(printf %s | cb)' ; SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
 
-# go to clipboard hyperlink
-keymap  xs      COMMAND       "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
-keymap  xS      COMMAND       "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; TAB_GOTO file:/cgi-bin/goto_clipboard_tmux.cgi"
+# use fzf to select a surfraw elvi and enter search term(s)
+keymap  xs      COMMAND       "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; GOTO file:/cgi-bin/goto_clipboard.cgi"
+keymap  xS      COMMAND       "READ_SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; BACK ; TAB_GOTO file:/cgi-bin/goto_clipboard.cgi"

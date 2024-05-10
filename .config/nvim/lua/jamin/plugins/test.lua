@@ -10,6 +10,7 @@ return {
       -- "marilari88/neotest-vitest",
       { "benelan/neotest-stenciljs", dev = true },
     },
+
     config = function()
       local has_jest, jest = pcall(require, "neotest-jest")
       local has_go, go = pcall(require, "neotest-go")
@@ -40,6 +41,7 @@ return {
         },
       })
     end,
+
     keys = {
       {
         "<leader>n<CR>",

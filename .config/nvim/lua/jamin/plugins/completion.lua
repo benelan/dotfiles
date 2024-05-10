@@ -20,9 +20,11 @@ return {
       })
     end,
   },
+
   -----------------------------------------------------------------------------
   -- completes from neovim's builtin spell checker
   -- { "f3fora/cmp-spell", ft = res.filetypes.writing },
+
   -----------------------------------------------------------------------------
   -- completes git commits and github issues/pull requests
   -- {
@@ -37,11 +39,13 @@ return {
   --     })
   --   end,
   -- },
+
   -----------------------------------------------------------------------------
   -- completes API info from attached language servers
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
   { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
   -- { "hrsh7th/cmp-nvim-lsp-document-symbol", event = "LspAttach" },
+
   -----------------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp", -- completion engine
@@ -53,6 +57,7 @@ return {
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
       { "lukas-reineke/cmp-rg", cond = vim.fn.executable("rg") == 1 },
     },
+
     opts = function()
       local cmp = require("cmp")
       local has_ls, ls = pcall(require, "luasnip")
@@ -173,6 +178,7 @@ return {
               end
             else
               vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
+
               -- use LSP kind icons for non-path completion items and specify a fallback icon
               vim_item.kind = string.format(
                 " %s %s",
@@ -180,6 +186,7 @@ return {
                 vim_item.kind
               )
             end
+
             return vim_item
           end,
         },
@@ -244,6 +251,7 @@ return {
         },
       }
     end,
+
     config = function(_, opts)
       require("cmp").setup(opts)
       require("cmp").setup.cmdline({ "/", "?" }, {
@@ -255,12 +263,14 @@ return {
       })
     end,
   },
+
   -----------------------------------------------------------------------------
   {
     "L3MON4D3/LuaSnip", -- snippet engine
     build = "make install_jsregexp",
     version = "v2.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
+
     config = function()
       local ls = require("luasnip")
       local lua_loader = require("luasnip.loaders.from_lua")
@@ -289,6 +299,7 @@ return {
       ls.filetype_extend("svelte", { "javascript", "typescript", "html", "css" })
       ls.filetype_extend("astro", { "javascript", "typescript", "html", "css" })
     end,
+
     keys = function()
       local has_ls, ls = pcall(require, "luasnip")
       if not has_ls then return {} end
@@ -371,6 +382,7 @@ return {
       }
     end,
   },
+
   -----------------------------------------------------------------------------
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
@@ -378,6 +390,7 @@ return {
     cond = vim.env.USE_CODEIUM == "1",
     event = "VimEnter",
     cmd = "Codeium",
+
     config = function()
       local filetypes = {}
 
@@ -392,6 +405,7 @@ return {
       -- vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
     end,
   },
+
   -----------------------------------------------------------------------------
   -- "github/copilot.vim", -- official Copilot plugin
   {
@@ -399,6 +413,7 @@ return {
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
+
     -- dependencies = {
     --   {
     --     "zbirenbaum/copilot-cmp", -- integrates Copilot with cmp
@@ -409,6 +424,7 @@ return {
     --     end,
     --   },
     -- },
+
     config = function()
       local has_copilot_cmp = pcall(require, "copilot_cmp")
 
@@ -441,6 +457,7 @@ return {
         },
       })
     end,
+
     keys = {
       {
         "<Tab>",
