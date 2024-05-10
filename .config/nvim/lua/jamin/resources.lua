@@ -245,6 +245,7 @@ local i = function(icon, backup) return vim.g.use_devicons and icon or backup or
 
 M.icons = {
   ui = {
+    docs = i(" ", "🖹 "),
     -- utf8 icons don't need fallbacks
     prompt = "❱ ",
     select = "➤  ",
@@ -253,6 +254,7 @@ M.icons = {
     x = "✘ ",
     checkmark = "✔ ",
     question_mark = "？",
+    square = "■ ",
     box = "☐ ",
     box_checked = "☑ ",
     box_crossed = "☒ ",

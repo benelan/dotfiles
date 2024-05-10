@@ -25,7 +25,7 @@ return {
         desc = "Add reference comment (neogen)",
       },
       {
-        "<leader>rf",
+        "<leader>rm",
         function() require("neogen").generate({ type = "func" }) end,
         desc = "Add function reference comment (neogen)",
       },
@@ -45,6 +45,45 @@ return {
         desc = "Add buffer reference comment (neogen)",
       },
     },
+  },
+
+  -----------------------------------------------------------------------------
+  -- open rule documentation for linters
+  {
+    "chrisgrieser/nvim-rulebook",
+    keys = {
+      { "<leader>rx", function() require("rulebook").ignoreRule() end },
+      { "<leader>rl", function() require("rulebook").lookupRule() end },
+      { "<leader>ry", function() require("rulebook").yankDiagnosticCode() end },
+    },
+    config = function()
+      require("rulebook").setup({})
+
+      local virtual_text_enabled = true
+      local virtual_text_config = {
+        source = "if_many",
+        severity = { min = vim.diagnostic.severity.WARN },
+        prefix = function(diag)
+          return require("rulebook").hasDocs(diag) and res.icons.ui.docs or res.icons.ui.square
+        end,
+      }
+
+      vim.diagnostic.config({ virtual_text = virtual_text_config })
+
+      keymap("n", "<leader>sv", function()
+        virtual_text_enabled = not virtual_text_enabled
+        vim.diagnostic.config({
+          virtual_text = virtual_text_enabled and virtual_text_config or false,
+        })
+        print(
+          string.format(
+            "%s %s",
+            "diagnostic virtual text",
+            virtual_text_enabled and "enabled" or "disabled"
+          )
+        )
+      end, "Toggle diagnostic virtual text")
+    end,
   },
 
   -----------------------------------------------------------------------------
