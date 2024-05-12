@@ -95,7 +95,7 @@ M.lsp_servers = {
   -- "rust_analyzer",
   -- "sqlls",
   "svelte",
-  -- "tailwindcss",
+  "tailwindcss",
   "taplo",
   -- "typos_lsp",
   -- "tsserver",

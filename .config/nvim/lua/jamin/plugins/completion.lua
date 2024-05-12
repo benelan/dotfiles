@@ -177,6 +177,12 @@ return {
                 )
               end
             else
+              local has_tw, tw = pcall(require, "tailwind-tools.cmp")
+              if has_tw then
+                local tw_hl_group = tw.lspkind_format(entry, vim_item).kind_hl_group
+                if tw_hl_group then vim_item.kind_hl_group = tw_hl_group end
+              end
+
               vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
 
               -- use LSP kind icons for non-path completion items and specify a fallback icon

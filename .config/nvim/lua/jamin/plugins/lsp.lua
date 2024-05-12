@@ -379,4 +379,14 @@ return {
       }
     end,
   },
+
+  -----------------------------------------------------------------------------
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    event = "LspAttach",
+    cond = vim.fn.executable("tailwindcss-language-server") == 1
+      and vim.tbl_contains(res.lsp_servers, "tailwindcss"),
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = {},
+  },
 }
