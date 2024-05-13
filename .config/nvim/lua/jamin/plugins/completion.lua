@@ -390,30 +390,7 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- Codeium is a free Copilot alternative - https://codeium.com/
-  {
-    "Exafunction/codeium.vim",
-    cond = vim.env.USE_CODEIUM == "1",
-    event = "VimEnter",
-    cmd = "Codeium",
-
-    config = function()
-      local filetypes = {}
-
-      for _, ft in
-        ipairs(vim.tbl_deep_extend("force", res.filetypes.excluded, res.filetypes.writing))
-      do
-        filetypes[ft] = false
-      end
-
-      vim.g.codeium_filetypes = filetypes
-      vim.g.codeium_enabled = true
-      -- vim.g.codeium_tab_fallback = ":nohlsearch | diffupdate | syntax sync fromstart<CR>"
-    end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- "github/copilot.vim", -- official Copilot plugin
+  -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
     "https://github.com/zbirenbaum/copilot.lua", -- alternative written in Lua
     cond = vim.env.USE_COPILOT == "1",
@@ -454,7 +431,7 @@ return {
           },
         },
         suggestion = {
-          enabled = not has_copilot_cmp,
+          enabled = not has_copilot_cmp and not vim.g.codeium_enabled,
           auto_trigger = true,
           keymap = {
             accept = false, -- remapped below to add fallback
@@ -470,6 +447,8 @@ return {
         function()
           if require("copilot.suggestion").is_visible() then
             require("copilot.suggestion").accept()
+          elseif vim.g.codeium_enabled then
+            vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
           else
             vim.api.nvim_feedkeys(
               vim.api.nvim_replace_termcodes("<Tab>", true, false, true),
@@ -482,5 +461,27 @@ return {
         desc = "Copilot accept",
       },
     },
+  },
+
+  -----------------------------------------------------------------------------
+  -- Codeium is a free Copilot alternative - https://codeium.com/
+  {
+    "Exafunction/codeium.vim",
+    cond = vim.env.USE_CODEIUM == "1",
+    event = "VimEnter",
+    cmd = "Codeium",
+
+    config = function()
+      local filetypes = {}
+
+      for _, ft in
+        ipairs(vim.tbl_deep_extend("force", res.filetypes.excluded, res.filetypes.writing))
+      do
+        filetypes[ft] = false
+      end
+
+      vim.g.codeium_filetypes = filetypes
+      vim.g.codeium_enabled = true
+    end,
   },
 }

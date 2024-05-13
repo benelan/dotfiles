@@ -197,7 +197,8 @@ return {
   {
     -- https://platform.openai.com/docs/guides/gpt-best-practices
     "jackMort/ChatGPT.nvim",
-    cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1,
+    cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1
+      and vim.env.USE_COPILOT ~= "1",
     cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstruction", "ChatGPTRun" },
     dependencies = {
       "MunifTanjim/nui.nvim",
@@ -207,20 +208,20 @@ return {
 
     -- stylua: ignore
     keys = {
-      { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>cp", "<cmd>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
-      { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
-      { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
-      { "<leader>cl", "<cmd>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
-      { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
-      { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
-      { "<leader>ct", "<cmd>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
-      { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
-      { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
-      { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
-      { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
-      { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
-      { "<leader>ca", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
+      { "<leader>c<CR>", "<CMD>ChatGPT<CR>", desc = "ChatGPT" },
+      { "<leader>cp", "<CMD>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
+      { "<leader>ci", "<CMD>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
+      { "<leader>cg", "<CMD>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
+      { "<leader>cl", "<CMD>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
+      { "<leader>ck", "<CMD>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
+      { "<leader>cd", "<CMD>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
+      { "<leader>ct", "<CMD>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
+      { "<leader>co", "<CMD>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
+      { "<leader>cs", "<CMD>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
+      { "<leader>cf", "<CMD>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
+      { "<leader>ce", "<CMD>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
+      { "<leader>cr", "<CMD>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
+      { "<leader>ca", "<CMD>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
     },
 
     opts = {
@@ -242,6 +243,113 @@ return {
       settings_window = { setting_sign = string.format(" %s ", res.icons.ui.dot_outline) },
       popup_window = { win_options = { foldcolumn = "0" } },
       system_window = { win_options = { foldcolumn = "0" } },
+    },
+  },
+
+  -----------------------------------------------------------------------------
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    cond = vim.env.USE_COPILOT == "1",
+    branch = "canary",
+    dependencies = { "zbirenbaum/copilot.lua", "nvim-lua/plenary.nvim" },
+    opts = { show_help = false },
+
+    cmd = {
+      "CopilotChat",
+      "CopilotChatCommit",
+      "CopilotChatCommitStaged",
+      "CopilotChatDocs",
+      "CopilotChatExplain",
+      "CopilotChatFix",
+      "CopilotChatFixDiagnostic",
+      "CopilotChatLoad",
+      "CopilotChatOptimize",
+      "CopilotChatReset",
+      "CopilotChatReview",
+      "CopilotChatTests",
+      "CopilotChatToggle",
+    },
+
+    keys = {
+      {
+        "<leader>c<CR>",
+        "<CMD>CopilotChatToggle<CR>",
+        desc = "Toggle vsplit (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ce",
+        "<CMD>CopilotChatExplain<CR>",
+        desc = "Explain code (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ct",
+        "<CMD>CopilotChatTests<CR>",
+        desc = "Generate tests (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>cd",
+        "<CMD>CopilotChatDocs<CR>",
+        desc = "Generate docs (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>cr",
+        "<CMD>CopilotChatReview<CR>",
+        desc = "Review code (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>co",
+        "<CMD>CopilotChatOptimize<CR>",
+        desc = "Optimize code (copilot chat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>cm",
+        "<CMD>CopilotChatCommit<CR>",
+        desc = "Generate commit message (copilot chat)",
+        mode = { "v", "n" },
+      },
+      {
+        "<leader>cM",
+        "<CMD>CopilotChatCommitStaged<CR>",
+        desc = "Generate commit message for staged files (copilot chat)",
+      },
+      { "<leader>cf", "<CMD>CopilotChatFix<CR>", desc = "Fix code (copilot chat)", mode = "v" },
+      {
+        "<leader>cf",
+        "<CMD>CopilotChatFixDiagnostic<CR>",
+        desc = "Fix diagnostic (copilot chat)",
+        mode = "n",
+      },
+      {
+        "<leader>cx",
+        "<CMD>CopilotChatReset<CR>",
+        desc = "Reset history and clear buffer (copilot chat)",
+      },
+      {
+        "<leader>ch",
+        function()
+          if not pcall(require, "telescope") then return end
+          require("CopilotChat.integrations.telescope").pick(
+            require("CopilotChat.actions").help_actions()
+          )
+        end,
+        desc = "Find help actions (copilot chat)",
+      },
+      {
+        "<leader>cp",
+        function()
+          if not pcall(require, "telescope") then return end
+          require("CopilotChat.integrations.telescope").pick(
+            require("CopilotChat.actions").prompt_actions()
+          )
+        end,
+        desc = "Find prompt actions (copilot chat)",
+      },
     },
   },
 }
