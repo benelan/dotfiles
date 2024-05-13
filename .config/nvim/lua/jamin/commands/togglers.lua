@@ -125,7 +125,7 @@ M.ui_toggle = function()
   -- vim.bo.modifiable = ui_disabled
 
   vim.opt.signcolumn = ui_disabled and "yes" or "no"
-  vim.opt.colorcolumn = ui_disabled and 80 or 0
+  vim.opt.colorcolumn = ui_disabled and "80" or "0"
   vim.opt.laststatus = ui_disabled and 3 or 0
   vim.opt.showtabline = ui_disabled and 2 or 0
 
@@ -133,11 +133,6 @@ M.ui_toggle = function()
 
   -- toggle lsp diagnostics
   vim.schedule(function() vim.diagnostic[ui_disabled and "disable" or "enable"](nil) end)
-
-  -- toggle matchup popup
-  if vim.g.loaded_matchup == 1 then
-    vim.g.matchup_matchparen_offscreen = { method = ui_disabled and "popup" or "" }
-  end
 
   -- redraw treesitter context which gets messed up
   if vim.fn.exists(":TSContextToggle") then

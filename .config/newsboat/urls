@@ -260,22 +260,21 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCVeW9qkBjo3zosnqUbG7CFw "yo
 https://www.youtube.com/feeds/videos.xml?channel_id=UC9x0AN7BWHpCDHSm9NiJFJQ "youtube" "network"                           # Network Chuck
 https://www.youtube.com/feeds/videos.xml?channel_id=UCorzANoC3fX9VVefJHM5wtA "youtube" "linux"                             # Nick Janetakis
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA "youtube" "linux"                             # Luke Smith
-https://www.youtube.com/feeds/videos.xml?channel_id=UCfLsPYDDrGaFc9XhfDM-ktA "youtube" "linux"                             # Null Byte
 https://www.youtube.com/feeds/videos.xml?channel_id=UCFsRlOn7gODgv6WUriLrzXg "youtube" "podcast" "software"                # devtools.fm
 https://www.youtube.com/feeds/videos.xml?channel_id=UCSHZKyawb77ixDdsGog4iWA "youtube" "podcast"                           # Lex Fridman
 https://www.youtube.com/feeds/videos.xml?channel_id=UC6zbKG1pqq2do-_oa9QFliA "youtube" "podcast" "security"                # Critical Thinking - Bug Bounty
 https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw "youtube" "math" "compsci"                    # 3Brown1Blue
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2C_jShtL725hvbm1arSV9w "youtube" "misc"                              # CGPGrey
-https://www.youtube.com/feeds/videos.xml?channel_id=UCvQECJukTDE2i6aCoMnS-Vg "youtube" "misc"                              # Big Think
 
 "query:---Podcasts---:tags #\"podcast\""
-https://feed.syntax.fm/ "podcast" "frontend"
-https://changelog.fm/rss "podcast" "software"
-https://podrocket.logrocket.com/rss "podcast" "frontend"
-https://jsparty.fm/rss "podcast" "frontend"
-https://shoptalkshow.com/feed/podcast/ "podcast" "frontend" "design" "css"
-https://topenddevs.com/podcasts/javascript-jabber/rss "podcast" "frontend"
 https://feed.podbean.com/theboundingbox/feed.xml "podcast" "frontend" "gis"
+https://feed.syntax.fm/ "podcast" "frontend"
+https://shoptalkshow.com/feed/podcast/ "podcast" "frontend" "design" "css"
+https://gomakethings.com/feed/podcast.xml "podcast" "frontend"
+https://podrocket.logrocket.com/rss "podcast" "frontend"
+https://changelog.fm/rss "podcast" "software"
+https://jsparty.fm/rss "podcast" "frontend"
+https://topenddevs.com/podcasts/javascript-jabber/rss "podcast" "frontend"
 https://feed.podbean.com/modernweb/feed.xml "podcast" "frontend"
 https://feeds.soundcloud.com/users/soundcloud:users:206137365/sounds.rss "podcast" "frontend"
 https://seradio.libsyn.com/rss "podcast" "software"

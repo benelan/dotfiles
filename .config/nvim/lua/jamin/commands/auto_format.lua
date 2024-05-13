@@ -7,12 +7,7 @@ vim.api.nvim_create_user_command("AutoFormatToggle", function()
   print("Setting autoformatting to: " .. tostring(format_is_enabled))
 end, {})
 
-vim.keymap.set("n", "<leader>sF", "<CMD>AutoFormatToggle<CR>", {
-  buffer = true,
-  silent = true,
-  noremap = true,
-  desc = "Toggle format on save",
-})
+vim.keymap.set("n", "<leader>sf", ":AutoFormatToggle<CR>", { desc = "Toggle format on save" })
 
 local fix_typescript_issues = function(bufnr)
   local ts_client = vim.lsp.get_clients({ bufnr = bufnr, name = "typescript-tools" })[1]

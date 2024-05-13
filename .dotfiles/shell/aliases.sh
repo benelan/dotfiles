@@ -24,30 +24,23 @@ alias f="vifm ."
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
 
-alias v="vim --noplugin  -u $DOTFILES/assets/templates/standalone.vimrc"
 # minimum usable vim options
-alias vmin="vim --no-plugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
-
-# Directory listing/traversal
-_color=$(supports "ls --color" --color -G)
-_time_style=$(supports "ls --time-style=long-iso" --time-style=long-iso)
-_group_dirs=$(supports "ls --group-directories-first" --group-directories-first)
-
-alias ls="ls $_color $_group_dirs"
+alias vmin="vim --noplugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
+alias v="vim --noplugin -u $DOTFILES/assets/standalone.vimrc"
 
 # list all files/dirs, short format, sort by time
-alias l="ls -Art $_color $_group_dirs"
+alias l="ls -Art --color --group-directories-first"
+
+alias ls="ls --color --group-directories-first"
 
 # list all files/dirs, long format, sort by time
-alias ll="ls -hogArt $_color $_time_style $_group_dirs"
+alias ll="ls -hogArt --color --time-style=long-iso --group-directories-first"
 
 # List directories, long format, sort by time
-alias lsd="ls -radgoth */ $_color $_time_style"
+alias lsd="ls -radgoth */ --color --time-style=long-iso"
 
 # Lists hidden files, long format, sort by time
-alias lsh="ls -radgoth .?* $_color $_time_style $_group_dirs"
-
-unset _color _time_style _group_dirs
+alias lsh="ls -radgoth .?* --color --time-style=long-iso --group-directories-first"
 
 # Always enable colored grep/diff/tree
 supports colordiff && alias diff='colordiff'
@@ -100,12 +93,6 @@ alias wthr='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 # Network/System {{{1
 alias vpn="protonvpn-cli"
 
-# Stop after sending count ECHO_REQUEST packets
-alias ping='ping -c 5'
-
-# Pings hostname(s) 30 times in quick succession
-alias fping='ping -c 30 -i.2'
-
 # resume by default
 alias wget='wget -c'
 
@@ -113,10 +100,12 @@ alias wget='wget -c'
 alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
 # get top processes eating memory
-alias psmem='ps auxf | sort -nrk 4 | perl -e "print reverse <>"'
+# shellcheck disable=2142
+alias psmem='ps aux | sort -nrk 4 | awk '\''{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'\'''
 
 # get top processes eating cpu
-alias pscpu='ps auxf | sort -nrk 3 | perl -e "print reverse <>"'
+# shellcheck disable=2142
+alias pscpu='ps aux | sort -nrk 3 | awk '\''{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'\'''
 
 # Web Development {{{1
 if supports chromium-browser; then
@@ -161,7 +150,6 @@ if supports npm; then
 fi
 
 # Linux {{{1
-# Locks the session.
 alias afk="loginctl lock-session"
 
 if supports apt; then
@@ -190,13 +178,6 @@ fi
 
 # Git {{{1
 alias g='git'
-
-# https://github.com/benelan/git-mux
-alias gx="git-mux"
-alias gxt="git-mux task"
-alias gxp="git-mux project"
-
-# Dotfiles {{{1
 alias d='dot'
 
 # toggle git env vars so I can use `git` instead of `dot`
@@ -208,15 +189,17 @@ alias edot="EDITOR=nvim dot edit +\"if !len(argv()) | execute 'Telescope git_fil
 # open Fugitive's status for the current or dotfiles repo
 alias G='if [ "$(git rev-parse --is-inside-work-tree)" = "false" ]; then (cd && dot edit +G +only); else $EDITOR +G +only; fi'
 
-# GitHub {{{1
-# https://cli.github.com/
-# Open Octo with my issues/prs
+# https://github.com/benelan/git-mux
+alias gx="git-mux"
+alias gxt="git-mux task"
+alias gxp="git-mux project"
+
+# Open my issues/prs in neovim - https://github.com/pwntester/octo.nvim
 alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
 
 # Docker {{{1
 if supports docker; then
-
     # display names of running containers
     alias dkls="docker container ls | awk 'NR > 1 {print \$NF}'"
 
@@ -246,5 +229,5 @@ if supports docker; then
 
         unset _cmd
     fi
-    #}}}
+    #}}}2
 fi

@@ -17,6 +17,46 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- jump to alternate and related files defined by project
+  {
+    "tpope/vim-projectionist",
+    lazy = false,
+    keys = {
+      { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
+      { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
+      { "<leader>ad", "<CMD>Edoc<CR>", desc = "Related: doc (projectionist)" },
+      { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },
+      { "<leader>am", "<CMD>Emain<CR>", desc = "Related: main (projectionist)" },
+      { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
+      { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
+      { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
+      { "<leader>a<CR>", "<CMD>Console<CR>", desc = "Console (projectionist)" },
+    },
+    init = function()
+      vim.g.projectionist_heuristics = {
+        -- the '.git' is for worktrees and 'package.json' is for monorepos
+        ["/.git/|.git|package.json"] = { ["README.md"] = { type = "docs" } },
+        ["/.github/workflows/"] = { ["/.github/workflows/*.yml"] = { type = "ci" } },
+        ["package.json"] = { ["package.json"] = { type = "run" } },
+        ["Makefile"] = { ["Makefile"] = { type = "run" } },
+        ["Cargo.toml"] = { ["Cargo.toml"] = { type = "run" } },
+        ["*.go"] = {
+          ["*.go"] = {
+            alternate = "{}_test.go",
+            type = "main",
+            template = { "package {basename|camelcase}" },
+          },
+          ["*_test.go"] = {
+            alternate = "{}.go",
+            type = "test",
+            template = { "package {basename|camelcase}" },
+          },
+        },
+      }
+    end,
+  },
+
+  -----------------------------------------------------------------------------
   -- fuzzy finding
   {
     "nvim-telescope/telescope.nvim",
@@ -115,28 +155,14 @@ return {
         require("telescope.actions").open_qflist(...)
       end
 
-      local function flash_jump(prompt_bufnr)
-        local has_flash, flash = pcall(require, "flash")
-        if has_flash then
-          flash.jump({
-            pattern = "^",
-            label = { after = { 0, 0 } },
-            search = {
-              mode = "search",
-              exclude = {
-                function(win)
-                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
-                end,
-              },
-            },
-            action = function(match)
-              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-              picker:set_selection(match.pos[1] - 1)
-            end,
-          })
-        else
-          return false
-        end
+      local function open_in_trouble(...)
+        local has_trouble, trouble = pcall(require, "trouble.sources.telescope")
+        if has_trouble then return trouble.open(...) end
+      end
+
+      local function add_to_trouble(...)
+        local has_trouble, trouble = pcall(require, "trouble.sources.telescope")
+        if has_trouble then return trouble.add(...) end
       end
 
       -- use the same mappings in insert and normal mode
@@ -155,7 +181,8 @@ return {
         ["<M-v>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = open_in_quickfix,
-        ["<M-s>"] = flash_jump,
+        ["<M-t>"] = open_in_trouble,
+        ["<M-T>"] = add_to_trouble,
       }
 
       return {

@@ -87,34 +87,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  {
-    "tpope/vim-projectionist",
-    lazy = false,
-
-    init = function()
-      vim.g.projectionist_heuristics = {
-        ["/.git/"] = { ["README.md"] = { type = "docs" } },
-        ["/.github/workflows/"] = { ["/.github/workflows/*.yml"] = { type = "ci" } },
-        ["package.json"] = { ["package.json"] = { type = "run" } },
-        ["Makefile"] = { ["Makefile"] = { type = "run" } },
-        ["Cargo.toml"] = { ["Cargo.toml"] = { type = "run" } },
-      }
-    end,
-
-    keys = {
-      { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
-      { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
-      { "<leader>ad", "<CMD>Edocs<CR>", desc = "Related: docs (projectionist)" },
-      { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },
-      { "<leader>am", "<CMD>Emain<CR>", desc = "Related: main (projectionist)" },
-      { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
-      { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
-      { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
-      { "<leader>a<CR>", "<CMD>Console<CR><C-w><C-w>", desc = "Console (projectionist)" },
-    },
-  },
-
-  -----------------------------------------------------------------------------
   -- transparently edit gpg encrypted files
   { "jamessan/vim-gnupg" },
 
@@ -177,18 +149,11 @@ return {
     cmd = { "Sesh" },
     event = "VeryLazy",
     keys = {
+      { "<leader>Ss", desc = "Save cwd session" },
       { "<leader>S.", "<CMD>Sesh<CR>", desc = "Load cwd session" },
       { "<leader>Sp", "<CMD>Sesh!<CR>", desc = "Load previous session" },
-      {
-        "<leader>Sl",
-        function() require("resession").load() end,
-        desc = "Load session",
-      },
-      {
-        "<leader>Sx",
-        function() require("resession").delete() end,
-        desc = "Delete named session",
-      },
+      { "<leader>Sl", function() require("resession").load() end, desc = "Load session" },
+      { "<leader>Sx", function() require("resession").delete() end, desc = "Delete named session" },
       {
         "<leader>Sd",
         function() require("resession").delete(nil, { dir = "dirsession" }) end,
@@ -199,17 +164,14 @@ return {
         function() require("resession").save(vim.fn.input("Session name: "), { attach = false }) end,
         desc = "Save named session",
       },
-      { "<leader>Ss", desc = "Save cwd session" },
     },
 
     opts = {
       extensions = { quickfix = {} },
       buf_filter = function(bufnr)
         local ft = vim.bo[bufnr].filetype
-
         if vim.tbl_contains({ "qf", "help", "man", "netrw" }, ft) then return true end
         if vim.tbl_contains(res.filetypes.excluded, ft) then return false end
-
         return require("resession").default_buf_filter(bufnr)
       end,
     },
