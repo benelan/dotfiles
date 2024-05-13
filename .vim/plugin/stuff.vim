@@ -100,8 +100,8 @@ endfor
 
 "" system clipboard {{{2
 for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
-    execute 'nnoremap ' . char . ' "_' . char
-    execute 'vnoremap ' . char . ' "_' . char
+    execute 'nnoremap ' . char . ' "_' . char 
+    execute 'vnoremap ' . char . ' "_' . char 
 endfor
 
 for char in [ 'y', 'p', 'P' ]

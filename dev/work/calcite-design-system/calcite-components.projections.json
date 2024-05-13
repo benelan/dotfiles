@@ -1,6 +1,6 @@
 {
   "readme.md": {
-    "type": "docs"
+    "type": "doc"
   },
   "*.tsx": {
     "type": "main",
@@ -32,10 +32,10 @@
     "console": "[ -n \"$TMUX\" ] && tmux split-window -d 'npx stencil test --e2e --watch -- {}.e2e'"
   },
   "*.stories.ts": {
-    "type": "docs",
+    "type": "doc",
     "alternate": "{}.tsx",
     "related": ["{}.e2e.ts", "{}.scss", "{dirname}/src/demos/{}.html"],
-    "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 5 'npm run docs:preview'"
+    "console": "[ -n \"$TMUX\" ] && tmux split-window -dl 5 'npm run screenshot-tests:preview'"
   },
   "src/demos/*.html": {
     "type": "example",

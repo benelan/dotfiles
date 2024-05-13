@@ -36,20 +36,6 @@ goog() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## use $EDITOR to edit text inside a pipeline                 {{{
-
-# Write all data to a temporary file, edit that file, then
-# print it again.
-# https://www.uninformativ.de/git/bin-pub/file/vipe.html
-vipe() {
-    tmp=$(mktemp)
-    trap 'rm -f "$tmp"' 0
-    cat >"$tmp"
-    ${EDITOR:-vim} "$tmp" </dev/tty >/dev/tty
-    cat "$tmp"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## make one or more directories and cd into the last one      {{{
 
 mcd() { mkdir -p -- "$@" && cd -- "$_" || return 1; }
@@ -69,7 +55,7 @@ vman() { nvim "+hide Man $*"; }
 #        I've been doing no special chars for landing pages
 #        and separating with "-" when it's more specific, e.g.
 #        mf https://martinfowler.com/tags/
-#        mf-flacid https://martinfowler.com/bliki/FlaccidScrum.html
+#        mf-flaccid https://martinfowler.com/bliki/FlaccidScrum.html
 # url  - the URL to open, can also be a file URI
 # tags - colon-separated list of tags, none is "::"
 #        https://github.com/mickael-menu/zk/blob/main/docs/tags.md
@@ -295,44 +281,6 @@ cht() {
 # Git                                                                   {{{
 # --------------------------------------------------------------------- {|}
 
-## checkout a branch based on fuzzy search term               {{{
-
-# If installed, use fuzzy finder (fzf) to pick when there are multiple matches.
-# Otherwise, checkout the most recently committed branch that matches the query
-# git (find|fuzzy) checkout
-fgco() {
-    # [arg1] search term
-    # [arg2..n] options to pass fzf
-    # [usage] to checkout "benelan/2807-fix-slot-doc":
-    # $ gfco slot
-    # [usage] same thing with additional fzf options, see `man fzf`
-    # $ gfco slot --exact --reverse --header='Checkout Branch' --height=10
-
-    SEARCH_TERM="$1"
-    if supports fzf; then
-        PICK_BRANCH_CMD='fzf --no-sort"'
-        [ "$#" -gt 0 ] && shift
-    else
-        # Choose the first branch if fzf isn't installed
-        # The branches are sorted by commit date,
-        # so this is usually what I want
-        PICK_BRANCH_CMD="head -n 1"
-        # ignore fzf options if provided
-        shift $#
-    fi
-
-    # remote and local branches sorted by commit date
-    git for-each-ref refs/remotes refs/heads \
-        --sort=-committerdate --format='%(refname:short)' |
-        # filter by search term, remove 'origin/' prefix from refs, and dedupe
-        awk '/'"$SEARCH_TERM"'/{gsub("^origin/(HEAD)?","")};!x[$0]++' |
-        # pick -> checkout branch
-        $PICK_BRANCH_CMD "$@" | xargs git checkout
-
-    unset PICK_BRANCH_CMD SEARCH_TERM
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## delete squash merged branches                              {{{
 
 # from https://github.com/not-an-aardvark/git-delete-squashed

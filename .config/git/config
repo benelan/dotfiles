@@ -397,7 +397,7 @@
             --bind='alt-o:become(git checkout {})'
 
     fst = !FZF_DEFAULT_COMMAND='git -c color.ui=always stash list \
-            --pretty=\"%<(15)%Cgreen%cr %<($((COLUMNS - 28)))%Creset%gs %C(white dim)%h\"' \
+            --pretty=\"%Cgreen%cr  %Creset%gs  %C(white dim)%h\"' \
         fzf --ansi --no-sort --no-multi --no-hscroll \
             --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
             --preview='git -c color.diff=always show {-1}' \
