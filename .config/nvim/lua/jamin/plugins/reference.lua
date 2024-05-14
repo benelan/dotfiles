@@ -194,55 +194,103 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- GPT plugin (requires OpenAI API key)
   {
-    -- https://platform.openai.com/docs/guides/gpt-best-practices
-    "jackMort/ChatGPT.nvim",
+    "robitx/gp.nvim",
     cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1
       and vim.env.USE_COPILOT ~= "1",
-    cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstruction", "ChatGPTRun" },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
+    cmd = { "GpAgent", "GpChatFinder", "GpChatNew", "GpChatPaste", "GpChatToggle" },
 
-    -- stylua: ignore
+    --stylua: ignore
     keys = {
-      { "<leader>c<CR>", "<CMD>ChatGPT<CR>", desc = "ChatGPT" },
-      { "<leader>cp", "<CMD>ChatGPTActAs<CR>", desc =  "ChatGPT select prompt" },
-      { "<leader>ci", "<CMD>ChatGPTEditWithInstruction<CR>", desc = "ChatGPT edit with instruction", mode = { "n", "v" } },
-      { "<leader>cg", "<CMD>ChatGPTRun grammar_correction<CR>", desc = "ChatGPT grammar correction", mode = { "n", "v" } },
-      { "<leader>cl", "<CMD>ChatGPTRun translate<CR>", desc = "ChatGPT translate", mode = { "n", "v" } },
-      { "<leader>ck", "<CMD>ChatGPTRun keywords<CR>", desc = "ChatGPT keywords", mode = { "n", "v" } },
-      { "<leader>cd", "<CMD>ChatGPTRun docstring<CR>", desc = "ChatGPT docstring", mode = { "n", "v" } },
-      { "<leader>ct", "<CMD>ChatGPTRun add_tests<CR>", desc = "ChatGPT add tests", mode = { "n", "v" } },
-      { "<leader>co", "<CMD>ChatGPTRun optimize_code<CR>", desc = "ChatGPT optimize code", mode = { "n", "v" } },
-      { "<leader>cs", "<CMD>ChatGPTRun summarize<CR>", desc = "ChatGPT summarize", mode = { "n", "v" } },
-      { "<leader>cf", "<CMD>ChatGPTRun fix_bugs<CR>", desc = "ChatGPT fix bugs", mode = { "n", "v" } },
-      { "<leader>ce", "<CMD>ChatGPTRun explain_code<CR>", desc = "ChatGPT explain code", mode = { "n", "v" } },
-      { "<leader>cr", "<CMD>ChatGPTRun roxygen_edit<CR>", desc = "ChatGPT roxygen edit", mode = { "n", "v" } },
-      { "<leader>ca", "<CMD>ChatGPTRun code_readability_analysis<CR>", desc = "ChatGPT code readability analysis", mode = { "n", "v" } },
+      { "<leader>c", ":GpAgent<CR>", desc = "Print agent (chatgpt)" },
+      { "<leader>c<Tab>", ":GpNextAgent<CR>", desc = "Next agent (chatgpt)" },
+      { "<leader>c/", ":GpChatFinder<CR>", desc = "Find session (chatgpt)" },
+      { "<leader>c<CR>", ":GpChatToggle<CR>", desc = "Toggle (chatgpt)", mode = { "n", "v" } },
+      { "<leader>cp", ":GpChatPaste<CR>", desc = "Paste to recent (chatgpt)", mode = { "n", "v" } },
+      { "<leader>ca", ":GpAppend<CR>", desc = "Append response (chatgpt)", mode = { "n", "v" } },
+      { "<leader>ci", ":GpImplement<CR>", desc = "Implement code (chatgpt)", mode = { "n", "v" } },
+      { "<leader>ce", ":GpExplain<CR>", desc = "Explain code (chatgpt)", mode = { "n", "v" } },
+      { "<leader>cr", ":GpReview<CR>", desc = "Review code (chatgpt)", mode = { "n", "v" } },
+      { "<leader>ct", ":GpTests<CR>", desc = "Generate tests (chatgpt)", mode = { "n", "v" } },
+      { "<leader>cd", ":GpDocs<CR>", desc = "Generate docs (chatgpt)", mode = { "n", "v" } },
+      { "<leader>co", ":GpOptimize<CR>", desc = "Optimize code (chatgpt)", mode = { "n", "v" } },
+      { "<leader>cf", ":GpFix<CR>", desc = "Fix code (chatgpt)", mode = { "n", "v" } },
     },
 
     opts = {
-      api_key_cmd = string.format("gpg --decrypt %s/cache/openai.txt.gpg", vim.env.DOTFILES),
-      show_quickfixes_cmd = "copen",
-      chat = {
-        welcome_message = res.art.bender_dots,
-        question_sign = res.icons.ui.speech_bubble,
-        answer_sign = res.icons.ui.select,
-        border_left_sign = res.icons.ui.fill_solid,
-        border_right_sign = res.icons.ui.fill_solid,
-        sessions_window = {
-          inactive_sign = string.format(" %s ", res.icons.ui.box),
-          active_sign = string.format(" %s ", res.icons.ui.box_checked),
-          current_line_sign = res.icons.ui.collapsed,
-        },
+      openai_api_key = {
+        "gpg",
+        "--decrypt",
+        vim.fs.normalize(vim.env.DOTFILES .. "/cache/openai.txt.gpg"),
       },
-      popup_input = { prompt = string.format(" %s ", res.icons.ui.prompt) },
-      settings_window = { setting_sign = string.format(" %s ", res.icons.ui.dot_outline) },
-      popup_window = { win_options = { foldcolumn = "0" } },
-      system_window = { win_options = { foldcolumn = "0" } },
+      chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<M-CR>" },
+      chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<M-BS>" },
+      chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<M-Space>" },
+      chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<M-c>" },
+      hooks = {
+        Explain = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "Please respond by explaining the code, assuming I am a senior software engineer."
+          local agent = gp.get_chat_agent()
+          gp.Prompt(
+            params,
+            gp.Target.vnew("markdown"),
+            nil,
+            agent.model,
+            template,
+            agent.system_prompt
+          )
+        end,
+
+        Tests = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "Please implement tests."
+          local agent = gp.get_command_agent()
+          gp.Prompt(params, gp.Target.vnew, nil, agent.model, template, agent.system_prompt)
+        end,
+
+        Fix = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "There is a problem in this code. Rewrite the code to show it with the bug fixed."
+          local agent = gp.get_command_agent()
+          gp.Prompt(params, gp.Target.vnew, nil, agent.model, template, agent.system_prompt)
+        end,
+
+        Optimize = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "Please optimize the code to improve performance and readablilty."
+          local agent = gp.get_command_agent()
+          gp.Prompt(params, gp.Target.rewrite, nil, agent.model, template, agent.system_prompt)
+        end,
+
+        Docs = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "Please respond with a docstring comment to prepend. Pay attention to adding parameter and return types (if applicable) and mention any errors that might be raised or returned, depending on the language."
+          local agent = gp.get_command_agent()
+          gp.Prompt(params, gp.Target.prepend, nil, agent.model, template, agent.system_prompt)
+        end,
+
+        Review = function(gp, params)
+          local template = "I have the following code from {{filename}}:\n\n"
+            .. "```{{filetype}}\n{{selection}}\n```\n\n"
+            .. "Please analyze for code smells and suggest improvements in markdown format."
+          local agent = gp.get_chat_agent()
+          gp.Prompt(
+            params,
+            gp.Target.vnew("markdown"),
+            nil,
+            agent.model,
+            template,
+            agent.system_prompt
+          )
+        end,
+      },
     },
   },
 
@@ -252,7 +300,13 @@ return {
     cond = vim.env.USE_COPILOT == "1",
     branch = "canary",
     dependencies = { "zbirenbaum/copilot.lua", "nvim-lua/plenary.nvim" },
-    opts = { show_help = false },
+    opts = {
+      show_help = false,
+      mappings = {
+        submit_prompt = { normal = "<M-CR>", insert = "<M-CR>" },
+        reset = { normal = "<M-BS>", insert = "<M-BS>" },
+      },
+    },
 
     cmd = {
       "CopilotChat",
@@ -341,7 +395,7 @@ return {
         desc = "Find help actions (copilot chat)",
       },
       {
-        "<leader>cp",
+        "<leader>c/",
         function()
           if not pcall(require, "telescope") then return end
           require("CopilotChat.integrations.telescope").pick(
