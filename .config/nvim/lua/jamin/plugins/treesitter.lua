@@ -17,11 +17,48 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- more text objects
+  { "nvim-treesitter/nvim-treesitter-textobjects", lazy = true },
+
+  -----------------------------------------------------------------------------
+  -- shows the current scope
   {
-    "nvim-treesitter/nvim-treesitter", -- syntax tree parser/highlighter engine
+    "nvim-treesitter/nvim-treesitter-context",
+    lazy = true,
+    opts = {
+      multiline_threshold = 1,
+      max_lines = 6,
+      mode = "cursor",
+      -- separator = "─",
+    },
+    config = function(_, opts)
+      require("treesitter-context").setup(opts)
+
+      vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
+    end,
+    keys = {
+      {
+        "<leader>T",
+        function() require("treesitter-context").go_to_context() end,
+        desc = "Treesitter context",
+      },
+      {
+        "<leader>stc",
+        function() require("treesitter-context").toggle() end,
+        desc = "Toggle treesitter context",
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
+  -- syntax tree parser/highlighter engine
+  {
+    "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     event = "BufReadPost",
-
+    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
     init = function(plugin)
       -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
       -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
@@ -33,45 +70,14 @@ return {
     end,
 
     dependencies = {
-      { "nvim-treesitter/nvim-treesitter-textobjects" }, -- more text objects
-
       {
-        "JoosepAlviste/nvim-ts-context-commentstring", -- sets commentstring
+        "JoosepAlviste/nvim-ts-context-commentstring",
         init = function() vim.g.skip_ts_context_commentstring_module = true end,
         opts = {},
       },
-
-      {
-        "nvim-treesitter/nvim-treesitter-context", -- shows the current scope
-        opts = {
-          multiline_threshold = 1,
-          max_lines = 6,
-          mode = "cursor",
-          -- separator = "─",
-        },
-        config = function(_, opts)
-          require("treesitter-context").setup(opts)
-
-          vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
-          vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
-          vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
-        end,
-        keys = {
-          {
-            "<leader>Tc",
-            function() require("treesitter-context").go_to_context() end,
-            desc = "Treesitter context",
-          },
-          {
-            "<leader>stc",
-            function() require("treesitter-context").toggle() end,
-            desc = "Toggle treesitter context",
-          },
-        },
-      },
     },
 
-    config = function()
+    opts = function()
       local swap_next, swap_prev = (function()
         local n, p = {}, {}
         local swap_objects = {
@@ -89,7 +95,7 @@ return {
         return n, p
       end)()
 
-      require("nvim-treesitter.configs").setup({
+      return {
         ensure_installed = res.treesitter_parsers,
         indent = { enable = true },
         autotag = { enable = true },
@@ -183,7 +189,18 @@ return {
             swap_previous = swap_prev,
           },
         },
-      })
+      }
+    end,
+
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+      vim.schedule(
+        function()
+          require("lazy").load({
+            plugins = { "nvim-treesitter-textobjects", "nvim-treesitter-context" },
+          })
+        end
+      )
     end,
   },
 }
