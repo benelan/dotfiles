@@ -176,7 +176,7 @@ if supports task; then
     [ -d "$NOTES" ] && alias ts='(cd && git sync-changes "$NOTES" ".task/" "chore(task): sync")'
 fi
 
-# Git {{{1
+# Git/Dot {{{1
 alias g='git'
 alias d='dot'
 
