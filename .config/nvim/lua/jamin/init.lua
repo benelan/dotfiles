@@ -43,26 +43,15 @@ _G.keymap = function(mode, lhs, rhs, desc)
   vim.keymap.set(mode, lhs, rhs, { silent = true, noremap = true, desc = desc or nil })
 end
 
-_G.R = function(name) require("plenary.reload").reload_module(name) end
-
 -------------------------------------------------------------------------------
 ----> Modules
 -------------------------------------------------------------------------------
 
 require("jamin.options")
 require("jamin.keymaps")
-require("jamin.commands")
+require("jamin.autocommands")
 
--- Neovim embedded in VSCode
-if vim.g.vscode then
-  vim.cmd([[
-    source ~/.vim/plugin/stuff.vim
-    source ~/.vim/plugin/operators.vim
-    source ~/.vim/plugin/system_open_handler.vim
-  ]])
-
-  return -- skip loading neovim plugins
-end
+require("jamin.rooter").setup()
 
 -------------------------------------------------------------------------------
 ----> Plugins
@@ -84,6 +73,7 @@ vim.opt.rtp:prepend(lazypath) ---@diagnostic disable-line: undefined-field
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
+  defaults = { lazy = true },
   change_detection = { notify = false },
   checker = { enabled = vim.g.use_devicons, notify = false },
   dev = { path = vim.env.LIB, fallback = true },

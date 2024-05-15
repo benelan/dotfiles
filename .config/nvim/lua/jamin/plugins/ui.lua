@@ -1,5 +1,3 @@
-local res = require("jamin.resources")
-
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
@@ -80,10 +78,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- filetype icons
   {
-    "nvim-tree/nvim-web-devicons", -- filetype icons
-    -- enabled = false,
-    lazy = true,
+    "nvim-tree/nvim-web-devicons",
     cond = vim.g.use_devicons == true,
     opts = {
       default = true,
@@ -95,134 +92,13 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- best useless plugin ever
   {
-    "Eandrju/cellular-automaton.nvim", -- best useless plugin ever
-    -- enabled = false,
+    "Eandrju/cellular-automaton.nvim",
     cmd = "CellularAutomaton",
     keys = {
       { "<leader>!", "<CMD>CellularAutomaton make_it_rain<CR>", desc = "Make it rain" },
       { "<leader>~", "<CMD>CellularAutomaton game_of_life<CR>", desc = "Game of life" },
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  {
-    "j-hui/fidget.nvim",
-    -- enabled = false,
-    event = "LspAttach",
-    keys = {
-      { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View message history (fidget)" },
-      { "<leader>vd", "<CMD>Fidget clear_history<CR>", desc = "Delete message history (fidget)" },
-      { "<leader>vx", "<CMD>Fidget clear<CR>", desc = "Clear displayed notifications (fidget)" },
-      { "<leader>vn", "<CMD>Fidget suppress<CR>", desc = "Toggle notification display (fidget)" },
-      { "<leader>vp", "<CMD>Fidget lsp_suppress<CR>", desc = "Toggle LSP progress (fidget)" },
-    },
-    opts = {
-      progress = {
-        ignore = { "null-ls" },
-        display = { done_icon = res.icons.ui.checkmark },
-      },
-      notification = {
-        override_vim_notify = true,
-        window = { winblend = 0, x_padding = 0 },
-      },
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  {
-    "jinh0/eyeliner.nvim", -- highlights the best character to f/F/t/T per word
-    -- enabled = false,
-    event = "CursorHold",
-    opts = { highlight_on_key = false, dim = true },
-    config = function(_, opts)
-      require("eyeliner").setup(opts)
-      vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
-    end,
-  },
-
-  -----------------------------------------------------------------------------
-  {
-    "folke/trouble.nvim", -- lsp/diagnsotic lists
-    cmd = "Trouble",
-    branch = "dev",
-    keys = {
-      {
-        "<leader>xx",
-        "<CMD>Trouble diagnostics toggle<CR>",
-        desc = "Diagnostics (trouble)",
-      },
-      {
-        "<leader>xb",
-        "<CMD>Trouble diagnostics toggle filter.buf=0<CR>",
-        desc = "Buffer diagnostics (trouble)",
-      },
-      {
-        "<leader>xs",
-        "<CMD>Trouble symbols toggle focus=false<CR>",
-        desc = "Symbols (trouble)",
-      },
-      {
-        "<leader>xl",
-        "<CMD>Trouble lsp toggle focus=false win.position=right<CR>",
-        desc = "LSP definitions/references/etc (trouble)",
-      },
-      {
-        "<leader>xL",
-        "<CMD>Trouble loclist toggle<CR>",
-        desc = "Location list (trouble)",
-      },
-      {
-        "<leader>xQ",
-        "<CMD>Trouble qflist toggle<CR>",
-        desc = "Quickfix list (trouble)",
-      },
-      {
-        "]d",
-        function()
-          if require("trouble").is_open({ mode = "diagnostics" }) then
-            ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").next({ mode = "diagnostics", jump = true })
-          else
-            vim.diagnostic.goto_next({ float = true })
-          end
-        end,
-        desc = "Next diagnostic (trouble)",
-      },
-      {
-        "[d",
-        function()
-          if require("trouble").is_open({ mode = "diagnostics" }) then
-            ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").prev({ mode = "diagnostics", jump = true })
-          else
-            vim.diagnostic.goto_prev({ float = true })
-          end
-        end,
-        desc = "Previous diagnostic (trouble)",
-      },
-    },
-
-    opts = {
-      keys = { H = "fold_close", J = "next", K = "prev", L = "fold_open" },
-      modes = {
-        cascade = {
-          mode = "diagnostics",
-          filter = function(items)
-            local severity = vim.diagnostic.severity.HINT
-            for _, item in ipairs(items) do
-              severity = math.min(severity, item.severity)
-            end
-            return vim.tbl_filter(function(item) return item.severity == severity end, items)
-          end,
-        },
-      },
-      icons = {
-        indent = { fold_open = res.icons.ui.expanded, fold_closed = res.icons.ui.collapsed },
-        folder_closed = res.icons.ui.folder_closed,
-        folder_open = res.icons.ui.folder_open,
-        kinds = res.icons.lsp_kind,
-      },
     },
   },
 }

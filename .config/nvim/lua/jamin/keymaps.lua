@@ -25,7 +25,7 @@ keymap("n", "n", "nzzzv", "Next search result")
 keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- Clear search highlight and escape
-keymap({ "i", "n" }, "<esc>", "<CMD>noh<CR><esc>", "Clear hls and escape")
+keymap({ "i", "n" }, "<ESC>", "<CMD>noh<CR><esc>", "Clear hls and escape")
 
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<", "," }
@@ -37,20 +37,6 @@ local undo_after_chars = { "?", ".", "!", ";", "]", ")", "}", ">" }
 for _, char in ipairs(undo_after_chars) do
   keymap("i", char, char .. "<C-g>u")
 end
-
--- Add empty lines before and after cursor line
-keymap(
-  "n",
-  "[<space>",
-  "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
-  "Put empty line above"
-)
-keymap(
-  "n",
-  "]<space>",
-  "<CMD>call append(line('.'), repeat([''], v:count1))<CR>",
-  "Put empty line below"
-)
 
 -- Move Lines
 keymap("n", "<M-j>", "<CMD>m .+1<CR>==", "Move line down")
@@ -233,17 +219,29 @@ keymap("n", "<leader>sth", function()
   end
 end, "Toggle treesitter highlighting")
 
--------------------------------------------------------------------------------
-----> VSC*de
--------------------------------------------------------------------------------
 
-if vim.g.vscode then
-  -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary
-  keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
-  keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
+---Toggles diagnostics for the current buffer, or globally if called with a bang
+---@param event table The event that triggered the command. If event.bang is true
+local function diagnostic_toggle(event)
+  local vars = event.bang and vim.g or vim.b
+  vars.diagnostics_disabled = not vars.diagnostics_disabled
 
-  keymap("n", "gr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
-  keymap("n", "gR", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
+  local cmd = vars.diagnostics_disabled and "disable" or "enable"
 
-  keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
+  vim.api.nvim_echo({
+    {
+      string.format("%s diagnostics %sd", event.bang and "Global" or "Buffer", cmd),
+    },
+  }, false, {})
+
+  vim.schedule(function() vim.diagnostic[cmd](event.bang and nil or 0) end)
 end
+
+vim.api.nvim_create_user_command("DiagnosticToggle", diagnostic_toggle, {
+  bang = true,
+  desc = "Toggles diagnostics for the current buffer, or globally if called with a bang",
+})
+
+keymap("n", "<leader>sd", "<CMD>DiagnosticToggle<CR>", "Toggle buffer diagnostics")
+keymap("n", "<leader>sD", "<CMD>DiagnosticToggle!<CR>", "Toggle global diagnostics")
+

@@ -3,57 +3,28 @@ local M = {}
 M.filetypes = {
   excluded = {
     "-",
-    "Outline",
-    "OverseerList",
-    "OversserForm",
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
-    "Trouble",
-    "chatgpt-input",
     "checkhealth",
     "cmp_menu",
-    "copilot-chat",
-    "dap-preview",
-    "dap-repl",
-    "dap-terminal",
-    "dapui_breakpoints",
-    "dapui_console",
-    "dapui_hover",
-    "dapui_scopes",
-    "dapui_stacks",
-    "dapui_watches",
-    "floggraph",
     "fugitive",
     "fugitiveblame",
-    "harpoon",
     "help",
     "lazy",
     "lspinfo",
     "man",
     "mason",
-    "neotest-output",
-    "neotest-output-panel",
-    "neotest-summary",
     "netrw",
-    "octo",
     "qf",
     "undotree",
   },
   writing = {
-    "asciidoc",
-    "changelog",
-    "chatgpt-input",
-    "copilot-chat",
     "gitcommit",
     "mail",
     "markdown",
     "octo",
     "org",
-    "pdf",
-    "rmd",
-    "rrst",
-    "rst",
     "text",
   },
   webdev = {
@@ -104,7 +75,6 @@ M.lsp_servers = {
   "vimls",
   "volar",
   "yamlls",
-  "zk",
 }
 
 M.mason_packages = {
@@ -365,51 +335,6 @@ M.icons.test = {
   failed = i("󰅚 ", M.icons.ui.x),
   unknown = i("󰘥 ", M.icons.ui.question_mark),
   running_animated = M.icons.progress,
-}
-
-M.art = {
-  bender_ascii = [[
-          _
-         ( )
-          H
-          H
-         _H_
-      .-'-.-'-.
-     /         \
-    |           |
-    |   .-------'._     ,--------------------.
-    |  / /  '.' '. \    | Hey lazy dev, want |
-    |  \ \ @   @ / /    |   me to replace    |
-    |   '---------'     |    all humans?     |
-    |  .'-+-+-+|        ,--------------------'
-    |  `.-+-+-+|    ---'                      
-    |    """""" |
-    '-.__   __.-'
-         """
-  ]],
-  bender_dots = [[
-                  ⠘⡀ Hey⠀lazy dev, want ⡜
-                   ⠑⡀⠀ me to replace   ⡜
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠐⣵    ⠈⠢⢄⠀all humans? ⣀⠴⠊
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡀   ⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⡀⠤⠄⠒⠈   
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⡇    ⠀⠘⣀⠄⠊⠁
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠚⠒⠊⣲⠤⣀
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠔⠈⠀⠈⠉⠉⠀⠀⠀⠉⢆
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠎⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇
- ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸
- ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⡠⠀⠒⠀⠀⠀⠐⠒⠒⠈⠐⠠⡀
- ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠐⠀⠀⡔⠈⠙⠛⠻⢿⠿⠛⠉⠻⣷⡕⡄
- ⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⢠⠀⠀⡀⠰⠆⠀⠀⢈⠰⠶⠀⢠⣿⡿⡇
- ⠀⠀⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀⠑⠠⠬⠅⠐⠒⠒⠓⠲⢶⠶⠯⠉⠂⠁
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⣀⣀⠀⢀⠀⠀⡀⠀⣀⠸
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⣌⠁⠓⠒⢺⠒⠒⡗⠒⡇
- ⠀⠀⠀⠀⠀⠀⠀⠀⢀⡇⠀⠈⠫⠽⠀⢸⠂⠀⠇⠩⠓⡄
- ⠀⠀⠀⠀⠀⢀⡠⠂⠁⠈⠐⠂⠤⠄⠀⠀⠀⠤⠤⠄⠒⠉⠐⢄⡀
- ⠀⠀⠀⠀⡔⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣄
- ⠀⠀⢀⠤⠯⠭⣒⠂⠤⠄⢀⣀⣀⣀⣀⠀⢀⣀⣀⡀⠀⠤⠐⠊⠁⢸⢢⠀
- ⠀⢰⣁⠤⢤⡀⠀⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀⠀⡄⠈⡧⡀
- ⡠⠋⠀⠀⢀⠇⠀⢸⠀⢰⠋⠀⠒⠒⠒⠒⠒⠒⠂⠉⠉⠀⠀⢸⠀⡇⢰⡿⠛⠆
- ]],
 }
 
 return M

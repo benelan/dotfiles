@@ -84,24 +84,21 @@ return {
       end, "Toggle diagnostic virtual text")
 
       -------------------------------------------------------------------------------
-      ----> Server setup
+      ----> LSP - server setup
 
       for _, server in pairs(res.lsp_servers) do
-        -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
-        if not vim.tbl_contains({ "zk", "tsserver" }, server) then
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
-          local server_opts = vim.tbl_deep_extend(
-            "force",
-            { capabilities = capabilities },
-            has_user_opts and user_opts or {}
-          )
+        local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
+        local server_opts = vim.tbl_deep_extend(
+          "force",
+          { capabilities = capabilities },
+          has_user_opts and user_opts or {}
+        )
 
-          lspconfig[server].setup(server_opts)
-        end
+        lspconfig[server].setup(server_opts)
       end
 
       -------------------------------------------------------------------------------
-      ----> On attach
+      ----> LSP - on attach
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {}),
@@ -177,21 +174,11 @@ return {
             bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
 
-          -- -- setup codelens if supported by language server
-          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
-          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
-          --     buffer = args.buf,
-          --     callback = function() vim.lsp.codelens.refresh() end,
-          --   })
-          --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-          -- end
-
           -- disable formatting for some LSP servers in favor of better standalone programs
           -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
           if
             vim.tbl_contains(
-              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
+              { "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
               client.name
             )
           then
@@ -199,7 +186,7 @@ return {
             client.server_capabilities.documentRangeFormattingProvider = false
             client.server_capabilities.documentHighlightProvider = false
           elseif client.supports_method("textDocument/formatting") then
-            -- if the LSP server has formatting capabilities, use it for formatexpr
+            -- use the LSP server's formatting capabilities for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
             bufmap(
               { "n", "v" },
@@ -209,23 +196,15 @@ return {
             )
           end
 
-          -- workaround for gopls not supporting semanticTokensProvider
-          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          if
-            client.name == "gopls" and not client.supports_method("textDocument/semanticTokens")
-          then
-            local semantic = client.config.capabilities.textDocument.semanticTokens
-            if semantic then
-              client.server_capabilities.semanticTokensProvider = {
-                full = true,
-                range = true,
-                legend = {
-                  tokenTypes = semantic.tokenTypes,
-                  tokenModifiers = semantic.tokenModifiers,
-                },
-              }
-            end
-          end
+          -- -- setup codelens if supported by language server
+          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
+          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
+          --     buffer = args.buf,
+          --     callback = function() vim.lsp.codelens.refresh() end,
+          --   })
+          --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
+          -- end
         end,
       })
     end,
@@ -235,7 +214,6 @@ return {
   {
     -- Installer/manager for language servers, linters, formatters, and debuggers
     "williamboman/mason.nvim",
-    lazy = true,
     build = ":MasonUpdate",
     keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
     opts = {
@@ -267,7 +245,6 @@ return {
   -- integrates mason and lspconfig
   {
     "williamboman/mason-lspconfig.nvim",
-    lazy = true,
     dependencies = { "williamboman/mason.nvim" },
     build = ":MasonUpdate",
     opts = {
@@ -357,36 +334,7 @@ return {
   -- JSON and YAML schema store for autocompletion and validation
   {
     "b0o/SchemaStore.nvim",
-    lazy = true,
     cond = vim.tbl_contains(res.lsp_servers, "yamlls")
       or vim.tbl_contains(res.lsp_servers, "jsonls"),
-  },
-
-  -----------------------------------------------------------------------------
-  -- Lua implementation of typescript-language-server
-  {
-    "pmizio/typescript-tools.nvim",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = function()
-      local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
-      return {
-        settings = {
-          expose_as_code_action = "all",
-          tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
-          -- jsx_close_tag = { enable = true },
-        },
-      }
-    end,
-  },
-
-  -----------------------------------------------------------------------------
-  {
-    "luckasRanarison/tailwind-tools.nvim",
-    event = "LspAttach",
-    cond = vim.fn.executable("tailwindcss-language-server") == 1
-      and vim.tbl_contains(res.lsp_servers, "tailwindcss"),
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = {},
   },
 }
