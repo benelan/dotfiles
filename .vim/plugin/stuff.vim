@@ -345,8 +345,20 @@ if has("autocmd")
             \ |   exe "normal! g`\""
             \ | endif
 
+        autocmd FileType * setlocal formatoptions-=o
+
+        autocmd FileType qf,help,man
+                    \ set nobuflisted
+                    \ | nnoremap <silent> <buffer> q :q<CR>
+
         autocmd QuickFixCmdPost [^l]* nested cwindow
         autocmd QuickFixCmdPost l* nested lwindow
+
+        autocmd BufEnter term://* startinsert
+        autocmd BufLeave term://* stopinsert
+
+        "" use skeleton when creating new html file
+        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
       augroup END
 
     "" set global marks by filetype when leaving buffers {{{2
@@ -424,34 +436,6 @@ if has("autocmd")
         autocmd BufLeave,BufWinLeave,BufFilePost
                     \ \(//:\)\@<!$NOTES/**.md
                     \ normal! mN
-    augroup END
-
-    "" filetype-specific options {{{2
-    augroup jamin_filetype_options
-        autocmd!
-        autocmd FileType * setlocal formatoptions-=o
-
-        autocmd FileType qf,help,man
-                    \ set nobuflisted
-                    \ | nnoremap <silent> <buffer> q :q<CR>
-    augroup END
-
-    "" automatically toggle some options on enter/leave {{{2
-    augroup jamin_toggle_options
-        autocmd!
-        "  autocmd BufEnter,FocusGained,WinEnter * if &number | set relativenumber | endif
-        "  autocmd BufLeave,FocusLost,WinLeave * if &number | set norelativenumber | endif
-
-        autocmd BufEnter term://* startinsert
-        autocmd BufLeave term://* stopinsert
-    augroup END
-
-    "" use skeletons when creating specific new files {{{2
-    augroup jamin_skeletons
-        autocmd!
-        autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
-        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
-        autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
     augroup END
 
     "" set makeprg or use a builtin compiler when possible {{{2
