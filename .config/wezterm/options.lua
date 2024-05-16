@@ -1,7 +1,10 @@
-local wezterm = require("wezterm")
+---@diagnostic disable: inject-field
+---@type Wezterm
+local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
 local utils = require("utils")
 local M = {}
 
+---@param config Config
 function M.apply_config(config)
   if string.match(wezterm.target_triple, "windows") then
     config.default_domain = "WSL:Ubuntu-22.04"
@@ -15,15 +18,16 @@ function M.apply_config(config)
   -- https://wezfurlong.org/wezterm/config/lua/config/term
   config.term = "wezterm" -- xterm-256color
   config.default_cwd = wezterm.home_dir
-  config.audible_bell = "Disabled"
   config.animation_fps = 1
   config.cursor_blink_rate = 0
   config.check_for_updates = false
   config.scrollback_lines = 10000
 
+  config.audible_bell = "Disabled" ---@diagnostic disable-line: assign-type-mismatch
+  config.window_close_confirmation = "NeverPrompt" ---@diagnostic disable-line: assign-type-mismatch
+
   config.clean_exit_codes = { 130 }
   config.exit_behavior = "Close"
-  config.window_close_confirmation = "NeverPrompt"
 
   config.font_size = 15
   config.font = wezterm.font_with_fallback({ "Iosevka Nerd Font" })
