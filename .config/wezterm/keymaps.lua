@@ -1,6 +1,10 @@
-local wezterm = require("wezterm")
+---@type Wezterm
+local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
 local utils = require("utils")
+
+package.path = string.format("%s;%s/dev/personal/?/lua/?.lua", package.path, wezterm.home_dir)
 local git_mux = require("git-mux")
+
 local act = wezterm.action
 local M = {}
 
@@ -17,9 +21,8 @@ function M.apply_to_config(config)
     {
       key = "p",
       mods = "LEADER|CTRL",
-      action = wezterm.action_callback(function(win, pane)
-        -- local new_pane = pane:split({ direction = "Right", top_level = true })
-        local new_tab, new_pane, new_win = win:mux_window():spawn_tab({})
+      action = wezterm.action_callback(function(win)
+        local _, new_pane = win:mux_window():spawn_tab({})
         wezterm.GLOBAL.git_mux_pane_id = new_pane:pane_id()
         new_pane:send_text("git-mux project\n")
       end),
@@ -33,7 +36,7 @@ function M.apply_to_config(config)
       key = "h",
       mods = "LEADER|CTRL",
       action = wezterm.action_callback(
-        function(window, pane) git_mux.project(window, pane, { wezterm.home_dir }) end
+        function(window, pane) git_mux.project(window, pane, { path = wezterm.home_dir }) end
       ),
     },
     {
@@ -47,7 +50,7 @@ function M.apply_to_config(config)
       key = "c",
       mods = "LEADER|CTRL",
       action = wezterm.action_callback(
-        function(window, pane) git_mux.project(window, pane, { os.getenv("CALCITE") }) end
+        function(window, pane) git_mux.project(window, pane, { path = os.getenv("CALCITE") }) end
       ),
     },
 

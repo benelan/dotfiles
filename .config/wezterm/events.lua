@@ -1,8 +1,9 @@
-local wezterm = require("wezterm")
+---@type Wezterm
+local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
 local M = {}
 
 M.setup = function()
-  wezterm.on("update-status", function(window, pane)
+  wezterm.on("update-status", function(window)
     local mode = window:active_key_table() or ""
     if mode ~= "" then mode = string.format("[%s]", mode:sub(1, 1):upper()) end
 
