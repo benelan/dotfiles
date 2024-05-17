@@ -1,8 +1,9 @@
 local res = require("jamin.resources")
 
 return {
+  -- split/join treesitter nodes to multiple/single line(s)
   {
-    "Wansmer/treesj", -- split/join treesitter nodes to multiple/single line(s)
+    "Wansmer/treesj",
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<CMD>TSJToggle<CR>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
@@ -10,8 +11,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- auto pair tags in html/jsx/vue/etc
   {
-    "windwp/nvim-ts-autotag", -- auto pair tags in html/jsx/vue/etc
+    "windwp/nvim-ts-autotag",
     dependencies = "nvim-treesitter/nvim-treesitter",
     ft = { "astro", "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml" },
   },
@@ -31,13 +33,14 @@ return {
       mode = "cursor",
       -- separator = "─",
     },
+
     config = function(_, opts)
       require("treesitter-context").setup(opts)
-
       vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
     end,
+
     keys = {
       {
         "<leader>T",
@@ -57,14 +60,11 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     event = "BufReadPost",
-    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    -- https://github.com/LazyVim/LazyVim/blob/ae6d8f1a34fff49f9f1abf9fdd8a559c95b85cf3/lua/lazyvim/plugins/treesitter.lua#L10-L19
+    lazy = vim.fn.argc(-1) == 0,
     init = function(plugin)
-      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
-      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
-      -- no longer trigger the **nvim-treeitter** module to be loaded in time.
-      -- Luckily, the only thins that those plugins need are the custom queries, which we make available
-      -- during startup.
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
@@ -73,7 +73,17 @@ return {
       {
         "JoosepAlviste/nvim-ts-context-commentstring",
         init = function() vim.g.skip_ts_context_commentstring_module = true end,
-        opts = {},
+        opts = { enable_autocmd = false },
+        config = function(_, opts)
+          require("ts_context_commentstring").setup(opts)
+          local get_option = vim.filetype.get_option
+          ---@diagnostic disable-next-line: duplicate-set-field
+          vim.filetype.get_option = function(filetype, option)
+            return option == "commentstring"
+                and require("ts_context_commentstring.internal").calculate_commentstring()
+              or get_option(filetype, option)
+          end
+        end,
       },
     },
 
@@ -82,7 +92,7 @@ return {
         local n, p = {}, {}
         local swap_objects = {
           a = "@parameter.inner",
-          f = "@function.outer",
+          m = "@function.outer",
           e = "@element",
           v = "@variable",
         }

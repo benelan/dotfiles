@@ -266,19 +266,30 @@ return {
 
     opts = {
       enable_builtin = true,
+      default_merge_method = "squash",
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
+      issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       file_panel = { use_icons = vim.g.use_devicons },
-      -- right_bubble_delimiter = res.icons.ui.block,
-      -- left_bubble_delimiter = res.icons.ui.block,
-      reaction_viewer_hint_icon = res.icons.ui.circle,
-      timeline_marker = res.icons.ui.prompt,
-      user_icon = vim.g.use_devicons and res.icons.lsp_kind.Copilot or res.icons.ui.speech_bubble,
+      outdated_icon = not vim.g.use_devicons and res.icons.ui.clock or nil,
+      resolved_icon = not vim.g.use_devicons and res.icons.ui.checkmark or nil,
+      reaction_viewer_hint_icon = not vim.g.use_devicons and res.icons.ui.circle or nil,
+      user_icon = not vim.g.use_devicons and res.icons.ui.speech_bubble or nil,
+      timeline_marker = not vim.g.use_devicons and res.icons.ui.prompt or nil,
+      right_bubble_delimiter = not vim.g.use_devicons and res.icons.ui.block or nil,
+      left_bubble_delimiter = not vim.g.use_devicons and res.icons.ui.block or nil,
       picker_config = {
-        mappings = { open_in_browser = { lhs = "<C-o>" }, checkout_pr = { lhs = "<M-o>" } },
+        mappings = {
+          open_in_browser = { lhs = "<C-o>" },
+          checkout_pr = { lhs = "<M-o>" },
+        },
       },
       mappings = {
-        issue = { open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" } },
-        pull_requests = { open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" } },
+        issue = {
+          open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },
+        },
+        pull_requests = {
+          open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" },
+        },
       },
     },
 
@@ -301,26 +312,26 @@ return {
 
           vim.keymap.set(
             "n",
-            "<leader>t<CR>",
+            "<leader>tr",
             "<CMD>Octo thread resolve<CR>",
             { desc = "Resolve pull request review thread (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
-            "<leader>t<Backspace>",
+            "<leader>tu",
             "<CMD>Octo thread unresolve<CR>",
             { desc = "Unresolve pull request review thread (octo)", silent = true, buffer = true }
           )
 
           vim.keymap.set(
             "n",
-            "<leader>vp",
+            "<leader>vo",
             "<CMD>Octo review comments<CR>",
             { desc = "Show pending PR review comments (octo)", silent = true, buffer = true }
           )
 
-          -- Add issue number and user completion to octo buffers
+          -- Add issue number and username completion to octo buffers
           vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true })
           vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true })
         end,
@@ -338,10 +349,10 @@ return {
       { "<leader>os", "<CMD>Octo search<CR>", desc = "Search (octo)" },
 
       -- Issues
-      { "<leader>oi<CR>", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
+      { "<leader>oic", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
       { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
-      { "<leader>oia", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
-      { "<leader>oic", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
+      { "<leader>oila", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
+      { "<leader>oilc", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
 
       -- Pull requests
       {
@@ -356,10 +367,10 @@ return {
         end,
         desc = "Open pull request for current branch (octo)",
       },
-      { "<leader>op<CR>", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
+      { "<leader>opc", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opa", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
-      { "<leader>opc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
+      { "<leader>opla", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
+      { "<leader>oplc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
 
       -- My repos and gists
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },

@@ -19,9 +19,12 @@ local function get_lsp_root(buf, ignore)
   if not next(clients) then return end
 
   for _, client in pairs(clients) do
+    ---@diagnostic disable-next-line: undefined-field
+    local filetypes = client.config.filetypes
+
     if
-      client.config.filetypes ---@diagnostic disable-line: undefined-field
-      and vim.tbl_contains(client.config.filetypes, vim.bo[buf].ft) ---@diagnostic disable-line: undefined-field
+      filetypes
+      and vim.tbl_contains(filetypes, vim.bo[buf].ft)
       and not vim.tbl_contains(ignore, client.name)
       and vim.fn.isdirectory(client.config.root_dir)
     then

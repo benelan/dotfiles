@@ -1,6 +1,4 @@
----@diagnostic disable: inject-field
----@type Wezterm
-local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
+local wezterm = require("wezterm") --[[@as Wezterm]]
 local utils = require("utils")
 local M = {}
 
@@ -23,8 +21,8 @@ function M.apply_config(config)
   config.check_for_updates = false
   config.scrollback_lines = 10000
 
-  config.audible_bell = "Disabled" ---@diagnostic disable-line: assign-type-mismatch
-  config.window_close_confirmation = "NeverPrompt" ---@diagnostic disable-line: assign-type-mismatch
+  config.audible_bell = "Disabled"
+  config.window_close_confirmation = "NeverPrompt"
 
   config.clean_exit_codes = { 130 }
   config.exit_behavior = "Close"

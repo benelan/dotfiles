@@ -26,6 +26,16 @@
 # Aliases in ~/.config/git/config work with `dot` too, e.g., `dot cm` is:
 #   $ git --git-dir="$HOME/.git/" --work-tree="$HOME" commit -m
 
+# Utility functions                                                     {{{
+# --------------------------------------------------------------------- {|}
+
+_has() { command -v "$1" >/dev/null 2>&1; }
+
+_dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
+
+_update_modules() { _dot submodule update --recursive --rebase --remote "$@"; }
+
+# --------------------------------------------------------------------- }}}
 # Setup dotfiles                                                        {{{
 # --------------------------------------------------------------------- {|}
 setup_dotfiles() {
@@ -54,24 +64,22 @@ setup_dotfiles() {
 
     git clone --bare "$repo_url" "$HOME/.git"
 
-    dot() { /usr/bin/git --git-dir="$HOME/.git/" --work-tree="$HOME" "$@"; }
-
     # Make sure fetching works correctly for all branches
-    dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    _dot config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
     # Prevents showing everything in $HOME when using status/diff.
     # Dotfiles need to be manually added for them to show up, e.g.
     # $ dot add ~/.npmrc
-    dot config status.showUntrackedFiles no
+    _dot config status.showUntrackedFiles no
 
-    dot branch --set-upstream-to=origin/master master
+    _dot branch --set-upstream-to=origin/master master
 
-    if dot checkout >/dev/null 2>&1; then
+    if _dot checkout >/dev/null 2>&1; then
         printf "\nChecked out dotfiles\n" >&2
     else
         printf "\n> Backing up conflicting dotfiles to %s\n" "$backup_dir" >&2
         # Get the list of files that need to be backed up
-        files=$(dot checkout 2>&1 | grep -e "^\s")
+        files=$(_dot checkout 2>&1 | grep -e "^\s")
         printf "%s\n" "$files" >&2
 
         dirs=$(
@@ -93,7 +101,7 @@ setup_dotfiles() {
         # Checkout the dotfiles now that there are no conflicts.
         # Move the files from the backup dir to $HOME to undo the script:
         # $ mv ~/.dotfiles-backup/* ~/
-        if ! dot checkout; then
+        if ! _dot checkout; then
             printf "\nError: unable to setup the dotfiles\n" >&2
             exit 1
         else
@@ -110,7 +118,7 @@ setup_dotfiles() {
     # Must install libs before they can be pwn'd
     printf "\n> Installing git submodules\n\n" >&2
     pushd ~
-    dot submodule update --init --recursive
+    _dot submodule update --init --recursive
     popd
 
     bash -l
@@ -331,7 +339,7 @@ install_packages_npm() {
 
 INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
 install_packages_vim() {
-    cd && update_modules .vim
+    cd && _update_modules .vim
 
     vim +"$(
         find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
@@ -649,7 +657,7 @@ install_script_git-extras() {
 ## Install CLI apt packages                                    {{{
 
 ## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
-INSTALL_UBUNTU_APT_DOC="Install essential apt packages"
+INSTALL_UBUNTU_APT_CORE_DOC="Install essential apt packages"
 install_ubuntu_apt-core() {
     ! _has apt-get || ! [ -r "$DEPS_DIR/apt-core" ] && return
 
@@ -826,11 +834,11 @@ install_ubuntu_signal() {
 INSTALL_UBUNTU_WEZTERM_DOC="Install WezTerm terminal emulator"
 install_ubuntu_wezterm() {
     deb="wezterm-nightly.Ubuntu22.04.deb"
-
     curl -Lo "$CACHE_DIR/$deb" \
         "https://github.com/wez/wezterm/releases/download/nightly/$deb"
 
-    sudo apt-get install -qq "$CACHE_DIR/$deb" || true
+    sudo apt-get install -qq "${CACHE_DIR:?}/${deb}" || true
+    rm -f "${CACHE_DIR:?}/${deb}"
     unset deb
 
     # https://wezfurlong.org/wezterm/config/lua/config/term.html
@@ -840,6 +848,57 @@ install_ubuntu_wezterm() {
         tic -x -o ~/.terminfo "$tempfile" &&
         rm "$tempfile"
 }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install rg/fd/bat/delta                                     {{{
+
+_install_rust_cli_deb_package() {
+    [ -z "$2" ] && echo "Missing args: <binary> <repo>" >&2 && return
+    binary="$1"
+    repo="$2"
+
+    version=$(basename "$(
+        curl -sw "%{redirect_url}" "https://github.com/${repo}/releases/latest"
+    )")
+
+    # remove leading 'v'
+    version="${version#v}"
+
+    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$version" ]; then
+        echo "The latest version of $binary ($version) is already installed" >&2
+        return
+    fi
+
+    deb="${binary}_${version}_$(dpkg --print-architecture).deb"
+    curl -Lo "${CACHE_DIR:?}/${deb}" \
+        "https://github.com/${repo}/releases/latest/download/${deb}"
+
+    sudo apt-get install -qq "${CACHE_DIR:?}/${deb}"
+    exit_code="$?"
+
+    rm -f "${CACHE_DIR:?}/${deb}"
+    unset deb
+    return "$exit_code"
+}
+
+## https://github.com/BurntSushi/ripgrep#installation
+INSTALL_UBUNTU_RG_DOC="Install blazingly fast grep replacement"
+install_ubuntu_rg() {
+    if [ $(dpkg --print-architecture) != "amd64" ]; then
+        echo "ripgrep only provides a deb package for amd64" >&2
+    else
+        _install_rust_cli_deb_package rg BurntSushi/ripgrep
+    fi
+}
+
+INSTALL_UBUNTU_FD_DOC="Install blazingly fast find replacement"
+install_ubuntu_fd() { _install_rust_cli_deb_package fd sharkdp/fd; }
+
+INSTALL_UBUNTU_BAT_DOC="Install cat replacement with syntax highlighting"
+install_ubuntu_bat() { _install_rust_cli_deb_package bat sharkdp/bat; }
+
+INSTALL_UBUNTU_DELTA_DOC="Install git diff pager with syntax highlighting"
+install_ubuntu_delta() { _install_rust_cli_deb_package delta dandavison/delta; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Taskwarrior TUI                                     {{{
@@ -1089,20 +1148,25 @@ install_theme_wallpaper() {
 
 INSTALL_THEME_GTK_DOC="Install gruvbox GTK theme for application windows"
 install_theme_gtk() {
+    if [ "$(uname)" != "Linux" ]; then
+        echo "Unsupported operating system for GTK theme: $(uname)" >&2
+        return
+    fi
+
     THEMES_DIR="$HOME/.themes"
     mkdir -p "$THEMES_DIR"
 
-    # download gruvbox gnome theme
+    # download gruvbox gtk theme pack
     git -C "$CACHE_DIR" clone --depth=1 \
         https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
 
-    # move to ~/.themes dir for gtk-3.0
-    cp -r "$CACHE_DIR/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL" "$THEMES_DIR"
+    # move the dark, borderless theme variant to ~/.themes dir for gtk-3.0
+    mv "$CACHE_DIR/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL" "$THEMES_DIR"
 
     # symlink the gtk-4.0 theme files
     ln --force --symbolic "$THEMES_DIR"/Gruvbox-Dark-BL/gtk-4.0/* ~/.config/gtk-4.0/
 
-    # remove the repo because it's yuuge
+    # remove the repo because it's yuuge (there are a lot of variants)
     rm -rf "$CACHE_DIR/Gruvbox-GTK-Theme"
 }
 
@@ -1112,8 +1176,8 @@ install_theme_gtk() {
 INSTALL_THEME_ICONS_DOC="Install gruvbox icons pack"
 install_theme_icons() {
     if [ "$(uname)" != "Linux" ]; then
-        echo "Unsupported operating system: $(uname)"
-        return 0
+        echo "Unsupported operating system for icons: $(uname)" >&2
+        return
     fi
 
     ICONS_DIR="$HOME/.local/share/icons"
@@ -1132,20 +1196,17 @@ install_theme_icons() {
     rm -rf "$ICONS_DIR/Gruvbox-Plus-Dark"
 
     # move icons to the proper location
-    cp -r "$CACHE_DIR/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark" "$ICONS_DIR"
-
-    # remove the repo because it's yuuge
+    mv "$CACHE_DIR/gruvbox-plus-icon-pack/Gruvbox-Plus-Dark" "$ICONS_DIR"
     rm -rf "$CACHE_DIR/gruvbox-plus-icon-pack"
 
     # download and install flatbed cursor if it doesn't exist
     if ! [ -d "$ICONS_DIR/FlatbedCursors-Orange" ]; then
-        cursors="FlatbedCursors-0.5.2.tar.bz2"
+        cursors="FlatbedCursors-latest.tar.bz2"
 
-        curl -Lo "$cursors" "https://limitland.gitlab.io/flatbedcursors/$cursors"
-        extract "$cursors"
+        curl -LO https://limitland.gitlab.io/flatbedcursors/$cursors
+        extract $cursors
 
-        mkdir -p "$ICONS_DIR/FlatbedCursors-Orange/"
-        cp -r ./FlatbedCursors-Orange/* "$ICONS_DIR/FlatbedCursors-Orange/"
+        mv ./FlatbedCursors-Orange "$ICONS_DIR"
         rm -rf ./FlatbedCursors*
 
         unset cursors
@@ -1215,18 +1276,43 @@ install_theme_rofi-config() {
 # --------------------------------------------------------------------- {|}
 # Who wants some random binaries downloadeded from the internet? 🙋
 
-## Install vifm                                                {{{
+## Utility function for downloading binaries compiled by rust  {{{
 
-INSTALL_MISC_VIFM_DOC="Install vim-like CLI file manager"
-install_misc_vifm() {
-    curl -Lo "$BIN_DIR/vifm" \
-        "https://github.com/vifm/vifm/releases/latest/download/vifm-$(
-            basename $(
-                curl -s -w "%{redirect_url}" \
-                    https://github.com/vifm/vifm/releases/latest
-            )
-        )-x86_64.AppImage"
-    chmod +x "$BIN_DIR/vifm"
+_download_rust_cli_binary() {
+    [ -z "$2" ] && echo "Missing args: <binary> <repo>" >&2 && return
+    binary="$1"
+    repo="$2"
+
+    version=$(basename "$(
+        curl -sw "%{redirect_url}" "https://github.com/${repo}/releases/latest"
+    )")
+
+    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$version" ]; then
+        echo "The latest version of $binary ($version) is already installed" >&2
+        return
+    fi
+
+    cpu="$(uname -m)"
+    kernel="$(uname -s)"
+
+    if [ "$kernel" = "Linux" ]; then
+        if [ "$cpu" = "x86_64" ]; then
+            machine="$cpu-unknown-linux-musl"
+        else
+            machine="$cpu-unknown-linux-gnu"
+        fi
+    elif [ "$kernel" = "Darwin" ]; then
+        machine="$cpu-apple-darwin"
+    else
+        echo "Unsupported kernel: ${kernel:-unknown}" >&2
+        return
+    fi
+
+    mkdir -p "${CACHE_DIR:?}/$binary"
+    curl -L "https://github.com/${repo}/releases/latest/download/$(basename "$repo")-${version}-${machine}.tar.gz" |
+        tar -C "${CACHE_DIR:?}/$binary" --overwrite --strip-components=1 -xzf -
+
+    unset machine cpu kernel version binary repo
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1234,23 +1320,15 @@ install_misc_vifm() {
 
 INSTALL_MISC_RG_DOC="Install blazingly fast grep replacement"
 install_misc_rg() {
-    arch="aarch64-unknown-linux-gnu"
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" \
-            https://github.com/BurntSushi/ripgrep/releases/latest
-    )")
+    _has dpkg && install_ubuntu_rg && return
+    _download_rust_cli_binary rg BurntSushi/ripgrep
 
-    mkdir -p "$CACHE_DIR/rg"
-    curl -L "https://github.com/BurntSushi/ripgrep/releases/download/${version}/ripgrep-${version}-${arch}.tar.gz" |
-        tar -C "$CACHE_DIR/rg" --overwrite --strip-components=1 -xzf -
+    mv "${CACHE_DIR:?}/rg/rg" "${BIN_DIR:?}/rg"
+    mv "${CACHE_DIR:?}/rg/doc/rg.1" "${MAN_DIR:?}/man1/rg.1"
+    mv "${CACHE_DIR:?}/rg/complete/rg.bash" "${COMPLETIONS_DIR:?}/rg"
 
-    mv "$CACHE_DIR/rg/rg" "$BIN_DIR/rg"
-    mv "$CACHE_DIR/rg/doc/rg.1" "$MAN_DIR/man1/rg.1"
-    mv "$CACHE_DIR/rg/complete/rg.bash" "$COMPLETIONS_DIR/rg"
-
-    chmod +x "$BIN_DIR/rg"
+    chmod +x "${BIN_DIR:?}/rg"
     rm -rf "${CACHE_DIR:?}/rg"
-    unset arch version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1258,22 +1336,18 @@ install_misc_rg() {
 
 INSTALL_MISC_FD_DOC="Install blazingly fast find replacement"
 install_misc_fd() {
-    arch="aarch64-unknown-linux-gnu"
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" https://github.com/sharkdp/fd/releases/latest
-    )")
+    if _has dpkg && install_ubuntu_fd; then
+        return
+    fi
+    _download_rust_cli_binary fd sharkdp/fd
 
-    mkdir -p "$CACHE_DIR/fd"
-    curl -L "https://github.com/sharkdp/fd/releases/download/${version}/fd-${version}-${arch}.tar.gz" |
-        tar -C "$CACHE_DIR/fd" --overwrite --strip-components=1 -xzf -
+    mv "${CACHE_DIR:?}/fd/fd" "${BIN_DIR:?}/fd"
+    mv "${CACHE_DIR:?}/fd/fd.1" "${MAN_DIR:?}/man1/fd.1"
+    mv "${CACHE_DIR:?}/fd/autocomplete/fd.bash" "${COMPLETIONS_DIR:?}/fd"
 
-    mv "$CACHE_DIR/fd/fd" "$BIN_DIR/fd"
-    mv "$CACHE_DIR/fd/fd.1" "$MAN_DIR/man1/fd.1"
-    mv "$CACHE_DIR/fd/autocomplete/fd.bash" "$COMPLETIONS_DIR/fd"
-
-    chmod +x "$BIN_DIR/fd"
+    chmod +x "${BIN_DIR:?}/fd"
     rm -rf "${CACHE_DIR:?}/fd"
-    unset arch version
+    unset machine cpu kernel version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1281,22 +1355,16 @@ install_misc_fd() {
 
 INSTALL_MISC_BAT_DOC="Install cat replacement with syntax highlighting"
 install_misc_bat() {
-    arch="aarch64-unknown-linux-gnu"
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" https://github.com/sharkdp/bat/releases/latest
-    )")
+    _has dpkg && install_ubuntu_bat && return
+    _download_rust_cli_binary bat sharkdp/bat
 
-    mkdir -p "$CACHE_DIR/bat"
-    curl -L "https://github.com/sharkdp/bat/releases/download/${version}/bat-${version}-${arch}.tar.gz" |
-        tar -C "$CACHE_DIR/bat" --overwrite --strip-components=1 -xzf -
+    mv "${CACHE_DIR:?}/bat/bat" "${BIN_DIR:?}/bat"
+    mv "${CACHE_DIR:?}/bat/bat.1" "${MAN_DIR:?}/man1/bat.1"
+    mv "${CACHE_DIR:?}/bat/autocomplete/bat.bash" "${COMPLETIONS_DIR:?}/bat"
 
-    mv "$CACHE_DIR/bat/bat" "$BIN_DIR/bat"
-    mv "$CACHE_DIR/bat/bat.1" "$MAN_DIR/man1/bat.1"
-    mv "$CACHE_DIR/bat/autocomplete/bat.bash" "$COMPLETIONS_DIR/bat"
-
-    chmod +x "$BIN_DIR/bat"
+    chmod +x "${BIN_DIR:?}/bat"
     rm -rf "${CACHE_DIR:?}/bat"
-    unset arch version
+    unset machine cpu kernel version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1304,19 +1372,13 @@ install_misc_bat() {
 
 INSTALL_MISC_DELTA_DOC="Install git diff pager with syntax highlighting"
 install_misc_delta() {
-    arch="aarch64-unknown-linux-gnu"
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" https://github.com/dandavison/delta/releases/latest
-    )")
+    _has dpkg && install_ubuntu_delta && return
+    _download_rust_cli_binary delta dandavison/delta
 
-    mkdir -p "$CACHE_DIR/delta"
-    curl -L "https://github.com/dandavison/delta/releases/download/${version}/delta-${version}-${arch}.tar.gz" |
-        tar -C "$CACHE_DIR/delta" --overwrite --strip-components=1 -xzf -
-
-    mv "$CACHE_DIR/delta/delta" "$BIN_DIR/delta"
-    chmod +x "$BIN_DIR/delta"
+    mv "${CACHE_DIR:?}/delta/delta" "${BIN_DIR:?}/delta"
+    chmod +x "${BIN_DIR:?}/delta"
     rm -rf "${CACHE_DIR:?}/delta"
-    unset arch version
+    unset machine cpu kernel version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1324,19 +1386,28 @@ install_misc_delta() {
 
 INSTALL_MISC_CLIPCAT_DOC="Install clipboard manager with rofi/fzf integration"
 install_misc_clipcat() {
-    # options are `x86_64-unknown-linux-musl` or `aarch64-unknown-linux-musl`
-    arch="x86_64-unknown-linux-musl"
     version=$(basename "$(
         curl -sw "%{redirect_url}" \
             https://github.com/xrelkd/clipcat/releases/latest
     )")
 
-    curl -L "https://github.com/xrelkd/clipcat/releases/download/${version}/clipcat-${version}-${arch}.tar.gz" |
+    cpu="$(uname -m)"
+    kernel="$(uname -s)"
+
+    # shellcheck disable=2235
+    if [ "$kernel" != "Linux" ] || (
+        [ "$cpu" != "x86_64" ] && [ "$cpu" != "aarch64" ]
+    ); then
+        echo "Only supports Linux with x86_64 or aarch64" >&2
+        return
+    fi
+
+    curl -L "https://github.com/xrelkd/clipcat/releases/download/${version}/clipcat-${version}-$cpu-unknown-linux-musl.tar.gz" |
         tar -C "$BIN_DIR" --overwrite -xzf -
 
     rm -f ./README.md ./LICENSE
     chmod +x "$BIN_DIR/clipcat*"
-    unset arch version
+    unset cpu kernel version
 
     clipcatctl completions bash >"$COMPLETIONS_DIR/clipcatctl"
     clipcat-menu completions bash >"$COMPLETIONS_DIR/clipcat-menu"
@@ -1401,6 +1472,25 @@ install_misc_broot() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install vifm                                                {{{
+
+INSTALL_MISC_VIFM_DOC="Install vim-like CLI file manager"
+install_misc_vifm() {
+    if [ $(uname -m) != "x86_64" ]; then
+        echo "vifm only provides an AppImage package for x86_64" >&2
+        return
+    fi
+
+    version=$(basename $(curl -sw "%{redirect_url}" \
+        https://github.com/vifm/vifm/releases/latest))
+
+    curl -Lo "$BIN_DIR/vifm" \
+        "https://github.com/vifm/vifm/releases/latest/download/vifm-$version-x86_64.AppImage"
+
+    chmod +x "$BIN_DIR/vifm"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install neovim                                              {{{
 
 ## https://github.com/neovim/neovim/releases
@@ -1418,10 +1508,10 @@ install_misc_neovim() {
                 fzf --no-multi
         )"
     else
-        version="${1:-nightly}"
+        version="${1:-stable}"
     fi
 
-    echo "Installing NVIM $version"
+    echo "Installing NVIM $version" >&2
     curl -LO "https://github.com/neovim/neovim/releases/download/$version/nvim.appimage"
     chmod +x nvim.appimage
 
@@ -1491,14 +1581,6 @@ install_misc_yt-dlp() {
 # Git submodule install/build functions                                 {{{
 # --------------------------------------------------------------------- {|}
 
-## Update git submodules                                       {{{
-
-update_modules() {
-    /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" \
-        submodule update --recursive --rebase --remote "$@"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install fzf                                                 {{{
 
 INSTALL_BUILD_FZF_DOC="Build and install fuzzy finder from source"
@@ -1512,6 +1594,7 @@ install_build_fzf() {
         git describe --tags "$(git rev-list --tags --max-count=1)"
     )"
 
+    GOFLAGS="$GOFLAGS -buildvcs=false"
     make
     make install
     chmod +x "$LIB/fzf/bin/fzf"
@@ -1527,8 +1610,7 @@ install_build_neovim() {
 
     git fetch --all --tags --force
     git reset --hard origin/master
-    git checkout nightly
-    # git checkout stable
+    git checkout stable
 
     sudo make CMAKE_BUILD_TYPE=Release
     sudo make install
@@ -1537,7 +1619,7 @@ install_build_neovim() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install clipmenu                                            {{{
 
-INSTALL_BUILD_CLIPMENU_DOC="Install simpler clipboard manager with rofi/fzf integration"
+INSTALL_BUILD_CLIPMENU_DOC="Install simple clipboard manager with rofi/fzf integration"
 install_build_clipmenu() {
     if [ -d "$LIB/clipnotify" ]; then
         git -C "$LIB/clipnotify" pull
@@ -1551,14 +1633,10 @@ install_build_clipmenu() {
         git clone -b master https://github.com/cdown/clipmenu.git "$LIB/clipmenu"
     fi
 
-    pushd "$LIB/clipnotify" >/dev/null
-    make install PREFIX=~/.local
-    rm ./clipnotify
-    popd >/dev/null
+    make -C "$LIB/clipnotify" install PREFIX=~/.local
+    make -C "$LIB/clipmenu" install PREFIX=~/.local
 
-    pushd "$LIB/clipmenu" >/dev/null
-    make install PREFIX=~/.local
-    popd >/dev/null
+    rm "$LIB/clipnotify/clipnotify"
 
     # replace the bin path in the service since we changed PREFIX
     sed -i "s|/usr/bin/clipmenud|/home/$USER/.local/bin/clipmenud|g" \
@@ -1583,12 +1661,16 @@ install_build_clipmenu() {
 ## Ubuntu-specific packages                                    {{{
 
 ubuntu_installs() {
-    ! _has apt-get && echo "Not on an Ubuntu-based system" && return 1
+    ! _has apt-get && echo "Not on an Debian-based system" >&2 && return
 
     ## CLI install scripts (suitable for servers)
     install_ubuntu_apt-core
     install_ubuntu_apt-network
     install_ubuntu_docker
+    install_ubuntu_rg
+    install_ubuntu_fd
+    install_ubuntu_bat
+    install_ubuntu_delta
     install_ubuntu_gh
     install_ubuntu_git
     install_ubuntu_glow
@@ -1681,8 +1763,8 @@ packages_installs() {
 ## Git submodules and local builds                             {{{
 
 build_installs() {
+    _update_modules
     install_ubuntu_apt-build
-    update_modules
     install_build_neovim || true
     install_build_fzf || true
     install_build_clipmenu || true
@@ -1703,7 +1785,7 @@ all_installs() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
-# Parse arguments and execute functions                                 {{{
+# Dependency help messages, argument parsing, and function execution    {{{
 # --------------------------------------------------------------------- {|}
 
 ## Dependency installation help message                        {{{
@@ -1749,7 +1831,7 @@ EOF
 
 deps_command_help() {
     [ -z "$1" ] && deps_help
-    printf "option -%s requires one of the following arguments:\n\n" "${1}"
+    printf "option -%s requires one of the following arguments:\n\n" "${1}" >&2
     case $1 in
         b) list_dependency_options install_build_ ;;
         u) list_dependency_options install_ubuntu_ ;;
@@ -1784,7 +1866,7 @@ install_dependency() {
     if _has "$cmd"; then
         "$cmd"
     else
-        printf "error: invalid $1 dependency: %s\n" "$2"
+        printf "Error: invalid $1 dependency \"%s\"\n" "$2" >&2
         deps_command_help "${1:0:1}"
     fi
 }
@@ -1836,7 +1918,7 @@ deps_parse_flags() {
             I) i3_installs ;;
             h) deps_help ;;
             :) deps_command_help "${OPTARG}" ;;
-            *) printf "invalid option: -%s\nsee usage info: -h\n" "${OPTARG}" ;;
+            *) deps_help "invalid option \"-${OPTARG}\"" ;;
         esac
     done
 
@@ -1844,7 +1926,10 @@ deps_parse_flags() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Determine whether to install deps or pass args to git       {{{
+
+# --------------------------------------------------------------------- }}}
+## Entry function for the dot command                                   {{{
+# --------------------------------------------------------------------- {|}
 
 main() {
     case $1 in
@@ -1853,6 +1938,9 @@ main() {
 
         # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
+
+        # support for sudo
+        sudo) shift && sudo "$@" ;;
 
         # creates env vars in (n)vim so git plugins work with the bare dotfiles repo
         edit)
@@ -1863,20 +1951,16 @@ main() {
                 --cmd 'let $GIT_DIR = expand("~/.git")'
             ;;
 
-        # prevent usage of git commands 'clean' and 'clear' (from git-extras)
-        clea*) echo "Don't delete your home directory, dumbass" && return 1 ;;
+        # prevent usage of `git clean` and 'git clear' (from git-extras)
+        clea*) echo "Don't delete your home directory, dumbass" >&2 && exit 1 ;;
 
-        # change the 'all' git alias to not add untracked files
-        all) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" add --update ;;
+        # override my 'all' git alias to not add untracked files
+        all) _dot add --update ;;
 
         # all other commands are passed directly to git
-        *) /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@" ;;
+        *) _dot "$@" ;;
     esac
 }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
-_has() { command -v "$1" >/dev/null 2>&1; }
 
 main "$@"
 

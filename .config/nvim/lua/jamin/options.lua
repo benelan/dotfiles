@@ -32,7 +32,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
--- vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
+vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
@@ -66,7 +66,6 @@ if has_res then
 end
 
 if vim.fn.executable("rg") == 1 then
-  vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --smart-case --glob '!{.git,node_modules}'"
   vim.opt.grepformat = {
     "%f:%l:%c:%m",
     "%-G%.%#: No such file or directory (os error 2)",

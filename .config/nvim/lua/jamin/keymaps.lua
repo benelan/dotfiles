@@ -60,17 +60,6 @@ keymap("i", "<M-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
 keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", "Move line down")
 keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
 
--- up/down home/end movement that handles wrapped lines better
-local opts = { expr = true, silent = true }
-vim.keymap.set("n", "$", "(&wrap == 1 ? 'g$' : '$')", opts)
-vim.keymap.set("n", "^", "(&wrap == 1 ? 'g^' : '^')", opts)
-vim.keymap.set("n", "g$", "(&wrap == 1 ? '$' : 'g$')", opts)
-vim.keymap.set("n", "g^", "(&wrap == 1 ? '^' : 'g^')", opts)
-vim.keymap.set("n", "gj", "(v:count == 0 ? 'j' : 'gj')", opts)
-vim.keymap.set("n", "gk", "(v:count == 0 ? 'k' : 'gk')", opts)
-vim.keymap.set("n", "j", "(v:count == 0 ? 'gj' : 'j')", opts)
-vim.keymap.set("n", "k", "(v:count == 0 ? 'gk' : 'k')", opts)
-
 -- escape terminal mode
 keymap("t", "<esc><esc>", "<C-\\><C-N>")
 
@@ -110,9 +99,6 @@ keymap("n", "[Q", "<CMD>cfirst<CR>", "First quickfix item")
 
 keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
 keymap("n", "<M-i>", "<CMD>cnewer<CR>", "Next quickfix list")
-
-keymap("n", "]d", function() vim.diagnostic.goto_next({ float = true }) end, "Next diagnostic")
-keymap("n", "[d", function() vim.diagnostic.goto_prev({ float = true }) end, "Previous diagnostic")
 
 keymap(
   "n",

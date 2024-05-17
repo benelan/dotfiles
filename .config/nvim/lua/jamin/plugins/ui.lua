@@ -218,9 +218,12 @@ return {
         },
       },
       icons = {
-        indent = { fold_open = res.icons.ui.expanded, fold_closed = res.icons.ui.collapsed },
-        folder_closed = res.icons.ui.folder_closed,
-        folder_open = res.icons.ui.folder_open,
+        indent = {
+          fold_open = not vim.g.use_devicons and res.icons.ui.expanded or nil,
+          fold_closed = not vim.g.use_devicons and res.icons.ui.collapsed or nil,
+        },
+        folder_closed = not vim.g.use_devicons and "📂 " or nil,
+        folder_open = not vim.g.use_devicons and "📁 " or nil,
         kinds = res.icons.lsp_kind,
       },
     },

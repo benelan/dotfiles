@@ -9,7 +9,7 @@
   },
   "workspace.checkThirdParty": false,
   "workspace.library": [
-    "lua",
+    "./lua",
     "$VIMRUNTIME",
     "~/.local/share/nvim/lazy/ChatGPT.nvim/lua",
     "~/.local/share/nvim/lazy/LuaSnip/lua",

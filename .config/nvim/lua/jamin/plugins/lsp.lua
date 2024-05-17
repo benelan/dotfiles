@@ -123,11 +123,6 @@ return {
           bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
-          -- lsp keymaps
-          if client.supports_method("textDocument/hover") then
-            bufmap("n", "K", vim.lsp.buf.hover, "LSP hover")
-          end
-
           if client.supports_method("textDocument/definition") then
             bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           end
@@ -163,12 +158,7 @@ return {
 
           local function toggle_inlay_hints(bufnr)
             local enabled = not vim.lsp.inlay_hint.is_enabled(bufnr)
-            -- breaking change to the arguments of vim.lsp.inlay_hint.enable
-            if vim.fn.has("nvim-0.10.0-dev-2968+g344906a08") then
-              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
-            else
-              vim.lsp.inlay_hint.enable(bufnr, enabled) ---@diagnostic disable-line: param-type-mismatch
-            end
+            vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
           end
 
           -- setup inlay hints if supported by language server

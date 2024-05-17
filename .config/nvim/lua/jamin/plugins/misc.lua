@@ -63,17 +63,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- adds keymap for toggling comments on text objects
-  {
-    dir = "~/.vim/pack/foo/start/vim-commentary",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-commentary")
-      -- neovim added builtin support for commenting, see :h commenting
-      and vim.fn.has("nvim-0.10.0-dev-2930+g47ba96a6b") == 0,
-    keys = { { mode = { "n", "v", "o" }, "gc" } },
-    cmd = "Commentary",
-  },
-
-  -----------------------------------------------------------------------------
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
