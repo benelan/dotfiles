@@ -9,7 +9,7 @@ return {
 
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
-      { "<leader>gc", "<CMD>tab Git commit<CR>", desc = "Fugitive commit" },
+      { "<leader>gc", "<CMD>tab Git commit --verbose<CR>", desc = "Fugitive commit" },
       { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },
       { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
       { "<leader>gD", "<CMD>Git difftool -y<CR>", desc = "Fugitive difftool" },

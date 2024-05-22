@@ -1,7 +1,5 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
 local utils = require("utils")
-
-package.path = string.format("%s/?/lua/?.lua;%s", os.getenv("PERSONAL"), package.path)
 local git_mux = require("git-mux")
 
 local act = wezterm.action
@@ -42,7 +40,7 @@ function M.apply_to_config(config)
       key = "n",
       mods = "LEADER|CTRL",
       action = wezterm.action_callback(
-        function(window, pane) git_mux.project(window, pane, { os.getenv("NOTES") }) end
+        function(window, pane) git_mux.project(window, pane, { path = os.getenv("NOTES") }) end
       ),
     },
     {

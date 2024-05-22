@@ -353,12 +353,16 @@ install_packages_vim() {
 
 INSTALL_PACKAGES_NEOVIM_DOC="Update/install neovim plugins and devdoc sources"
 install_packages_neovim() {
+    nvim --headless +"Lazy! sync" +qa
+
     devdoc_sources=(
         "astro"
         "bash"
+        "browser_support_tables"
         "css"
         "docker"
         "dom"
+        "esbuild"
         "gnu_make"
         "go"
         "html"
@@ -366,8 +370,8 @@ install_packages_neovim() {
         "javascript"
         "jest"
         "jq"
-        "lodash-4"
-        "lua-5.4"
+        "jsdoc"
+        "lua-5.1"
         "markdown"
         "node"
         "npm"
@@ -380,9 +384,9 @@ install_packages_neovim() {
         "typescript"
         "vite"
         "vue-3"
+        "webpack-5"
     )
 
-    nvim --headless +"Lazy! sync" +qa
     if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] && [ "$(
         find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l
     )" -le ${#devdoc_sources[@]} ]; then
@@ -1180,7 +1184,7 @@ install_theme_icons() {
         return
     fi
 
-    ICONS_DIR="$HOME/.local/share/icons"
+    ICONS_DIR=~/.icons
     mkdir -p "$ICONS_DIR"
 
     # download gruvbox icons
@@ -1203,10 +1207,10 @@ install_theme_icons() {
     if ! [ -d "$ICONS_DIR/FlatbedCursors-Orange" ]; then
         cursors="FlatbedCursors-latest.tar.bz2"
 
-        curl -LO https://limitland.gitlab.io/flatbedcursors/$cursors
+        curl -LO "https://limitland.gitlab.io/flatbedcursors/$cursors"
         extract $cursors
 
-        mv ./FlatbedCursors-Orange "$ICONS_DIR"
+        mv ./FlatbedCursors-Orange ./FlatbedCursors-White "$ICONS_DIR"
         rm -rf ./FlatbedCursors*
 
         unset cursors
@@ -1756,7 +1760,7 @@ packages_installs() {
     install_packages_npm
     install_packages_pip
     install_packages_vim
-    install_packages_neovim
+    # install_packages_neovim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1941,6 +1945,9 @@ main() {
 
         # support for sudo
         sudo) shift && sudo "$@" ;;
+
+        # clone a repo to the directory I keep 3rd part libraries
+        get) shift && git clone "$1" "${LIB:?}/$(basename "$1" .git)" ;;
 
         # creates env vars in (n)vim so git plugins work with the bare dotfiles repo
         edit)

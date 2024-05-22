@@ -80,9 +80,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- filetype icons
   {
-    "nvim-tree/nvim-web-devicons", -- filetype icons
-    -- enabled = false,
+    "nvim-tree/nvim-web-devicons",
     lazy = true,
     cond = vim.g.use_devicons == true,
     opts = {
@@ -95,9 +95,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- best useless plugin ever
   {
-    "Eandrju/cellular-automaton.nvim", -- best useless plugin ever
-    -- enabled = false,
+    "Eandrju/cellular-automaton.nvim",
     cmd = "CellularAutomaton",
     keys = {
       { "<leader>!", "<CMD>CellularAutomaton make_it_rain<CR>", desc = "Make it rain" },
@@ -106,9 +106,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- display lsp progress and notifications
   {
     "j-hui/fidget.nvim",
-    -- enabled = false,
     event = "LspAttach",
     keys = {
       { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View message history (fidget)" },
@@ -130,9 +130,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- highlights the best character to f/F/t/T per word
   {
-    "jinh0/eyeliner.nvim", -- highlights the best character to f/F/t/T per word
-    -- enabled = false,
+    "jinh0/eyeliner.nvim",
     event = "CursorHold",
     opts = { highlight_on_key = false, dim = true },
     config = function(_, opts)
@@ -142,13 +142,14 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- lsp/diagnsotic lists
   {
-    "folke/trouble.nvim", -- lsp/diagnsotic lists
+    "folke/trouble.nvim",
     cmd = "Trouble",
     branch = "dev",
     keys = {
       {
-        "<leader>xx",
+        "<leader>xd",
         "<CMD>Trouble diagnostics toggle<CR>",
         desc = "Diagnostics (trouble)",
       },

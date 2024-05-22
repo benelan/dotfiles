@@ -19,31 +19,11 @@ return {
     },
 
     keys = {
-      {
-        "<leader>r<leader>",
-        function() require("neogen").generate({}) end,
-        desc = "Add reference comment (neogen)",
-      },
-      {
-        "<leader>rm",
-        function() require("neogen").generate({ type = "func" }) end,
-        desc = "Add function reference comment (neogen)",
-      },
-      {
-        "<leader>rc",
-        function() require("neogen").generate({ type = "class" }) end,
-        desc = "Add class reference comment (neogen)",
-      },
-      {
-        "<leader>rt",
-        function() require("neogen").generate({ type = "type" }) end,
-        desc = "Add type reference comment (neogen)",
-      },
-      {
-        "<leader>rb",
-        function() require("neogen").generate({ type = "file" }) end,
-        desc = "Add buffer reference comment (neogen)",
-      },
+      { "<leader>ra", "<CMD>Neogen<CR>", desc = "Add reference comment (neogen)" },
+      { "<leader>rm", "<CMD>Neogen func<CR>", desc = "Add method reference comment (neogen)" },
+      { "<leader>rc", "<CMD>Neogen class<CR>", desc = "Add class reference comment (neogen)" },
+      { "<leader>rt", "<CMD>Neogen type<CR>", desc = "Add type reference comment (neogen)" },
+      { "<leader>rb", "<CMD>Neogen file<CR>", desc = "Add buffer reference comment (neogen)" },
     },
   },
 
@@ -51,39 +31,24 @@ return {
   -- open rule documentation for linters
   {
     "chrisgrieser/nvim-rulebook",
+    opts = {},
     keys = {
-      { "<leader>rx", function() require("rulebook").ignoreRule() end },
-      { "<leader>rl", function() require("rulebook").lookupRule() end },
-      { "<leader>ry", function() require("rulebook").yankDiagnosticCode() end },
+      {
+        "<leader>ri",
+        function() require("rulebook").ignoreRule() end,
+        desc = "Add diagnostic ignore comment (rulebook)",
+      },
+      {
+        "<leader>rl",
+        function() require("rulebook").lookupRule() end,
+        desc = "Lookup diagnostic (rulebook)",
+      },
+      {
+        "<leader>ry",
+        function() require("rulebook").yankDiagnosticCode() end,
+        desc = "Yank diagnostic code (rulebook)",
+      },
     },
-    config = function()
-      require("rulebook").setup({})
-
-      local virtual_text_enabled = true
-      local virtual_text_config = {
-        source = "if_many",
-        severity = { min = vim.diagnostic.severity.WARN },
-        prefix = function(diag)
-          return require("rulebook").hasDocs(diag) and res.icons.ui.docs or res.icons.ui.square
-        end,
-      }
-
-      vim.diagnostic.config({ virtual_text = virtual_text_config })
-
-      keymap("n", "<leader>sv", function()
-        virtual_text_enabled = not virtual_text_enabled
-        vim.diagnostic.config({
-          virtual_text = virtual_text_enabled and virtual_text_config or false,
-        })
-        print(
-          string.format(
-            "%s %s",
-            "diagnostic virtual text",
-            virtual_text_enabled and "enabled" or "disabled"
-          )
-        )
-      end, "Toggle diagnostic virtual text")
-    end,
   },
 
   -----------------------------------------------------------------------------
@@ -109,12 +74,10 @@ return {
       "DevdocsUpdateAll",
     },
 
-    -- stylua: ignore
     keys = {
       { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
-      { "<leader>rO", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
+      { "<leader>rf", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
       { "<leader>rr", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
-      { "<leader>rR", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open floating ref by filetype (devdocs)" },
     },
 
     opts = function()
@@ -132,9 +95,11 @@ return {
           cmd_ignore = {
             "astro",
             "bash",
+            "browser_support_tables",
             "css",
             "docker",
             "dom",
+            "esbuild",
             "gnu_make",
             "go",
             "html",
@@ -142,8 +107,8 @@ return {
             "javascript",
             "jest",
             "jq",
-            "lodash-4",
-            "lua-5.4",
+            "jsdoc",
+            "lua-5.1",
             "markdown",
             "node",
             "npm",
@@ -156,23 +121,25 @@ return {
             "typescript",
             "vite",
             "vue-3",
+            "webpack-5",
           },
         }
 
       return vim.tbl_deep_extend("force", glow_opts, {
-        mappings = { open_in_browser = "<C-o>" },
+        mappings = { open_in_browser = "<M-o>" },
         -- stylua: ignore
         filetypes = {
+          sh = { "jq", "bash" },
           css = { "css", "tailwindcss" },
           scss = { "css", "sass", "tailwindcss" },
           html = { "javascript", "dom", "html", "css" },
-          javascript = { "javascript", "dom", "node" },
-          typescript = { "javascript", "typescript", "dom", "node" },
-          javascriptreact = { "javascript", "dom", "html", "react", "css", "tailwindcss" },
-          typescriptreact = { "javascript", "typescript", "dom", "html", "react", "css", "tailwindcss" },
-          vue = { "javascript", "dom", "html", "vue", "css", "tailwindcss" },
-          svelte = { "javascript", "dom", "html", "svelte", "css", "tailwindcss" },
-          astro = { "javascript", "dom", "node", "html", "astro", "css", "tailwindcss" },
+          javascript = { "javascript", "dom", "node", "jsdoc" },
+          typescript = { "javascript", "typescript", "dom", "node", "jsdoc" },
+          javascriptreact = { "javascript", "dom", "html", "jsdoc", "react", "css", "tailwindcss" },
+          typescriptreact = { "javascript", "typescript", "dom", "html", "jsdoc", "react", "css", "tailwindcss" },
+          vue = { "javascript", "dom", "html", "jsdoc", "vue", "css", "tailwindcss" },
+          svelte = { "javascript", "dom", "html", "jsdoc", "svelte", "css", "tailwindcss" },
+          astro = { "javascript", "dom", "node", "html", "jsdoc", "astro", "css", "tailwindcss" },
         },
         float_win = {
           relative = "editor",

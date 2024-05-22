@@ -279,31 +279,44 @@ return {
 
     config = function()
       local ls = require("luasnip")
+      local types = require("luasnip.util.types")
       local lua_loader = require("luasnip.loaders.from_lua")
       local vscode_loader = require("luasnip.loaders.from_vscode")
 
-      ls.config.set_config({
-        history = false,
-        region_check_events = "CursorMoved,CursorHold,InsertEnter",
+      ls.setup({
+        region_check_events = "CursorHold",
         delete_check_events = "InsertLeave",
-        enable_autosnippets = true,
+        ext_opts = {
+          [types.choiceNode] = {
+            active = {
+              hl_mode = "combine",
+              virt_text = { { res.icons.ui.box_dot, "Operator" } },
+            },
+          },
+          [types.insertNode] = {
+            active = {
+              hl_mode = "combine",
+              virt_text = { { res.icons.ui.pencil, "Boolean" } },
+            },
+          },
+        },
       })
 
-      -- loads friendly_snippets
-      vscode_loader.lazy_load()
+      ls.filetype_extend("typescript", { "javascript" })
+      ls.filetype_extend("javascriptreact", { "javascript", "html" })
+      ls.filetype_extend("typescriptreact", { "javascript", "typescript", "html" })
+      ls.filetype_extend("vue", { "javascript", "typescript", "html", "css" })
+      ls.filetype_extend("svelte", { "javascript", "typescript", "html", "css" })
+      ls.filetype_extend("astro", { "javascript", "typescript", "html", "css" })
+
+      -- loads snippets in the luasnippets dir of the neovim config
+      lua_loader.lazy_load()
 
       -- loads the snippets I created for VSCode a while ago
       vscode_loader.lazy_load({ paths = { "~/.config/Code/User" } })
 
-      -- loads snippets in the luasnippets dir of my neovim config
-      lua_loader.lazy_load()
-
-      ls.filetype_extend("typescript", { "javascript" })
-      ls.filetype_extend("javascriptreact", { "javascript" })
-      ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
-      ls.filetype_extend("vue", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("svelte", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("astro", { "javascript", "typescript", "html", "css" })
+      -- loads snippets from runtimepath, e.g. from plugins like friendly_snippets
+      vscode_loader.lazy_load()
     end,
 
     keys = function()
@@ -412,9 +425,12 @@ return {
       local has_copilot_cmp = pcall(require, "copilot_cmp")
 
       local filetypes = {}
-      for _, ft in
-        ipairs(vim.tbl_deep_extend("force", res.filetypes.excluded, res.filetypes.writing))
-      do
+
+      for _, ft in ipairs(res.filetypes.excluded) do
+        filetypes[ft] = false
+      end
+
+      for _, ft in ipairs(res.filetypes.writing) do
         filetypes[ft] = false
       end
 
@@ -474,9 +490,11 @@ return {
     config = function()
       local filetypes = {}
 
-      for _, ft in
-        ipairs(vim.tbl_deep_extend("force", res.filetypes.excluded, res.filetypes.writing))
-      do
+      for _, ft in ipairs(res.filetypes.excluded) do
+        filetypes[ft] = false
+      end
+
+      for _, ft in ipairs(res.filetypes.writing) do
         filetypes[ft] = false
       end
 

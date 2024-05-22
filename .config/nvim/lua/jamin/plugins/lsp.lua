@@ -156,13 +156,18 @@ return {
             bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
-          local function toggle_inlay_hints(bufnr)
-            local enabled = not vim.lsp.inlay_hint.is_enabled(bufnr)
-            vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
-          end
-
           -- setup inlay hints if supported by language server
-          if vim.lsp.inlay_hint and client.supports_method("textDocument/inlayHint") then
+          if
+            vim.lsp.inlay_hint
+            and vim.api.nvim_buf_is_valid(args.buf)
+            and vim.bo[args.buf].buftype == ""
+            and client.supports_method("textDocument/inlayHint")
+          then
+            local function toggle_inlay_hints(bufnr)
+              local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
+            end
+
             if opts.inlay_hints.enabled == true then toggle_inlay_hints(args.buf) end
             bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
@@ -187,7 +192,6 @@ return {
           then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
-            client.server_capabilities.documentHighlightProvider = false
           elseif client.supports_method("textDocument/formatting") then
             -- if the LSP server has formatting capabilities, use it for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
@@ -222,8 +226,8 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- Installer/manager for language servers, linters, formatters, and debuggers
   {
-    -- Installer/manager for language servers, linters, formatters, and debuggers
     "williamboman/mason.nvim",
     lazy = true,
     build = ":MasonUpdate",
@@ -267,8 +271,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- integrates formatters and linters (null-ls.nvim successor)
   {
-    "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
+    "nvimtools/none-ls.nvim",
     -- pinned commit due to https://github.com/nvimtools/none-ls.nvim/issues/58
     commit = "bb680d752cec37949faca7a1f509e2fe67ab418a",
     event = "VeryLazy",

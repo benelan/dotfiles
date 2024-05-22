@@ -96,6 +96,22 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -------------------------------------------------------------------------------
+-- set git env vars for the bare dotfiles repo when not in the dev directory
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
+  desc = "Special dotfiles setup",
+  callback = function()
+    local ok, inside_dev = pcall(vim.startswith, vim.uv.cwd(), vim.fs.normalize("~/dev"))
+
+    if ok and not inside_dev then
+      vim.env.GIT_WORK_TREE = vim.env.HOME
+      vim.env.GIT_DIR = vim.env.HOME .. "/.git"
+      return
+    end
+  end,
+})
+
+-------------------------------------------------------------------------------
 -- use listchars like an indentline plugin
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("jamin_ghetto_indentlines", {}),

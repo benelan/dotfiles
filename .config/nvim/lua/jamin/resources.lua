@@ -124,13 +124,13 @@ M.treesitter_parsers = {
   "bash",
   "css",
   "diff",
-  -- "dockerfile",
-  -- "git_rebase",
+  "dockerfile",
+  "git_rebase",
   "gitcommit",
   "go",
-  "gomod",
-  "gosum",
-  "gowork",
+  -- "gomod",
+  -- "gosum",
+  -- "gowork",
   "graphql",
   "html",
   "http",
@@ -147,12 +147,13 @@ M.treesitter_parsers = {
   "make",
   "markdown",
   "markdown_inline",
-  "perl",
+  -- "perl",
+  -- "printf",
   "python",
   "query",
   "regex",
   -- "rst",
-  "rust",
+  -- "rust",
   "scss",
   "sql",
   "svelte",
@@ -381,7 +382,7 @@ M.art = {
     |  \ \ @   @ / /    |   me to replace    |
     |   '---------'     |    all humans?     |
     |  .'-+-+-+|        ,--------------------'
-    |  `.-+-+-+|    ---'                      
+    |  `.-+-+-+|    ---'
     |    """""" |
     '-.__   __.-'
          """
@@ -390,7 +391,7 @@ M.art = {
                   ⠘⡀ Hey⠀lazy dev, want ⡜
                    ⠑⡀⠀ me to replace   ⡜
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠐⣵    ⠈⠢⢄⠀all humans? ⣀⠴⠊
- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡀   ⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⡀⠤⠄⠒⠈   
+ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡀   ⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⡀⠤⠄⠒⠈
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⡇    ⠀⠘⣀⠄⠊⠁
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠚⠒⠊⣲⠤⣀
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠔⠈⠀⠈⠉⠉⠀⠀⠀⠉⢆

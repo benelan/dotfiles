@@ -13,14 +13,14 @@ root = true
     spaces_around_operators = true
     indent_brace_style = K&R
 
-[*.{js,jsx,json,jsonc,ts,tsx,html,vue,svelte}]
+[*.{js,jsx,json,jsonc,ts,tsx,html,vue,svelte,astro}]
     spaces_around_brackets = true
     indent_size = 2
 
 [*.{css,scss,sass,less,lua,yml,yaml}]
     indent_size = 2
 
-[*.{md,mail}]
+[*.{md,mdx,mail}]
     max_line_length = 80
     indent_size = 2
 

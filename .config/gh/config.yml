@@ -2,29 +2,47 @@ version: "1"
 git_protocol: ssh
 # pager: cat
 aliases:
-  i: |
-    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
-      --bind='alt-+:execute(gh issue edit --add-assignee @me {1})+refresh-preview'
-      --bind='alt--:execute(gh issue edit --remove-assignee @me {1})+refresh-preview'
-      --bind='alt-n:execute<nvim +\"Octo issue edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
-    " gh fzf issue $*
-  p: |
-    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
-      --bind='alt-n:execute<nvim +\"Octo pr edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
-      --bind='alt-m:execute(gh pr merge --delete-branch --squash {1})+refresh-preview'
-      --bind='alt-v:execute(gh pr edit --add-label \"pr ready for visual snapshots\" {1})+refresh-preview'
-      --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
-      --bind='ctrl-alt-v:execute(gh pr edit --remove-label \"pr ready for visual snapshots\" {1})+refresh-preview'
-      --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
-      --bind='alt--:execute(gh pr review --request-changes {1})+refresh-preview'
-      " gh fzf pr $*
-  ime: i --assignee @me
-  pme: p --assignee @me
-  itrunc: "!GH_FZF_TRUNCATE_FIELDS=true gh i"
-  ptrunc: "!GH_FZF_TRUNCATE_FIELDS=true gh p"
   r: fzf run
   w: fzf workflow
   v: fzf release
   R: fzf repo
   g: fzf gist
+
+  i: |
+    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+      --bind='alt-+:execute(gh issue edit --add-assignee @me {1})+refresh-preview'
+      --bind='alt--:execute(gh issue edit --remove-assignee @me {1})+refresh-preview'
+      --bind='alt-n:execute<nvim +\"Octo issue edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
+      --bind='alt-D:execute(gh issue edit {1} --add-label \"2 - in development\" --remove-label \"1 - assigned\")+refresh-preview'
+      --bind='alt-I:execute(gh issue edit {1} --add-label \"3 - installed\")+refresh-preview'
+    " gh fzf issue $*
+
+  p: |
+    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+      --bind='alt-n:execute<nvim +\"Octo pr edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
+      --bind='alt-m:execute(gh pr merge --delete-branch --squash {1})+refresh-preview'
+      --bind='alt-v:execute(gh pr edit {1} --add-label \"pr ready for visual snapshots\" --remove-label \"pr ready for visual snapshots\")+refresh-preview'
+      --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
+      --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
+      --bind='alt--:execute(gh pr review --request-changes {1})+refresh-preview'
+      " gh fzf pr $*
+
+  itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i"
+  ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p"
+
+  ime: i --assignee @me
+  pme: p --assignee @me
+
+  pcomment: pr comment --editor
+  icomment: issue comment --editor
+
   co: pr checkout
+  ship: pr create --fill-first
+  review: |
+    !gh pr view --comments $1 && gh pr diff $1 && gh pr review $1;
+    if [ $? -ne 0 ]; then
+      read -r -p "Open PR in browser? [y/N] " REPLY
+      case $REPLY in
+        [yY]*) gh pr diff --web $1 ;;
+      esac
+    fi
