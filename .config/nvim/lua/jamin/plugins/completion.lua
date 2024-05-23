@@ -51,7 +51,7 @@ return {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter" },
     dependencies = {
-      "L3MON4D3/LuaSnip",
+      "garymjr/nvim-snippets",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
@@ -60,20 +60,12 @@ return {
 
     opts = function()
       local cmp = require("cmp")
-      local has_ls, ls = pcall(require, "luasnip")
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
       local has_copilot_cmp, copilot_comparators = pcall(require, "copilot_cmp.comparators")
 
       return {
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
         preselect = cmp.PreselectMode.None,
-
-        -- setup LuaSnip with the completion engine
-        snippet = {
-          expand = function(args)
-            if has_ls then ls.lsp_expand(args.body) end
-          end,
-        },
 
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
@@ -148,7 +140,7 @@ return {
             vim_item.menu = ({
               buffer = i("BUF"),
               copilot = i("SNIP"),
-              luasnip = i("SNIP"),
+              snippets = i("SNIP"),
               dictionary = i("DICT"),
               git = i("GIT"),
               nvim_lsp = i("LSP"),
@@ -229,18 +221,19 @@ return {
 
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "copilot", group_index = 2 },
-          { name = "luasnip", group_index = 2 },
-          { name = "nvim_lsp", group_index = 2 },
-          { name = "path", group_index = 2 },
-          { name = "git", group_index = 2 },
-          { name = "buffer", keyword_length = 2, group_index = 2 },
-          { name = "tmux", keyword_length = 2, group_index = 2 },
+          { name = "copilot", group_index = 1 },
+          { name = "snippets", group_index = 1 },
+          { name = "nvim_lsp", group_index = 1 },
+          { name = "path", group_index = 1 },
+          { name = "git", group_index = 1 },
+          { name = "buffer", group_index = 1, keyword_length = 2 },
+          { name = "tmux", group_index = 1, keyword_length = 2 },
           -- only show ripgrep/spell/dictionary if there are no results from other sources
-          { name = "rg", keyword_length = 3, group_index = 3 },
+          { name = "rg", group_index = 2, keyword_length = 3 },
+          { name = "dictionary", group_index = 2, keyword_length = 2 },
           {
             name = "spell",
-            group_index = 3,
+            group_index = 2,
             keyword_length = 2,
             entry_filter = function(entry)
               return string.match(entry:get_insert_text(), "%s") == nil
@@ -253,7 +246,6 @@ return {
               end,
             },
           },
-          { name = "dictionary", group_index = 3, keyword_length = 2 },
         },
       }
     end,
@@ -271,58 +263,25 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- use VSC*de snippets with native neovim snippets (requires v0.10.0)
   {
-    "L3MON4D3/LuaSnip", -- snippet engine
-    build = "make install_jsregexp",
-    version = "v2.*",
-    dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
-
-    config = function()
-      local ls = require("luasnip")
-      local types = require("luasnip.util.types")
-      local lua_loader = require("luasnip.loaders.from_lua")
-      local vscode_loader = require("luasnip.loaders.from_vscode")
-
-      ls.setup({
-        region_check_events = "CursorHold",
-        delete_check_events = "InsertLeave",
-        ext_opts = {
-          [types.choiceNode] = {
-            active = {
-              hl_mode = "combine",
-              virt_text = { { res.icons.ui.box_dot, "Operator" } },
-            },
-          },
-          [types.insertNode] = {
-            active = {
-              hl_mode = "combine",
-              virt_text = { { res.icons.ui.pencil, "Boolean" } },
-            },
-          },
-        },
-      })
-
-      ls.filetype_extend("typescript", { "javascript" })
-      ls.filetype_extend("javascriptreact", { "javascript", "html" })
-      ls.filetype_extend("typescriptreact", { "javascript", "typescript", "html" })
-      ls.filetype_extend("vue", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("svelte", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("astro", { "javascript", "typescript", "html", "css" })
-
-      -- loads snippets in the luasnippets dir of the neovim config
-      lua_loader.lazy_load()
-
-      -- loads the snippets I created for VSCode a while ago
-      vscode_loader.lazy_load({ paths = { "~/.config/Code/User" } })
-
-      -- loads snippets from runtimepath, e.g. from plugins like friendly_snippets
-      vscode_loader.lazy_load()
-    end,
+    "garymjr/nvim-snippets",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    opts = {
+      friendly_snippets = true,
+      global_snippets = { "all", "global" },
+      search_paths = { vim.uv.os_homedir() .. "/.config/Code/User/snippets" },
+      extended_filetypes = {
+        typescript = { "javascript" },
+        javascriptreact = { "javascript", "html" },
+        typescriptreact = { "javascript", "typescript", "javascriptreact", "html" },
+        vue = { "javascript", "typescript", "html", "css" },
+        svelte = { "javascript", "typescript", "html", "css" },
+        astro = { "javascript", "typescript", "html", "css" },
+      },
+    },
 
     keys = function()
-      local has_ls, ls = pcall(require, "luasnip")
-      if not has_ls then return {} end
-
       -- The keymaps have Copilot/Codeium fallbacks for when there are no snippet actions
       return {
         {
@@ -331,8 +290,8 @@ return {
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
 
-            if ls.jumpable(-1) then
-              ls.jump(-1)
+            if vim.snippet.active({ direction = -1 }) then
+              vim.schedule(function() vim.snippet.jump(-1) end)
             elseif has_copilot and not has_copilot_cmp then
               if copilot.is_visible() then
                 copilot.dismiss()
@@ -347,7 +306,7 @@ return {
             end
           end,
           mode = { "i", "s" },
-          desc = "Luasnip jump back or copilot/codeium dismiss",
+          desc = "Snippet jump back or copilot/codeium dismiss",
         },
 
         {
@@ -356,8 +315,8 @@ return {
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
 
-            if ls.jumpable(1) then
-              ls.jump(1)
+            if vim.snippet.active({ direction = 1 }) then
+              vim.schedule(function() vim.snippet.jump(1) end)
             elseif has_copilot and not has_copilot_cmp and copilot.is_visible() then
               copilot.accept_line()
             elseif vim.g.codeium_enabled then
@@ -371,32 +330,7 @@ return {
             end
           end,
           mode = { "i", "s" },
-          desc = "Luasnip jump forward or copilot/codeium accept",
-        },
-
-        {
-          "<C-\\>",
-          function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-            local has_copilot_cmp = pcall(require, "copilot_cmp")
-
-            if ls.choice_active() then
-              ls.change_choice(1)
-            elseif has_copilot and not has_copilot_cmp then
-              copilot.toggle_auto_trigger()
-              copilot.dismiss()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#Complete"]()
-            else
-              vim.api.nvim_feedkeys(
-                vim.api.nvim_replace_termcodes("<C-\\>", true, false, true),
-                "n",
-                false
-              )
-            end
-          end,
-          mode = { "i", "s" },
-          desc = "Luasnip choice, copilot toggle auto_trigger, or codeium suggest",
+          desc = "Snippet jump forward or copilot/codeium accept",
         },
       }
     end,
