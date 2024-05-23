@@ -442,14 +442,6 @@ if has("autocmd")
         autocmd BufLeave term://* stopinsert
     augroup END
 
-    "" use skeletons when creating specific new files {{{2
-    augroup jamin_skeletons
-        autocmd!
-        autocmd BufNewFile .eslintrc.json 0r ~/.dotfiles/assets/templates/.eslintrc.json
-        autocmd BufNewFile *.html 0r ~/.dotfiles/assets/templates/skeleton.html
-        autocmd BufNewFile LICENSE* 0r ~/.dotfiles/assets/templates/license.md
-    augroup END
-
     "" set makeprg or use a builtin compiler when possible {{{2
     augroup jamin_compilers_formatters
         autocmd!

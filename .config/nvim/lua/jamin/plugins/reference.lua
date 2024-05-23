@@ -4,11 +4,11 @@ return {
   -- Generates doc annotations for a variety of filetypes
   {
     "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Neogen",
 
     opts = {
-      snippet_engine = "luasnip",
+      snippet_engine = "nvim",
       languages = {
         lua = { template = { annotation_convention = "emmylua" } },
         astro = { template = { annotation_convention = "jsdoc" } },

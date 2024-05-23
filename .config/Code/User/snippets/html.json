@@ -1,0 +1,31 @@
+{
+  "skeleton": {
+    "prefix": "skeleton",
+    "description": "HTML skeleton",
+    "body": [
+      "<!doctype html>",
+      "<html lang='en'>",
+      "\t<head>",
+      "\t\t<meta charset='utf-8' />",
+      "\t\t<meta http-equiv='x-ua-compatible' content='ie=edge' />",
+      "\t\t<meta name='viewport' content='width=device-width, initial-scale=1' />",
+      "\t\t<title>${1:Hello, world!}</title>",
+      "\t\t<style>",
+      "\t\t\t${2:html, body {",
+      "\t\t\t\tmargin: 0;",
+      "\t\t\t\tpadding: 0;",
+      "\t\t\t\twidth: 100%;",
+      "\t\t\t\theight: 100%;",
+      "\t\t\t}}",
+      "\t\t</style>",
+      "\t</head>",
+      "\t<body>",
+      "\t\t${3:<h1>Hello, world!</h1>}",
+      "\t</body>",
+      "\t<script>",
+      "\t\t${4:console.log(document.querySelector('h1').textContent);}$0",
+      "\t</script>",
+      "</html>"
+    ]
+  }
+}
