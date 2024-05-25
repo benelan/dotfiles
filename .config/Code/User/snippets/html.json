@@ -23,9 +23,20 @@
       "\t\t${3:<h1>Hello, world!</h1>}",
       "\t</body>",
       "\t<script>",
-      "\t\t${4:console.log(document.querySelector('h1').textContent);}$0",
+      "\t\t${4:console.log(document.querySelector('h1').textContent);}",
+      "\t\t$0",
       "\t</script>",
       "</html>"
     ]
+  },
+  "web component slot": {
+    "prefix": "slot",
+    "body": ["<slot>$0</slot>"],
+    "description": "Define <slot>"
+  },
+  "web component named slot": {
+    "prefix": "slot-named",
+    "body": ["<slot name=\"${1}\">${0}</slot>"],
+    "description": "Define <slot> with name"
   }
 }

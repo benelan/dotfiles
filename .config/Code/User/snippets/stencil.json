@@ -1,0 +1,114 @@
+{
+  "StencilJS Component": {
+    "prefix": "Component-stencil",
+    "body": [
+      "import { Component, Prop, h } from \"@stencil/core\";\n",
+      "@Component({",
+      "\ttag: \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/g}\",",
+      "\tstyleUrl: \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/g}.css\",",
+      "})",
+      "export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}Component {",
+      "\t@Prop() ${1:propName}: ${2:propType}\n",
+      "\trender() {",
+      "\t\treturn (",
+      "\t\t\t<>",
+      "\t\t\t\t${3:// TODO: content}",
+      "\t\t\t</>",
+      "\t\t);",
+      "\t}",
+      "}"
+    ],
+    "description": "StencilJS Component"
+  },
+  "StencilJS FunctionalComponent": {
+    "prefix": "FunctionalComponent-stencil",
+    "body": [
+      "import { FunctionalComponent, Prop, h } from \"@stencil/core\";\n",
+      "interface ${1:Component}Props {",
+      "\t${2:// TODO: props}",
+      "}\n",
+      "export const ${1}: FunctionalComponent<${1}Props> = (${3:args}) => (",
+      "\t${4:// TODO: template}",
+      ");",
+      "$0"
+    ],
+    "description": "StencilJS Functional Component"
+  },
+  "StencilJS Property": {
+    "prefix": "prop-stencil",
+    "body": "@Prop() ${1:propName}: ${2:propType};\n$0",
+    "description": "StencilJS @Prop decorator"
+  },
+  "StencilJS Element": {
+    "prefix": "element-stencil",
+    "body": "@Element() ${1:elementName}: ${2:HTMLElement};\n$0",
+    "description": "StencilJS @Element decorator"
+  },
+  "StencilJS Event": {
+    "prefix": "event-stencil",
+    "body": "@Event() ${1:eventName}: EventEmitter<${2:void}>;\n$0",
+    "description": "StencilJS @Event decorator"
+  },
+  "StencilJS Method Async": {
+    "prefix": "method-async-stencil",
+    "body": [
+      "@Method()",
+      "async ${1:methodName}(){",
+      "\t${2:// TODO}",
+      "}",
+      "$0"
+    ],
+    "description": "StencilJS @Method async decorator"
+  },
+  "StencilJS Method Promise": {
+    "prefix": "method-promise-stencil",
+    "body": [
+      "@Method()",
+      "${1:methodName}(): Promise<${2:void}> {",
+      "\t${3:// TODO}",
+      "}",
+      "$0"
+    ],
+    "description": "StencilJS @Method decorator returning a promise"
+  },
+  "StencilJS componentWillLoad": {
+    "prefix": "componentWillLoad-stencil",
+    "body": ["componentWillLoad() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentWillLoad() life cycle hook"
+  },
+  "StencilJS componentDidLoad": {
+    "prefix": "componentDidLoad-stencil",
+    "body": ["componentDidLoad() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentDidLoad() life cycle hook"
+  },
+  "StencilJS componentWillRender": {
+    "prefix": "componentWillRender-stencil",
+    "body": ["componentWillRender() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentWillRender() life cycle hook"
+  },
+  "StencilJS componentDidRender": {
+    "prefix": "componentDidRender-stencil",
+    "body": ["componentDidRender() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentDidRender() life cycle hook"
+  },
+  "StencilJS componentWillUpdate": {
+    "prefix": "componentWillUpdate-stencil",
+    "body": ["componentWillUpdate() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentWillUpdate() life cycle hook"
+  },
+  "StencilJS componentDidUpdate": {
+    "prefix": "componentDidUpdate-stencil",
+    "body": ["componentDidUpdate() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS componentDidUpdate() life cycle hook"
+  },
+  "StencilJS connectedCallback": {
+    "prefix": "connectedCallback-stencil",
+    "body": ["connectedCallback() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS connectedCallback() life cycle hook"
+  },
+  "StencilJS disconnectedCallback": {
+    "prefix": "disconnectedCallback-stencil",
+    "body": ["disconnectedCallback() {", "\t${1:// TODO}", "}", "$0"],
+    "description": "StencilJS disconnectedCallback() life cycle hook"
+  }
+}

@@ -95,10 +95,13 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
 endfor
 
 "" system clipboard {{{2
-for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
-    execute 'nnoremap ' . char . ' "_' . char 
-    execute 'vnoremap ' . char . ' "_' . char 
-endfor
+
+nnoremap x "_x
+nnoremap X "_X
+nnoremap r "_r
+nnoremap R "_R
+nnoremap s "_s
+nnoremap S "_S
 
 for char in [ 'y', 'p', 'P' ]
     execute 'nnoremap <leader>' . char . ' "+' . char

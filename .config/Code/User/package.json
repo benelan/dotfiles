@@ -7,13 +7,20 @@
     "snippets": [
       {
         "language": [
-          "vue",
-          "html",
-          "svelte",
-          "javascript",
-          "typescript",
-          "javascriptreact",
-          "typescriptreact"
+          "global",
+          "all"
+        ],
+        "path": "./snippets/global.json"
+      },
+      {
+        "language": [
+          "html"
+        ],
+        "path": "./snippets/html.json"
+      },
+      {
+        "language": [
+          "javascript"
         ],
         "path": "./snippets/javascript.json"
       },
@@ -21,13 +28,7 @@
         "language": [
           "typescriptreact"
         ],
-        "path": "./snippets/typescriptreact.json"
-      },
-      {
-        "language": [
-          "html"
-        ],
-        "path": "./snippets/html.json"
+        "path": "./snippets/stencil.json"
       }
     ]
   }

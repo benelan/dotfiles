@@ -4,11 +4,14 @@ return {
   -- Generates doc annotations for a variety of filetypes
   {
     "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
     cmd = "Neogen",
-    keys = { { "<leader>ra", "<CMD>Neogen<CR>", desc = "Add docstring comment (neogen)" } },
+    keys = {
+      { "<leader>ra", "<CMD>Neogen<CR>", desc = "Add docstring comment (neogen)" },
+      { "<leader>rm", "<CMD>Neogen func<CR>", desc = "Add method docstring comment (neogen)" },
+    },
     opts = {
-      snippet_engine = "nvim",
+      snippet_engine = "luasnip",
       languages = {
         lua = { template = { annotation_convention = "emmylua" } },
         vue = { template = { annotation_convention = "jsdoc" } },
@@ -58,7 +61,11 @@ return {
 
     keys = {
       { "<leader>ro", "<CMD>vsplit <BAR> DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
-      { "<leader>rt", "<CMD>vsplit <BAR> DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
+      {
+        "<leader>rt",
+        "<CMD>vsplit <BAR> DevdocsOpenCurrent<CR>",
+        desc = "Open ref by filetype (devdocs)",
+      },
       { "<leader>rf", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
     },
 
