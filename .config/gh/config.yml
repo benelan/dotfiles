@@ -2,11 +2,16 @@ version: "1"
 git_protocol: ssh
 # pager: cat
 aliases:
-  r: fzf run
   w: fzf workflow
   v: fzf release
   R: fzf repo
   g: fzf gist
+
+  r: |
+    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+      --bind='alt-e:execute(gh run view --log-failed {-1})'
+      --bind='alt-i:reload(eval \"\$FZF_DEFAULT_COMMAND --status in_progress\")'
+    " gh fzf run $*
 
   i: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS

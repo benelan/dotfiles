@@ -81,6 +81,7 @@
 
 [mergetool "vimdiff"]
     trustExitCode = true
+    conflictStyle = diff3
     ; https://git-scm.com/docs/vimdiff
     ; The layout option is available since git v2.37
     layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
@@ -92,13 +93,17 @@
 
 [mergetool "fugitive"]
     trustExitCode = true
+    conflictStyle = diff3
     ; https://github.com/tpope/vim-fugitive
-    cmd = vim -f +'packadd vim-fugitive         \
-        | nnoremap <leader>g[ :diffget //2<CR>  \
-        | nnoremap <leader>g] :diffget //3<CR>  \
-        | nnoremap <leader>g{ :%diffget //2<CR> \
-        | nnoremap <leader>g} :%diffget //3<CR> \
-        | nnoremap <leader>w <CMD>wqa<CR>       \
+    cmd = vim -f +'packadd vim-fugitive   \
+        | nnoremap [x :diffget //2<CR>    \
+        | nnoremap ]x :diffget //3<CR>    \
+        | vnoremap [x :diffget //2<CR>    \
+        | vnoremap ]x :diffget //3<CR>    \
+        | nnoremap [X :%diffget //2<CR>   \
+        | nnoremap ]X :%diffget //3<CR>   \
+        | nnoremap <leader>w <CMD>wqa<CR> \
+        | nnoremap <leader>q <CMD>cq<CR> \
         | Gvdiffsplit!' $MERGED
 
 [rebase]
@@ -117,6 +122,8 @@
     addIgnoredFile = false
     statusHints = false
     detachedHead = false
+    mergeConflict = false
+    addEmptyPathspec = false
 
 [log]
     date = format:"%a %F %R"
@@ -172,7 +179,7 @@
     d = diff
     ds = diff --staged
     dt = difftool
-    dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)) -- . ':(exclude)package-lock.json'; }; f"
+    dh = !sh -c \"git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)) -- . ':(exclude)package-lock.json'\"
 
     ; edit the files changed locally (staged and unstaged)
     e = !$EDITOR $(git diff --name-only HEAD | sort -u)
@@ -385,28 +392,20 @@
     ours   = !"f() { git checkout --ours   $@ && git add $@; }; f"
     theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
-    ; Work In Progress: from https://gist.github.com/492227 and VonC on stackoverflow.
-    ; This enables a quick way to add all new and modified files to the index,
-    ; while cleaning the index from the files removed from the working tree;
-    ; this cleaning will facilitate a rebase, because there won't be any conflict
-    ; due to an "unclean" working directory (not in sync with the index).
-    ; The unwip will restore the deleted files to the working tree.
-    wip = !"git add --all; git ls-files --deleted -z | xargs -0 git rm; git commit --message='chore: WIP'"
-    unwip = !"git log -n 1 | grep -q -c 'chore: WIP' && git reset HEAD~1"
-
-
     ; Take a snapshot of your current working tree without removing changes.
     ; This is handy for refactoring where you can't quite fit what you've done
     ; into a commit but daren't stray too far from now without a backup.
     ;
     ; Running this:
-    ;    $ git snapshot
+    ;    $ git wip
     ;
     ; Creates this stash:
-    ;    stash@{0}: On feature/handy-git-tricks: chore: SNAPSHOT @ Mon Apr 8 12:39:06 BST 2013
+    ;    stash@{0}: On feature/handy-git-tricks: Mon Apr 8 12:39:06 BST 2013 [WIP]
     ;
     ; And seemingly no changes to your working tree.
-    snapshot = !git stash push "chore: SNAPSHOT @ $(date)" && git stash apply "stash@{0}"
+    ;
+    ; NOTE: renamed snapshot -> wip and modified to accept args for the stash message
+    wip = !sh -c \"git stash push -m '${*:-$(date)} [WIP]' && git stash apply 'stash@{0}'\"
 
     ; List all issues mentioned in commit messages between range of commits
     ;
@@ -415,4 +414,11 @@
     ;
     ; But will work with any valid commit range:
     ;    $ git issues master..HEAD
-    issues = !"sh -c \"git log $1 --oneline | grep -o \\\"#[0-9]\\+\\\" | sort -u\""
+    ;
+    ; NOTE: modified to print urls via git-open instead of only the numbers
+    issues = !"sh -c \"\
+            git log $1 --oneline \
+                | grep -o \\\"#[0-9]\\+\\\" \
+                | tr -d '#' \
+                | sort -u \
+                | xargs -I{} echo '$(git open -ip){}'\""

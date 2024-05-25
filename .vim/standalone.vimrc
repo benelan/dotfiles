@@ -157,7 +157,7 @@ if has("keymap")
 
     " Format the entire buffer preserving cursor location.
     " Requires the 'B' text object defined below.
-    nmap Q mtgqBg`t
+    nmap Q mtgqBg`t:delmarks t<CR>
 
     " Format selected text maintaining the selection.
     xmap Q gq`[v`]
@@ -253,14 +253,15 @@ if has("keymap")
         execute 'vnoremap <leader>' . char . ' "+' . char
     endfor
 
-    for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
-        execute 'nnoremap ' . char . ' "_' . char 
-        execute 'vnoremap ' . char . ' "_' . char 
-    endfor
-
-    vnoremap <leader>d "_d
     nnoremap <leader>Y "+y$
     nnoremap gY <CMD>let @+=@*<CR>
+
+    nnoremap x "_x
+    nnoremap X "_X
+    nnoremap r "_r
+    nnoremap R "_R
+    nnoremap s "_s
+    nnoremap S "_S
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" clear search highlights and reset syntax                   {{{
@@ -577,7 +578,8 @@ if has("autocmd")
 
         autocmd FileType qf,help,man,netrw
                     \ set nobuflisted
-                    \| nnoremap <silent> <buffer> q :bd<CR>
+                    \ | nnoremap <silent> <buffer> q :q<CR>
+                    \ | nnoremap <silent> <buffer> gq :bd!<CR>
 
         " Clear jumplist on startup
         autocmd VimEnter * clearjumps

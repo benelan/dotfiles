@@ -32,7 +32,7 @@ nnoremap <Backspace> <C-^>
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
-nmap Q mtgqBg`t
+nmap Q mtgqBg`t:delmarks t<CR>
 
 " Format selected text maintaining the selection.
 xmap Q gq`[v`]
@@ -95,11 +95,6 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
 endfor
 
 "" system clipboard {{{2
-for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
-    execute 'nnoremap ' . char . ' "_' . char
-    execute 'vnoremap ' . char . ' "_' . char
-endfor
-
 for char in [ 'y', 'p', 'P' ]
     execute 'nnoremap <leader>' . char . ' "+' . char
     execute 'vnoremap <leader>' . char . ' "+' . char
@@ -107,6 +102,13 @@ endfor
 
 nnoremap <leader>Y "+y$
 nnoremap gY <CMD>let @+=@*<CR>
+
+nnoremap x "_x
+nnoremap X "_X
+nnoremap r "_r
+nnoremap R "_R
+nnoremap s "_s
+nnoremap S "_S
 
 "" spelling {{{2
 " fix the next/previous misspelled word
@@ -244,9 +246,10 @@ if has("autocmd")
 
         autocmd FileType * setlocal formatoptions-=o
 
-        autocmd FileType qf,help,man,netrw
+        autocmd FileType qf,help,man,netrw,git
                     \ set nobuflisted
-                    \ | nnoremap <silent> <buffer> q :bd<CR>
+                    \ | nnoremap <silent> <buffer> q :q<CR>
+                    \ | nnoremap <silent> <buffer> gq :bd!<CR>
 
         autocmd QuickFixCmdPost [^l]* nested cwindow
         autocmd QuickFixCmdPost l* nested lwindow

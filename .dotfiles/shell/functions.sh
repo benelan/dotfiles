@@ -145,7 +145,6 @@ if supports inotifywait; then
         while inotifywait -qqre modify,close_write,moved_to,move_self \
             --exclude '.git|node_modules|dist' "$target"; do
             bash -c "${*:-$notify_cmd 'changes detected' $target}"
-            echo
             sleep 1
         done
         unset target
@@ -184,11 +183,11 @@ dataurl() {
 
 # param 1: name of file or directory to find
 # param 2: directory to start from (defaults to PWD)
-# example: $ parent-find .git
-parent_find() {
+# example: $ pfind .git
+pfind() {
     test -e "${2:-$PWD}/$1" && echo "${2:-$PWD}" && return 0
     [ '/' = "${2:-$PWD}" ] && return 1
-    parent-find "$1" "$(dirname "${2:-$PWD}")"
+    pfind "$1" "$(dirname "${2:-$PWD}")"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
