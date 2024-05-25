@@ -15,21 +15,15 @@
 
 [core]
     excludesfile = ~/.config/git/ignore
-    ; Disable line endings output conversion.
-    autocrlf = input
     ; Speed up commands involving untracked files such as `git status`.
     ; See --untracked-cache in https://git-scm.com/docs/git-update-index
     untrackedCache = true
 
-[apply]
-    ; Detect whitespace errors when applying a patch.
-    whitespace = fix
-
 [branch]
     ; Show most recently changed branches first.
     sort = -committerdate
-    autosetuprebase = always
-    autosetupmerge = always
+    ; autoSetupMerge = simple
+    ; autoSetupRebase = always
 
 [color "branch"]
     current = yellow reverse
@@ -60,19 +54,10 @@
 
 [diff]
     algorithm = patience
-    tool = fugitive
+    tool = vimdiff
     colorMoved = zebra
     keepBackup = false
-    ; Detect copies as well as renames.
     renames = copies
-    renameLimit = 9328
-    compactionHeuristic = true
-
-[diff "gpg"]
-    textconv = gpg -q --no-tty --decrypt
-
-[diff "bin"]
-    textconv = hexdump -v -C
 
 [difftool]
     trustExitCode = true
@@ -84,7 +69,6 @@
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
-    summary = true
     ; options: nvimdiff, diffconflicts, fugitive
     tool = diffconflicts
 
@@ -117,23 +101,28 @@
         | nnoremap <leader>w <CMD>wqa<CR>       \
         | Gvdiffsplit!' $MERGED
 
+[rebase]
+    missingCommitsCheck = warn
+
 [status]
-    ; Enable submodule summary of commits.
+    ; Display submodule and stash info
     submoduleSummary = true
+    showStash = true
 
 [help]
     ; Correct and execute mistyped commands.
-    autocorrect = 15
+    autocorrect = 10
 
 [advice]
     addIgnoredFile = false
-    statusHint = false
+    statusHints = false
+    detachedHead = false
 
 [log]
     date = format:"%a %F %R"
 
 [format]
-    ; man --pager='less -p "^PRETTY FORMATS"' git-log
+    ; For more info see $ man --pager='less -p "^PRETTY FORMATS"' git-log
     ; pretty = format:"%C(green)%h  %C(yellow)%ah  %C(cyan)%an  %C(white)%s%C(auto)% d%C(reset)"
     pretty = format:"%C(green)%h  %C(yellow)%ah  %C(reset)%s  %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)% d"
 
@@ -159,17 +148,9 @@
 
     a = add
     all = add --all
-    au = add --update
-
-    ; add unmerged files
-    aum  = !"git ls-files --unmerged | cut -f2 | sort -u | xargs git add"
 
     b = branch
     bd = branch -D
-    buoc = !git branch -u origin/$(git symbolic-ref --short HEAD)
-
-    ; list branches with author names and the most recently created at the bottom
-    bc = for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p) %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes
 
     c = commit --verbose
     call = commit --verbose --all
@@ -191,7 +172,6 @@
     d = diff
     ds = diff --staged
     dt = difftool
-    dn = diff --name-status
     dh = "!f() { git diff HEAD~${1:-1}..HEAD~$((${1:-1} - 1)) -- . ':(exclude)package-lock.json'; }; f"
 
     ; edit the files changed locally (staged and unstaged)
@@ -226,7 +206,7 @@
     mt = mergetool
 
     p = push
-    puoc = !git push --set-upstream origin $(git symbolic-ref --short HEAD)
+    puoc = push -u origin HEAD
 
     pl = pull --rebase --autostash
     plum = !git pull --rebase --autostash upstream "$(git bdefault)"
@@ -255,16 +235,11 @@
     stpo = stash pop
     stpu = stash push
 
-    ; delete multiple stashes, e.g. $ git stdr 5 8
-    ; would delete @stash{5}, @stash{6}, @stash{7}, and @stash{8}
-    stdr = "!f() { for _ in $(seq $1 ${2:-$1}); do git stash drop $1; done; }; f"
-
     sm = submodule
     smu = submodule update --init --recursive
 
     t = tag
     tnext = name-rev --tags --name-only
-
     treset = !git tag -l | xargs git tag -d && git fetch --tags
 
     w = worktree
@@ -283,11 +258,6 @@
     ; log with full commit message and stat
     lll = log --stat --pretty=format:'%C(green)%h %C(yellow)%ah %C(black bold)- %C(white dim ul)%s%C(reset) %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)%d%+b'
 
-    new = log HEAD@{1}..HEAD@{0}
-
-    ; log the last n commits, e.g. $ git ln 69
-    ln = !git log --graph --abbrev-commit -n
-
     ; add/remove file(s) to/from index
     hide = update-index --assume-unchanged
     unhide = update-index --no-assume-unchanged
@@ -303,9 +273,6 @@
         read -r should_push; \
         case \"$should_push\" in [yY]*) git push origin \"$1\" --force ;; esac; \
         }; f"
-
-    ; credit an author on the latest commit.
-    credit = "!f() { [ -z \"$2\" ] && echo 'Error: provide an author name and email' || git commit --amend --author \"$1 <$2>\" -C ${3:-HEAD}; }; f"
 
     ; get the default branch
     bdefault = "!f() { (git remote set-head ${1:-origin} --auto || git remote set-head upstream --auto 2>/dev/null) | awk '{print $NF}'; }; f"
