@@ -13,11 +13,6 @@
 -->          t     Terminal-Job                                   |
 -------------------->  :h map-listing  <---------------------------
 
--- open uri/path under the cursor or line
-keymap("n", "gx", "<Plug>SystemOpen", "Open with system")
--- open current directory with file explorer
-keymap("n", "g.", "<Plug>SystemOpenCWD", "Open directory with system")
-
 -- -- remaps to center movement in the screen
 keymap("n", "<C-u>", "<C-u>zz", "Scroll half page up")
 keymap("n", "<C-d>", "<C-d>zz", "Scroll half page down")
@@ -123,17 +118,23 @@ keymap({ "n", "v" }, "<leader>gr", ":diffget<BAR>diffupdate<CR>", "Get hunk (dif
 keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 
 -- three way diff for merge conflict resolution
-keymap("n", "<localleader>x", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
+keymap(
+  { "n", "v" },
+  "<localleader>x",
+  ":diffget BA<BAR>diffupdate<CR>",
+  "Choose hunk from BASE (diff)"
+)
 keymap(
   "n",
   "<localleader>X",
   "<CMD>%diffget BA<BAR>diffupdate<CR>",
-  "Choose all hunks from base (diff)"
+  "Choose all hunks from BASE (diff)"
 )
-keymap("n", "]x", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
-keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from remote (diff)")
-keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
-keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from local (diff)")
+
+keymap({ "n", "v" }, "]x", ":diffget RE<BAR>diffupdate<CR>", "Choose hunk from REMOTE (diff)")
+keymap({ "n", "v" }, "[x", ":diffget LO<BAR>diffupdate<CR>", "Choose hunk from LOCAL (diff)")
+keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from REMOTE (diff)")
+keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from LOCAL (diff)")
 
 -------------------------------------------------------------------------------
 ----> Buffers, windows, tabs
@@ -205,7 +206,6 @@ keymap("n", "<leader>sth", function()
   end
 end, "Toggle treesitter highlighting")
 
-
 ---Toggles diagnostics for the current buffer, or globally if called with a bang
 ---@param event table The event that triggered the command. If event.bang is true
 local function diagnostic_toggle(event)
@@ -230,4 +230,3 @@ vim.api.nvim_create_user_command("DiagnosticToggle", diagnostic_toggle, {
 
 keymap("n", "<leader>sd", "<CMD>DiagnosticToggle<CR>", "Toggle buffer diagnostics")
 keymap("n", "<leader>sD", "<CMD>DiagnosticToggle!<CR>", "Toggle global diagnostics")
-

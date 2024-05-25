@@ -474,6 +474,10 @@ install_script_completion() {
         pandoc --bash-completion >"$COMPLETIONS_DIR/pandoc"
     fi
 
+    if _has glow; then
+        glow completion bash >"$COMPLETIONS_DIR/glow"
+    fi
+
     if _has gh; then
         gh completion -s bash >"$COMPLETIONS_DIR/gh"
     fi

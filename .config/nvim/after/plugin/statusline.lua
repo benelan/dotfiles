@@ -1,4 +1,3 @@
-local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
 
 local highlights = {
@@ -103,33 +102,6 @@ local function fugitive_head(fallback)
   return fallback and fallback() or ""
 end
 
----Show number of updatable plugins.
-local function lazy_updates(fallback)
-  return vim.g.use_devicons
-      and has_lazy
-      and lazy.has_updates()
-      and string.format("  %s%s  ", fmt_hl(highlights.lazy), lazy.updates())
-    or fallback and fallback()
-    or ""
-end
-
----Show debug info.
-local function debug_state(fallback)
-  if vim.g.loaded_dap == true then
-    local has_dap, dap = pcall(require, "dap")
-
-    if has_dap then
-      local dap_status = dap.status()
-
-      if not vim.tbl_contains({ "", nil }, dap_status) then
-        return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
-      end
-    end
-  end
-
-  return fallback and fallback() or ""
-end
-
 function JaminStatusLine()
   return ""
     ---- left flags section ----------------------
@@ -140,12 +112,12 @@ function JaminStatusLine()
     .. gitsigns_head(fugitive_head)
     ---- left state section ----------------------
     .. fmt_hl(highlights.section_state)
-    .. debug_state(gitsigns_state)
+    .. gitsigns_state()
     ---- split between left/right sections -------
     .. "%="
     ---- right state section ---------------------
     .. fmt_hl(highlights.section_state)
-    .. buffer_diagnostics(lazy_updates)
+    .. buffer_diagnostics()
     ---- right context section -------------------
     .. fmt_hl(highlights.section_context)
     .. "%<" -- start collapsing on the file path

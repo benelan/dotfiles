@@ -36,14 +36,7 @@ alias ls="ls --color --group-directories-first"
 # list all files/dirs, long format, sort by time
 alias ll="ls -hogArt --color --time-style=long-iso --group-directories-first"
 
-# List directories, long format, sort by time
-alias lsd="ls -radgoth */ --color --time-style=long-iso"
-
-# Lists hidden files, long format, sort by time
-alias lsh="ls -radgoth .?* --color --time-style=long-iso --group-directories-first"
-
 # Always enable colored grep/diff/tree
-supports colordiff && alias diff='colordiff'
 alias grep='grep --color=auto'
 alias tree='tree -C'
 
@@ -81,10 +74,8 @@ fi
 
 # Time and weather {{{1
 # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
-if supports date; then
-    alias now='date +"%Y-%m-%dT%H:%M:%S"'
-    alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
-fi
+alias now='date +"%Y-%m-%dT%H:%M:%S"'
+alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
 
 # Displays detailed weather and forecast.
 wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
@@ -117,7 +108,6 @@ if supports npm; then
     alias ni="npm install"
     alias nu="npm uninstall"
     alias ns="npm start"
-    alias nl="npm link"
     alias nt="npm test"
     alias nr="npm run"
     alias nrb="npm run build"

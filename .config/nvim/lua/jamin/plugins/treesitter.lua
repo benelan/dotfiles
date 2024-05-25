@@ -10,6 +10,19 @@ return {
     opts = { use_default_keymaps = false, max_join_length = 420 },
   },
 
+  ------------------------------------------------------------------------------
+  -- add print statements for debugging
+  {
+    "andrewferrier/debugprint.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "DeleteDebugPrints",
+    keys = {
+      { "g?", mode = { "n", "v", "o" } },
+      { "g?d", "<CMD>DeleteDebugPrints<CR>" },
+    },
+    opts = {},
+  },
+
   -----------------------------------------------------------------------------
   -- set commentstring based on treesitter node
   {"folke/ts-comments.nvim", event = "VeryLazy", opts = {}},

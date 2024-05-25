@@ -27,16 +27,6 @@ M.filetypes = {
     "org",
     "text",
   },
-  webdev = {
-    "astro",
-    "html",
-    "javascript",
-    "javascriptreact",
-    "svelte",
-    "typescript",
-    "typescriptreact",
-    "vue",
-  },
   marker_folds = {
     "",
     "conf",
@@ -54,7 +44,6 @@ M.lsp_servers = {
   "cssls",
   -- "docker_compose_language_service",
   "dockerls",
-  -- "efm",
   -- "emmet_language_server",
   "eslint",
   -- "gopls",
@@ -70,8 +59,7 @@ M.lsp_servers = {
   "svelte",
   "tailwindcss",
   "taplo",
-  -- "typos_lsp",
-  -- "tsserver",
+  "tsserver",
   "vimls",
   "volar",
   "yamlls",
@@ -218,7 +206,6 @@ local i = function(icon, backup) return vim.g.use_devicons and icon or backup or
 
 M.icons = {
   ui = {
-    docs = i(" ", "🖹 "),
     -- utf8 icons don't need fallbacks
     prompt = "❱ ",
     select = "➤  ",
@@ -311,30 +298,13 @@ M.icons = {
     [vim.diagnostic.severity.INFO] = i("󰋽 ", "I"),
     [vim.diagnostic.severity.HINT] = i("󰰀 ", "H"),
   },
-  debug = {
-    breakpoint = i("󰆤 ", "B"),
-    breakpoint_condition = i("󱄶 ", "C"),
-    breakpoint_rejected = i("󰽅 ", "R"),
-    logpoint = i("󰆣 ", "L"),
-    stopped = i("󰿅 ", "S"),
-  },
   git = {
     branch = i(" "),
     added = i("󰜄 ", "+"),
     changed = i("󱗝 ", "∗"),
     removed = i("󰛲 ", "‒"),
   },
-  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
   border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
-}
-
-M.icons.test = {
-  passed = i("󰗡 ", M.icons.ui.checkmark),
-  running = i("󰁚 ", M.icons.ui.play),
-  skipped = i("󰍷 ", M.icons.ui.skip),
-  failed = i("󰅚 ", M.icons.ui.x),
-  unknown = i("󰘥 ", M.icons.ui.question_mark),
-  running_animated = M.icons.progress,
 }
 
 return M

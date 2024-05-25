@@ -182,7 +182,7 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- use VSC*de snippets with native neovim snippets (requires v0.10.0)
+  -- use VSC*de snippets with native neovim module (requires v0.10.0)
   {
     "garymjr/nvim-snippets",
     dependencies = { "rafamadriz/friendly-snippets" },
@@ -191,12 +191,18 @@ return {
       global_snippets = { "all", "global" },
       search_paths = { vim.uv.os_homedir() .. "/.config/Code/User/snippets" },
       extended_filetypes = {
+        markdown = { "license" },
+        text = { "license" },
+        [""] = { "license" },
+        scss = { "css" },
+        html = { "css" },
+        sh = { "shell" },
+        dockerfile = { "docker" },
         typescript = { "javascript" },
         javascriptreact = { "javascript", "html" },
         typescriptreact = { "javascript", "typescript", "javascriptreact", "html" },
-        vue = { "javascript", "typescript", "html", "css" },
-        svelte = { "javascript", "typescript", "html", "css" },
-        astro = { "javascript", "typescript", "html", "css" },
+        svelte = { "html", "css" },
+        astro = { "html", "css" },
       },
     },
 

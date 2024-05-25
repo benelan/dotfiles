@@ -4,20 +4,12 @@
 # Utilities                                                             {{{
 # --------------------------------------------------------------------- {|}
 
-## search history                                             {{{
-
-hist() {
-    grep --color=always "$*" "$HISTFILE" |
-        less --no-init --raw-control-chars --quiet
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## search for text within the current directory               {{{
 
 s() {
-    grep --color=always "$*" --ignore-case --recursive \
-        --exclude-dir=".git" --exclude-dir="node_modules" . |
-        less --no-init --raw-control-chars --quiet
+    grep --color=always --ignore-case --recursive --exclude-dir=".git" \
+        --exclude-dir="node_modules" --exclude-dir="dist" "$*" . |
+        ${PAGER:-less}
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -79,27 +71,9 @@ if supports fff; then
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## format JSON and sort fields                                {{{
-
-# arg1: input file
-# arg2: output file, defaults to input file
-fmtjson() {
-    jq '.' -sSM "$1" |
-        jq 'reduce .[] as  $obj ({}; . * $obj)' -M >/tmp/fmt.json &&
-        mv /tmp/fmt.json "${2:-"$1"}"
-
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## pandoc functions for converting between text filetypes     {{{
 
 if supports pandoc; then
-    # Open a markdown file in the less pager
-    mdp() {
-        pandoc -s -f gfm -t man "${@:--}" | man -l -
-        # use groff on mac: . . . . . . . | groff -T utf8 -man | less
-    }
-
     # Convert markdown to HTML
     md2html() {
         mkdir -p "$DOTFILES/cache/pandoc"
@@ -145,50 +119,22 @@ if supports inotifywait; then
         while inotifywait -qqre modify,close_write,moved_to,move_self \
             --exclude '.git|node_modules|dist' "$target"; do
             bash -c "${*:-$notify_cmd 'changes detected' $target}"
-            echo
             sleep 1
         done
         unset target
     }
 fi
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## get gzipped file size                                      {{{
-
-gz() {
-    orig=$(wc -c <"$1")
-    gzip=$(gzip -c "$1" | wc -c)
-    ratio=$(echo "$gzip * 100/ $orig" | bc -l)
-    saved=$(echo "($orig - $gzip) * 100/ $orig" | bc -l)
-
-    printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" \
-        "$orig" "$gzip" "$saved" "$ratio"
-    unset orig gzip ratio saved
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## create a data URL from a file                              {{{
-
-dataurl() {
-    mimetype=$(file --mime-type "$1" | cut -d ' ' -f2)
-    if [ "$mimetype" = "text/*" ]; then
-        mimetype="${mimetype};charset=utf-8"
-    fi
-
-    echo "data:${mimetype};base64,$(openssl base64 -in "$1" | tr -d '\n')"
-    unset mimetype
-}
-
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 ## recursively search parent directory for file               {{{
 
 # param 1: name of file or directory to find
 # param 2: directory to start from (defaults to PWD)
-# example: $ parent-find .git
-parent_find() {
+# example: $ pfind .git
+pfind() {
     test -e "${2:-$PWD}/$1" && echo "${2:-$PWD}" && return 0
     [ '/' = "${2:-$PWD}" ] && return 1
-    parent-find "$1" "$(dirname "${2:-$PWD}")"
+    pfind "$1" "$(dirname "${2:-$PWD}")"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -220,22 +166,9 @@ wtfport() {
 killport() { wtfport "$1" | xargs kill -9; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## find real from shortened url                               {{{
+## determine where a shortened URL redirects                  {{{
 
 unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## list hosts defined in ssh config                           {{{
-
-ssh-list() {
-    [ -r ~/.ssh/config ] &&
-        awk '$1 ~ /Host$/ {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## add all ssh private keys to agent                          {{{
-
-ssh-add-all() { grep -slR "PRIVATE" ~/.ssh | xargs ssh-add; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## display all ip addresses for this host                     {{{
@@ -378,11 +311,7 @@ if supports fzf; then
                 fasd -dl |
                     fzf --tac --reverse --no-sort --no-multi --exit-0 \
                         --select-1 --tiebreak=index --query="$*" \
-                        --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
-                        --preview-window='right:hidden:wrap' \
-                        --bind=ctrl-v:toggle-preview \
-                        --bind=ctrl-x:toggle-sort \
-                        --header='(view:ctrl-v) (sort:ctrl-x)'
+                        --preview='tree -C {} | head -n $((FZF_PREVIEW_LINES * 100))'
             )" || return 1
         }
 
@@ -392,10 +321,8 @@ if supports fzf; then
             [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
 
             file="$(
-                fasd -Rfl "$1" |
-                    fzf --select-1 --exit-0 --no-sort --no-multi
-            )" &&
-                ${EDITOR:-vim} "${file}" || return 1
+                fasd -Rfl "$1" | fzf --select-1 --exit-0 --no-sort --no-multi
+            )" && ${EDITOR:-vim} "${file}" || return 1
 
             unset file
         }
@@ -412,9 +339,7 @@ if supports fzf; then
             --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)' \
             --bind="ctrl-o:execute(o {+} >/dev/null 2>&1)" \
             --bind="ctrl-e:execute(${EDITOR:-vim} {+})+abort" \
-            --bind="enter:execute(${EDITOR:-vim} {+})+abort" \
-            --bind=ctrl-v:toggle-preview \
-            --bind=ctrl-x:toggle-sort
+            --bind="enter:execute(${EDITOR:-vim} {+})+abort"
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -427,8 +352,6 @@ if supports fzf; then
         fi
         rg --files-with-matches --no-messages "$*" |
             fzf --multi --no-select-1 --exit-0 --ansi \
-                --bind=ctrl-v:toggle-preview \
-                --bind=ctrl-x:toggle-sort \
                 --bind "ctrl-o:execute(o {})" \
                 --bind "ctrl-y:execute(echo {} | cb)" \
                 --bind="enter:execute(${EDITOR:-vim} {+})+abort" \

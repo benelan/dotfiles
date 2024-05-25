@@ -98,5 +98,4 @@ return {
       { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
     },
   },
-
 }

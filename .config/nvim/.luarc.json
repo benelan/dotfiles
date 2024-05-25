@@ -5,7 +5,7 @@
   },
   "diagnostics": {
     "libraryFiles": "Disable",
-    "globals": ["c", "d", "f", "fmt", "i", "r", "rep", "s", "sn", "t", "vim"]
+    "globals": ["vim"]
   },
   "workspace.checkThirdParty": false,
   "workspace.library": [
@@ -15,12 +15,10 @@
     "~/.local/share/nvim/lazy/lazy.nvim/lua",
     "~/.local/share/nvim/lazy/mason-lspconfig.nvim/lua",
     "~/.local/share/nvim/lazy/mason.nvim/lua",
-    "~/.local/share/nvim/lazy/neogen/lua",
     "~/.local/share/nvim/lazy/none-ls.nvim/lua",
     "~/.local/share/nvim/lazy/nvim-cmp/lua",
     "~/.local/share/nvim/lazy/nvim-lspconfig/lua",
     "~/.local/share/nvim/lazy/nvim-treesitter-context/lua",
-    "~/.local/share/nvim/lazy/nvim-treesitter-textobjects/lua",
     "~/.local/share/nvim/lazy/nvim-treesitter/lua",
     "~/.local/share/nvim/lazy/nvim-web-devicons/lua",
     "~/.local/share/nvim/lazy/plenary.nvim/lua",

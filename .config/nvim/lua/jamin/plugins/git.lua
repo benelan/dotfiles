@@ -73,6 +73,30 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- [F]ugitive extension for viewing commit history [log]
+  {
+    "rbong/vim-flog",
+    dependencies = "vim-fugitive",
+    cmd = { "Flog", "Flogsplit", "Floggit" },
+    keys = {
+      {
+        "<leader>gh",
+        "<CMD>Flogsplit -path=%<CR>",
+        desc = "Git buffer history (flog)",
+        mode = "n",
+      },
+      { "<leader>gH", "<CMD>Flog<CR>", desc = "Git history (flog)", mode = "n" },
+      { "<leader>gh", ":Flog<CR>", desc = "Git history (flog)", mode = "v" },
+      {
+        "<leader>gH",
+        ":<C-u>call VisualSelection('pcre')<CR>:<C-R>=@/<CR><C-b>Flog -patch-search=<CR>",
+        desc = "Find selected text in git patch history (flog)",
+        mode = "v",
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- git change indicators, blame, and hunk utils
   {
     "lewis6991/gitsigns.nvim",

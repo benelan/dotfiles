@@ -57,9 +57,9 @@ return {
     cmd = { "DevdocsFetch", "DevdocsOpen", "DevdocsOpenFloat", "DevdocsOpenCurrent" },
 
     keys = {
-      { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
+      { "<leader>ro", "<CMD>vsplit <BAR> DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
+      { "<leader>rt", "<CMD>vsplit <BAR> DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
       { "<leader>rf", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
-      { "<leader>rt", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
     },
 
     opts = function()
@@ -72,7 +72,7 @@ return {
         or {
           previewer_cmd = "glow",
           picker_cmd = true,
-          cmd_args = { "-s", "dark", "-w", width },
+          cmd_args = { "-s", "dark", "-w", width - 10 },
           picker_cmd_args = { "-s", "dark" },
         }
 

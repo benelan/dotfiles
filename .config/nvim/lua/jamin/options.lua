@@ -20,9 +20,7 @@ vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
 -- https://github.com/wez/wezterm/issues/4607
 if vim.env.WEZTERM_PANE ~= nil then vim.opt.termsync = false end
 
-local ui = vim.api.nvim_list_uis() or {}
-vim.opt.pumheight = #ui > 0 and math.floor(ui[1].height / 2) or 20
-
+vim.opt.pumheight = 20
 vim.opt.showtabline = 2
 vim.opt.laststatus = 3
 vim.opt.relativenumber = true
@@ -32,12 +30,9 @@ vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
-vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
-vim.opt.scrolloff = 5
-vim.opt.sidescrolloff = 8
 vim.opt.linebreak = true
 vim.opt.breakindent = true
 
