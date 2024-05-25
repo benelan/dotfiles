@@ -96,8 +96,8 @@ endfor
 
 "" system clipboard {{{2
 for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
-    execute 'nnoremap ' . char . ' "_' . char 
-    execute 'vnoremap ' . char . ' "_' . char 
+    execute 'nnoremap ' . char . ' "_' . char
+    execute 'vnoremap ' . char . ' "_' . char
 endfor
 
 for char in [ 'y', 'p', 'P' ]
@@ -106,7 +106,6 @@ for char in [ 'y', 'p', 'P' ]
 endfor
 
 nnoremap <leader>Y "+y$
-
 nnoremap gY <CMD>let @+=@*<CR>
 
 "" spelling {{{2
@@ -126,15 +125,11 @@ vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fro
 inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
 "" ex commands (vimgrep, search/replace, etc) {{{2
-" Edit contents of register
-nnoremap <leader>Er :<c-u><c-r><c-r>='let @'. v:register
-            \ .' = '. string(getreg(v:register))<CR><c-f><left>
-
-" start ex command for vimgrep
-nnoremap <leader>Eg :<C-U>vimgrep /\<<C-r><C-w>\>>\c/j **<S-Left><S-Left><Right>
+" start ex command for vimgrep on word under cursor
+nnoremap <leader>wf :<C-U>vimgrep /\<<C-r><C-w>\>>\c/j **<S-Left><S-Left><Right>
 
 " replace word under cursor in whole buffer
-nnoremap <leader>ER :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+nnoremap <leader>wr :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
 "" plug keymaps {{{2
 nnoremap g: <Plug>(ColonOperator)
@@ -169,61 +164,8 @@ endfunction
 
 command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
-"" quickfix list to/from file for later access {{{2
-" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
-" Save the current quickfix list to a file.
-command! QfSave call getqflist()
-    \ ->map({i, x -> (
-    \     x.bufnr != 0
-    \         ? bufname(x.bufnr) .":". x.lnum .":". x.col .":"
-    \         : ''
-    \ ). x.text })
-    \ ->writefile(input('Write? ', 'Quickfix.txt'), 's')
-
-" Save all open buffers to a file that can be loaded as a quickfix list (-q).
-command! QfSaveBufs call getbufinfo()
-    \ ->filter({i, x -> x.listed && x.name != ''})
-    \ ->map({i, x -> fnamemodify(x.name, ':~') .':'. string(x.lnum) .': '})
-    \ ->writefile(input('Write? ', 'Buffers.txt'), 's')
-
-" Copy all quickfix entries for the current file into location list entries.
-command! Qf2Ll call getqflist()
-    \ ->filter({i, x -> x.bufnr == bufnr()})
-    \ ->setloclist(0)
-
-"" grep all files in the quickfix/buffer/argument lists {{{2
-command! -nargs=* GrepQfList call getqflist()
-    \ ->map({i, x -> fnameescape(bufname(x.bufnr))})
-    \ ->sort() ->uniq() ->join(' ')
-    \ ->M('grep <args> ')
-    \ ->execute()
-
-command! -nargs=* GrepBufList call range(0, bufnr('$'))
-    \ ->filter({i, x -> buflisted(x)})
-    \ ->map({i, x -> fnameescape(bufname(x))})
-    \ ->join(' ')
-    \ ->M('grep <args> ')
-    \ ->execute()
-
-command! -nargs=* GrepArgList grep <args> ##
-
-" return a string if the first arg is not empty.
-function! M(x, y)
-    return a:x == '' || a:x == v:false ? '' : a:y . a:x
-endfunction
-
 "" wipe all registers {{{2
 command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
-
-"" toggle netrw open/close {{{2
-function! s:NetrwToggle()
-  try | Rexplore
-  catch | Explore
-  endtry
-endfunction
-
-command! Netrw call <sid>NetrwToggle()
-nnoremap <silent> <leader>e <CMD>Netrw<CR>
 
 "" go to next/previous merge conflict hunks {{{2
 " from https://github.com/tpope/vim-unimpaired
@@ -278,48 +220,7 @@ command! -bang -complete=buffer -nargs=? Bdelete
 command! -bang -complete=buffer -nargs=? Bwipeout
 	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
 
-nnoremap <silent> <leader><Backspace> <CMD>Bdelete<CR>
-
-"" fugitive open commit's diff per file {{{2
-" https://github.com/tpope/vim-fugitive/issues/132#issuecomment-649516204
-command! DiffHistory call s:view_git_history()
-
-function! s:view_git_history() abort
-  Git difftool --name-only ! !^@
-  call s:diff_current_quickfix_entry()
-  " Bind <CR> for current quickfix window to properly set up diff split layout after selecting an item
-  copen
-  nnoremap <buffer> <CR> <CR><BAR>:call <sid>diff_current_quickfix_entry()<CR>
-  wincmd p
-endfunction
-
-function s:diff_current_quickfix_entry() abort
-  " Cleanup windows
-  for window in getwininfo()
-    if window.winnr !=? winnr() && bufname(window.bufnr) =~? '^fugitive:'
-      exe 'bdelete' window.bufnr
-    endif
-  endfor
-  cc
-  call s:add_mappings()
-  let qf = getqflist({'context': 0, 'idx': 0})
-  if get(qf, 'idx') && type(get(qf, 'context')) == type({}) && type(get(qf.context, 'items')) == type([])
-    let diff = get(qf.context.items[qf.idx - 1], 'diff', [])
-    echom string(reverse(range(len(diff))))
-    for i in reverse(range(len(diff)))
-      exe (i ? 'leftabove' : 'rightbelow') 'vert diffsplit' fnameescape(diff[i].filename)
-      call s:add_mappings()
-    endfor
-  endif
-endfunction
-
-function! s:add_mappings() abort
-  nnoremap <buffer>]q :cnext <BAR> :call <sid>diff_current_quickfix_entry()<CR>
-  nnoremap <buffer>[q :cprevious <BAR> :call <sid>diff_current_quickfix_entry()<CR>
-  " Reset quickfix height. Sometimes it messes up after selecting another item
-  11copen
-  wincmd p
-endfunction
+nnoremap <silent> <leader><BS> <CMD>Bdelete<CR>
 
 " Autocommands {{{1
 if has("autocmd")
@@ -341,8 +242,17 @@ if has("autocmd")
             \ |   exe "normal! g`\""
             \ | endif
 
+        autocmd FileType * setlocal formatoptions-=o
+
+        autocmd FileType qf,help,man,netrw
+                    \ set nobuflisted
+                    \ | nnoremap <silent> <buffer> q :bd<CR>
+
         autocmd QuickFixCmdPost [^l]* nested cwindow
         autocmd QuickFixCmdPost l* nested lwindow
+
+        autocmd BufEnter term://* startinsert
+        autocmd BufLeave term://* stopinsert
       augroup END
 
     "" set global marks by filetype when leaving buffers {{{2
@@ -386,7 +296,7 @@ if has("autocmd")
 
         " [D]ata/metadata files
         autocmd BufLeave,BufWinLeave,BufFilePost
-                    \ \(//:\)\@<!*.\(csv\|tsv\|json\|toml\)
+                    \ \(//:\)\@<!*.\(csv\|tsv\|json\|jsonc\|toml\)
                     \ normal! mD
 
         autocmd BufLeave,BufWinLeave,BufFilePost
@@ -420,26 +330,6 @@ if has("autocmd")
         autocmd BufLeave,BufWinLeave,BufFilePost
                     \ \(//:\)\@<!$NOTES/**.md
                     \ normal! mN
-    augroup END
-
-    "" filetype-specific options {{{2
-    augroup jamin_filetype_options
-        autocmd!
-        autocmd FileType * setlocal formatoptions-=o
-
-        autocmd FileType qf,help,man
-                    \ set nobuflisted
-                    \ | nnoremap <silent> <buffer> q :q<CR>
-    augroup END
-
-    "" automatically toggle some options on enter/leave {{{2
-    augroup jamin_toggle_options
-        autocmd!
-        "  autocmd BufEnter,FocusGained,WinEnter * if &number | set relativenumber | endif
-        "  autocmd BufLeave,FocusLost,WinLeave * if &number | set norelativenumber | endif
-
-        autocmd BufEnter term://* startinsert
-        autocmd BufLeave term://* stopinsert
     augroup END
 
     "" set makeprg or use a builtin compiler when possible {{{2

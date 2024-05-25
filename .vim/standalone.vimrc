@@ -162,7 +162,7 @@ if has("keymap")
     " Format selected text maintaining the selection.
     xmap Q gq`[v`]
 
-    nnoremap <Backspace> <C-^>
+    nnoremap <BS> <C-^>
 
     nnoremap n nzzzv
     nnoremap N Nzzzv
@@ -194,6 +194,13 @@ if has("keymap")
     " Create a new line above/below the cursor
     nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
+
+    " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
+    nnoremap <silent> - <CMD>execute (
+        \ &filetype ==# "netrw"
+            \ ? "normal! -"
+            \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
+    \)<CR>
 
     " Change pwd to the buffer's directory
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
@@ -229,11 +236,11 @@ if has("keymap")
     " add closing brackets
     inoremap (<CR> (<CR>)<Esc>O
     inoremap {<CR> {<CR>}<Esc>O
-    inoremap {; {<CR>};<Esc>O
-    inoremap {, {<CR>},<Esc>O
+    inoremap {;<CR> {<CR>};<Esc>O
+    inoremap {,<CR> {<CR>},<Esc>O
     inoremap [<CR> [<CR>]<Esc>O
-    inoremap [; [<CR>];<Esc>O
-    inoremap [, [<CR>],<Esc>O
+    inoremap [;<CR> [<CR>];<Esc>O
+    inoremap [,<CR> [<CR>],<Esc>O
 
     " exit insert mode in terminal buffers
     tnoremap <Esc><Esc> <C-\><C-n>
@@ -241,18 +248,18 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" system clipboard                                           {{{
 
-    nnoremap <leader>y "+y
-    vnoremap <leader>y "+y
-    nnoremap <leader>Y "+y$
+    for char in [ 'y', 'p', 'P' ]
+        execute 'nnoremap <leader>' . char . ' "+' . char
+        execute 'vnoremap <leader>' . char . ' "+' . char
+    endfor
+
+    for char in [ 'x', 'X', 's', 'S', 'r', 'R' ]
+        execute 'nnoremap ' . char . ' "_' . char 
+        execute 'vnoremap ' . char . ' "_' . char 
+    endfor
 
     vnoremap <leader>d "_d
-
-    nnoremap <leader>p "+p
-    vnoremap <leader>p "+p
-    vnoremap p "_dP
-
-    nnoremap x "_x
-
+    nnoremap <leader>Y "+y$
     nnoremap gY <CMD>let @+=@*<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -270,19 +277,22 @@ if has("keymap")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" git difftool/mergetool keymaps for selecting hunks         {{{
 
-    nnoremap <leader>gw :diffget<BAR>diffupdate<CR>
-    vnoremap <leader>gw :diffget<BAR>diffupdate<CR>
-    nnoremap <leader>gr :diffget<CR>
-    vnoremap <leader>gr :diffget<CR>
+    nnoremap <leader>gr :diffget<BAR>diffupdate<CR>
+    vnoremap <leader>gr :diffget<BAR>diffupdate<CR>
+    nnoremap <leader>gw :diffput<CR>
+    vnoremap <leader>gw :diffput<CR>
 
+    vnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
     nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
     nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
     " LOCAL is the left buffer when using vimdiff
+    vnoremap [x :diffget LO<BAR>diffupdate<CR>
     nnoremap [x :diffget LO<BAR>diffupdate<CR>
     nnoremap [X :%diffget LO<BAR>diffupdate<CR>
 
     " REMOTE is the rightmost buffer
+    vnoremap ]x :diffget RE<BAR>diffupdate<CR>
     nnoremap ]x :diffget RE<BAR>diffupdate<CR>
     nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
 
@@ -395,26 +405,6 @@ if has("eval")
     nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" netrw keymaps                                              {{{
-
-    function! s:NetrwToggle()
-        try | Rexplore
-        catch | Explore
-        endtry
-    endfunction
-
-    command! Netrw call <sid>NetrwToggle()
-    nnoremap <silent> <leader>e :Netrw<CR>
-
-
-    " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
-    nnoremap <silent> - <CMD>execute (
-        \ &filetype ==# "netrw"
-            \ ? "normal! -"
-            \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
-    \)<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" save the value of the last visual selection                {{{
 
     function! VisualSelection(...) range
@@ -463,7 +453,7 @@ if has("eval")
     command! -bang -complete=buffer -nargs=? Bwipeout
         \ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
-    nnoremap <silent> <leader><Backspace> :Bdelete<CR>
+    nnoremap <silent> <leader><BS> :Bdelete<CR>
     nnoremap <silent> <leader><Delete> :bdelete<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -585,16 +575,15 @@ if has("autocmd")
 
         autocmd FileType * setlocal formatoptions-=o
 
-        autocmd FileType qf,help,man
+        autocmd FileType qf,help,man,netrw
                     \ set nobuflisted
-                    \| nnoremap <silent> <buffer> q :q<CR>
+                    \| nnoremap <silent> <buffer> q :bd<CR>
 
         " Clear jumplist on startup
         autocmd VimEnter * clearjumps
 
         " Clear actively used file marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks QWEASD
-
+        autocmd VimEnter *  delmarks REQAZ
 
         " Set up keywordprg to open devdocs
         autocmd FileType {java,type}script{,react},vue,svelte,astro

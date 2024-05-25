@@ -25,7 +25,7 @@ keymap("n", "n", "nzzzv", "Next search result")
 keymap("n", "N", "Nzzzv", "Previous search result")
 
 -- Clear search highlight and escape
-keymap({ "i", "n" }, "<esc>", "<CMD>noh<CR><esc>", "Clear hls and escape")
+keymap({ "i", "n" }, "<ESC>", "<CMD>noh<CR><esc>", "Clear hls and escape")
 
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<", "," }
@@ -137,17 +137,23 @@ keymap({ "n", "v" }, "<leader>gr", ":diffget<BAR>diffupdate<CR>", "Get hunk (dif
 keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
 
 -- three way diff for merge conflict resolution
-keymap("n", "<localleader>x", "<CMD>diffget BA<BAR>diffupdate<CR>", "Choose hunk from base (diff)")
+keymap(
+  { "n", "v" },
+  "<localleader>x",
+  ":diffget BA<BAR>diffupdate<CR>",
+  "Choose hunk from BASE (diff)"
+)
 keymap(
   "n",
   "<localleader>X",
   "<CMD>%diffget BA<BAR>diffupdate<CR>",
-  "Choose all hunks from base (diff)"
+  "Choose all hunks from BASE (diff)"
 )
-keymap("n", "]x", "<CMD>diffget RE<BAR>diffupdate<CR>", "Choose hunk from remote (diff)")
-keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from remote (diff)")
-keymap("n", "[x", "<CMD>diffget LO<BAR>diffupdate<CR>", "Choose hunk from local (diff)")
-keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from local (diff)")
+
+keymap({ "n", "v" }, "]x", ":diffget RE<BAR>diffupdate<CR>", "Choose hunk from REMOTE (diff)")
+keymap({ "n", "v" }, "[x", ":diffget LO<BAR>diffupdate<CR>", "Choose hunk from LOCAL (diff)")
+keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from REMOTE (diff)")
+keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from LOCAL (diff)")
 
 -------------------------------------------------------------------------------
 ----> Buffers, windows, tabs
