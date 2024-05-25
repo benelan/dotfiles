@@ -11,22 +11,28 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- set commentstring based on treesitter node
+  {"folke/ts-comments.nvim", event = "VeryLazy", opts = {}},
+
+  -----------------------------------------------------------------------------
   -- shows the current scope
   {
     "nvim-treesitter/nvim-treesitter-context",
+    lazy = true,
     opts = {
       multiline_threshold = 1,
       max_lines = 6,
       mode = "cursor",
       -- separator = "─",
     },
+
     config = function(_, opts)
       require("treesitter-context").setup(opts)
-
       vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
     end,
+
     keys = {
       {
         "<leader>C",
@@ -47,24 +53,13 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     event = "BufReadPost",
-    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    -- https://github.com/LazyVim/LazyVim/blob/ae6d8f1a34fff49f9f1abf9fdd8a559c95b85cf3/lua/lazyvim/plugins/treesitter.lua#L10-L19
+    lazy = vim.fn.argc(-1) == 0,
     init = function(plugin)
-      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
-      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
-      -- no longer trigger the **nvim-treeitter** module to be loaded in time.
-      -- Luckily, the only thins that those plugins need are the custom queries, which we make available
-      -- during startup.
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
 
-    dependencies = {
-      {
-        "JoosepAlviste/nvim-ts-context-commentstring",
-        init = function() vim.g.skip_ts_context_commentstring_module = true end,
-        opts = {},
-      },
-    },
 
     opts = {
       ensure_installed = res.treesitter_parsers,

@@ -1,5 +1,4 @@
----@type Wezterm
-local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
+local wezterm = require("wezterm") --[[@as Wezterm]]
 local utils = require("utils")
 
 package.path = string.format("%s;%s/dev/personal/?/lua/?.lua", package.path, wezterm.home_dir)
@@ -43,7 +42,7 @@ function M.apply_to_config(config)
       key = "n",
       mods = "LEADER|CTRL",
       action = wezterm.action_callback(
-        function(window, pane) git_mux.project(window, pane, { os.getenv("NOTES") }) end
+        function(window, pane) git_mux.project(window, pane, { path = os.getenv("NOTES") }) end
       ),
     },
     {
@@ -57,6 +56,8 @@ function M.apply_to_config(config)
     -- Workspace management
     { key = ")", mods = "LEADER|SHIFT", action = act.SwitchWorkspaceRelative(1) },
     { key = "(", mods = "LEADER|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
+
+    ---@diagnostic disable-next-line: assign-type-mismatch
     { key = "s", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
 
     {
@@ -174,6 +175,7 @@ function M.apply_to_config(config)
         end),
       }),
     },
+
     { key = ";", mods = "CTRL|ALT", action = act.ActivateCommandPalette },
     { key = "Enter", mods = "CTRL|ALT", action = act.ShowLauncher },
     { key = "0", mods = "CTRL|ALT", action = act.ResetFontSize },

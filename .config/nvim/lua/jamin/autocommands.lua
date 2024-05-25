@@ -45,6 +45,17 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.wo.cursorline = false
     vim.wo.wrap = true
     vim.wo.conceallevel = 2
+
+    -- up/down home/end movement that handles wrapped lines better
+    local opts = { expr = true, silent = true }
+    vim.keymap.set("n", "$", "&wrap == 1 ? 'g$' : '$'", opts)
+    vim.keymap.set("n", "^", "&wrap == 1 ? 'g^' : '^'", opts)
+    vim.keymap.set("n", "g$", "&wrap == 1 ? '$' : 'g$'", opts)
+    vim.keymap.set("n", "g^", "&wrap == 1 ? '^' : 'g^'", opts)
+    vim.keymap.set("n", "gj", "v:count == 0 ? 'j' : 'gj'", opts)
+    vim.keymap.set("n", "gk", "v:count == 0 ? 'k' : 'gk'", opts)
+    vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", opts)
+    vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", opts)
   end,
 })
 
@@ -59,7 +70,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
       vim.wo.foldmethod = "marker"
     elseif vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
       vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     else
       vim.wo.foldmethod = "indent"
     end
@@ -80,6 +91,22 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     if backup then
       backup = backup:gsub("[/\\]", "%%")
       vim.go.backupext = backup
+    end
+  end,
+})
+
+-------------------------------------------------------------------------------
+-- set git env vars for the bare dotfiles repo when not in the dev directory
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
+  desc = "Special dotfiles setup",
+  callback = function()
+    local ok, inside_dev = pcall(vim.startswith, vim.uv.cwd(), vim.fs.normalize("~/dev"))
+
+    if ok and not inside_dev then
+      vim.env.GIT_WORK_TREE = vim.env.HOME
+      vim.env.GIT_DIR = vim.env.HOME .. "/.git"
+      return
     end
   end,
 })

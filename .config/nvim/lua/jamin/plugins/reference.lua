@@ -4,11 +4,11 @@ return {
   -- Generates doc annotations for a variety of filetypes
   {
     "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Neogen",
     keys = { { "<leader>ra", "<CMD>Neogen<CR>", desc = "Add docstring comment (neogen)" } },
     opts = {
-      snippet_engine = "luasnip",
+      snippet_engine = "nvim",
       languages = {
         lua = { template = { annotation_convention = "emmylua" } },
         vue = { template = { annotation_convention = "jsdoc" } },
@@ -26,9 +26,21 @@ return {
     "chrisgrieser/nvim-rulebook",
     opts = {},
     keys = {
-      { "<leader>ri", function() require("rulebook").ignoreRule() end },
-      { "<leader>rl", function() require("rulebook").lookupRule() end },
-      { "<leader>ry", function() require("rulebook").yankDiagnosticCode() end },
+      {
+        "<leader>ri",
+        function() require("rulebook").ignoreRule() end,
+        desc = "Add diagnostic ignore comment (rulebook)",
+      },
+      {
+        "<leader>rl",
+        function() require("rulebook").lookupRule() end,
+        desc = "Lookup diagnostic (rulebook)",
+      },
+      {
+        "<leader>ry",
+        function() require("rulebook").yankDiagnosticCode() end,
+        desc = "Yank diagnostic code (rulebook)",
+      },
     },
   },
 
@@ -44,7 +56,6 @@ return {
     },
     cmd = { "DevdocsFetch", "DevdocsOpen", "DevdocsOpenFloat", "DevdocsOpenCurrent" },
 
-    -- stylua: ignore
     keys = {
       { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
       { "<leader>rf", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
@@ -66,19 +77,20 @@ return {
         }
 
       return vim.tbl_deep_extend("force", glow_opts, {
-        mappings = { open_in_browser = "<C-o>" },
+        mappings = { open_in_browser = "<M-o>" },
         -- stylua: ignore
         filetypes = {
+          sh = { "jq", "bash" },
           css = { "css", "tailwindcss" },
           scss = { "css", "sass", "tailwindcss" },
           html = { "javascript", "dom", "html", "css" },
-          javascript = { "javascript", "dom", "node" },
-          typescript = { "javascript", "typescript", "dom", "node" },
-          javascriptreact = { "javascript", "dom", "html", "react", "css", "tailwindcss" },
-          typescriptreact = { "javascript", "typescript", "dom", "html", "react", "css", "tailwindcss" },
-          vue = { "javascript", "dom", "html", "vue", "css", "tailwindcss" },
-          svelte = { "javascript", "dom", "html", "svelte", "css", "tailwindcss" },
-          astro = { "javascript", "dom", "node", "html", "astro", "css", "tailwindcss" },
+          javascript = { "javascript", "dom", "node", "jsdoc" },
+          typescript = { "javascript", "typescript", "dom", "node", "jsdoc" },
+          javascriptreact = { "javascript", "dom", "html", "jsdoc", "react", "css", "tailwindcss" },
+          typescriptreact = { "javascript", "typescript", "dom", "html", "jsdoc", "react", "css", "tailwindcss" },
+          vue = { "javascript", "dom", "html", "jsdoc", "vue", "css", "tailwindcss" },
+          svelte = { "javascript", "dom", "html", "jsdoc", "svelte", "css", "tailwindcss" },
+          astro = { "javascript", "dom", "node", "html", "jsdoc", "astro", "css", "tailwindcss" },
         },
         float_win = {
           relative = "editor",

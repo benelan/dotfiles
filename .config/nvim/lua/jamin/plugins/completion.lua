@@ -31,7 +31,7 @@ return {
     "hrsh7th/nvim-cmp", -- completion engine
     event = { "InsertEnter" },
     dependencies = {
-      "L3MON4D3/LuaSnip",
+      "garymjr/nvim-snippets",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
@@ -40,19 +40,11 @@ return {
 
     opts = function()
       local cmp = require("cmp")
-      local has_ls, ls = pcall(require, "luasnip")
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
 
       return {
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
         preselect = cmp.PreselectMode.None,
-
-        -- setup LuaSnip with the completion engine
-        snippet = {
-          expand = function(args)
-            if has_ls then ls.lsp_expand(args.body) end
-          end,
-        },
 
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
@@ -99,7 +91,7 @@ return {
             -- show the item's completion source in the results
             vim_item.menu = ({
               buffer = i("BUF"),
-              luasnip = i("SNIP"),
+              snippets = i("SNIP"),
               dictionary = i("DICT"),
               nvim_lsp = i("LSP"),
               nvim_lsp_signature_help = i("SIG"),
@@ -168,14 +160,14 @@ return {
 
         sources = {
           { name = "nvim_lsp_signature_help", group_index = 1 },
-          { name = "luasnip", group_index = 2 },
-          { name = "nvim_lsp", group_index = 2 },
-          { name = "path", group_index = 2 },
-          { name = "buffer", keyword_length = 2, group_index = 2 },
-          { name = "tmux", keyword_length = 2, group_index = 2 },
-          -- only show ripgrep/dictionary if there are no results from other sources
-          { name = "rg", keyword_length = 3, group_index = 3 },
-          { name = "dictionary", group_index = 3, keyword_length = 2 },
+          { name = "snippets", group_index = 1 },
+          { name = "nvim_lsp", group_index = 1 },
+          { name = "path", group_index = 1 },
+          { name = "buffer", group_index = 1, keyword_length = 2 },
+          { name = "tmux", group_index = 1, keyword_length = 2 },
+          -- only show ripgrep/spell/dictionary if there are no results from other sources
+          { name = "rg", group_index = 2, keyword_length = 3 },
+          { name = "dictionary", group_index = 2, keyword_length = 2 },
         },
       }
     end,
@@ -190,83 +182,140 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- use VSC*de snippets with native neovim snippets (requires v0.10.0)
   {
-    "L3MON4D3/LuaSnip", -- snippet engine
-    build = "make install_jsregexp",
-    version = "v2.*",
-    dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
-
-    config = function()
-      local ls = require("luasnip")
-      local lua_loader = require("luasnip.loaders.from_lua")
-      local vscode_loader = require("luasnip.loaders.from_vscode")
-
-      ls.config.set_config({
-        history = false,
-        region_check_events = "CursorMoved,CursorHold,InsertEnter",
-        delete_check_events = "InsertLeave",
-        enable_autosnippets = true,
-      })
-
-      -- loads friendly_snippets
-      vscode_loader.lazy_load()
-
-      -- loads the snippets I created for VSCode a while ago
-      vscode_loader.lazy_load({ paths = { "~/.config/Code/User" } })
-
-      -- loads snippets in the luasnippets dir of my neovim config
-      lua_loader.lazy_load()
-
-      ls.filetype_extend("typescript", { "javascript" })
-      ls.filetype_extend("javascriptreact", { "javascript" })
-      ls.filetype_extend("typescriptreact", { "javascript", "typescript" })
-      ls.filetype_extend("vue", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("svelte", { "javascript", "typescript", "html", "css" })
-      ls.filetype_extend("astro", { "javascript", "typescript", "html", "css" })
-    end,
-
-    keys = {
-      {
-        "<C-h>",
-        function()
-          if require("luasnip").jumpable(-1) then
-            require("luasnip").jump(-1)
-          else
-            return vim.lsp.buf.signature_help()
-          end
-        end,
-        mode = { "i", "s" },
-        desc = "Luasnip jump back",
-      },
-      {
-        "<C-l>",
-        function()
-          if require("luasnip").jumpable(1) then
-            require("luasnip").jump(1)
-          else
-            -- fallback to "redrawing" the buffer like readline's mapping
-            vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")
-          end
-        end,
-        mode = { "i", "s" },
-        desc = "Luasnip jump forward",
-      },
-      {
-        "<C-\\>",
-        function()
-          if require("luasnip").choice_active() then
-            require("luasnip").change_choice(1)
-          else
-            vim.api.nvim_feedkeys(
-              vim.api.nvim_replace_termcodes("<C-\\>", true, false, true),
-              "n",
-              false
-            )
-          end
-        end,
-        mode = { "i", "s" },
-        desc = "Luasnip toggle choice",
+    "garymjr/nvim-snippets",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    opts = {
+      friendly_snippets = true,
+      global_snippets = { "all", "global" },
+      search_paths = { vim.uv.os_homedir() .. "/.config/Code/User/snippets" },
+      extended_filetypes = {
+        typescript = { "javascript" },
+        javascriptreact = { "javascript", "html" },
+        typescriptreact = { "javascript", "typescript", "javascriptreact", "html" },
+        vue = { "javascript", "typescript", "html", "css" },
+        svelte = { "javascript", "typescript", "html", "css" },
+        astro = { "javascript", "typescript", "html", "css" },
       },
     },
+
+    keys = function()
+      -- The keymaps have Copilot/Codeium fallbacks for when there are no snippet actions
+      return {
+        {
+          "<C-h>",
+          function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
+            if vim.snippet.active({ direction = -1 }) then
+              vim.schedule(function() vim.snippet.jump(-1) end)
+            elseif has_copilot then
+              if copilot.is_visible() then
+                copilot.dismiss()
+              else
+                local has_copilot_panel, copilot_panel = pcall(require, "copilot.panel")
+                if has_copilot_panel then copilot_panel.refresh() end
+              end
+            elseif vim.g.codeium_enabled then
+              vim.api.nvim_feedkeys(vim.fn["codeium#Clear"](), "n", true)
+            else
+              return vim.lsp.buf.signature_help()
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Snippet jump back or copilot/codeium dismiss",
+        },
+
+        {
+          "<C-l>",
+          function()
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
+            if vim.snippet.active({ direction = 1 }) then
+              vim.schedule(function() vim.snippet.jump(1) end)
+            elseif has_copilot and copilot.is_visible() then
+              copilot.accept_line()
+            elseif vim.g.codeium_enabled then
+              vim.g.codeium_tab_fallback = [[:nohlsearch | diffupdate | syntax sync fromstart
+]]
+              vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
+              vim.g.codeium_tab_fallback = nil
+            else
+              -- fallback to "redrawing" the buffer like readline's mapping
+              vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")
+            end
+          end,
+          mode = { "i", "s" },
+          desc = "Snippet jump forward or copilot/codeium accept",
+        },
+      }
+    end,
+  },
+
+  -----------------------------------------------------------------------------
+  -- "github/copilot.vim", -- official Copilot plugin written in vimscript
+  {
+    "https://github.com/zbirenbaum/copilot.lua", -- alternative written in Lua
+    cond = vim.env.USE_COPILOT == "1",
+    cmd = "Copilot",
+    event = "InsertEnter",
+
+    config = function()
+      local filetypes = {}
+
+      for _, ft in ipairs(res.filetypes.excluded) do
+        filetypes[ft] = false
+      end
+
+      for _, ft in ipairs(res.filetypes.writing) do
+        filetypes[ft] = false
+      end
+
+      require("copilot").setup({
+        filetypes = filetypes,
+        panel = {
+          layout = { position = "right", ratio = 0.3 },
+          keymap = {
+            jump_next = "]",
+            jump_prev = "[",
+            refresh = "<CR>",
+            accept = "<Tab>",
+          },
+        },
+        suggestion = {
+          enabled = not vim.g.codeium_enabled,
+          auto_trigger = true,
+          keymap = {
+            accept = false, -- remapped below to add fallback
+            accept_word = "<M-l>",
+          },
+        },
+      })
+    end,
+  },
+
+  -----------------------------------------------------------------------------
+  -- Codeium is a free Copilot alternative - https://codeium.com/
+  {
+    "Exafunction/codeium.vim",
+    cond = vim.env.USE_CODEIUM == "1",
+    event = "VimEnter",
+    cmd = "Codeium",
+
+    config = function()
+      local filetypes = {}
+
+      for _, ft in ipairs(res.filetypes.excluded) do
+        filetypes[ft] = false
+      end
+
+      for _, ft in ipairs(res.filetypes.writing) do
+        filetypes[ft] = false
+      end
+
+      vim.g.codeium_filetypes = filetypes
+      vim.g.codeium_enabled = true
+    end,
   },
 }

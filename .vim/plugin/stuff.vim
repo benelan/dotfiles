@@ -40,10 +40,6 @@ xmap Q gq`[v`]
 " Use the repeat operator on a visual selection.
 vnoremap . :normal .<CR>
 
-" Repeat a macro on a visual selection.
-" Complete the command by choosing the register containing the macro.
-vnoremap @ :normal @
-
 " Maintain selection while indenting
 vnoremap < <gv
 vnoremap > >gv

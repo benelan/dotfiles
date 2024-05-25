@@ -163,6 +163,10 @@ if has("keymap")
     vnoremap <Down> :m '>+1<CR>gv=gv
     vnoremap <Up> :m '<-2<CR>gv=gv
 
+    " Repeat a macro on a visual selection.
+    " Complete the command by choosing the register containing the macro.
+    vnoremap @ :normal @
+
     nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 

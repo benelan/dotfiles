@@ -1,5 +1,4 @@
----@type Wezterm
-local wezterm = require("wezterm") ---@diagnostic disable-line: assign-type-mismatch
+local wezterm = require("wezterm") --[[@as Wezterm]]
 local M = {}
 
 M.setup = function()

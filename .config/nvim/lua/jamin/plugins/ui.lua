@@ -81,6 +81,7 @@ return {
   -- filetype icons
   {
     "nvim-tree/nvim-web-devicons",
+    lazy = true,
     cond = vim.g.use_devicons == true,
     opts = {
       default = true,

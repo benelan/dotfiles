@@ -120,11 +120,6 @@ return {
           bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
-          -- lsp keymaps
-          if client.supports_method("textDocument/hover") then
-            bufmap("n", "K", vim.lsp.buf.hover, "LSP hover")
-          end
-
           if client.supports_method("textDocument/definition") then
             bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           end
@@ -158,18 +153,18 @@ return {
             bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
-          local function toggle_inlay_hints(bufnr)
-            local enabled = not vim.lsp.inlay_hint.is_enabled(bufnr)
-            -- breaking change to the arguments of vim.lsp.inlay_hint.enable
-            if vim.fn.has("nvim-0.10.0-dev-2968+g344906a08") then
-              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
-            else
-              vim.lsp.inlay_hint.enable(bufnr, enabled) ---@diagnostic disable-line: param-type-mismatch
-            end
-          end
-
           -- setup inlay hints if supported by language server
-          if vim.lsp.inlay_hint and client.supports_method("textDocument/inlayHint") then
+          if
+            vim.lsp.inlay_hint
+            and vim.api.nvim_buf_is_valid(args.buf)
+            and vim.bo[args.buf].buftype == ""
+            and client.supports_method("textDocument/inlayHint")
+          then
+            local function toggle_inlay_hints(bufnr)
+              local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
+            end
+
             if opts.inlay_hints.enabled == true then toggle_inlay_hints(args.buf) end
             bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
           end
@@ -184,7 +179,6 @@ return {
           then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
-            client.server_capabilities.documentHighlightProvider = false
           elseif client.supports_method("textDocument/formatting") then
             -- use the LSP server's formatting capabilities for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
@@ -211,8 +205,8 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- Installer/manager for language servers, linters, formatters, and debuggers
   {
-    -- Installer/manager for language servers, linters, formatters, and debuggers
     "williamboman/mason.nvim",
     build = ":MasonUpdate",
     keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
@@ -254,8 +248,9 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- integrates formatters and linters (null-ls.nvim successor)
   {
-    "nvimtools/none-ls.nvim", -- integrates formatters and linters (null-ls.nvim successor)
+    "nvimtools/none-ls.nvim",
     -- pinned commit due to https://github.com/nvimtools/none-ls.nvim/issues/58
     commit = "bb680d752cec37949faca7a1f509e2fe67ab418a",
     event = "VeryLazy",

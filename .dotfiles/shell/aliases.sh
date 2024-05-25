@@ -26,7 +26,7 @@ alias se='sudo ${EDITOR:-vim}'
 
 # minimum usable vim options
 alias vmin="vim --noplugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
-alias v="vim --noplugin -u $DOTFILES/assets/standalone.vimrc"
+alias v="vim --noplugin -u $HOME/.vim/standalone.vimrc"
 
 # list all files/dirs, short format, sort by time
 alias l="ls -Art --color --group-directories-first"

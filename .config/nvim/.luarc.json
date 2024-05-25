@@ -9,9 +9,8 @@
   },
   "workspace.checkThirdParty": false,
   "workspace.library": [
-    "lua",
+    "./lua",
     "$VIMRUNTIME",
-    "~/.local/share/nvim/lazy/LuaSnip/lua",
     "~/.local/share/nvim/lazy/gitsigns.nvim/lua",
     "~/.local/share/nvim/lazy/lazy.nvim/lua",
     "~/.local/share/nvim/lazy/mason-lspconfig.nvim/lua",

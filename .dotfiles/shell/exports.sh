@@ -110,8 +110,8 @@ export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 # golang {{{1
 if supports go; then
     export GOROOT="/usr/local/go"
-    export GOPATH="$HOME/go"
-    export GOFLAGS="-buildvcs=false -trimpath"
+    export GOPATH="$HOME/.go"
+    export GOFLAGS="-trimpath"
 fi
 
 # javascript {{{1
@@ -170,8 +170,7 @@ supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 
 # https://github.com/junegunn/fzf
 if supports fzf; then
-    export FZF_COMPLETION_TRIGGER='~~'
-    export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window "right:50%"
+    export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window="right,50%,wrap,<60(down,40%,wrap)"
     --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down,ctrl-v:toggle-preview,ctrl-x:toggle-sort,ctrl-h:toggle-header"
     --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,hl:#d3869b:bold,hl+:#d3869b,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#928374,label:#83a598"'
 
@@ -207,18 +206,24 @@ fi
 supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
 supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
+_gh_user="$(git config --global github.user || echo "benelan")"
+
+export GH_FZF_BRANCH_PREFIX="$_gh_user/"
+export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
+
 # https://github.com/benelan/git-mux
 if supports git-mux; then
-    # shellcheck disable=2155
-    export GIT_MUX_BRANCH_PREFIX="$(git config --global github.user || echo "benelan")"
-
-    # shell commands or an executable on PATH to run after a new worktree or session is created
-    export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
-    # shellcheck disable=2016
-    export GIT_MUX_NEW_SESSION_CMD='[ -n "$TMUX" ] && tmux rename-window scratch; git fetch --all --prune 2>/dev/null; history -d -1 >/dev/null 2>&1; clear -x'
+    export GIT_MUX_LOGS="1"
+    export GIT_MUX_LOG_LEVEL="WARN"
+    export GIT_MUX_BRANCH_PREFIX="$_gh_user"
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
+
+    # shell commands or an executable on PATH to run after a new worktree or session is created
+    # shellcheck disable=2016
+    export GIT_MUX_NEW_SESSION_CMD='[ -n "$TMUX" ] && tmux rename-window scratch; git fetch --all --prune 2>/dev/null; history -d -1 >/dev/null 2>&1; clear -x'
+    export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 
 if [ -n "$(
@@ -229,3 +234,5 @@ if [ -n "$(
 )" ]; then
     export USE_DEVICONS=1
 fi
+
+unset _gh_user
