@@ -10,14 +10,14 @@ endif
 let b:qf_isLoc = get(get(getwininfo(win_getid()), 0, {}), 'loclist', 0)
 
 if b:qf_isLoc == 1
-    nnoremap <silent> <buffer> H :lolder<CR>
-    nnoremap <silent> <buffer> L :lnewer<CR>
+    nnoremap <silent> <buffer> ( :lolder<CR>
+    nnoremap <silent> <buffer> ) :lnewer<CR>
     nnoremap <silent> <buffer> O <CR>:lclose<CR>
     " begin search and replace
     nnoremap <buffer> r :ldo s/// \| update<C-Left><C-Left><Left><Left><Left>
 else
-    nnoremap <silent> <buffer> H :colder<CR>
-    nnoremap <silent> <buffer> L :cnewer<CR>
+    nnoremap <silent> <buffer> ( :colder<CR>
+    nnoremap <silent> <buffer> ) :cnewer<CR>
     nnoremap <buffer> ]f :cnfile<CR>
     nnoremap <buffer> [f :cpfile<CR>
     nnoremap <silent> <buffer> O <CR>:cclose<CR>
@@ -43,7 +43,7 @@ nnoremap <silent> <buffer> K k<CR><C-w>p
 
 " @see: https://vi.stackexchange.com/a/21255
 " using range-aware function
-function! QFdelete(bufnr) range
+function! s:qfDelete(bufnr) range
     " get current qflist
     let l:qfl = getqflist()
 
@@ -58,14 +58,14 @@ function! QFdelete(bufnr) range
     call setpos('.', [a:bufnr, a:firstline, 1, 0])
 endfunction
 
-nnoremap <silent><buffer>dd :call QFdelete(bufnr())<CR>
-vnoremap <silent><buffer>d  :call QFdelete(bufnr())<CR>
+nnoremap <silent><buffer>dd :call <SID>qfDelete(bufnr())<CR>
+vnoremap <silent><buffer>d  :call <SID>qfDelete(bufnr())<CR>
 
-function! AdjustWindowHeight(minheight, maxheight)
+function! s:adjustWindowHeight(minheight, maxheight)
   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
 
-call AdjustWindowHeight(3, 10)
+call <SID>adjustWindowHeight(2, 10)
 
 " Always move the cursor to the current quickfix item when entering the buffer.
 "au BufEnter <buffer> nested exe getqflist({'id': 0, 'idx': 0}).idx

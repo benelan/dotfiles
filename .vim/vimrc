@@ -126,20 +126,6 @@ if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
-" Better indention/ hierarchy
-set formatlistpat=^\\s*                    " Optional leading whitespace
-set formatlistpat+=[                       " Start class
-set formatlistpat+=\\[({]\\?               " |  Optionally match opening punctuation
-set formatlistpat+=\\(                     " |  Start group
-set formatlistpat+=[0-9]\\+                " |  |  A number
-set formatlistpat+=\\\|[iIvVxXlLcCdDmM]\\+ " |  |  Roman numerals
-set formatlistpat+=\\\|[a-zA-Z]            " |  |  A single letter
-set formatlistpat+=\\)                     " |  End group
-set formatlistpat+=[\\]:.)}                " |  Closing punctuation
-set formatlistpat+=]                       " End class
-set formatlistpat+=\\s\\+                  " One or more spaces
-set formatlistpat+=\\\|^\\s*[-–+o*•]\\s\\+ " Or bullet points
-
 " Keymaps {{{1
 if has("keymap")
     let mapleader = " "
@@ -167,22 +153,6 @@ if has("keymap")
     " Complete the command by choosing the register containing the macro.
     vnoremap @ :normal @
 
-    nnoremap ]<space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
-    nnoremap [<space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
-
-    nnoremap <expr> <silent> gV "`[" . strpart(getregtype(), 0, 1) . "`]"
-
-    "" https://vi.stackexchange.com/a/213
-    "" move down jumping over blank lines and indents
-    nnoremap <silent> gJ :let _=&lazyredraw<CR>
-        \ :set lazyredraw<CR>/\%<C-R>=virtcol(".")
-        \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
-    "" move up jumping over blank lines and indents
-    nnoremap <silent> gK :let _=&lazyredraw<CR>
-        \ :set lazyredraw<CR>?\%<C-R>=virtcol(".")
-        \ <CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
     "" misc insert/terminal/command mode keymaps {{{2
@@ -205,14 +175,17 @@ if has("keymap")
     nnoremap <leader>gw :diffput<CR>
     vnoremap <leader>gw :diffput<CR>
 
+    vnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
     nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
     nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
     "" LOCAL is the left buffer when using vimdiff
+    vnoremap [x :diffget LO<BAR>diffupdate<CR>
     nnoremap [x :diffget LO<BAR>diffupdate<CR>
     nnoremap [X :%diffget LO<BAR>diffupdate<CR>
 
     "" REMOTE is the rightmost buffer
+    vnoremap ]x :diffget RE<BAR>diffupdate<CR>
     nnoremap ]x :diffget RE<BAR>diffupdate<CR>
     nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
 
@@ -306,7 +279,7 @@ if has("keymap")
     nnoremap - <CMD>packadd vifm.vim<CR><CMD>Vifm<CR>
 
     nnoremap <leader>gs <CMD>packadd vim-fugitive<CR><CMD>tab G<CR>
-    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>tab G commit<CR>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>tab G commit --verbose<CR>
     nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><CMD>G blame<CR>
     nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gvdiffsplit<CR>
     nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><CMD>0Gclog --follow<CR>
@@ -334,7 +307,8 @@ if has("autocmd")
             \ setlocal keywordprg=sh\ -c\ 'o\ https://devdocs.io/\\#q=\$1\ '\ --
 
         if executable("dict")
-            autocmd FileType markdown,text,gitcommit setlocal keywordprg=dict
+            autocmd FileType markdown,text,gitcommit 
+                        \ setlocal keywordprg=dict | let b:no_cursorline=1
         endif
 
         autocmd InsertLeave,WinEnter *
@@ -369,17 +343,14 @@ if has("eval")
 
     "" toggle quickfix/location lists open/close {{{2
     com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
-    nnoremap <leader>q <CMD>QfToggle<CR>
-
-    com! LlToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|lope|else|lcl|ccl|endif|norm <C-W><C-W>"
-    nnoremap <leader>l <CMD>LlToggle<CR>
+    nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" fzf user commands {{{2
     if isdirectory(expand("$LIB/fzf")) && executable("fzf")
         " Enable per-command history
         " - When set, CTRL-N and CTRL-P will be bound to "next-history" and
         "   "previous-history" instead of "down" and "up".
-        let g:fzf_history_dir = "~/.dotfiles/cache/fzf-history"
+        " let g:fzf_history_dir = "~/.dotfiles/cache/fzf-history"
 
         " An action can be a reference to a function that processes selected lines
         function! s:build_quickfix_list(lines)
@@ -397,9 +368,9 @@ if has("eval")
 
         " See `man fzf-tmux` for available options
         if exists("$TMUX")
-            let g:fzf_layout = { "tmux": "-p90%,60%" }
+            let g:fzf_layout = { "tmux": "-p90%,80%" }
         else
-            let g:fzf_layout = { "window": { "width": 0.9, "height": 0.6 } }
+            let g:fzf_layout = { "window": { "width": 0.9, "height": 0.8 } }
         endif
 
         "" get git root directory
@@ -407,7 +378,7 @@ if has("eval")
             let root = systemlist("git -C "
                 \ . shellescape(expand("%:p:h"),)
                 \ . " rev-parse --show-toplevel")[0]
-            return v:shell_error ? "" : root
+            return v:shell_error ? expand("~") : root
         endfunction
 
         command! -bang GFiles
@@ -461,16 +432,15 @@ endif
 
 
 " Statusline {{{1
-let g:use_devicons = expand("$USE_DEVICONS") != 0
-        \ && expand("$USE_DEVICONS") == 1
-        \ || expand("$TERM") == "wezterm" ||
-        \ system('tmux showenv | grep -c "TERM=wezterm"') > 0
+let g:use_devicons = expand("$USE_DEVICONS") != 0 && (
+        \ expand("$USE_DEVICONS") == 1 || expand("$WEZTERM_PANE")
+    \)
 
 if has("eval") && has("statusline")
 
     let g:git_branch="" " gets set in an autocmd above
     function! DisplayGitBranch()
-        let icon = g:use_devicons ? "   " : "  "
+        let icon = g:use_devicons ? "    " : "  "
         return g:git_branch != "" ? icon .. g:git_branch .. "  " : ""
     endfunction
 
