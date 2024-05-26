@@ -30,7 +30,6 @@ return {
         underline = true,
         update_in_insert = false,
       },
-      inlay_hints = { enabled = false },
       force_capabilities = {
         telemetry = false,
         textDocument = {
@@ -144,29 +143,93 @@ return {
             bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
           end
 
-          if client.supports_method("textDocument/codeAction") then
-            bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "LSP code action")
-          end
-
           if client.supports_method("textDocument/signatureHelp") then
             bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
             bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
-          -- setup inlay hints if supported by language server
           if
             vim.lsp.inlay_hint
             and vim.api.nvim_buf_is_valid(args.buf)
             and vim.bo[args.buf].buftype == ""
             and client.supports_method("textDocument/inlayHint")
           then
-            local function toggle_inlay_hints(bufnr)
-              local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
-              vim.lsp.inlay_hint.enable(enabled, { buf = bufnr })
-            end
+            bufmap(
+              "n",
+              "gH",
+              function()
+                vim.lsp.inlay_hint.enable(
+                  not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
+                  { buf = args.buf }
+                )
+              end,
+              "Toggle LSP inlay hints"
+            )
+          end
 
-            if opts.inlay_hints.enabled == true then toggle_inlay_hints(args.buf) end
-            bufmap("n", "gH", function() toggle_inlay_hints(args.buf) end, "Toggle LSP inlay hints")
+          if client.supports_method("textDocument/codeAction") then
+            bufmap(
+              { "n", "v" },
+              "ga",
+              function()
+                vim.lsp.buf.code_action({
+                  context = { only = { "source", "refactor", "quickfix" } },
+                })
+              end,
+              "Code action"
+            )
+
+            if client.name == "tsserver" then
+              ---@diagnostic disable: assign-type-mismatch
+              bufmap(
+                "n",
+                "<leader>lao",
+                function()
+                  vim.lsp.buf.code_action({
+                    apply = true,
+                    context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+                  })
+                end,
+                "Organize imports (tsserver)"
+              )
+
+              bufmap(
+                "n",
+                "<leader>lau",
+                function()
+                  vim.lsp.buf.code_action({
+                    apply = true,
+                    context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
+                  })
+                end,
+                "Remove unused variables (tsserver)"
+              )
+
+              bufmap(
+                "n",
+                "<leader>lai",
+                function()
+                  vim.lsp.buf.code_action({
+                    apply = true,
+                    context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
+                  })
+                end,
+                "Add missing imports (tsserver)"
+              )
+
+              bufmap(
+                "n",
+                "<leader>laf",
+                function()
+                  vim.lsp.buf.code_action({
+                    apply = true,
+                    context = { only = { "source.fixAll.ts" }, diagnostics = {} },
+                  })
+                end,
+                "Fix all (tsserver)"
+              )
+              ---@diagnostic enable: assign-type-mismatch
+            end
           end
 
           -- disable formatting for some LSP servers in favor of better standalone programs
@@ -248,18 +311,15 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- integrates formatters and linters (null-ls.nvim successor)
+  -- integrates formatters and linters
   {
-    "nvimtools/none-ls.nvim",
-    -- pinned commit due to https://github.com/nvimtools/none-ls.nvim/issues/58
-    commit = "bb680d752cec37949faca7a1f509e2fe67ab418a",
+    "jose-elias-alvarez/null-ls.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
 
     opts = function()
       local nls = require("null-ls")
 
-      -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
       local hover = nls.builtins.hover
       local formatting = nls.builtins.formatting
       local diagnostics = nls.builtins.diagnostics
@@ -275,7 +335,7 @@ return {
           hover.printenv,
 
           code_actions.gitrebase,
-          code_actions.shellcheck,
+          code_actions.shellcheck, -- still using null-ls for this
 
           diagnostics.hadolint,
           diagnostics.actionlint.with({

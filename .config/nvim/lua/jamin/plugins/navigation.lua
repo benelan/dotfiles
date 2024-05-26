@@ -8,10 +8,10 @@ return {
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
-    keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "<leader>-", "<CMD>Vifm<CR>" } },
+    keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "-", "<CMD>Vifm<CR>" } },
     init = function()
       -- define keymap here to fix lazy loading related startup error
-      keymap("n", "<leader>-", "<CMD>Vifm<CR>", "Vifm")
+      keymap("n", "-", "<CMD>Vifm<CR>", "Vifm")
       keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
     end,
   },

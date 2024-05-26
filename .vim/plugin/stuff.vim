@@ -32,7 +32,7 @@ nnoremap <Backspace> <C-^>
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
-nmap Q mtgqBg`t
+nmap Q mtgqBg`t:delmarks t<CR>
 
 " Format selected text maintaining the selection.
 xmap Q gq`[v`]
@@ -52,7 +52,7 @@ nnoremap & :&&<CR>
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 
 " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
-nnoremap <silent> - <CMD>execute (
+nnoremap <silent> <leader>- <CMD>execute (
     \ &filetype ==# "netrw"
         \ ? "normal! -"
         \ : ":Explore " . expand("%:h") .
@@ -96,13 +96,6 @@ endfor
 
 "" system clipboard {{{2
 
-nnoremap x "_x
-nnoremap X "_X
-nnoremap r "_r
-nnoremap R "_R
-nnoremap s "_s
-nnoremap S "_S
-
 for char in [ 'y', 'p', 'P' ]
     execute 'nnoremap <leader>' . char . ' "+' . char
     execute 'vnoremap <leader>' . char . ' "+' . char
@@ -110,6 +103,13 @@ endfor
 
 nnoremap <leader>Y "+y$
 nnoremap gY <CMD>let @+=@*<CR>
+
+nnoremap x "_x
+nnoremap X "_X
+nnoremap r "_r
+nnoremap R "_R
+nnoremap s "_s
+nnoremap S "_S
 
 "" spelling {{{2
 " fix the next/previous misspelled word

@@ -9,7 +9,7 @@ nmap <buffer> xx <CR><CMD>Gread<BAR>write<BAR>bdelete<CR>
 nmap <buffer> cc <CMD>tab Git commit --verbose<CR>
 
 " Stage all tracked files
-nmap <buffer> S  mtgUks`t
+nmap <buffer> S  mtgUks`t:delmarks t<CR>
 
-nmap <buffer> <leader>P <CMD>Git push<CR>
+nmap <buffer> <leader>P <CMD>Git push -u HEAD<CR>
 nmap <buffer> <leader>p <CMD>Git pull --rebase<CR>
