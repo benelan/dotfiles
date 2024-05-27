@@ -595,6 +595,7 @@ EXEC 01;31      # Unix
 
 # Unimportant files
 *# 37
+*-bak 37
 *Quickfix.txt 37
 *Session.vim 37
 *cache 37

@@ -95,7 +95,7 @@
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing window manager is
     # present (e.g. xcompmgr, compiz, etc.). (X11 only)
-    transparency = 5
+    transparency = 0
 
     # Draw a line of "separator_height" pixel height between two
     # notifications.
@@ -262,8 +262,8 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = /usr/bin/dmenu -i -fn IosevkaNerdFont-14 -nf '#ebdbb2' -nb '#282828' -sb '#504945' -p dunst: 
-    # dmenu = rofi -dmenu -i -p dunst: -theme ~/.config/rofi/launchers/type-1/style-10.rasi
+    # dmenu = /usr/bin/dmenu -i -fn IosevkaNerdFont-14 -sb 'dark slate gray' -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/launchers/type-1/style-10.rasi
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/sensible-browser

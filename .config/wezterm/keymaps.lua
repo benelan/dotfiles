@@ -1,7 +1,5 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
 local utils = require("utils")
-
-package.path = string.format("%s;%s/dev/personal/?/lua/?.lua", package.path, wezterm.home_dir)
 local git_mux = require("git-mux")
 
 local act = wezterm.action

@@ -106,7 +106,7 @@ M.treesitter_parsers = {
   "markdown",
   "markdown_inline",
   -- "perl",
-  -- "printf",
+  "printf",
   "python",
   "query",
   "regex",

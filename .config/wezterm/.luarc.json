@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "diagnostics": {
+    "libraryFiles": "Disable"
+  },
+  "workspace.checkThirdParty": false,
+  "workspace.library": [
+    "./",
+    "$LIB/wezterm-types",
+    "$PERSONAL/git-mux",
+    "${3rd}/luv/library",
+    "${3rd}/luassert/library"
+  ]
+}

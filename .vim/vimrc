@@ -121,12 +121,6 @@ if has("keymap")
     nnoremap Y y$
     vnoremap Y y
 
-    nnoremap n nzzzv
-    nnoremap N Nzzzv
-
-    nnoremap <C-u> <C-u>zz
-    nnoremap <C-d> <C-d>zz
-
     "" move line(s) up and down
     nnoremap <Down> <CMD>m .+1<CR>==
     nnoremap <Up> <CMD>m .-2<CR>==
@@ -151,88 +145,8 @@ if has("keymap")
     inoremap ; ;<C-g>u
 
     tnoremap <leader><Esc> <C-\><C-n>
-    tnoremap <Esc><Esc> <C-\><C-n>
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
-
-    "" lists - next/prev {{{2
-    "" Argument list
-    nnoremap [a :previous<CR>
-    nnoremap ]a :next<CR>
-    nnoremap [A :last<CR>
-    nnoremap ]A :first<CR>
-
-    "" Buffer list
-    nnoremap [b :bprevious<CR>
-    nnoremap ]b :bnext<CR>
-    nnoremap [B :blast<CR>
-    nnoremap ]B :bfirst<CR>
-
-    "" Quickfix list
-    nnoremap [q :cprevious<CR>
-    nnoremap ]q :cnext<CR>
-    nnoremap [Q :clast<CR>
-    nnoremap ]Q :cfirst<CR>
-
-    "" Location list
-    nnoremap [l :lprevious<CR>
-    nnoremap ]l :lnext<CR>
-    nnoremap [L :llast<CR>
-    nnoremap ]L :lfirst<CR>
-
-    "" Tab list
-    nnoremap [t :tabprevious<CR>
-    nnoremap ]t :tabnext<CR>
-    nnoremap [T :tlast<CR>
-    nnoremap ]T :tfirst<CR>
-
-    "" buffers, tabs, and windows {{{2
-    "" close buffer
-    nnoremap <leader><Delete> :bdelete<CR>
-
-    "" picks buffer
-    nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
-
-    "" Managing tabs
-    nnoremap <leader>tn :tabnew<CR>
-    nnoremap <leader>to :tabonly<CR>
-    nnoremap <leader>tc :tabclose<CR>
-
-    "" Navigate splits
-    nnoremap <C-h> <C-W>h
-    nnoremap <C-j> <C-W>j
-    nnoremap <C-k> <C-W>k
-    nnoremap <C-l> <C-W>l
-
-    "" Resize splits
-    nnoremap <C-Left> :vertical resize -5<CR>
-    nnoremap <C-Down> :resize -5<CR>
-    nnoremap <C-Up> :resize +5<CR>
-    nnoremap <C-Right> :vertical resize +5<CR>
-
-    "" toggle options {{{2
-    nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
-    nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
-    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
-    nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
-    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
-    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
-
-    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
-            \ &colorcolumn == ""
-                \ ? &textwidth > 0 ? &textwidth : "79"
-                \ :""
-        \ )<CR><CMD>set colorcolumn?<CR>
-
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
-            \ &conceallevel == "0" ? "2" : "0"
-        \ )<CR><CMD>set conceallevel?<CR>
-
-    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
-            \ &clipboard == "unnamed"
-                \ ? "unnamed,unnamedplus"
-                \ : "unnamed"
-        \ )<CR><CMD>set clipboard?<CR>
 
     "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))
@@ -358,14 +272,14 @@ if has("eval")
             \    "sink": "e",
             \    "dir": g:GitRootDirectory(),
             \    "options": [
-            \        "--preview", "~/.vim/bin/fzf-preview.sh {}"
+            \        "--preview", "~/dev/lib/fzf/bin/fzf-preview.sh {}"
             \    ]
             \ },<bang>0))
 
         command! -bang Files
             \ call fzf#run(fzf#wrap("files", {
             \    "options": [
-            \        "--preview", "~/.vim/bin/fzf-preview.sh {}"
+            \        "--preview", "~/dev/lib/fzf/bin/fzf-preview.sh {}"
             \    ]
             \ },<bang>0))
 
@@ -376,7 +290,7 @@ if has("eval")
             \     "source": "ls",
             \     "dir": <q-args>,
             \     "options": [
-            \         "--preview", "~/.vim/bin/fzf-preview.sh {}"
+            \        "--preview", "~/dev/lib/fzf/bin/fzf-preview.sh {}"
             \     ]
             \ }, <bang>0))
 
