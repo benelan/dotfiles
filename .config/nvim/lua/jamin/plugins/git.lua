@@ -9,7 +9,7 @@ return {
 
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
-      { "<leader>gc", "<CMD>tab Git commit --verbose<CR>", desc = "Fugitive commit" },
+      { "<leader>gc", "<CMD>tab Git commit -vv<CR>", desc = "Fugitive commit" },
       { "<leader>gP", "<CMD>Git pull --rebase<CR>", desc = "Fugitive pull --rebase" },
       { "<leader>gb", "<CMD>Git blame<CR>", desc = "Fugitive blame" },
       { "<leader>gD", "<CMD>Git difftool -y<CR>", desc = "Fugitive difftool" },
@@ -107,7 +107,7 @@ return {
         "]c",
         function()
           if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").next_hunk() end)
+          vim.schedule(function() require("gitsigns").nav_hunk("next") end)
           return "<Ignore>"
         end,
         expr = true,
@@ -118,7 +118,7 @@ return {
         "[c",
         function()
           if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").prev_hunk() end)
+          vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
           return "<Ignore>"
         end,
         expr = true,
@@ -127,23 +127,23 @@ return {
       },
       {
         "]h",
-        function() require("gitsigns").next_hunk() end,
+        function() require("gitsigns").nav_hunk("next", { wrap = false, preview = true }) end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[h",
-        function() require("gitsigns").prev_hunk() end,
+        function() require("gitsigns").nav_hunk("prev", { wrap = false, preview = true }) end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "]H",
-        function() require("gitsigns").next_hunk({ wrap = false, preview = true }) end,
-        desc = "Next hunk (gitsigns)",
+        function() require("gitsigns").nav_hunk("last", { wrap = false, preview = true }) end,
+        desc = "Last hunk (gitsigns)",
       },
       {
         "[H",
-        function() require("gitsigns").prev_hunk({ wrap = false, preview = true }) end,
-        desc = "Previous hunk (gitsigns)",
+        function() require("gitsigns").nav_hunk("first", { wrap = false, preview = true }) end,
+        desc = "First hunk (gitsigns)",
       },
       {
         "ih",
@@ -252,6 +252,11 @@ return {
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
       preview_config = { border = res.icons.border },
       worktrees = { { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" } },
+      signs = {
+        add = { text = res.icons.git.status },
+        change = { text = res.icons.git.status },
+        untracked = { text = res.icons.git.status },
+      },
     },
   },
 
@@ -359,7 +364,7 @@ return {
         "<leader>op",
         function()
           local number = vim.fn.system "gh pr view --json number --jq .number"
-          if number and not string.match(number, "request") then
+          if number and not string.match(number, "request") and vim.v.shell_error ~= 0 then
             vim.cmd.Octo("pr edit " .. number)
           else
             print "No pull request found for current branch"

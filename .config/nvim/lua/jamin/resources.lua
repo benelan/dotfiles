@@ -230,7 +230,7 @@ M.icons = {
     ellipses = "…  ",
     dot = "·",
     dot_outline = "◦",
-    separator = "┊",
+    indentline = "▏",
     fill_slash = "╱",
     fill_shade = "░",
     fill_solid = "█",
@@ -299,6 +299,7 @@ M.icons = {
     [vim.diagnostic.severity.HINT] = i("󰰀 ", "H"),
   },
   git = {
+    status = "▎",
     branch = i(" "),
     added = i("󰜄 ", "+"),
     changed = i("󱗝 ", "∗"),

@@ -95,7 +95,7 @@
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing window manager is
     # present (e.g. xcompmgr, compiz, etc.). (X11 only)
-    transparency = 10
+    transparency = 5
 
     # Draw a line of "separator_height" pixel height between two
     # notifications.
@@ -110,7 +110,7 @@
     horizontal_padding = 8
 
     # Padding between text and icon.
-    text_icon_padding = 1
+    text_icon_padding = 2
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
@@ -150,7 +150,7 @@
 
     ### Text ###
 
-    font = Ubuntu Mono 12
+    font = Ubuntu Mono 13
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -190,7 +190,7 @@
     #   %n  progress value if set without any extra characters
     #   %%  Literal %
     # Markup is allowed
-    format = "<b>%s</b>\n%b"
+    format = <span weight="bold" size="larger">%s</span>\n%b
 
     # Alignment of message text.
     # Possible values are "left", "center" and "right".
@@ -245,10 +245,10 @@
     min_icon_size = 16
 
     # Scale larger icons down to this size, set to 0 to disable
-    max_icon_size = 96
+    max_icon_size = 64
 
     # Paths to default icons (only necessary when not using recursive icon lookup)
-    icon_path = /usr/share/icons/Adwaita/16x16/status/:/usr/share/icons/Adwaita/16x16/devices/:/usr/share/icons/Adwaita/16x16/actions/:/usr/share/icons/Adwaita/16x16/emblems:/usr/share/icons/Adwaita/16x16/legacy:/usr/share/icons/Adwaita/16x16/apps:/usr/share/icons/Adwaita/scalable/status/:/usr/share/icons/Adwaita/scalable/devices/:/usr/share/icons/Adwaita/scalable/actions/:/usr/share/icons/Adwaita/scalable/emblems:/usr/share/icons/Adwaita/scalable/apps
+    icon_path = ~/.local/share/icons/Gruvbox-Plus-Dark/actions/16:~/.local/share/icons/Gruvbox-Plus-Dark/apps/16:~/.local/share/icons/Gruvbox-Plus-Dark/panel/16:~/.local/share/icons/Gruvbox-Plus-Dark/places/16/:~/.local/share/icons/Gruvbox-Plus-Dark/devices/16:~/.local/share/icons/Gruvbox-Plus-Dark/categories/16:~/.local/share/icons/Gruvbox-Plus-Dark/status/16:~/.local/share/icons/Gruvbox-Plus-Dark/emblems/16:/usr/share/icons/Adwaita/16x16/status/:/usr/share/icons/Adwaita/16x16/devices/:/usr/share/icons/Adwaita/16x16/actions/:/usr/share/icons/Adwaita/16x16/emblems:/usr/share/icons/Adwaita/16x16/legacy:/usr/share/icons/Adwaita/16x16/apps:/usr/share/icons/Adwaita/scalable/status/:/usr/share/icons/Adwaita/scalable/devices/:/usr/share/icons/Adwaita/scalable/actions/:/usr/share/icons/Adwaita/scalable/emblems:/usr/share/icons/Adwaita/scalable/apps
 
     ### History ###
 
@@ -262,7 +262,8 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /usr/bin/dmenu -i -fn IosevkaNerdFont-14 -nf '#ebdbb2' -nb '#282828' -sb '#504945' -p dunst: 
+    # dmenu = rofi -dmenu -i -p dunst: -theme ~/.config/rofi/launchers/type-1/style-10.rasi
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/sensible-browser
@@ -347,9 +348,9 @@
     # * context_all: Open context menu for all notifications.
     # These values can be strung together for each mouse event, and
     # will be executed in sequence.
-    mouse_left_click = close_current
+    mouse_left_click = do_action,close_current
     mouse_middle_click = close_all
-    mouse_right_click = do_action, close_current
+    mouse_right_click = close_current
 
 # Experimental features that may or may not work correctly. Do not expect them
 # to have a consistent behaviour across releases.
@@ -375,10 +376,10 @@
     close_all = mod4+shift+n
 
     # Redisplay last message(s).
-    history = mod4+ctrl+n
+    history = mod4+mod1+n
 
     # Context menu.
-    context = mod4+ctrl+shift+n
+    context = mod4+ctrl+n
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
@@ -485,6 +486,10 @@
     msg_urgency = critical
     fullscreen = show
 
+[gh_fzf]
+    appname = gh-fzf
+    action_name = log
+
 #[espeak]
 #    summary = "*"
 #    script = dunst_espeak.sh
@@ -498,10 +503,10 @@
 #    summary = "foobar"
 #    skip_display = true
 
-#[history-ignore]
-#    # This notification will not be saved in history
-#    summary = "foobar"
-#    history_ignore = yes
+[history-ignore]
+    # This notification will not be saved in history
+    appname = "volume"
+    history_ignore = yes
 
 #[skip-display]
 #    # This notification will not be displayed, but will be included in the history

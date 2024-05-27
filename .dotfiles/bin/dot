@@ -92,7 +92,7 @@ setup_dotfiles() {
         # Using dirname is easier but won't work on OSX
         # dirs=$(echo "$files" | xargs dirname)
 
-        # Create the directories in $DOTFILES_BACKUP_DIR
+        # Create the directories in $backup_dir
         echo "$dirs" | xargs -I{} mkdir -p "$backup_dir/{}"
 
         # Move the conflicting files to the new directories
@@ -111,9 +111,8 @@ setup_dotfiles() {
     unset files dirs repo_url backup_dir cache_dir
 
     # Make the bins and scripts executable
-    printf "\n> Making scripts and bins executable\n" >&2
+    printf "\n> Making scripts executable\n" >&2
     [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
-    [ -d ~/.dotfiles/scripts/ ] && chmod +x ~/.dotfiles/scripts/*
 
     # Must install libs before they can be pwn'd
     printf "\n> Installing git submodules\n\n" >&2

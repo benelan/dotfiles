@@ -139,16 +139,26 @@ nnoremap g: <Plug>(ColonOperator)
 nnoremap gs <Plug>(SubstituteOperator)
 vnoremap gs <Plug>(SubstituteOperator)
 
+" git difftool keymaps for staging hunks {{{2
+nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
+vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
+
+" cycle through git three way merge conflicts in visual mode {{{2
+nnoremap <expr> <Tab> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+
+nnoremap <expr> <C-n> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+xnoremap <expr> <C-n> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+xnoremap <expr> <C-p> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-p>'
+
+xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
+xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'
+
 " Functions and user commands {{{1
-"" go to next/previous merge conflict hunks {{{2
-" from https://github.com/tpope/vim-unimpaired
-function! s:findConflict(reverse) abort
-  call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
-endfunction
-
-nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
-
 "" save the value of the last visual selection {{{2
 function! VisualSelection(...) range
     let l:saved_reg = @"
@@ -217,7 +227,7 @@ if has("autocmd")
 
         autocmd FileType * setlocal formatoptions-=o
 
-        autocmd FileType qf,help,man,netrw
+        autocmd FileType qf,help,man,netrw,git
                     \ set nobuflisted
                     \ | nnoremap <silent> <buffer> q :q<CR>
                     \ | nnoremap <silent> <buffer> gq :bd!<CR>

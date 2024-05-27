@@ -124,7 +124,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       trail = res.icons.ui.dot,
       lead = res.icons.ui.dot,
       nbsp = res.icons.ui.nbsp,
-      leadmultispace = res.icons.ui.separator
+      leadmultispace = res.icons.ui.indentline
         .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
     }
   end,

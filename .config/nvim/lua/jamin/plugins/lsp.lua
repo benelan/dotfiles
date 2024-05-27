@@ -168,15 +168,16 @@ return {
           end
 
           if client.supports_method("textDocument/codeAction") then
+            bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "Code action")
             bufmap(
               { "n", "v" },
-              "ga",
+              "gA",
               function()
                 vim.lsp.buf.code_action({
                   context = { only = { "source", "refactor", "quickfix" } },
                 })
               end,
-              "Code action"
+              "Code action (only source and quickfix)"
             )
 
             if client.name == "tsserver" then

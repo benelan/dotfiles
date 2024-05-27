@@ -58,6 +58,7 @@ return {
         hl("GitSignsChange", alt_palette.orange, palette.none)
         hl("GitSignsChangeNr", alt_palette.orange, palette.none)
         hl("GitSignsChangeLn", alt_palette.orange, palette.none)
+        hl("GitSignsUntracked", alt_palette.purple, palette.none)
 
         hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 

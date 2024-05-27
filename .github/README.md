@@ -9,7 +9,7 @@ that fit your workflows.
 To install the dotfiles in your `$HOME` directory, run:
 
 ```sh
-curl -sSL benelan.dev/dotfiles | sh
+curl -sSL benelan.dev/s/dotfiles | sh
 ```
 
 If the link above dies, use the [`dot`](../.dotfiles/bin/dot) script's `init`
@@ -23,16 +23,20 @@ The script will backup any conflicting files to `~/.dotfiles-backup`. It
 will set up the dotfiles as a bare git repo, which makes syncing changes easy.
 You can also create separate branches for different machines. Read
 [this tutorial](https://www.atlassian.com/git/tutorials/dotfiles) for more info.
-A common alternative is managing dotfiles with symlinks (e.g. GNU stow), but in
-my experience that can get messy.
+A common alternative is managing dotfiles with symlinks (e.g.,
+[GNU stow](https://www.gnu.org/software/stow/)), but in my experience that can
+get messy.
 
 ## `dot` command
 
-The `dot` script has two custom subcommands: `init` and `deps`. The `init`
-subcommand sets up the dotfiles bare repo, as mentioned [above](#setup). The
-`deps` subcommand installs various dependencies, including development
-tools, GUI apps, shell scripts, fonts, themes, and more. See `dot deps -h` for
-usage information.
+The `dot` script has the following custom subcommands:
+
+- `init`: Setup the dotfiles bare repo, as mentioned [above](#setup).
+- `deps`: Install various dependencies, including development tools, GUI apps,
+  shell scripts, fonts, themes, and more. See `dot deps -h` for usage info.
+- `edit`: Open nvim/vim with environment variables set so git plugins work with
+  the bare dotfiles repo.
+- `get`: Clone a repo to the `$LIB` directory instead of `$PWD`.
 
 All other subcommands and their arguments are passed to `git`, with environment
 variables set to ensure `dot` always runs on the bare repo. Untracked files are
@@ -56,9 +60,9 @@ Git bash completion and the git aliases defined at the bottom of
 My setup was primarily created for Ubuntu/Debian and their derivatives. However,
 I try to separate the Ubuntu-only code and make sure executables exist before
 using them. The main issue you'll face with other linux distros is missing
-dependencies, which I install with `dot deps -U` on Ubuntu. See the
-[apt](../.dotfiles/deps/apt) and [apt-gui](../.dotfiles/deps/apt-gui) dependency
-lists, although names may vary depending on your distro's package manager.
+dependencies, which I install with `dot deps -U` on Ubuntu. See the `apt`
+[dependency lists](../.dotfiles/deps), although names may vary depending on your
+distro's package manager.
 
 ### macOS
 
@@ -83,7 +87,7 @@ are flags that accept a value of `1` or `0` (default) to enabled/disable tools
 and other functionality.
 
 - `USE_GUI_APPS` - Install and use tools that only work on desktop machines.
-- `USE_WORK_STUFF` - Setup the environment for work.
+- `USE_WORK_STUFF` - Setup the environment for work (aliases functions, etc.)
 - `USE_COPILOT` - Use the GitHub Copilot plugin in Neovim.
 - `USE_CODEIUM` - Use the Codeium (free Copilot alternative) plugin in Neovim.
 - `USE_DEVICONS` - Use developer icons in various tools. The icons are displayed

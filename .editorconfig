@@ -17,16 +17,17 @@ root = true
     spaces_around_brackets = true
     indent_size = 2
 
-[*.{css,scss,sass,less,lua,yml,yaml}]
+[*.{css,scss,sass,less,lua,yml,yaml,md,mdx,mail}]
     indent_size = 2
 
-[*.{md,mdx,mail}]
+[*.{md,mail,sh,bash}]
     max_line_length = 80
-    indent_size = 2
+
+[*.lua]
+    max_line_length = 100
 
 [COMMIT_EDITMSG]
     max_line_length = 72
 
 [Makefile]
     indent_style = tab
-    indent_size = 4

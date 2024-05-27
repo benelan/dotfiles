@@ -22,7 +22,9 @@ return {
     "tpope/vim-projectionist",
     lazy = false,
     keys = {
+      { "<M-BS>", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
+      { "<leader>aa", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
       { "<leader>ad", "<CMD>Edoc<CR>", desc = "Related: doc (projectionist)" },
       { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },

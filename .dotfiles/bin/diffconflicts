@@ -83,18 +83,18 @@ BASE="$2"
 LOCAL="$3"
 REMOTE="$4"
 MERGED="$5"
-LOCONFLICT="${MERGED%.*}_LOCONFLICT_$$.$(basename "${MERGED##*.}")"
-RECONFLICT="${MERGED%.*}_RECONFLICT_$$.$(basename "${MERGED##*.}")"
+XLOCAL="${MERGED%.*}_XLOCAL_$$.$(basename "${MERGED##*.}")"
+XREMOTE="${MERGED%.*}_XREMOTE_$$.$(basename "${MERGED##*.}")"
 
 # Always delete our temp files; Git will handle it's own temp files.
-trap 'rm -f "'"${LOCONFLICT}"'" "'"${RECONFLICT}"'"' SIGINT SIGTERM EXIT
+trap 'rm -f "'"${XLOCAL}"'" "'"${XREMOTE}"'"' SIGINT SIGTERM EXIT
 
 # Remove the conflict markers for each 'side' and put each into a temp file
-sed -E -e '/^=======\r?$/,/^>>>>>>> /d' -e '/^<<<<<<< /d' "${MERGED}" >"${LOCONFLICT}"
-sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" >"${RECONFLICT}"
+sed -E -e '/^=======\r?$/,/^>>>>>>> /d' -e '/^<<<<<<< /d' "${MERGED}" >"${XLOCAL}"
+sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" >"${XREMOTE}"
 
 # Fire up vimdiff
-$CMD -f -R -d "${LOCONFLICT}" "${RECONFLICT}" \
+$CMD -f -R -d "${XLOCAL}" "${XREMOTE}" \
     -c "set noreadonly" \
     -c "vnoremap <leader>gr :diffget  <BAR> diffupdate<CR>" \
     -c "nnoremap <leader>gr :diffget  <BAR> diffupdate<CR>" \
@@ -113,7 +113,7 @@ EC=$?
 
 # Overwrite $MERGED only if vimdiff exits cleanly.
 if [[ $EC == "0" ]]; then
-    cat "${LOCONFLICT}" >"${MERGED}"
+    cat "${XLOCAL}" >"${MERGED}"
 fi
 
 exit $EC

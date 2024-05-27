@@ -1,4 +1,4 @@
-" vim:filetype=vim foldmethod=marker:
+" vim:filetype=vifm foldmethod=marker:
 " Sample configuration file for vifm (last updated: 2 June, 2023)
 " You can edit this file by hand.
 " The " character at the beginning of a line comments out the line.
@@ -249,11 +249,14 @@ fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
 
 " Web
 filetype {*.xhtml,*.html,*.htm},<text/html>
+            \ {Open in neovim} nvim %f,
+            \ {Open in vim} vim %f,
+            \ {Open in vi} vi %f,
+            \ {View in default browser} o %f,
             \ {Open with firefox} firefox %f &,
             \ {Open with brave-browser} brave-browser %f &,
+            \ {Open with chromium-browser} chromium-browser %f &,
             \ {Open with chrome} google-chrome %f &,
-            \ {Open with qutebrowser} qutebrowser %f %i,
-            \ {View in default browser} open %f,
 
 fileviewer {*.xhtml,*.html,*.htm},<text/html>
             \ {Open with w3m} w3m,
