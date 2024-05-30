@@ -129,33 +129,6 @@ keymap(
 )
 
 -------------------------------------------------------------------------------
-----> Git difftool and mergetool
--------------------------------------------------------------------------------
-
--- two way diff for staging/resetting hunks
-keymap({ "n", "v" }, "<leader>gr", ":diffget<BAR>diffupdate<CR>", "Get hunk (diff)")
-keymap({ "n", "v" }, "<leader>gw", ":diffput<CR>", "Put hunk (diff)")
-
--- three way diff for merge conflict resolution
-keymap(
-  { "n", "v" },
-  "<localleader>x",
-  ":diffget BA<BAR>diffupdate<CR>",
-  "Choose hunk from BASE (diff)"
-)
-keymap(
-  "n",
-  "<localleader>X",
-  "<CMD>%diffget BA<BAR>diffupdate<CR>",
-  "Choose all hunks from BASE (diff)"
-)
-
-keymap({ "n", "v" }, "]x", ":diffget RE<BAR>diffupdate<CR>", "Choose hunk from REMOTE (diff)")
-keymap({ "n", "v" }, "[x", ":diffget LO<BAR>diffupdate<CR>", "Choose hunk from LOCAL (diff)")
-keymap("n", "]X", "<CMD>%diffget RE<BAR>diffupdate<CR>", "Choose all hunks from REMOTE (diff)")
-keymap("n", "[X", "<CMD>%diffget LO<BAR>diffupdate<CR>", "Choose all hunks from LOCAL (diff)")
-
--------------------------------------------------------------------------------
 ----> Buffers, windows, tabs
 -------------------------------------------------------------------------------
 
@@ -204,7 +177,7 @@ keymap(
 keymap(
   "n",
   "<leader>s|",
-  ':execute "set colorcolumn=" . (&colorcolumn == "" ? "79" : "")<CR><CMD>set colorcolumn?<CR>',
+  ':execute "set colorcolumn=" . (&colorcolumn == "" ? &textwidth > 0 ? "+1" : "81" : "")<CR><CMD>set colorcolumn?<CR>',
   "Toggle colorcolumn"
 )
 

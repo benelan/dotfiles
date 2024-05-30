@@ -28,11 +28,11 @@ vim.opt.laststatus = 3
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.signcolumn = "yes"
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "81"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
-vim.opt.diffopt:append "algorithm:patience,hiddenoff,foldcolumn:1,linematch:60"
+vim.opt.diffopt:append("algorithm:histogram,foldcolumn:1,linematch:60,context:8,indent-heuristic")
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 

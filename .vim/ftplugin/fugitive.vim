@@ -5,11 +5,11 @@ nmap <buffer> q gq
 " Reset the file under the cursor without losing undo history
 nmap <buffer> xx <CR><CMD>Gread<BAR>write<BAR>bdelete<CR>
 
-" override the default commit keymap
-nmap <buffer> cc <CMD>tab Git commit --verbose<CR>
+" override the default commit keymap to open in a new tab and be very verbose
+nmap <buffer> cc <CMD>tab Git commit -vv<CR>
 
 " Stage all tracked files
-nmap <buffer> S  mtgUks`t
+nmap <buffer> S  mtgUks`t:delmarks t<CR>
 
-nmap <buffer> <leader>P <CMD>Git push<CR>
-nmap <buffer> <leader>p <CMD>Git pull --rebase<CR>
+nmap <buffer> <leader>pu <CMD>Git push -u origin HEAD<CR>
+nmap <buffer> <leader>pl <CMD>Git pull --rebase<CR>

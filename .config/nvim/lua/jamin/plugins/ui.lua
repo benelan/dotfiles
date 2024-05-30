@@ -60,6 +60,7 @@ return {
         hl("GitSignsChange", alt_palette.orange, palette.none)
         hl("GitSignsChangeNr", alt_palette.orange, palette.none)
         hl("GitSignsChangeLn", alt_palette.orange, palette.none)
+        hl("GitSignsUntracked", alt_palette.purple, palette.none)
 
         hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 
@@ -146,37 +147,21 @@ return {
   {
     "folke/trouble.nvim",
     cmd = "Trouble",
-    branch = "dev",
     keys = {
-      {
-        "<leader>xd",
-        "<CMD>Trouble diagnostics toggle<CR>",
-        desc = "Diagnostics (trouble)",
-      },
+      { "<leader>xs", "<CMD>Trouble symbols toggle<CR>", desc = "Symbols (trouble)" },
+      { "<leader>xL", "<CMD>Trouble loclist toggle<CR>", desc = "Location list (trouble)" },
+      { "<leader>xQ", "<CMD>Trouble qflist toggle<CR>", desc = "Quickfix list (trouble)" },
+      { "<leader>xd", "<CMD>Trouble diagnostics toggle<CR>", desc = "Diagnostics (trouble)" },
+      { "<leader>xx", "<CMD>Trouble mydiag toggle", desc = "Diagnostics w/ less noise (trouble)" },
       {
         "<leader>xb",
         "<CMD>Trouble diagnostics toggle filter.buf=0<CR>",
         desc = "Buffer diagnostics (trouble)",
       },
       {
-        "<leader>xs",
-        "<CMD>Trouble symbols toggle focus=false<CR>",
-        desc = "Symbols (trouble)",
-      },
-      {
         "<leader>xl",
-        "<CMD>Trouble lsp toggle focus=false win.position=right<CR>",
+        "<CMD>Trouble lsp toggle<CR>",
         desc = "LSP definitions/references/etc (trouble)",
-      },
-      {
-        "<leader>xL",
-        "<CMD>Trouble loclist toggle<CR>",
-        desc = "Location list (trouble)",
-      },
-      {
-        "<leader>xQ",
-        "<CMD>Trouble qflist toggle<CR>",
-        desc = "Quickfix list (trouble)",
       },
       {
         "]d",
@@ -205,17 +190,21 @@ return {
     },
 
     opts = {
+      pinned = true,
       keys = { H = "fold_close", J = "next", K = "prev", L = "fold_open" },
+      win = { size = { width = 0.25, height = 0.3 } },
       modes = {
-        cascade = {
+        mydiag = {
           mode = "diagnostics",
-          filter = function(items)
-            local severity = vim.diagnostic.severity.HINT
-            for _, item in ipairs(items) do
-              severity = math.min(severity, item.severity)
-            end
-            return vim.tbl_filter(function(item) return item.severity == severity end, items)
-          end,
+          filter = {
+            any = {
+              buf = 0,
+              {
+                severity = vim.diagnostic.severity.ERROR,
+                function(item) return item.filename:find((vim.loop or vim.uv).cwd(), 1, true) end,
+              },
+            },
+          },
         },
       },
       icons = {

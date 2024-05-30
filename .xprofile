@@ -52,4 +52,8 @@ if [ -r "$wallpaper" ]; then
     esac
 fi
 
+# notifications
+[ -f /usr/bin/dunst ] && /usr/bin/dunst &
+
+# local stuff
 [ -r "$HOME/.xprofile.local" ] && . "$HOME/.xprofile.local"

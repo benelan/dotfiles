@@ -1,25 +1,13 @@
 " Settings                                                              {{{
 " --------------------------------------------------------------------- {|}
 
-set nocompatible
+source $VIMRUNTIME/defaults.vim
 
-if has("autocmd")
-    filetype plugin indent on
-endif
-
-if has("syntax") && !exists("syntax_on")
-    syntax enable
-endif
-
-set autoread confirm hidden lazyredraw ttyfast t_vb= ttimeout ttimeoutlen=100
-set smarttab expandtab shiftround softtabstop=4 shiftwidth=4
-set ignorecase smartcase autoindent smartindent formatoptions+=l formatoptions-=t
-set backspace=indent,eol,start clipboard=unnamed nrformats-=octal
-set number relativenumber foldmethod=indent foldlevel=99 display+=lastline
-set laststatus=2 showtabline=2 wildmenu wildmode=list:longest,full
-set complete-=i completeopt=noselect,menuone,menuone
-set splitbelow splitright scrolloff=5 sidescrolloff=5 linebreak
-set path-=/usr/include path+=** define= include=
+set autoread confirm hidden lazyredraw ttyfast clipboard=unnamed t_vb=
+set linebreak smarttab expandtab shiftround softtabstop=4 shiftwidth=4
+set ignorecase smartcase autoindent smartindent laststatus=2
+set number relativenumber splitbelow splitright foldmethod=indent foldlevel=99
+set complete-=i path-=/usr/include path+=** define= include=
 
 if has("persistent_undo")
     set undofile
@@ -49,35 +37,21 @@ else
     set dictionary=spell
 endif
 
-if has('reltime')
-  set incsearch
-endif
-
-if has("extra_search")
-    set hlsearch
-endif
-
-if has("multi_byte_encoding")
-    set listchars+=extends:»,precedes:«
-    set listchars+=multispace:·\ ,trail:·
-    " set listchars+=nbsp:␣,eol:⮠
-    let &showbreak= "…  "
-    set fillchars+=diff:╱
-else
-    set listchars+=extends:>,precedes:<
-    let &showbreak= "... "
+if exists("+spelloptions")
+    set spelloptions+=camel
 endif
 
 if exists("+breakindent")
     set breakindent
 endif
 
+set wildmode=list:longest,full
 if exists("+wildignorecase")
     set wildignorecase
 endif
 
-if exists("+spelloptions")
-    set spelloptions+=camel
+if has("extra_search")
+    set hlsearch
 endif
 
 if has("cmdline_hist")
@@ -88,17 +62,30 @@ if has("virtualedit")
     set virtualedit+=block
 endif
 
+if has('nvim-0.3.2') || has("patch-8.1.0360")
+    set diffopt+=algorithm:histogram,indent-heuristic
+endif
+
+set formatoptions-=t
 if v:version > 703 || v:version == 703 && has("patch541")
     set formatoptions+=j
 endif
 
-if exists("+termguicolors")
-    set termguicolors
+set listchars=tab:\|->
+if has("multi_byte_encoding")
+    set listchars+=extends:»,precedes:«
+    set listchars+=multispace:·\ ,trail:·
+    set listchars+=nbsp:␣,eol:⤶
+    let &showbreak= "…  "
+    set fillchars+=diff:╱
+else
+    set listchars+=extends:>,precedes:<
+    let &showbreak= "... "
 endif
 
 set statusline=[%n]%m%r%h%w%q%y\ %f\ %=\ %v:[%l/%L]
 
-colorscheme desert
+" colorscheme desert
 hi! link TabLineFill Statusline
 
 "" markdown settings                                          {{{
@@ -276,29 +263,31 @@ if has("keymap")
                 \:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" git difftool/mergetool keymaps for selecting hunks         {{{
+    "" git difftool keymaps for staging hunks                     {{{
 
-    nnoremap <leader>gr :diffget<BAR>diffupdate<CR>
-    vnoremap <leader>gr :diffget<BAR>diffupdate<CR>
-    nnoremap <leader>gw :diffput<CR>
-    vnoremap <leader>gw :diffput<CR>
+    nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+    vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+    nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
+    vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
 
-    vnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
-    nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
-    nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
 
-    " LOCAL is the left buffer when using vimdiff
-    vnoremap [x :diffget LO<BAR>diffupdate<CR>
-    nnoremap [x :diffget LO<BAR>diffupdate<CR>
-    nnoremap [X :%diffget LO<BAR>diffupdate<CR>
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    " cycle through git three way merge conflicts in visual mode  {{{
 
-    " REMOTE is the rightmost buffer
-    vnoremap ]x :diffget RE<BAR>diffupdate<CR>
-    nnoremap ]x :diffget RE<BAR>diffupdate<CR>
-    nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
+    nnoremap <expr> <Tab> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+    xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+    nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+
+    nnoremap <expr> <C-n> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+    xnoremap <expr> <C-n> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+    xnoremap <expr> <C-p> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-p>'
+
+    xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
+    xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{
+
     "" Argument list
     nnoremap [a :previous<CR>
     nnoremap ]a :next<CR>
@@ -374,18 +363,22 @@ if has("keymap")
     nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
     nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
     nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
-    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
-            \ . (&colorcolumn == "" ? "79" : "")<CR>
+    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
+            \ &colorcolumn == ""
+                \ ? &textwidth > 0 ? &textwidth : "79"
+                \ :""
+        \ )<CR><CMD>set colorcolumn?<CR>
 
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel="
-                \ . (&conceallevel == "0" ? "2" : "0")<CR>
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
+            \ &conceallevel == "0" ? "2" : "0"
+        \ )<CR><CMD>set conceallevel?<CR>
 
-    nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
-            \ . (&clipboard == "unnamed"
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
+            \ &clipboard == "unnamed"
                 \ ? "unnamed,unnamedplus"
-                \ : "unnamed")<CR><CMD>set clipboard?<CR>
+                \ : "unnamed"
+        \ )<CR><CMD>set clipboard?<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
@@ -564,15 +557,6 @@ if has("autocmd")
 
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
-
-        " When editing a file, always jump to the last known cursor position.
-        " Don't do it when the position is invalid, when inside an event handler
-        " (happens when dropping a file on gvim) and for a commit message (it's
-        " likely a different one than last time).
-        autocmd BufReadPost *
-            \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-            \ |   exe "normal! g`\""
-            \ | endif
 
         autocmd FileType * setlocal formatoptions-=o
 
@@ -759,60 +743,6 @@ if has("eval")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
     " TODO: make a surround operator via: c<motion>"<C-r><C-o>""<Esc>
-endif
-
-"-----------------------------------------------------------------------}}}
-" Terminal options                                                      {{{
-"-----------------------------------------------------------------------{|}
-
-" Fix modern terminal features
-" :help terminal-output-codes
-if !has('gui_running') && !has('nvim') && &term =~ '^\%(screen\|tmux\|xterm\|gnome\)'
-    " Styled and colored underline support
-    let &t_AU = "\e[58:5:%dm"
-    let &t_8u = "\e[58:2:%lu:%lu:%lum"
-    let &t_Us = "\e[4:2m"
-    let &t_Cs = "\e[4:3m"
-    let &t_ds = "\e[4:4m"
-    let &t_Ds = "\e[4:5m"
-    let &t_Ce = "\e[4:0m"
-
-    " Enable true colors, see  :help xterm-true-color
-    let &t_8f = "\e[38:2:%lu:%lu:%lum"
-    let &t_8b = "\e[48:2:%lu:%lu:%lum"
-    let &t_RF = "\e]10;?\e\\"
-    let &t_RB = "\e]11;?\e\\"
-
-    " Enable bracketed paste mode, see  :help xterm-bracketed-paste
-    let &t_BE = "\e[?2004h"
-    let &t_BD = "\e[?2004l"
-    let &t_PS = "\e[200~"
-    let &t_PE = "\e[201~"
-
-    " Cursor control
-    if exists("+cursorshape")
-        let &t_RS = "\eP$q q\e\\"
-        let &t_RC = "\e[?12$p"
-        let &t_VS = "\e[?12l"
-        let &t_SH = "\e[%d q"
-        let &t_SI = "\e[6 q"
-        let &t_SR = "\e[4 q"
-        let &t_EI = "\e[2 q"
-    endif
-
-    " Enable focus event tracking, see  :help xterm-focus-event
-    let &t_fe = "\e[?1004h"
-    let &t_fd = "\e[?1004l"
-    execute "set <FocusGained>=\e[I"
-    execute "set <FocusLost>=\e[O"
-
-    " Enable modified arrow keys, see  :help arrow_modifiers
-    execute "silent! set <xUp>=\e[@;*A"
-    execute "silent! set <xDown>=\e[@;*B"
-    execute "silent! set <xRight>=\e[@;*C"
-    execute "silent! set <xLeft>=\e[@;*D"
-
-    let &t_ut=""
 endif
 
 "----------------------------------------------------------------------}}}

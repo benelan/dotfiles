@@ -11,6 +11,7 @@ return {
       snippet_engine = "luasnip",
       languages = {
         lua = { template = { annotation_convention = "emmylua" } },
+        vue = { template = { annotation_convention = "jsdoc" } },
         astro = { template = { annotation_convention = "jsdoc" } },
         svelte = { template = { annotation_convention = "jsdoc" } },
         typescript = { template = { annotation_convention = "jsdoc" } },
@@ -75,9 +76,13 @@ return {
     },
 
     keys = {
-      { "<leader>ro", "<CMD>DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
+      { "<leader>ro", "<CMD>vsplit <BAR> DevdocsOpen<CR>", desc = "Open ref (devdocs)" },
       { "<leader>rf", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
-      { "<leader>rr", "<CMD>DevdocsOpenCurrent<CR>", desc = "Open ref by filetype (devdocs)" },
+      {
+        "<leader>rr",
+        "<CMD>vsplit <BAR> DevdocsOpenCurrent<CR>",
+        desc = "Open ref by filetype (devdocs)",
+      },
     },
 
     opts = function()
@@ -90,39 +95,8 @@ return {
         or {
           previewer_cmd = "glow",
           picker_cmd = true,
-          cmd_args = { "-s", "dark", "-w", width },
+          cmd_args = { "-s", "dark" },
           picker_cmd_args = { "-s", "dark" },
-          cmd_ignore = {
-            "astro",
-            "bash",
-            "browser_support_tables",
-            "css",
-            "docker",
-            "dom",
-            "esbuild",
-            "gnu_make",
-            "go",
-            "html",
-            "http",
-            "javascript",
-            "jest",
-            "jq",
-            "jsdoc",
-            "lua-5.1",
-            "markdown",
-            "node",
-            "npm",
-            "react",
-            "sass",
-            "sqlite",
-            "svelte",
-            "svg",
-            "tailwindcss",
-            "typescript",
-            "vite",
-            "vue-3",
-            "webpack-5",
-          },
         }
 
       return vim.tbl_deep_extend("force", glow_opts, {
@@ -274,6 +248,10 @@ return {
         reset = { normal = "<M-BS>", insert = "<M-BS>" },
       },
     },
+    config = function(_, opts)
+      require("CopilotChat").setup(opts)
+      require("CopilotChat.integrations.cmp").setup()
+    end,
 
     cmd = {
       "CopilotChat",

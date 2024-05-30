@@ -10,8 +10,14 @@ aliases:
   r: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       --bind='alt-e:execute(gh run view --log-failed {-1})'
-      --bind='alt-i:reload(eval \"\$FZF_DEFAULT_COMMAND --status in_progress\")'
     " gh fzf run $*
+
+  m: |
+    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+      --bind='alt-bspace:execute(
+        gh api --silent --method DELETE /repos/{owner}/{repo}/milestones/{-1}
+      )+reload(eval \"\$FZF_DEFAULT_COMMAND\")'
+    " gh fzf milestone
 
   i: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
@@ -20,6 +26,10 @@ aliases:
       --bind='alt-n:execute<nvim +\"Octo issue edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
       --bind='alt-D:execute(gh issue edit {1} --add-label \"2 - in development\" --remove-label \"1 - assigned\")+refresh-preview'
       --bind='alt-I:execute(gh issue edit {1} --add-label \"3 - installed\")+refresh-preview'
+      --bind='alt-@:execute(
+        selected=\"\$(gh fzf milestone)\"
+        [ -n \"\$selected\" ] && gh issue edit --milestone \"\$selected\" {1}
+      )'
     " gh fzf issue $*
 
   p: |

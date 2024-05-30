@@ -8,10 +8,10 @@ return {
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
-    keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "<leader>-", "<CMD>Vifm<CR>" } },
+    keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "-", "<CMD>Vifm<CR>" } },
     init = function()
       -- define keymap here to fix lazy loading related startup error
-      keymap("n", "<leader>-", "<CMD>Vifm<CR>", "Vifm")
+      keymap("n", "-", "<CMD>Vifm<CR>", "Vifm")
       keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
     end,
   },
@@ -22,7 +22,9 @@ return {
     "tpope/vim-projectionist",
     lazy = false,
     keys = {
+      { "<M-BS>", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>a", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
+      { "<leader>aa", "<CMD>A<CR>", desc = "Alternate (projectionist)" },
       { "<leader>ac", "<CMD>Eci<CR>", desc = "Related: ci (projectionist)" },
       { "<leader>ad", "<CMD>Edoc<CR>", desc = "Related: doc (projectionist)" },
       { "<leader>ae", "<CMD>Eexample<CR>", desc = "Related: example (projectionist)" },

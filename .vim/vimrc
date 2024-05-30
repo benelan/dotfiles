@@ -1,25 +1,14 @@
 " Settings {{{1
-set nocompatible
-if has("autocmd")
-    filetype plugin indent on
-endif
 
-if has("syntax") && !exists("syntax_on")
-    syntax enable
-endif
+source $VIMRUNTIME/defaults.vim
 
-set number relativenumber linebreak backspace=indent,eol,start
-set mouse= clipboard=unnamed ttyfast lazyredraw autoread confirm hidden
-set ignorecase smartcase autoindent smartindent formatoptions+=l
-set nomodeline nostartofline t_vb= nrformats-=octal nrformats+=unsigned
+set number relativenumber splitbelow splitright laststatus=2 showtabline=2
+set clipboard=unnamed ttyfast lazyredraw autoread confirm hidden linebreak
+set ignorecase smartcase autoindent smartindent formatoptions-=t
 set softtabstop=4 shiftwidth=4 shiftround smarttab expandtab
-set wildmenu wildmode=list:longest,full
-set complete-=i completeopt=noselect,menuone,menuone
-set laststatus=2 showtabline=2 display+=lastline
-set splitbelow splitright scrolloff=8 sidescrolloff=8
-set sessionoptions-=options viewoptions-=options
-set path-=/usr/include path+=** define= include=
-set wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
+set nomodeline nostartofline t_vb= nrformats+=unsigned
+set complete-=i path-=/usr/include path+=** define= include=
+set wildmode=list:longest,full wildignore=*~,#*#,*.7z,.DS_Store,.git,.hg,.svn,
     \*.a,*.adf,*.asc,*.au,*.aup,*.avi,*.bin,*.bmp,*.bz2,*.class,*.db,*.dbm,
     \*.djvu,*.docx,*.exe,*.filepart,*.flac,*.gd2,*.gif,*.gifv,*.gmo,*.gpg,*.gz,
     \*.hdf,*.ico,*.iso,*.jar,*.jpeg,*.jpg,*.m4a,*.mid,*.mp3,*.mp4,*.o,*.odp,
@@ -65,18 +54,15 @@ if has("folding")
     set foldmethod=indent foldlevel=99 foldclose=all
 endif
 
-if &ttimeoutlen == -1
-    set ttimeout ttimeoutlen=100
-endif
-
 if has("extra_search")
-    set hlsearch incsearch
+    set hlsearch
 endif
 
+set listchars=tab:\|->
 if has("multi_byte_encoding")
     set listchars+=extends:»,precedes:«
     set listchars+=multispace:·\ ,trail:·
-    " set listchars+=nbsp:␣,eol:⮠
+    set listchars+=nbsp:␣,eol:⤶
     let &showbreak= "…  "
     set fillchars+=diff:╱
 else
@@ -169,26 +155,6 @@ if has("keymap")
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
 
-    "" git difftool/mergetool keymaps for selecting hunks {{{2
-    nnoremap <leader>gr :diffget<BAR>diffupdate<CR>
-    vnoremap <leader>gr :diffget<BAR>diffupdate<CR>
-    nnoremap <leader>gw :diffput<CR>
-    vnoremap <leader>gw :diffput<CR>
-
-    vnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
-    nnoremap <localleader>x :diffget BA<BAR>diffupdate<CR>
-    nnoremap <localleader>X :%diffget BA<BAR>diffupdate<CR>
-
-    "" LOCAL is the left buffer when using vimdiff
-    vnoremap [x :diffget LO<BAR>diffupdate<CR>
-    nnoremap [x :diffget LO<BAR>diffupdate<CR>
-    nnoremap [X :%diffget LO<BAR>diffupdate<CR>
-
-    "" REMOTE is the rightmost buffer
-    vnoremap ]x :diffget RE<BAR>diffupdate<CR>
-    nnoremap ]x :diffget RE<BAR>diffupdate<CR>
-    nnoremap ]X :%diffget RE<BAR>diffupdate<CR>
-
     "" lists - next/prev {{{2
     "" Argument list
     nnoremap [a :previous<CR>
@@ -252,16 +218,21 @@ if has("keymap")
     nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
     nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn="
-            \ . (&colorcolumn == "" ? "79" : "")<CR>
+    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
+            \ &colorcolumn == ""
+                \ ? &textwidth > 0 ? &textwidth : "79"
+                \ :""
+        \ )<CR><CMD>set colorcolumn?<CR>
 
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel="
-                \ . (&conceallevel == "0" ? "2" : "0")<CR>
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
+            \ &conceallevel == "0" ? "2" : "0"
+        \ )<CR><CMD>set conceallevel?<CR>
 
-    nnoremap <silent> <leader>sY <CMD>execute "set clipboard="
-            \ . (&clipboard == "unnamed"
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
+            \ &clipboard == "unnamed"
                 \ ? "unnamed,unnamedplus"
-                \ : "unnamed")<CR><CMD>set clipboard?<CR>
+                \ : "unnamed"
+        \ )<CR><CMD>set clipboard?<CR>
 
     "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))
@@ -307,7 +278,7 @@ if has("autocmd")
             \ setlocal keywordprg=sh\ -c\ 'o\ https://devdocs.io/\\#q=\$1\ '\ --
 
         if executable("dict")
-            autocmd FileType markdown,text,gitcommit 
+            autocmd FileType markdown,text,gitcommit
                         \ setlocal keywordprg=dict | let b:no_cursorline=1
         endif
 

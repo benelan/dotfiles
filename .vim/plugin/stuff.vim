@@ -52,7 +52,7 @@ nnoremap & :&&<CR>
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 
 " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
-nnoremap <silent> - <CMD>execute (
+nnoremap <silent> <leader>- <CMD>execute (
     \ &filetype ==# "netrw"
         \ ? "normal! -"
         \ : ":Explore " . expand("%:h") .
@@ -138,6 +138,25 @@ nnoremap g: <Plug>(ColonOperator)
 nnoremap gs <Plug>(SubstituteOperator)
 vnoremap gs <Plug>(SubstituteOperator)
 
+" git difftool keymaps for staging hunks {{{2
+nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
+nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
+vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
+
+" cycle through git three way merge conflicts in visual mode {{{2
+nnoremap <expr> <Tab> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+
+nnoremap <expr> <C-n> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+xnoremap <expr> <C-n> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
+xnoremap <expr> <C-p> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-p>'
+
+xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
+xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'
+
 " Functions and user commands {{{1
 "" utility functions {{{2
 function! s:warn(msg)
@@ -168,15 +187,6 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 
 "" wipe all registers {{{2
 command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
-
-"" go to next/previous merge conflict hunks {{{2
-" from https://github.com/tpope/vim-unimpaired
-function! s:findConflict(reverse) abort
-  call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
-endfunction
-
-nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
-nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
 "" save the value of the last visual selection {{{2
 function! VisualSelection(...) range

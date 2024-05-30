@@ -207,9 +207,12 @@ supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
 supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
 _gh_user="$(git config --global github.user || echo "benelan")"
+_gh_icon="$XDG_DATA_HOME/icons/Gruvbox-Plus-Dark/apps/scalable/github.svg"
 
 export GH_FZF_BRANCH_PREFIX="$_gh_user/"
 export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
+
+[ -f "$_gh_icon" ] && export GH_FZF_NOTIFY_ICON="$_gh_icon"
 
 # https://github.com/benelan/git-mux
 if supports git-mux; then

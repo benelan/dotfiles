@@ -70,7 +70,8 @@
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
     ; options: nvimdiff, diffconflicts, fugitive
-    tool = diffconflicts
+    tool = vimdiff
+    conflictStyle = diff3
 
 [mergetool]
     hideResolved = true
@@ -81,10 +82,16 @@
 
 [mergetool "vimdiff"]
     trustExitCode = true
-    conflictStyle = diff3
     ; https://git-scm.com/docs/vimdiff
     ; The layout option is available since git v2.37
-    layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
+    ; layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
+    cmd = vim $LOCAL $MERGED $REMOTE -fdc \"set nohlsearch | wincmd l \
+        | xnoremap <expr> <C-l> &diff ? ':diffget REMOTE <BAR> diffupdate<CR>gv' : '<C-l>' \
+        | xnoremap <expr> <C-h> &diff ? ':diffget LOCAL <BAR> diffupdate<CR>gv' : '<C-h>' \
+        | xnoremap <expr> <C-b> &diff ? ':diffget BASE <BAR> diffupdate<CR>gv' : '<C-b>' \
+        | xnoremap <expr> <silent> <CR> &diff ? '<ESC>:tabedit $LOCAL <BAR> diffs $MERGED \
+            <BAR> wincmd k <BAR> vertical diffs $BASE <BAR> vertical diffs $REMOTE \
+            <BAR> wincmd b <BAR> tabedit $MERGED <BAR> tabfirst<CR>' : '<CR>'\"
 
 [mergetool "diffconflicts"]
     trustExitCode = true
@@ -93,17 +100,10 @@
 
 [mergetool "fugitive"]
     trustExitCode = true
-    conflictStyle = diff3
-    ; https://github.com/tpope/vim-fugitive
-    cmd = vim -f +'packadd vim-fugitive   \
-        | nnoremap [x :diffget //2<CR>    \
-        | nnoremap ]x :diffget //3<CR>    \
-        | vnoremap [x :diffget //2<CR>    \
-        | vnoremap ]x :diffget //3<CR>    \
-        | nnoremap [X :%diffget //2<CR>   \
-        | nnoremap ]X :%diffget //3<CR>   \
-        | nnoremap <leader>w <CMD>wqa<CR> \
-        | nnoremap <leader>q <CMD>cq<CR> \
+    ; http://vimcasts.org/episodes/fugitive-vim-resolving-merge-conflicts-with-vimdiff/
+    cmd = vim -f +'packadd vim-fugitive \
+        | xnoremap <expr> <C-l> &diff ? ':diffget //3 <BAR> diffupdate<CR>gv' : '<C-l>' \
+        | xnoremap <expr> <C-h> &diff ? ':diffget //2 <BAR> diffupdate<CR>gv' : '<C-h>' \
         | Gvdiffsplit!' $MERGED
 
 [rebase]
@@ -131,7 +131,7 @@
 [format]
     ; For more info see $ man --pager='less -p "^PRETTY FORMATS"' git-log
     ; pretty = format:"%C(green)%h  %C(yellow)%ah  %C(cyan)%an  %C(white)%s%C(auto)% d%C(reset)"
-    pretty = format:"%C(green)%h  %C(yellow)%ah  %C(reset)%s  %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)% d"
+    pretty = format:"%C(yellow)%ad %C(magenta)<%C(blue)%an%C(magenta)> %C(green)%h%C(auto)%d%n%C(black bold)%C(white dim ul)%s%C(reset)%+b%n"
 
 [init]
     defaultBranch = main
@@ -257,13 +257,11 @@
 
     ls = ls-files
 
-    l = log
+    ; log with oneline
+    l = log --pretty=format:'%C(green)%h  %C(yellow)%ah  %C(reset)%s  %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)% d'
 
     ; log with full commit messages
-    ll = log --pretty=format:'%C(green)%h %C(yellow)%ad %C(black bold)- %C(white dim ul)%s%C(reset) %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)%d%+b'
-
-    ; log with full commit message and stat
-    lll = log --stat --pretty=format:'%C(green)%h %C(yellow)%ah %C(black bold)- %C(white dim ul)%s%C(reset) %C(magenta)<%C(blue)%an%C(magenta)>%C(auto)%d%+b'
+    ll = log --date=human
 
     ; add/remove file(s) to/from index
     hide = update-index --assume-unchanged
@@ -378,6 +376,7 @@
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='enter:become(echo {-1})' \
             --bind='alt-a:become(git stash apply {n})' \
+            --bind='alt-p:become(git stash pop {n})' \
             --bind='alt-x:execute(git stash drop {n})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-o:become(git stash branch stash-{-1} {n})'
 

@@ -1,6 +1,5 @@
-if exists("did_load_filetypes")
-    finish
-endif
+if exists("g:did_load_filetypes") | finish | endif
+let g:did_load_filetypes = 1
 
 augroup filetypedetect
     autocmd! BufRead,BufNewFile *.mdx set filetype=markdown

@@ -87,7 +87,7 @@ end
 
 ---Show HEAD ref name via Gitsigns.
 local function gitsigns_head(fallback)
-  return vim.g.gitsigns_head and string.format("  %s%s  ", icons.git.branch, vim.g.gitsigns_head)
+  return vim.b.gitsigns_head and string.format("  %s%s  ", icons.git.branch, vim.b.gitsigns_head)
     or fallback and fallback()
     or ""
 end
