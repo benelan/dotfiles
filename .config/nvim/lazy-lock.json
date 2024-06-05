@@ -1,6 +1,6 @@
 {
   "LuaSnip": { "branch": "master", "commit": "03c8e67eb7293c404845b3982db895d59c0d1538" },
-  "SchemaStore.nvim": { "branch": "main", "commit": "bc29cb05bb7a9845fbb04ae14ce72434bd271191" },
+  "SchemaStore.nvim": { "branch": "main", "commit": "493250022db69edd8afe8e6d0f17105756a3b721" },
   "cellular-automaton.nvim": { "branch": "main", "commit": "b7d056dab963b5d3f2c560d92937cb51db61cb5b" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-dictionary": { "branch": "main", "commit": "3dab73d34a889eafdb57c666c3c2076b4c3e126b" },
@@ -25,7 +25,7 @@
   "nvim-devdocs": { "branch": "master", "commit": "1ab982d3e069d191d9157b897c8b70cf48b7f77a" },
   "nvim-lspconfig": { "branch": "master", "commit": "4d38bece98300e3e5cd24a9aa0d0ebfea4951c16" },
   "nvim-rulebook": { "branch": "main", "commit": "baff4b397509d89c51425ab7eda5b6b537458908" },
-  "nvim-treesitter": { "branch": "master", "commit": "eb59a3df509322924631c1ed85b0d2ec696bb78d" },
+  "nvim-treesitter": { "branch": "master", "commit": "9a7ad2ff7a7ea81016aca2fc89c9b2c1a5365421" },
   "nvim-treesitter-context": { "branch": "master", "commit": "5efba33af0f39942e426340da7bc15d7dec16474" },
   "nvim-web-devicons": { "branch": "master", "commit": "c0cfc1738361b5da1cd0a962dd6f774cc444f856" },
   "octo.nvim": { "branch": "master", "commit": "22f34582a4eb1fb221eafd0daa9eb1b2bacfb813" },

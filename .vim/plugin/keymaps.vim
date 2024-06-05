@@ -40,10 +40,10 @@ dig -1 128078
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
-nmap <silent> Q mtgqBg`tzz:delmarks t<CR>
+nmap <silent> <leader>F mtgqBg`tzz:delmarks t<CR>
 
 " Format selected text maintaining the selection.
-xmap Q gqgv
+xmap <leader>F gq`[v`]V
 
 "" insert, command, and operator keymaps {{{1
 " Use last changed or yanked text as an object
@@ -213,9 +213,8 @@ nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
 xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
 xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
 
-nnoremap <expr> <C-n> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
-xnoremap <expr> <C-n> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
-xnoremap <expr> <C-p> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-p>'
+xnoremap <expr> <C-j> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-j>'
+xnoremap <expr> <C-k> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-k>'
 
 xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
 xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'
