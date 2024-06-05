@@ -402,9 +402,11 @@ filetype {*.tudu} tudu -f %c
 filetype {*.pro} qtcreator %f &
 
 " Directories
-filextype {*/}
+filextype {*/},{.*/}
             \ {View in nautilus} nautilus %f &, 
             \ {View in default file explorer} open %f &,
+
+fileviewer {*/},{.*/} tree -aCI .git/ --gitignore --nolinks %c
 
 " Syntax highlighting in preview
 "

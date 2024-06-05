@@ -1147,33 +1147,6 @@ install_theme_wallpaper() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install gruvbox gtk theme                                   {{{
-
-INSTALL_THEME_GTK_DOC="Install gruvbox GTK theme for application windows"
-install_theme_gtk() {
-    if [ "$(uname)" != "Linux" ]; then
-        echo "Unsupported operating system for GTK theme: $(uname)" >&2
-        return
-    fi
-
-    THEMES_DIR="$HOME/.themes"
-    mkdir -p "$THEMES_DIR"
-
-    # download gruvbox gtk theme pack
-    git -C "$CACHE_DIR" clone --depth=1 \
-        https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
-
-    # move the dark, borderless theme variant to ~/.themes dir for gtk-3.0
-    mv "$CACHE_DIR/Gruvbox-GTK-Theme/themes/Gruvbox-Dark-BL" "$THEMES_DIR"
-
-    # symlink the gtk-4.0 theme files
-    ln --force --symbolic "$THEMES_DIR"/Gruvbox-Dark-BL/gtk-4.0/* ~/.config/gtk-4.0/
-
-    # remove the repo because it's yuuge (there are a lot of variants)
-    rm -rf "$CACHE_DIR/Gruvbox-GTK-Theme"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install gruvbox icons                                       {{{
 
 INSTALL_THEME_ICONS_DOC="Install gruvbox icons pack"

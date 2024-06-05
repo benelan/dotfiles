@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.wo.conceallevel = 2
 
     -- up/down home/end movement that handles wrapped lines better
-    local opts = { expr = true, silent = true }
+    local opts = { expr = true, silent = true, buffer = true }
     vim.keymap.set("n", "$", "&wrap == 1 ? 'g$' : '$'", opts)
     vim.keymap.set("n", "^", "&wrap == 1 ? 'g^' : '^'", opts)
     vim.keymap.set("n", "g$", "&wrap == 1 ? '$' : 'g$'", opts)

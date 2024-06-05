@@ -118,6 +118,27 @@ return {
             })
           end
 
+          -- disable formatting for some LSP servers in favor of better standalone programs
+          -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
+          if
+            vim.tbl_contains(
+              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
+              client.name
+            )
+          then
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+          elseif client.supports_method("textDocument/formatting") then
+            -- if the LSP server has formatting capabilities, use it for formatexpr
+            vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
+            bufmap(
+              { "n", "v" },
+              "<leader>F",
+              function() vim.lsp.buf.format({ async = true }) end,
+              "LSP format"
+            )
+          end
+
           bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
           bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
           bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
@@ -131,24 +152,23 @@ return {
           end
 
           if client.supports_method("textDocument/references") then
-            bufmap("n", "gr", vim.lsp.buf.references, "LSP references")
+            bufmap("n", "grr", vim.lsp.buf.references, "LSP references")
           end
 
           if client.supports_method("textDocument/rename") then
-            bufmap("n", "gR", vim.lsp.buf.rename, "LSP rename")
+            bufmap("n", "grn", vim.lsp.buf.rename, "LSP rename")
           end
 
           if client.supports_method("textDocument/typeDefinition") then
-            bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
+            bufmap("n", "grt", vim.lsp.buf.type_definition, "LSP type definition")
           end
 
           if client.supports_method("textDocument/implementation") then
-            bufmap("n", "gm", vim.lsp.buf.implementation, "LSP implementation")
+            bufmap("n", "gri", vim.lsp.buf.implementation, "LSP implementation")
           end
 
           if client.supports_method("textDocument/signatureHelp") then
-            bufmap("n", "gh", vim.lsp.buf.signature_help, "LSP signature help")
-            bufmap("i", "<C-h>", vim.lsp.buf.signature_help, "LSP signature help")
+            bufmap("i", "<C-s>", vim.lsp.buf.signature_help, "LSP signature help")
           end
 
           if
@@ -159,7 +179,7 @@ return {
           then
             bufmap(
               "n",
-              "gH",
+              "gh",
               function()
                 vim.lsp.inlay_hint.enable(
                   not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
@@ -170,11 +190,21 @@ return {
             )
           end
 
+          -- -- setup codelens if supported by language server
+          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
+          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
+          --     buffer = args.buf,
+          --     callback = function() vim.lsp.codelens.refresh() end,
+          --   })
+          --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
+          -- end
+
           if client.supports_method("textDocument/codeAction") then
-            bufmap({ "n", "v" }, "ga", vim.lsp.buf.code_action, "Code action")
+            bufmap({ "n", "v" }, "gra", vim.lsp.buf.code_action, "Code action")
             bufmap(
               { "n", "v" },
-              "gA",
+              "ga",
               function()
                 vim.lsp.buf.code_action({
                   context = { only = { "source", "refactor", "quickfix" } },
@@ -233,55 +263,6 @@ return {
                 "Fix all (tsserver)"
               )
               ---@diagnostic enable: assign-type-mismatch
-            end
-          end
-
-          -- -- setup codelens if supported by language server
-          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
-          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
-          --     buffer = args.buf,
-          --     callback = function() vim.lsp.codelens.refresh() end,
-          --   })
-          --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
-          -- end
-
-          -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
-          if
-            vim.tbl_contains(
-              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
-              client.name
-            )
-          then
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          elseif client.supports_method("textDocument/formatting") then
-            -- if the LSP server has formatting capabilities, use it for formatexpr
-            vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
-            bufmap(
-              { "n", "v" },
-              "gF",
-              function() vim.lsp.buf.format({ async = true }) end,
-              "LSP format"
-            )
-          end
-
-          -- workaround for gopls not supporting semanticTokensProvider
-          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          if
-            client.name == "gopls" and not client.supports_method("textDocument/semanticTokens")
-          then
-            local semantic = client.config.capabilities.textDocument.semanticTokens
-            if semantic then
-              client.server_capabilities.semanticTokensProvider = {
-                full = true,
-                range = true,
-                legend = {
-                  tokenTypes = semantic.tokenTypes,
-                  tokenModifiers = semantic.tokenModifiers,
-                },
-              }
             end
           end
         end,

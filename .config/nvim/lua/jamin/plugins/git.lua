@@ -268,9 +268,11 @@ return {
     cond = vim.fn.executable("gh") == 1,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     cmd = "Octo",
+    event = { { event = "BufReadCmd", pattern = "octo://*" } },
 
     opts = {
       enable_builtin = true,
+      default_to_projects_v2 = true,
       default_merge_method = "squash",
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
@@ -308,37 +310,37 @@ return {
         pattern = "octo",
         group = vim.api.nvim_create_augroup("jamin_octo_settings", {}),
         callback = function()
-          vim.keymap.set(
-            "n",
-            "<leader>pC",
-            "<CMD>Octo pr checks<CR>",
-            { desc = "Show pull request checks (octo)", silent = true, buffer = true }
-          )
+          vim.keymap.set("n", "<leader>pC", "<CMD>Octo pr checks<CR>", {
+            desc = "Show pull request checks (octo)",
+            silent = true,
+            buffer = true,
+            noremap = true,
+          })
 
-          vim.keymap.set(
-            "n",
-            "<leader>tr",
-            "<CMD>Octo thread resolve<CR>",
-            { desc = "Resolve pull request review thread (octo)", silent = true, buffer = true }
-          )
+          vim.keymap.set("n", "<leader>tr", "<CMD>Octo thread resolve<CR>", {
+            desc = "Resolve pull request review thread (octo)",
+            silent = true,
+            buffer = true,
+            noremap = true,
+          })
 
-          vim.keymap.set(
-            "n",
-            "<leader>tu",
-            "<CMD>Octo thread unresolve<CR>",
-            { desc = "Unresolve pull request review thread (octo)", silent = true, buffer = true }
-          )
+          vim.keymap.set("n", "<leader>tu", "<CMD>Octo thread unresolve<CR>", {
+            desc = "Unresolve pull request review thread (octo)",
+            silent = true,
+            buffer = true,
+            noremap = true,
+          })
 
-          vim.keymap.set(
-            "n",
-            "<leader>vo",
-            "<CMD>Octo review comments<CR>",
-            { desc = "Show pending PR review comments (octo)", silent = true, buffer = true }
-          )
+          vim.keymap.set("n", "<leader>vo", "<CMD>Octo review comments<CR>", {
+            desc = "Show pending PR review comments (octo)",
+            silent = true,
+            buffer = true,
+            noremap = true,
+          })
 
           -- Add issue number and username completion to octo buffers
-          vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true })
-          vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true })
+          vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true, noremap = true })
+          vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true, noremap = true })
         end,
       })
     end,
@@ -356,6 +358,7 @@ return {
       -- Issues
       { "<leader>oic", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
       { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
+      { "<leader>oill", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
       { "<leader>oila", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
       { "<leader>oilc", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
 
@@ -374,6 +377,7 @@ return {
       },
       { "<leader>opc", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
+      { "<leader>opll", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
       { "<leader>opla", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
       { "<leader>oplc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
 

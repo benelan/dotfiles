@@ -144,10 +144,10 @@ if has("keymap")
 
     " Format the entire buffer preserving cursor location.
     " Requires the 'B' text object defined below.
-    nmap Q mtgqBg`t:delmarks t<CR>
+    nmap <silent> <leader>F mtgqBg`tzz:delmarks t<CR>
 
     " Format selected text maintaining the selection.
-    xmap Q gq`[v`]
+    xmap <leader>F gq`[v`]V
 
     nnoremap <BS> <C-^>
 
@@ -195,10 +195,10 @@ if has("keymap")
     cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
     cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
 
-    " use last changed or yanked text as an object
-    onoremap V :<C-U>execute "normal! `[v`]"<CR>
+    " Use last changed or yanked text as an object
+    onoremap gv :<C-U>execute "normal! `[v`]"<CR>
 
-    " use entire buffer as an object
+    " Use entire buffer as an object
     onoremap B :<C-U>execute "normal! 1GVG"<CR>
 
     " Line text objects including spaces/newlines
@@ -278,9 +278,8 @@ if has("keymap")
     xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
     nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
 
-    nnoremap <expr> <C-n> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
-    xnoremap <expr> <C-n> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-n>'
-    xnoremap <expr> <C-p> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-p>'
+    xnoremap <expr> <C-j> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-j>'
+    xnoremap <expr> <C-k> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-k>'
 
     xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
     xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'

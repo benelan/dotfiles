@@ -122,7 +122,7 @@ return {
 
         -- LSP keymaps
         { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
-        { "<leader>ly", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
+        { "<leader>lt", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
         { "<leader>li", function() builtin.lsp_implementations() end, desc = "LSP implementations (telescope)" },
 
         { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
