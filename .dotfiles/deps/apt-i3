@@ -2,7 +2,6 @@ acpi
 blueman
 brightnessctl
 compton
-conky-all
 dex
 dunst
 feh
@@ -16,12 +15,9 @@ libxcb1-dev
 libxfixes-dev
 lm-sensors
 lshw
-lxappearance
 maim
-playerctl
-powertop
-rofi
 wmctrl
 xdotool
 xinput
+xsel
 xss-lock

@@ -21,28 +21,28 @@ logger() {
 }
 
 linux_copy() {
-    if supports xclip; then
-        logger "INFO " "copy > using xclip"
-        cat | xclip -selection clipboard
+    if [ -n "$WAYLAND_DISPLAY" ] && supports wl-copy; then
+        logger "INFO " "copy > using wl-copy"
+        cat | wl-copy
     elif supports xsel; then
         logger "INFO " "copy > using xsel"
         cat | xsel -bi
-    elif supports wl-copy; then
-        logger "INFO " "copy > using wl-copy"
-        cat | wl-copy
+    elif supports xclip; then
+        logger "INFO " "copy > using xclip"
+        cat | xclip -selection clipboard
     fi
 }
 
 linux_paste() {
-    if supports xclip; then
-        logger "INFO " "paste > using xclip"
-        xclip -selection clipboard -o
+    if [ -n "$WAYLAND_DISPLAY" ] && supports wl-paste; then
+        logger "INFO " "paste > using wl-copy"
+        wl-paste
     elif supports xsel; then
         logger "INFO " "paste > using xsel"
         xsel -bo
-    elif supports wl-copy; then
-        logger "INFO " "paste > using wl-copy"
-        wl-paste
+    elif supports xclip; then
+        logger "INFO " "paste > using xclip"
+        xclip -selection clipboard -o
     fi
 }
 

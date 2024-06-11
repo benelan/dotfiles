@@ -65,6 +65,13 @@ Commands:
   lyrics     View lyrics for the current track
   player     Select a player (playerctl only)
   rofi       Open rofi and select a command
+  info       Print metadata formatted for use in statusbars
+  title      Print title
+  artist     Print artist
+  album      Print album
+  status     Print status
+  playlist   Print playlist position
+  artwork    Print the album cover's file path
 EOF
         exit 0
     fi
@@ -281,6 +288,13 @@ main() {
     fi
 
     case $command in
+        info) echo "${artist:+$artist - }$title" ;;
+        title) echo "$title" ;;
+        artist) echo "$artist" ;;
+        album) echo "$album" ;;
+        status) echo "$status" ;;
+        playlist) echo "$playlist" ;;
+        artwork) echo "$album_cover" ;;
         focus) selected="$focus_icon" ;;
         previous) selected="$previous_icon" ;;
         toggle) selected="$toggle_icon" ;;

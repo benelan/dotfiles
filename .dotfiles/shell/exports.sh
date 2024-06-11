@@ -239,3 +239,8 @@ if [ -n "$(
 fi
 
 unset _gh_user
+
+# local {{{1
+if [ -f "$DOTFILES/shell/.local.exports.sh" ]; then
+    . "$DOTFILES/shell/.local.exports.sh"
+fi
