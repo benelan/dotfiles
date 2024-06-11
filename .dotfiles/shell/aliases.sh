@@ -231,3 +231,8 @@ if supports docker; then
     fi
     #}}}2
 fi
+
+# Local {{{1
+if [ -f "$DOTFILES/shell/.local.aliases.sh" ]; then
+    . "$DOTFILES/shell/.local.aliases.sh"
+fi

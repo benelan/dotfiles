@@ -71,6 +71,8 @@ M.filetypes = {
     "",
     "conf",
     "text",
+    "swayconfig",
+    "i3config",
     "sh",
     "tmux",
     "vim",

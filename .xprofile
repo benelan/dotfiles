@@ -33,7 +33,7 @@ fi
 # fi
 
 # set wallpaper
-wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
+wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
 if [ -r "$wallpaper" ]; then
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)

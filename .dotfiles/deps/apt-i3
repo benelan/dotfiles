@@ -18,10 +18,9 @@ lm-sensors
 lshw
 lxappearance
 maim
-playerctl
 powertop
-rofi
 wmctrl
 xdotool
 xinput
+xsel
 xss-lock

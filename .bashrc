@@ -32,5 +32,6 @@ unset file
 # setup broot shell integration so `cd` works
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 
-# ensure tmux is running
-[ -z "$TMUX" ] && [ -z "$WEZTERM_PANE" ] && supports git-mux && git-mux project "$PWD"
+# ensure tmux is running in graphical environments (excluding wezterm)
+[ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] &&
+    [ -z "$WEZTERM_PANE" ] && supports git-mux && git-mux project "$PWD"

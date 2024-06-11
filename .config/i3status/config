@@ -7,15 +7,16 @@
 # If the above line is not correctly displayed, fix your editor first!
 
 general {
-        colors = true
-        interval = 5
-        color_good = "#98971a"
-        color_degraded = "#d79921"
-        color_bad = "#cc241d"
-        # color_separator = "#ebdbb2"
+    colors = true
+    interval = 5
+    color_good = "#ebdbb2"
+    color_degraded = "#d79921"
+    color_bad = "#cc241d"
+    # color_separator = "#ebdbb2"
 }
 
 order += "tztime local"
+order += "read_file WEATHER"
 order += "load"
 order += "cpu_usage"
 order += "memory"
@@ -24,47 +25,58 @@ order += "ethernet _first_"
 order += "volume master"
 order += "battery all"
 
+# The /tmp/weather file is updated via a cronjob. Make sure to export the
+# OPENWEATHER_API_KEY environment variable and add the weather script to PATH
+# before your shell startup scripts check for interactivity.
+#
+# */20 * * * * bash -l -c 'weather info >/tmp/weather 2>/dev/null'
+read_file WEATHER {
+    path = "/tmp/weather"
+    format = "%content"
+    format_bad = ""
+    separator_block_width = 25
+}
+
 tztime local {
-        format = "%Y-%m-%d %H:%M:%S "
-        separator_block_width = 25
+    format = "%R %a %F"
+    separator_block_width = 25
 }
 
 volume master {
-        format = "VOL: %volume"
-        format_muted = "VOL: muted (%volume)"
-        device = "default"
-        mixer = "Master"
-        mixer_idx = 0
-        separator_block_width = 25
+    format = "VOL %volume"
+    format_muted = "VOL: muted (%volume)"
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
+    separator_block_width = 25
 }
 
 battery all {
-        format = "%status %remaining (%percentage) %consumption"
-        integer_battery_capacity = true
-        low_threshold = "20"
-        threshold_type = "percentage"
-        separator_block_width = 25
+    format = "%status %percentage (%remaining) %consumption"
+    integer_battery_capacity = true
+    low_threshold = "20"
+    threshold_type = "percentage"
+    separator_block_width = 25
 }
 
 wireless _first_ {
-        format_up = "WIFI:%quality (%essid)"
-        format_down = "WIFI: down"
-        separator_block_width = 25
+    format_up = "WIFI%quality (%essid)"
+    format_down = "WIFI down"
+    separator_block_width = 25
 }
 
 ethernet _first_ {
-        format_up = "ETH: %speed"
-        format_down = ""
-        separator_block_width = 25
+    format_up = "ETH %speed"
+    format_down = ""
+    separator_block_width = 25
 }
 
 # path_exists VPN {
-#         # path exists when a VPN tunnel launched by nmcli/nm-applet is active
-#         path = "/proc/sys/net/ipv4/conf/tun0"
-#         format_down = ""
-#         format_up = "%title: %status"
+# # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+#     path = "/proc/sys/net/ipv4/conf/tun0"
+#     format_down = ""
+#     format_up = "%title: %status"
 # }
-
 
 # read_file uptime {
 #         path = "/proc/uptime"
@@ -77,25 +89,25 @@ ethernet _first_ {
 # }
 
 memory {
-        format = ""
-        format_degraded = "MEM: %percentage_used (%used / %total)"
-        threshold_degraded = "75%"
-        threshold_critical = "25%"
-        separator_block_width = 25
+    format = ""
+    format_degraded = "MEM %percentage_used (%used / %total)"
+    threshold_degraded = "75%"
+    threshold_critical = "25%"
+    separator_block_width = 25
 }
 
 cpu_usage {
-        format = ""
-        format_above_threshold = "CPU: %usage"
-        format_above_degraded_threshold = "CPU: %usage"
-        separator_block_width = 25
-        degraded_threshold = 25
-        max_threshold = 75
+    format = ""
+    format_above_threshold = "CPU %usage"
+    format_above_degraded_threshold = "CPU %usage"
+    separator_block_width = 25
+    degraded_threshold = 25
+    max_threshold = 75
 }
 
 load {
-        format = ""
-        format_above_threshold = "LOAD: %1min | %5min | %15min"
-        max_threshold = 3
-        separator_block_width = 25
+    format = ""
+    format_above_threshold = "LOAD %1min | %5min | %15min"
+    max_threshold = 3
+    separator_block_width = 25
 }

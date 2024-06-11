@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -o errexit
 
 # This script is designed for use in widgets, status bars or other UI
@@ -6,7 +6,7 @@ set -o errexit
 
 # If WEATHER_CACHE's modified timestamp is older than the interval (in minutes),
 # the data will be re-fetched before the subcommand is executed.
-# Set this to "-1" to prevent automatically re-fetching the data. You can run 
+# Set this to "-1" to prevent automatically re-fetching the data. You can run
 # `weather refresh` from a crontab or systemd timer instead.
 # NOTE: It takes OpenWeather at minimum 10 minutes to update their data
 WEATHER_REFRESH_INTERVAL="${WEATHER_REFRESH_INTERVAL:-10}"
@@ -21,8 +21,23 @@ help() {
         cat >&2 <<EOF
 Get information about the weather.
 
-Usage:  weather <refresh|icon|title|description|city|wind-speed
-                 |temp|min-temp|max-temp|feels-like|humidity|pressure>
+Usage:  $(basename "$0") <command>
+
+Commands:
+        refresh
+        info
+        waybar
+        icon
+        title
+        description
+        city
+        wind-speed
+        temp
+        min-temp
+        max-temp
+        feels-like
+        humidity
+        pressure
 EOF
         exit 0
     fi
@@ -93,6 +108,24 @@ get_icon() {
     esac
 }
 
+info() {
+    printf "%s %s %s" "$(get_icon)" "$(get_prop '.name')," "$(get_prop '.main.temp')°F"
+}
+
+waybar_json() {
+    tooltip="$(get_prop '.weather[0].main')\n\
+Temp: $(get_prop '.main.temp')°F\n\
+Feels like: $(get_prop '.main.feels_like')°F\n\
+Temp low: $(get_prop '.main.temp_min')°F\n\
+Temp high: $(get_prop '.main.temp_max')°F\n\
+Pressure: $(get_prop '.main.pressure')\n\
+Humidity: $(get_prop '.main.humidity')\n\
+Wind speed: $(get_prop '.wind.speed')\n\
+Wind degree: $(get_prop '.wind.deg')"
+
+    echo -E "{\"text\":\"$(info)\", \"tooltip\":\"$tooltip\"}"
+}
+
 main() {
     [ -z "$1" ] && help "a command is required"
     command -v jq >/dev/null 2>&1 || help "missing required dependency: jq"
@@ -105,6 +138,8 @@ main() {
     fi
 
     case "$1" in
+        waybar) waybar_json ;;
+        info) info ;;
         refresh) get_data ;;
         icon) get_icon ;;
         city) get_prop ".name" ;;

@@ -1,0 +1,217 @@
+// vim: set filetype=jsonc:
+{
+    "layer": "top", // Waybar at top layer
+    // "position": "bottom", // Waybar position (top|bottom|left|right)
+    "height": 30, // Waybar height
+    // "width": 1280, // Waybar width
+
+    // Choose the order of the modules
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-center": ["clock", "custom/weather", "custom/music"],
+    "modules-right": [
+        "cpu",
+        "memory",
+        "temperature",
+        "network",
+        "backlight",
+        "pulseaudio",
+        "battery",
+        "tray"
+    ],
+
+    // Modules configurations
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{icon}{name}",
+        "format-icons": {
+            "01": "󰈹 ",
+            "02": "󰨊 ",
+            "03": "󰖟 ",
+            "04": "󰅴 ",
+            "05": "󱍓 ",
+            "06": "󰏘 ",
+            "07": "󰭹 ",
+            "08": "󰇮 ",
+            "09": "󰴢 ",
+            "10": "󰊻 ",
+            "urgent": "󰀨 ",
+            "focused": "󰮔 ",
+            "default": "󰄯 "
+        }
+    },
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-alt": "NO_IDLE {status}",
+        "format-alt-click": "click-right",
+        "format-icons": {
+            "activated": "󰈈 ",
+            "deactivated": "󰈉 "
+        }
+    },
+
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10,
+        "show-passive-items": true
+    },
+
+    "clock": {
+        "format": "{:%Y-%m-%d %H:%M}",
+        "format-alt": "{:%H:%M}",
+        "format-alt-click": "click-right",
+        "tooltip": false,
+        "tooltip-format": "{calendar}"
+    },
+
+    "cpu": {
+        "format": "󰍛 {usage}%",
+        "format-alt": "CPU {usage}%",
+        "format-alt-click": "click-right"
+    },
+
+    "memory": {
+        "format": "󰘚 {percentage}%",
+        "format-alt": "MEM {percentage}%",
+        "format-alt-click": "click-right",
+        "tooltip-format": "{avail:0.1f}GB available, used {used:0.1f}/{total:0.1f}GB"
+    },
+
+    "temperature": {
+        // "thermal-zone": 2,
+        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "critical-threshold": 80,
+        "format": "{icon}{temperatureC}°C",
+        "format-alt": "TEMP {temperatureC}°C",
+        "format-alt-click": "click-right",
+        "format-icons": {
+            "default": ["󱃃 ", "󰔏 ", "󱃂 "],
+            "critical": "󰸁 "
+        },
+        "tooltip-format": "{temperatureC}°C | {temperatureF}°F | {temperatureK}K",
+        "tooltip": false
+    },
+
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon}{percent}%",
+        "format-alt": "BRI {percent}%",
+        "format-alt-click": "click-right",
+        "format-icons": ["󰃞 ", "󰃟 ", "󰃝 ", "󰃠 "]
+    },
+
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 10
+        },
+        "format": "{icon} {capacity}% ({time})",
+		"format-full": "{icon} {capacity}%",
+		"format-charging-full": "{icon} {capacity}%",
+        "format-alt": "{icon} {capacity}%",
+        "format-alt-click": "click-right",
+        "format-time": "{H}:{M:02}",
+        // "format-icons": {
+        //     "full": "FULL",
+        //     "charging": "CHRG",
+        //     "charging-full": "PLUG",
+        //     "default": "BAT"
+        // }
+        "format-icons": {
+            "full": "󰁹",
+            "charging": "󰂄",
+            "charging-full": "󰚥",
+            "default": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂"]
+        }
+    },
+
+    "network": {
+        // "interface": "wlp2s0", // (Optional) To force the use of this interface
+        "format": "{icon}",
+        "format-wifi": "{icon} {signalStrength}% ({essid})",
+        "format-ethernet": "{icon} {ifname}",
+        "format-alt": "{icon} {ipaddr}/{cidr}",
+        "format-alt-click": "click-right",
+        "format-icons": {
+            "wired": " ",
+            "default": "󰛳 ",
+            "ethernet": "󰈀 ",
+            "disabled": "󰀝 ",
+            "disconnected": "󰤮 ",
+            "wifi": ["󰤯 ", "󰤟 ", "󰤢 ", "󰤥 ", "󰤨 "]
+        },
+        "tooltip-format-wifi": "{signalStrength}%",
+        "on-click": "nm-connection-editor"
+    },
+
+    "pulseaudio": {
+        "scroll-step": 1,
+        "format": "{icon}{volume}%",
+        "format-alt": "VOL {volume}%",
+        "format-alt-click": "click-right",
+        "format-bluetooth": "{icon}{volume}%",
+        "format-muted": "{icon}",
+        "format-icons": {
+            "muted": "󰝟 ",
+            "car": "󰄋 ",
+            "phone": "󰏶 ",
+            "headset": "󰋎 ",
+            "headphone": "󰋋 ",
+            "hands-free": "󱠱 ",
+            "portable": "󰗜 ",
+            // "speaker": "󰓃 ",
+            "hifi": "󰤽 ",
+            "hdmi": "󰽟 ",
+            "default": ["󰕿 ", "󰖀 ", "󰕾 "]
+        },
+        "on-click": "pavucontrol"
+    },
+
+    "bluetooth": {
+        "format": "{icon}",
+        "format-alt": "BT {status}",
+        "format-alt-click": "click-right",
+        "format-icons": {
+            "enabled": "",
+            "disabled": ""
+        },
+        "tooltip": false
+    },
+
+    "custom/cmus": {
+        "format": "󰝚 {}",
+        "format-alt": "CMUS {}",
+        "format-alt-click": "click-right",
+        //"max-length": 15,
+        "interval": 10,
+        "exec": "cmus-remote -C \"format_print '%a - %t'\"",
+        "exec-if": "pgrep cmus",
+        "on-click": "cmus-remote -u",
+        "escape": true
+    },
+
+    "custom/music": {
+        "format": "{}",
+        "interval": 10,
+        "exec": "music info",
+        "exec-if": "command -v music >/dev/null 2>&1",
+        "on-click": "music toggle",
+        "on-click-right": "music next",
+        "on-click-middle": "music previous"
+
+    },
+
+    "custom/weather": {
+        "format": "{}",
+        "interval": 900,
+        "return-type": "json",
+        "exec": "weather waybar",
+        "exec-if": "command -v weather >/dev/null 2>&1"
+    }
+}

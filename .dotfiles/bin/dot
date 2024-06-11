@@ -737,6 +737,43 @@ install_ubuntu_apt-i3() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install swaywm apt packages                                 {{{
+
+## https://swaywm.org/
+INSTALL_UBUNTU_APT_SWAY_DOC="Install apt packages used in the sway window manager"
+install_ubuntu_apt-sway() {
+    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-sway" ] && return
+
+    while IFS="" read -r pkg || [ -n "$pkg" ]; do
+        sudo apt-get install -qq "$pkg" || true
+    done <"$DEPS_DIR/apt-sway"
+
+    unset pkg
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install and configure lightdm                               {{{
+
+## https://github.com/canonical/lightdm
+INSTALL_UBUNTU_LIGHTDM_DOC="Install and configure the lightdm desktop manager"
+install_ubuntu_lightdm() {
+    if _has apt-get && ! _has lightdm || ! _has slick-greeter; then
+        sudo apt-get install -qq lightdm slick-greeter || true
+    fi
+
+    if [ -r "$DOTFILES/etc/lightdm/lightdm.conf" ]; then
+        sudo cp "$DOTFILES/etc/lightdm/lightdm.conf" /etc/lightdm/
+    fi
+
+    if [ -r "$DOTFILES/etc/lightdm/slick-greeter.conf" ]; then
+        sudo cp "$DOTFILES/etc/lightdm/slick-greeter.conf" /etc/lightdm/
+    fi
+
+    sudo systemctl disable gdm3 || true
+    sudo systemctl enable lightdm
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install GUI apt packages                                    {{{
 
 INSTALL_UBUNTU_APT_GUI_DOC="Install GUI apt packages that for desktop machines"
@@ -1118,29 +1155,41 @@ install_theme_font-complete() {
 
 INSTALL_THEME_WALLPAPER_DOC="Install gruvbox coffee wallpaper"
 install_theme_wallpaper() {
-    wallpaper="$HOME/Pictures/Wallpapers/gruvbox_coffee.png"
-    profile="$HOME/Pictures/Profiles/fry.png"
+    wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/gruvbox_coffee.png"
+    profile="$(xdg-user-dir PICTURES)/Profiles/fry.png"
 
-    if ! [ -r "$wallpaper" ]; then
-        curl -Lo "$wallpaper" \
-            https://benelan.dev/wallpaper.png >/dev/null 2>&1 || true
-    fi
+    [ -r "$wallpaper" ] && [ -r "$profile" ] && return
 
-    if ! [ -r "$profile" ]; then
-        curl -Lo "$profile" \
-            https://benelan.dev/profile.png >/dev/null 2>&1 || true
-    fi
+    curl -Lo "$wallpaper" \
+        https://benelan.dev/img/wallpaper.png >/dev/null 2>&1 || true
+
+    curl -Lo "$profile" \
+        https://benelan.dev/img/profile.png >/dev/null 2>&1 || true
+
+    current_wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
+    current_profile="$(xdg-user-dir PICTURES)/Profiles/current"
+
+    ln -s "$wallpaper" "$current_wallpaper"
+    ln -s "$profile" "$current_profile"
+
+    sudo mkdir -p /usr/share/backgrounds /usr/share/pixmaps
+    sudo cp "$wallpaper" /usr/share/backgrounds/
+    sudo cp "$profile" /usr/share/pixmaps/faces/
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
             if _has gsettings; then
-                gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper"
-                gsettings set org.gnome.desktop.background picture-uri-dark "file://$wallpaper"
+                gsettings set org.gnome.desktop.background picture-uri \
+                    "file://$current_wallpaper"
+                gsettings set org.gnome.desktop.background picture-uri-dark \
+                    "file://$current_wallpaper"
             fi
             ;;
         *)
-            if _has feh; then
-                feh --no-fehbg --bg-center --image-bg "#3c3836" "$wallpaper"
+            if [ -n "$WAYLAND_DISPLAY" ] && _has swaybg; then
+                swaybg --output "*" --mode fill --image "$current_wallpaper"
+            elif _has feh; then
+                feh --no-fehbg --bg-center --image-bg "#3c3836" "$current_wallpaper"
             fi
             ;;
     esac
@@ -1682,6 +1731,20 @@ i3_installs() {
         install_language_rust
         cargo install xidlehook --bins
     fi
+
+    sudo mkdir -p /etc/X11/xorg.conf.d
+    sudo cp "$DOTFILES"/etc/X11/xorg.conf.d/* /etc/X11/xorg.conf.d/
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install sway and related tools                              {{{
+sway_installs() {
+    install_ubuntu_apt-sway
+    install_ubuntu_lightdm
+    install_theme_rofi-config
+    install_theme_wallpaper
+    install_script_i3-volume
+    install_script_i3-battery
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1776,7 +1839,7 @@ Install dependencies by category or name. The names of supported dependencies
 are printed when no argument is provided to a lowercase flag.
 
 Usage:
-  dot deps [-ABLPSTUh] [-b <build>] [-l <language>] [-m <misc>] [-p <package>]
+  dot deps [-ABLPSTUWXh] [-b <build>] [-l <language>] [-m <misc>] [-p <package>]
            [-s <script>] [-t <theme>] [-u <ubuntu>] [-n [<neovim-version>]]
 
 Flags:
@@ -1787,7 +1850,8 @@ Flags:
   -S    Install all shell script dependencies
   -T    Install all operating system theme dependencies
   -U    Install all Ubuntu-specific dependencies
-  -I    Install i3 window manager and related tools
+  -W    Install sway window manager (Wayland) and related tools
+  -X    Install i3 window manager (X11) and related tools
 
   -b    Install a locally built dependency
   -l    Install a programming language
@@ -1868,7 +1932,7 @@ deps_parse_flags() {
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR" "$COMPLETIONS_DIR"
 
-    while getopts :Bb:Uu:Ll:Ss:Tt:Pp:m:nAIh opt; do
+    while getopts :Bb:Uu:Ll:Ss:Tt:Pp:m:nAWXh opt; do
         case $opt in
             B) build_installs ;;
             b) install_dependency "build" "$OPTARG" ;;
@@ -1891,7 +1955,8 @@ deps_parse_flags() {
             m) install_dependency "misc" "$OPTARG" ;;
             n) install_misc_neovim "${OPTARG}" ;;
             A) all_installs ;;
-            I) i3_installs ;;
+            X) i3_installs ;;
+            W) sway_installs ;;
             h) deps_help ;;
             :) deps_command_help "${OPTARG}" ;;
             *) deps_help "invalid option \"-${OPTARG}\"" ;;

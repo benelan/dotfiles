@@ -621,3 +621,12 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
 fi
 
 # --------------------------------------------------------------------- }}}
+# Local                                                                 {{{
+# --------------------------------------------------------------------- {|}
+
+# source local functions if they exist on the machine
+if [ -f "$DOTFILES/shell/.local.functions.sh" ]; then
+    . "$DOTFILES/shell/.local.functions.sh"
+fi
+
+# --------------------------------------------------------------------- }}}
