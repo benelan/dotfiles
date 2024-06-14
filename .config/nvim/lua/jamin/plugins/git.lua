@@ -6,6 +6,7 @@ return {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
     cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     dependencies = "vim-rhubarb",
+    event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
     keys = {
       { "<leader>gs", "<CMD>tab Git<CR>", desc = "Fugitive status" },
@@ -45,10 +46,17 @@ return {
       "Gllog", "Gpedit", "Gread", "Gsplit", "Gtabedit", "Gvdiffsplit",
       "Gvsplit", "Gwq", "Gwrite"
     },
-
-    -- init = function()
-    --   vim.g.fugitive_dynamic_colors = 0
-    -- end,
+    config = function()
+      vim.api.nvim_create_autocmd({ "User" }, {
+        pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate" },
+        group = vim.api.nvim_create_augroup("jamin_fugitive_reload_status", {}),
+        callback = function(args)
+          if vim.g.loaded_fugitive and vim.fn.exists("*FugitiveDidChange") then
+            vim.fn["FugitiveDidChange"](args.data and args.data.buffer or nil)
+          end
+        end,
+      })
+    end,
   },
 
   -----------------------------------------------------------------------------
@@ -253,6 +261,11 @@ return {
       preview_config = { border = res.icons.border },
       worktrees = { { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" } },
       signs = {
+        add = { text = res.icons.git.status },
+        change = { text = res.icons.git.status },
+        untracked = { text = res.icons.git.status },
+      },
+      signs_staged = {
         add = { text = res.icons.git.status },
         change = { text = res.icons.git.status },
         untracked = { text = res.icons.git.status },

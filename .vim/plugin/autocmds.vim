@@ -7,6 +7,9 @@ augroup jamin_misc
     " equalize window sizes when vim is resized
     autocmd VimResized * wincmd =
 
+    autocmd BufWritePost * if exists("*FugitiveDidChange") |
+                \ call FugitiveDidChange() | endif
+
     " Clear jumplist on startup
     autocmd VimEnter * clearjumps
 

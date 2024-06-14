@@ -18,6 +18,7 @@
     ; Speed up commands involving untracked files such as `git status`.
     ; See --untracked-cache in https://git-scm.com/docs/git-update-index
     untrackedCache = true
+    fsmonitor = true
 
 [branch]
     ; Show most recently changed branches first.
