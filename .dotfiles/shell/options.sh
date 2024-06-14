@@ -180,8 +180,3 @@ if ((BASH_VERSINFO[0] >= 4)); then
     bind -x '"\e\e": sudo-command-line'
 
 fi
-
-# source local options if they exist on the machine
-if [ -f "$DOTFILES/shell/.local.options.sh" ]; then
-    . "$DOTFILES/shell/.local.options.sh"
-fi

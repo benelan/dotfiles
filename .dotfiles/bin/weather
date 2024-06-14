@@ -77,28 +77,51 @@ get_data() {
 get_icon() {
     icon=$(get_prop '.weather[0].icon')
 
-    # Nerd Font icons for openweathermap.org data
     # https://openweathermap.org/weather-conditions
-    ICON_01D="󰖙 "
-    ICON_01N="󰖔 "
-    ICON_02D="󰖕 "
-    ICON_02N="󰼱 "
-    ICON_03="󰖐 "
-    ICON_04="󰖞 "
-    ICON_09="󰖖 "
-    ICON_10="󰖗 "
-    ICON_11="󰖓 "
-    ICON_13="󰖘 "
-    ICON_50="󰖑 "
-    NO_DATA=" "
+    if [ -n "$NERD_ICONS" ]; then
+        # Nerd Font icons - https://www.nerdfonts.com/
+        ICON_01D="󰖙 "
+        ICON_01N="󰖔 "
+        ICON_02D="󰖕 "
+        ICON_02N="󰼱 "
+        ICON_03D="󰖐 "
+        ICON_04D="󰖞 "
+        ICON_03N="$ICON_03D"
+        ICON_04N="$ICON_04D"
+        ICON_09="󰖖 "
+        ICON_10="󰖗 "
+        ICON_11="󰖓 "
+        ICON_13="󰖘 "
+        ICON_50="󰖑 "
+        NO_DATA=" "
+    else
+        # UTF8 icons
+        ICON_01N="⏾" # ☾☽
+        ICON_02N="$ICON_01N"
+        ICON_03N="$ICON_01N"
+        ICON_04N="$ICON_01N"
+        ICON_01D="🌣"
+        ICON_02D="🌤"
+        ICON_03D="🌥"
+        ICON_04D="$ICON_03D"
+        ICON_09="🌧" # 🌦
+        ICON_10="🌧" # 🌢  ⛆
+        ICON_11="🌩" # 🗲
+        ICON_13="🌨" # ❄
+        ICON_50="🌫"
+        NO_DATA="🌡"
+
+    fi
 
     case $icon in
         *01d*) echo "${ICON_01D}" ;;
         *01n*) echo "${ICON_01N}" ;;
         *02d*) echo "${ICON_02D}" ;;
         *02n*) echo "${ICON_02N}" ;;
-        *03d* | *03n*) echo "${ICON_03}" ;;
-        *04d* | *04n*) echo "${ICON_04}" ;;
+        *03d*) echo "${ICON_03D}" ;;
+        *03n*) echo "${ICON_03N}" ;;
+        *04d*) echo "${ICON_04D}" ;;
+        *04n*) echo "${ICON_04N}" ;;
         *09d* | *09n*) echo "${ICON_09}" ;;
         *10d* | *10n*) echo "${ICON_10}" ;;
         *11d* | *11n*) echo "${ICON_11}" ;;
@@ -109,7 +132,7 @@ get_icon() {
 }
 
 info() {
-    printf "%s %s %s" "$(get_icon)" "$(get_prop '.name')," "$(get_prop '.main.temp')°F"
+    printf "%s %s %s" "$(get_icon)" "$(get_prop '.main.temp')°F" "($(get_prop '.name'))"
 }
 
 waybar_json() {

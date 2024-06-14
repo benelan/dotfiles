@@ -473,6 +473,10 @@ install_script_completion() {
         pandoc --bash-completion >"$COMPLETIONS_DIR/pandoc"
     fi
 
+    if _has glow; then
+        glow completion bash >"$COMPLETIONS_DIR/glow"
+    fi
+
     if _has gh; then
         gh completion -s bash >"$COMPLETIONS_DIR/gh"
     fi
@@ -752,28 +756,6 @@ install_ubuntu_apt-sway() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install and configure lightdm                               {{{
-
-## https://github.com/canonical/lightdm
-INSTALL_UBUNTU_LIGHTDM_DOC="Install and configure the lightdm desktop manager"
-install_ubuntu_lightdm() {
-    if _has apt-get && ! _has lightdm || ! _has slick-greeter; then
-        sudo apt-get install -qq lightdm slick-greeter || true
-    fi
-
-    if [ -r "$DOTFILES/etc/lightdm/lightdm.conf" ]; then
-        sudo cp "$DOTFILES/etc/lightdm/lightdm.conf" /etc/lightdm/
-    fi
-
-    if [ -r "$DOTFILES/etc/lightdm/slick-greeter.conf" ]; then
-        sudo cp "$DOTFILES/etc/lightdm/slick-greeter.conf" /etc/lightdm/
-    fi
-
-    sudo systemctl disable gdm3 || true
-    sudo systemctl enable lightdm
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install GUI apt packages                                    {{{
 
 INSTALL_UBUNTU_APT_GUI_DOC="Install GUI apt packages that for desktop machines"
@@ -810,15 +792,24 @@ install_ubuntu_vscode() {
 INSTALL_UBUNTU_PROTONVPN_DOC="Install the Proton VPN CLI"
 install_ubuntu_protonvpn() {
     _has protonvpn-cli && return
-    checksum="c409c819eed60985273e94e575fd5dfd8dd34baef3764fc7356b0f23e25a372c"
-    deb="protonvpn-stable-release_1.0.3_all.deb"
+    deb="protonvpn-stable-release_1.0.3-3_all.deb"
 
     curl -Lo "$CACHE_DIR/$deb" \
         "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
+
+    checksum="de7ef83a663049b5244736d3eabaacec003eb294a4d6024a8fbe0394f22cc4e5"
     echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
 
-    sudo apt-get install -qq "$CACHE_DIR/$deb" || true
-    unset deb
+    if sudo apt-get install -qq "$CACHE_DIR/$deb"; then
+        sudo apt update
+        sudo apt-get install -y proton-vpn-gnome-desktop
+    fi
+
+    sudo wget -O "/etc/openvpn/update-resolv-conf" \
+        "https://raw.githubusercontent.com/ProtonVPN/scripts/master/update-resolv-conf.sh"
+    sudo chmod +x "/etc/openvpn/update-resolv-conf"
+
+    unset deb checksum
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1644,7 +1635,7 @@ install_build_neovim() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install clipmenu                                            {{{
 
-INSTALL_BUILD_CLIPMENU_DOC="Install simple clipboard manager with rofi/fzf integration"
+INSTALL_BUILD_CLIPMENU_DOC="Install simple X11 clipboard manager with rofi/fzf integration"
 install_build_clipmenu() {
     if [ -d "$LIB/clipnotify" ]; then
         git -C "$LIB/clipnotify" pull
@@ -1678,6 +1669,46 @@ install_build_clipmenu() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install tuigreet for greetd login manager                   {{{
+# https://github.com/apognu/tuigreet
+
+INSTALL_BUILD_TUIGREET_DOC="Install a simple greeter for the greetd login manager"
+install_build_tuigreet() {
+    # trying installing greetd with apt if it's not already installed
+    ! _has greetd && ! sudo apt-get install -qqy greetd && return
+
+    if [ -d "$LIB/tuigreet" ]; then
+        if [ -n "$(git -C "$LIB/tuigreet" diff --name-only HEAD...origin/HEAD)" ]; then
+            git -C "$LIB/tuigreet" pull
+        else
+            return
+        fi
+    else
+        git clone https://github.com/apognu/tuigreet.git "$LIB/tuigreet"
+    fi
+
+    cd "$LIB/tuigreet" || return
+
+    install_language_rust
+    cargo build --release
+
+    sudo mv target/release/tuigreet /usr/local/bin/tuigreet
+    sudo mkdir /var/cache/tuigreet
+    sudo chown greeter:greeter /var/cache/tuigreet
+    sudo chmod 0755 /var/cache/tuigreet
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now greetd
+
+    sudo tee /etc/greetd/config.toml >/dev/null <<EOF
+[terminal]
+vt = 1
+[default_session]
+command = "tuigreet --remember-user-session --asterisks -itrc sway-run"
+user = "greeter"
+EOF
+}
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Dependency group install functions                                    {{{
@@ -1699,7 +1730,6 @@ ubuntu_installs() {
     install_ubuntu_gh
     install_ubuntu_git
     install_ubuntu_glow
-    install_ubuntu_protonvpn
     install_ubuntu_taskwarrior-tui
 
     ## GUI install scripts
@@ -1707,11 +1737,17 @@ ubuntu_installs() {
         install_ubuntu_apt-gui
         install_ubuntu_apt-media
         install_ubuntu_brave
-        install_ubuntu_discord
         install_ubuntu_vscode
         install_ubuntu_wezterm
         install_ubuntu_vivaldi
-        # install_ubuntu_docker-desktop
+
+        if [ -z "$USE_WORK_STUFF" ]; then
+            # install_ubuntu_docker-desktop
+            install_ubuntu_protonvpn
+            install_ubuntu_protonmail
+            install_ubuntu_discord
+            install_ubuntu_signal
+        fi
     fi
 
     sudo apt-get update -qq && sudo apt-get upgrade -qq && sudo apt-get autoremove -qq
@@ -1722,7 +1758,6 @@ ubuntu_installs() {
 i3_installs() {
     install_ubuntu_apt-i3
     install_theme_rofi-config
-    install_theme_conky-config
     install_script_i3-volume
     install_script_i3-battery
     install_build_clipmenu
@@ -1740,11 +1775,13 @@ i3_installs() {
 ## Install sway and related tools                              {{{
 sway_installs() {
     install_ubuntu_apt-sway
-    install_ubuntu_lightdm
     install_theme_rofi-config
     install_theme_wallpaper
     install_script_i3-volume
     install_script_i3-battery
+    # install_build_tuigreet
+
+    _has go && go install go.senan.xyz/cliphist@latest
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1753,10 +1790,8 @@ sway_installs() {
 theme_installs() {
     install_theme_font
     install_theme_wallpaper
-    install_theme_gtk
     install_theme_icons
     install_theme_rofi-config
-    # install_theme_conky-config
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1806,7 +1841,6 @@ build_installs() {
     install_ubuntu_apt-build
     install_build_neovim || true
     install_build_fzf || true
-    install_build_clipmenu || true
     install_packages_vim
 }
 

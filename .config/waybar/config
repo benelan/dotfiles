@@ -79,7 +79,7 @@
         "format": "󰘚 {percentage}%",
         "format-alt": "MEM {percentage}%",
         "format-alt-click": "click-right",
-        "tooltip-format": "{avail:0.1f}GB available, used {used:0.1f}/{total:0.1f}GB"
+        "tooltip-format": "{avail:0.1f} GiB available, used {used:0.1f}/{total:0.1f} GiB"
     },
 
     "temperature": {

@@ -91,7 +91,8 @@ wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
 alias wthr='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
 
 # Network/System {{{1
-alias vpn="protonvpn-cli"
+alias vpn="nm-fzf vpn"
+alias wifi="nm-fzf wifi"
 
 # resume by default
 alias wget='wget -c'
@@ -230,9 +231,4 @@ if supports docker; then
         unset _cmd
     fi
     #}}}2
-fi
-
-# Local {{{1
-if [ -f "$DOTFILES/shell/.local.aliases.sh" ]; then
-    . "$DOTFILES/shell/.local.aliases.sh"
 fi

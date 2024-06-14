@@ -70,6 +70,7 @@ path() {
 path -p "$HOME/.dotfiles/bin"
 path -p "$HOME/.local/share/nvim/mason/bin"
 path -a "$HOME/dev/personal/git-mux/bin"
+path -a "$HOME/dev/personal/nm-fzf"
 path -a "$HOME/dev/lib/fzf/bin"
 path -a "$HOME/.luarocks/bin"
 path -a "$HOME/.nimble/bin"

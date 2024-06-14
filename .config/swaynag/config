@@ -1,0 +1,13 @@
+font=IosevkaNerdFont Bold 13
+border-bottom-size=2
+button-border-size=0
+message-padding=6
+button-padding=4
+
+[warning]
+button-text=ebdbb2
+button-background=1d2021
+border-bottom=504945
+
+[error]
+button-background=1d2021

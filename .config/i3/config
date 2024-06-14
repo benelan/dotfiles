@@ -18,10 +18,6 @@ exec --no-startup-id dex --autostart --environment i3
 
 exec --no-startup-id compton --daemon
 
-exec_always --no-startup-id killall conky || true && \
-    conky --daemonize --pause=1 --config="$HOME/.config/conky/conky.conf" || true && \
-    conky --daemonize --pause=2 --config="$HOME/.config/conky/mimosa.conf"
-
 exec_always --no-startup-id ! pgrep -x dunst && dunst
 
 exec --no-startup-id i3-battery-popup -nL 15 \
@@ -158,12 +154,10 @@ bindsym $mod+grave exec music rofi
 bindsym $mod+Shift+y exec clipmenu
 
 bindsym $mod+Print exec ~/.config/rofi/applets/bin/screenshot.sh
-bindsym $mod+Delete exec ~/.config/rofi/scripts/powermenu_t2
+bindsym $mod+Delete exec ~/.config/rofi/applets/bin/powermenu.sh
 bindsym $mod+space exec ~/.config/rofi/scripts/launcher_t1
 bindsym $mod+a exec ~/.config/rofi/scripts/launcher_t4
-bindsym $mod+Shift+a exec ~/.config/rofi/applets/bin/appasroot.sh
 bindsym $mod+o exec BROWSER=firefox ~/.config/rofi/applets/bin/quicklinks.sh
-bindsym $mod+Shift+o exec ~/.config/rofi/applets/bin/apps.sh
 
 # change focus
 bindsym $mod+h focus left
@@ -268,7 +262,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # lock and suspend
-bindsym $mod+Escape exec ~/.config/rofi/applets/bin/powermenu.sh
+bindsym $mod+Escape exec loginctl lock session
 bindsym $mod+Shift+Escape exec systemctl suspend
 
 # resize window (you can also use the mouse for that)

@@ -478,6 +478,8 @@ return {
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
     "Exafunction/codeium.vim",
+    -- pinned due to: https://github.com/Exafunction/codeium.vim/issues/384
+    commit = "31dd29",
     cond = vim.env.USE_CODEIUM == "1",
     event = "VimEnter",
     cmd = "Codeium",

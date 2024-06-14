@@ -41,7 +41,12 @@ goog() {
 mcd() { mkdir -p -- "$@" && cd -- "$_" || return 1; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-# use neovim as a manpager                                   {{{
+## shhhhhh                                                    {{{
+
+shh() { nohup "$@" >/dev/null 2>&1 </dev/null & }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+# use neovim as a manpager                                    {{{
 
 vman() { nvim "+hide Man $*"; }
 
@@ -619,14 +624,3 @@ if [ "$USE_WORK_STUFF" = "1" ]; then
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 fi
-
-# --------------------------------------------------------------------- }}}
-# Local                                                                 {{{
-# --------------------------------------------------------------------- {|}
-
-# source local functions if they exist on the machine
-if [ -f "$DOTFILES/shell/.local.functions.sh" ]; then
-    . "$DOTFILES/shell/.local.functions.sh"
-fi
-
-# --------------------------------------------------------------------- }}}

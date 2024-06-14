@@ -14,10 +14,51 @@
 
 NMFZF_VERSION="0.1.0"
 
-# utils #{{{1
-opts='--colors yes --escape yes'
-
+# utils/config #{{{1
 has() { command -v "$1" >/dev/null 2>&1; }
+
+help_cmd() {
+    printf "
+An fzf wrapper around Linux's Network Manager CLI (nmcli).
+
+Usage:       nmfzf [<command>]
+             nmfzf { wifi | vpn } [<subcommand>]
+             nmfzf wifi connect [<SSID>]
+             nmfzf vpn import [<user-name>]
+
+When omitted, <command> defaults to 'wifi'.
+
+Commands:
+
+  c[onnection]   Manage network connections.
+
+  d[evice]       Manage network devices.
+
+  w[ifi]         Manage wifi connections, an optional <subcommand> is accepted:
+                   c[onnect]      Select and connect to a wifi network (default)
+                   d[isconnect]   Disconnect from the current wifi network(s)
+                   t[oggle]       Enable or disable the wifi device
+
+  v[pn]          Manage vpn connections, an optional <subcommand> is accepted:
+                   c[onnect]      Select and connect to a vpn network (default)
+                   d[isconnect]   Disconnect from the current vpn network(s)
+                   i[mport]       Select and import openvpn config file(s)
+
+Environment Variables:
+
+  NMFZF_PASSWD_FILE
+    The path to a file that contains a list of connection passwords.
+    See: \$ man --pager='less -p \"^\s*passwd-file\"' nmcli
+
+  NMFZF_APPLET_AUTH
+    Determines if nm-applet should be used for authentication. One benefit of
+    using nm-applet is passwords aren't required for existing vpn connections.
+    By default, nm-applet will be used if it is installed and running. A value
+    of \"0\" disables usage, and \"1\" launches nm-applet in the background and
+    kills it on exit if it's installed but not running.
+" >&2
+    exit 0
+}
 
 error() {
     if [ -n "$1" ]; then
@@ -28,30 +69,21 @@ error() {
     exit 1
 }
 
-help_cmd() { #{{{1
-    printf "
-An fzf wrapper around Linux's Network Manager CLI (nmcli).
+# vpn users should use nm-applet so existing connections don't need a password
+if has nm-applet && [ "$NMFZF_APPLET_AUTH" != "0" ]; then
+    if ! pgrep -x nm-applet >/dev/null 2>&1; then
+        if [ "$NMFZF_APPLET_AUTH" = "1" ]; then
+            nohup nm-applet >/dev/null 2>&1 </dev/null &
+            trap "pkill nm-applet" EXIT TERM INT
+        else
+            ask="--ask"
+        fi
+    fi
+else
+    ask="--ask"
+fi
 
-Usage:       nmfzf [<command>]
-             nmfzf wifi [<subcommand>]
-             nmfzf wifi connect [<SSID>]
-
-When omitted, <command> defaults to 'wifi'.
-
-Commands:
-  d[evice]   Manage network devices.
-  w[ifi]     Manage the wifi connection, an optional <subcommand> is accepted:
-               c[onnect]      Select and/or connect to a wifi network (default)
-               d[isconnect]   Disconnect from the current wifi network
-               t[oggle]       Enable or disable the wifi device
-
-Environment Variables:
-  NMFZF_SAFE_MODE   Set to any value if <SSID> might contain consecutive spaces.
-                    The downside is a password prompt is displayed for existing
-                    connections too, rather than just new ones.
-" >&2
-    exit 0
-}
+opts='--colors yes --escape yes'
 
 device_cmd() { #{{{1
     device_actions='(enter: print) (alt-c: connect) (alt-d: disconnect) (alt-X: delete)
@@ -62,7 +94,7 @@ device_cmd() { #{{{1
     FZF_DEFAULT_COMMAND="nmcli $opts device status" \
         fzf --ansi --delimiter='  ' \
         --header-lines=1 --header="$device_actions" \
-        --preview='nmcli --colors yes device show {1}' \
+        --preview='nmcli -p --colors yes device show {1}' \
         --bind='enter:become(echo {1})' \
         --bind='ctrl-r:reload(eval "$FZF_DEFAULT_COMMAND")' \
         --bind='alt-M:execute(nmcli device monitor {1})' \
@@ -81,23 +113,104 @@ device_cmd() { #{{{1
 
 connection_cmd() { #{{{1
     conn_fields='NAME,TYPE,DEVICE,UUID'
-    conn_actions='(enter: print) (alt-c: connect) (alt-d: disconnect) (alt-X: delete) (alt-e: edit) 
+    conn_actions='(enter: print) (alt-c: connect) (alt-d: disconnect) (alt-X: delete) (alt-e: edit)
 (alt-m: modify) (alt-M: monitor) (alt-a: active filter) (alt-r: reload list)
 
 '
+
     FZF_DEFAULT_COMMAND="nmcli $opts --fields '$conn_fields' connection show" \
         fzf --ansi --delimiter='  ' --header-lines=1 --header="$conn_actions" \
-        --preview='nmcli --colors yes connection show {1}' \
+        --preview='nmcli -p --colors yes connection show {-1}' \
         --bind='enter:become(echo {1})' \
         --bind='ctrl-r:reload(eval "$FZF_DEFAULT_COMMAND")' \
         --bind='alt-a:reload(eval "$FZF_DEFAULT_COMMAND --active")' \
         --bind='alt-M:execute(nmcli connection monitor {-1})' \
-        --bind='alt-m:execute(nmcli connection modify {1} {q})+refresh-preview' \
+        --bind='alt-m:execute(nmcli connection modify {-1} {q})+refresh-preview' \
         --bind='alt-r:execute(nmcli connection reload {-1})+refresh-preview' \
         --bind='alt-e:become(nmcli connection edit {-1})+reload(
             eval "$FZF_DEFAULT_COMMAND"
         )' \
-        --bind='alt-c:execute(nmcli connection up {-1})+reload(
+        --bind='alt-c:execute(
+                [ -r "$NMFZF_PASSWD_FILE" ] &&
+                    passwd_file="passwd-file \"$NMFZF_PASSWD_FILE\""
+                nmcli '"$ask"' connection up {-1} $passwd_file
+        )+reload(eval "$FZF_DEFAULT_COMMAND")' \
+        --bind='alt-d:execute(nmcli connection down {-1})+reload(
+            eval "$FZF_DEFAULT_COMMAND"
+        )' \
+        --bind='alt-X:execute(nmcli connection delete {-1})+reload(
+            eval "$FZF_DEFAULT_COMMAND"
+        )'
+}
+
+vpn_cmd() { #{{{1
+    subcommand="connect"
+    [ -n "$1" ] && subcommand="$1" && shift
+
+    case "$subcommand" in
+        i | im | imp | impo | impor | import) vpn_import "$@" ;;
+        c | co | con | conn | conne | connec | connect) vpn_connect "$@" ;;
+        d | dis | disc | disco | discon | disconn | disconne | disconnec | \
+            disconnect) nmfzf disconnect vpn ;;
+        *) error "invalid vpn subcommand: \"$1\"" ;;
+    esac
+
+    unset subcommand
+}
+
+vpn_import() { #{{{2
+    if has fd; then
+        # shellcheck disable=2034
+        FZF_DEFAULT_COMMAND="fd -IHt f -e ovpn"
+    fi
+
+    # shellcheck disable=2086
+    fzf --multi -q "'.ovpn$ " | xargs sh -c '
+        for file do
+            if nmcli connection import type openvpn file "$file" && [ -n "'$1'" ]; then
+                name="$(basename "$file" .ovpn)" &&
+                nmcli connection modify "$name" vpn.user-name "'$1'" &&
+                printf "Username '\''%s'\'' successfully added to '\''%s'\'' connection.\n\n" "'$1'" "$name" >&2;
+            fi;
+        done' _
+}
+
+vpn_connect() { #{{{2
+    if [ -n "$1" ]; then
+        nmcli connection up "$1"
+        return $?
+    fi
+
+    vpn_fields='NAME,TYPE,DEVICE,UUID'
+    vpn_actions='(enter: connect) (alt-d: disconnect) (alt-X: delete) (alt-e: edit)
+(alt-m: modify) (alt-M: monitor) (alt-a: active filter) (alt-r: reload list)
+
+'
+    # disabled color because the ansi escape codes break the awk filter
+    FZF_DEFAULT_COMMAND="nmcli -c no -e yes --fields '$vpn_fields' conn show |
+        awk '\$2 == \"vpn\" || NR==1'" \
+        fzf --delimiter='  ' --header-lines=1 --header="$vpn_actions" \
+        --preview='nmcli -p -c yes connection show {-1}' \
+        --bind='enter:become(
+                if [ "$(echo {} | awk "{print \$3}")" != "--" ]; then
+                    nmcli connection down {-1}
+                else
+                    [ -r "$NMFZF_PASSWD_FILE" ] &&
+                        passwd_file="passwd-file \"$NMFZF_PASSWD_FILE\""
+                    nmcli '"$ask"' connection up {-1} $passwd_file
+                fi
+        )' \
+        --bind='ctrl-r:reload(eval "$FZF_DEFAULT_COMMAND")' \
+        --bind='alt-a:reload(eval "$FZF_DEFAULT_COMMAND --active")' \
+        --bind='alt-M:execute(nmcli connection monitor {-1})' \
+        --bind='alt-u:execute(
+            read -rp "Enter user-name for {1} vpn: " name;
+            [ -n "$name" ] &&
+            nmcli connection modify {-1} vpn.user-name "$name"
+        )+refresh-preview' \
+        --bind='alt-m:execute(nmcli connection modify {-1} {q})+refresh-preview' \
+        --bind='alt-r:execute(nmcli connection reload {-1})+refresh-preview' \
+        --bind='alt-e:become(nmcli connection edit {-1})+reload(
             eval "$FZF_DEFAULT_COMMAND"
         )' \
         --bind='alt-d:execute(nmcli connection down {-1})+reload(
@@ -111,12 +224,16 @@ connection_cmd() { #{{{1
 wifi_cmd() { #{{{1
     subcommand="connect"
     [ -n "$1" ] && subcommand="$1" && shift
+
     case "$subcommand" in
-        c*) wifi_connect "$@" ;;
-        d*) wifi_disconnect ;;
-        t*) wifi_toggle ;;
+        t | tog | toggl | togg | toggle) wifi_toggle ;;
+        c | co | con | conn | conne | connec | connect) wifi_connect "$@" ;;
+        d | dis | disc | disco | discon | disconn | disconne | disconnec | \
+            disconnect) nmfzf disconnect wifi ;;
         *) error "invalid wifi subcommand: \"$1\"" ;;
     esac
+
+    unset subcommand
 }
 
 wifi_connect() { #{{{2
@@ -124,7 +241,7 @@ wifi_connect() { #{{{2
         if nmcli --get-values name connection 2>/dev/null | grep -Fxq "$1"; then
             nmcli connection up "$1"
         else
-            nmcli --ask device wifi connect "$1"
+            nmcli $ask device wifi connect "$1"
         fi
         return $?
     fi
@@ -139,32 +256,38 @@ wifi_connect() { #{{{2
         --bind='ctrl-r:reload(eval "$FZF_DEFAULT_COMMAND")' \
         --bind='alt-r:reload(eval "$FZF_DEFAULT_COMMAND --rescan yes")' \
         --bind='alt-t:execute(nmfzf wifi toggle)' \
-        --bind='alt-d:execute(nmfzf wifi disconnect)+reload(
+        --bind='alt-d:execute(nmfzf disconnect wifi)+reload(
             eval "$FZF_DEFAULT_COMMAND"
         )' \
         --bind='enter:become(
             if [ "$(echo {} | awk "{print \$NF}")" = "*" ]; then
-                nmfzf wifi disconnect
+                nmcli connection down {2}
             else
-                if [ -n "$NMFZF_SAFE_MODE" ]; then
-                    nmcli --ask device wifi connect {1}
-                else
-                    nmfzf wifi connect {2}
-                fi
+                nmfzf wifi connect {2}
             fi
         )'
-}
-
-wifi_disconnect() { #{{{2
-    nmcli device status |
-        awk '$2 == "wifi" && $3 == "connected" { print $1 }' |
-        xargs -I{} nmcli device disconnect {}
 }
 
 wifi_toggle() { #{{{2
     nmcli radio wifi "$(
         [ "$(nmcli radio wifi)" = "enabled" ] && echo "off" || echo "on"
     )"
+}
+
+disconnect_cmd() { #{{{1
+    if [ -z "$1" ]; then
+        error "no connection type specified"
+    fi
+
+    # shellcheck disable=2086
+    nmcli --escape yes --fields "TYPE,UUID" connection show --active |
+        tail -n +2 |
+        awk '$1 == "'$1'" || "'$1'" == "all" { print $2 }' |
+        xargs -I{} nmcli connection down {}
+
+    # nmcli device status |
+    #     awk '$2` == "'$1'" && $3 == "connected" { print $1 }' |
+    #     xargs -I{} nmcli device disconnect {}
 }
 
 main() { #{{{1
@@ -180,8 +303,10 @@ main() { #{{{1
             connecti | connectio | connection) connection_cmd ;;
         d | de | dev | devi | devic | device) device_cmd ;;
         w | wi | wif | wifi) wifi_cmd "$@" ;;
-        h | -h | help | --help) help_cmd ;;
-        v | -v | version | --version) printf "%s\n" "$NMFZF_VERSION" ;;
+        v | vp | vpn) vpn_cmd "$@" ;;
+        dis | discon | disconn | disconnect) disconnect_cmd "$@" ;;
+        -h | --help | help) help_cmd ;;
+        -v | --version | version) printf "%s\n" "$NMFZF_VERSION" ;;
         *) error "invalid command: \"$command\"" ;;
     esac
 }

@@ -3,9 +3,8 @@
 
 ### Startup processes {{{1
 #
-# Wallpaper
-exec_always --no-startup-id swaybg --output "*" --mode fill \
-    --image "$(xdg-user-dir PICTURES)/Wallpapers/current"
+# Network manager applet
+# exec --no-startup-id nm-applet --indicator
 
 # Notification manager
 # https://github.com/dunst-project/dunst
@@ -16,28 +15,43 @@ exec_always --no-startup-id ! pgrep -x dunst && dunst
 exec --no-startup-id i3-battery-popup -nL 15 \
         -s /usr/share/sounds/freedesktop/stereo/dialog-warning.oga
 
+# Clipboard history manager
+# https://github.com/sentriz/cliphist
+exec exec wl-paste --watch cliphist store
+
 
 ### Idle/lock/suspend {{{1
 #
 # https://github.com/swaywm/swaylock
+set $lock 'swaylock -Feflc 000000'
+
 # https://github.com/swaywm/swayidle
 #
-# Dim the screen after 7 minutes, undim if user becomes active.
-# Lock the screen after 11 minutes of idle time.
-# Suspend the system after 22 minutes of idle time.
+# Dim the screen after 7 min, undim if user becomes active.
+# Turn off the display 3 sec before locking as a last chance to resume w/o password
+# Lock the screen after 11 min of idle time.
+# Suspend the system after 22 min of idle time.
+# Update the status bar weather info after unlocking or resuming from sleep
 exec --no-startup-id swayidle -w \
     timeout 420 'brightnessctl --class=backlight get >/tmp/idle_brightness; \
                  brightnessctl --class=backlight set 33%-' \
          resume 'brightnessctl --class=backlight set $(cat /tmp/idle_brightness)' \
-    timeout 666 'swaylock' \
+    timeout 666 'swaymsg "output * dpms off"' \
+         resume 'swaymsg "output * dpms on"' \
+    timeout 669 $lock \
     timeout 1337 'systemctl suspend' \
-    lock 'swaylock' \
-    before-sleep 'swaylock'
+    lock $lock \
+    before-sleep $lock \
+    unlock 'weather info >/tmp/weather' \
+    after-resume 'weather info >/tmp/weather'
 
-# Lock the screen on events like laptop lid close. Requires xwayland (I think)
-exec --no-startup-id xss-lock --transfer-sleep-lock -- swaylock
+# Turn off the display and lock the session when the laptop lid is closed
+bindswitch lid:off exec swaymsg "output * dpms off"; $lock
 
-# Don't go idle if the current window is fullscreen
+# Turn on the display when the laptop lid is opened
+bindswitch lid:on exec swaymsg "output * dpms on"
+
+# Don't go idle and lock if the current window is fullscreen
 for_window [title=".*"] inhibit_idle fullscreen
 
 
@@ -45,7 +59,8 @@ for_window [title=".*"] inhibit_idle fullscreen
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-
+#
+# Configure scrolling and clicking with the touchpad
 input "type:touchpad" {
     dwt enabled
     tap disabled
@@ -56,6 +71,22 @@ input "type:touchpad" {
     accel_profile adaptive
     pointer_accel 0.25
 }
+
+# Use CapsLock as a second Escape and press both Shift keys to toggle caps lock
+input "type:keyboard" {
+    xkb_options caps:escape
+    xkb_options shift:breaks_caps
+    xkb_options shift:both_capslock
+}
+
+### Outputs {{{1
+#
+# Wallpaper
+output * bg "$(xdg-user-dir PICTURES)/Wallpapers/current" fill
+
+# Monitor resolution and positioning
+output "BenQ Corporation BenQ GW2790QT 9BP00005019" resolution 2560x1440 position 0,0
+output "Unknown 0x683D 0x00000000" resolution 1920x1080 position -1920,360
 
 
 ### Variables {{{1
@@ -127,7 +158,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id \
 bindsym $mod+XF86AudioLowerVolume exec --no-startup-id \
     NO_NOTIFY_COLOR=1 volume -ynPt i3status -u SIGUSR1 set 0
 
-# Dunst notification keybindings 
+# Dunst notification keybindings
 bindsym $mod+n exec dunstctl close
 bindsym $mod+Shift+n exec dunstctl close-all
 bindsym $mod+Control+n exec dunstctl context
@@ -147,7 +178,8 @@ bindsym $mod+b workspace number $ws3, exec "$BROWSER"
 bindsym $mod+Shift+b workspace number $ws1, exec "$HOME_BROWSER"
 # bindsym $mod+Shift+e workspace number $ws8, exec thunderbird
 
-# Start your launcher (rofi requires xwayland)
+# Use rofi as the launcher. Requires XWayland or the wl-roots compatible fork:
+# https://github.com/lbonn/rofi
 bindsym $mod+d exec "rofi -modi drun,run,window,filebrowser -show drun"
 
 bindsym $mod+grave exec music rofi
@@ -157,12 +189,15 @@ bindsym $mod+a exec ~/.config/rofi/scripts/launcher_t4
 bindsym $mod+o exec BROWSER=firefox ~/.config/rofi/applets/bin/quicklinks.sh
 bindsym $mod+Shift+o exec ~/.config/rofi/applets/bin/apps.sh
 
-# https://sr.ht/~emersion/grim/
-# https://github.com/emersion/slurp
+# clipboard history manager
+bindsym $mod+Shift+y exec cliphist list | rofi -dmenu -p 'cliphist' | cliphist decode | wl-copy
+
+# https://github.com/swaywm/sway/wiki/Useful-add-ons-for-sway#screenshot
 bindsym Print exec grimshot copy area
 bindsym $mod+Print exec wl-copy < "$(grimshot save active)"
 bindsym $mod+Control+Print exec wl-copy < "$(grimshot save output)"
 
+# colorpicker
 bindsym $mod+c exec grim -g "$(slurp -p)" -t ppm - | \
     convert - -format "%[pixel:p{0,0}]" txt:- | \
     tail -n 1 | cut -d " " -f 4 | wl-copy
@@ -199,23 +234,14 @@ bindsym $mod+f floating toggle
 # Change focus between tiling / floating windows
 bindsym $mod+Shift+f focus mode_toggle
 
-# Focus the parent container
-# bindsym $mod+a focus parent
-
-# Focus the child container
-#bindsym $mod+d focus child
-
 # Reload the configuration file
-bindsym $mod+Shift+c reload
-
-# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Shift+r reload
 
 # Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e exec swaynag -t warning -m "You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session." -B "Yes, exit sway" 'swaymsg exit'
+bindsym $mod+Shift+e exec swaynag -t warning -m "Exiting sway will end the Wayland session, are you sure?" -B "Yes, exit sway" 'swaymsg exit'
 
 # Lock and suspend
-bindsym $mod+Escape exec loginctl lock-session
+bindsym $mod+Escape exec $lock
 bindsym $mod+Shift+Escape exec systemctl suspend
 
 # Resize window (you can also use the mouse for that)
@@ -297,10 +323,12 @@ assign [class="^(Chromium|Google-chrome|Vivaldi-stable)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark|Gnome-boxes)$"] $ws4
 assign [class="^(file-roller|Gedit|Gnome-calculator|Gnome-calendar|Org\.gnome\.Nautilus)$"] $ws5
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb|Gimp-\d+\.\d+|com\.sayonara\-player\.Sayonara)$"] $ws6
+assign [title="^.* - mpv$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
 assign [class="^thunderbird$"] $ws8
+assign [class="^Proton Mail$"] $ws8
 assign [title="^Outlook \(PWA\).*"] $ws9
-assign [title="^Microsoft Teams.*"] $ws10
+assign [title="^Microsoft Teams - .* | Microsoft Teams$"] $ws10
 
 # libreoffice window's don't have a class on startup so they need to be moved afterwards
 for_window [class="^libreoffice-(startcenter|writer|calc|impress|draw|math)$"] move window to workspace $ws5
@@ -317,12 +345,12 @@ font pango:Ubuntu 13
 # font pango:DejaVu Sans Mono 12
 
 # Set primary gruvbox colorscheme colors
-set $foreground #ebdbb2
-set $background3 #665c54
-set $background2 #504945
-set $background1 #3c3836
-set $background0_s #32302f
-set $background0_h #1d2021
+set $fg1 #ebdbb2
+set $bg3 #665c54
+set $bg2 #504945
+set $bg1 #3c3836
+set $bg0_s #32302f
+set $bg0_h #1d2021
 set $red #cc241d
 set $green #98971a
 set $yellow #d79921
@@ -332,36 +360,36 @@ set $aqua #689d68
 set $orange #d65d0e
 set $gray #a89984
 set $white #ffffff
+set $black #000000
 
-# Start swaybar to display a workspace bar (plus the system information i3status
-# finds out, if available)
 bar {
-    position top
     status_command i3status
     # swaybar_command waybar
+
+    position top
     tray_output primary
     font pango:Iosevka Nerd Font 12
+
     colors {
         # Bar background color
-        background $background0_s
-        # Text color used for blocks that do not have a color specified.
-        statusline $foreground
+        background $bg0_s
+        # Text color used for blocks that do not have a color specified
+        statusline $fg1
         # Workspaces section
-        #                    border  backgr. text
-        focused_workspace    $orange $orange $background0_h
-        inactive_workspace   $background0_h $background0_h $foreground
-        active_workspace     $background0_h $background0_h $foreground
-        urgent_workspace     $red $red $background0_s
+        #                    border  backgr  text
+        focused_workspace    $orange $orange $black
+        inactive_workspace   $bg0_h  $bg0_h  $fg1
+        active_workspace     $bg0_h  $bg0_h  $fg1
+        urgent_workspace     $red    $red    $black
     }
 }
 
-# class                 border|backgr|text|indicator|child_border
-client.focused          $aqua $aqua $background0_h $gray $background3
-client.focused_inactive $background0_h $background0_h $foreground $gray $background0_h
-client.unfocused        $background0_h $background0_h $foreground $gray $background0_h
-client.urgent           $red $red $white $red $red
+# class                 border backgr text indictr child_border
+client.focused          $bg0_s $bg2   $fg1   $gray $bg2
+client.focused_inactive $bg0_s $bg0_s $fg1   $gray $bg0_s
+client.unfocused        $bg0_s $bg0_s $fg1   $gray $bg0_s
+client.urgent           $red   $red   $white $red  $red
 
-# Smaller window borders
-for_window [title=".*"] border pixel 1
+for_window [title=".*"] border pixel 2
 
 include /etc/sway/config.d/*
