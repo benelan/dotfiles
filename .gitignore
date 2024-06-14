@@ -11,10 +11,10 @@
 .deno
 .docker
 .dotfiles/cache/*
-.dotfiles/shell/local.sh
 .gnome
 .gnupg
 .icons
+.local.*
 .lua-rocks
 .mozilla
 .pki

@@ -1,6 +1,7 @@
 acpi
 brightnessctl
 dunst
+greetd
 grim
 grimshot
 i3status
@@ -11,4 +12,3 @@ sway
 swayidle
 swaylock
 wl-clipboard
-xss-lock

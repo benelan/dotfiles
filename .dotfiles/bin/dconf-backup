@@ -4,7 +4,6 @@ declare -a backup_settings=(
     "org/gnome/desktop"
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
     "org/gnome/shell/extensions"
-    "org/gnome/shell/keybindings"
     "org/gnome/terminal"
 )
 

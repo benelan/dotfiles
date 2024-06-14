@@ -229,6 +229,8 @@ if supports git-mux; then
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 
+export NM_FZF_APPLET_AUTH=1
+
 if [ -n "$(
     find "$XDG_DATA_HOME/fonts" \
         -type f \
@@ -239,8 +241,3 @@ if [ -n "$(
 fi
 
 unset _gh_user
-
-# local {{{1
-if [ -f "$DOTFILES/shell/.local.exports.sh" ]; then
-    . "$DOTFILES/shell/.local.exports.sh"
-fi

@@ -21,12 +21,14 @@ esac
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
 # Source bash options, prompt, completion, and local settings {{{1
-# Add any environment-specific stuff to local.sh (it's gitignored).
 # The source order matters!
-for file in ~/.dotfiles/shell/{options,prompt,completion,local}.sh; do
+for file in ~/.dotfiles/shell/{options,prompt,completion}.sh; do
     [ -r "$file" ] && . "$file"
 done
 unset file
+
+# Add any environment-specific stuff to ~/.local.bashrc (it's gitignored).
+[ -r ~/.local.bashrc ] && . ~/.local.bashrc
 
 # Setup miscellaneous tools and integrations {{{1
 # setup broot shell integration so `cd` works

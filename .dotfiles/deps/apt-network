@@ -4,8 +4,10 @@ cron
 dnsutils
 net-tools
 nmap
+openresolv
 openssh-client
 openssl
+openvpn
 rsync
 socat
 tcpdump
