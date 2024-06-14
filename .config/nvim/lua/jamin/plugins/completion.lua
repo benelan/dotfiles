@@ -400,7 +400,7 @@ return {
   -----------------------------------------------------------------------------
   -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
-    "https://github.com/zbirenbaum/copilot.lua", -- alternative written in Lua
+    "zbirenbaum/copilot.lua", -- alternative written in Lua
     cond = vim.env.USE_COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",

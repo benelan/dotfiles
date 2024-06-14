@@ -13,3 +13,6 @@ nmap <buffer> S  mtgUks`t:delmarks t<CR>
 
 nmap <buffer> <leader>pu <CMD>Git push -u origin HEAD<CR>
 nmap <buffer> <leader>pl <CMD>Git pull --rebase<CR>
+
+autocmd BufEnter <buffer> if exists("*FugitiveDidChange") |
+                \ call FugitiveDidChange() | endif

@@ -159,7 +159,7 @@ return {
       extensions = { quickfix = {} },
       buf_filter = function(bufnr)
         local ft = vim.bo[bufnr].filetype
-        if vim.tbl_contains({ "qf", "help", "man", "netrw" }, ft) then return true end
+        if vim.tbl_contains({ "qf", "help", "man", "netrw", "octo", "fugitive" }, ft) then return true end
         if vim.tbl_contains(res.filetypes.excluded, ft) then return false end
         return require("resession").default_buf_filter(bufnr)
       end,
