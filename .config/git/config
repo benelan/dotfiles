@@ -87,25 +87,26 @@
     ; The layout option is available since git v2.37
     ; layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
     cmd = vim $LOCAL $MERGED $REMOTE -fdc \"set nohlsearch | wincmd l \
-        | xnoremap <expr> <C-l> &diff ? ':diffget REMOTE <BAR> diffupdate<CR>gv' : '<C-l>' \
-        | xnoremap <expr> <C-h> &diff ? ':diffget LOCAL <BAR> diffupdate<CR>gv' : '<C-h>' \
-        | xnoremap <expr> <C-b> &diff ? ':diffget BASE <BAR> diffupdate<CR>gv' : '<C-b>' \
+        | xnoremap <nowait> <expr> [ &diff ? ':diffget LOCAL <BAR> diffupdate<CR>' : '[' \
+        | xnoremap <nowait> <expr> ] &diff ? ':diffget REMOTE <BAR> diffupdate<CR>' : ']' \
+        | xnoremap <nowait> <expr> \\ &diff ? ':diffget BASE <BAR> diffupdate<CR>' : '\\' \
         | xnoremap <expr> <silent> <CR> &diff ? '<ESC>:tabedit $LOCAL <BAR> diffs $MERGED \
             <BAR> wincmd k <BAR> vertical diffs $BASE <BAR> vertical diffs $REMOTE \
             <BAR> wincmd b <BAR> tabedit $MERGED <BAR> tabfirst<CR>' : '<CR>'\"
-
-[mergetool "diffconflicts"]
-    trustExitCode = true
-    ; $DOTFILES/bin/diffconflicts
-	cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
 
 [mergetool "fugitive"]
     trustExitCode = true
     ; http://vimcasts.org/episodes/fugitive-vim-resolving-merge-conflicts-with-vimdiff/
     cmd = vim -f +'packadd vim-fugitive \
-        | xnoremap <expr> <C-l> &diff ? ':diffget //3 <BAR> diffupdate<CR>gv' : '<C-l>' \
-        | xnoremap <expr> <C-h> &diff ? ':diffget //2 <BAR> diffupdate<CR>gv' : '<C-h>' \
+        | xnoremap <nowait> <expr> [ &diff ? ':diffget //2 <BAR> diffupdate<CR>' : '[' \
+        | xnoremap <nowait> <expr> ] &diff ? ':diffget //3 <BAR> diffupdate<CR>' : ']' \
         | Gvdiffsplit!' $MERGED
+
+[mergetool "diffconflicts"]
+    trustExitCode = true
+    ; $DOTFILES/bin/diffconflicts
+    cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+
 
 [rebase]
     missingCommitsCheck = warn

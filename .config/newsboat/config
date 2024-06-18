@@ -2,7 +2,7 @@
 
 confirm-exit yes
 # wrap-scroll yes
-scrolloff 69
+scrolloff 999999
 datetime-format "%F"
 browser "$TERM_BROWSER %u"
 prepopulate-query-feeds yes

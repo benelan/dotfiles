@@ -649,9 +649,12 @@ install_script_git-extras() {
             cd "$dir" &&
             git clone https://github.com/tj/git-extras.git &>/dev/null &&
             cd git-extras &&
-            git checkout \
-                $(git describe --tags $(git rev-list --tags --max-count=1)) \
-                &>/dev/null &&
+            git checkout $(
+                git for-each-ref refs/tags \
+                    --count=1 \
+                    --sort=-taggerdate \
+                    --format='%(refname:short)'
+            ) &>/dev/null &&
             sudo make install &&
             rm -rf "$dir"
     fi
@@ -1240,7 +1243,8 @@ install_theme_icons() {
 
     # checkout the latest release (need to remove --depth=1 from clone)
     # git -C "$CACHE_DIR" checkout "$(
-    #     git describe --tags "$(git rev-list --tags --max-count=1)"
+    #     git for-each-ref refs/tags \
+    #         --count=1 --sort=-taggerdate --format='%(refname:short)'
     # )"
 
     # remove the old icons to prevent symlink errors
@@ -1641,7 +1645,12 @@ install_build_fzf() {
 
     git fetch --all --tags --force --prune
     git reset --hard origin/master
-    git checkout "$(git describe --abbrev=0)"
+    git checkout "$(
+        git for-each-ref refs/tags \
+            --count=1 \
+            --sort=-taggerdate \
+            --format='%(refname:short)'
+    )"
 
     # GOFLAGS="$GOFLAGS -buildvcs=false"
     make && make install && chmod +x "$LIB/fzf/bin/fzf"
@@ -1727,7 +1736,11 @@ install_build_clipmenu() {
 INSTALL_BUILD_TUIGREET_DOC="Install a simple greeter for the greetd login manager"
 install_build_tuigreet() {
     # trying installing greetd with apt if it's not already installed
-    ! _has greetd && ! sudo apt-get install -qqy greetd && return
+    if ! _has greetd; then
+        sudo apt-get install -qqy greetd || return
+        sudo useradd -M -G video greeter
+        sudo chmod -R go+r /etc/greetd/
+    fi
 
     if [ -d "$LIB/tuigreet" ]; then
         git -C "$LIB/tuigreet/" fetch --all
@@ -1753,6 +1766,7 @@ install_build_tuigreet() {
     sudo systemctl daemon-reload
     sudo systemctl enable --now greetd
 
+    mkdir -p /etc/greetd
     sudo tee /etc/greetd/config.toml >/dev/null <<EOF
 [terminal]
 vt = 1
@@ -1761,6 +1775,7 @@ command = "tuigreet --asterisks --theme 'input=green;button=green' --remember-us
 user = "greeter"
 EOF
 }
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
@@ -2098,8 +2113,9 @@ main() {
         # prevent usage of `git clean` and 'git clear' (from git-extras)
         clea*) echo "Don't delete your home directory, dumbass" >&2 && exit 1 ;;
 
-        # override my 'all' git alias to not add untracked files
+        # override my git aliases
         all) _dot add --update ;;
+        rh) _dot stash push -m "RESET" ;;
 
         # all other commands are passed directly to git
         *) _dot "$@" ;;

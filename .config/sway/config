@@ -6,38 +6,6 @@
 # Mod1 is Alt, Mod4 is Super
 set $mod Mod4
 
-<<<<<<< HEAD
-# Clipboard history manager
-# https://github.com/sentriz/cliphist
-exec exec wl-paste --watch cliphist store
-
-# Low battery notification
-# https://github.com/rjekker/i3-battery-popup
-exec --no-startup-id i3-battery-popup -nL 15 \
-        -s /usr/share/sounds/freedesktop/stereo/dialog-warning.oga
-
-# Clipboard history manager
-# https://github.com/sentriz/cliphist
-exec exec wl-paste --watch cliphist store
-
-
-### Idle/lock/suspend {{{1
-#
-||||||| parent of 519feaaf (refactor: even more cleanup)
-# Low battery notification
-# https://github.com/rjekker/i3-battery-popup
-exec --no-startup-id i3-battery-popup -nL 15 \
-        -s /usr/share/sounds/freedesktop/stereo/dialog-warning.oga
-
-# Clipboard history manager
-# https://github.com/sentriz/cliphist
-exec exec wl-paste --watch cliphist store
-
-
-### Idle/lock/suspend {{{1
-#
-=======
->>>>>>> 519feaaf (refactor: even more cleanup)
 # https://github.com/swaywm/swaylock
 set $lock 'swaylock -Feflc 000000'
 
@@ -176,8 +144,21 @@ bindsym $mod+Shift+y exec cliphist list | rofi -dmenu -p 'cliphist' | cliphist d
 
 # https://github.com/swaywm/sway/wiki/Useful-add-ons-for-sway#screenshot
 bindsym Print exec grimshot copy area
+bindsym $mod+Shift+Print exec grimshot save area
 bindsym $mod+Print exec wl-copy < "$(grimshot save active)"
-bindsym $mod+Control+Print exec wl-copy < "$(grimshot save output)"
+bindsym $mod+Mod1+Print exec wl-copy < "$(grimshot save output)"
+
+# select an area of the screen and copy the text within to the clipboard
+# https://github.com/tesseract-ocr/tesseract
+bindsym $mod+y exec grim -s 3 -g "$(slurp)" -l 0 - | \
+    convert - -bordercolor White -border 10x10 -contrast-stretch 0 \
+        -opaque none +matte -sharpen 0x1 - | \
+    tesseract - - --psm 6 \
+        -c "load_system_dawg=0" \
+        -c "load_freq_dawg=0" \
+        -c "preserve_interword_spaces=1" \
+        -c "segment_nonalphabetic_script=1" | \
+    wl-copy
 
 # colorpicker
 bindsym $mod+c exec grim -g "$(slurp -p)" -t ppm - | \
@@ -300,9 +281,11 @@ bindsym $mod+Mod1+0 [workspace=$ws10] kill
 ### Window assignments {{{1
 #
 # Automatically open apps in specific workspaces
+assign [title="^Outlook \(PWA\).*"] $ws9
+assign [title="^Microsoft Teams.*"] $ws10
 assign [class="^firefox$"] $ws1
 # assign [class="^Gnome-terminal$"] $ws2
-assign [class="^(Chromium|Google-chrome|Vivaldi-stable)$"] $ws3
+assign [class="^(Chromium|Google-chrome|Brave-browser)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark|Gnome-boxes)$"] $ws4
 assign [class="^(file-roller|Gedit|Gnome-calculator|Gnome-calendar|Org\.gnome\.Nautilus)$"] $ws5
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb|Gimp-\d+\.\d+|com\.sayonara\-player\.Sayonara)$"] $ws6
@@ -310,8 +293,6 @@ assign [title="^.* - mpv$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
 assign [class="^thunderbird$"] $ws8
 assign [class="^Proton Mail$"] $ws8
-assign [title="^Outlook \(PWA\).*"] $ws9
-assign [title="^Microsoft Teams - .* | Microsoft Teams$"] $ws10
 
 # libreoffice window's don't have a class on startup so they need to be moved afterwards
 for_window [class="^libreoffice-(startcenter|writer|calc|impress|draw|math)$"] move window to workspace $ws5
@@ -382,18 +363,18 @@ include /etc/sway/config.d/*
 #
 # https://github.com/swaywm/swayidle
 #
-# Dim the screen after 7 min, undim if user becomes active.
-# Turn off the display 3 sec before locking as a last chance to resume w/o password
-# Lock the screen after 11 min of idle time.
+# Dim the screen after 5 min, undim if user becomes active.
+# Turn off the display 20 sec before locking as a last chance to resume w/o password
+# Lock the screen after 7 min of idle time.
 # Suspend the system after 22 min of idle time.
 # Update the status bar's weather info after unlocking or resuming from sleep
 exec --no-startup-id swayidle -w \
-    timeout 420 'brightnessctl --class=backlight get >/tmp/idle_brightness; \
+    timeout 300 'brightnessctl --class=backlight get >/tmp/idle_brightness; \
                  brightnessctl --class=backlight set 33%-' \
          resume 'brightnessctl --class=backlight set $(cat /tmp/idle_brightness)' \
-    timeout 666 'swaymsg "output * dpms off"' \
+    timeout 400 'swaymsg "output * dpms off"' \
          resume 'swaymsg "output * dpms on"' \
-    timeout 669 $lock \
+    timeout 420 $lock \
     timeout 1337 'systemctl suspend' \
     lock $lock \
     before-sleep $lock \
@@ -427,4 +408,3 @@ exec exec wl-paste --watch cliphist store
 
 # Refresh the statusbar weather info
 exec_always --no-startup-id weather info > /tmp/weather
-

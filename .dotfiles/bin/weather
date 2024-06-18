@@ -133,7 +133,10 @@ get_icon() {
 }
 
 info() {
-    printf "%s %s %s" "$(get_icon)" "$(get_prop '.main.temp')°F" "($(get_prop '.name'))"
+    printf "%s %0.1f°F (%s)" \
+        "$(get_icon)" \
+        "$(get_prop '.main.temp')" \
+        "$(get_prop '.weather[0].description')"
 }
 
 main() {

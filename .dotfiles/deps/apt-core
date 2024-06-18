@@ -1,3 +1,5 @@
+apparmor-profiles
+apparmor-utils
 bat
 btop
 clamav

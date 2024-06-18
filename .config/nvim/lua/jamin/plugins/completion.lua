@@ -22,6 +22,17 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- completes git commits and github issues/pull requests
+  {
+    "petertriho/cmp-git",
+    ft = { "markdown", "gitcommit", "octo" },
+    opts = {
+      filetypes = { "markdown", "gitcommit", "octo" },
+      github = { issues = { state = "all" }, pull_requests = { state = "all" } },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- completes API info from attached language servers
   { "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
   { "hrsh7th/cmp-nvim-lsp-signature-help", event = "LspAttach" },
@@ -111,28 +122,25 @@ return {
             if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
 
-              if icon then
-                vim_item.kind = string.format(" %s  %s", icon, vim_item.kind)
-                vim_item.kind_hl_group = hl_group
-              else
-                -- use a fallback folder or file icon if the filetype doesn't exist in devicons
-                vim_item.kind = string.format(
-                  " %s  %s",
-                  vim_item.kind == "Folder" and res.icons.lsp_kind.Folder or res.icons.lsp_kind.File,
-                  vim_item.kind
-                )
+              if hl_group then vim_item.kind_hl_group = hl_group end
+
+              if vim.g.use_devicons then
+                vim_item.kind = icon and icon
+                  or (
+                    vim_item.kind == "Folder" and res.icons.lsp_kind.Folder
+                    or res.icons.lsp_kind.File
+                  )
               end
             else
               vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
 
               -- use LSP kind icons for non-path completion items and specify a fallback icon
-              vim_item.kind = string.format(
-                " %s %s",
-                res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback,
-                vim_item.kind
-              )
+              if vim.g.use_devicons then
+                vim_item.kind = res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback
+              end
             end
 
+            vim_item.kind = " " .. vim_item.kind
             return vim_item
           end,
         },
@@ -212,7 +220,7 @@ return {
           [types.insertNode] = {
             active = {
               hl_mode = "combine",
-              virt_text = { { res.icons.ui.pencil, "Boolean" } },
+              virt_text = { { res.icons.ui.edit, "Boolean" } },
             },
           },
         },
@@ -315,7 +323,8 @@ return {
   -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
     "zbirenbaum/copilot.lua", -- alternative written in Lua
-    enabled = vim.env.COPILOT == "1",
+    cond = vim.env.COPILOT == "1"
+      or (vim.env.COPILOT ~= "0" and string.match(vim.uv.cwd() or "", vim.env.WORK) ~= nil),
     cmd = "Copilot",
     event = "InsertEnter",
 
@@ -377,7 +386,7 @@ return {
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
     "Exafunction/codeium.vim",
-    enabled = vim.env.CODEIUM == "1",
+    cond = vim.env.CODEIUM == "1" and string.match(vim.uv.cwd() or "", vim.env.WORK) == nil,
     event = "VimEnter",
     cmd = "Codeium",
 

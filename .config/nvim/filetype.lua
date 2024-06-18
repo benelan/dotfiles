@@ -8,6 +8,7 @@ vim.filetype.add({
     [".eslintrc.json"] = "jsonc",
   },
   pattern = {
+    ["logs?%.?t?x?t?"] = "log",
     ["tsconfig.*json"] = "jsonc",
     [".*/%.vscode/.*%.json"] = "jsonc",
     [".*%.conf"] = "conf",

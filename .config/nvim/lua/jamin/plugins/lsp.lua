@@ -176,7 +176,7 @@ return {
           then
             bufmap(
               "n",
-              "gh",
+              "<leader>si",
               function()
                 vim.lsp.inlay_hint.enable(
                   not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
@@ -209,58 +209,6 @@ return {
               end,
               "Code action (only source and quickfix)"
             )
-
-            if client.name == "tsserver" then
-              ---@diagnostic disable: assign-type-mismatch
-              bufmap(
-                "n",
-                "<leader>lao",
-                function()
-                  vim.lsp.buf.code_action({
-                    apply = true,
-                    context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
-                  })
-                end,
-                "Organize imports (tsserver)"
-              )
-
-              bufmap(
-                "n",
-                "<leader>lau",
-                function()
-                  vim.lsp.buf.code_action({
-                    apply = true,
-                    context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
-                  })
-                end,
-                "Remove unused variables (tsserver)"
-              )
-
-              bufmap(
-                "n",
-                "<leader>lai",
-                function()
-                  vim.lsp.buf.code_action({
-                    apply = true,
-                    context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
-                  })
-                end,
-                "Add missing imports (tsserver)"
-              )
-
-              bufmap(
-                "n",
-                "<leader>laf",
-                function()
-                  vim.lsp.buf.code_action({
-                    apply = true,
-                    context = { only = { "source.fixAll.ts" }, diagnostics = {} },
-                  })
-                end,
-                "Fix all (tsserver)"
-              )
-              ---@diagnostic enable: assign-type-mismatch
-            end
           end
         end,
       })

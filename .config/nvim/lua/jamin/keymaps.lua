@@ -69,7 +69,7 @@ keymap(
 )
 
 -- toggle treesitter highlighting
-keymap("n", "<leader>sth", function()
+keymap("n", "<leader>sh", function()
   if vim.b.ts_highlight then
     vim.treesitter.stop()
     print("treesitter highlighting stopped")

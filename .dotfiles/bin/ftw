@@ -207,7 +207,7 @@ while [ $? != 130 ]; do
         --header="$header" \
         --preview-window="right:40%,wrap,hidden" \
         --preview="task {1} | less" \
-        --hscroll-off=69420 \
+        --hscroll-off=9999999 \
         --multi \
         --bind="alt-p:toggle-preview" \
         --bind="alt-h:toggle-header" \

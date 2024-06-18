@@ -44,10 +44,10 @@ set trash
 set trashdir=%r/.vifm_trash,$HOME/.local/share/Trash/files
 
 " This is how many directories to store in the directory history.
-set history=420
+set history=400
 
 " Maximum number of changes that can be undone.
-set undolevels=1069
+set undolevels=1000
 
 " What should be saved automatically on restarting vifm.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.

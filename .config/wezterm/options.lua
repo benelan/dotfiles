@@ -39,7 +39,7 @@ function M.apply_config(config)
   config.window_padding = { left = 3, right = 0, top = 0, bottom = 0 }
   config.inactive_pane_hsb = { saturation = 0.8, brightness = 0.8 }
 
-  config.tab_max_width = 69
+  config.tab_max_width = 70
   config.use_fancy_tab_bar = false
   config.tab_bar_at_bottom = true
   config.show_new_tab_button_in_tab_bar = false

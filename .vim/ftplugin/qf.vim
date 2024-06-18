@@ -1,5 +1,7 @@
 if (exists("b:loaded")) | finish | endif | let b:loaded = 1
 
+let g:qf_disable_statusline = 1
+
 setlocal nowrap norelativenumber number
 set nobuflisted
 

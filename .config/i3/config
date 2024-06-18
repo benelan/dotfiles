@@ -143,11 +143,45 @@ bindsym $mod+f floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+Shift+f focus mode_toggle
 
-# focus the parent container
-# bindsym $mod+a focus parent
+# reload the configuration file
+bindsym $mod+Shift+c reload
 
-# focus the child container
-#bindsym $mod+d focus child
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exiting i3 will end the X session, are you sure?' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# lock and suspend
+bindsym $mod+Escape exec loginctl lock session
+bindsym $mod+Shift+Escape exec systemctl suspend
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+    # These bindings trigger as soon as you enter the resize mode
+
+    # Pressing left will shrink the window’s width.
+    # Pressing right will grow the window’s width.
+    # Pressing up will shrink the window’s height.
+    # Pressing down will grow the window’s height.
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    # same bindings, but for the arrow keys
+    bindsym Left resize shrink width 20 px or 20 ppt
+    bindsym Down resize grow height 20 px or 20 ppt
+    bindsym Up resize shrink height 20 px or 20 ppt
+    bindsym Right resize grow width 20 px or 20 ppt
+
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
 
 # move the currently focused window to the scratchpad
 bindsym $mod+Shift+minus move scratchpad
@@ -196,9 +230,11 @@ bindsym $mod+Mod1+0 [workspace=$ws10] kill
 ### Window assignments {{{1
 #
 # automatically open apps in specific workspaces
+assign [title="^Outlook \(PWA\).*"] $ws9
+assign [title="^Microsoft Teams.*"] $ws10
 assign [class="^firefox$"] $ws1
 # assign [class="^Gnome-terminal$"] $ws2
-assign [class="^(Chromium|Google-chrome|Vivaldi-stable)$"] $ws3
+assign [class="^(Chromium|Google-chrome|Brave-browser)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark|Gnome-boxes)$"] $ws4
 assign [class="^(file-roller|Gedit|Gnome-calculator|Gnome-calendar|Org\.gnome\.Nautilus)$"] $ws5
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb|Gimp-\d+\.\d+|com\.sayonara\-player\.Sayonara)$"] $ws6
@@ -206,51 +242,9 @@ assign [title="^.* - mpv$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
 assign [class="^thunderbird$"] $ws8
 assign [class="^Proton Mail$"] $ws8
-assign [title="^Outlook \(PWA\).*"] $ws9
-assign [title="^Microsoft Teams - .* | Microsoft Teams$"] $ws10
 
 # libre office window's don't have a class on startup so they need to be moved afterwards
 for_window [class="^libreoffice-(startcenter|writer|calc|impress|draw|math)$"] move window to workspace $ws5
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exiting i3 will end the X session, are you sure?' -B 'Yes, exit i3' 'i3-msg exit'"
-
-# lock and suspend
-bindsym $mod+Escape exec loginctl lock session
-bindsym $mod+Shift+Escape exec systemctl suspend
-
-# resize window (you can also use the mouse for that)
-mode "resize" {
-    # These bindings trigger as soon as you enter the resize mode
-
-    # Pressing left will shrink the window’s width.
-    # Pressing right will grow the window’s width.
-    # Pressing up will shrink the window’s height.
-    # Pressing down will grow the window’s height.
-    bindsym h resize shrink width 10 px or 10 ppt
-    bindsym j resize grow height 10 px or 10 ppt
-    bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow width 10 px or 10 ppt
-
-    # same bindings, but for the arrow keys
-    bindsym Left resize shrink width 20 px or 20 ppt
-    bindsym Down resize grow height 20 px or 20 ppt
-    bindsym Up resize shrink height 20 px or 20 ppt
-    bindsym Right resize grow width 20 px or 20 ppt
-
-    # back to normal: Enter or Escape or $mod+r
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym $mod+r mode "default"
-}
-
-bindsym $mod+r mode "resize"
 
 
 ### UI {{{1
@@ -304,9 +298,9 @@ bar {
 }
 
 # class                 border backgr text indictr child_border
-client.focused          $bg3   $bg2   $fg1   $gray $bg2
-client.focused_inactive $bg2   $bg0_s $gray  $gray $bg0_s
-client.unfocused        $bg2   $bg0_s $gray  $gray $bg0_s
+client.focused          $bg3   $bg2   $fg1   $bg2 $bg2
+client.focused_inactive $bg2   $bg0_s $gray  $bg2 $bg0_s
+client.unfocused        $bg2   $bg0_s $gray  $bg2 $bg0_s
 client.urgent           $red   $red   $white $red  $red
 
 # smaller window borders
@@ -345,12 +339,12 @@ exec --no-startup-id xidlehook \
     --not-when-fullscreen \
     `# Don't lock when there's audio playing` \
     --not-when-audio \
-    `# Dim the screen after 7 minutes, undim if user becomes active` \
-    --timer 420 \
+    `# Dim the screen after 5 minutes, undim if user becomes active` \
+    --timer 350 \
         'brightnessctl --class=backlight get >/tmp/xidlehook_brightness; brightnessctl --class=backlight set 33%-' \
         'brightnessctl --class=backlight set $(cat /tmp/xidlehook_brightness)' \
-    `# Undim & lock 1 minute and 9 seconds later` \
-    --timer 69 \
+    `# Undim & lock 1 minute later` \
+    --timer 60 \
         'brightnessctl --class=backlight set $(cat /tmp/xidlehook_brightness); loginctl lock-session' \
         'sleep 30 && weather info > /tmp/weather' \
     `# Finally, suspend 22 minutes and 17 seconds after it locks` \

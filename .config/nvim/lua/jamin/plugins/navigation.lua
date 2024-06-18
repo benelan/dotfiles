@@ -32,6 +32,7 @@ return {
       { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
       { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
       { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
+      { "<leader>au", "<CMD>Eutil<CR>", desc = "Related: util (projectionist)" },
       { "<leader>a<CR>", "<CMD>Console<CR>", desc = "Console (projectionist)" },
     },
     init = function()
@@ -182,7 +183,7 @@ return {
           entry_prefix = string.rep(" ", 4),
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",
-          history = { limit = 420 },
+          history = { limit = 400 },
           dynamic_preview_title = true,
           mappings = { i = mappings, n = mappings },
           file_ignore_patterns = { "%.git/", "node_modules/", "dist/", "build/" },
