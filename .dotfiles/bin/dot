@@ -756,6 +756,40 @@ install_ubuntu_apt-sway() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install and configure lightdm                               {{{
+
+## https://github.com/canonical/lightdm
+INSTALL_UBUNTU_LIGHTDM_DOC="Install and configure the lightdm desktop manager"
+install_ubuntu_lightdm() {
+    if _has apt-get && ! _has lightdm || ! _has slick-greeter; then
+        sudo apt-get install -qq lightdm slick-greeter || true
+    fi
+
+    if ! [ -f "/etc/lightdm/lightdm.conf" ]; then
+        sudo tee /etc/lightdm/lightdm.conf >/dev/null <<EOF
+[Seat:*]
+greeter-session=slick-greeter
+#user-session=sway
+EOF
+    fi
+
+    if ! [ -f "/etc/lightdm/slick-greeter.conf" ]; then
+        sudo tee /etc/lightdm/slick-greeter.conf >/dev/null <<EOF
+[Greeter]
+background=/usr/share/backgrounds/gruvbox_coffee.png
+background-color=#3c3836
+show-power=true
+show-clock=true
+show-quit=true
+show-a11y=false
+show-keyboard=false
+EOF
+    fi
+
+    sudo dpkg-reconfigure lightdm
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install GUI apt packages                                    {{{
 
 INSTALL_UBUNTU_APT_GUI_DOC="Install GUI apt packages that for desktop machines"
@@ -1146,26 +1180,28 @@ install_theme_font-complete() {
 
 INSTALL_THEME_WALLPAPER_DOC="Install gruvbox coffee wallpaper"
 install_theme_wallpaper() {
+    current_wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
     wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/gruvbox_coffee.png"
     profile="$(xdg-user-dir PICTURES)/Profiles/fry.png"
 
-    [ -r "$wallpaper" ] && [ -r "$profile" ] && return
+    if ! [ -r "$wallpaper" ]; then
+        curl -Lo "$wallpaper" \
+            https://benelan.dev/img/wallpaper.png >/dev/null 2>&1 || true
 
-    curl -Lo "$wallpaper" \
-        https://benelan.dev/img/wallpaper.png >/dev/null 2>&1 || true
+        ln -s "$wallpaper" "$current_wallpaper"
+        sudo mkdir -p /usr/share/backgrounds
+        sudo cp "$wallpaper" /usr/share/backgrounds/
+    fi
 
-    curl -Lo "$profile" \
-        https://benelan.dev/img/profile.png >/dev/null 2>&1 || true
+    if ! [ -r "$profile" ]; then
+        curl -Lo "$profile" \
+            https://benelan.dev/img/profile.png >/dev/null 2>&1 || true
 
-    current_wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
-    current_profile="$(xdg-user-dir PICTURES)/Profiles/current"
+        ln -s "$profile" "$(xdg-user-dir PICTURES)/Profiles/current"
 
-    ln -s "$wallpaper" "$current_wallpaper"
-    ln -s "$profile" "$current_profile"
-
-    sudo mkdir -p /usr/share/backgrounds /usr/share/pixmaps
-    sudo cp "$wallpaper" /usr/share/backgrounds/
-    sudo cp "$profile" /usr/share/pixmaps/faces/
+        [ -d /usr/share/pixmaps/faces ] &&
+            sudo cp "$profile" /usr/share/pixmaps/faces/
+    fi
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
@@ -1704,7 +1740,7 @@ install_build_tuigreet() {
 [terminal]
 vt = 1
 [default_session]
-command = "tuigreet --remember-user-session --asterisks -itrc sway-run"
+command = "tuigreet --asterisks --theme 'input=green;button=green' --remember-user-session -itrc sway-run"
 user = "greeter"
 EOF
 }

@@ -3,9 +3,6 @@
 
 ### Startup processes {{{1
 #
-# Network manager applet
-# exec --no-startup-id nm-applet --indicator
-
 # Notification manager
 # https://github.com/dunst-project/dunst
 exec_always --no-startup-id ! pgrep -x dunst && dunst
@@ -31,7 +28,7 @@ set $lock 'swaylock -Feflc 000000'
 # Turn off the display 3 sec before locking as a last chance to resume w/o password
 # Lock the screen after 11 min of idle time.
 # Suspend the system after 22 min of idle time.
-# Update the status bar weather info after unlocking or resuming from sleep
+# Update the status bar's weather info after unlocking or resuming from sleep
 exec --no-startup-id swayidle -w \
     timeout 420 'brightnessctl --class=backlight get >/tmp/idle_brightness; \
                  brightnessctl --class=backlight set 33%-' \
@@ -73,6 +70,7 @@ input "type:touchpad" {
 }
 
 # Use CapsLock as a second Escape and press both Shift keys to toggle caps lock
+# For options, see: $ localectl list-x11-keymap-options
 input "type:keyboard" {
     xkb_options caps:escape
     xkb_options shift:breaks_caps
@@ -84,9 +82,9 @@ input "type:keyboard" {
 # Wallpaper
 output * bg "$(xdg-user-dir PICTURES)/Wallpapers/current" fill
 
-# Monitor resolution and positioning
-output "BenQ Corporation BenQ GW2790QT 9BP00005019" resolution 2560x1440 position 0,0
-output "Unknown 0x683D 0x00000000" resolution 1920x1080 position -1920,360
+# Monitor resolution and positioning (aligns at bottom instead of top)
+# output eDP-1 resolution 1920x1080 position 0,0
+# output DP-1 resolution 2560x1440 position 1920,360
 
 
 ### Variables {{{1
@@ -235,7 +233,7 @@ bindsym $mod+f floating toggle
 bindsym $mod+Shift+f focus mode_toggle
 
 # Reload the configuration file
-bindsym $mod+Shift+r reload
+bindsym $mod+Shift+c reload
 
 # Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+e exec swaynag -t warning -m "Exiting sway will end the Wayland session, are you sure?" -B "Yes, exit sway" 'swaymsg exit'

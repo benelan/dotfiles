@@ -1,7 +1,6 @@
 acpi
 blueman
 brightnessctl
-compton
 dex
 dunst
 feh
@@ -16,6 +15,7 @@ libxfixes-dev
 lm-sensors
 lshw
 maim
+picom
 wmctrl
 xdotool
 xinput
