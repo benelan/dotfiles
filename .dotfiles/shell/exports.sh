@@ -237,7 +237,7 @@ if [ -n "$(
         -name "*Nerd*Font*.ttf" \
         -readable -print -quit 2>/dev/null
 )" ]; then
-    export USE_DEVICONS=1
+    export NERD_ICONS=1
 fi
 
 unset _gh_user

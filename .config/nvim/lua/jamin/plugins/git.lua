@@ -4,7 +4,7 @@ return {
   -- the GOAT git plugin
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     dependencies = "vim-rhubarb",
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
@@ -63,7 +63,7 @@ return {
   -- Open file/selection in GitHub repo
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
     keys = {
       {
         "<leader>go",
@@ -135,22 +135,30 @@ return {
       },
       {
         "]h",
-        function() require("gitsigns").nav_hunk("next", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("next", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[h",
-        function() require("gitsigns").nav_hunk("prev", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("prev", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "]H",
-        function() require("gitsigns").nav_hunk("last", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("last", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Last hunk (gitsigns)",
       },
       {
         "[H",
-        function() require("gitsigns").nav_hunk("first", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("first", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "First hunk (gitsigns)",
       },
       {
@@ -278,8 +286,7 @@ return {
   {
     "pwntester/octo.nvim",
     -- dev = true,
-    cond = vim.fn.executable("gh") == 1,
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    enabled = vim.fn.executable("gh") == 1,
     cmd = "Octo",
     event = { { event = "BufReadCmd", pattern = "octo://*" } },
 
@@ -371,28 +378,15 @@ return {
       -- Issues
       { "<leader>oic", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
       { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
-      { "<leader>oill", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
-      { "<leader>oila", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
-      { "<leader>oilc", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
+      { "<leader>oima", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List my assigned issues (octo)" },
+      { "<leader>oimc", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List my created issues (octo)" },
 
       -- Pull requests
-      {
-        "<leader>op",
-        function()
-          local number = vim.fn.system "gh pr view --json number --jq .number"
-          if number and not string.match(number, "request") and vim.v.shell_error ~= 0 then
-            vim.cmd.Octo("pr edit " .. number)
-          else
-            print "No pull request found for current branch"
-          end
-        end,
-        desc = "Open pull request for current branch (octo)",
-      },
+      { "<leader>op", "<CMD>Octo pr<CR>", desc = "Open pull request for current branch (octo)" },
       { "<leader>opc", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opll", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opla", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
-      { "<leader>oplc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
+      { "<leader>opma", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List my assigned pull requests (octo)" },
+      { "<leader>opmc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List my created pull requests (octo)" },
 
       -- My repos and gists
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },

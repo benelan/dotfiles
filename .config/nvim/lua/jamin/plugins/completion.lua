@@ -6,7 +6,7 @@ return {
   {
     "uga-rosa/cmp-dictionary",
     -- only use source if a dict file exists in the usual place
-    cond = vim.fn.filereadable("/usr/share/dict/words") == 1,
+    enabled = vim.fn.filereadable("/usr/share/dict/words") == 1,
     ft = res.filetypes.writing,
     config = function()
       local has_dict, dict = pcall(require, "cmp_dictionary")
@@ -35,7 +35,7 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable("rg") == 1 },
+      { "lukas-reineke/cmp-rg", enabled = vim.fn.executable("rg") == 1 },
     },
 
     opts = function()
@@ -315,7 +315,7 @@ return {
   -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
     "zbirenbaum/copilot.lua", -- alternative written in Lua
-    cond = vim.env.USE_COPILOT == "1",
+    enabled = vim.env.COPILOT == "1",
     cmd = "Copilot",
     event = "InsertEnter",
 
@@ -377,9 +377,7 @@ return {
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
     "Exafunction/codeium.vim",
-    -- pinned due to: https://github.com/Exafunction/codeium.vim/issues/384
-    commit = "31dd29",
-    cond = vim.env.USE_CODEIUM == "1",
+    enabled = vim.env.CODEIUM == "1",
     event = "VimEnter",
     cmd = "Codeium",
 

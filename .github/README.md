@@ -86,11 +86,11 @@ in [`~/.bashrc`](../.bashrc) if it exists. The following environment variables
 are flags that accept a value of `1` or `0` (default) to enabled/disable tools
 and other functionality.
 
-- `USE_GUI_APPS` - Install and use tools that only work on desktop machines.
-- `USE_WORK_STUFF` - Setup the environment for work (aliases functions, etc.)
-- `USE_COPILOT` - Use the GitHub Copilot plugin in Neovim.
-- `USE_CODEIUM` - Use the Codeium (free Copilot alternative) plugin in Neovim.
-- `USE_DEVICONS` - Use developer icons in various tools. The icons are displayed
+- `DESKTOP_MACHINE` - Install and use GUI tools that only work on desktop machines.
+- `WORK_MACHINE` - Setup the environment for work (aliases functions, etc.)
+- `COPILOT` - Use the GitHub Copilot plugin in Neovim.
+- `CODEIUM` - Use the Codeium (free Copilot alternative) plugin in Neovim.
+- `NERD_ICONS` - Use developer icons in various tools. The icons are displayed
   in Neovim/Vim/Vifm/etc. by default when using Wezterm (since it
   [ships with Nerd Font glyphs](https://wezfurlong.org/wezterm/config/lua/wezterm/nerdfonts.html)),
   but they can be disabled by setting the option to `0`. If you don't use

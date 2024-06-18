@@ -170,7 +170,6 @@ EXEC 01;31      # Unix
 *CREDITS.md 01;35
 *FAQ.md 01;35
 *GUIDE.md 01;35
-*HISTORY 01;35
 *HISTORY.md 01;35
 *INDEX.md 01;35
 *LICENSE 01;35
@@ -309,6 +308,7 @@ EXEC 01;31      # Unix
 .yml 36
 
 # config files
+*.local 03;36
 *authorized_keys 03;36
 *cfg 03;36
 *conf 03;36
@@ -325,7 +325,6 @@ EXEC 01;31      # Unix
 .dircolors 03;36
 .ini 03;36
 .list 03;36
-.local 03;36
 .profile 03;36
 .xprofile 03;36
 .xsession 03;36
@@ -603,6 +602,7 @@ EXEC 01;31      # Unix
 *ignore 37
 *lock 37
 *lockfile 37
+*nohup.out 37
 *package-lock.json 37
 .projections.json 37
 *~ 37
@@ -689,6 +689,7 @@ TERM screen-256color-bce
 TERM screen-256color-s
 
 # config files
+*.local 36
 *authorized_keys 36
 *cfg 36
 *conf 36
@@ -705,7 +706,6 @@ TERM screen-256color-s
 .dircolors 36
 .ini 36
 .list 36
-.local 36
 .profile 36
 .xprofile 36
 .xsession 36

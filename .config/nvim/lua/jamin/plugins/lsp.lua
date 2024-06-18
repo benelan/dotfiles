@@ -315,7 +315,7 @@ return {
   {
     "jose-elias-alvarez/null-ls.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+    dependencies = { "williamboman/mason.nvim" },
 
     opts = function()
       local nls = require("null-ls")

@@ -52,11 +52,7 @@ return {
   {
     "luckasRanarison/nvim-devdocs",
     build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = { "DevdocsFetch", "DevdocsOpen", "DevdocsOpenFloat", "DevdocsOpenCurrent" },
 
     keys = {

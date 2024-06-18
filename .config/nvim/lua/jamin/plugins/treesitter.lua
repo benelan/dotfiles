@@ -25,7 +25,7 @@ return {
 
   -----------------------------------------------------------------------------
   -- set commentstring based on treesitter node
-  {"folke/ts-comments.nvim", event = "VeryLazy", opts = {}},
+  { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
 
   -----------------------------------------------------------------------------
   -- shows the current scope

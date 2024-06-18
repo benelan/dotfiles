@@ -31,9 +31,9 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
 })
 
 -- icons can be turned on/off per machine using the environment variable
-vim.g.use_devicons = vim.env.USE_DEVICONS ~= "0"
+vim.g.use_devicons = vim.env.NERD_ICONS ~= "0"
   and (
-    vim.env.USE_DEVICONS == "1"
+    vim.env.NERD_ICONS == "1"
     -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
     or vim.env.WEZTERM_PANE ~= nil
   )
@@ -59,17 +59,11 @@ require("jamin.rooter").setup()
 
 -- bootstrap lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 end
-vim.opt.rtp:prepend(lazypath) ---@diagnostic disable-line: undefined-field
+vim.opt.rtp:prepend(lazypath)
 
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {

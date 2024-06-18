@@ -317,8 +317,8 @@ endif
 
 
 " Statusline {{{1
-let g:use_devicons = expand("$USE_DEVICONS") != 0 && (
-        \ expand("$USE_DEVICONS") == 1 || expand("$WEZTERM_PANE")
+let g:use_devicons = expand("$NERD_ICONS") != 0 && (
+        \ expand("$NERD_ICONS") == 1 || expand("$WEZTERM_PANE")
     \)
 
 if has("eval") && has("statusline")

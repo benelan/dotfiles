@@ -4,7 +4,7 @@ return {
   {
     dir = "~/.vim",
     priority = 420,
-    cond = vim.fn.isdirectory("~/.vim"),
+    enabled = vim.fn.isdirectory("~/.vim"),
     lazy = false,
   },
 
@@ -13,7 +13,7 @@ return {
   {
     dir = "~/.vim/pack/foo/start/vim-closer",
     lazy = false,
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
     config = function()
       -- setup files that can contain javascript which aren't included by default
       vim.api.nvim_create_autocmd("FileType", {
@@ -33,7 +33,7 @@ return {
   -- helps visualize and navigate the undo tree - see :h undo-tree
   {
     dir = "~/.vim/pack/foo/opt/undotree",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
@@ -43,7 +43,7 @@ return {
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
     event = "CursorHold",
   },
 
@@ -51,7 +51,7 @@ return {
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
     config = function()
       vim.cmd([[
         let g:surround_{char2nr('8')} = "/* \r */"
@@ -65,7 +65,7 @@ return {
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {
