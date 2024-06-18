@@ -8,6 +8,9 @@ if has xrandr && has grep; then
     if xrandr -q | grep -q 'eDP-1 connected'; then
         xrandr --output eDP-1 --mode 1920x1080 --rate 60 --primary --scale 1
     fi
+    if xrandr -q | grep -q 'DP-1 connected'; then
+        xrandr --output DP-1 --mode 2560x1440 --rate 60 --primary --scale 1
+    fi
     if xrandr -q | grep -q 'HDMI-0 connected'; then
         xrandr --output HDMI-0 --mode 2560x1440 --rate 60 --primary --scale 1
     fi
