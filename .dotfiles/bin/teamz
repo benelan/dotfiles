@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -o errexit
 
+# Draft Microsoft Teams messages from the command line.
+#
+# Copyright (c) 2024 Ben Elan <https://benelan.dev> [MIT License]
+
 CMD="$(basename "$0")"
 TEAMS_USER_LIST="${TEAMS_USER_LIST:-"$HOME/.$CMD-users"}"
 

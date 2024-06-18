@@ -1,7 +1,8 @@
 local has_res, res = pcall(require, "jamin.resources")
 
+vim.opt.mouse = ""
 vim.opt.clipboard = "unnamed"
-vim.opt.updatetime = 169
+vim.opt.updatetime = 150
 vim.opt.confirm = true
 vim.opt.virtualedit:append("block")
 vim.opt.nrformats:append("unsigned")

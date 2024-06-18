@@ -10,25 +10,25 @@
           "global",
           "all"
         ],
-        "path": "./snippets/global.json"
+        "path": "snippets/global.json"
       },
       {
         "language": [
           "html"
         ],
-        "path": "./snippets/html.json"
+        "path": "snippets/html.json"
       },
       {
         "language": [
           "javascript"
         ],
-        "path": "./snippets/javascript.json"
+        "path": "snippets/javascript.json"
       },
       {
         "language": [
           "typescriptreact"
         ],
-        "path": "./snippets/stencil.json"
+        "path": "snippets/stencil.json"
       }
     ]
   }

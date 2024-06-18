@@ -209,7 +209,7 @@ return {
         "pwa-node",
       }) do
         if not dap.adapters[adapter] then
-          require("dap").adapters[adapter] = {
+          dap.adapters[adapter] = {
             type = "server",
             host = "localhost",
             port = "${port}",
@@ -356,6 +356,7 @@ return {
       -------------------------------------------------------------------------
       {
         "rcarriga/nvim-dap-ui",
+        dependencies = { "nvim-neotest/nvim-nio" },
         keys = {
           {
             "<leader>dU",

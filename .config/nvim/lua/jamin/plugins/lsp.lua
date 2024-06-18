@@ -179,7 +179,7 @@ return {
           then
             bufmap(
               "n",
-              "gh",
+              "<leader>si",
               function()
                 vim.lsp.inlay_hint.enable(
                   not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
@@ -320,7 +320,7 @@ return {
   {
     "jose-elias-alvarez/null-ls.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+    dependencies = { "williamboman/mason.nvim" },
 
     opts = function()
       local nls = require("null-ls")
@@ -404,7 +404,7 @@ return {
   {
     "pmizio/typescript-tools.nvim",
     ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    dependencies = { "neovim/nvim-lspconfig" },
     opts = function()
       local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
       return {
@@ -422,7 +422,7 @@ return {
   {
     "luckasRanarison/tailwind-tools.nvim",
     event = "LspAttach",
-    cond = vim.fn.executable("tailwindcss-language-server") == 1
+    enabled = vim.fn.executable("tailwindcss-language-server") == 1
       and vim.tbl_contains(res.lsp_servers, "tailwindcss"),
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {},

@@ -8,4 +8,4 @@
 [ -r ~/.dotfiles/shell/exports.sh ] && . ~/.dotfiles/shell/exports.sh
 
 # Add any environment-specific stuff to ~/.local.profile (it's gitignored).
-[ -r ~/.local.profile ] && . ~/.local.profile
+[ -r ~/.profile.local ] && . ~/.profile.local

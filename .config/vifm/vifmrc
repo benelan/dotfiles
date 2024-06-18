@@ -44,10 +44,10 @@ set trash
 set trashdir=%r/.vifm_trash,$HOME/.local/share/Trash/files
 
 " This is how many directories to store in the directory history.
-set history=420
+set history=400
 
 " Maximum number of changes that can be undone.
-set undolevels=1069
+set undolevels=1000
 
 " What should be saved automatically on restarting vifm.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
@@ -406,7 +406,7 @@ filextype {*/},{.*/}
             \ {View in nautilus} nautilus %f &, 
             \ {View in default file explorer} open %f &,
 
-fileviewer {*/},{.*/} tree -aCI .git/ --gitignore --nolinks %c
+fileviewer {*/},{.*/} tree -aCI .git/ -I node_modules/ -I dist/ --gitignore --nolinks %c
 
 " Syntax highlighting in preview
 "
@@ -652,9 +652,6 @@ nnoremap ]t :tabnext<cr>:view!<cr>
 nnoremap - :qa<cr>
 
 " Devicons require a patched font (or wezterm which ships with them)
-if expand($USE_DEVICONS) != "0" &&
-    \ (expand($TMUX) != "" && system('tmux showenv | grep -c "TERM=wezterm"') > 0)
-    \ || expand($USE_DEVICONS) == "1"
-    \ || expand($TERM) == "wezterm"
+if expand($NERD_ICONS) != "0" && (expand($NERD_ICONS) == "1" || expand($WEZTERM_PANE) != "")
   source ~/.config/vifm/scripts/icons.vifm
 endif

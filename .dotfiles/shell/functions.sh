@@ -485,7 +485,7 @@ fi
 # Work                                                                  {{{
 # --------------------------------------------------------------------- {|}
 
-if [ "$USE_WORK_STUFF" = "1" ]; then
+if [ "$WORK_MACHINE" = "1" ]; then
     ## toggle a label used to run CC visual snapshots on PRs      {{{
 
     if supports gh; then

@@ -6,7 +6,7 @@ return {
   {
     "uga-rosa/cmp-dictionary",
     -- only use source if a dict file exists in the usual place
-    cond = vim.fn.filereadable("/usr/share/dict/words") == 1,
+    enabled = vim.fn.filereadable("/usr/share/dict/words") == 1,
     ft = res.filetypes.writing,
     config = function()
       local has_dict, dict = pcall(require, "cmp_dictionary")
@@ -27,18 +27,14 @@ return {
 
   -----------------------------------------------------------------------------
   -- completes git commits and github issues/pull requests
-  -- {
-  --   "petertriho/cmp-git",
-  --   enabled = false,
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   ft = { "gitcommit", "markdown", "octo" },
-  --   config = function()
-  --     require("cmp_git").setup({
-  --       filetypes = { "gitcommit", "markdown", "octo" },
-  --       github = { issues = { state = "all" }, pull_requests = { state = "all" } },
-  --     })
-  --   end,
-  -- },
+  {
+    "petertriho/cmp-git",
+    ft = { "markdown", "gitcommit", "octo" },
+    opts = {
+      filetypes = { "markdown", "gitcommit", "octo" },
+      github = { issues = { state = "all" }, pull_requests = { state = "all" } },
+    },
+  },
 
   -----------------------------------------------------------------------------
   -- completes API info from attached language servers
@@ -55,7 +51,7 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
-      { "lukas-reineke/cmp-rg", cond = vim.fn.executable("rg") == 1 },
+      { "lukas-reineke/cmp-rg", enabled = vim.fn.executable("rg") == 1 },
     },
 
     opts = function()
@@ -167,34 +163,33 @@ return {
             if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
 
-              if icon then
-                vim_item.kind = string.format(" %s  %s", icon, vim_item.kind)
-                vim_item.kind_hl_group = hl_group
-              else
-                -- use a fallback folder or file icon if the filetype doesn't exist in devicons
-                vim_item.kind = string.format(
-                  " %s  %s",
-                  vim_item.kind == "Folder" and res.icons.lsp_kind.Folder or res.icons.lsp_kind.File,
-                  vim_item.kind
-                )
+              if hl_group then vim_item.kind_hl_group = hl_group end
+
+              if vim.g.use_devicons then
+                vim_item.kind = icon and icon
+                  or (
+                    vim_item.kind == "Folder" and res.icons.lsp_kind.Folder
+                    or res.icons.lsp_kind.File
+                  )
               end
             else
+              -- colorize completion items for tailwind classes
               local has_tw, tw = pcall(require, "tailwind-tools.cmp")
+              local tw_hl_group
               if has_tw then
-                local tw_hl_group = tw.lspkind_format(entry, vim_item).kind_hl_group
+                tw_hl_group = tw.lspkind_format(entry, vim_item).kind_hl_group
                 if tw_hl_group then vim_item.kind_hl_group = tw_hl_group end
               end
 
-              vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
+              vim_item.menu_hl_group = tw_hl_group or ("CmpItemKind" .. vim_item.kind)
 
               -- use LSP kind icons for non-path completion items and specify a fallback icon
-              vim_item.kind = string.format(
-                " %s %s",
-                res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback,
-                vim_item.kind
-              )
+              if vim.g.use_devicons then
+                vim_item.kind = res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback
+              end
             end
 
+            vim_item.kind = " " .. vim_item.kind
             return vim_item
           end,
         },
@@ -297,7 +292,7 @@ return {
           [types.insertNode] = {
             active = {
               hl_mode = "combine",
-              virt_text = { { res.icons.ui.pencil, "Boolean" } },
+              virt_text = { { res.icons.ui.edit, "Boolean" } },
             },
           },
         },
@@ -401,7 +396,8 @@ return {
   -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
     "zbirenbaum/copilot.lua", -- alternative written in Lua
-    cond = vim.env.USE_COPILOT == "1",
+    cond = vim.env.COPILOT == "1"
+      or (vim.env.COPILOT ~= "0" and string.match(vim.uv.cwd() or "", vim.env.WORK) ~= nil),
     cmd = "Copilot",
     event = "InsertEnter",
 
@@ -478,9 +474,7 @@ return {
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
     "Exafunction/codeium.vim",
-    -- pinned due to: https://github.com/Exafunction/codeium.vim/issues/384
-    commit = "31dd29",
-    cond = vim.env.USE_CODEIUM == "1",
+    cond = vim.env.CODEIUM == "1" and string.match(vim.uv.cwd() or "", vim.env.WORK) == nil,
     event = "VimEnter",
     cmd = "Codeium",
 

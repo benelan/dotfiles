@@ -161,8 +161,6 @@ fi
 if supports systemctl; then
     alias sc='systemctl'
     alias scu='systemctl --user'
-    alias scdr='systemctl daemon-reload'
-    alias scdru='systemctl --user daemon-reload'
 fi
 
 # Taskwarrior {{{1
@@ -195,9 +193,12 @@ alias gx="git-mux"
 alias gxt="git-mux task"
 alias gxp="git-mux project"
 
-# Open my issues/prs in neovim - https://github.com/pwntester/octo.nvim
+# open my issues/prs in neovim with: https://github.com/pwntester/octo.nvim
 alias ghp='nvim +"Octo search is:open is:pr author:benelan sort:updated"'
 alias ghi='nvim +"Octo issue list assignee=benelan state=OPEN"'
+
+# temporary workaround for: https://github.com/cli/cli/issues/9237
+alias ghf="$PERSONAL/gh-fzf/gh-fzf"
 
 # Docker {{{1
 if supports docker; then
@@ -214,7 +215,7 @@ if supports docker; then
     alias dkprune='docker system prune -a'
 
     # docker aliases for Calcite development {{{2
-    if [ "$USE_WORK_STUFF" = "1" ]; then
+    if [ "$WORK_MACHINE" = "1" ]; then
         # I need to link these files to the current worktree
         alias cc_link_files='pushd "$(npm prefix)" >/dev/null && ln -f "$CALCITE/Dockerfile"; ln -f "$CALCITE/.marksman.toml"; ln -f "$CALCITE/calcite-components.projections.json" "./packages/calcite-components/.projections.json"; popd >/dev/null'
 

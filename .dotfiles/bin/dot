@@ -4,9 +4,11 @@
 
 # Ben Elan's dotfiles and dependency management script.
 #
+# Copyright (c) 2024 Ben Elan <https://benelan.dev> [MIT License]
+#
 # The `init` command clones the dotfiles as a bare git repo in $HOME.
 # Any conflicting dotfiles are moved to ${DOTFILES:-$HOME/.dotfiles}-backup.
-
+#
 # The `deps` command installs/updates dependencies. For usage information, see:
 #   $ dot deps -h
 #
@@ -164,8 +166,8 @@ install_language_go() {
     _has go && return
 
     # checksum will need to be updated when using a new go version
-    checksum="d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612"
-    outfile="go1.20.5.linux-amd64.tar.gz"
+    checksum="ba79d4526102575196273416239cca418a651e049c2b099f3159db85e7bade7d"
+    outfile="go1.22.4.linux-amd64.tar.gz"
     curl -Lo "$outfile" "https://go.dev/dl/$outfile"
 
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
@@ -647,9 +649,12 @@ install_script_git-extras() {
             cd "$dir" &&
             git clone https://github.com/tj/git-extras.git &>/dev/null &&
             cd git-extras &&
-            git checkout \
-                $(git describe --tags $(git rev-list --tags --max-count=1)) \
-                &>/dev/null &&
+            git checkout $(
+                git for-each-ref refs/tags \
+                    --count=1 \
+                    --sort=-taggerdate \
+                    --format='%(refname:short)'
+            ) &>/dev/null &&
             sudo make install &&
             rm -rf "$dir"
     fi
@@ -1184,24 +1189,21 @@ install_theme_wallpaper() {
     wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/gruvbox_coffee.png"
     profile="$(xdg-user-dir PICTURES)/Profiles/fry.png"
 
-    if ! [ -r "$wallpaper" ]; then
-        curl -Lo "$wallpaper" \
-            https://benelan.dev/img/wallpaper.png >/dev/null 2>&1 || true
+    # shellcheck disable=2015
+    ! [ -r "$wallpaper" ] && curl -Lo "$wallpaper" \
+        https://benelan.dev/img/wallpaper.png >/dev/null 2>&1 || true
 
-        ln -s "$wallpaper" "$current_wallpaper"
-        sudo mkdir -p /usr/share/backgrounds
-        sudo cp "$wallpaper" /usr/share/backgrounds/
-    fi
+    ln -fs "$wallpaper" "$current_wallpaper"
+    sudo mkdir -p /usr/share/backgrounds
+    sudo cp "$wallpaper" /usr/share/backgrounds/
 
-    if ! [ -r "$profile" ]; then
-        curl -Lo "$profile" \
-            https://benelan.dev/img/profile.png >/dev/null 2>&1 || true
+    # shellcheck disable=2015
+    ! [ -r "$profile" ] && curl -Lo "$profile" \
+        https://benelan.dev/img/profile.png >/dev/null 2>&1 || true
 
-        ln -s "$profile" "$(xdg-user-dir PICTURES)/Profiles/current"
-
-        [ -d /usr/share/pixmaps/faces ] &&
-            sudo cp "$profile" /usr/share/pixmaps/faces/
-    fi
+    ln -fs "$profile" "$(xdg-user-dir PICTURES)/Profiles/current"
+    [ -d /usr/share/pixmaps/faces ] &&
+        sudo cp "$profile" /usr/share/pixmaps/faces/
 
     case "$XDG_CURRENT_DESKTOP" in
         *gnome* | *GNOME*)
@@ -1241,7 +1243,8 @@ install_theme_icons() {
 
     # checkout the latest release (need to remove --depth=1 from clone)
     # git -C "$CACHE_DIR" checkout "$(
-    #     git describe --tags "$(git rev-list --tags --max-count=1)"
+    #     git for-each-ref refs/tags \
+    #         --count=1 --sort=-taggerdate --format='%(refname:short)'
     # )"
 
     # remove the old icons to prevent symlink errors
@@ -1640,16 +1643,17 @@ install_build_fzf() {
     ! [ -d "$LIB/fzf" ] && return
     cd "$LIB/fzf" || return
 
-    git fetch --all --tags --force
+    git fetch --all --tags --force --prune
     git reset --hard origin/master
     git checkout "$(
-        git describe --tags "$(git rev-list --tags --max-count=1)"
+        git for-each-ref refs/tags \
+            --count=1 \
+            --sort=-taggerdate \
+            --format='%(refname:short)'
     )"
 
-    GOFLAGS="$GOFLAGS -buildvcs=false"
-    make
-    make install
-    chmod +x "$LIB/fzf/bin/fzf"
+    # GOFLAGS="$GOFLAGS -buildvcs=false"
+    make && make install && chmod +x "$LIB/fzf/bin/fzf"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1659,13 +1663,18 @@ INSTALL_BUILD_NEOVIM_DOC="Build and install neovim editor from source"
 install_build_neovim() {
     ! [ -d "$LIB/neovim" ] && return
     cd "$LIB/neovim" || return
+    neovim_head="$(git rev-parse HEAD)"
 
     git fetch --all --tags --force
     git reset --hard origin/master
     git checkout stable
 
-    sudo make CMAKE_BUILD_TYPE=Release
-    sudo make install
+    if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then
+        sudo make CMAKE_BUILD_TYPE=Release
+        sudo make install
+    fi
+
+    unset neovim_head
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1674,21 +1683,35 @@ install_build_neovim() {
 INSTALL_BUILD_CLIPMENU_DOC="Install simple X11 clipboard manager with rofi/fzf integration"
 install_build_clipmenu() {
     if [ -d "$LIB/clipnotify" ]; then
-        git -C "$LIB/clipnotify" pull
+        git -C "$LIB/clipnotify" fetch --all
+        if git -C "$LIB/clipnotify" diff --quiet HEAD...origin/HEAD; then
+            git -C "$LIB/clipnotify" pull
+        else
+            skip_clipnotify=1
+        fi
     else
         git clone https://github.com/cdown/clipnotify.git "$LIB/clipnotify"
     fi
 
     if [ -d "$LIB/clipmenu" ]; then
-        git -C "$LIB/clipmenu" pull
+        git -C "$LIB/clipmenu" fetch --all
+        if git -C "$LIB/clipmenu" diff --quiet HEAD...origin/HEAD; then
+            git -C "$LIB/clipmenu" pull
+        else
+            skip_clipmenu=1
+        fi
     else
         git clone -b master https://github.com/cdown/clipmenu.git "$LIB/clipmenu"
     fi
 
-    make -C "$LIB/clipnotify" install PREFIX=~/.local
-    make -C "$LIB/clipmenu" install PREFIX=~/.local
+    if [ -z "$skip_clipnotify" ]; then
+        make -C "$LIB/clipnotify" install PREFIX=~/.local &&
+            rm "$LIB/clipnotify/clipnotify"
+    fi
 
-    rm "$LIB/clipnotify/clipnotify"
+    [ -n "$skip_clipmenu" ] && return
+
+    make -C "$LIB/clipmenu" install PREFIX=~/.local
 
     # replace the bin path in the service since we changed PREFIX
     sed -i "s|/usr/bin/clipmenud|/home/$USER/.local/bin/clipmenud|g" \
@@ -1702,6 +1725,8 @@ install_build_clipmenu() {
 
     systemctl --user daemon-reload
     systemctl --user enable --now clipmenud
+
+    unset skip_clipnotify skip_clipmenu
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1711,10 +1736,15 @@ install_build_clipmenu() {
 INSTALL_BUILD_TUIGREET_DOC="Install a simple greeter for the greetd login manager"
 install_build_tuigreet() {
     # trying installing greetd with apt if it's not already installed
-    ! _has greetd && ! sudo apt-get install -qqy greetd && return
+    if ! _has greetd; then
+        sudo apt-get install -qqy greetd || return
+        sudo useradd -M -G video greeter
+        sudo chmod -R go+r /etc/greetd/
+    fi
 
     if [ -d "$LIB/tuigreet" ]; then
-        if [ -n "$(git -C "$LIB/tuigreet" diff --name-only HEAD...origin/HEAD)" ]; then
+        git -C "$LIB/tuigreet/" fetch --all
+        if git -C "$LIB/tuigreet" diff --quiet HEAD...origin/HEAD; then
             git -C "$LIB/tuigreet" pull
         else
             return
@@ -1729,13 +1759,14 @@ install_build_tuigreet() {
     cargo build --release
 
     sudo mv target/release/tuigreet /usr/local/bin/tuigreet
-    sudo mkdir /var/cache/tuigreet
+    sudo mkdir -p /var/cache/tuigreet
     sudo chown greeter:greeter /var/cache/tuigreet
     sudo chmod 0755 /var/cache/tuigreet
 
     sudo systemctl daemon-reload
     sudo systemctl enable --now greetd
 
+    mkdir -p /etc/greetd
     sudo tee /etc/greetd/config.toml >/dev/null <<EOF
 [terminal]
 vt = 1
@@ -1744,6 +1775,7 @@ command = "tuigreet --asterisks --theme 'input=green;button=green' --remember-us
 user = "greeter"
 EOF
 }
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
@@ -1769,7 +1801,7 @@ ubuntu_installs() {
     install_ubuntu_taskwarrior-tui
 
     ## GUI install scripts
-    if [ "$USE_GUI_APPS" = "1" ]; then
+    if [ "$DESKTOP_MACHINE" = "1" ]; then
         install_ubuntu_apt-gui
         install_ubuntu_apt-media
         install_ubuntu_brave
@@ -1777,7 +1809,7 @@ ubuntu_installs() {
         install_ubuntu_wezterm
         install_ubuntu_vivaldi
 
-        if [ -z "$USE_WORK_STUFF" ]; then
+        if [ -z "$WORK_MACHINE" ]; then
             # install_ubuntu_docker-desktop
             install_ubuntu_protonvpn
             install_ubuntu_protonmail
@@ -1804,7 +1836,20 @@ i3_installs() {
     fi
 
     sudo mkdir -p /etc/X11/xorg.conf.d
-    sudo cp "$DOTFILES"/etc/X11/xorg.conf.d/* /etc/X11/xorg.conf.d/
+    sudo tee /etc/X11/xorg.conf.d/30-touchpad.conf >/dev/null <<EOF
+Section "InputClass"
+    Identifier "touchpad"
+    Driver "libinput"
+    MatchIsTouchpad "true"
+    Option "Tapping" "false"
+    Option "TappingDrag" "false"
+    Option "ClickMethod" "clickfinger"
+    Option "ScrollMethod" "twofinger"
+    Option "NaturalScrolling" "true"
+    Option "DisableWhileTyping" "true"
+    Option "AccelSpeed" "0.25"
+EndSection
+EOF
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2068,8 +2113,9 @@ main() {
         # prevent usage of `git clean` and 'git clear' (from git-extras)
         clea*) echo "Don't delete your home directory, dumbass" >&2 && exit 1 ;;
 
-        # override my 'all' git alias to not add untracked files
+        # override my git aliases
         all) _dot add --update ;;
+        rh) _dot stash push -m "RESET" ;;
 
         # all other commands are passed directly to git
         *) _dot "$@" ;;

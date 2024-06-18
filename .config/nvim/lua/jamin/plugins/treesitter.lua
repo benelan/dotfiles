@@ -7,15 +7,7 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = { { "<leader><Tab>", "<CMD>TSJToggle<CR>", desc = "SplitJoin" } },
     cmd = "TSJToggle",
-    opts = { use_default_keymaps = false, max_join_length = 420 },
-  },
-
-  -----------------------------------------------------------------------------
-  -- auto pair tags in html/jsx/vue/etc
-  {
-    "windwp/nvim-ts-autotag",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    ft = { "astro", "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml" },
+    opts = { use_default_keymaps = false, max_join_length = 500 },
   },
 
   -----------------------------------------------------------------------------
@@ -24,12 +16,15 @@ return {
 
   -----------------------------------------------------------------------------
   -- set commentstring based on treesitter node
-  {"folke/ts-comments.nvim", event = "VeryLazy", opts = {}},
+  { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
 
   -----------------------------------------------------------------------------
   -- shows the current scope
   {
     "nvim-treesitter/nvim-treesitter-context",
+    -- Pinned because the subsequent commit displays virtual text on the context and it doesn't get
+    -- cleared when the diagnostic is resolved. Scrolling up to the context line does clear it
+    commit = "813170c8ef6f5caa5c3f8b6d91e84ed6a206cc9d",
     lazy = true,
     opts = {
       multiline_threshold = 1,
@@ -47,12 +42,12 @@ return {
 
     keys = {
       {
-        "<leader>T",
+        "<leader>C",
         function() require("treesitter-context").go_to_context() end,
         desc = "Treesitter context",
       },
       {
-        "<leader>stc",
+        "<leader>sC",
         function() require("treesitter-context").toggle() end,
         desc = "Toggle treesitter context",
       },
@@ -100,7 +95,7 @@ return {
         highlight = {
           enable = true,
           disable = function(lang, buf) ---@diagnostic disable-line: unused-local
-            local max_filesize = 420 * 1024 -- 420 KB
+            local max_filesize = 500 * 1024 -- 500 KB
             local bufname = vim.api.nvim_buf_get_name(buf)
             local ok, stats = pcall(vim.uv.fs_stat, bufname)
             if ok and stats and stats.size > max_filesize then return true end

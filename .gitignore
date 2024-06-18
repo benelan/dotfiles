@@ -8,6 +8,7 @@
 .config/mimeapps.list
 .config/vifm/vifminfo.json
 .config/wezterm/ssh.lua
+.dbus
 .deno
 .docker
 .dotfiles/cache/*
@@ -15,8 +16,10 @@
 .gnupg
 .icons
 .local.*
+.local/
 .lua-rocks
 .mozilla
+.npm
 .pki
 .rustup
 .ssh

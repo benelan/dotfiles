@@ -1,23 +1,24 @@
 version: "1"
 git_protocol: ssh
-# pager: cat
 aliases:
   w: fzf workflow
   v: fzf release
   R: fzf repo
   g: fzf gist
+  s: fzf search
+  code: fzf search code
 
   r: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       --bind='alt-e:execute(gh run view --log-failed {-1})'
     " gh fzf run $*
 
-  m: |
-    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
-      --bind='alt-bspace:execute(
-        gh api --silent --method DELETE /repos/{owner}/{repo}/milestones/{-1}
-      )+reload(eval \"\$FZF_DEFAULT_COMMAND\")'
-    " gh fzf milestone
+  # m: |
+  #   !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+  #     --bind='alt-bspace:execute(
+  #       gh api --silent --method DELETE /repos/{owner}/{repo}/milestones/{-1}
+  #     )+reload(eval \"\$FZF_DEFAULT_COMMAND\")'
+  #   " gh fzf milestone
 
   i: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
@@ -39,14 +40,14 @@ aliases:
       --bind='alt-v:execute(gh pr edit {1} --add-label \"pr ready for visual snapshots\" --remove-label \"pr ready for visual snapshots\")+refresh-preview'
       --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
       --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
-      --bind='alt--:execute(gh pr review --request-changes {1})+refresh-preview'
+      --bind='alt-_:execute(gh pr review --request-changes {1})+refresh-preview'
       " gh fzf pr $*
 
-  itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i"
-  ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p"
+  itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i $*"
+  ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p $*"
 
-  ime: i --assignee @me
-  pme: p --assignee @me
+  ime: i --assignee @me $*
+  pme: p --assignee @me $*
 
   pcomment: pr comment --editor
   icomment: issue comment --editor
@@ -61,3 +62,9 @@ aliases:
         [yY]*) gh pr diff --web $1 ;;
       esac
     fi
+
+  dl: '!GH_REPO="${3:-$GH_REPO}" gh api -H "accept: application/vnd.github.v3.raw" "repos/{owner}/{repo}/contents/$1" > "${2:-$1}"'
+
+  # https://github.com/meiji163/gh-notify
+  n: |
+    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --no-hscroll" gh notify "$@"

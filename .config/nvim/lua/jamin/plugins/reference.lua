@@ -57,11 +57,7 @@ return {
   {
     "luckasRanarison/nvim-devdocs",
     build = { ":DevdocsFetch", ":DevdocsUpdateAll" },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
 
     cmd = {
       "DevdocsFetch",
@@ -139,7 +135,8 @@ return {
   {
     "robitx/gp.nvim",
     cond = vim.fn.filereadable(vim.env.DOTFILES .. "/cache/openai.txt.gpg") == 1
-      and vim.env.USE_COPILOT ~= "1",
+      and vim.env.COPILOT ~= "1"
+      and string.match(vim.uv.cwd() or "", vim.env.WORK) == nil,
     cmd = { "GpAgent", "GpChatFinder", "GpChatNew", "GpChatPaste", "GpChatToggle" },
 
     --stylua: ignore
@@ -238,9 +235,10 @@ return {
   -----------------------------------------------------------------------------
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    cond = vim.env.USE_COPILOT == "1",
+    cond = vim.env.COPILOT == "1"
+      or (vim.env.COPILOT ~= "0" and string.match(vim.uv.cwd() or "", vim.env.WORK) ~= nil),
     branch = "canary",
-    dependencies = { "zbirenbaum/copilot.lua", "nvim-lua/plenary.nvim" },
+    dependencies = { "zbirenbaum/copilot.lua" },
     opts = {
       show_help = false,
       mappings = {

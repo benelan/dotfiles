@@ -26,16 +26,19 @@ order += "ethernet _first_"
 order += "volume master"
 order += "battery all"
 
+# Use a cronjob to update /tmp/weather with the current data via this script:
 # https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/weather
 #
-# The /tmp file is updated via the cronjob below. The following env vars need
-# to be set in your shell startup scripts before any interactivity checks:
+# */20 * * * * bash -l -c 'weather info >/tmp/weather 2>/dev/null'
+#
+# Set these env vars in a shell login script before any interactivity checks:
 #
 # export PATH="<weather>:$PATH"     # alternatively download it to ~/.local/bin
 # export NERD_FONTS=1               # optional, uses UTF8 pictograms by default
 # export OPENWEATHER_API_KEY="<your-key>"
 #
-# */20 * * * * bash -l -c 'weather info >/tmp/weather 2>/dev/null'
+# Use wttr as a less accurate source that doesn't require auth, for example:
+# curl --silent --compressed --max-time 10 --url "https://wttr.in/?format=%C+%t+(%h,+%w)" >/tmp/weather 
 read_file WEATHER {
     path = "/tmp/weather"
     format = "%content"

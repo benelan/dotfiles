@@ -3,12 +3,10 @@ local M = {}
 M.filetypes = {
   excluded = {
     "-",
-    "Outline",
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
     "Trouble",
-    "chatgpt-input",
     "checkhealth",
     "cmp_menu",
     "copilot-chat",
@@ -247,11 +245,14 @@ M.path = {
   },
 }
 
-local i = function(icon, backup) return vim.g.use_devicons and icon or backup or "" end
+M.i = function(icon, backup)
+  if vim.g.use_devicons then return icon end
+  return backup or ""
+end
 
 M.icons = {
   ui = {
-    docs = i(" ", "🖹 "),
+    docs = M.i(" ", "🖹 "),
     -- utf8 icons don't need fallbacks
     prompt = "❱ ",
     select = "➤  ",
@@ -281,93 +282,104 @@ M.icons = {
     fill_shade = "░",
     fill_solid = "█",
     speech_bubble = "🗩 ",
-    pencil = "🖉 ",
+    user = "🯅", -- 🏄︎🏂︎ 🛉 🯅 🯆 🯈 🯇 🮲🮳👽︎
+    storage = "⛁ ", -- 🗃 📚︎ 📟︎ ⛁ ⛃
+    network = "🖧 ", -- 💻︎
+    package = "📦︎",
+    edit = "🖉 ",
+    security = "🛡",
+    settings = "🛠",
+    pay = "💰︎",
     pin = "🖈 ",
     clock = "⏲ ",
-    bell = "🕭 ",
-    map = "🗺 ",
+    alert = "🕭 ",
+    sleep = "🌜︎",
+    awake = "⛾ ",
+    search = "🔍︎",
     key = "🗝 ",
+    globe = "🌎︎",
+    map = "🗺 ",
   },
   lsp_kind = {
-    Array = i(" "),
-    Boolean = i(" "), -- 󰨙 ◩
-    Class = i(" "), --     
-    Codeium = i("󰘦 "),
-    Color = i(" "),
-    Comment = i(" "),
-    Control = i(" "),
-    Component = i(" "),
-    Conditional = i(" "),
-    Constant = i("󰭸 "),
-    Constructor = i(" "), -- 
-    Copilot = i(" "), --   
-    Enum = i(" "),
-    EnumMember = i(" "),
-    Error = i("󰛉 "), -- 
-    Event = i(" "),
-    Field = i("󰓽 "), -- 
-    File = i(" "),
-    Folder = i(" "),
-    Fragment = i(" "),
-    Function = i(" "), -- 󰡱
-    Interface = i(" "), -- 
-    Key = i("󰷖 "), -- 󰌋   🗝
-    Keyword = i(" "), -- 
-    Macro = i(" "),
-    TypeAlias = i(" "),
-    Method = i(" "),
-    StaticMethod = i(" "),
-    Module = i(" "), -- 󰶮
-    Namespace = i("󰦮 "), --   
-    Null = i("󰟢 "),
-    Number = i(" "),
-    Object = i("󰅩 "),
-    Operator = i(" "),
-    Package = i(" "), -- 
-    Property = i("󰓽 "), -- 
-    Reference = i(" "), -- 
-    Snippet = i(" "),
-    Spell = i("󰓆 "),
-    String = i("󱀍 "), --   
-    Struct = i(" "),
-    Text = i("󰈍 "), -- 󰦨
-    TypeParameter = i(" "),
-    Parameter = i(" "),
-    Unit = i(" "),
-    Value = i(" "), -- 󰠱
-    Variable = i(" "),
-    Fallback = i(" "), -- 󰒅  󰒉
+    Array = M.i(" "),
+    Boolean = M.i(" "), -- 󰨙 ◩
+    Class = M.i(" "), --     
+    Codeium = M.i("󰘦 "),
+    Color = M.i(" "),
+    Comment = M.i(" "),
+    Control = M.i(" "),
+    Component = M.i(" "),
+    Conditional = M.i(" "),
+    Constant = M.i("󰭸 "),
+    Constructor = M.i(" "), -- 
+    Copilot = M.i(" "), --   
+    Enum = M.i(" "),
+    EnumMember = M.i(" "),
+    Error = M.i("󰛉 "), -- 
+    Event = M.i(" "),
+    Field = M.i("󰓽 "), -- 
+    File = M.i(" "),
+    Folder = M.i(" "),
+    Fragment = M.i(" "),
+    Function = M.i(" "), -- 󰡱
+    Interface = M.i(" "), -- 
+    Key = M.i("󰷖 "), -- 󰌋   🗝
+    Keyword = M.i(" "), -- 
+    Macro = M.i(" "),
+    TypeAlias = M.i(" "),
+    Method = M.i(" "),
+    StaticMethod = M.i(" "),
+    Module = M.i(" "), -- 󰶮
+    Namespace = M.i("󰦮 "), --   
+    Null = M.i("󰟢 "),
+    Number = M.i(" "),
+    Object = M.i("󰅩 "),
+    Operator = M.i(" "),
+    Package = M.i(" "), -- 
+    Property = M.i("󰓽 "), -- 
+    Reference = M.i(" "), -- 
+    Snippet = M.i("✀ "), -- ✀  
+    Spell = M.i("󰓆 "),
+    String = M.i("󱀍 "), --   
+    Struct = M.i(" "),
+    Text = M.i("󰈍 "), -- 󰦨
+    TypeParameter = M.i(" "),
+    Parameter = M.i(" "),
+    Unit = M.i(" "),
+    Value = M.i(" "), -- 󰠱
+    Variable = M.i(" "),
+    Fallback = M.i(" "), -- 󰒅  󰒉
   },
   diagnostics = {
-    [vim.diagnostic.severity.ERROR] = i("󰅝 ", "E"),
-    [vim.diagnostic.severity.WARN] = i("󰀪 ", "W"),
-    [vim.diagnostic.severity.INFO] = i("󰋽 ", "I"),
-    [vim.diagnostic.severity.HINT] = i("󰰀 ", "H"),
+    [vim.diagnostic.severity.ERROR] = M.i("󰅝 ", "E"),
+    [vim.diagnostic.severity.WARN] = M.i("󰀪 ", "W"),
+    [vim.diagnostic.severity.INFO] = M.i("󰋽 ", "I"),
+    [vim.diagnostic.severity.HINT] = M.i("󰰀 ", "H"),
   },
   debug = {
-    breakpoint = i("󰆤 ", "B"),
-    breakpoint_condition = i("󱄶 ", "C"),
-    breakpoint_rejected = i("󰽅 ", "R"),
-    logpoint = i("󰆣 ", "L"),
-    stopped = i("󰿅 ", "S"),
+    breakpoint = M.i("󰆤 ", "B"),
+    breakpoint_condition = M.i("󱄶 ", "C"),
+    breakpoint_rejected = M.i("󰽅 ", "R"),
+    logpoint = M.i("󰆣 ", "L"),
+    stopped = M.i("󰿅 ", "S"),
   },
   git = {
     status = "▎",
-    branch = i(" "),
-    added = i("󰜄 ", "+"),
-    changed = i("󱗝 ", "∗"),
-    removed = i("󰛲 ", "‒"),
+    branch = M.i(" "), -- ⛕  ⛙
+    added = M.i("󰜄 ", "+"),
+    changed = M.i("󱗝 ", "∗"),
+    removed = M.i("󰛲 ", "‒"),
   },
   progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-  border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
+  border = "rounded", -- M.i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
 }
 
 M.icons.test = {
-  passed = i("󰗡 ", M.icons.ui.checkmark),
-  running = i("󰁚 ", M.icons.ui.play),
-  skipped = i("󰍷 ", M.icons.ui.skip),
-  failed = i("󰅚 ", M.icons.ui.x),
-  unknown = i("󰘥 ", M.icons.ui.question_mark),
+  passed = M.i("󰗡 ", M.icons.ui.checkmark),
+  running = M.i("󰁚 ", M.icons.ui.play),
+  skipped = M.i("󰍷 ", M.icons.ui.skip),
+  failed = M.i("󰅚 ", M.icons.ui.x),
+  unknown = M.i("󰘥 ", M.icons.ui.question_mark),
   running_animated = M.icons.progress,
 }
 

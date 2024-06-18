@@ -13,10 +13,10 @@ set colored-completion-prefix on
 set colored-stats on
 set completion-ignore-case on
 set completion-map-case on
-set completion-query-items 169
+set completion-query-items 150
 set enable-bracketed-paste on
 set history-preserve-point on
-set keyseq-timeout 69
+set keyseq-timeout 70
 set mark-symlinked-directories on
 set match-hidden-files off
 set menu-complete-display-prefix on

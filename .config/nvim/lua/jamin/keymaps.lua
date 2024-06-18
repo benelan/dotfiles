@@ -83,7 +83,7 @@ keymap(
 )
 
 -- toggle treesitter highlighting
-keymap("n", "<leader>sth", function()
+keymap("n", "<leader>sh", function()
   if vim.b.ts_highlight then
     vim.treesitter.stop()
     print("treesitter highlighting stopped")
@@ -99,8 +99,8 @@ if vim.g.vscode then
   keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
   keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
 
-  keymap("n", "gr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
-  keymap("n", "gR", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
+  keymap("n", "grr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
+  keymap("n", "grn", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
 
   keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
 end

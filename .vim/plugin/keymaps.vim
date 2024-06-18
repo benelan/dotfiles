@@ -1,7 +1,7 @@
 if exists('loaded_jamin_keymaps') | finish | endif
 let loaded_jamin_keymaps = 1
 
-"" general keymaps {{{1
+"" GENERAL {{{1
 nnoremap <Backspace> <C-^>
 
 nnoremap n nzzzv
@@ -11,6 +11,12 @@ nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
 tnoremap <Esc><Esc> <C-\><C-n>
+
+cnoremap <C-a> <Home>
+cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
+cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
+
+inoremap <C-c> <Esc>`^
 
 " Use the repeat operator on a visual selection.
 vnoremap . :normal .<CR>
@@ -25,6 +31,18 @@ nnoremap & :&&<CR>
 
 " When joining, do the right thing to join up function definitions
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
+
+" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
+fu! EQ(varname)
+    exe "norm ". a:varname
+endfu
+com -nargs=1 -range -complete=var EQ <line1>,<line2>call EQ(<args>)
+
+let _macro_uppercase_word = 'gUw'
+
+nnoremap <leader>eq :EQ _macro_
+vnoremap <leader>eq :EQ _macro_
+nnoremap <leader>es :<C-R>=_sub_
 
 " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
 nnoremap <silent> <leader>- <CMD>execute (
@@ -45,7 +63,7 @@ nmap <silent> <leader>F mtgqBg`tzz:delmarks t<CR>
 " Format selected text maintaining the selection.
 xmap <leader>F gq`[v`]V
 
-"" insert, command, and operator keymaps {{{1
+"" TEXT OBJECTS {{{1
 " Use last changed or yanked text as an object
 onoremap gv :<C-U>execute "normal! `[v`]"<CR>
 
@@ -68,15 +86,7 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
     execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
 endfor
 
-" Add a line above/below the cursor from insert mode
-cnoremap <C-a> <Home>
-
-cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
-cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
-
-inoremap <C-c> <Esc>`^
-
-" lists - next/prev {{{1
+"" NAVIGATE LISTS {{{1
 " Argument list
 nnoremap [a :previous<CR>
 nnoremap ]a :next<CR>
@@ -107,7 +117,7 @@ nnoremap ]t :tabnext<CR>
 nnoremap [T :tlast<CR>
 nnoremap ]T :tfirst<CR>
 
-" buffers, tabs, and windows {{{1
+"" BUFFERS, TABS, AND WINDOWS {{{1
 " close buffer
 nnoremap <leader><Delete> :bdelete<CR>
 
@@ -131,7 +141,7 @@ nnoremap <C-Down> :resize -5<CR>
 nnoremap <C-Up> :resize +5<CR>
 nnoremap <C-Right> :vertical resize +5<CR>
 
-" toggle options {{{2
+"" TOGGLE OPTIONS {{{1
 nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
 nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
 nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
@@ -155,7 +165,7 @@ nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
             \ : "unnamed"
     \ )<CR><CMD>set clipboard?<CR>
 
-"" system clipboard {{{1
+"" SYSTEM CLIPBOARD {{{1
 for char in [ 'y', 'p', 'P' ]
     execute 'nnoremap <leader>' . char . ' "+' . char
     execute 'vnoremap <leader>' . char . ' "+' . char
@@ -171,50 +181,49 @@ nnoremap R "_R
 nnoremap s "_s
 nnoremap S "_S
 
-"" spelling {{{1
+"" SPELLING {{{1
 " fix the next/previous misspelled word
-nnoremap [S [s1z=
-nnoremap ]S ]s1z=
+nnoremap [S <CMD>set spell<CR>[s1z=
+nnoremap ]S <CMD>set spell<CR>]s1z=
 
 " fix the misspelled word under the cursor
-nnoremap <M-z> 1z=
+nnoremap <M-z> <CMD>set spell<CR>1z=
 
 " fix the previous misspelled word w/o moving cursor
-inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
+inoremap <M-z> <CMD>set spell<CR><C-g>u<Esc>[s1z=`]a<C-g>u
 
-"" clear search highlights and reset syntax {{{1
+"" RESET UI {{{1
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 vnoremap <leader><C-l>  <Esc>:<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>gv
 inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
-"" ex commands (vimgrep, search/replace, etc) {{{1
+"" EX COMMANDS {{{1
 " start ex command for vimgrep on word under cursor
-nnoremap <leader>wf :<C-U>vimgrep /\<<C-r><C-w>\>>\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>wf :<C-U>vimgrep /\<<C-r><C-w>\>\c/j **<S-Left><S-Left><Right>
 
 " replace word under cursor in whole buffer
 nnoremap <leader>wr :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
-"" plug keymaps {{{1
+"" PLUG KEYMAPS {{{1
 nnoremap g: <Plug>(ColonOperator)
 nnoremap gs <Plug>(SubstituteOperator)
 vnoremap gs <Plug>(SubstituteOperator)
-nnoremap gx <Plug>SystemOpen
-nnoremap g. <Plug>SystemOpenCWD
+nnoremap gx <Plug>(SystemOpen)
+nnoremap g. <Plug>(SystemOpenCWD)
 
-" git difftool keymaps for staging hunks {{{1
+"" GIT DIFFTOOL {{{1
 nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
 vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
 nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
 vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
 
-" cycle through git three way merge conflicts in visual mode {{{1
-nnoremap <expr> <Tab> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
-nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
+"" GIT MERGETOOL {{{1
+" Cycle through and select merge conflicts. I've found diffput/diffget don't
+" always work well in normal mode for resolving merge conflicts because
+" sometimes there are multiple hunks within the conflict region. This results
+" in an incomplete resolution, which often leaves behind conflict markers.
+" Using diffget/diffput after selecting the conflict resolves this issue.
+nnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
 xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
+nnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
 xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
-
-xnoremap <expr> <C-j> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-j>'
-xnoremap <expr> <C-k> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-k>'
-
-xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
-xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'

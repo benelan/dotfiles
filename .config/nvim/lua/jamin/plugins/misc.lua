@@ -5,8 +5,8 @@ return {
   -- keymaps/autocmds/utils/etc. shared with the vim config
   {
     dir = "~/.vim",
-    priority = 420,
-    cond = vim.fn.isdirectory("~/.vim"),
+    priority = 90,
+    enabled = vim.fn.isdirectory("~/.vim"),
     lazy = false,
   },
 
@@ -14,7 +14,7 @@ return {
   -- adds closing brackets only when pressing enter
   {
     dir = "~/.vim/pack/foo/start/vim-closer",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
     config = function()
       -- setup files that can contain javascript which aren't included by default
       vim.api.nvim_create_autocmd("FileType", {
@@ -34,7 +34,7 @@ return {
   -- helps visualize and navigate the undo tree - see :h undo-tree
   {
     dir = "~/.vim/pack/foo/opt/undotree",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
@@ -44,7 +44,7 @@ return {
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
     event = "CursorHold",
   },
 
@@ -52,7 +52,7 @@ return {
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
     config = function()
       vim.cmd([[
         let g:surround_{char2nr('8')} = "/* \r */"
@@ -66,7 +66,7 @@ return {
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {
@@ -80,6 +80,22 @@ return {
   { "jamessan/vim-gnupg" },
 
   -----------------------------------------------------------------------------
+  -- programming wordlists for vim's builtin spellchecker
+  {
+    "psliwka/vim-dirtytalk",
+    event = "VeryLazy",
+    build = {
+      ":DirtytalkUpdate",
+      string.format(
+        "cp -f %s/site/spell/programming.utf-8.spl %s/spell",
+        vim.fn.stdpath("data"),
+        vim.fn.stdpath("config")
+      ),
+    },
+    config = function() vim.opt.spelllang:append("programming") end,
+  },
+
+  -----------------------------------------------------------------------------
   -- plugin manager
   {
     "folke/lazy.nvim",
@@ -87,35 +103,8 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- embed neovim in the browser
-  {
-    "glacambre/firenvim",
-    lazy = not vim.g.started_by_firenvim,
-    build = function() vim.fn["firenvim#install"](0) end,
-
-    init = function()
-      vim.g.firenvim_config = {
-        globalSettings = { cmdlineTimeout = 420 },
-        localSettings = { [".*"] = { takeover = "never" } },
-      }
-    end,
-
-    config = function()
-      -- settings for neovim embedded in the browser
-      if vim.g.started_by_firenvim then
-        keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>")
-        keymap("n", "<C-z>", "<Cmd>call firenvim#hide_frame()<CR>")
-
-        -- turn off some UI options
-        vim.opt.showtabline = 0
-        vim.opt.laststatus = 0
-        vim.opt.showmode = false
-        vim.opt.ruler = false
-        vim.opt.fillchars:append("eob: ")
-        vim.opt.shortmess:append("aoW")
-      end
-    end,
-  },
+  -- lua utils
+  { "nvim-lua/plenary.nvim", lazy = true },
 
   -----------------------------------------------------------------------------
   -- quickfix/location list helper
@@ -159,7 +148,9 @@ return {
       extensions = { quickfix = {} },
       buf_filter = function(bufnr)
         local ft = vim.bo[bufnr].filetype
-        if vim.tbl_contains({ "qf", "help", "man", "netrw", "octo", "fugitive" }, ft) then return true end
+        if vim.tbl_contains({ "qf", "help", "man", "netrw", "octo", "fugitive" }, ft) then
+          return true
+        end
         if vim.tbl_contains(res.filetypes.excluded, ft) then return false end
         return require("resession").default_buf_filter(bufnr)
       end,

@@ -28,7 +28,7 @@ done
 unset file
 
 # Add any environment-specific stuff to ~/.local.bashrc (it's gitignored).
-[ -r ~/.local.bashrc ] && . ~/.local.bashrc
+[ -r ~/.bashrc.local. ] && . ~/.bashrc.local
 
 # Setup miscellaneous tools and integrations {{{1
 # setup broot shell integration so `cd` works

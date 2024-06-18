@@ -4,7 +4,7 @@ return {
   -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
   {
     dir = vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim",
-    cond = vim.fn.executable("vifm") == 1
+    enabled = vim.fn.executable("vifm") == 1
       and vim.fn.isdirectory(vim.env.HOME .. "/.vim/pack/foo/opt/vifm.vim"),
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
@@ -32,6 +32,7 @@ return {
       { "<leader>as", "<CMD>Estyle<CR>", desc = "Related: style (projectionist)" },
       { "<leader>at", "<CMD>Etest<CR>", desc = "Related: test (projectionist)" },
       { "<leader>ar", "<CMD>Erun<CR>", desc = "Related: run (projectionist)" },
+      { "<leader>au", "<CMD>Eutil<CR>", desc = "Related: util (projectionist)" },
       { "<leader>a<CR>", "<CMD>Console<CR>", desc = "Console (projectionist)" },
     },
     init = function()
@@ -59,15 +60,11 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  { "chentoast/marks.nvim", event = "VeryLazy", opts = {} },
-
-  -----------------------------------------------------------------------------
   -- fuzzy finding
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
-      "nvim-lua/plenary.nvim",
       {
         "nvim-telescope/telescope-fzf-native.nvim", -- fzf syntax for telescope
         build = "make",
@@ -198,7 +195,7 @@ return {
           entry_prefix = string.rep(" ", 4),
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",
-          history = { limit = 420 },
+          history = { limit = 400 },
           dynamic_preview_title = true,
           mappings = { i = mappings, n = mappings },
           file_ignore_patterns = { "%.git/", "node_modules/", "dist/", "build/" },
@@ -249,7 +246,6 @@ return {
     branch = "harpoon2",
     -- pinned commit due to: https://github.com/ThePrimeagen/harpoon/issues/577
     commit = "e76cb03",
-    dependencies = { "nvim-lua/plenary.nvim" },
 
     opts = {
       settings = {

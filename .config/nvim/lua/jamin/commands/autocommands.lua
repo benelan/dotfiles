@@ -4,7 +4,7 @@ local res = require("jamin.resources")
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),
-  callback = function() vim.highlight.on_yank({ higroup = "Visual", timeout = 269 }) end,
+  callback = function() vim.highlight.on_yank({ higroup = "Visual", timeout = 250 }) end,
 })
 
 -------------------------------------------------------------------------------
@@ -101,11 +101,15 @@ vim.api.nvim_create_autocmd("VimEnter", {
   group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
   desc = "Special dotfiles setup",
   callback = function()
-    local ok, inside_dev = pcall(vim.startswith, vim.uv.cwd(), vim.fs.normalize("~/dev"))
+    local cwd = vim.uv.cwd()
+    local home = vim.uv.os_homedir()
 
-    if ok and not inside_dev then
-      vim.env.GIT_WORK_TREE = vim.env.HOME
-      vim.env.GIT_DIR = vim.env.HOME .. "/.git"
+    local home_ok, inside_home = pcall(vim.startswith, cwd, home)
+    local dev_ok, inside_dev = pcall(vim.startswith, cwd, vim.fs.normalize(vim.env.DEV))
+
+    if home_ok and inside_home and dev_ok and not inside_dev then
+      vim.env.GIT_WORK_TREE = home
+      vim.env.GIT_DIR = home .. "/.git"
       return
     end
   end,
@@ -114,7 +118,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -------------------------------------------------------------------------------
 -- use listchars like an indentline plugin
 vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = vim.api.nvim_create_augroup("jamin_ghetto_indentlines", {}),
+  group = vim.api.nvim_create_augroup("jamin_janky_indentlines", {}),
   callback = function()
     vim.opt.listchars = {
       tab = "|->",

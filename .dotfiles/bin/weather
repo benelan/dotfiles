@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 set -o errexit
 
+# Copyright (c) 2024 Ben Elan <https://benelan.dev> [MIT License]
+#
 # This script is designed for use in widgets, status bars or other UI
 # For example: polybar, conky, eww, rofi, shell prompt, etc.
-
+#
 # If WEATHER_CACHE's modified timestamp is older than the interval (in minutes),
 # the data will be re-fetched before the subcommand is executed.
 # Set this to "-1" to prevent automatically re-fetching the data. You can run
 # `weather refresh` from a crontab or systemd timer instead.
 # NOTE: It takes OpenWeather at minimum 10 minutes to update their data
 WEATHER_REFRESH_INTERVAL="${WEATHER_REFRESH_INTERVAL:-10}"
-WEATHER_CACHE_FILE="${WEATHER_CACHE:-"$DOTFILES/cache/weather.json"}"
-mkdir -p "$(dirname "$WEATHER_CACHE_FILE")"
+WEATHER_CACHE="${WEATHER_CACHE:-"${TMPDIR:-/tmp}/weather.json"}"
+mkdir -p "$(dirname "$WEATHER_CACHE")"
 
 help() {
     if [ -n "$*" ]; then
@@ -44,9 +46,9 @@ EOF
 }
 
 get_prop() {
-    value="$(jq -r "$1" <"$WEATHER_CACHE_FILE")"
+    value="$(jq -r "$1" <"$WEATHER_CACHE")"
     if [ "$value" = "null" ]; then
-        help "jq unable to find property in $WEATHER_CACHE_FILE"
+        help "jq unable to find property in $WEATHER_CACHE"
     fi
     echo "$value"
 }
@@ -70,7 +72,7 @@ get_data() {
         lon="$(echo "$loc" | cut -d, -f 2)"
     fi
 
-    curl -Lso "$WEATHER_CACHE_FILE" \
+    curl -Lso "$WEATHER_CACHE" \
         "https://api.openweathermap.org/data/2.5/weather?cnt=5&lang=en&units=imperial&lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}"
 }
 
@@ -132,7 +134,10 @@ get_icon() {
 }
 
 info() {
-    printf "%s %s %s" "$(get_icon)" "$(get_prop '.main.temp')°F" "($(get_prop '.name'))"
+    printf "%s %0.1f°F (%s)" \
+        "$(get_icon)" \
+        "$(get_prop '.main.temp')" \
+        "$(get_prop '.weather[0].description')"
 }
 
 waybar_json() {
@@ -156,7 +161,7 @@ main() {
     if [ "$WEATHER_REFRESH_INTERVAL" != "-1" ]; then
         # re-fetch data if the modified time isn't less than the refresh interval
         # use '-/or' instead of '+/and' because it fails if the file doesn't exist
-        [ "$(find "$WEATHER_CACHE_FILE" -mmin "-$WEATHER_REFRESH_INTERVAL" \
+        [ "$(find "$WEATHER_CACHE" -mmin "-$WEATHER_REFRESH_INTERVAL" \
             2>/dev/null)" ] || get_data
     fi
 

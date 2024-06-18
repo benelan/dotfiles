@@ -3,35 +3,35 @@ local res = require("jamin.resources")
 return {
   {
     dir = "~/.vim/pack/foo/start/gruvbox-material",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/start/gruvbox-material"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/gruvbox-material"),
     lazy = false,
-    priority = 42069,
+    priority = 100,
 
     config = function()
-      vim.g.gruvbox_material_background = "soft"
+      if vim.g.neovide or vim.g.started_by_firenvim then
+        vim.g.gruvbox_material_dim_inactive_windows = 1
+      else
+        vim.g.gruvbox_material_transparent_background = 1
+        vim.g.gruvbox_material_background = "soft"
+      end
+
       vim.g.gruvbox_material_foreground = "original"
       vim.g.gruvbox_material_ui_contrast = "high"
-      vim.g.gruvbox_material_diagnostic_virtual_text = "highlghted"
       vim.g.gruvbox_material_float_style = "dim"
-      vim.g.gruvbox_material_current_word = "bold"
-      vim.g.gruvbox_material_statusline_style = "original"
+      -- vim.g.gruvbox_material_inlay_hints_background = "dimmed"
+      vim.g.gruvbox_material_diagnostic_virtual_text = "highlighted" -- "grey", "colored"
 
       vim.g.gruvbox_material_better_performance = 1
-      vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_enable_bold = 1
-      vim.g.gruvbox_material_diagnostic_text_highlight = 0
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_disable_italic_comment = 1
       vim.g.gruvbox_material_disable_terminal_colors = 1
-      -- vim.g.gruvbox_material_dim_inactive_windows = 1
-
-      if not vim.g.neovide and not vim.g.started_by_firenvim then
-        vim.g.gruvbox_material_transparent_background = 1
-      end
 
       local gruvbox_custom_colors = function()
         local alt_palette = vim.fn["gruvbox_material#get_palette"]("hard", "material", { x = {} })
         local palette = vim.fn["gruvbox_material#get_palette"](
-          vim.g.gruvbox_material_background,
-          vim.g.gruvbox_material_foreground,
+          vim.g.gruvbox_material_background or "medium",
+          vim.g.gruvbox_material_foreground or "material",
           {
             bg_visual_yellow = { "#7a380b", "208" },
             bg_orange = { "#5A3B0A", "130" },
@@ -79,6 +79,10 @@ return {
       vim.cmd.colorscheme("gruvbox-material")
     end,
   },
+
+  -----------------------------------------------------------------------------
+  -- syntax for log files
+  { "MTDL9/vim-log-highlighting", ft = { "log" } },
 
   -----------------------------------------------------------------------------
   -- filetype icons
@@ -148,11 +152,15 @@ return {
     "folke/trouble.nvim",
     cmd = "Trouble",
     keys = {
-      { "<leader>xs", "<CMD>Trouble symbols toggle<CR>", desc = "Symbols (trouble)" },
       { "<leader>xL", "<CMD>Trouble loclist toggle<CR>", desc = "Location list (trouble)" },
       { "<leader>xQ", "<CMD>Trouble qflist toggle<CR>", desc = "Quickfix list (trouble)" },
+      { "<leader>xs", "<CMD>Trouble symbols toggle<CR>", desc = "Symbols (trouble)" },
       { "<leader>xd", "<CMD>Trouble diagnostics toggle<CR>", desc = "Diagnostics (trouble)" },
-      { "<leader>xx", "<CMD>Trouble mydiag toggle", desc = "Diagnostics w/ less noise (trouble)" },
+      {
+        "<leader>xx",
+        "<CMD>Trouble mydiag toggle<CR>",
+        desc = "Diagnostics w/ less noise (trouble)",
+      },
       {
         "<leader>xb",
         "<CMD>Trouble diagnostics toggle filter.buf=0<CR>",
@@ -160,7 +168,7 @@ return {
       },
       {
         "<leader>xl",
-        "<CMD>Trouble lsp toggle<CR>",
+        "<CMD>Trouble lsp toggle win.position=right<CR>",
         desc = "LSP definitions/references/etc (trouble)",
       },
       {
@@ -192,7 +200,10 @@ return {
     opts = {
       pinned = true,
       keys = { H = "fold_close", J = "next", K = "prev", L = "fold_open" },
-      win = { size = { width = 0.25, height = 0.3 } },
+      win = {
+        relative = "editor",
+        size = { width = 0.25, height = 0.3 },
+      },
       modes = {
         mydiag = {
           mode = "diagnostics",

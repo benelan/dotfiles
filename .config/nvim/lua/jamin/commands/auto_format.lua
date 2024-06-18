@@ -50,15 +50,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function(event)
     if not format_is_enabled then return end
 
-    -- typescript goes first so the formatting changes it causes from the actions
-    -- are fixed by prettier. For example, organizing imports can change the indent size.
+    -- typescript goes first so the formatting changes it causes from the actions are fixed by
+    -- prettier. For example, organizing imports can change the indent size.
     fix_typescript_issues(event.buf)
 
     vim.lsp.buf.format({ async = false })
 
-    -- the eslint command doesn't have an async option so it needs to go last
-    -- so the changes aren't undone by other formatting actions.
-    -- NOTE: file may be written before the eslint fixes complete
+    -- the eslint command doesn't have a synchronous option so it needs to go last or the changes
+    -- can be undone by other formatting actions. 
+    -- NOTE: the file may be written before the eslint fixes complete
     fix_eslint_issues(event.buf)
   end,
 })

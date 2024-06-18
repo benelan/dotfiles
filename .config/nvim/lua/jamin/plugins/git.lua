@@ -4,7 +4,7 @@ return {
   -- the GOAT git plugin
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     dependencies = "vim-rhubarb",
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
@@ -63,7 +63,7 @@ return {
   -- Open file/selection in GitHub repo
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    cond = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
     keys = {
       {
         "<leader>go",
@@ -135,22 +135,30 @@ return {
       },
       {
         "]h",
-        function() require("gitsigns").nav_hunk("next", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("next", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[h",
-        function() require("gitsigns").nav_hunk("prev", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("prev", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "]H",
-        function() require("gitsigns").nav_hunk("last", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("last", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "Last hunk (gitsigns)",
       },
       {
         "[H",
-        function() require("gitsigns").nav_hunk("first", { wrap = false, preview = true }) end,
+        function()
+          require("gitsigns").nav_hunk("first", { wrap = false, preview = true, target = "all" })
+        end,
         desc = "First hunk (gitsigns)",
       },
       {
@@ -259,7 +267,6 @@ return {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
       preview_config = { border = res.icons.border },
-      worktrees = { { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.git" } },
       signs = {
         add = { text = res.icons.git.status },
         change = { text = res.icons.git.status },
@@ -278,25 +285,26 @@ return {
   {
     "pwntester/octo.nvim",
     -- dev = true,
-    cond = vim.fn.executable("gh") == 1,
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    enabled = vim.fn.executable("gh") == 1,
     cmd = "Octo",
     event = { { event = "BufReadCmd", pattern = "octo://*" } },
 
     opts = {
       enable_builtin = true,
-      default_to_projects_v2 = true,
       default_merge_method = "squash",
+      default_to_projects_v2 = true,
+      suppress_missing_scope = { projects_v2 = true },
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       file_panel = { use_icons = vim.g.use_devicons },
-      outdated_icon = not vim.g.use_devicons and res.icons.ui.clock or nil,
-      resolved_icon = not vim.g.use_devicons and res.icons.ui.checkmark or nil,
-      reaction_viewer_hint_icon = not vim.g.use_devicons and res.icons.ui.circle or nil,
-      user_icon = not vim.g.use_devicons and res.icons.ui.speech_bubble or nil,
-      timeline_marker = not vim.g.use_devicons and res.icons.ui.prompt or nil,
-      right_bubble_delimiter = not vim.g.use_devicons and res.icons.ui.block or nil,
-      left_bubble_delimiter = not vim.g.use_devicons and res.icons.ui.block or nil,
+      outdated_icon = res.i(nil, res.icons.ui.clock),
+      resolved_icon = res.i(nil, res.icons.ui.checkmark),
+      reaction_viewer_hint_icon = res.i(nil, res.icons.ui.circle),
+      repo_icon = res.i(nil, res.icons.ui.storage),
+      user_icon = res.i(nil, res.icons.ui.user),
+      timeline_marker = res.i(nil, res.icons.ui.prompt),
+      right_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
+      left_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
       picker_config = {
         mappings = {
           open_in_browser = { lhs = "<C-o>" },
@@ -317,48 +325,9 @@ return {
       require("octo").setup(opts)
 
       vim.treesitter.language.register("markdown", "octo")
-      vim.api.nvim_set_hl(0, "OctoBubble", { link = "DiagnosticVirtualTextInfo" })
-
-      vim.api.nvim_create_autocmd({ "FileType" }, {
-        pattern = "octo",
-        group = vim.api.nvim_create_augroup("jamin_octo_settings", {}),
-        callback = function()
-          vim.keymap.set("n", "<leader>pC", "<CMD>Octo pr checks<CR>", {
-            desc = "Show pull request checks (octo)",
-            silent = true,
-            buffer = true,
-            noremap = true,
-          })
-
-          vim.keymap.set("n", "<leader>tr", "<CMD>Octo thread resolve<CR>", {
-            desc = "Resolve pull request review thread (octo)",
-            silent = true,
-            buffer = true,
-            noremap = true,
-          })
-
-          vim.keymap.set("n", "<leader>tu", "<CMD>Octo thread unresolve<CR>", {
-            desc = "Unresolve pull request review thread (octo)",
-            silent = true,
-            buffer = true,
-            noremap = true,
-          })
-
-          vim.keymap.set("n", "<leader>vo", "<CMD>Octo review comments<CR>", {
-            desc = "Show pending PR review comments (octo)",
-            silent = true,
-            buffer = true,
-            noremap = true,
-          })
-
-          -- Add issue number and username completion to octo buffers
-          vim.keymap.set("i", "@", "@<C-x><C-o>", { silent = true, buffer = true, noremap = true })
-          vim.keymap.set("i", "#", "#<C-x><C-o>", { silent = true, buffer = true, noremap = true })
-        end,
-      })
+      vim.api.nvim_set_hl(0, "OctoBubble", { link = "CursorLine" })
     end,
 
-    -- stylua: ignore
     keys = {
       -- Find possible actions
       { "<leader>o", "<CMD>Octo actions<CR>", desc = "Actions (octo)" },
@@ -369,34 +338,67 @@ return {
       { "<leader>os", "<CMD>Octo search<CR>", desc = "Search (octo)" },
 
       -- Issues
-      { "<leader>oic", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
+      { "<leader>oiC", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
       { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
-      { "<leader>oill", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
-      { "<leader>oila", "<CMD>Octo issue list assignee=benelan state=OPEN<CR>", desc = "List assigned issues (octo)" },
-      { "<leader>oilc", "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>", desc = "List created issues (octo)" },
+      {
+        "<leader>oia",
+        "<CMD>Octo issue list assignee=benelan state=OPEN<CR>",
+        desc = "List my assigned issues (octo)",
+      },
+      {
+        "<leader>oic",
+        "<CMD>Octo issue list createdBy=benelan state=OPEN<CR>",
+        desc = "List my created issues (octo)",
+      },
 
       -- Pull requests
-      {
-        "<leader>op",
-        function()
-          local number = vim.fn.system "gh pr view --json number --jq .number"
-          if number and not string.match(number, "request") and vim.v.shell_error ~= 0 then
-            vim.cmd.Octo("pr edit " .. number)
-          else
-            print "No pull request found for current branch"
-          end
-        end,
-        desc = "Open pull request for current branch (octo)",
-      },
-      { "<leader>opc", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
+      { "<leader>op", "<CMD>Octo pr<CR>", desc = "Open pull request for current branch (octo)" },
+      { "<leader>opC", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opll", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
-      { "<leader>opla", "<CMD>Octo search is:open is:pr assignee:benelan<CR>", desc = "List assigned pull requests (octo)" },
-      { "<leader>oplc", "<CMD>Octo search is:open is:pr author:benelan<CR>", desc = "List created pull requests (octo)" },
+      {
+        "<leader>opa",
+        "<CMD>Octo search is:open is:pr assignee:benelan<CR>",
+        desc = "List my assigned pull requests (octo)",
+      },
+      {
+        "<leader>opc",
+        "<CMD>Octo search is:open is:pr author:benelan<CR>",
+        desc = "List my created pull requests (octo)",
+      },
 
       -- My repos and gists
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },
       { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
+
+      -- Octo buffer keymaps
+      {
+        "<leader>pC",
+        "<CMD>Octo pr checks<CR>",
+        desc = "Show pull request checks (octo)",
+        ft = "octo",
+      },
+      {
+        "<leader>vo",
+        "<CMD>Octo review comments<CR>",
+        desc = "Show pending PR review comments (octo)",
+        ft = "octo",
+      },
+
+      {
+        "<leader>tr",
+        "<CMD>Octo thread resolve<CR>",
+        desc = "Resolve pull request review thread (octo)",
+        ft = "octo",
+      },
+      {
+        "<leader>tu",
+        "<CMD>Octo thread unresolve<CR>",
+        desc = "Unresolve pull request review thread (octo)",
+        ft = "octo",
+      },
+
+      -- { "@", "@<C-x><C-o>", mode = "i", ft = "octo" },
+      -- { "#", "#<C-x><C-o>", mode = "i", ft = "octo" },
     },
   },
 }

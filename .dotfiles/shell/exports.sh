@@ -170,9 +170,16 @@ supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 
 # https://github.com/junegunn/fzf
 if supports fzf; then
-    export FZF_DEFAULT_OPTS='--cycle --reverse --preview-window="right,50%,wrap,<60(down,40%,wrap)"
-    --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,shift-up:preview-top,shift-down:preview-bottom,ctrl-u:half-page-up,ctrl-d:half-page-down,ctrl-v:toggle-preview,ctrl-x:toggle-sort,ctrl-h:toggle-header"
-    --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,hl:#d3869b:bold,hl+:#d3869b,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#928374,label:#83a598"'
+    export FZF_DEFAULT_OPTS='
+        --cycle --reverse --highlight-line --info=right 
+        --preview-window="right,border-left,wrap,<75(down,border-top,wrap)"
+        --bind "ctrl-v:toggle-preview,ctrl-x:toggle-sort"
+        --bind "alt-up:preview-page-up,alt-down:preview-page-down,alt-shift-up:preview-top,alt-shift-down:preview-bottom"
+        --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,ctrl-u:half-page-up,ctrl-d:half-page-down"
+        --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,hl:#d3869b:bold,hl+:#d3869b"
+        --color "info:#83a598,prompt:#bdae93,query:#d3869b:bold,disabled:#b16286:bold"
+        --color "spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#928374,label:#928374"
+    '
 
     # alternative gruvbox colorscheme
     # --color "bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934"'
@@ -202,6 +209,16 @@ if supports fff; then
     export FFF_FAV9="$NOTES"
 fi
 
+# requires my fork until the pr is merged:
+# https://github.com/meiji163/gh-notify/pull/87
+export GH_NOTIFY_MARK_READ_KEY="alt-space"
+export GH_NOTIFY_MARK_ALL_READ_KEY="alt-backspace"
+export GH_NOTIFY_OPEN_BROWSER_KEY="ctrl-o"
+export GH_NOTIFY_COMMENT_KEY="alt-c"
+export GH_NOTIFY_VIEW_DIFF_KEY="alt-d"
+export GH_NOTIFY_VIEW_PATCH_KEY="alt-D"
+export GH_NOTIFY_RESIZE_PREVIEW_KEY="alt-P"
+
 # my tools {{{1
 supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
 supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
@@ -209,6 +226,7 @@ supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 _gh_user="$(git config --global github.user || echo "benelan")"
 _gh_icon="$XDG_DATA_HOME/icons/Gruvbox-Plus-Dark/apps/scalable/github.svg"
 
+# https://github.com/benelan/gh-fzf/
 export GH_FZF_BRANCH_PREFIX="$_gh_user/"
 export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
 
@@ -229,6 +247,7 @@ if supports git-mux; then
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 
+# https://github.com/benelan/nm-fzf
 export NM_FZF_APPLET_AUTH=1
 
 if [ -n "$(
@@ -237,7 +256,7 @@ if [ -n "$(
         -name "*Nerd*Font*.ttf" \
         -readable -print -quit 2>/dev/null
 )" ]; then
-    export USE_DEVICONS=1
+    export NERD_ICONS=1
 fi
 
 unset _gh_user
