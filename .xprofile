@@ -12,6 +12,33 @@
         # -option shift:both_capslock \
         # -option shift:breaks_caps \
 
+# automatically configure an unknown number of displays
+if command -v xrandr >/dev/null 2>&1 && command -v grep >/dev/null 2>&1; then
+    # should the laptop screen be on the right or left end of the monitor lineup?
+    direction="right"
+    # extra flags to add to the laptop's builtin display
+    # builtin_opts="--primary"
+
+    displays="$(xrandr -q | grep -w connected | cut -d' ' -f1)"
+    for display in $displays; do
+        case $display in
+            None*) ;;
+            # the builtin laptop display is saved for last
+            eDP-1 | DP-4) builtin="$display" ;;
+            *)
+                xrandr --output "$display" --auto --primary ${prev:+"--$direction-of" "$prev"}
+                prev="$display"
+                ;;
+        esac
+    done
+
+    # shellcheck disable=2086,2154
+    [ -n "$builtin" ] &&
+        xrandr --output "$builtin" $builtin_opts --auto ${prev:+"--$direction-of" "$prev"}
+
+    unset builtin prev
+fi
+
 # set wallpaper
 wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
 [ -f "$wallpaper" ] && [ -x /usr/bin/feh ] &&
