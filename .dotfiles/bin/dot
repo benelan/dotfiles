@@ -857,10 +857,11 @@ install_ubuntu_protonvpn() {
 ## https://proton.me/support/mail-desktop-app
 INSTALL_UBUNTU_PROTONMAIL_DOC="Install the Proton Mail/Calendar desktop application"
 install_ubuntu_protonmail() {
-    _has proton-mail && return
+    # _has proton-mail && return
     deb="ProtonMail-desktop-beta.deb"
     curl -Lo "$CACHE_DIR/$deb" "https://proton.me/download/mail/linux/$deb"
     sudo apt-get install -qq "$CACHE_DIR/$deb" || true
+    rm -f "$CACHE_DIR/$deb"
     unset deb
 }
 
@@ -1083,6 +1084,8 @@ install_ubuntu_gh() {
     else
         gh extension install benelan/gh-fzf
     fi
+    # fork of https://github.com/meiji163/gh-notify
+    gh extension install benelan/gh-fzf
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

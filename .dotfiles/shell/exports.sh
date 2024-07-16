@@ -171,7 +171,7 @@ supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 # https://github.com/junegunn/fzf
 if supports fzf; then
     export FZF_DEFAULT_OPTS='
-        --cycle --reverse --highlight-line --info=right 
+        --cycle --reverse --highlight-line --info=right
         --preview-window="right,border-left,wrap,<75(down,border-top,wrap)"
         --bind "ctrl-v:toggle-preview,ctrl-x:toggle-sort"
         --bind "alt-up:preview-page-up,alt-down:preview-page-down,alt-shift-up:preview-top,alt-shift-down:preview-bottom"
@@ -209,10 +209,9 @@ if supports fff; then
     export FFF_FAV9="$NOTES"
 fi
 
-# requires my fork until the pr is merged:
-# https://github.com/meiji163/gh-notify/pull/87
-export GH_NOTIFY_MARK_READ_KEY="alt-space"
-export GH_NOTIFY_MARK_ALL_READ_KEY="alt-backspace"
+# https://github.com/meiji163/gh-notify
+export GH_NOTIFY_MARK_READ_KEY="alt-backspace"
+export GH_NOTIFY_MARK_ALL_READ_KEY="ctrl-delete"
 export GH_NOTIFY_OPEN_BROWSER_KEY="ctrl-o"
 export GH_NOTIFY_COMMENT_KEY="alt-c"
 export GH_NOTIFY_VIEW_DIFF_KEY="alt-d"
@@ -247,9 +246,12 @@ if supports git-mux; then
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 
+unset _gh_user _gh_icon
+
 # https://github.com/benelan/nm-fzf
 export NM_FZF_APPLET_AUTH=1
 
+# nerd font icons {{{1
 if [ -n "$(
     find "$XDG_DATA_HOME/fonts" \
         -type f \
@@ -258,5 +260,3 @@ if [ -n "$(
 )" ]; then
     export NERD_ICONS=1
 fi
-
-unset _gh_user

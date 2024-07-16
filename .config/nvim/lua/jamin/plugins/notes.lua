@@ -17,34 +17,42 @@ return {
   {
     "jakewvincent/mkdnflow.nvim",
     ft = "markdown",
-    opts = {
-      filetypes = { md = true, rmd = true, mdx = true, markdown = true },
-      to_do = { symbols = { " ", "x" } },
-      links = {
-        -- style = "wiki",
-        transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
-      },
-      perspective = { priority = "current", fallback = "first" },
-      mappings = {
-        MkdnEnter = { { "i", "n", "v" }, "<CR>" },
-        MkdnTab = { "i", "<Tab>" },
-        MkdnSTab = { "i", "<S-Tab>" },
-        MkdnGoBack = { "n", "[f" },
-        MKdnGoForward = { "n", "]f" },
-        MkdnIncreaseHeading = { "n", "_" },
-        MkdnDecreaseHeading = { "n", "+" },
-        MkdnFoldSection = { "n", "<leader>zr" },
-        MkdnUnfoldSection = { "n", "<leader>zm" },
-        MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>P" },
-        MkdnToggleToDo = { { "n", "v" }, "<leader>m<Tab>" },
-        MkdnUpdateNumbering = { "n", "<leader>mn" },
-        MkdnMoveSource = { "n", "<leader>mR" },
-        MkdnTableNewRowBelow = { "n", "<leader>mir" },
-        MkdnTableNewRowAbove = { "n", "<leader>miR" },
-        MkdnTableNewColAfter = { "n", "<leader>mic" },
-        MkdnTableNewColBefore = { "n", "<leader>miC" },
-      },
-    },
+    opts = function()
+      local has_zk_util, zk_util = pcall(require, "zk.util")
+      local link_style = has_zk_util
+          and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil
+          and "wiki"
+        or nil
+
+      return {
+        filetypes = { md = true, rmd = true, mdx = true, markdown = true },
+        to_do = { symbols = { " ", "x" } },
+        links = {
+          style = link_style,
+          transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
+        },
+        perspective = { priority = "root", fallback = "current", root_tell = ".git" },
+        mappings = {
+          MkdnEnter = { { "i", "n", "v" }, "<CR>" },
+          MkdnTab = { "i", "<Tab>" },
+          MkdnSTab = { "i", "<S-Tab>" },
+          MkdnGoBack = { "n", "[f" },
+          MKdnGoForward = { "n", "]f" },
+          MkdnIncreaseHeading = { "n", "_" },
+          MkdnDecreaseHeading = { "n", "+" },
+          MkdnFoldSection = { "n", "<leader>zr" },
+          MkdnUnfoldSection = { "n", "<leader>zm" },
+          MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>P" },
+          MkdnToggleToDo = { { "n", "v" }, "<leader>m<Tab>" },
+          MkdnUpdateNumbering = { "n", "<leader>mn" },
+          MkdnMoveSource = { "n", "<leader>mR" },
+          MkdnTableNewRowBelow = { "n", "<leader>mir" },
+          MkdnTableNewRowAbove = { "n", "<leader>miR" },
+          MkdnTableNewColAfter = { "n", "<leader>mic" },
+          MkdnTableNewColBefore = { "n", "<leader>miC" },
+        },
+      }
+    end,
   },
 
   -----------------------------------------------------------------------------

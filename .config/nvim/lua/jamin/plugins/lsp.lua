@@ -109,6 +109,10 @@ return {
 
           if client == nil then return end
 
+          -- setup stuff specific to an LSP server
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. client.name)
+          if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args.buf) end
+
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
               buffer = args.buf,

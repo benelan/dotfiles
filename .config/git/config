@@ -373,12 +373,13 @@
     fst = !FZF_DEFAULT_COMMAND='git -c color.ui=always stash list \
             --pretty=\"%Cgreen%cr  %Creset%gs  %C(white dim)%h\"' \
         fzf --ansi --no-sort --no-multi --no-hscroll \
-            --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout)' \
+            --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout) (alt-f: fugitive)' \
             --preview='git -c color.diff=always show {-1}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='enter:become(echo {-1})' \
             --bind='alt-a:become(git stash apply {n})' \
             --bind='alt-p:become(git stash pop {n})' \
+            --bind='alt-f:execute:vim +\":packadd vim-fugitive | exe \\\"edit \\\".FugitiveFind({-1})\"' \
             --bind='alt-x:execute(git stash drop {n})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-o:become(git stash branch stash-{-1} {n})'
 

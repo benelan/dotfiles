@@ -34,7 +34,8 @@ local function format_numeric_state(data)
       table.insert(output, item.icon)
       table.insert(output, item.value)
 
-      template = template .. "%%#%s#%s%d  "
+      template = template .. "%%#%s#"
+      template = template .. (vim.g.use_devicons and "%s%d  " or "[%s%d]")
     end
   end
 

@@ -24,7 +24,7 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     -- Pinned because the subsequent commit displays virtual text on the context and it doesn't get
     -- cleared when the diagnostic is resolved. Scrolling up to the context line does clear it
-    commit = "813170c8ef6f5caa5c3f8b6d91e84ed6a206cc9d",
+    commit = "8198ad4b01ca64b6f5c7a7253f52df3fe329be46",
     lazy = true,
     opts = {
       multiline_threshold = 1,

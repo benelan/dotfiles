@@ -11,5 +11,5 @@ let g:markdown_fenced_languages = [
     \ 'tsx=typescriptreact', 'jsx=javascriptreact'
 \ ]
 
-let _sub_wiki2md = '%s/\[\[\(.\{-}\)|\(.\{-}\)\]\]/[\2\](\1)/g'
-let _sub_md2wiki = '%s/\[\(.\{-}\)\](\(.\{-}\))/[[\2|\1]]/g'
+let _ex_convert_links_wiki2md = '%s/\v\[\[(.{-})\|(.{-})\]\]/[\2\](\1)/g'
+let _ex_convert_links_md2wiki = '%s/\v\[(.{-})\]\((https)@!(.{-})\)/[[\3|\1]]/g'

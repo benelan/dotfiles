@@ -5,8 +5,8 @@ return {
       "nvim-neotest/nvim-nio",
       "nvim-treesitter/nvim-treesitter",
       -- "nvim-neotest/neotest-go",
-      -- "nvim-neotest/neotest-jest",
-      -- "marilari88/neotest-vitest",
+      "nvim-neotest/neotest-jest",
+      "marilari88/neotest-vitest",
       { "benelan/neotest-stenciljs", dev = true },
     },
 
@@ -14,6 +14,7 @@ return {
       local has_jest, jest = pcall(require, "neotest-jest")
       local has_go, go = pcall(require, "neotest-go")
       local has_vitest, vitest = pcall(require, "neotest-vitest")
+      local has_stenciljs, stenciljs = pcall(require, "neotest-stenciljs")
 
       vim.diagnostic.config({
         virtual_text = {
@@ -33,10 +34,17 @@ return {
         output = { open_on_run = true },
         icons = require("jamin.resources").icons.test,
         adapters = {
-          require("neotest-stenciljs")({ no_build = true }),
-          has_vitest and vitest or nil,
-          has_jest and jest or nil,
           has_go and go or nil,
+          has_stenciljs and stenciljs("neotest-stenciljs")({ no_build = true }) or nil,
+          has_vitest and vitest or nil,
+          has_jest and jest({
+            cwd = function(file)
+              if string.find(file, "/packages/") then
+                return string.match(file, "(.*/packages.-/[^/]+/)")
+              end
+              return vim.fn.getcwd()
+            end,
+          }) or nil,
         },
       })
     end,

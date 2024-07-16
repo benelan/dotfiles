@@ -63,6 +63,25 @@ function! s:open_path(text)
     endif
 endfunction
 
+" Open github repo of an (n)vim plugin {{{1
+function! s:open_vim_plugin(text)
+    " only attempt to match in package.json files
+    if expand("%:p") =~# stdpath("config")
+        let l:pattern='"\([a-zA-Z0-9_\-.]*\/[a-zA-Z0-9_\-.]*\)"'
+        let l:match = matchlist(a:text, l:pattern)
+
+        if len(l:match) > 0
+            let l:url_prefix='https://www.github.com/'
+            let l:url = shellescape(l:url_prefix.l:match[1])
+            echom "Opening github repo of (n)vim plugin: " .. l:match[1]
+
+            call s:execute_open(l:url)
+            :redraw!
+            return 1
+        endif
+    endif
+endfunction
+
 " Open NPM dependency in the browser if the file is package.json {{{1
 function! s:open_npm_dep(text)
     " only attempt to match in package.json files
@@ -123,6 +142,7 @@ function! s:handle_system_open()
         elseif s:open_gh_issue(l:word)
         elseif s:open_uri(l:line)
         elseif s:open_npm_dep(l:line)
+        elseif s:open_vim_plugin(l:line)
         elseif s:open_gh_issue(l:line)
         else | echom "No openable text found"
     endif
