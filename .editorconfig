@@ -9,21 +9,16 @@ root = true
     indent_style = space
     indent_size = 4
     curly_bracket_next_line = false
-    spaces_around_brackets = false
     spaces_around_operators = true
     indent_brace_style = K&R
 
-[*.{js,jsx,json,jsonc,ts,tsx,html,vue,svelte,astro}]
-    spaces_around_brackets = true
+[*.{js,jsx,json,jsonc,ts,tsx,html,vue,svelte,astro,css,scss,sass,less,lua,yml,yaml,md,mdx,mail}]
     indent_size = 2
 
-[*.{css,scss,sass,less,lua,yml,yaml,md,mdx,mail}]
-    indent_size = 2
-
-[*.{md,mail,sh,bash}]
+[*.{mail,sh,bash}]
     max_line_length = 80
 
-[*.lua]
+[*.{lua,md}]
     max_line_length = 100
 
 [COMMIT_EDITMSG]
@@ -31,3 +26,7 @@ root = true
 
 [Makefile]
     indent_style = tab
+
+# https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
+[[shell]]
+    switch_case_indent = true

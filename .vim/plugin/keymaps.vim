@@ -32,17 +32,20 @@ nnoremap & :&&<CR>
 " When joining, do the right thing to join up function definitions
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 
-" https://github.com/whiteinge/dotfiles/blob/master/.vimrc
-fu! EQ(varname)
-    exe "norm ". a:varname
-endfu
-com -nargs=1 -range -complete=var EQ <line1>,<line2>call EQ(<args>)
+" Run saved ex commands
+nnoremap <leader>ex :<C-R>=_ex_
+" examples:
+let _ex_increment_numbers_to_eob = '.,$g/\d/exe "normal! :nohlsearch\<CR>\<C-a>"'
+let _ex_increment_numbers_recursive = 'exe "normal! ggVGg\<C-a>"'
 
-let _macro_uppercase_word = 'gUw'
-
-nnoremap <leader>eq :EQ _macro_
-vnoremap <leader>eq :EQ _macro_
-nnoremap <leader>es :<C-R>=_sub_
+" Run saved macros
+nnoremap <leader>eq :exe "norm " . _macro
+vnoremap <leader>eq :<C-U>exe "'<,'>norm " . _macro
+" examples:
+let _macro_uppercase_word = 'gUiw'
+let _macro_uppercase_WORD = 'gUiW'
+let _macro_lowercase_word = 'guiw'
+let _macro_lowercase_WORD = 'guiW'
 
 " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
 nnoremap <silent> <leader>- <CMD>execute (
