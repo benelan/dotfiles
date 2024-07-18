@@ -28,6 +28,7 @@ Usage:  $(basename "$0") <command>
 Commands:
         refresh
         info
+        waybar
         icon
         title
         description
@@ -139,6 +140,20 @@ info() {
         "$(get_prop '.weather[0].description')"
 }
 
+waybar_json() {
+    tooltip="$(get_prop '.weather[0].main')\n\
+Temp: $(get_prop '.main.temp')°F\n\
+Feels like: $(get_prop '.main.feels_like')°F\n\
+Temp low: $(get_prop '.main.temp_min')°F\n\
+Temp high: $(get_prop '.main.temp_max')°F\n\
+Pressure: $(get_prop '.main.pressure')\n\
+Humidity: $(get_prop '.main.humidity')\n\
+Wind speed: $(get_prop '.wind.speed')\n\
+Wind degree: $(get_prop '.wind.deg')"
+
+    echo -E "{\"text\":\"$(info)\", \"tooltip\":\"$tooltip\"}"
+}
+
 main() {
     [ -z "$1" ] && help "a command is required"
     command -v jq >/dev/null 2>&1 || help "missing required dependency: jq"
@@ -151,6 +166,7 @@ main() {
     fi
 
     case "$1" in
+        waybar) waybar_json ;;
         info) info ;;
         refresh) get_data ;;
         icon) get_icon ;;

@@ -1,0 +1,141 @@
+/*
+* Gruvbox colors for waybar using gtk named colors
+* https://docs.gtk.org/gtk3/css-overview.html
+* https://github.com/Alexays/Waybar/wiki/Styling
+* https://github.com/Alexays/Waybar/blob/master/resources/style.css
+*/
+@define-color background #282828;
+@define-color foreground #ebdbb2;
+@define-color black #282828;
+@define-color red #cc241d;
+@define-color green #98971a;
+@define-color yellow #d79921;
+@define-color blue #458588;
+@define-color magenta #b16286;
+@define-color cyan #689d6a;
+@define-color white #a89984;
+@define-color aqua #427b58; /* #689d6a; */
+@define-color orange #d65d0e;
+
+@define-color magenta_b #d3869b;
+@define-color cyan_b #8ec07c;
+@define-color yellow_b #fabd2f;
+@define-color white_b #ebdbb2;
+@define-color black_b #928374;
+@define-color red_b #fb4934;
+@define-color green_b #b8bb26;
+@define-color blue_b #83a598;
+@define-color aqua_b #8ec07c;
+@define-color orange_b #fe8010;
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "IosevkaNerdFont", "Ubuntu Mono", monospace;
+  font-size: 16px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: @background;
+  border-bottom: 3px solid @aqua;
+  color: @white_b;
+}
+
+#workspaces button {
+  padding: 0 5px;
+  min-width: 20px;
+  background: transparent;
+  color: @white_b;
+  border-bottom: 3px solid transparent;
+}
+
+#workspaces button.focused {
+  background: @aqua;
+  border-bottom: 3px solid @aqua;
+}
+
+#workspaces button:hover,
+widget:hover {
+  border-bottom: 3px solid @magenta_b;
+  box-shadow: inherit;
+  text-shadow: inherit;
+}
+
+#workspaces button.urgent {
+  border-bottom: 3px solid @red_b;
+}
+
+#mode,
+#clock,
+#custom-weather,
+#custom-music,
+#custom-cmus {
+  padding: 0 10px;
+  margin: 0 5px;
+}
+
+#custom-music {
+ padding-left: 100px; 
+}
+
+#mode {
+  background: @red;
+  border-bottom: 3px solid @white_b;
+}
+
+#idle_inhibitor {
+  padding: 0 10px;
+}
+
+#idle_inhibitor.deactivated {
+  color: @black_b
+}
+
+#cpu,
+#memory,
+#temperature,
+#network,
+#backlight,
+#bluetooth,
+#pulseaudio,
+#battery {
+  padding: 0 10px;
+  margin: 0 3px;
+}
+
+#battery.charging,
+#battery.plugged {
+  color: @green;
+}
+
+#battery.warning,
+#memory.warning,
+#cpu.warning,
+#temperature.critical,
+#pulseaudio.muted {
+  color: @yellow;
+}
+
+#battery.critical,
+#memory.critical,
+#cpu.critical {
+  color: @red;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left>widget:first-child>#workspaces {
+  margin-left: 0;
+}
+
+#tray {
+  margin-right: 5px;
+}
+
+#tray>.passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray>.needs-attention {
+  -gtk-icon-effect: highlight;
+}

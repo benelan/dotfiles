@@ -327,8 +327,8 @@ set $white #ffffff
 set $black #000000
 
 bar {
-    status_command i3status
-    # swaybar_command waybar
+    # status_command i3status
+    swaybar_command waybar
 
     position top
     tray_output primary
@@ -396,6 +396,9 @@ for_window [title=".*"] inhibit_idle fullscreen
 # Notification manager
 # https://github.com/dunst-project/dunst
 exec_always --no-startup-id ! pgrep -x dunst && dunst
+
+# Network manager applet
+exec_always --no-startup-id nm-applet --indicator
 
 # Low battery notification
 # https://github.com/rjekker/i3-battery-popup
