@@ -141,15 +141,15 @@ info() {
 }
 
 waybar_json() {
-    tooltip="$(get_prop '.weather[0].main')\n\
+    tooltip="$(get_prop '.name'): $(get_prop '.weather[0].main')\n\
 Temp: $(get_prop '.main.temp')°F\n\
-Feels like: $(get_prop '.main.feels_like')°F\n\
 Temp low: $(get_prop '.main.temp_min')°F\n\
 Temp high: $(get_prop '.main.temp_max')°F\n\
-Pressure: $(get_prop '.main.pressure')\n\
-Humidity: $(get_prop '.main.humidity')\n\
-Wind speed: $(get_prop '.wind.speed')\n\
-Wind degree: $(get_prop '.wind.deg')"
+Feels like: $(get_prop '.main.feels_like')°F\n\
+Humidity: $(get_prop '.main.humidity')%\n\
+Pressure: $(get_prop '.main.pressure') hPa\n\
+Wind speed: $(get_prop '.wind.speed') mph\n\
+Cloud coverage: $(get_prop '.clouds.all')%"
 
     echo -E "{\"text\":\"$(info)\", \"tooltip\":\"$tooltip\"}"
 }

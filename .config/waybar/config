@@ -6,16 +6,17 @@
     // "width": 1280, // Waybar width
 
     // Choose the order of the modules
-    "modules-left": ["sway/workspaces", "sway/mode"],
-    "modules-center": ["clock", "custom/weather", "custom/music"],
+    "modules-left": ["sway/workspaces", "sway/mode", "custom/music"],
+    "modules-center": ["clock", "custom/weather"],
     "modules-right": [
+        "temperature",
         "cpu",
         "memory",
-        "temperature",
-        "network",
         "backlight",
         "pulseaudio",
         "battery",
+        "network",
+        "idle_inhibitor",
         "tray"
     ],
 
@@ -23,7 +24,7 @@
     "sway/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
-        "format": "{icon}{name}",
+        "format": "{name}",
         "format-icons": {
             "01": "󰈹 ",
             "02": "󰨊 ",
@@ -47,8 +48,9 @@
 
     "idle_inhibitor": {
         "format": "{icon}",
-        "format-alt": "NO_IDLE {status}",
+        "format-alt": "⛾",
         "format-alt-click": "click-right",
+        "tooltip": false,
         "format-icons": {
             "activated": "󰈈 ",
             "deactivated": "󰈉 "
@@ -56,28 +58,39 @@
     },
 
     "tray": {
-        // "icon-size": 21,
+        "icon-size": 18,
         "spacing": 10,
-        "show-passive-items": true
+        "show-passive-items": true,
+        "reverse-direction": true
     },
 
     "clock": {
-        "format": "{:%Y-%m-%d %H:%M}",
-        "format-alt": "{:%H:%M}",
+        "format": "{:%R %a %F}",
+        "format-alt": "{:%I:%M %p  %a %x}",
         "format-alt-click": "click-right",
-        "tooltip": false,
-        "tooltip-format": "{calendar}"
+        "tooltip": false
     },
 
     "cpu": {
-        "format": "󰍛 {usage}%",
-        "format-alt": "CPU {usage}%",
+        "states": {
+            "warning": 25,
+            "critical": 75
+        },
+        "format": "",
+        // "format-alt": "CPU: {usage}%",
+        "format-warning": " {usage}%",
+        "format-critical": " {usage}%",
         "format-alt-click": "click-right"
     },
-
     "memory": {
-        "format": "󰘚 {percentage}%",
-        "format-alt": "MEM {percentage}%",
+        "states": {
+            "warning": 25,
+            "critical": 75
+        },
+        "format": "",
+        "format-warning": "󰆼 {percentage}%",
+        "format-critical": "󰆼 {percentage}%",
+        // "format-alt": "CPU: {percentage}%",
         "format-alt-click": "click-right",
         "tooltip-format": "{avail:0.1f} GiB available, used {used:0.1f}/{total:0.1f} GiB"
     },
@@ -85,13 +98,13 @@
     "temperature": {
         // "thermal-zone": 2,
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        "critical-threshold": 80,
-        "format": "{icon}{temperatureC}°C",
-        "format-alt": "TEMP {temperatureC}°C",
+        "critical-threshold": 70,
+        "format-critical": "󰸁 {temperatureC}°C",
+        "format": "",
+        // "format-alt": "TEMP: {temperatureC}°C",
         "format-alt-click": "click-right",
         "format-icons": {
-            "default": ["󱃃 ", "󰔏 ", "󱃂 "],
-            "critical": "󰸁 "
+            "default": ["󱃃 ", "󰔏 ", "󱃂 "]
         },
         "tooltip-format": "{temperatureC}°C | {temperatureF}°F | {temperatureK}K",
         "tooltip": false
@@ -100,9 +113,10 @@
     "backlight": {
         "device": "intel_backlight",
         "format": "{icon}{percent}%",
-        "format-alt": "BRI {percent}%",
+        "format-alt": "BRI: {percent}%",
         "format-alt-click": "click-right",
         "format-icons": ["󰃞 ", "󰃟 ", "󰃝 ", "󰃠 "]
+        // "format-icons": ["󰹐 ", "󰌶 ", "󱩎 ", "󱩏 ", "󱩐 ", "󱩑 ", "󱩒 ", "󱩓 ", "󱩔 ", "󱩕 ", "󱩖 ", "󰛨 "]
     },
 
     "battery": {
@@ -111,17 +125,18 @@
             "warning": 30,
             "critical": 10
         },
-        "format": "{icon} {capacity}% ({time})",
+        "format": "{icon} {capacity}%",
 		"format-full": "{icon} {capacity}%",
 		"format-charging-full": "{icon} {capacity}%",
-        "format-alt": "{icon} {capacity}%",
+        "format-alt": "BAT: {capacity}%",
         "format-alt-click": "click-right",
         "format-time": "{H}:{M:02}",
+        "tooltip-format": "Time to empty: {time} hr",
         // "format-icons": {
-        //     "full": "FULL",
-        //     "charging": "CHRG",
-        //     "charging-full": "PLUG",
-        //     "default": "BAT"
+        //     "full": "FULL:",
+        //     "charging": "CHRG:",
+        //     "charging-full": "PLUG:",
+        //     "default": "BAT:"
         // }
         "format-icons": {
             "full": "󰁹",
@@ -134,10 +149,14 @@
     "network": {
         // "interface": "wlp2s0", // (Optional) To force the use of this interface
         "format": "{icon}",
-        "format-wifi": "{icon} {signalStrength}% ({essid})",
         "format-ethernet": "{icon} {ifname}",
-        "format-alt": "{icon} {ipaddr}/{cidr}",
+        "format-wifi": "{icon} {signalStrength}%",
+        "format-alt": "WIFI: {signalStrength}%",
+        // "tooltip-format-wifi": "{essid} - {ipaddr}/{cidr} ({ifname})",
+        "tooltip-format": "{ipaddr}/{cidr} - {essid} ({ifname})",
         "format-alt-click": "click-right",
+        "on-click-middle": "nm-connection-editor",
+        "on-click": "$TERMINAL -e nm-fzf wifi",
         "format-icons": {
             "wired": " ",
             "default": "󰛳 ",
@@ -145,38 +164,47 @@
             "disabled": "󰀝 ",
             "disconnected": "󰤮 ",
             "wifi": ["󰤯 ", "󰤟 ", "󰤢 ", "󰤥 ", "󰤨 "]
-        },
-        "tooltip-format-wifi": "{signalStrength}%",
-        "on-click": "nm-connection-editor"
+        }
+        // "format-icons": {
+        //     "wired": "",
+        //     "default": "",
+        //     "ethernet": "ETH:",
+        //     "disabled": "NET: off",
+        //     "disconnected": "NET: down",
+        //     "wifi": "WIFI:"
+        // }
     },
 
     "pulseaudio": {
+        "states": {
+            "warning": 100
+        },
         "scroll-step": 1,
+        "format-alt": "VOL: {volume}%",
         "format": "{icon}{volume}%",
-        "format-alt": "VOL {volume}%",
+        "format-muted": "󰝟 {volume}%",
+        // "format-muted": "VOL: muted",
         "format-alt-click": "click-right",
-        "format-bluetooth": "{icon}{volume}%",
-        "format-muted": "{icon}",
         "format-icons": {
-            "muted": "󰝟 ",
             "car": "󰄋 ",
             "phone": "󰏶 ",
             "headset": "󰋎 ",
             "headphone": "󰋋 ",
-            "hands-free": "󱠱 ",
+            "hands-free": "󰋎 ",
             "portable": "󰗜 ",
             // "speaker": "󰓃 ",
             "hifi": "󰤽 ",
             "hdmi": "󰽟 ",
-            "default": ["󰕿 ", "󰖀 ", "󰕾 "]
+            "default": ["󰖀 ", "󰕾 "]
         },
         "on-click": "pavucontrol"
     },
 
     "bluetooth": {
         "format": "{icon}",
-        "format-alt": "BT {status}",
-        "format-alt-click": "click-right",
+        // "format-alt": "BT: {status}",
+        // "format-alt-click": "click-right",
+        "on-click": "pavucontrol",
         "format-icons": {
             "enabled": "",
             "disabled": ""
@@ -186,24 +214,26 @@
 
     "custom/cmus": {
         "format": "󰝚 {}",
-        "format-alt": "CMUS {}",
+        "format-alt": "CMUS: {}",
         "format-alt-click": "click-right",
         //"max-length": 15,
         "interval": 10,
         "exec": "cmus-remote -C \"format_print '%a - %t'\"",
-        "exec-if": "pgrep cmus",
+        "exec-if": "pgrep -x cmus",
         "on-click": "cmus-remote -u",
         "escape": true
     },
 
     "custom/music": {
-        "format": "{}",
+        "format": "󰴸 {}",
+        "format-alt": "󰴸                           ",
         "interval": 10,
+        "tooltip": false,
+        "format-alt-click": "click-right",
         "exec": "music info",
         "exec-if": "command -v music >/dev/null 2>&1",
         "on-click": "music toggle",
-        "on-click-right": "music next",
-        "on-click-middle": "music previous"
+        "on-click-middle": "music rofi"
 
     },
 

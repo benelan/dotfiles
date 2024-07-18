@@ -1,4 +1,4 @@
-/* 
+/*
 * Gruvbox colors for waybar using gtk named colors
 * https://docs.gtk.org/gtk3/css-overview.html
 * https://github.com/Alexays/Waybar/wiki/Styling
@@ -7,26 +7,26 @@
 @define-color background #282828;
 @define-color foreground #ebdbb2;
 @define-color black #282828;
-@define-color red   #cc241d;
+@define-color red #cc241d;
 @define-color green #98971a;
 @define-color yellow #d79921;
-@define-color blue  #458588;
+@define-color blue #458588;
 @define-color magenta #b16286;
-@define-color cyan  #689d6a;
+@define-color cyan #689d6a;
 @define-color white #a89984;
-@define-color aqua  #689d6a;
-@define-color orange #fe8010;
+@define-color aqua #427b58; /* #689d6a; */
+@define-color orange #d65d0e;
 
 @define-color magenta_b #d3869b;
-@define-color cyan_b   #8ec07c;
+@define-color cyan_b #8ec07c;
 @define-color yellow_b #fabd2f;
-@define-color white_b  #ebdbb2;
-@define-color black_b  #928374;
-@define-color red_b    #fb4934;
-@define-color green_b  #b8bb26;
-@define-color blue_b   #83a598;
-@define-color aqua_b   #8ec07c;
-@define-color orange_b #d65d0e;
+@define-color white_b #ebdbb2;
+@define-color black_b #928374;
+@define-color red_b #fb4934;
+@define-color green_b #b8bb26;
+@define-color blue_b #83a598;
+@define-color aqua_b #8ec07c;
+@define-color orange_b #fe8010;
 
 * {
   border: none;
@@ -38,7 +38,7 @@
 
 window#waybar {
   background: @background;
-  border-bottom: 3px solid @blue;
+  border-bottom: 3px solid @aqua;
   color: @white_b;
 }
 
@@ -51,11 +51,12 @@ window#waybar {
 }
 
 #workspaces button.focused {
-  background: @blue;
-  border-bottom: 3px solid @blue;
+  background: @aqua;
+  border-bottom: 3px solid @aqua;
 }
 
-#workspaces button:hover, widget:hover {
+#workspaces button:hover,
+widget:hover {
   border-bottom: 3px solid @magenta_b;
   box-shadow: inherit;
   text-shadow: inherit;
@@ -67,11 +68,15 @@ window#waybar {
 
 #mode,
 #clock,
-#custom-music,
 #custom-weather,
+#custom-music,
 #custom-cmus {
   padding: 0 10px;
   margin: 0 5px;
+}
+
+#custom-music {
+ padding-left: 100px; 
 }
 
 #mode {
@@ -79,7 +84,14 @@ window#waybar {
   border-bottom: 3px solid @white_b;
 }
 
-#idle_inhibitor,
+#idle_inhibitor {
+  padding: 0 10px;
+}
+
+#idle_inhibitor.deactivated {
+  color: @black_b
+}
+
 #cpu,
 #memory,
 #temperature,
@@ -87,51 +99,43 @@ window#waybar {
 #backlight,
 #bluetooth,
 #pulseaudio,
-#battery,
-#tray {
-  padding: 0 6px;
+#battery {
+  padding: 0 10px;
   margin: 0 3px;
 }
 
-#battery.charging, #battery.plugged {
+#battery.charging,
+#battery.plugged {
   color: @green;
 }
 
-#battery.warning {
+#battery.warning,
+#memory.warning,
+#cpu.warning,
+#temperature.critical,
+#pulseaudio.muted {
   color: @yellow;
 }
 
-@keyframes blink {
-  to {
-    color: @white_b;
-  }
-}
-
-/* Using steps() instead of linear as a timing function to limit cpu usage */
-#battery.critical:not(.charging) {
-  animation-name: blink;
-  animation-duration: 0.5s;
-  animation-timing-function: steps(12);
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+#battery.critical,
+#memory.critical,
+#cpu.critical {
   color: @red;
 }
 
 /* If workspaces is the leftmost module, omit left margin */
-.modules-left > widget:first-child > #workspaces {
+.modules-left>widget:first-child>#workspaces {
   margin-left: 0;
 }
 
-/* If workspaces/battery/tray is the rightmost module, omit right margin */
-.modules-right > widget:last-child > #workspaces, #battery, #tray {
-  margin-right: 0;
+#tray {
+  margin-right: 5px;
 }
 
-
-#tray > .passive {
+#tray>.passive {
   -gtk-icon-effect: dim;
 }
 
-#tray > .needs-attention {
+#tray>.needs-attention {
   -gtk-icon-effect: highlight;
 }

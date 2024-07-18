@@ -299,9 +299,9 @@ bar {
 
 # class                 border backgr text indictr child_border
 client.focused          $bg3   $bg2   $fg1   $bg2 $bg2
-client.focused_inactive $bg2   $bg0_s $gray  $bg2 $bg0_s
-client.unfocused        $bg2   $bg0_s $gray  $bg2 $bg0_s
-client.urgent           $red   $red   $white $red  $red
+client.focused_inactive $bg2   $bg0_s $gray  $bg0_s $bg0_s
+client.unfocused        $bg2   $bg0_s $gray  $bg0_s $bg0_s
+client.urgent           $red   $red   $white $black  $red
 
 # smaller window borders
 for_window [all] border pixel 1

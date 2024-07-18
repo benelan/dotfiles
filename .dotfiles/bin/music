@@ -119,7 +119,10 @@ playerctl_get_metadata() {
         cp "$album_cover_backup" "$album_cover"
     fi
 
-    title="$(playerctl --player="$source" metadata --format "{{title}}" | cut -c1-35)"
+    title="$(
+        playerctl --player="$source" metadata --format "{{title}}" | cut -c1-35 |
+            sed -r 's/\s?(online free.*|(^|\|\s)Watch)\s?//g'
+    )"
     title="${title:-"Nothing Playing"}"
 
     artist="$(playerctl --player="$source" metadata --format "{{artist}}" | cut -c1-35)"
@@ -272,6 +275,10 @@ $artist"
     )"
 }
 
+print_info() {
+    echo "${artist:+$artist - }$title"
+}
+
 # Parse args and execute {{{1
 main() {
     command="$1"
@@ -288,7 +295,7 @@ main() {
     fi
 
     case $command in
-        info) echo "${artist:+$artist - }$title" ;;
+        info) print_info ;;
         title) echo "$title" ;;
         artist) echo "$artist" ;;
         album) echo "$album" ;;
