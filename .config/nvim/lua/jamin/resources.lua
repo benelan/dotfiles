@@ -65,6 +65,7 @@ M.lsp_servers = {
   "vimls",
   "volar",
   "yamlls",
+  "zk"
 }
 
 M.mason_packages = {

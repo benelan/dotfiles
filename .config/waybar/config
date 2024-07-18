@@ -65,8 +65,8 @@
     },
 
     "clock": {
-        "format": "{:%X   %a %x}",
-        "format-alt": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%R %a %F}",
+        "format-alt": "{:%I:%M %p  %a %x}",
         "format-alt-click": "click-right",
         "tooltip": false
     },
@@ -77,8 +77,9 @@
             "critical": 75
         },
         "format": "",
-        "format-warning": "CPU: {usage}%",
-        "format-critical": "CPU: {usage}%",
+        // "format-alt": "CPU: {usage}%",
+        "format-warning": " {usage}%",
+        "format-critical": " {usage}%",
         "format-alt-click": "click-right"
     },
     "memory": {
@@ -87,8 +88,9 @@
             "critical": 75
         },
         "format": "",
-        "format-warning": "MEM: {percentage}%",
-        "format-critical": "MEM: {percentage}%",
+        "format-warning": "󰆼 {percentage}%",
+        "format-critical": "󰆼 {percentage}%",
+        // "format-alt": "CPU: {percentage}%",
         "format-alt-click": "click-right",
         "tooltip-format": "{avail:0.1f} GiB available, used {used:0.1f}/{total:0.1f} GiB"
     },
@@ -97,8 +99,9 @@
         // "thermal-zone": 2,
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
         "critical-threshold": 70,
-        "format-critical": "TEMP: {temperatureC}°C",
+        "format-critical": "󰸁 {temperatureC}°C",
         "format": "",
+        // "format-alt": "TEMP: {temperatureC}°C",
         "format-alt-click": "click-right",
         "format-icons": {
             "default": ["󱃃 ", "󰔏 ", "󱃂 "]
@@ -173,6 +176,9 @@
     },
 
     "pulseaudio": {
+        "states": {
+            "warning": 100
+        },
         "scroll-step": 1,
         "format-alt": "VOL: {volume}%",
         "format": "{icon}{volume}%",
@@ -189,7 +195,7 @@
             // "speaker": "󰓃 ",
             "hifi": "󰤽 ",
             "hdmi": "󰽟 ",
-            "default": ["󰕿 ", "󰖀 ", "󰕾 "]
+            "default": ["󰖀 ", "󰕾 "]
         },
         "on-click": "pavucontrol"
     },
@@ -207,20 +213,20 @@
     },
 
     "custom/cmus": {
-        "format": "CMUS: {}",
-        "format-alt": "󰝚 {}",
+        "format": "󰝚 {}",
+        "format-alt": "CMUS: {}",
         "format-alt-click": "click-right",
         //"max-length": 15,
         "interval": 10,
         "exec": "cmus-remote -C \"format_print '%a - %t'\"",
-        "exec-if": "pgrep cmus",
+        "exec-if": "pgrep -x cmus",
         "on-click": "cmus-remote -u",
         "escape": true
     },
 
     "custom/music": {
         "format": "󰴸 {}",
-        "format-alt": "󰴸              ",
+        "format-alt": "󰴸                           ",
         "interval": 10,
         "tooltip": false,
         "format-alt-click": "click-right",

@@ -31,6 +31,14 @@ aliases:
         selected=\"\$(gh fzf milestone)\"
         [ -n \"\$selected\" ] && gh issue edit --milestone \"\$selected\" {1}
       )'
+      --bind='alt-.:reload(
+        current=\$(
+          gh api --paginate --jq \"map(select(.due_on != null)) | .[].number\" \
+            \"/repos/{owner}/{repo}/milestones?sort=due_on&state=open&direction=asc\" |
+          head -n1
+        )
+        eval \"\$FZF_DEFAULT_COMMAND \${current:+--milestone \$current}\"
+      )'
     " gh fzf issue $*
 
   p: |
@@ -41,7 +49,7 @@ aliases:
       --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
       --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
       --bind='alt-_:execute(gh pr review --request-changes {1})+refresh-preview'
-      " gh fzf pr $*
+    " gh fzf pr $*
 
   itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i $*"
   ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p $*"
@@ -65,6 +73,14 @@ aliases:
 
   dl: '!GH_REPO="${3:-$GH_REPO}" gh api -H "accept: application/vnd.github.v3.raw" "repos/{owner}/{repo}/contents/$1" > "${2:-$1}"'
 
+  toreview: '!gh p -S\"review:required -is:draft\"'
+
+  todo: |
+    !gh i --assignee @me --milestone \'"$(
+        gh api --paginate --jq 'map(select(.due_on != null)) | .[].number' \
+            '/repos/{owner}/{repo}/milestones?sort=due_on&state=open&direction=asc' |
+            head -n1
+    )"\'
+
   # https://github.com/meiji163/gh-notify
-  n: |
-    !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --no-hscroll" gh notify "$@"
+  n: '!FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --no-hscroll" gh notify "$@"'

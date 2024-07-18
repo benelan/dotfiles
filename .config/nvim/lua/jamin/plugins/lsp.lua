@@ -86,14 +86,17 @@ return {
       ----> LSP - server setup
 
       for _, server in pairs(res.lsp_servers) do
-        local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
-        local server_opts = vim.tbl_deep_extend(
-          "force",
-          { capabilities = capabilities },
-          has_user_opts and user_opts or {}
-        )
+        -- the zk.nvim plugin sets up the client itself
+        if server ~= "zk" then
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
+          local server_opts = vim.tbl_deep_extend(
+            "force",
+            { capabilities = capabilities },
+            has_user_opts and user_opts or {}
+          )
 
-        lspconfig[server].setup(server_opts)
+          lspconfig[server].setup(server_opts)
+        end
       end
 
       -------------------------------------------------------------------------------
@@ -120,16 +123,15 @@ return {
           end
 
           -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier, shfmt, stylua (using null-ls, efm-langserver, conform, etc.)
+          -- e.g.  prettier and stylua (using null-ls, efm-langserver, conform, etc.)
           if
-            vim.tbl_contains(
-              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
-              client.name
-            )
+            vim.tbl_contains({ "tsserver", "eslint", "jsonls", "html", "lua_ls" }, client.name)
           then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
-          elseif client.supports_method("textDocument/formatting") then
+          end
+
+          if client.supports_method("textDocument/formatting") then
             -- if the LSP server has formatting capabilities, use it for formatexpr
             vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
             bufmap(
@@ -211,7 +213,7 @@ return {
                   context = { only = { "source", "refactor", "quickfix" } },
                 })
               end,
-              "Code action (only source and quickfix)"
+              "Code action (only, refactor, and quickfix)"
             )
           end
         end,
@@ -301,12 +303,9 @@ return {
           diagnostics.markdownlint.with({
             extra_args = {
               "--disable",
-              "blanks-around-fences",
-              "no-duplicate-heading",
               "line-length",
               "first-line-heading",
               "no-inline-html",
-              "single-title",
             },
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
@@ -329,7 +328,6 @@ return {
 
           formatting.fixjson.with({ extra_filetypes = { "jsonc", "json5" } }),
           formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
-          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.stylua,
           formatting.trim_whitespace,
         },

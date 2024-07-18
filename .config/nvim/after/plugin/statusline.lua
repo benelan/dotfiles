@@ -1,5 +1,7 @@
 local icons = require("jamin.resources").icons
 
+vim.opt.statusline = "%!v:lua.JaminStatusLine()"
+
 local highlights = {
   section_flags = "TabLineSel",
   section_context = "TabLineFill",
@@ -7,8 +9,6 @@ local highlights = {
   git_added = "StatusLineGitAdd",
   git_changed = "StatusLineGitChange",
   git_removed = "StatusLineGitDelete",
-  dap = "StatusLineDap",
-  lazy = "StatusLineLazy",
 }
 
 ---Format a highlight group for the statusline.
@@ -128,4 +128,16 @@ function JaminStatusLine()
     .. "  %v:[%l/%L]  "
 end
 
-vim.opt.statusline = "%!v:lua.JaminStatusLine()"
+-- update the git and diagnostic info in the statusline
+local augroup = vim.api.nvim_create_augroup("jamin_update_statusline", {})
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+  group = augroup,
+  command = "redrawstatus",
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = { "GitSignsUpdate", "FugitiveChanged" },
+  group = augroup,
+  command = "redrawstatus",
+})

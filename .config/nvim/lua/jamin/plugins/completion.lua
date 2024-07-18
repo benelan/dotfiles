@@ -57,7 +57,11 @@ return {
       return {
         snippet = {
           expand = function(args)
-            if has_ls then ls.lsp_expand(args.body) end
+            if has_ls then
+              ls.lsp_expand(args.body)
+            else
+              vim.snippet.expand(args.body)
+            end
           end,
         },
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
@@ -66,7 +70,7 @@ return {
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
+          ["<C-t>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
             { "i", "s", "c" }
@@ -79,21 +83,15 @@ return {
           ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "s" }),
 
           -- go to the next/previous completion result
-          ["<C-n>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i", "s", "c" }),
+          ["<C-n>"] = cmp.mapping(
+            cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+            { "i", "s", "c" }
+          ),
 
-          ["<C-p>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i", "s", "c" }),
+          ["<C-p>"] = cmp.mapping(
+            cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+            { "i", "s", "c" }
+          ),
         },
 
         window = {
@@ -110,6 +108,7 @@ return {
               buffer = i("BUF"),
               luasnip = i("SNIP"),
               dictionary = i("DICT"),
+              git = i("GIT"),
               nvim_lsp = i("LSP"),
               nvim_lsp_signature_help = i("SIG"),
               path = i("PATH"),
@@ -177,6 +176,7 @@ return {
           { name = "luasnip", group_index = 1 },
           { name = "nvim_lsp", group_index = 1 },
           { name = "path", group_index = 1 },
+          { name = "git", group_index = 1 },
           { name = "buffer", group_index = 1, keyword_length = 2 },
           { name = "tmux", group_index = 1, keyword_length = 2 },
           -- only show ripgrep/spell/dictionary if there are no results from other sources
@@ -249,6 +249,7 @@ return {
         {
           "<C-h>",
           function()
+            local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
 
             if ls.jumpable(-1) then
@@ -262,6 +263,8 @@ return {
               end
             elseif vim.g.codeium_enabled then
               vim.api.nvim_feedkeys(vim.fn["codeium#Clear"](), "n", true)
+            elseif has_cmp and cmp.visible() then
+              cmp.abort()
             else
               return vim.lsp.buf.signature_help()
             end
@@ -273,6 +276,7 @@ return {
         {
           "<C-l>",
           function()
+            local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
 
             if ls.jumpable(1) then
@@ -284,6 +288,8 @@ return {
 ]]
               vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
               vim.g.codeium_tab_fallback = nil
+            elseif has_cmp and cmp.visible() then
+              cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
             else
               -- fallback to "redrawing" the buffer like readline's mapping
               vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")
@@ -360,6 +366,7 @@ return {
         },
       })
     end,
+
     keys = {
       {
         "<Tab>",

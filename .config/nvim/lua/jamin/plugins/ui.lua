@@ -43,8 +43,6 @@ return {
         hl("DiffText", palette.fg0, palette.bg_visual_yellow)
 
         hl("StatusLineState", palette.none, palette.bg3)
-        hl("StatusLineLazy", palette.purple, palette.bg3)
-        hl("StatusLineDap", palette.aqua, palette.bg3)
 
         hl("StatusLineDiagnosticSev1", palette.red, palette.bg3) -- error
         hl("StatusLineDiagnosticSev2", palette.yellow, palette.bg3) -- warning
