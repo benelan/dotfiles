@@ -120,13 +120,13 @@ playerctl_get_metadata() {
     fi
 
     title="$(
-        playerctl --player="$source" metadata --format "{{title}}" | cut -c1-35 |
+        playerctl --player="$source" metadata --format "{{title}}" |
             sed -r 's/\s?(online free.*|(^|\|\s)Watch)\s?//g'
     )"
     title="${title:-"Nothing Playing"}"
 
-    artist="$(playerctl --player="$source" metadata --format "{{artist}}" | cut -c1-35)"
-    album="$(playerctl --player="$source" metadata --format "{{album}}" | cut -c1-35)"
+    artist="$(playerctl --player="$source" metadata --format "{{artist}}")"
+    album="$(playerctl --player="$source" metadata --format "{{album}}")"
 
     status="$(playerctl --player="$source" status)"
     status="${status:-"Stopped"}"
@@ -144,9 +144,9 @@ mpd_get_metadata() {
         -vf scale=500:500 "${album_cover}" -y ||
         cp "$album_cover_backup" "$album_cover"
 
-    title="$(mpc -f %title% current | cut -c1-35)"
-    artist="$(mpc -f %artist% current | cut -c1-35)"
-    album="$(mpc -f %album% current | cut -c1-35)"
+    title="$(mpc -f %title% current)"
+    artist="$(mpc -f %artist% current)"
+    album="$(mpc -f %album% current)"
 
     stat="$(mpc status | head -2 | head -n1 | cut -c2-7)"
     status="Stopped"
@@ -264,9 +264,9 @@ rofi_picker() {
     fi
 
     rofi_metadata="$status: $playlist
-$title
-$album
-$artist"
+$(cut -c1-35 <<<"$title")
+$(cut -c1-35 <<<"$album")
+$(cut -c1-35 <<<"$artist")"
 
     selected="$(
         echo "$rofi_list" |

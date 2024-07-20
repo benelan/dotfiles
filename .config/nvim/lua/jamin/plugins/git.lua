@@ -47,15 +47,15 @@ return {
       "Gvsplit", "Gwq", "Gwrite"
     },
     config = function()
-      vim.api.nvim_create_autocmd({ "User" }, {
-        pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate" },
-        group = vim.api.nvim_create_augroup("jamin_fugitive_reload_status", {}),
-        callback = function(args)
-          if vim.g.loaded_fugitive and vim.fn.exists("*FugitiveDidChange") then
-            vim.fn["FugitiveDidChange"](args.data and args.data.buffer or nil)
-          end
-        end,
-      })
+      -- vim.api.nvim_create_autocmd({ "User" }, {
+      --   pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate" },
+      --   group = vim.api.nvim_create_augroup("jamin_fugitive_reload_status", {}),
+      --   callback = function(args)
+      --     if vim.g.loaded_fugitive and vim.fn.exists("*FugitiveDidChange") then
+      --       vim.fn["FugitiveDidChange"](args.data and args.data.buffer or nil)
+      --     end
+      --   end,
+      -- })
     end,
   },
 

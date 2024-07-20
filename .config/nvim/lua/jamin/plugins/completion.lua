@@ -131,7 +131,9 @@ return {
                   )
               end
             else
-              vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
+              if vim_item.kind then
+                vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
+              end
 
               -- use LSP kind icons for non-path completion items and specify a fallback icon
               if vim.g.use_devicons then

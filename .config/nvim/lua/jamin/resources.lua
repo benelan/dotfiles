@@ -322,7 +322,7 @@ M.icons = {
     changed = M.i("󱗝 ", "∗"),
     removed = M.i("󰛲 ", "‒"),
   },
-  border = "rounded", -- i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
+  border = M.i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
 }
 
 return M

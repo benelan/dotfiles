@@ -111,7 +111,7 @@ export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 if supports go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/.go"
-    export GOFLAGS="-trimpath"
+    export GOFLAGS="-trimpath -buildvcs=false"
 fi
 
 # javascript {{{1
@@ -172,11 +172,11 @@ supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 if supports fzf; then
     export FZF_DEFAULT_OPTS='
         --cycle --reverse --highlight-line --info=right
-        --preview-window="right,border-left,wrap,<75(down,border-top,wrap)"
+        --preview-window="right,wrap,border-thinblock,<75(down)"
         --bind "ctrl-v:toggle-preview,ctrl-x:toggle-sort"
         --bind "alt-up:preview-page-up,alt-down:preview-page-down,alt-shift-up:preview-top,alt-shift-down:preview-bottom"
         --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,ctrl-u:half-page-up,ctrl-d:half-page-down"
-        --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,hl:#d3869b:bold,hl+:#d3869b"
+        --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,preview-bg:#1d2021,hl:#d3869b:bold,hl+:#d3869b"
         --color "info:#83a598,prompt:#bdae93,query:#d3869b:bold,disabled:#b16286:bold"
         --color "spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#928374,label:#928374"
     '

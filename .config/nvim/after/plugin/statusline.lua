@@ -137,7 +137,7 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
 })
 
 vim.api.nvim_create_autocmd("User", {
-  pattern = { "GitSignsUpdate", "FugitiveChanged" },
+  pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate", "FugitiveChanged" },
   group = augroup,
   command = "redrawstatus",
 })

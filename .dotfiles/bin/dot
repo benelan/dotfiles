@@ -1117,7 +1117,7 @@ install_ubuntu_gh() {
         gh extension install benelan/gh-fzf
     fi
     # fork of https://github.com/meiji163/gh-notify
-    gh extension install benelan/gh-fzf
+    gh extension install benelan/notify-fzf
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

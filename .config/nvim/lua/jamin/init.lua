@@ -65,6 +65,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local res = require("jamin.resources")
+
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   defaults = { lazy = true },
@@ -73,7 +75,7 @@ require("lazy").setup("jamin.plugins", {
   dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
-    border = "rounded",
+    border = res.icons.border,
     backdrop = 100,
     icons = vim.g.use_devicons and {} or {
       cmd = "",

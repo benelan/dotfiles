@@ -109,10 +109,23 @@ return {
 
           if client == nil then return end
 
+          -- disable formatting for some LSP servers in favor of better standalone programs
+          -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)
+          if
+            vim.tbl_contains(
+              { "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
+              client.name
+            )
+          then
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+          end
+
           -- setup stuff specific to an LSP server
           local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. client.name)
           if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args.buf) end
 
+          -- setup lsp keymaps
           local bufmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, {
               buffer = args.buf,
@@ -122,14 +135,9 @@ return {
             })
           end
 
-          -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier and stylua (using null-ls, efm-langserver, conform, etc.)
-          if
-            vim.tbl_contains({ "tsserver", "eslint", "jsonls", "html", "lua_ls" }, client.name)
-          then
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          end
+          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
+          bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
+          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
           if client.supports_method("textDocument/formatting") then
             -- if the LSP server has formatting capabilities, use it for formatexpr
@@ -142,11 +150,19 @@ return {
             )
           end
 
-          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
-          bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
-          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
-
           if client.supports_method("textDocument/definition") then
+            local function peek_definition()
+              return vim.lsp.buf_request(
+                args.buf,
+                "textDocument/definition",
+                vim.lsp.util.make_position_params(),
+                function(_, result)
+                  if result == nil or vim.tbl_isempty(result) then return nil end
+                  vim.lsp.util.preview_location(result[1], {})
+                end
+              )
+            end
+            bufmap("n", "grp", peek_definition, "LSP peek definition")
             bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
           end
 
@@ -294,9 +310,7 @@ return {
           diagnostics.hadolint,
           diagnostics.actionlint.with({
             runtime_condition = function()
-              return vim.api
-                .nvim_buf_get_name(vim.api.nvim_get_current_buf())
-                :match("github/workflows") ~= nil
+              return string.match(vim.api.nvim_buf_get_name(0), "github/workflows")
             end,
           }),
 
@@ -327,6 +341,7 @@ return {
           }),
 
           formatting.fixjson.with({ extra_filetypes = { "jsonc", "json5" } }),
+          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
           formatting.stylua,
           formatting.trim_whitespace,
