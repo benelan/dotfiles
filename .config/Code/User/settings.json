@@ -48,16 +48,13 @@
   "search.smartCase": true,
   "search.exclude": {
     "**/node_modules": true,
-    "**/bower_components": true,
-    "**/*.code-search": true,
     "**/build": true,
     "**/dist": true,
     "*.min.js": true
   },
-  "gruvboxMaterial.darkPalette": "original",
-  "gruvboxMaterial.darkWorkbench": "high-contrast",
-  "gruvboxMaterial.lightWorkbench": "high-contrast",
   "workbench.colorTheme": "Gruvbox Material Dark",
+  "gruvboxMaterial.darkPalette": "original",
+  "gruvboxMaterial.darkWorkbench": "flat",
   "eslint.workingDirectories": [
     {
       "mode": "auto"
@@ -100,21 +97,21 @@
       "commands": ["workbench.explorer.fileView.focus"]
     },
     {
-      "before": ["leader", "w"],
-      "commands": ["workbench.action.files.save"]
-    },
-    {
       "before": ["Z", "Z"],
       "commands": [":wq"]
     },
     {
-      "before": ["<leader>", "/"],
+      "before": ["Z", "Q"],
+      "commands": [":q!"]
+    },
+    {
+      "before": ["g", "c"],
       "commands": ["editor.action.commentLine"]
     }
   ],
   "vim.visualModeKeyBindingsNonRecursive": [
     {
-      "before": ["<leader>", "/"],
+      "before": ["g", "c"],
       "commands": ["editor.action.commentLine"]
     }
   ],

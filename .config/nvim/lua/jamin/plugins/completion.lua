@@ -76,7 +76,7 @@ return {
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<C-z>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
+          ["<C-t>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
             { "i", "s", "c" }
@@ -89,21 +89,15 @@ return {
           ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "s" }),
 
           -- go to the next/previous completion result
-          ["<C-n>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i", "s", "c" }),
+          ["<C-n>"] = cmp.mapping(
+            cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+            { "i", "s", "c" }
+          ),
 
-          ["<C-p>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i", "s", "c" }),
+          ["<C-p>"] = cmp.mapping(
+            cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+            { "i", "s", "c" }
+          ),
 
           -- Next/previous result, but use Copilot or Codeium instead if installed
           ["<C-j>"] = cmp.mapping(function(fallback)
@@ -181,7 +175,11 @@ return {
                 if tw_hl_group then vim_item.kind_hl_group = tw_hl_group end
               end
 
-              vim_item.menu_hl_group = tw_hl_group or ("CmpItemKind" .. vim_item.kind)
+              if tw_hl_group then
+                vim_item.menu_hl_group = tw_hl_group
+              elseif vim_item.kind then
+                vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
+              end
 
               -- use LSP kind icons for non-path completion items and specify a fallback icon
               if vim.g.use_devicons then
@@ -320,8 +318,9 @@ return {
         {
           "<C-h>",
           function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+            local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
 
             if ls.jumpable(-1) then
               ls.jump(-1)
@@ -334,6 +333,8 @@ return {
               end
             elseif vim.g.codeium_enabled then
               vim.api.nvim_feedkeys(vim.fn["codeium#Clear"](), "n", true)
+            elseif has_cmp and cmp.visible() then
+              cmp.abort()
             else
               return vim.lsp.buf.signature_help()
             end
@@ -345,8 +346,9 @@ return {
         {
           "<C-l>",
           function()
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
+            local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
+            local has_copilot, copilot = pcall(require, "copilot.suggestion")
 
             if ls.jumpable(1) then
               ls.jump(1)
@@ -357,6 +359,8 @@ return {
 ]]
               vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
               vim.g.codeium_tab_fallback = nil
+            elseif has_cmp and cmp.visible() then
+              cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
             else
               -- fallback to "redrawing" the buffer like readline's mapping
               vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")

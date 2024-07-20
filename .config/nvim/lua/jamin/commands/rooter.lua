@@ -94,28 +94,30 @@ function M.worktree()
   if vim.v.shell_error == 0 and vim.fn.isdirectory(worktree_root) == 1 then return worktree_root end
 end
 
--- Change directory to project root using LSP or file markers in `root_names`
-vim.api.nvim_create_user_command("Rcd", function()
-  local root = M.project()
-  if root then vim.fn.chdir(root) end
-end, { desc = "Change directory to project/lsp root" })
+M.setup = function()
+  -- Change directory to project root using LSP or file markers in `root_names`
+  vim.api.nvim_create_user_command("Rcd", function()
+    local root = M.project()
+    if root then vim.fn.chdir(root) end
+  end, { desc = "Change directory to project/lsp root" })
 
--- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
--- This is useful when working with monorepos, where the project root is not always the git root.
-vim.api.nvim_create_user_command("Wcd", function()
-  local root = M.worktree()
-  if root then vim.fn.chdir(root) end
-end, { desc = "Change directory to git work tree root" })
+  -- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
+  -- This is useful when working with monorepos, where the project root is not always the git root.
+  vim.api.nvim_create_user_command("Wcd", function()
+    local root = M.worktree()
+    if root then vim.fn.chdir(root) end
+  end, { desc = "Change directory to git work tree root" })
 
--- keymaps for the user commands
-vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
-vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project (lsp) root" })
-vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
+  -- keymaps for the user commands
+  vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
+  vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project (lsp) root" })
+  vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
 
--- automatically change directory to project root
-vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
-  group = vim.api.nvim_create_augroup("jamin_rooter", {}),
-  callback = M.project,
-})
+  -- automatically change directory to project root
+  vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
+    group = vim.api.nvim_create_augroup("jamin_rooter", {}),
+    callback = M.project,
+  })
+end
 
 return M

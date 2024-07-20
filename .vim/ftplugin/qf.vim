@@ -16,25 +16,24 @@ if b:qf_isLoc == 1
     nnoremap <silent> <buffer> ) :lnewer<CR>
     nnoremap <silent> <buffer> O <CR>:lclose<CR>
     " begin search and replace
-    nnoremap <buffer> r :ldo s/// \| update<C-Left><C-Left><Left><Left><Left>
+    nnoremap <buffer> r :ldo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
 else
     nnoremap <silent> <buffer> ( :colder<CR>
     nnoremap <silent> <buffer> ) :cnewer<CR>
     nnoremap <buffer> ]f :cnfile<CR>
     nnoremap <buffer> [f :cpfile<CR>
     nnoremap <silent> <buffer> O <CR>:cclose<CR>
-    " begin search and replace
-    nnoremap <buffer> r :cdo s/// \| update<C-Left><C-Left><Left><Left><Left>
+    nnoremap <buffer> r :cdo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
 endif
 
 " open entry in a new vertical window
-nnoremap <silent> <expr> <buffer> v &splitright ? "\<C-w>\<CR>\<C-w>L\<C-w>p\<C-w>J\<C-w>p" : "\<C-w>\<CR>\<C-w>H\<C-w>p\<C-w>J\<C-w>p"
+nnoremap <silent> <expr> <buffer> <C-v> &splitright ? "\<C-w>\<CR>\<C-w>L\<C-w>p\<C-w>J\<C-w>p" : "\<C-w>\<CR>\<C-w>H\<C-w>p\<C-w>J\<C-w>p"
 
 " open entry in a new horizontal window and move quickfix to the bottom
-nnoremap <silent> <buffer> s <C-w><CR><C-w>p<C-w>J<C-w>p
+nnoremap <silent> <buffer> <C-s> <C-w><CR><C-w>p<C-w>J<C-w>p
 
 " open entry in a new tab
-nnoremap <silent> <buffer> t <C-w><CR><C-w>T
+nnoremap <silent> <buffer> <C-t> <C-w><CR><C-w>T
 
 " open entry and come back
 nnoremap <silent> <buffer> o <CR><C-w>p
@@ -63,11 +62,11 @@ endfunction
 nnoremap <silent><buffer>dd :call <SID>qfDelete(bufnr())<CR>
 vnoremap <silent><buffer>d  :call <SID>qfDelete(bufnr())<CR>
 
-function! s:adjustWindowHeight(minheight, maxheight)
-  exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
-endfunction
-
-call <SID>adjustWindowHeight(2, 10)
+" function! s:adjustWindowHeight(minheight, maxheight)
+"   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
+" endfunction
+"
+" call <SID>adjustWindowHeight(2, 10)
 
 " Always move the cursor to the current quickfix item when entering the buffer.
-"au BufEnter <buffer> nested exe getqflist({'id': 0, 'idx': 0}).idx
+" au BufEnter <buffer> nested exe getqflist({'id': 0, 'idx': 0}).idx

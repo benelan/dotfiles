@@ -56,11 +56,11 @@
     "command": "workbench.action.focusBelowGroup"
   },
   {
-    "key": "alt+\\",
+    "key": "alt+v",
     "command": "workbench.action.splitEditorRight"
   },
   {
-    "key": "alt+-",
+    "key": "alt+s",
     "command": "workbench.action.splitEditorDown"
   },
   {

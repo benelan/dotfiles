@@ -210,7 +210,7 @@ return {
             -- initial_mode = "normal",
             mappings = {
               i = { ["<M-x>"] = "delete_buffer" },
-              n = { ["dd"] = "delete_buffer" },
+              n = { ["<M-x>"] = "delete_buffer", ["dd"] = "delete_buffer" },
             },
           },
 

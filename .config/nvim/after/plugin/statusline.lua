@@ -1,6 +1,8 @@
 local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
 
+vim.opt.statusline = "%!v:lua.JaminStatusLine()"
+
 local highlights = {
   section_flags = "TabLineSel",
   section_context = "TabLineFill",
@@ -120,7 +122,7 @@ local function debug_state(fallback)
     local has_dap, dap = pcall(require, "dap")
 
     if has_dap then
-      local dap_status = dap.status()
+      local dap_status = dap.status() ---@diagnostic disable-line: undefined-field
 
       if not vim.tbl_contains({ "", nil }, dap_status) then
         return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
@@ -156,4 +158,16 @@ function JaminStatusLine()
     .. "  %v:[%l/%L]  "
 end
 
-vim.opt.statusline = "%!v:lua.JaminStatusLine()"
+-- update the git and diagnostic info in the statusline
+local augroup = vim.api.nvim_create_augroup("jamin_update_statusline", {})
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+  group = augroup,
+  command = "redrawstatus",
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate", "FugitiveChanged" },
+  group = augroup,
+  command = "redrawstatus",
+})

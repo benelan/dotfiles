@@ -814,14 +814,46 @@ install_ubuntu_apt-gui() {
 ## https://code.visualstudio.com/docs/setup/linux
 INSTALL_UBUNTU_VSCODE_DOC="Install Visual Studio Code text editor"
 install_ubuntu_vscode() {
-    _has code && return
-    deb="$CACHE_DIR/vscode.deb"
+    if _has code; then
+        extensions=(
+            # "VisualStudioExptTeam.intellicode-api-usage-examples"
+            # "VisualStudioExptTeam.vscodeintellicode"
+            "asvetliakov.vscode-neovim"
+            # "bradlc.vscode-tailwindcss"
+            # "christian-kohler.path-intellisense"
+            # "dbaeumer.vscode-eslint"
+            # "eamodio.gitlens"
+            # "esbenp.prettier-vscode"
+            # "foam.foam-vscode"
+            # "formulahendry.auto-close-tag"
+            # "humao.rest-client"
+            # "mechatroner.rainbow-csv"
+            # "ms-azuretools.vscode-docker"
+            # "ms-vscode-remote.remote-containers"
+            # "ritwickdey.LiveServer"
+            "sainnhe.gruvbox-material"
+            # "streetsidesoftware.code-spell-checker"
+            # "stylelint.vscode-stylelint"
+            # "sumneko.lua"
+            # "svelte.svelte-vscode"
+            # "timonwong.shellcheck"
+            # "vscodevim.vim"
+            # "yzhang.markdown-all-in-one"
+        )
 
-    curl -ssLo "$deb" \
-        "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+        for extension in "${extensions[@]}"; do
+            code --install-extension "$extension"
+        done
+        unset extension
+    else
+        deb="$CACHE_DIR/vscode.deb"
 
-    sudo apt-get install -qq "$deb" || true
-    unset deb
+        curl -ssLo "$deb" \
+            "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+
+        sudo apt-get install -qq "$deb" || true
+        unset deb
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1085,7 +1117,7 @@ install_ubuntu_gh() {
         gh extension install benelan/gh-fzf
     fi
     # fork of https://github.com/meiji163/gh-notify
-    gh extension install benelan/gh-fzf
+    gh extension install benelan/notify-fzf
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
