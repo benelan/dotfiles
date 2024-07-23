@@ -263,7 +263,7 @@
 
     # dmenu path.
     # dmenu = /usr/bin/dmenu -i -fn IosevkaNerdFont-14 -sb 'dark slate gray' -p dunst:
-    dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/launchers/type-1/style-10.rasi
+    dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/launchers/type-1/style-11.rasi
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/sensible-browser

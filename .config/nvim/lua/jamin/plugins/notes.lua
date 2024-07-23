@@ -27,6 +27,7 @@ return {
       return {
         filetypes = { md = true, rmd = true, mdx = true, markdown = true },
         to_do = { symbols = { " ", "x" } },
+        silent = true,
         links = {
           style = link_style,
           transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
@@ -45,7 +46,7 @@ return {
           MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>P" },
           MkdnToggleToDo = { { "n", "v" }, "<leader>m<Tab>" },
           MkdnUpdateNumbering = { "n", "<leader>mn" },
-          MkdnMoveSource = { "n", "<leader>mR" },
+          MkdnMoveSource = { "n", "<leader>mrn" },
           MkdnTableNewRowBelow = { "n", "<leader>mir" },
           MkdnTableNewRowAbove = { "n", "<leader>miR" },
           MkdnTableNewColAfter = { "n", "<leader>mic" },

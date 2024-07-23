@@ -114,22 +114,38 @@ return {
       {
         "]c",
         function()
-          if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("next") end)
-          return "<Ignore>"
+          if vim.wo.diff or vim.tbl_contains({ "fugitive", "git" }, vim.bo.filetype) then
+            vim.api.nvim_feedkeys(
+              vim.api.nvim_replace_termcodes("]c", true, false, true),
+              "n",
+              false
+            )
+          elseif vim.bo.filetype == "gitcommit" then
+            vim.fn.search("^@@", "W")
+          else
+            vim.schedule(function() require("gitsigns").nav_hunk("next") end)
+          end
         end,
-        expr = true,
         mode = "n",
         desc = "Next hunk (gitsigns)",
       },
       {
         "[c",
         function()
-          if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
+          if vim.wo.diff then
+            vim.api.nvim_feedkeys(
+              vim.api.nvim_replace_termcodes("[c", true, false, true),
+              "n",
+              false
+            )
+          end
+          if vim.bo.filetype == "gitcommit" then
+            vim.fn.search("^@@", "Wb")
+          else
+            vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
+          end
           return "<Ignore>"
         end,
-        expr = true,
         mode = "n",
         desc = "Previous hunk (gitsigns)",
       },
@@ -230,6 +246,11 @@ return {
         "<leader>hb",
         function() require("gitsigns").blame_line({ full = true }) end,
         desc = "Git blame line (gitsigns)",
+      },
+      {
+        "<leader>hB",
+        function() require("gitsigns").blame() end,
+        desc = "Git blame buffer (gitsigns)",
       },
       {
         "<leader>htb",

@@ -7,8 +7,6 @@
 # Mod1 is Alt, Mod4 is Super
 set $mod Mod4
 
-set $lock 'i3lock -efc 000000 --nofork'
-
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "01"
@@ -153,7 +151,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exiting i3 will end the X session, are you sure?' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # lock and suspend
-bindsym $mod+Escape exec loginctl lock session
+bindsym $mod+Escape exec loginctl lock-session
 bindsym $mod+Shift+Escape exec systemctl suspend
 
 # resize window (you can also use the mouse for that)
@@ -306,6 +304,7 @@ client.urgent           $red   $red   $white $black  $red
 # smaller window borders
 for_window [all] border pixel 1
 
+focus_follows_mouse no
 
 ### Startup processes {{{1
 #
@@ -330,7 +329,7 @@ exec --no-startup-id blueman-applet
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- $lock
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -efc 000000 --nofork
 
 # Idle hook for locking session
 # https://gitlab.com/jD91mZM2/xidlehook

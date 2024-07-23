@@ -26,10 +26,21 @@ return {
   {
     "petertriho/cmp-git",
     ft = { "markdown", "gitcommit", "octo" },
-    opts = {
-      filetypes = { "markdown", "gitcommit", "octo" },
-      github = { issues = { state = "all" }, pull_requests = { state = "all" } },
-    },
+    opts = { filetypes = { "markdown", "gitcommit", "octo" } },
+    config = function(_, opts)
+      require("cmp_git").setup(opts)
+
+      -- The gh cli creates markdown files in `/tmp` when creating/editing issues/prs/comments. Not
+      -- sure why, but cwd ends up being `/tmp` when gh opens the editor. That prevents cmp-git from
+      -- working, since it doesn't know the repo to query for completion items.
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "markdown" },
+        group = vim.api.nvim_create_augroup("jamin_git_cmp_gh_hack", {}),
+        callback = function(ev)
+          if string.match(ev.file, "/tmp/%d+%.md") then vim.cmd.cd("-") end
+        end,
+      })
+    end,
   },
 
   -----------------------------------------------------------------------------
@@ -178,7 +189,21 @@ return {
           { name = "luasnip", group_index = 1 },
           { name = "nvim_lsp", group_index = 1 },
           { name = "path", group_index = 1 },
-          { name = "git", group_index = 1 },
+          {
+            name = "git",
+            entry_filter = function(_, ctx)
+              if not ctx.filetype == "markdown" then return true end
+
+              local bufpath = vim.api.nvim_buf_get_name(ctx.bufnr)
+              local bufname = string.lower(vim.fs.basename(bufpath))
+              local enable_files = { "contributing.md", "changelog.md", "readme.md" }
+
+              return vim.list_contains(enable_files, bufname)
+                -- the gh cli creates files in /tmp when editing issues/prs/comments
+                or string.match(bufpath, "/tmp/%d+%.md")
+            end,
+            group_index = 1,
+          },
           { name = "buffer", group_index = 1, keyword_length = 2 },
           { name = "tmux", group_index = 1, keyword_length = 2 },
           -- only show ripgrep/spell/dictionary if there are no results from other sources

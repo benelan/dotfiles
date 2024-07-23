@@ -38,13 +38,11 @@ return {
     opts = {
       multiline_threshold = 1,
       max_lines = 6,
-      mode = "cursor",
-      -- separator = "─",
     },
 
     config = function(_, opts)
       require("treesitter-context").setup(opts)
-      vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+      -- vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
     end,
@@ -67,6 +65,9 @@ return {
   -- syntax tree parser/highlighter engine
   {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+    },
     build = ":TSUpdate",
     event = "BufReadPost",
     -- https://github.com/LazyVim/LazyVim/blob/ae6d8f1a34fff49f9f1abf9fdd8a559c95b85cf3/lua/lazyvim/plugins/treesitter.lua#L10-L19
@@ -76,17 +77,15 @@ return {
       require("nvim-treesitter.query_predicates")
     end,
 
-
     opts = {
       ensure_installed = res.treesitter_parsers,
       indent = { enable = true },
-      autotag = { enable = true },
       query_linter = { enable = true },
 
       highlight = {
         enable = true,
         disable = function(lang, buf) ---@diagnostic disable-line: unused-local
-          local max_filesize = 420 * 1024 -- 420 KB
+          local max_filesize = 500 * 1024 -- 500 KB
           local bufname = vim.api.nvim_buf_get_name(buf)
           local ok, stats = pcall(vim.uv.fs_stat, bufname)
           if ok and stats and stats.size > max_filesize then return true end
