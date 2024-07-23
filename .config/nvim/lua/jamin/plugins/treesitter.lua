@@ -11,10 +11,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- more text objects
-  { "nvim-treesitter/nvim-treesitter-textobjects", lazy = true },
-
-  -----------------------------------------------------------------------------
   -- set commentstring based on treesitter node
   { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
 
@@ -29,13 +25,11 @@ return {
     opts = {
       multiline_threshold = 1,
       max_lines = 6,
-      mode = "cursor",
-      -- separator = "─",
     },
 
     config = function(_, opts)
       require("treesitter-context").setup(opts)
-      vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+      -- vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
       vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
     end,
@@ -58,6 +52,9 @@ return {
   -- syntax tree parser/highlighter engine
   {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+    },
     build = ":TSUpdate",
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     event = "BufReadPost",
@@ -89,7 +86,6 @@ return {
       return {
         ensure_installed = res.treesitter_parsers,
         indent = { enable = true },
-        autotag = { enable = true },
         query_linter = { enable = true },
 
         highlight = {
@@ -185,13 +181,7 @@ return {
 
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
-      vim.schedule(
-        function()
-          require("lazy").load({
-            plugins = { "nvim-treesitter-textobjects", "nvim-treesitter-context" },
-          })
-        end
-      )
+      vim.schedule(function() require("lazy").load({ plugins = { "nvim-treesitter-context" } }) end)
     end,
   },
 }

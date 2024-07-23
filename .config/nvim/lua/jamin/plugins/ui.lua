@@ -172,11 +172,11 @@ return {
         desc = "LSP definitions/references/etc (trouble)",
       },
       {
-        "]d",
+        "]x",
         function()
-          if require("trouble").is_open({ mode = "diagnostics" }) then
+          if require("trouble").is_open({}) then
             ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").next({ mode = "diagnostics", jump = true })
+            require("trouble").next({ jump = true })
           else
             vim.diagnostic.goto_next({ float = true })
           end
@@ -184,11 +184,11 @@ return {
         desc = "Next diagnostic (trouble)",
       },
       {
-        "[d",
+        "[x",
         function()
-          if require("trouble").is_open({ mode = "diagnostics" }) then
+          if require("trouble").is_open({}) then
             ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").prev({ mode = "diagnostics", jump = true })
+            require("trouble").prev({ jump = true })
           else
             vim.diagnostic.goto_prev({ float = true })
           end

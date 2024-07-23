@@ -232,6 +232,11 @@ return {
         desc = "Git blame line (gitsigns)",
       },
       {
+        "<leader>hB",
+        function() require("gitsigns").blame() end,
+        desc = "Git blame buffer (gitsigns)",
+      },
+      {
         "<leader>htb",
         function() require("gitsigns").toggle_current_line_blame() end,
         desc = "Toggle blame (gitsigns)",

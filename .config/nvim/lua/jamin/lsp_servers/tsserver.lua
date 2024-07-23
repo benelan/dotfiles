@@ -95,13 +95,14 @@ return {
   settings = {
     typescript = language_settings,
     javascript = language_settings,
-    completions = { completeFunctionCalls = true },
+    completions = { completeFunctionCalls = false },
     implicitProjectConfiguration = { checkJs = true },
     diagnostics = {
       -- https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
       ignoredCodes = {
         80001, -- File is a CommonJS module; it may be converted to an ES module. [Suggestion]
         80005, -- 'require' call may be converted to an import. [Suggestion]
+        80006, -- This may be converted to an async function. [Suggestion]
       },
     },
   },

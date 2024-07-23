@@ -372,12 +372,25 @@ return {
     dependencies = { "neovim/nvim-lspconfig" },
     opts = function()
       local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
+      local has_tst, api = pcall(require, "typescript-tools.api")
+
+      local handlers = has_tst
+          and has_ts
+          and {
+            ["textDocument/publishDiagnostics"] = api.filter_diagnostics(
+              ts.settings.diagnostics.ignoredCodes or {}
+            ),
+          }
+        or {}
+
       return {
+        handlers = handlers,
         settings = {
           expose_as_code_action = "all",
-          tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
-          complete_function_calls = ts.settings.completions.completeFunctionCalls or true,
           jsx_close_tag = { enable = true },
+          tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
+          complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
+            or false,
         },
       }
     end,

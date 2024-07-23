@@ -210,13 +210,14 @@ if supports fff; then
 fi
 
 # https://github.com/meiji163/gh-notify
-export GH_NOTIFY_MARK_READ_KEY="alt-backspace"
-export GH_NOTIFY_MARK_ALL_READ_KEY="ctrl-delete"
-export GH_NOTIFY_OPEN_BROWSER_KEY="ctrl-o"
 export GH_NOTIFY_COMMENT_KEY="alt-c"
 export GH_NOTIFY_VIEW_DIFF_KEY="alt-d"
 export GH_NOTIFY_VIEW_PATCH_KEY="alt-D"
+export GH_NOTIFY_TOGGLE_PREVIEW_KEY="alt-p"
 export GH_NOTIFY_RESIZE_PREVIEW_KEY="alt-P"
+export GH_NOTIFY_MARK_READ_KEY="alt-x"
+export GH_NOTIFY_MARK_ALL_READ_KEY="alt-backspace"
+export GH_NOTIFY_OPEN_BROWSER_KEY="ctrl-o"
 
 # my tools {{{1
 supports matpat && export MATPAT_OPEN_CMD="$BROWSER"

@@ -231,7 +231,7 @@
         "tooltip": false,
         "format-alt-click": "click-right",
         "exec": "music info",
-        "exec-if": "command -v music >/dev/null 2>&1",
+        "exec-if": "command -v music >/dev/null 2>&1 && [ \"$(music info)\" !=  \"Nothing Playing\" ]",
         "on-click": "music toggle",
         "on-click-middle": "music rofi"
 

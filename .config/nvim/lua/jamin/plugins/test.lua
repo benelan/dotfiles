@@ -32,6 +32,7 @@ return {
 
       require("neotest").setup({
         output = { open_on_run = true },
+        status = { virtual_text = true },
         icons = require("jamin.resources").icons.test,
         adapters = {
           has_go and go or nil,

@@ -193,6 +193,10 @@ return {
       local dap = require("dap")
       vim.g.loaded_dap = true
 
+      require("dap.ext.vscode").json_decode = function(str)
+        return vim.json.decode(require("plenary.json").json_strip_comments(str, {}))
+      end
+
       -------------------------------------------------------------------------
       -- Adapters
       -------------------------------------------------------------------------
