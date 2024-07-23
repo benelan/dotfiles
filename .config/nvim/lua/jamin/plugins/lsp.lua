@@ -1,4 +1,5 @@
 local res = require("jamin.resources")
+local lsp_augroup = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {})
 
 return {
   {
@@ -61,10 +62,13 @@ return {
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
 
       -- combine default LSP client capabilities with override opts specified above
+      local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
         "force",
-        require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-        opts.force_capabilities
+        {},
+        vim.lsp.protocol.make_client_capabilities(),
+        has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+        opts.capabilities or {}
       )
 
       local virtual_text_enabled = true
@@ -88,7 +92,7 @@ return {
       for _, server in pairs(res.lsp_servers) do
         -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
         if not vim.tbl_contains({ "zk", "tsserver" }, server) then
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. server)
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server)
           local server_opts = vim.tbl_deep_extend(
             "force",
             { capabilities = capabilities },
@@ -99,140 +103,9 @@ return {
         end
       end
 
-      -------------------------------------------------------------------------------
-      ----> On attach
-
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {}),
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-          if client == nil then return end
-
-          -- disable formatting for some LSP servers in favor of better standalone programs
-          -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)
-          if
-            vim.tbl_contains(
-              { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
-              client.name
-            )
-          then
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          end
-
-          -- setup stuff specific to an LSP server
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp_servers." .. client.name)
-          if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args.buf) end
-
-          -- setup lsp keymaps
-          local bufmap = function(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, {
-              buffer = args.buf,
-              silent = true,
-              noremap = true,
-              desc = desc,
-            })
-          end
-
-          bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
-          bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
-          bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
-
-          if client.supports_method("textDocument/formatting") then
-            -- if the LSP server has formatting capabilities, use it for formatexpr
-            vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
-            bufmap(
-              { "n", "v" },
-              "<leader>F",
-              function() vim.lsp.buf.format({ async = true }) end,
-              "LSP format"
-            )
-          end
-
-          if client.supports_method("textDocument/definition") then
-            local function peek_definition()
-              return vim.lsp.buf_request(
-                args.buf,
-                "textDocument/definition",
-                vim.lsp.util.make_position_params(),
-                function(_, result)
-                  if result == nil or vim.tbl_isempty(result) then return nil end
-                  vim.lsp.util.preview_location(result[1], {})
-                end
-              )
-            end
-            bufmap("n", "grp", peek_definition, "LSP peek definition")
-            bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-          end
-
-          if client.supports_method("textDocument/declaration") then
-            bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
-          end
-
-          if client.supports_method("textDocument/references") then
-            bufmap("n", "grr", vim.lsp.buf.references, "LSP references")
-          end
-
-          if client.supports_method("textDocument/rename") then
-            bufmap("n", "grn", vim.lsp.buf.rename, "LSP rename")
-          end
-
-          if client.supports_method("textDocument/typeDefinition") then
-            bufmap("n", "grt", vim.lsp.buf.type_definition, "LSP type definition")
-          end
-
-          if client.supports_method("textDocument/implementation") then
-            bufmap("n", "gri", vim.lsp.buf.implementation, "LSP implementation")
-          end
-
-          if client.supports_method("textDocument/signatureHelp") then
-            bufmap("i", "<C-s>", vim.lsp.buf.signature_help, "LSP signature help")
-          end
-
-          if
-            vim.lsp.inlay_hint
-            and vim.api.nvim_buf_is_valid(args.buf)
-            and vim.bo[args.buf].buftype == ""
-            and client.supports_method("textDocument/inlayHint")
-          then
-            bufmap(
-              "n",
-              "<leader>si",
-              function()
-                vim.lsp.inlay_hint.enable(
-                  not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
-                  { buf = args.buf }
-                )
-              end,
-              "Toggle LSP inlay hints"
-            )
-          end
-
-          -- -- setup codelens if supported by language server
-          -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
-          --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-          --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
-          --     buffer = args.buf,
-          --     callback = function() vim.lsp.codelens.refresh() end,
-          --   })
-          --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
-          -- end
-
-          if client.supports_method("textDocument/codeAction") then
-            bufmap({ "n", "v" }, "gra", vim.lsp.buf.code_action, "Code action")
-            bufmap(
-              { "n", "v" },
-              "ga",
-              function()
-                vim.lsp.buf.code_action({
-                  context = { only = { "source", "refactor", "quickfix" } },
-                })
-              end,
-              "Code action (only source and quickfix)"
-            )
-          end
-        end,
+        group = lsp_augroup,
+        callback = require("jamin.lsp").on_attach,
       })
     end,
   },
@@ -253,19 +126,22 @@ return {
       require("mason").setup(opts)
       local mr = require("mason-registry")
 
-      -- make sure all of the Mason tools are installed
-      local function ensure_installed()
+      mr:on("package:install:success", function()
+        vim.defer_fn(function()
+          -- trigger FileType event to possibly load this newly installed LSP server
+          require("lazy.core.handler.event").trigger({
+            event = "FileType",
+            buf = vim.api.nvim_get_current_buf(),
+          })
+        end, 100)
+      end)
+
+      mr.refresh(function()
         for _, tool in ipairs(opts.ensure_installed) do
           local p = mr.get_package(tool)
           if not p:is_installed() and vim.fn.executable(tool) == 0 then p:install() end
         end
-      end
-
-      if mr.refresh then
-        mr.refresh(ensure_installed)
-      else
-        ensure_installed()
-      end
+      end)
     end,
   },
 
@@ -368,10 +244,10 @@ return {
   -- Lua implementation of typescript-language-server
   {
     "pmizio/typescript-tools.nvim",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    ft = res.filetypes.webdev,
     dependencies = { "neovim/nvim-lspconfig" },
     opts = function()
-      local has_ts, ts = pcall(require, "jamin.lsp_servers.tsserver")
+      local has_ts, ts = pcall(require, "jamin.lsp.servers.tsserver")
       local has_tst, api = pcall(require, "typescript-tools.api")
 
       local handlers = has_tst
@@ -383,14 +259,36 @@ return {
           }
         or {}
 
+      local plugins = {}
+      if vim.tbl_contains(res.lsp_servers, "astro") then
+        table.insert(plugins, "@astrojs/ts-plugin")
+      end
+      if vim.tbl_contains(res.lsp_servers, "volar") then
+        table.insert(plugins, "@vue/typescript-plugin")
+      end
+      if vim.tbl_contains(res.lsp_servers, "svelte") then
+        table.insert(plugins, "typescript-svelte-plugin")
+      end
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = lsp_augroup,
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if not client or client.name ~= "typescript-tools" then return end
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers.tsserver")
+          if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
+        end,
+      })
+
       return {
         handlers = handlers,
         settings = {
+          tsserver_plugins = plugins,
           expose_as_code_action = "all",
           jsx_close_tag = { enable = true },
           tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
           complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
-            or false,
+            or true,
         },
       }
     end,

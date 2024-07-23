@@ -58,7 +58,6 @@ M.filetypes = {
   },
   webdev = {
     "astro",
-    "html",
     "javascript",
     "javascriptreact",
     "svelte",
