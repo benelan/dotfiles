@@ -61,10 +61,16 @@ dig -1 128078
 
 " Format the entire buffer preserving cursor location.
 " Requires the 'B' text object defined below.
-nmap <silent> <leader>F mtgqBg`tzz:delmarks t<CR>
+nmap <silent> gQ mtgqBg`tzz:delmarks t<CR>
 
 " Format selected text maintaining the selection.
-xmap <leader>F gq`[v`]V
+xmap gQ gq`[v`]V
+
+if !has('nvim')
+    nmap <silent> <leader>F gQ
+    xmap <leader>F gQ
+endif
+
 
 "" TEXT OBJECTS {{{1
 " Use last changed or yanked text as an object
