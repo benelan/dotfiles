@@ -25,6 +25,7 @@ return {
     opts = {
       multiline_threshold = 1,
       max_lines = 6,
+      -- separator = res.icons.ui.horizontal_separator
     },
 
     config = function(_, opts)

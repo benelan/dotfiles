@@ -121,6 +121,44 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- search/replace in multiple files
+  {
+    "MagicDuck/grug-far.nvim",
+    opts = {
+      headerMaxWidth = 80,
+      resultsSeparatorLineChar = res.icons.ui.horizontal_separator,
+      spinnerStates = vim.g.use_devicons and nil or false,
+      icons = { enabled = vim.g.use_devicons },
+    },
+    cmd = "GrugFar",
+    keys = {
+      {
+        "<leader>R",
+        function()
+          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+          require("grug-far").grug_far({
+            transient = true,
+            prefills = {
+              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+            },
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Search and Replace",
+      },
+      {
+        "<leader>tf",
+        function()
+          local state = unpack(require("grug-far").toggle_flags({ "--fixed-strings" }))
+          vim.notify("grug-far: toggled --fixed-strings " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --fixed-strings",
+        ft = "grug-ar",
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- save/restore sessions
   {
     "stevearc/resession.nvim",
