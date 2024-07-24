@@ -147,6 +147,27 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- fancy rendering of markdown files
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    ft = { "markdown" },
+    cmd = "RenderMarkdown",
+    keys = { { "<leader>mr", "<CMD>RenderMarkdown toggle<CR>", desc = "Render markdown" } },
+    opts = {
+      sign = { enabled = false },
+      heading = {
+        icons = {},
+        backgrounds = { "RenderMarkdownH1Bg", "RenderMarkdownH2Bg", "" },
+      },
+      link = { enabled = vim.g.use_devicons },
+      checkbox = {
+        unchecked = { icon = vim.g.use_devicons and nil or res.icons.ui.box },
+        checked = { icon = vim.g.use_devicons and nil or res.icons.ui.box_checked },
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- lsp/diagnsotic lists
   {
     "folke/trouble.nvim",
