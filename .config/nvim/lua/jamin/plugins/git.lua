@@ -331,6 +331,13 @@ return {
 
       vim.treesitter.language.register("markdown", "octo")
       vim.api.nvim_set_hl(0, "OctoBubble", { link = "CursorLine" })
+
+      -- temporary fix for https://github.com/pwntester/octo.nvim/issues/536
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = vim.api.nvim_create_augroup("jamin_octo_fold_weirdness", {}),
+        pattern = "octo://*",
+        command = "if &diff | set nofoldenable | fi",
+      })
     end,
 
     keys = {

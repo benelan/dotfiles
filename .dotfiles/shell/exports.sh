@@ -119,6 +119,8 @@ supports volta && export VOLTA_HOME="$HOME/.volta"
 supports bun && export BUN_INSTALL="$HOME/.bun"
 
 if supports node; then
+    export NODE_OPTIONS="--max-old-space-size=8192"
+
     # Enable persistent REPL history for `node`.
     export NODE_REPL_HISTORY="$HOME/.node_history"
 
@@ -230,7 +232,9 @@ _gh_icon="$XDG_DATA_HOME/icons/Gruvbox-Plus-Dark/apps/scalable/github.svg"
 export GH_FZF_BRANCH_PREFIX="$_gh_user/"
 export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
 
-[ -f "$_gh_icon" ] && export GH_FZF_NOTIFY_ICON="$_gh_icon"
+[ -f "$_gh_icon" ] &&
+    export GH_FZF_NOTIFY_ICON="$_gh_icon" &&
+    export GH_ND_ICON="$_gh_icon"
 
 # https://github.com/benelan/git-mux
 if supports git-mux; then

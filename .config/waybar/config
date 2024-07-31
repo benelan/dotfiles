@@ -78,8 +78,8 @@
         },
         "format": "",
         // "format-alt": "CPU: {usage}%",
-        "format-warning": " {usage}%",
-        "format-critical": " {usage}%",
+        "format-warning": "󰘚 {usage}%",
+        "format-critical": "󰘚 {usage}%",
         "format-alt-click": "click-right"
     },
     "memory": {
@@ -102,7 +102,7 @@
         "format-critical": "󰸁 {temperatureC}°C",
         "format": "",
         // "format-alt": "TEMP: {temperatureC}°C",
-        "format-alt-click": "click-right",
+        // "format-alt-click": "click-right",
         "format-icons": {
             "default": ["󱃃 ", "󰔏 ", "󱃂 "]
         },

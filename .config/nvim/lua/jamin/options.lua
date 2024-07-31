@@ -67,7 +67,7 @@ if has_res then
 end
 
 if vim.fn.executable("rg") == 1 then
-  vim.opt.grepprg = "rg --vimgrep --hidden --no-heading --smart-case --glob '!{.git,node_modules}'"
+  vim.opt.grepprg = "rg --vimgrep --hidden --smart-case"
   vim.opt.grepformat = {
     "%f:%l:%c:%m",
     "%-G%.%#: No such file or directory (os error 2)",

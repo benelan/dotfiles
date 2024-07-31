@@ -6,7 +6,18 @@ aliases:
   R: fzf repo
   g: fzf gist
   s: fzf search
-  code: fzf search code
+
+  code: |
+    !repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null)"
+    [ -n "$repo" ] && [ "$repo" != "benelan/dotfiles" ] && filter="repo:$repo "
+    gh fzf search code "$filter" $@
+
+  commits: |
+    !repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null)"
+    [ -n "$repo" ] && [ "$repo" != "benelan/dotfiles" ] && filter="repo:$repo "
+    SHELL="bash" FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPS
+      --bind='alt-y:execute-silent:cb<<<{2}'
+    " gh fzf search commits "$filter" $@
 
   r: |
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
@@ -54,8 +65,8 @@ aliases:
   itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i $*"
   ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p $*"
 
-  ime: i --assignee @me $*
-  pme: p --assignee @me $*
+  ime: i --assignee @me
+  pme: p --assignee @me
 
   pcomment: pr comment --editor
   icomment: issue comment --editor
@@ -76,11 +87,14 @@ aliases:
   toreview: '!gh p -S\"review:required -is:draft\"'
 
   todo: |
-    !gh i --assignee @me --milestone \'"$(
-        gh api --paginate --jq 'map(select(.due_on != null)) | .[].number' \
-            '/repos/{owner}/{repo}/milestones?sort=due_on&state=open&direction=asc' |
-            head -n1
-    )"\'
+    !gh i --assignee @me --milestone \'$(
+      gh api '/repos/{owner}/{repo}/milestones?sort=due_on&state=open&direction=asc' \
+        --paginate --jq '(try ("'$1'" | tonumber) catch 0) as $index | map(select(
+          .due_on != null
+            and (.due_on | fromdateiso8601 | strftime("%Y-%m-%d")) >= (now | strftime("%Y-%m-%d"))
+        )) | .[$index].title'
+    )\'
 
   # https://github.com/meiji163/gh-notify
   n: '!FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --no-hscroll" gh notify "$@"'
+  nd: notify-desktop

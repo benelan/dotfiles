@@ -74,7 +74,7 @@ setup_dotfiles() {
     # $ dot add ~/.npmrc
     _dot config status.showUntrackedFiles no
 
-    _dot branch --set-upstream-to=origin/master master
+    # _dot branch --set-upstream-to=origin/master master
 
     if _dot checkout >/dev/null 2>&1; then
         printf "\nChecked out dotfiles\n" >&2
@@ -1110,14 +1110,14 @@ install_ubuntu_gh() {
     fi
 
     # install gh extensions
-    if [ -d "$PERSONAL/gh-fzf" ]; then
-        cd "$PERSONAL/gh-fzf"
-        gh extension install .
-    else
-        gh extension install benelan/gh-fzf
-    fi
-    # fork of https://github.com/meiji163/gh-notify
-    gh extension install benelan/notify-fzf
+    # if [ -d "$PERSONAL/gh-fzf" ]; then
+    #     cd "$PERSONAL/gh-fzf"
+    #     gh extension install .
+    # else
+    #     gh extension install benelan/gh-fzf
+    # fi
+    # # fork of https://github.com/meiji163/gh-notify
+    # gh extension install benelan/notify-fzf
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1220,9 +1220,14 @@ install_theme_font-complete() {
 
 INSTALL_THEME_WALLPAPER_DOC="Install gruvbox coffee wallpaper"
 install_theme_wallpaper() {
-    current_wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
-    wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/gruvbox_coffee.png"
-    profile="$(xdg-user-dir PICTURES)/Profiles/fry.png"
+    wallpaper_dir="$(xdg-user-dir PICTURES)/Wallpapers"
+    current_wallpaper="$wallpaper_dir/current"
+    wallpaper="$wallpaper_dir/gruvbox_coffee.png"
+
+    profile_dir="$(xdg-user-dir PICTURES)/Profiles"
+    profile="$profile_dir/fry.png"
+
+    mkdir -p "$wallpaper_dir" "$profile_dir"
 
     # shellcheck disable=2015
     ! [ -r "$wallpaper" ] && curl -Lo "$wallpaper" \
@@ -1707,6 +1712,8 @@ install_build_neovim() {
     if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
+    else
+        echo "Already up to date"
     fi
 
     unset neovim_head
@@ -1812,6 +1819,36 @@ EOF
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install the latest version of dunst                         {{{
+# https://github.com/dunst-project/dunst#building
+
+INSTALL_BUILD_DUNST_DOC="Install dunst for managing desktop notifications"
+install_build_dunst() {
+    if [ -d "$LIB/dunst" ]; then
+        git -C "$LIB/dunst/" fetch --all --prune --force
+    else
+        git clone https://github.com/dunst-project/dunst.git "$LIB/dunst"
+    fi
+
+    cd "$LIB/dunst" || return
+
+    latest_version="$(
+        git for-each-ref refs/tags \
+            --count=1 \
+            --sort=-taggerdate \
+            --format='%(refname:short)'
+    )"
+
+    if _has dunst && [ "$(dunst --version | awk '{print $NF}')" = "$latest_version" ]; then
+        echo "The latest version of dunst ($latest_version) is already installed" >&2
+        return
+    fi
+
+    sudo make
+    sudo make install
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Dependency group install functions                                    {{{
@@ -1833,7 +1870,7 @@ ubuntu_installs() {
     install_ubuntu_gh
     install_ubuntu_git
     install_ubuntu_glow
-    install_ubuntu_taskwarrior-tui
+    # install_ubuntu_taskwarrior-tui
 
     ## GUI install scripts
     if [ "$DESKTOP_MACHINE" = "1" ]; then
@@ -1932,7 +1969,7 @@ language_installs() {
     install_language_go
     install_language_rust
     install_language_node
-    install_language_bun
+    # install_language_bun
     # install_language_lua
     # install_language_nim
 }

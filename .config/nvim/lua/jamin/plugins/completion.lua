@@ -1,4 +1,44 @@
 local res = require("jamin.resources")
+local augroup = vim.api.nvim_create_augroup("jamin_completion_plugin_tweaks", {})
+
+local function use_copilot(dir)
+  local project = dir or vim.uv.cwd()
+  if not project then return end
+
+  return (vim.env.COPILOT == "1" and string.match(project, vim.env.DEV) ~= nil)
+    or (vim.env.COPILOT ~= "0" and string.match(project, vim.env.WORK) ~= nil)
+end
+
+local function toggle_copilot(dir)
+  local should_use = use_copilot(dir)
+
+  local has_copilot_client, copilot_client = pcall(require, "copilot.client")
+  if not has_copilot_client then return end
+
+  local is_attached = copilot_client.buf_is_attached()
+
+  if is_attached == "Offline" and should_use then
+    vim.cmd.Copilot("enable")
+  elseif is_attached == "Online" and not should_use then
+    vim.cmd.Copilot("disable")
+  end
+end
+
+local function use_codeium(dir)
+  local project = dir or vim.uv.cwd()
+  if not project then return end
+
+  return vim.env.CODEIUM == "1"
+    and string.match(project, vim.env.WORK) == nil
+    and (
+      string.match(project, vim.env.DEV) ~= nil
+      or string.match(project, vim.fn.stdpath("config") --[[@as string]]) ~= nil
+    )
+end
+
+local function toggle_codeium(event)
+  vim.cmd.Codeium(use_codeium(event.file) and "Enable" or "Disable")
+end
 
 return {
   -----------------------------------------------------------------------------
@@ -8,17 +48,12 @@ return {
     -- only use source if a dict file exists in the usual place
     enabled = vim.fn.filereadable("/usr/share/dict/words") == 1,
     ft = res.filetypes.writing,
-    config = function()
-      local has_dict, dict = pcall(require, "cmp_dictionary")
-      if not has_dict then return end
-
-      dict.setup({
-        paths = { "/usr/share/dict/words" },
-        document = { enable = true, command = { "dict", "${label}" } },
-        external = { enable = true, command = { "look", "${prefix}", "${path}" } },
-        first_case_insensitive = true,
-      })
-    end,
+    opts = {
+      paths = { "/usr/share/dict/words" },
+      document = { enable = true, command = { "dict", "${label}" } },
+      external = { enable = true, command = { "look", "${prefix}", "${path}" } },
+      first_case_insensitive = true,
+    },
   },
 
   -----------------------------------------------------------------------------
@@ -39,7 +74,7 @@ return {
       -- working, since it doesn't know the repo to query for completion items.
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "markdown" },
-        group = vim.api.nvim_create_augroup("jamin_git_cmp_gh_hack", {}),
+        group = augroup,
         callback = function(ev)
           if string.match(ev.file, "/tmp/%d+%.md") then vim.cmd.cd("-") end
         end,
@@ -248,7 +283,7 @@ return {
               local bufname = string.lower(vim.fs.basename(bufpath))
               local enable_files = { "contributing.md", "changelog.md", "readme.md" }
 
-              return vim.list_contains(enable_files, bufname)
+              return vim.list_contains(enable_files, string.lower(bufname))
                 -- the gh cli creates files in /tmp when editing issues/prs/comments
                 or string.match(bufpath, "/tmp/%d+%.md")
             end,
@@ -297,8 +332,8 @@ return {
   -----------------------------------------------------------------------------
   {
     "L3MON4D3/LuaSnip", -- snippet engine
+    lazy = true,
     build = "make install_jsregexp",
-    version = "v2.*",
     dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip" },
 
     config = function()
@@ -340,13 +375,14 @@ return {
     end,
 
     keys = function()
-      local has_ls, ls = pcall(require, "luasnip")
-      if not has_ls then return {} end
       -- The keymaps have Copilot/Codeium fallbacks for when there are no snippet actions
       return {
         {
           "<C-h>",
           function()
+            local has_ls, ls = pcall(require, "luasnip")
+            if not has_ls then return {} end
+
             local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
@@ -375,6 +411,9 @@ return {
         {
           "<C-l>",
           function()
+            local has_ls, ls = pcall(require, "luasnip")
+            if not has_ls then return {} end
+
             local has_cmp, cmp = pcall(require, "cmp")
             local has_copilot_cmp = pcall(require, "copilot_cmp")
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
@@ -401,6 +440,9 @@ return {
         {
           "<C-\\>",
           function()
+            local has_ls, ls = pcall(require, "luasnip")
+            if not has_ls then return {} end
+
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
 
             if ls.choice_active() then
@@ -429,8 +471,7 @@ return {
   -- "github/copilot.vim", -- official Copilot plugin written in vimscript
   {
     "zbirenbaum/copilot.lua", -- alternative written in Lua
-    cond = vim.env.COPILOT == "1"
-      or (vim.env.COPILOT ~= "0" and string.match(vim.uv.cwd() or "", vim.env.WORK) ~= nil),
+    cond = use_copilot(),
     cmd = "Copilot",
     event = "InsertEnter",
 
@@ -446,7 +487,10 @@ return {
     -- },
 
     config = function()
-      local has_copilot_cmp = pcall(require, "copilot_cmp")
+      vim.api.nvim_create_autocmd("DirChanged", {
+        group = augroup,
+        callback = function(event) toggle_copilot(event.file) end,
+      })
 
       local filetypes = {}
 
@@ -457,6 +501,8 @@ return {
       for _, ft in ipairs(res.filetypes.writing) do
         filetypes[ft] = false
       end
+
+      local has_copilot_cmp = pcall(require, "copilot_cmp")
 
       require("copilot").setup({
         filetypes = filetypes,
@@ -507,11 +553,16 @@ return {
   -- Codeium is a free Copilot alternative - https://codeium.com/
   {
     "Exafunction/codeium.vim",
-    cond = vim.env.CODEIUM == "1" and string.match(vim.uv.cwd() or "", vim.env.WORK) == nil,
+    cond = use_codeium(),
     event = "VimEnter",
     cmd = "Codeium",
 
     config = function()
+      vim.api.nvim_create_autocmd("DirChanged", {
+        group = augroup,
+        callback = function(event) toggle_codeium(event.file) end,
+      })
+
       local filetypes = {}
 
       for _, ft in ipairs(res.filetypes.excluded) do

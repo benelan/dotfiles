@@ -193,15 +193,6 @@ return {
           }),
 
           diagnostics.markdownlint.with({
-            extra_args = {
-              "--disable",
-              "blanks-around-fences",
-              "no-duplicate-heading",
-              "line-length",
-              "first-line-heading",
-              "no-inline-html",
-              "single-title",
-            },
             prefer_local = "node_modules/.bin",
             diagnostic_config = quiet_diagnostics,
           }),
@@ -224,6 +215,7 @@ return {
           formatting.fixjson.with({ extra_filetypes = { "jsonc", "json5" } }),
           formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
+          formatting.markdownlint,
           formatting.stylua,
           formatting.trim_whitespace,
         },

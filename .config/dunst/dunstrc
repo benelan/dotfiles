@@ -17,7 +17,7 @@
     #
     # If this option is set to mouse or keyboard, the monitor option
     # will be ignored.
-    follow = none
+    follow = keyboard
 
     ### Geometry ###
 
@@ -36,24 +36,24 @@
     geometry = "0x20-20+40"
 
     # dynamic width from 0 to 300
-    width = (0, 300)
+    width = (0, 700)
     # constant width of 300
     # width = 300
 
     # The maximum height of a single notification, excluding the frame.
-    height = 300
+    height = 800
 
     # Position the notification in the top right corner
     origin = top-right
 
     # Offset from the origin
-    offset = 20x40
+    offset = 5x5
 
     # Scale factor. It is auto-detected if value is 0.
     scale = 0
 
     # Maximum number of notification (0 means no limit)
-    notification_limit = 20
+    notification_limit = 10
 
     ### Progress bar ###
 
@@ -101,7 +101,7 @@
     # notifications.
     # Set to 0 to disable.
     # If gap_size is greater than 0, this setting will be ignored.
-    separator_height = 0
+    separator_height = 1
 
     # Padding between text and separator.
     padding = 8
@@ -110,14 +110,15 @@
     horizontal_padding = 8
 
     # Padding between text and icon.
-    text_icon_padding = 2
+    text_icon_padding = 8
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
     frame_width = 1
 
     # Defines color of the frame around the notification window.
-    frame_color = "#444444"
+    frame_color = "#3c3836"
+    highlight   = "#3c3836"
 
     # Size of gap to display between notifications - requires a compositor.
     # If value is greater than 0, separator_height will be ignored and a border
@@ -146,7 +147,7 @@
     # Set to 0 to disable.
     # A client can set the 'transient' hint to bypass this. See the rules
     # section for how to disable this if necessary
-    idle_threshold = 120
+    idle_threshold = 60
 
     ### Text ###
 
@@ -229,12 +230,12 @@
 
     # Recursive icon lookup. You can set a single theme, instead of having to
     # define all lookup paths.
-    # enable_recursive_icon_lookup = true
+    enable_recursive_icon_lookup = true
 
     # Set icon theme (only used for recursive icon lookup)
     # icon_theme = Adwaita
     # You can also set multiple icon themes, with the leftmost one being used first.
-    # icon_theme = Adwaita, Pop, Gruvbox-Plus-Dark
+    icon_theme = Gruvbox-Plus-Dark, Pop, Adwaita
 
     # Align icons left/right/top/off
     icon_position = left
@@ -242,13 +243,13 @@
     # Scale small icons up to this size, set to 0 to disable. Helpful
     # for e.g. small files or high-dpi screens. In case of conflict,
     # max_icon_size takes precedence over this.
-    min_icon_size = 16
+    min_icon_size = 48
 
     # Scale larger icons down to this size, set to 0 to disable
-    max_icon_size = 64
+    max_icon_size = 24
 
     # Paths to default icons (only necessary when not using recursive icon lookup)
-    icon_path = ~/.local/share/icons/Gruvbox-Plus-Dark/actions/16:~/.local/share/icons/Gruvbox-Plus-Dark/apps/16:~/.local/share/icons/Gruvbox-Plus-Dark/panel/16:~/.local/share/icons/Gruvbox-Plus-Dark/places/16/:~/.local/share/icons/Gruvbox-Plus-Dark/devices/16:~/.local/share/icons/Gruvbox-Plus-Dark/categories/16:~/.local/share/icons/Gruvbox-Plus-Dark/status/16:~/.local/share/icons/Gruvbox-Plus-Dark/emblems/16:/usr/share/icons/Adwaita/16x16/status/:/usr/share/icons/Adwaita/16x16/devices/:/usr/share/icons/Adwaita/16x16/actions/:/usr/share/icons/Adwaita/16x16/emblems:/usr/share/icons/Adwaita/16x16/legacy:/usr/share/icons/Adwaita/16x16/apps:/usr/share/icons/Adwaita/scalable/status/:/usr/share/icons/Adwaita/scalable/devices/:/usr/share/icons/Adwaita/scalable/actions/:/usr/share/icons/Adwaita/scalable/emblems:/usr/share/icons/Adwaita/scalable/apps
+    icon_path = ~/.local/share/icons/Gruvbox-Plus-Dark/actions/32:~/.local/share/icons/Gruvbox-Plus-Dark/apps/32:~/.local/share/icons/Gruvbox-Plus-Dark/panel/32:~/.local/share/icons/Gruvbox-Plus-Dark/places/32/:~/.local/share/icons/Gruvbox-Plus-Dark/devices/32:~/.local/share/icons/Gruvbox-Plus-Dark/categories/32:~/.local/share/icons/Gruvbox-Plus-Dark/status/32:~/.local/share/icons/Gruvbox-Plus-Dark/emblems/32:/usr/share/icons/Adwaita/32x32/status/:/usr/share/icons/Adwaita/32x32/devices/:/usr/share/icons/Adwaita/32x32/actions/:/usr/share/icons/Adwaita/32x32/emblems:/usr/share/icons/Adwaita/32x32/legacy:/usr/share/icons/Adwaita/32x32/apps:/usr/share/icons/Adwaita/scalable/status/:/usr/share/icons/Adwaita/scalable/devices/:/usr/share/icons/Adwaita/scalable/actions/:/usr/share/icons/Adwaita/scalable/emblems:/usr/share/icons/Adwaita/scalable/apps
 
     ### History ###
 
@@ -266,30 +267,16 @@
     dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/launchers/type-1/style-10.rasi
 
     # Browser for opening urls in context menu.
-    browser = /usr/bin/sensible-browser
+    browser = /usr/bin/xdg-open
 
     # Always run rule-defined scripts, even if the notification is suppressed
     always_run_script = true
 
-    # Define the title of the windows spawned by dunst
+    # Define the title of the windows spawned by dunst (X11 only)
     title = Dunst
 
-    # Define the class of the windows spawned by dunst
+    # Define the class of the windows spawned by dunst (X11 only)
     class = Dunst
-
-    # Print a notification on startup.
-    # This is mainly for error detection, since dbus (re-)starts dunst
-    # automatically after a crash.
-    startup_notification = false
-
-    # Manage dunst's desire for talking
-    # Can be one of the following values:
-    #  crit: Critical features. Dunst aborts
-    #  warn: Only non-fatal warnings
-    #  mesg: Important Messages
-    #  info: all unimportant stuff
-    # debug: all less than unimportant stuff
-    verbosity = mesg
 
     # Define the corner radius of the notification window
     # in pixel size. If the radius is 0, you have no rounded
@@ -310,6 +297,9 @@
     # parameter, an application may close the notification sent before the
     # user defined timeout.
     ignore_dbusclose = false
+
+    # Use regex instead of globs for overrides 
+    enable_posix_regex=true
 
     ### Wayland ###
     # These settings are Wayland-specific. They have no effect when using X11
@@ -348,21 +338,12 @@
     # * context_all: Open context menu for all notifications.
     # These values can be strung together for each mouse event, and
     # will be executed in sequence.
-    mouse_left_click = do_action,close_current
-    mouse_middle_click = close_all
+    mouse_left_click = do_action
     mouse_right_click = close_current
+    mouse_middle_click = context
 
-# Experimental features that may or may not work correctly. Do not expect them
-# to have a consistent behaviour across releases.
-[experimental]
-    # Calculate the dpi to use on a per-monitor basis.
-    # If this setting is enabled the Xft.dpi value will be ignored and instead
-    # dunst will attempt to calculate an appropriate dpi value for each monitor
-    # using the resolution and physical size. This might be useful in setups
-    # where there are multiple screens with very different dpi values.
-    per_monitor_dpi = false
 
-[shortcuts]
+    ### keyboard shortcuts
 
     # Shortcuts are specified as [modifier+][modifier+]...key
     # Available modifiers are "ctrl", "mod1" (the alt-key), "mod2",
@@ -381,12 +362,23 @@
     # Context menu.
     context = mod4+ctrl+n
 
+# Experimental features that may or may not work correctly. Do not expect them
+# to have a consistent behaviour across releases.
+[experimental]
+    # Calculate the dpi to use on a per-monitor basis.
+    # If this setting is enabled the Xft.dpi value will be ignored and instead
+    # dunst will attempt to calculate an appropriate dpi value for each monitor
+    # using the resolution and physical size. This might be useful in setups
+    # where there are multiple screens with very different dpi values.
+    per_monitor_dpi = false
+
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
     background = "#103838"
     foreground = "#fbf1c7"
     timeout = 5
+    override_pause_level = 10
     # Icon for notifications with low urgency, uncomment to enable
     icon = preferences-system-details-symbolic
 
@@ -480,61 +472,40 @@
 #        If the notification is already drawn, it won't get undrawn.
 # pushback: same as delay, but when switching into fullscreen, the notification will get
 #           withdrawn from screen again and will get delayed like a new notification
-[fullscreen_delay_everything]
+[fullscreen_pushback]
     fullscreen = pushback
 [fullscreen_show_critical]
     msg_urgency = critical
     fullscreen = show
 
-[gh_fzf]
+[volume]
+    appname = dunstify
+    summary = ^Volume +(muted|[0-9]{1,3}%)$
+    fullscreen = show
+    history_ignore = yes
+    set_stack_tag = "volume"
+
+[NetworkManager]
+    appname = NetworkManager
+    history_ignore = yes
+    timeout = 1
+    override_pause_level = 15
+    # Set `yes` to skip display, `true` to skip display and history
+    # skip_display = yes
+
+[gh-fzf]
     appname = gh-fzf
     action_name = log
+    fullscreen = show
+    override_pause_level = 60
 
-#[espeak]
-#    summary = "*"
-#    script = dunst_espeak.sh
+[gh-notify-desktop]
+    appname = gh-notify-desktop
+    action_name = web
+    override_pause_level = 45
 
 #[script-test]
 #    summary = "*script*"
 #    script = dunst_test.sh
 
-#[ignore]
-#    # This notification will not be displayed
-#    summary = "foobar"
-#    skip_display = true
-
-[history-ignore]
-    # This notification will not be saved in history
-    appname = "volume"
-    history_ignore = yes
-
-#[skip-display]
-#    # This notification will not be displayed, but will be included in the history
-#    summary = "foobar"
-#    skip_display = yes
-
-#[signed_on]
-#    appname = Pidgin
-#    summary = "*signed on*"
-#    urgency = low
-#
-#[signed_off]
-#    appname = Pidgin
-#    summary = *signed off*
-#    urgency = low
-#
-#[says]
-#    appname = Pidgin
-#    summary = *says*
-#    urgency = critical
-#
-#[twitter]
-#    appname = Pidgin
-#    summary = *twitter.com*
-#    urgency = normal
-#
-#[stack-volumes]
-#    appname = "some_volume_notifiers"
-#    set_stack_tag = "volume"
-#
 # vim: ft=cfg

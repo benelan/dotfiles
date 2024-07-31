@@ -116,7 +116,7 @@ M.setup = function()
   -- automatically change directory to project root
   vim.api.nvim_create_autocmd({ "BufReadPost", "LspAttach" }, {
     group = vim.api.nvim_create_augroup("jamin_rooter", {}),
-    callback = M.project,
+    callback = function(args) M.project(args) end,
   })
 end
 

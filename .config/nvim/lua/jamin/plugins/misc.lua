@@ -268,8 +268,10 @@ return {
         end,
       })
 
+      local augroup = vim.api.nvim_create_augroup("jamin_sync_session", {})
+
       -- vim.api.nvim_create_autocmd("UIEnter", {
-      --   group = vim.api.nvim_create_augroup("jamin_load_session", {}),
+      --   group = augroup,
       --   callback = function()
       --     -- Don't load session if nvim was started with args
       --     if vim.fn.argc(-1) == 0 then
@@ -283,7 +285,7 @@ return {
       -- })
 
       vim.api.nvim_create_autocmd({ "VimLeavePre", "BufEnter" }, {
-        group = vim.api.nvim_create_augroup("jamin_save_session", {}),
+        group = augroup,
         callback = function(args)
           -- Don't save empty sessions
           if

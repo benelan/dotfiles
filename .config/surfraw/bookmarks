@@ -3,9 +3,11 @@ gh-me https://github.com/benelan :github: -g
 gh-calcite https://github.com/calcite-design-system :github: -g
 regex101 https://regex101.com/ :playground:regex: -g
 caniuse https://caniuse.com/ :frontend:cheatsheet: -g
+codeium https://codeium.com/live :ai:chat:interactive: -g
 tsplay https://www.typescriptlang.org/play :interactive:playground:frontend:typescript: -g
 codepen https://codepen.io/ :interactive:playground:frontend: -g
 codesandbox https://codesandbox.io/dashboard :frontend:interactive:playground: -g
+stackblitz https://stackblitz.com/ :frontend:interactive:playground: -g
 bundlephobia https://bundlephobia.com/ :frontend:build:optimization: -g
 tw-cht https://flowbite.com/tools/tailwind-cheat-sheet/ :frontend:cheatsheet:
 wc https://open-wc.org/ :frontend:guide:web-components:
@@ -27,6 +29,8 @@ homenetworkguy https://homenetworkguy.com/ :hardware:homeserver:guide:backend:ne
 homenetworkguy-opnsense https://homenetworkguy.com/how-to/set-up-a-fully-functioning-home-network-using-opnsense/ :homeserver:networking:guide:blog:
 it-tools https://it-tools.tech/ :interactive:networking: -g
 vi-readline https://catonmat.net/ftp/bash-vi-editing-mode-cheat-sheet.pdf :cli:cheatsheet:vim:
+vim-regex https://vimregex.com/ :vim:regex:reference:
+vim-ex https://dahu.github.io/vim_waz_ere/ :vim:reference:
 cloudfree https://cloudfree.shop/ :shop:hardware:smarthome: -g
 digiblur https://digiblur.com/ :shop:hardware:smarthome:guide:
 eff https://www.eff.org/press :news:privacy:

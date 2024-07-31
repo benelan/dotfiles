@@ -82,7 +82,7 @@ return {
 
   -----------------------------------------------------------------------------
   -- syntax for log files
-  { "MTDL9/vim-log-highlighting", ft = { "log" } },
+  { "fei6409/log-highlight.nvim", ft = { "log" } },
 
   -----------------------------------------------------------------------------
   -- filetype icons
@@ -138,33 +138,15 @@ return {
   -- highlights the best character to f/F/t/T per word
   {
     "jinh0/eyeliner.nvim",
-    event = "CursorHold",
-    opts = { highlight_on_key = false, dim = true },
+    event = "VeryLazy",
+    opts = {
+      disabled_filetypes = res.filetypes.excluded,
+      disabled_buftypes = { "nofile", "help", "quickfix", "terminal" },
+    },
     config = function(_, opts)
       require("eyeliner").setup(opts)
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
     end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- fancy rendering of markdown files
-  {
-    "MeanderingProgrammer/markdown.nvim",
-    ft = { "markdown" },
-    cmd = "RenderMarkdown",
-    keys = { { "<leader>mr", "<CMD>RenderMarkdown toggle<CR>", desc = "Render markdown" } },
-    opts = {
-      sign = { enabled = false },
-      heading = {
-        icons = {},
-        backgrounds = { "RenderMarkdownH1Bg", "RenderMarkdownH2Bg", "" },
-      },
-      link = { enabled = vim.g.use_devicons },
-      checkbox = {
-        unchecked = { icon = vim.g.use_devicons and nil or res.icons.ui.box },
-        checked = { icon = vim.g.use_devicons and nil or res.icons.ui.box_checked },
-      },
-    },
   },
 
   -----------------------------------------------------------------------------
@@ -177,11 +159,7 @@ return {
       { "<leader>xQ", "<CMD>Trouble qflist toggle<CR>", desc = "Quickfix list (trouble)" },
       { "<leader>xs", "<CMD>Trouble symbols toggle<CR>", desc = "Symbols (trouble)" },
       { "<leader>xd", "<CMD>Trouble diagnostics toggle<CR>", desc = "Diagnostics (trouble)" },
-      {
-        "<leader>xx",
-        "<CMD>Trouble mydiag toggle<CR>",
-        desc = "Diagnostics w/ less noise (trouble)",
-      },
+      { "<leader>xx", "<CMD>Trouble mydiag toggle<CR>", desc = "My diagnostics (trouble)" },
       {
         "<leader>xb",
         "<CMD>Trouble diagnostics toggle filter.buf=0<CR>",
@@ -195,9 +173,8 @@ return {
       {
         "]x",
         function()
-          if require("trouble").is_open({}) then
-            ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").next({ jump = true })
+          if require("trouble").is_open() then
+            require("trouble").next({ jump = true }, {})
           else
             vim.diagnostic.goto_next({ float = true })
           end
@@ -207,9 +184,8 @@ return {
       {
         "[x",
         function()
-          if require("trouble").is_open({}) then
-            ---@diagnostic disable-next-line: missing-parameter
-            require("trouble").prev({ jump = true })
+          if require("trouble").is_open() then
+            require("trouble").prev({ jump = true }, {})
           else
             vim.diagnostic.goto_prev({ float = true })
           end
@@ -244,8 +220,8 @@ return {
           fold_open = not vim.g.use_devicons and res.icons.ui.expanded or nil,
           fold_closed = not vim.g.use_devicons and res.icons.ui.collapsed or nil,
         },
-        folder_closed = not vim.g.use_devicons and "📂 " or nil,
-        folder_open = not vim.g.use_devicons and "📁 " or nil,
+        folder_closed = not vim.g.use_devicons and res.icons.emoji.folder_open or nil,
+        folder_open = not vim.g.use_devicons and res.icons.emoji.folder_closed or nil,
         kinds = res.icons.lsp_kind,
       },
     },

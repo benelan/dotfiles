@@ -2,7 +2,7 @@ local M = {}
 
 M.filetypes = {
   excluded = {
-    "-",
+    "",
     "TelescopePreview",
     "TelescopePrompt",
     "TelescopeResults",
@@ -104,7 +104,7 @@ M.lsp_servers = {
   "tailwindcss",
   "taplo",
   -- "typos_lsp",
-  -- "tsserver",
+  "tsserver",
   "vimls",
   "volar",
   "yamlls",
@@ -306,6 +306,10 @@ M.icons = {
     key = "🗝 ",
     globe = "🌎︎",
     map = "🗺 ",
+  },
+  emoji = {
+    folder_open = "📂 ",
+    folder_closed = "📁 ",
   },
   lsp_kind = {
     Array = M.i(" "),

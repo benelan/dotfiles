@@ -38,7 +38,7 @@
 
 window#waybar {
   background: @background;
-  border-bottom: 3px solid @aqua;
+  border-bottom: 2px solid @blue_b;
   color: @white_b;
 }
 
@@ -47,23 +47,24 @@ window#waybar {
   min-width: 20px;
   background: transparent;
   color: @white_b;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
 }
 
 #workspaces button.focused {
-  background: @aqua;
-  border-bottom: 3px solid @aqua;
+  background: @blue_b;
+  color: @background;
+  border-bottom: 2px solid @blue_b;
 }
 
 #workspaces button:hover,
 widget:hover {
-  border-bottom: 3px solid @magenta_b;
+  border-bottom: 2px solid @magenta_b;
   box-shadow: inherit;
   text-shadow: inherit;
 }
 
 #workspaces button.urgent {
-  border-bottom: 3px solid @red_b;
+  border-bottom: 2px solid @red_b;
 }
 
 #mode,
@@ -81,7 +82,7 @@ widget:hover {
 
 #mode {
   background: @red;
-  border-bottom: 3px solid @white_b;
+  border-bottom: 2px solid @white_b;
 }
 
 #idle_inhibitor {
@@ -101,7 +102,7 @@ widget:hover {
 #pulseaudio,
 #battery {
   padding: 0 10px;
-  margin: 0 3px;
+  margin: 0 2px;
 }
 
 #battery.charging,

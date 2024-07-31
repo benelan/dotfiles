@@ -104,3 +104,5 @@ if vim.g.vscode then
 
   keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
 end
+
+require("jamin.utils").cowboy()

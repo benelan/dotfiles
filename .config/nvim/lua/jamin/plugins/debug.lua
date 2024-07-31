@@ -6,12 +6,16 @@ return {
   {
     "andrewferrier/debugprint.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "DeleteDebugPrints",
-    keys = {
-      { "g?", mode = { "n", "v", "o" } },
-      { "g?d", "<CMD>DeleteDebugPrints<CR>" },
+    cmd = { "DeleteDebugPrints", "ToggleCommentDebugPrints" },
+    keys = { { "g?", mode = { "n", "v", "o" } } },
+    opts = {
+      keymaps = {
+        normal = {
+          toggle_comment_debug_prints = "g?c",
+          delete_debug_prints = "g?x",
+        },
+      },
     },
-    opts = {},
   },
 
   ------------------------------------------------------------------------------
@@ -146,17 +150,17 @@ return {
         desc = "Run to cursor (debug)",
       },
       {
-        "<leader>dr",
-        function() require("dap").repl.toggle() end,
-        desc = "Toggle repl (debug)",
-      },
-      {
         "<leader>dK",
         function() require("dap.ui.widgets").hover() end,
         desc = "Hover (debug)",
       },
       {
-        "<Leader>dt",
+        "<leader>dwr",
+        function() require("dap").repl.toggle() end,
+        desc = "Toggle repl (debug)",
+      },
+      {
+        "<Leader>dwt",
         function()
           local widgets = require("dap.ui.widgets")
           widgets.centered_float(widgets.threads)
@@ -164,7 +168,7 @@ return {
         desc = "Threads widget (debug)",
       },
       {
-        "<leader>ds",
+        "<leader>dws",
         function()
           local widgets = require("dap.ui.widgets")
           vim.o.wrap = false
@@ -173,7 +177,7 @@ return {
         desc = "Scopes widget (debug)",
       },
       {
-        "<leader>df",
+        "<leader>dwf",
         function()
           local widgets = require("dap.ui.widgets")
           vim.o.wrap = false
@@ -182,7 +186,7 @@ return {
         desc = "Frames widget (debug)",
       },
       {
-        "<leader>dp",
+        "<leader>dwp",
         function() require("dap.ui.widgets").preview() end,
         desc = "Preview widget (debug)",
         mode = { "n", "v" },
@@ -191,9 +195,10 @@ return {
 
     config = function()
       local dap = require("dap")
+      local vscode = require("dap.ext.vscode")
       vim.g.loaded_dap = true
 
-      require("dap.ext.vscode").json_decode = function(str)
+      vscode.json_decode = function(str)
         return vim.json.decode(require("plenary.json").json_strip_comments(str, {}))
       end
 
@@ -212,10 +217,11 @@ return {
         "pwa-msedge",
         "pwa-node",
       }) do
+        vscode.type_to_filetypes[adapter] = res.filetypes.webdev
         if not dap.adapters[adapter] then
           dap.adapters[adapter] = {
             type = "server",
-            host = "localhost",
+            host = "127.0.0.1",
             port = "${port}",
             executable = {
               command = "js-debug-adapter",
@@ -254,7 +260,7 @@ return {
             name = "Attach to Chrome process (port 9222)",
             type = "pwa-chrome",
             request = "attach",
-            cwd = vim.fn.getcwd(),
+            cwd = vim.uv.cwd(),
             port = 9222,
             webRoot = "${workspaceFolder}",
           },
@@ -265,7 +271,7 @@ return {
             request = "launch",
             sourceMaps = true,
             url = url_prompt,
-            webRoot = vim.fn.getcwd(),
+            webRoot = vim.uv.cwd(),
             userDataDir = false,
           },
 
@@ -352,6 +358,8 @@ return {
         linehl = "Visual",
         numhl = "Purple",
       })
+
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
     end,
 
     dependencies = {

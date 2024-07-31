@@ -10,6 +10,7 @@ return {
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "-", "<CMD>Vifm<CR>" } },
     init = function()
+      vim.g.vifm_drop_gone_buffers = true
       -- define keymap here to fix lazy loading related startup error
       keymap("n", "-", "<CMD>Vifm<CR>", "Vifm")
       keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
@@ -74,80 +75,161 @@ return {
     },
 
     keys = function()
-      local has_builtin, builtin = pcall(require, "telescope.builtin")
-
-      -- fix errors on initial neovim install
-      if not has_builtin then return end
-
       -- when a count N is given to a telescope mapping called through the following
       -- function, the search is started in the Nth parent directory
       local function telescope_cwd(picker, args)
-        builtin[picker](
+        require("telescope.builtin")[picker](
           vim.tbl_extend("error", args or {}, { cwd = ("../"):rep(vim.v.count) .. "." })
         )
       end
 
-      -- stylua: ignore
       return {
-        { "<leader>f", function() builtin.builtin() end, desc = "Telescope builtins" },
-        { "<leader>fo", function() builtin.oldfiles() end, desc = "Find recent files (telescope)" },
-        { "<leader>fb", function() builtin.buffers() end, desc = "Find buffers (telescope)" },
-        { "<leader>fr", function() builtin.registers() end, desc = "Find register contents (telescope)" },
-        { "<leader>fm", function() builtin.marks() end, desc = "Find marks (telescope)" },
-        { "<leader>fj", function() builtin.jumplist() end, desc = "Find jumpmlist locations (telescope)" },
-        { "<leader>fc", function() builtin.commands() end, desc = "Find commands (telescope)" },
-        { "<leader>fk", function() builtin.keymaps() end, desc = "Find keymaps (telescope)" },
-        { "<leader>fh", function() builtin.help_tags() end, desc = "Find help tags (telescope)" },
-        { "<leader>f.", function() builtin.resume() end, desc = "Resume previous fuzzy finding (telescope)" },
-        { "<leader>f:", function() builtin.command_history() end, desc = "Find command history (telescope)" },
-        { "<leader>/", function() builtin.current_buffer_fuzzy_find() end, desc = "Find in buffer (telescope)" },
+        { "<leader>f", "<CMD>Telescope builtin<CR>", desc = "Telescope builtins" },
+        { "<leader>fo", "<CMD>Telescope oldfiles<CR>", desc = "Find recent files (telescope)" },
+        { "<leader>fb", "<CMD>Telescope buffers<CR>", desc = "Find buffers (telescope)" },
+        { "<leader>fc", "<CMD>Telescope commands<CR>", desc = "Find commands (telescope)" },
+        { "<leader>fk", "<CMD>Telescope keymaps<CR>", desc = "Find keymaps (telescope)" },
+        { "<leader>fh", "<CMD>Telescope help_tags<CR>", desc = "Find help tags (telescope)" },
+        { "<leader>fm", "<CMD>Telescope marks<CR>", desc = "Find marks (telescope)" },
+        {
+          "<leader>fr",
+          "<CMD>Telescope registers<CR>",
+          desc = "Find register contents (telescope)",
+        },
+        {
+          "<leader>fj",
+          "<CMD>Telescope jumplist<CR>",
+          desc = "Find jumpmlist locations (telescope)",
+        },
+        {
+          "<leader>f.",
+          "<CMD>Telescope resume<CR>",
+          desc = "Resume previous fuzzy finding (telescope)",
+        },
+        {
+          "<leader>f:",
+          "<CMD>Telescope command_history<CR>",
+          desc = "Find command history (telescope)",
+        },
+        {
+          "<leader>/",
+          "<CMD>Telescope current_buffer_fuzzy_find<CR>",
+          desc = "Find in buffer (telescope)",
+        },
 
         {
           "<leader>fw",
-          function() telescope_cwd("grep_string", { search = vim.fn.expand "<cword>", hidden = true }) end,
+          function()
+            telescope_cwd("grep_string", { search = vim.fn.expand("<cword>"), hidden = true })
+          end,
           desc = "Find word under cursor (telescope)",
         },
         {
           "<leader>fW",
-          function() telescope_cwd("grep_string", { search = vim.fn.expand "<cWORD>", hidden = true }) end,
+          function()
+            telescope_cwd("grep_string", { search = vim.fn.expand("<cWORD>"), hidden = true })
+          end,
           desc = "Find WORD under cursor (telescope)",
         },
-        { "<leader>ff", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
-        { "<leader>ft", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
-        { "<C-p>", function() telescope_cwd("find_files", { hidden = true }) end, desc = "Find files (telescope)" },
-        { "<C-\\>", function() telescope_cwd("live_grep", { hidden = true }) end, desc = "Find text (telescope)" },
+        {
+          "<leader>ff",
+          function() telescope_cwd("find_files", { hidden = true }) end,
+          desc = "Find files (telescope)",
+        },
+        {
+          "<leader>ft",
+          function() telescope_cwd("live_grep", { hidden = true }) end,
+          desc = "Find text (telescope)",
+        },
+        {
+          "<C-p>",
+          function() telescope_cwd("find_files", { hidden = true }) end,
+          desc = "Find files (telescope)",
+        },
+        {
+          "<C-\\>",
+          function() telescope_cwd("live_grep", { hidden = true }) end,
+          desc = "Find text (telescope)",
+        },
 
         -- LSP keymaps
-        { "<leader>lr", function() builtin.lsp_references() end, mode = { "n", "v" }, desc = "LSP references (telescope)" },
-        { "<leader>lt", function() builtin.lsp_type_definitions() end, desc = "LSP type definitions (telescope)" },
-        { "<leader>li", function() builtin.lsp_implementations() end, desc = "LSP implementations (telescope)" },
+        {
+          "<leader>lr",
+          "<CMD>Telescope lsp_references<CR>",
+          desc = "LSP references (telescope)",
+          mode = { "n", "v" },
+        },
+        {
+          "<leader>lt",
+          "<CMD>Telescope lsp_type_definitions<CR>",
+          desc = "LSP type definitions (telescope)",
+        },
+        {
+          "<leader>li",
+          "<CMD>Telescope lsp_implementations<CR>",
+          desc = "LSP implementations (telescope)",
+        },
 
-        { "<leader>lq", function() builtin.quickfix() end, desc = "Quickfix items (telescope)" },
-        { "<leader>lQ", function() builtin.quickfixhistory() end, desc = "Quickfix history (telescope)" },
+        { "<leader>lq", "<CMD>Telescope quickfix<CR>", desc = "Quickfix items (telescope)" },
+        {
+          "<leader>lQ",
+          "<CMD>Telescope quickfixhistory<CR>",
+          desc = "Quickfix history (telescope)",
+        },
 
-        { "<leader>lD", function() builtin.diagnostics() end, desc = "LSP workspace diagnostics (telescope)" },
-        { "<leader>ld", function() builtin.diagnostics { bufnr = 0 } end, desc = "LSP document diagnostics (telescope)" },
+        {
+          "<leader>lD",
+          "<CMD>Telescope diagnostics<CR>",
+          desc = "LSP workspace diagnostics (telescope)",
+        },
+        {
+          "<leader>ld",
+          function() require("telescope.builtin").diagnostics({ bufnr = 0 }) end,
+          desc = "LSP document diagnostics (telescope)",
+        },
 
         {
           "<leader>lS",
-          function() builtin.lsp_dynamic_workspace_symbols { ignore_symbols = { "Boolean", "Number" } } end,
+          function()
+            require("telescope.builtin").lsp_dynamic_workspace_symbols({
+              ignore_symbols = { "Boolean", "Number" },
+            })
+          end,
           desc = "LSP workspace symbols (telescope)",
         },
         {
           "<leader>ls",
-          function() builtin.lsp_document_symbols { ignore_symbols = { "Boolean", "Number" } } end,
+          function()
+            require("telescope.builtin").lsp_document_symbols({
+              ignore_symbols = { "Boolean", "Number" },
+            })
+          end,
           desc = "LSP document symbols (telescope)",
         },
 
         -- Git keymaps
-        { "<C-g>", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
-        { "<leader>gff", function() telescope_cwd "git_files" end, desc = "Git files (telescope)" },
-        { "<leader>gfb", function() builtin.git_branches() end, desc = "Git branches (telescope)" },
-        { "<leader>gfs", function() builtin.git_status() end, desc = "Git status (telescope)" },
-        { "<leader>gfS", function() builtin.git_stash() end, desc = "Git stash (telescope)" },
-        { "<leader>gfH", function() builtin.git_commits() end, desc = "Git history (telescope)" },
-        { "<leader>gfh", function() builtin.git_bcommits() end, desc = "Git buffer history (telescope)", mode = "n" },
-        { "<leader>gfh", function() builtin.git_bcommits_range() end, desc = "Git history (telescope)", mode = "v" },
+        { "<C-g>", function() telescope_cwd("git_files") end, desc = "Git files (telescope)" },
+        {
+          "<leader>gff",
+          function() telescope_cwd("git_files") end,
+          desc = "Git files (telescope)",
+        },
+        { "<leader>gfb", "<CMD>Telescope git_branches<CR>", desc = "Git branches (telescope)" },
+        { "<leader>gfs", "<CMD>Telescope git_status<CR>", desc = "Git status (telescope)" },
+        { "<leader>gfS", "<CMD>Telescope git_stash<CR>", desc = "Git stash (telescope)" },
+        { "<leader>gfH", "<CMD>Telescope git_commits<CR>", desc = "Git history (telescope)" },
+        {
+          "<leader>gfh",
+          "<CMD>Telescope git_bcommits<CR>",
+          desc = "Git buffer history (telescope)",
+          mode = "n",
+        },
+        {
+          "<leader>gfh",
+          "<CMD>Telescope git_bcommits_range<CR>",
+          desc = "Git history (telescope)",
+          mode = "v",
+        },
       }
     end,
 

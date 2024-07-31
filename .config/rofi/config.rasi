@@ -4,6 +4,9 @@ configuration {
     font: "Isoevka Nerd Font 13";
     show-icons: true;
     normalize-match: true;
+    tokenize: true;
+    click-to-exit: true;
+
     display-window: "Windows";
     display-windowcd: "Window CD";
     display-run: "Run";
@@ -12,10 +15,37 @@ configuration {
     display-combi: "Combi";
     display-keys: "Keys";
     display-filebrowser: "Files";
+
     window-match-fields: "title,class,role,name,desktop";
-    kb-cancel: "Escape,Control+g,Control+c,Control+bracketleft";
+
+    filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+    }
+
+    drun-match-fields: "name,generic,exec,categories,keywords";
+    drun-use-desktop-cache: false;
+    drun-reload-desktop-cache: false;
     drun {
-        application-fallback-icon: "application-x-addon";
+        parse-user:   true;
+        parse-system: true;
+    }
+
+    kb-cancel: "Escape,Control+g,Control+c,Control+bracketleft";
+    kb-select-1: "Control+1";
+    kb-select-2: "Control+2";
+    kb-select-3: "Control+3";
+    kb-select-4: "Control+4";
+    kb-select-5: "Control+5";
+    kb-select-6: "Control+6";
+    kb-select-7: "Control+7";
+    kb-select-8: "Control+8";
+    kb-select-9: "Control+9";
+    kb-select-10: "Control+0";
+
+    timeout {
+      action: "kb-cancel";
+      delay:  0;
     }
 }
 

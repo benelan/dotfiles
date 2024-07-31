@@ -1,3 +1,5 @@
+local res = require("jamin.resources")
+
 return {
   {
     "nvim-neotest/neotest",
@@ -11,11 +13,6 @@ return {
     },
 
     config = function()
-      local has_jest, jest = pcall(require, "neotest-jest")
-      local has_go, go = pcall(require, "neotest-go")
-      local has_vitest, vitest = pcall(require, "neotest-vitest")
-      local has_stenciljs, stenciljs = pcall(require, "neotest-stenciljs")
-
       vim.diagnostic.config({
         virtual_text = {
           format = function(diagnostic)
@@ -33,19 +30,21 @@ return {
       require("neotest").setup({
         output = { open_on_run = true },
         status = { virtual_text = true },
+        floating = { border = res.icons.border },
         icons = require("jamin.resources").icons.test,
         adapters = {
-          has_go and go or nil,
-          has_stenciljs and stenciljs("neotest-stenciljs")({ no_build = true }) or nil,
-          has_vitest and vitest or nil,
-          has_jest and jest({
+          -- require("neotests-go"),
+          require("neotest-stenciljs")({ no_build = true }),
+          require("neotest-vitest"),
+          require("neotest-jest")({
             cwd = function(file)
               if string.find(file, "/packages/") then
-                return string.match(file, "(.*/packages.-/[^/]+/)")
+                local pkg_dir = string.match(file, "(.*/packages.-/[^/]+/)")
+                if pkg_dir then return pkg_dir end
               end
-              return vim.fn.getcwd()
+              return vim.uv.cwd()
             end,
-          }) or nil,
+          }),
         },
       })
     end,
@@ -68,7 +67,13 @@ return {
       },
       {
         "<leader>nw",
-        function() require("neotest").run.run({ watch = true, no_build = false }) end,
+        function()
+          require("neotest").run.run({
+            watch = true,
+            no_build = false,
+            jestCommand = "jest --watch ",
+          })
+        end,
         desc = "Watch nearest test",
       },
       {
@@ -78,7 +83,7 @@ return {
       },
       {
         "<leader>na",
-        function() require("neotest").run.run(vim.fn.getcwd()) end,
+        function() require("neotest").run.run(vim.uv.cwd()) end,
         desc = "Test all files",
       },
       {

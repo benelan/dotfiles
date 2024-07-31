@@ -315,10 +315,10 @@ gbprune() {
 if supports fzf; then
     ## setup the preview command for files and directories    {{{
 
-    if type bat >/dev/null 2>&1; then
+    if supports bat; then
         # shellcheck disable=2016
         FZF_PREVIEW_CMD='bat --color=always --plain --line-range :$FZF_PREVIEW_LINES {}'
-    elif type pygmentize >/dev/null 2>&1; then
+    elif supports pygmentize; then
         # shellcheck disable=2016
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {} | pygmentize -g'
     else
@@ -345,7 +345,7 @@ if supports fzf; then
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## open bookmark with surfraw                             {{{
 
-    fob() {
+    fbm() {
         bookmark="$(awk NF "$XDG_CONFIG_HOME/surfraw/bookmarks" | fzf -e)"
         bookmark_name="$(awk '{print $1;}' <<<"$bookmark")"
         bookmark_gui_flag="$(awk '{print $4;}' <<<"$bookmark")"
