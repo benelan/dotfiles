@@ -36,6 +36,7 @@ return function(args)
   if client.supports_method("textDocument/formatting") then
     -- if the LSP server has formatting capabilities, use it for formatexpr
     vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
+    require("jamin.lsp.format").setup()
     bufmap(
       { "n", "v" },
       "<leader>F",
@@ -119,4 +120,8 @@ return function(args)
   --   })
   --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
   -- end
+
+  if client.supports_method("textDocument/documentHighlight") then
+    require("jamin.lsp.words").setup({ enabled = true, buf = args.buf })
+  end
 end

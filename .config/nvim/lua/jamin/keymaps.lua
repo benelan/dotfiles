@@ -82,6 +82,22 @@ keymap(
   "Previous diagnostic warning"
 )
 
+local virtual_text_enabled = true
+keymap("n", "<leader>sv", function()
+  virtual_text_enabled = not virtual_text_enabled
+  vim.diagnostic.config({
+    virtual_text = virtual_text_enabled and require("jamin.resources").diagnostics.virtual_text
+      or false,
+  })
+  print(
+    string.format(
+      "%s %s",
+      "diagnostic virtual text",
+      virtual_text_enabled and "enabled" or "disabled"
+    )
+  )
+end, "Toggle diagnostic virtual text")
+
 -- toggle treesitter highlighting
 keymap("n", "<leader>sh", function()
   if vim.b.ts_highlight then

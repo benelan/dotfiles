@@ -439,4 +439,22 @@ M.art = {
  ]],
 }
 
+M.diagnostics = {
+  virtual_text = {
+    severity = { min = vim.diagnostic.severity.WARN },
+    source = "if_many",
+  },
+  signs = { text = M.icons.diagnostics },
+  float = {
+    border = M.icons.border,
+    header = "",
+    prefix = "",
+    focusable = true,
+    source = true,
+  },
+  severity_sort = true,
+  underline = true,
+  update_in_insert = false,
+}
+
 return M

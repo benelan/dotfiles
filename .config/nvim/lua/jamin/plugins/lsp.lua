@@ -14,23 +14,6 @@ return {
     },
 
     opts = {
-      diagnostics = {
-        virtual_text = {
-          severity = { min = vim.diagnostic.severity.WARN },
-          source = "if_many",
-        },
-        signs = { text = res.icons.diagnostics },
-        float = {
-          border = res.icons.border,
-          header = "",
-          prefix = "",
-          focusable = true,
-          source = true,
-        },
-        severity_sort = true,
-        underline = true,
-        update_in_insert = false,
-      },
       force_capabilities = {
         telemetry = false,
         textDocument = {
@@ -52,14 +35,14 @@ return {
       --> Diagnostics and capabilities
 
       -- set the diagnostic opts specified above
-      vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
+      vim.diagnostic.config(vim.deepcopy(res.diagnostics))
 
       -- set border characters for hover and signature help
       vim.lsp.handlers["textDocument/hover"] =
-        vim.lsp.with(vim.lsp.handlers.hover, { border = opts.diagnostics.float.border })
+        vim.lsp.with(vim.lsp.handlers.hover, { border = res.diagnostics.float.border })
 
       vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = opts.diagnostics.float.border })
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = res.diagnostics.float.border })
 
       -- combine default LSP client capabilities with override opts specified above
       local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
@@ -70,21 +53,6 @@ return {
         has_cmp and cmp_nvim_lsp.default_capabilities() or {},
         opts.capabilities or {}
       )
-
-      local virtual_text_enabled = true
-      keymap("n", "<leader>sv", function()
-        virtual_text_enabled = not virtual_text_enabled
-        vim.diagnostic.config({
-          virtual_text = virtual_text_enabled and opts.diagnostics.virtual_text or false,
-        })
-        print(
-          string.format(
-            "%s %s",
-            "diagnostic virtual text",
-            virtual_text_enabled and "enabled" or "disabled"
-          )
-        )
-      end, "Toggle diagnostic virtual text")
 
       -------------------------------------------------------------------------------
       ----> Server setup
@@ -105,7 +73,7 @@ return {
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = lsp_augroup,
-        callback = require("jamin.lsp").on_attach,
+        callback = function(args) require("jamin.lsp.attach")(args) end,
       })
     end,
   },
