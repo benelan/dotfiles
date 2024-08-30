@@ -2,45 +2,6 @@
 #
 # This file is included by both the i3 and sway configs
 
-### Variables {{{1
-#
-# Mod1 is Alt, Mod4 is Super
-set $mod Mod4
-
-# Define names for default workspaces for which we configure key bindings later on.
-# We use variables to avoid repeating the names in multiple places.
-set $ws1 "01"
-set $ws2 "02"
-set $ws3 "03"
-set $ws4 "04"
-set $ws5 "05"
-set $ws6 "06"
-set $ws7 "07"
-set $ws8 "08"
-set $ws9 "09"
-set $ws10 "10"
-
-# Set primary gruvbox colorscheme colors
-set $fg1 #ebdbb2
-set $fg2 #d5c4a1
-set $bg0_h #1d2021
-set $bg0_s #32302f
-set $bg1 #3c3836
-set $bg2 #504945
-set $bg3 #665c54
-set $bg4 #7c6f64
-set $red #cc241d
-set $green #98971a
-set $yellow #d79921
-set $blue #83a598
-set $purple #b16286
-set $aqua #689d68
-set $orange #d65d0e
-set $gray #a89984
-set $white #ffffff
-set $black #000000
-
-
 ### Keybindings {{{1
 #
 # Use Mouse+$mod to drag floating windows to their wanted position
