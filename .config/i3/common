@@ -68,17 +68,11 @@ bindsym $mod+Shift+b exec "$HOME_BROWSER"
 
 # Use rofi as the launcher. Requires XWayland or the wl-roots compatible fork:
 # https://github.com/lbonn/rofi
-bindsym $mod+d exec "[ -f ~/.config/rofi/scripts/launcher_t4 ] \
-    && ~/.config/rofi/scripts/launcher_t4 \
-    || rofi -modi drun,run,window,filebrowser -show drun"
-
-bindsym $mod+Space exec "[ -f ~/.config/rofi/scripts/launcher_t1 ] \
-    && ~/.config/rofi/scripts/launcher_t1 \
-    || rofi -modi drun,run,window,filebrowser -show drun"
-
-bindsym $mod+grave exec music rofi
+bindsym $mod+d exec rofi -show drun -theme ~/.config/rofi/classic.rasi
+bindsym $mod+space exec rofi -show drun -theme ~/.config/rofi/fancy.rasi
 bindsym $mod+Shift+grave exec BROWSER=firefox ~/.config/rofi/applets/bin/quicklinks.sh
 bindsym $mod+End exec ~/.config/rofi/applets/bin/powermenu.sh
+bindsym $mod+grave exec music rofi
 
 # Change focus
 bindsym $mod+h focus left
@@ -218,12 +212,13 @@ workspace $ws9 output primary
 # Automatically open apps in specific workspaces
 # Find the class/app_id/etc of open windows with: $ swaymsg -t get_tree
 
+assign [class="^teams-for-linux$"] $ws10
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^Microsoft Teams"] $ws10
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^Outlook \(PWA\)"] $ws9
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^GitHub"] $ws4
 assign [class="^(Brave-browser|Chromium|Google-chrome)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark)$"] $ws4
-assign [class="^(Gimp-\d+\.\d+|com\.sayonara-player\.Sayonara)$"] $ws6
+assign [class="^(calibre|Gimp-\d+\.\d+|com\.sayonara-player\.Sayonara)$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
 assign [class="^Proton Mail$"] $ws8
 

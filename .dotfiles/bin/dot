@@ -1359,9 +1359,7 @@ install_theme_rofi-config() {
     "$LIB/rofi-scripts/setup.sh"
     popd >/dev/null
 
-    if [ -d "$HOME/.config/rofi.$USER" ]; then
-        cp -r --no-clobber "$HOME/.config/rofi.$USER/"* "$HOME/.config/rofi/"
-    fi
+    _dot restore ~/.config/rofi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1843,6 +1841,22 @@ install_build_dunst() {
         echo "The latest version of dunst ($latest_version) is already installed" >&2
         return
     fi
+
+    # https://github.com/dunst-project/dunst/wiki/Dependencies#debian-and-ubuntu
+    _has apt && sudo apt install -y \
+        libdbus-1-dev \
+        libx11-dev \
+        libxinerama-dev \
+        libxrandr-dev \
+        libxss-dev \
+        libglib2.0-dev \
+        libpango1.0-dev \
+        libgtk-3-dev \
+        libxdg-basedir-dev \
+        libgdk-pixbuf-2.0-dev \
+        libnotify-dev
+
+    git checkout "$latest_version"
 
     sudo make
     sudo make install

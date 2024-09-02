@@ -134,7 +134,6 @@ clone_gh_repo_bare() {
 }
 
 clone_gh_repo_bare "work" "Esri/calcite-design-system"
-clone_gh_repo_bare "work" "Esri/calcite-components-examples"
 clone_gh_repo_bare "work" "benelan/arcgis-esm-samples"
 clone_gh_repo_bare "work" "benelan/calcite-samples"
 
@@ -149,6 +148,7 @@ clone_gh_repo "work" "benelan/github-scripts"
 clone_gh_repo "work" "benelan/test"
 
 clone_gh_repo "personal" "benelan/git-mux"
+clone_gh_repo "personal" "benelan/gh-notify-desktop"
 clone_gh_repo "personal" "benelan/gh-fzf"
 clone_gh_repo "personal" "benelan/nm-fzf"
 clone_gh_repo "personal" "benelan/resume"

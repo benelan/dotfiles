@@ -56,7 +56,7 @@ set undolevels=1000
 
 " What should be saved automatically on restarting vifm.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
-set vifminfo=dhistory,savedirs,chistory,state,tui,shistory,
+set vifminfo=dhistory,chistory,state,tui,shistory,
             \phistory,fhistory,dirstack,registers,bookmarks,bmarks
 
 " Automatically resolve symbolic links on l or Enter.
@@ -69,12 +69,9 @@ set sortnumbers
 " If you would rather use a plain text help file set novimhelp.
 set vimhelp
 
-" If you would like to run an executable file when you
-" press Enter, l or Right Arrow, set this.
-set norunexec
+set fastrun
 
-" List of color schemes to try (picks the first one supported by the terminal)
-colorscheme gruvbox
+set dirsize=nitems
 
 " Format for displaying time in file list. For example:
 " TIME_STAMP_FORMAT=%m/%d-%H:%M
@@ -125,6 +122,9 @@ set tuioptions=psuv
 
 " make filter cmd behave like vim's Cfilter and favor <c-i> over <tab> binding
 set cpoptions=s
+
+" List of color schemes to try (picks the first one supported by the terminal)
+colorscheme gruvbox
 
 " Bookmarks {{{1
 " :mark mark /full/directory/path [filename]
@@ -211,23 +211,19 @@ fileviewer {*.md,*.mdx,*.ts,*.tsx}
 " Pdf
 filetype {*.pdf},<application/pdf>
         \ {View in zathura} zathura %c %i &,
-        \ {View in apvlv} apvlv %c,
-        \ {View in xpdf} xpdf %c,
-        \ {View in evince} evince %c &
+        \ {View in default app} o %c &
 
 fileviewer {*.pdf},<application/pdf> pdftotext -nopgbrk %c -
 
 " PostScript
 filetype {*.ps,*.eps,*.ps.gz},<application/postscript>
             \ {View in zathura} zathura %f &,
-            \ {View in gv} gv %c %i &,
-            \ {View in evince} evince %c &
+            \ {View in default app} o %c &
 
 " Djvu
 filetype {*.djvu},<image/vnd.djvu>
             \ {View in zathura} zathura %f &,
-            \ {View in apvlv} apvlv %f,
-            \ {View in evince} evince %c &
+            \ {View in default app} o %c &
 
 " Midi
 filetype {*.mid,*.kar} {Play using TiMidity++} timidity %f,
@@ -235,9 +231,9 @@ filetype {*.mid,*.kar} {Play using TiMidity++} timidity %f,
 " Audio
 filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus,
             \*.aac,*.mpga},<audio/*>
-            \ {Play using ffplay} ffplay -nodisp -hide_banner -autoexit %c,
-            \ {Play using MPlayer} mplayer %f,
             \ {Play using mpv} mpv --no-video %f %s,
+            \ {Play using vlc} vlc %f,
+            \ {Play using ffplay} ffplay -nodisp -hide_banner -autoexit %c,
 
 fileviewer {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus,
             \*.aac,*.mpga},<audio/*>
@@ -247,11 +243,9 @@ fileviewer {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus,
 filetype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
             \*.fl[icv],*.m2v,*.mov,*.webm,*.mts,*.m4v,*.r[am],*.qt,*.divx,
             \*.as[fx],*.unknown_video},<video/*>
+            \ {Play using mpv} mpv %f,
             \ {Play using vlc} vlc %f,
-            \ {Play using mpv} mpv --no-video %f,
             \ {Play using ffplay} ffplay -fs -hide_banner -autoexit %f,
-            \ {Play using mplayer} mplayer %f,
-            \ {Play using Dragon} dragon %f:p,
 
 fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
             \*.fl[icv],*.m2v,*.mov,*.webm,*.mts,*.m4v,*.r[am],*.qt,*.divx,
@@ -268,11 +262,6 @@ filetype {*.xhtml,*.html,*.htm},<text/html>
             \ {Open with brave-browser} brave-browser %f &,
             \ {Open with chromium-browser} chromium-browser %f &,
             \ {Open with chrome} google-chrome %f &,
-
-fileviewer {*.xhtml,*.html,*.htm},<text/html>
-            \ {Open with w3m} w3m,
-            \ {Open with lynx} lynx,
-            \ {Open with links} links,
 
 " Object
 filetype {*.o},<application/x-object> nm %f | less
@@ -301,7 +290,6 @@ filetype {*.blend} {Open in Blender} blender %c,
 filetype {*.sh3d} {Open in Sweet Home 3D} sweethome3d %c:p,
 
 filetype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
-            \ {View in sxiv} sxiv %f,
             \ {View in feh} feh %f,
             \ {View in ImageMagick} display %f,
             \ {View in default image viewer} open %f,
@@ -409,9 +397,6 @@ fileviewer {*.docx},<application/vnd.openxmlformats-officedocument.wordprocessin
 " TuDu files
 filetype {*.tudu} tudu -f %c
 
-" Qt projects
-filetype {*.pro} qtcreator %f &
-
 " Directories
 filextype {*/},{.*/}
             \ {View in nautilus} nautilus %f &,
@@ -441,7 +426,7 @@ fileviewer *[^/] bat --color always --wrap never --pager never %c -p
 " " :file[x]type commands above to ensure they don't interfere with system-wide
 " " settings).  By default all unknown files are opened with 'vi[x]cmd'
 " " uncommenting one of lines below will result in ignoring 'vi[x]cmd' option
-"filetype * o
+filetype * o
 
 " Panel configuration example {{{1
 " Customize view columns a bit (enable ellipsis for truncated file names)
@@ -553,20 +538,13 @@ command! togglesort
          \ |endif
 nnoremap <silent> \s :togglesort<cr>
 
-" Example of standard two-panel file managers mappings
-nnoremap <f4> :edit<cr>
-nnoremap <f5> :copy<cr>
-nnoremap <f6> :move<cr>
-nnoremap <f7> :mkdir<space>
-nnoremap <f8> :delete<cr>
-
 " Midnight commander alike mappings
 " Open current directory in the other pane
-nnoremap <a-s> :sync<cr>
+nnoremap <A-s> :sync<cr>
 " Open directory under cursor in the other pane
-nnoremap <a-o> :sync %c<cr>
+nnoremap <A-o> :sync %c<cr>
 " Swap panes
-nnoremap <a-u> <c-w>x
+nnoremap <A-u> <c-w>x
 
 " Various customization examples {{{1
 " Use ag (the silver searcher) instead of grep
@@ -606,7 +584,7 @@ nnoremap <C-a> ggvG<cr>
 nnoremap <A-i> <c-g>
 
 " create new tab
-nnoremap <c-t> :tabnew<cr>:view!<cr>
+nnoremap <C-t> :tabnew<cr>:view!<cr>
 
 " switch to tab to the left
 nnoremap [t :tabprevious<cr>:view!<cr>
@@ -619,4 +597,9 @@ nnoremap - :qa<cr>
 " Devicons require a patched font (or wezterm which ships with them)
 if expand($NERD_ICONS) != "0" && (expand($NERD_ICONS) == "1" || expand($WEZTERM_PANE) != "")
   source ~/.config/vifm/scripts/icons.vifm
+endif
+
+" load local config if it exists
+if filereadable(expand("$HOME/.config/vifm/vifmrc.local"))
+    source ~/.config/vifm/vifmrc.local
 endif

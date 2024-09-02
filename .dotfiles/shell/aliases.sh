@@ -19,7 +19,7 @@ else
 fi
 
 alias x="tmux"
-alias f="vifm ."
+alias f="vifm"
 
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'

@@ -35,13 +35,9 @@
     # screen width minus the width defined in within the geometry option.
     geometry = "0x20-20+40"
 
-    # dynamic width from 0 to 300
-    width = (0, 700)
-    # constant width of 300
-    # width = 300
-
-    # The maximum height of a single notification, excluding the frame.
-    height = 800
+    # dynamic width from 0 to 800
+    width = (0, 800)
+    height = (0, 800)
 
     # Position the notification in the top right corner
     origin = top-right
@@ -264,7 +260,7 @@
 
     # dmenu path.
     # dmenu = /usr/bin/dmenu -i -fn IosevkaNerdFont-14 -sb 'dark slate gray' -p dunst:
-    dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/launchers/type-1/style-10.rasi
+    dmenu = /usr/bin/rofi -dmenu -i -p dunst -theme ~/.config/rofi/classic.rasi
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/xdg-open
@@ -298,7 +294,7 @@
     # user defined timeout.
     ignore_dbusclose = false
 
-    # Use regex instead of globs for overrides 
+    # Use regex instead of globs for overrides
     enable_posix_regex=true
 
     ### Wayland ###

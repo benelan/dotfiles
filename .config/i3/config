@@ -71,7 +71,7 @@ assign [title="^.* - mpv$"] $ws6
 assign [class="^thunderbird$"] $ws8
 
 for_window [title="^.* - mpv$"] focus, inhibit_idle focus
-for_window [class="^(firefox|vlc)$"] focus, inhibit_idle focus
+for_window [class="^(vlc|firefox|Brave-browser)$"] focus, inhibit_idle focus
 
 
 ### UI {{{1
