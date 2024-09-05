@@ -7,7 +7,7 @@ return function(args)
   -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)
   if
     vim.tbl_contains(
-      { "typescript-tools", "tsserver", "eslint", "jsonls", "html", "lua_ls", "bashls" },
+      { "typescript-tools", "ts_ls", "eslint", "jsonls", "html", "lua_ls", "bashls" },
       client.name
     )
   then

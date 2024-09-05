@@ -34,7 +34,7 @@ local function custom_stuff(args)
         context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
       })
     end,
-    { desc = "Organize imports (tsserver)", buffer = args.buf }
+    { desc = "Organize imports", buffer = args.buf }
   )
 
   vim.keymap.set(
@@ -46,7 +46,7 @@ local function custom_stuff(args)
         context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
       })
     end,
-    { desc = "Remove unused variables (tsserver)", buffer = args.buf }
+    { desc = "Remove unused variables", buffer = args.buf }
   )
 
   vim.keymap.set(
@@ -58,7 +58,7 @@ local function custom_stuff(args)
         context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
       })
     end,
-    { desc = "Add missing imports (tsserver)", buffer = args.buf }
+    { desc = "Add missing imports", buffer = args.buf }
   )
   ---@diagnostic enable: assign-type-mismatch
 end

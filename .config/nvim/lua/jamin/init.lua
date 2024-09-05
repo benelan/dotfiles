@@ -53,6 +53,8 @@ require("jamin.options")
 require("jamin.keymaps")
 require("jamin.commands")
 
+require("jamin.lsp").setup()
+
 -- Neovim embedded in VSCode
 if vim.g.vscode then
   vim.cmd([[
@@ -78,8 +80,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local res = require("jamin.resources")
-
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   change_detection = { notify = false },
@@ -87,7 +87,7 @@ require("lazy").setup("jamin.plugins", {
   dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
-    border = res.icons.border,
+    border = require("jamin.resources").icons.border,
     backdrop = 100,
     icons = vim.g.use_devicons and {} or {
       cmd = "",

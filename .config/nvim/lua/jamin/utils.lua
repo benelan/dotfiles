@@ -1,5 +1,11 @@
+local res = require("jamin.resources")
 local M = {}
 
+--- Check parent directories for a target file
+---@param target table The path to the target file, relative a parent directories
+---@param start? string The directory to start the search from, defaults to cwd
+---@param stop? string The directory to stop the search in, defaults to $HOME
+---@return string path The absolute path to the target file, if found
 function M.find_in_parent(target, start, stop)
   return vim.fs.find(vim.fs.joinpath((unpack or table.unpack)(target)), {
     path = start,
@@ -38,7 +44,7 @@ function M.cowboy()
     local map = key
     vim.keymap.set("n", key, function()
       if vim.v.count > 0 then count = 0 end
-      if count >= 10 and vim.bo.buftype ~= "nofile" then
+      if count >= 10 and vim.bo.buftype ~= "nofile" and not vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype) then
         ok, id = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
           icon = "🤠",
           replace = id,

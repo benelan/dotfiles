@@ -1,84 +1,6 @@
 local res = require("jamin.resources")
-local lsp_augroup = vim.api.nvim_create_augroup("jamin_lsp_server_setup", {})
 
 return {
-  {
-    "neovim/nvim-lspconfig", -- neovim's LSP implementation
-    event = "BufReadPost",
-    dependencies = { "williamboman/mason-lspconfig.nvim" },
-
-    keys = {
-      { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
-      { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
-      { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
-    },
-
-    opts = {
-      force_capabilities = {
-        telemetry = false,
-        textDocument = {
-          codeLens = { dynamicRegistration = false },
-          completion = {
-            completionItem = {
-              snippetSupport = true,
-              resolveSupport = { properties = { "documentation", "detail", "additionalTextEdits" } },
-            },
-          },
-        },
-      },
-    },
-
-    config = function(_, opts)
-      local lspconfig = require("lspconfig")
-
-      -------------------------------------------------------------------------------
-      --> Diagnostics and capabilities
-
-      -- set the diagnostic opts specified above
-      vim.diagnostic.config(vim.deepcopy(res.diagnostics))
-
-      -- set border characters for hover and signature help
-      vim.lsp.handlers["textDocument/hover"] =
-        vim.lsp.with(vim.lsp.handlers.hover, { border = res.diagnostics.float.border })
-
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = res.diagnostics.float.border })
-
-      -- combine default LSP client capabilities with override opts specified above
-      local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-      local capabilities = vim.tbl_deep_extend(
-        "force",
-        {},
-        vim.lsp.protocol.make_client_capabilities(),
-        has_cmp and cmp_nvim_lsp.default_capabilities() or {},
-        opts.capabilities or {}
-      )
-
-      -------------------------------------------------------------------------------
-      ----> Server setup
-
-      for _, server in pairs(res.lsp_servers) do
-        -- the zk.nvim and typescript-tools.nvim plugins set up the clients themselves
-        if not vim.tbl_contains({ "zk", "tsserver" }, server) then
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server)
-          local server_opts = vim.tbl_deep_extend(
-            "force",
-            { capabilities = capabilities },
-            has_user_opts and user_opts or {}
-          )
-
-          lspconfig[server].setup(server_opts)
-        end
-      end
-
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = lsp_augroup,
-        callback = function(args) require("jamin.lsp.attach")(args) end,
-      })
-    end,
-  },
-
-  -----------------------------------------------------------------------------
   -- Installer/manager for language servers, linters, formatters, and debuggers
   {
     "williamboman/mason.nvim",
@@ -117,12 +39,63 @@ return {
   -- integrates mason and lspconfig
   {
     "williamboman/mason-lspconfig.nvim",
-    lazy = true,
-    dependencies = { "williamboman/mason.nvim" },
+    event = "BufReadPost",
+    dependencies = {
+      "williamboman/mason.nvim",
+      {
+        "neovim/nvim-lspconfig",
+        keys = {
+          { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
+          { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
+          { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
+        },
+      },
+    },
     build = ":MasonUpdate",
     opts = {
       ensure_installed = res.lsp_servers,
-      automatic_installation = true,
+      handlers = {
+        -- the zk.nvim and typescript-tools.nvim plugins setup the servers themselves,
+        -- so make sure mason-lspconfig doesn't call the default handler
+        ts_ls = function() end,
+        zk = function() end,
+
+        function(server_name)
+          local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server_name)
+
+          local capabilities_overrides = {
+            telemetry = false,
+            textDocument = {
+              codeLens = { dynamicRegistration = false },
+              completion = {
+                completionItem = {
+                  snippetSupport = true,
+                  resolveSupport = {
+                    properties = { "documentation", "detail", "additionalTextEdits" },
+                  },
+                },
+              },
+            },
+          }
+
+          local capabilities = vim.tbl_deep_extend(
+            "force",
+            {},
+            vim.lsp.protocol.make_client_capabilities(),
+            has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+            capabilities_overrides
+          )
+
+          local server_opts = vim.tbl_deep_extend(
+            "force",
+            { capabilities = capabilities },
+            has_user_opts and user_opts or {}
+          )
+
+          require("lspconfig")[server_name].setup(server_opts)
+        end,
+      },
     },
   },
 
@@ -207,7 +180,7 @@ return {
     ft = res.filetypes.webdev,
     dependencies = { "neovim/nvim-lspconfig" },
     opts = function()
-      local has_ts, ts = pcall(require, "jamin.lsp.servers.tsserver")
+      local has_ts, ts = pcall(require, "jamin.lsp.servers.ts_ls")
       local has_tst, api = pcall(require, "typescript-tools.api")
 
       local handlers = has_tst
@@ -231,11 +204,10 @@ return {
       end
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = lsp_augroup,
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if not client or client.name ~= "typescript-tools" then return end
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers.tsserver")
+          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers.ts_ls")
           if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
         end,
       })
