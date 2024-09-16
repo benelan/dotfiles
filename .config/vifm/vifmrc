@@ -23,7 +23,7 @@ endif
 set number
 set relativenumber
 
-set title
+set notitle
 
 set grepprg='rg --vimgrep --hidden'
 set findprg='fd --hidden %A %s'
@@ -102,7 +102,7 @@ set incsearch
 set tabstop=2
 
 " Try to leave some space from cursor to upper/lower border in lists
-set scrolloff=4
+set scrolloff=5
 
 " Don't do too many requests to slow file systems
 if !has('win')
@@ -160,7 +160,6 @@ command! unzip unzip %f
 command! run !! ./%f
 command! make !!make %a
 command! mcd :mkdir %a | cd %a
-command! mcd! :mkdir! %a | cd %a
 command! vgrep nvim "+grep %a"
 command! reload :write | restart full
 command! bak :clone %c.bak
@@ -310,8 +309,10 @@ filetype {*.sha256} {Check SHA256 hash sum} sha256sum -c %f %S,
 filetype {*.sha512} {Check SHA512 hash sum} sha512sum -c %f %S,
 
 " GPG signature
-filetype {*.asc},<application/pgp-signature>
-            \ {Check signature} !!gpg --verify %c,
+filetype {*.asc,*.gpg},<application/pgp-signature> {Open with neovim} nvim %c,
+
+" GPG signature
+fileviewer {*.asc,*.gpg},<application/pgp-signature> gpg --decrypt --dry-run %c
 
 " Torrent
 filetype {*.torrent},<application/x-bittorrent> transmission-gtk %f &
@@ -321,6 +322,8 @@ fileviewer {*.torrent},<application/x-bittorrent> transmission-show -v %c
 " FuseZipMount
 filetype {*.zip,*.jar,*.war,*.ear,*.oxt,*.apkg},
             \<application/zip,application/java-archive>
+            \ {Mount with archivemount}
+            \ FUSE_MOUNT|archivemount %SOURCE_FILE %DESTINATION_DIR,
             \ {Mount with fuse-zip}
             \ FUSE_MOUNT|fuse-zip %SOURCE_FILE %DESTINATION_DIR,
             \ {View contents} unzip -l %f | less,
@@ -594,7 +597,7 @@ if expand($NERD_ICONS) != "0" && (expand($NERD_ICONS) == "1" || expand($WEZTERM_
   source ~/.config/vifm/scripts/icons.vifm
 endif
 
-" load local config if it exists
-if filereadable(expand("$HOME/.config/vifm/vifmrc.local"))
-    source ~/.config/vifm/vifmrc.local
-endif
+"" load local config if it exists (filereadable requires vifm >= v0.13)
+"if filereadable(expand("$XDG_CONFIG_HOME/vifm/vifmrc.local"))
+"    source ~/.config/vifm/vifmrc.local
+"endif

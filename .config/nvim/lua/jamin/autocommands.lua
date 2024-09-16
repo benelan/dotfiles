@@ -4,7 +4,7 @@ local res = require("jamin.resources")
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),
-  callback = function() vim.highlight.on_yank({ higroup = "Visual", timeout = 250 }) end,
+  callback = function() (vim.hl or vim.highlight).on_yank({ higroup = "Visual", timeout = 250 }) end,
 })
 
 -------------------------------------------------------------------------------
@@ -139,12 +139,10 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_diagnostic_qflist", {}),
   callback = function(args)
-    -- Use pcall because I was getting inconsistent errors when quitting vim.
-    -- Possibly timing errors from trying to get/create diagnostics/qflists
-    -- that don't exist anymore. DiagnosticChanged fires at some strange times.
-    local has_diagnostics, diagnostics = pcall(vim.diagnostic.get)
-    local has_qflist, qflist = pcall(vim.fn.getqflist, { title = 0, id = 0, items = 0 })
-    if not has_diagnostics or not has_qflist then return end
+    if not vim.fn.filereadable(vim.fn.expand("%:p")) then return end
+
+    local diagnostics = vim.diagnostic.get()
+    local qflist = vim.fn.getqflist({ title = 0, id = 0, items = 0 })
 
     -- Sometimes the event fires with an empty diagnostic list in the data.
     -- This conditional prevents re-creating the qflist with the same

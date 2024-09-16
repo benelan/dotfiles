@@ -1,4 +1,6 @@
----@diagnostic disable: undefined-field
+---Plugins for print debugging and the Debug Adapter Protocol
+---https://microsoft.github.io/debug-adapter-protocol/
+
 local res = require("jamin.resources")
 
 return {
@@ -19,7 +21,8 @@ return {
   },
 
   ------------------------------------------------------------------------------
-  -- Debug Adapter Protocol: https://microsoft.github.io/debug-adapter-protocol/
+  -- Debug Adapter Protocol integration
+  ---@diagnostic disable: undefined-field
   {
     "mfussenegger/nvim-dap",
     cmd = {
@@ -34,25 +37,21 @@ return {
       {
         "<leader>d<CR>",
         function()
-          local has_rooter, rooter = pcall(require, "jamin.commands.rooter")
-          local vscode = require("dap.ext.vscode")
-
-          local cwd_launch = ".vscode/launch.json"
-          local adapter_fts = {
-            ["chrome"] = res.filetypes.webdev,
-            ["node"] = res.filetypes.webdev,
-            ["node-terminal"] = res.filetypes.webdev,
-            ["pwa-chrome"] = res.filetypes.webdev,
-            ["pwa-extensionHost"] = res.filetypes.webdev,
-            ["pwa-msedge"] = res.filetypes.webdev,
-            ["pwa-node"] = res.filetypes.webdev,
-          }
-
-          if vim.fn.filereadable(cwd_launch) == 1 then
-            vscode.load_launchjs(cwd_launch, adapter_fts)
-          end
+          local has_rooter, rooter = pcall(require, "jamin.utils.rooter")
 
           if has_rooter then
+            local vscode = require("dap.ext.vscode")
+            local cwd_launch = ".vscode/launch.json"
+            local adapter_fts = {
+              ["chrome"] = res.filetypes.webdev,
+              ["node"] = res.filetypes.webdev,
+              ["node-terminal"] = res.filetypes.webdev,
+              ["pwa-chrome"] = res.filetypes.webdev,
+              ["pwa-extensionHost"] = res.filetypes.webdev,
+              ["pwa-msedge"] = res.filetypes.webdev,
+              ["pwa-node"] = res.filetypes.webdev,
+            }
+
             local worktree_launch = string.format("%s/%s", rooter.worktree(), cwd_launch)
             local project_launch = string.format("%s/%s", rooter.project(), cwd_launch)
 
@@ -198,6 +197,7 @@ return {
       local vscode = require("dap.ext.vscode")
       vim.g.loaded_dap = true
 
+      ---@diagnostic disable-next-line: duplicate-set-field
       vscode.json_decode = function(str)
         return vim.json.decode(require("plenary.json").json_strip_comments(str, {}))
       end

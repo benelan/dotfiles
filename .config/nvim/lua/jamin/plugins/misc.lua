@@ -1,33 +1,15 @@
+---Plugins that don't fit in one of the other categories
+
 local res = require("jamin.resources")
 
 return {
   -----------------------------------------------------------------------------
-  -- keymaps/autocmds/utils/etc. shared with the vim config
+  -- keymaps/autocmds/utils/etc from my vim config (too lazy to lua-ify everything)
   {
     dir = "~/.vim",
     priority = 90,
     enabled = vim.fn.isdirectory("~/.vim"),
     lazy = false,
-  },
-
-  -----------------------------------------------------------------------------
-  -- adds closing brackets only when pressing enter
-  {
-    dir = "~/.vim/pack/foo/start/vim-closer",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
-    config = function()
-      -- setup files that can contain javascript which aren't included by default
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("jamin_closer_javascript", {}),
-        pattern = { "svelte", "astro", "html" },
-        callback = function()
-          vim.b.closer = 1
-          vim.b.closer_flags = "([{;"
-          vim.b.closer_no_semi = "^\\s*\\(function\\|class\\|if\\|else\\)"
-          vim.b.closer_semi_ctx = ")\\s*{$"
-        end,
-      })
-    end,
   },
 
   -----------------------------------------------------------------------------
@@ -38,28 +20,6 @@ return {
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- makes a lot more keymaps dot repeatable
-  {
-    dir = "~/.vim/pack/foo/start/vim-repeat",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
-    event = "CursorHold",
-  },
-
-  -----------------------------------------------------------------------------
-  -- adds keymaps for surrounding text objects with quotes, brackets, etc.
-  {
-    dir = "~/.vim/pack/foo/start/vim-surround",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
-    config = function()
-      vim.cmd([[
-        let g:surround_{char2nr('8')} = "/* \r */"
-        let g:surround_{char2nr('e')} = "\r\n}"
-      ]])
-    end,
-    keys = { "cs", "ds", "ys" },
   },
 
   -----------------------------------------------------------------------------
@@ -99,7 +59,7 @@ return {
   -- plugin manager
   {
     "folke/lazy.nvim",
-    init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Lazy.nvim") end,
+    init = function() keymap("n", "<leader>L", "<CMD>Lazy<CR>", "Manage plugins (lazy)") end,
   },
 
   -----------------------------------------------------------------------------
@@ -110,8 +70,12 @@ return {
   -- quickfix/location list helper
   {
     "stevearc/qf_helper.nvim",
+    event = "FileType qf",
     cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
-    opts = { quickfix = { default_bindings = false }, loclist = { default_bindings = false } },
+    opts = {
+      quickfix = { default_bindings = false },
+      loclist = { default_bindings = false },
+    },
     keys = {
       { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
       { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
@@ -136,7 +100,7 @@ return {
         "<leader>R",
         function()
           local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-          require("grug-far").grug_far({
+          require("grug-far").open({
             transient = true,
             prefills = {
               filesFilter = ext and ext ~= "" and "*." .. ext or nil,
@@ -144,16 +108,58 @@ return {
           })
         end,
         mode = { "n", "v" },
-        desc = "Search and Replace",
+        desc = "Find and Replace",
       },
       {
-        "<leader>tf",
+        "{",
+        function() vim.api.nvim_win_set_cursor(vim.fn.bufwinid(0), { 2, 0 }) end,
+        desc = "Jump to search input",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>F",
         function()
-          local state = unpack(require("grug-far").toggle_flags({ "--fixed-strings" }))
+          local state = unpack(require("grug-far").toggle_flags({ "--fixed-strings" }) or {})
           vim.notify("grug-far: toggled --fixed-strings " .. (state and "ON" or "OFF"))
         end,
         desc = "Toggle --fixed-strings",
-        ft = "grug-ar",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>H",
+        function()
+          local state = unpack(require("grug-far").toggle_flags({ "--hidden" }) or {})
+          vim.notify("grug-far: toggled --hidden " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --hidden",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>S",
+        function()
+          local state = unpack(require("grug-far").toggle_flags({ "--case-sensitive" }) or {})
+          vim.notify("grug-far: toggled --case-sensitive " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --case-sensitive",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>W",
+        function()
+          local state = unpack(require("grug-far").toggle_flags({ "--word-regexp" }) or {})
+          vim.notify("grug-far: toggled --word-regexp " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --word-regexp",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>M",
+        function()
+          local state = unpack(require("grug-far").toggle_flags({ "--multiline" }) or {})
+          vim.notify("grug-far: toggled --multiline " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --multiline",
+        ft = "grug-far",
       },
     },
   },
@@ -199,10 +205,11 @@ return {
       resession.setup(opts)
 
       resession.add_hook("post_load", function()
-        -- redraw treesitter context which gets messed up
-        if pcall(require, "treesitter-context") then
-          vim.cmd.TSContextToggle()
-          vim.cmd.TSContextToggle()
+        -- redraw treesitter context which gets messed up sometimes
+        local has_ts_context, ts_context = pcall(require, "treesitter-context")
+        if has_ts_context and ts_context.enabled() then
+          ts_context.disable()
+          ts_context.enable()
         end
       end)
 
@@ -241,7 +248,6 @@ return {
 
       vim.api.nvim_create_user_command("Sesh", function(event)
         local name, dir
-
         if event.args == "" and not event.bang then
           name = get_session_name()
           dir = "dirsession"
@@ -295,19 +301,6 @@ return {
             )
           then
             return
-          end
-
-          if args.event == "VimLeavePre" then
-            -- I think the fidget window caused inconsistent hanging when leaving vim
-            local has_progress, fidget_progress = pcall(require, "fidget.progress")
-            if has_progress then fidget_progress.suppress(true) end
-
-            local has_notification, fidget_notification = pcall(require, "fidget.notification")
-            if has_notification then
-              fidget_notification.suppress(true)
-              fidget_notification.clear()
-              fidget_notification.close()
-            end
           end
 
           -- Always save a special session named "previous"

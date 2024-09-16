@@ -1,3 +1,5 @@
+---Plugins for Git and GitHub integration
+
 local res = require("jamin.resources")
 
 return {
@@ -18,18 +20,6 @@ return {
       { "<leader>gd", "<CMD>Gvdiffsplit<CR>", desc = "Fugitive diff split" },
       { "<leader>gW", "<CMD>Gwrite<CR>", desc = "Fugitive write" },
       { "<leader>gR", "<CMD>Gread<CR>", desc = "Fugitive read" },
-      {
-        "<M-w>",
-        "<CMD>Gwrite <BAR> if &diff && tabpagenr('$') > 1 <BAR> tabclose <BAR> endif<CR>",
-        desc = "Write changes and close fugitive difftool tab",
-        mode = { "n" },
-      },
-      {
-        "<M-r>",
-        "<CMD>Gread <BAR> write <BAR> if &diff && tabpagenr('$') > 1 <BAR> tabclose <BAR> endif<CR>",
-        desc = "Read changes and close fugitive difftool tab",
-        mode = { "n" },
-      },
       {
         "<leader>gl",
         "<CMD>0Gclog --follow<CR>",
@@ -299,8 +289,9 @@ return {
       default_merge_method = "squash",
       default_to_projects_v2 = true,
       suppress_missing_scope = { projects_v2 = true },
-      pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
+      pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
+      reviews = { auto_show_threads = false },
       file_panel = { use_icons = vim.g.use_devicons },
       outdated_icon = res.i(nil, res.icons.ui.clock),
       resolved_icon = res.i(nil, res.icons.ui.checkmark),
@@ -312,15 +303,17 @@ return {
       left_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
       picker_config = {
         mappings = {
-          open_in_browser = { lhs = "<C-o>" },
-          checkout_pr = { lhs = "<M-o>" },
+          open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },
+          copy_url = { lhs = "<C-y>", desc = "copy url to system clipboard" },
+          checkout_pr = { lhs = "<M-o>", desc = "checkout pull request" },
+          merge_pr = { lhs = "<M-m>", desc = "merge pull request" },
         },
       },
       mappings = {
         issue = {
           open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },
         },
-        pull_requests = {
+        pull_request = {
           open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" },
         },
       },
@@ -332,11 +325,23 @@ return {
       vim.treesitter.language.register("markdown", "octo")
       vim.api.nvim_set_hl(0, "OctoBubble", { link = "CursorLine" })
 
-      -- temporary fix for https://github.com/pwntester/octo.nvim/issues/536
       vim.api.nvim_create_autocmd("BufEnter", {
-        group = vim.api.nvim_create_augroup("jamin_octo_fold_weirdness", {}),
+        group = vim.api.nvim_create_augroup("jamin_octo_buffer_setup", {}),
         pattern = "octo://*",
-        command = "if &diff | set nofoldenable | fi",
+        callback = function()
+          vim.keymap.set("n", "<leader>to", "<CMD>Octo review thread<CR>", {
+            desc = "Open review thread (octo)",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<leader>tr", "<CMD>Octo thread resolve<CR>", {
+            desc = "Resolve review thread (octo)",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<leader>tu", "<CMD>Octo thread unresolve<CR>", {
+            desc = "Unresolve review thread (octo)",
+            buffer = true,
+          })
+        end,
       })
     end,
 
@@ -344,13 +349,17 @@ return {
       -- Find possible actions
       { "<leader>o", "<CMD>Octo actions<CR>", desc = "Actions (octo)" },
 
+      -- -- native alternative to https://github.com/petertriho/cmp-git
+      -- { "@", "@<C-x><C-o>", mode = "i", ft = "octo" },
+      -- { "#", "#<C-x><C-o>", mode = "i", ft = "octo" },
+
       -- Search using GitHub's qualifiers
       -- https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
       -- https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
       { "<leader>os", "<CMD>Octo search<CR>", desc = "Search (octo)" },
 
       -- Issues
-      { "<leader>oiC", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
+      { "<leader>oI", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
       { "<leader>oil", "<CMD>Octo issue list<CR>", desc = "List issues (octo)" },
       {
         "<leader>oia",
@@ -364,8 +373,8 @@ return {
       },
 
       -- Pull requests
+      { "<leader>oP", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>op", "<CMD>Octo pr<CR>", desc = "Open pull request for current branch (octo)" },
-      { "<leader>opC", "<CMD>Octo pr create<CR>", desc = "Create pull request (octo)" },
       { "<leader>opl", "<CMD>Octo pr list<CR>", desc = "List pull requests" },
       {
         "<leader>opa",
@@ -390,27 +399,17 @@ return {
         ft = "octo",
       },
       {
-        "<leader>vo",
+        "<leader>vp",
         "<CMD>Octo review comments<CR>",
         desc = "Show pending PR review comments (octo)",
         ft = "octo",
       },
-
       {
-        "<leader>tr",
-        "<CMD>Octo thread resolve<CR>",
-        desc = "Resolve pull request review thread (octo)",
+        "<leader>vo",
+        "<CMD>Octo review<CR>",
+        desc = "Open PR review (octo)",
         ft = "octo",
       },
-      {
-        "<leader>tu",
-        "<CMD>Octo thread unresolve<CR>",
-        desc = "Unresolve pull request review thread (octo)",
-        ft = "octo",
-      },
-
-      -- { "@", "@<C-x><C-o>", mode = "i", ft = "octo" },
-      -- { "#", "#<C-x><C-o>", mode = "i", ft = "octo" },
     },
   },
 }

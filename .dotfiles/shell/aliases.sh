@@ -25,7 +25,7 @@ alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
 
 # minimum usable vim options
-alias vmin="vim --noplugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 | nnoremap Y y$'"
+alias vmin="vim --noplugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 bs=2 | nnoremap Y y$'"
 alias v="vim --noplugin -u $HOME/.vim/standalone.vimrc"
 
 # list all files/dirs, short format, sort by time
@@ -46,6 +46,8 @@ alias lsh="ls -radgoth .?* --color --time-style=long-iso --group-directories-fir
 supports colordiff && alias diff='colordiff'
 alias grep='grep --color=auto'
 alias tree='tree -C'
+
+[ -n "$WEZTERM_PANE" ] && alias imgcat="wezterm imgcat"
 
 # Navigation {{{1
 alias -- -="cd -"

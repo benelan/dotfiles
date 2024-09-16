@@ -276,6 +276,15 @@ $(cut -c1-35 <<<"$artist")"
 }
 
 print_info() {
+    # truncate extremely long titles and artists
+    if [ "$(wc -c <<<"$title")" -gt 48 ]; then
+        title="$(cut -c1-45 <<<"$title")..."
+    fi
+
+    if [ "$(wc -c <<<"$artist")" -gt 40 ]; then
+        artist="$(cut -c1-37 <<<"$artist")..."
+    fi
+
     echo "${artist:+$artist - }$title"
 }
 

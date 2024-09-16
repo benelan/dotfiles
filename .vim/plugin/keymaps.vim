@@ -47,10 +47,10 @@ let _macro_uppercase_WORD = 'gUiW'
 let _macro_lowercase_word = 'guiw'
 let _macro_lowercase_WORD = 'guiW'
 
-" Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
+" Toggle netrw file explorer
 nnoremap <silent> <leader>- <CMD>execute (
     \ &filetype ==# "netrw"
-        \ ? "normal! -"
+        \ ? "bdelete"
         \ : ":Explore " . expand("%:h") .
         \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
 \)<CR>
@@ -225,14 +225,3 @@ nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
 vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
 nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
 vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
-
-"" GIT MERGETOOL {{{1
-" Cycle through and select merge conflicts. I've found diffput/diffget don't
-" always work well in normal mode for resolving merge conflicts because
-" sometimes there are multiple hunks within the conflict region. This results
-" in an incomplete resolution, which often leaves behind conflict markers.
-" Using diffget/diffput after selecting the conflict resolves this issue.
-nnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
-xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
-nnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
-xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'

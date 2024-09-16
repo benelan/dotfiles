@@ -4,7 +4,7 @@ set -o errexit
 # Copyright (c) 2024 Ben Elan <https://benelan.dev> [MIT License]
 #
 # This script is designed for use in widgets, status bars or other UI
-# For example: polybar, conky, eww, rofi, shell prompt, etc.
+# For example: polybar, conky, eww, rofi, tmux, shell prompt, etc.
 #
 # If WEATHER_CACHE's modified timestamp is older than the interval (in minutes),
 # the data will be re-fetched before the subcommand is executed.
@@ -61,11 +61,6 @@ get_data() {
     if [ -n "$LONGITUDE" ] && [ -n "$LATITUDE" ]; then
         lat="$LATITUDE"
         lon="$LONGITUDE"
-    elif command -v jq >/dev/null 2>&1; then
-        loc=$(curl --silent --show-error --fail --ipv4 \
-            "https://location.services.mozilla.com/v1/geolocate?key=geoclue")
-        lat=$(echo "$loc" | jq -r .location.lat)
-        lon=$(echo "$loc" | jq -r .location.lng)
     else
         loc="$(curl -Ls ipinfo.io/loc)"
         lat="$(echo "$loc" | cut -d, -f 1)"

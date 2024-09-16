@@ -36,47 +36,50 @@ function M.obsidian_open(event)
   -- https://help.obsidian.md/Advanced+topics/Using+Obsidian+URI#Shorthand%20formats
   local uri = "obsidian://open?path=" .. absolute_filepath
 
-  if vim.fn.exists("*netrw#BrowseX") then
+  if vim.ui.open then
+    vim.ui.open(uri)
+  elseif vim.fn.exists("*netrw#BrowseX") then
     vim.fn["netrw#BrowseX"](uri, 0)
-    return
+  else
+    -- https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/o
+    local open_cmd = ("%s %s"):format("o", uri)
+
+    vim.fn.jobstart(open_cmd, {
+      detach = true,
+      on_exit = function(_, exit_code)
+        if exit_code ~= 0 then
+          vim.notify(
+            string.format(
+              "Command failed to open Obsidian with exit code '%s':\n%s",
+              exit_code,
+              open_cmd
+            ),
+            vim.log.levels.ERROR
+          )
+        end
+      end,
+    })
   end
-
-  -- https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/o
-  local open_cmd = ("%s %s"):format("o", uri)
-
-  vim.fn.jobstart(open_cmd, {
-    detach = true,
-    on_exit = function(_, exit_code)
-      if exit_code ~= 0 then
-        vim.notify(
-          string.format(
-            "Command failed to open Obsidian with exit code '%s':\n%s",
-            exit_code,
-            open_cmd
-          ),
-          vim.log.levels.ERROR
-        )
-      end
-    end,
-  })
 end
 
-vim.api.nvim_create_user_command("OO", M.obsidian_open, {
-  complete = function(arglead)
-    return vim
-      .iter(
-        vim.fs.find(
-          function(name) return name:match(arglead .. ".*%.md$") end,
-          { path = vim.env.NOTES, type = "file", limit = 200 }
+function M.setup()
+  vim.api.nvim_create_user_command("OO", M.obsidian_open, {
+    complete = function(arglead)
+      return vim
+        .iter(
+          vim.fs.find(
+            function(name) return name:match(arglead .. ".*%.md$") end,
+            { path = vim.env.NOTES, type = "file", limit = 200 }
+          )
         )
-      )
-      :map(function(name) return string.sub(name, string.len(vim.env.NOTES) + 2) end)
-      :totable()
-  end,
-  nargs = "?",
-  desc = "Open a note in the Obsidian GUI app",
-})
+        :map(function(name) return string.sub(name, string.len(vim.env.NOTES) + 2) end)
+        :totable()
+    end,
+    nargs = "?",
+    desc = "Open a note in the Obsidian GUI app",
+  })
 
-keymap("n", "<leader>zO", "<CMD>OO<CR>", "Open note in Obsidian")
+  keymap("n", "<leader>zO", "<CMD>OO<CR>", "Open note in Obsidian")
+end
 
 return M

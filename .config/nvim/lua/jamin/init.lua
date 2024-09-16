@@ -18,6 +18,7 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
   "node_provider",
   "perl_provider",
   "python3_provider",
+  "python_provider",
   "pythonx_provider",
   "remote_plugins",
   "ruby_provider",
@@ -51,9 +52,10 @@ _G.R = function(name) require("plenary.reload").reload_module(name) end
 
 require("jamin.options")
 require("jamin.keymaps")
-require("jamin.commands")
-
+require("jamin.autocommands")
+require("jamin.utils").setup()
 require("jamin.lsp").setup()
+require("jamin.utils").cowboy()
 
 -- Neovim embedded in VSCode
 if vim.g.vscode then

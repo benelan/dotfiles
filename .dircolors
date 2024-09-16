@@ -139,7 +139,7 @@ EXEC 01;31      # Unix
 
 # Magenta {{{2
 
-# documentation text files
+# documentation and metadata text files
 .adoc 35
 .asciidoc 35
 .bib 35
@@ -150,6 +150,16 @@ EXEC 01;31      # Unix
 .rst 35
 .tex 35
 .txt 35
+.opf 35
+.nfo 35
+
+# subtitles
+.ass 3;35
+.srt 3;35
+.ssa 3;35
+.sub 3;35
+.sup 3;35
+.vtt 3;35
 
 # important documentation text files
 *CHANGELOG 01;35
@@ -357,44 +367,44 @@ EXEC 01;31      # Unix
 # Yellow {{{2
 
 # image
-.HEIC 33
-.JPG 33
-.NEF 33
-.PNG 33
-.avif 33
-.bmp 33
-.cgm 33
-.dl 33
-.dvi 33
-.emf 33
-.eps 33
-.gif 33
-.heic 33
-.icns 33
-.ico 33
-.jpeg 33
-.jpg 33
-.mng 33
-.nef 33
-.pbm 33
-.pcx 33
-.pgm 33
-.png 33
-.ppm 33
-.pps 33
-.ppsx 33
-.ps 33
-.svg 33
-.svgz 33
-.tga 33
-.tif 33
-.tiff 33
-.webp 33
-.xbm 33
-.xcf 33
-.xpm 33
-.xwd 33
-.yuv 33
+.HEIC 03;33
+.JPG 03;33
+.NEF 03;33
+.PNG 03;33
+.avif 03;33
+.bmp 03;33
+.cgm 03;33
+.dl 03;33
+.dvi 03;33
+.emf 03;33
+.eps 03;33
+.gif 03;33
+.heic 03;33
+.icns 03;33
+.ico 03;33
+.jpeg 03;33
+.jpg 03;33
+.mng 03;33
+.nef 03;33
+.pbm 03;33
+.pcx 03;33
+.pgm 03;33
+.png 03;33
+.ppm 03;33
+.pps 03;33
+.ppsx 03;33
+.ps 03;33
+.svg 03;33
+.svgz 03;33
+.tga 03;33
+.tif 03;33
+.tiff 03;33
+.webp 03;33
+.xbm 03;33
+.xcf 03;33
+.xpm 03;33
+.xwd 03;33
+.yuv 03;33
 
 # audio
 .3ga 33
@@ -411,6 +421,7 @@ EXEC 01;31      # Unix
 .fcm 33
 .flac 33
 .m4a 33
+.m4b 33
 .mid 33
 .midi 33
 .mka 33
@@ -461,14 +472,6 @@ EXEC 01;31      # Unix
 .vob 33
 .webm 33
 .wmv 33
-
-# subtitles
-.ass 3;33
-.srt 3;33
-.ssa 3;33
-.sub 3;33
-.sup 3;33
-.vtt 3;33
 
 # binary document formats and multimedia source
 .ai 1;33
@@ -687,6 +690,54 @@ TERM screen-16color-s
 TERM screen-256color
 TERM screen-256color-bce
 TERM screen-256color-s
+
+# subtitles
+.ass 35
+.srt 35
+.ssa 35
+.sub 35
+.sup 35
+.vtt 35
+
+# image
+.HEIC 33
+.JPG 33
+.NEF 33
+.PNG 33
+.avif 33
+.bmp 33
+.cgm 33
+.dl 33
+.dvi 33
+.emf 33
+.eps 33
+.gif 33
+.heic 33
+.icns 33
+.ico 33
+.jpeg 33
+.jpg 33
+.mng 33
+.nef 33
+.pbm 33
+.pcx 33
+.pgm 33
+.png 33
+.ppm 33
+.pps 33
+.ppsx 33
+.ps 33
+.svg 33
+.svgz 33
+.tga 33
+.tif 33
+.tiff 33
+.webp 33
+.xbm 33
+.xcf 33
+.xpm 33
+.xwd 33
+.yuv 33
 
 # config files
 *.local 36

@@ -182,11 +182,12 @@ if has("keymap")
     nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
-    " Open netrw or go up in the directory tree if in netrw (vim-vinegar style)
-    nnoremap <silent> - <CMD>execute (
+    " Toggle netrw file explorer
+    nnoremap <silent> <leader>- <CMD>execute (
         \ &filetype ==# "netrw"
-            \ ? "normal! -"
-            \ : ":Explore " . expand("%:h") . "<BAR>silent! echo search('" . expand("%:t") . "')"
+            \ ? "bdelete"
+            \ : ":Explore " . expand("%:h") .
+            \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
     \)<CR>
 
     " Change pwd to the buffer's directory
@@ -269,20 +270,6 @@ if has("keymap")
     vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
     nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
     vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
-
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    " cycle through git three way merge conflicts in visual mode  {{{
-
-    nnoremap <expr> <Tab> &diff ? '/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
-    xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>'
-    nnoremap <expr> <S-Tab> &diff ? '?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>'
-
-    xnoremap <expr> <C-j> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<C-j>'
-    xnoremap <expr> <C-k> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<C-k>'
-
-    xnoremap <expr> <C-s> &diff ? '<ESC><CMD>wqa<CR>' : '<C-s>'
-    xnoremap <expr> <C-q> &diff ? '<ESC><CMD>cq<CR>' : '<C-q>'
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" lists - next/prev                                          {{{

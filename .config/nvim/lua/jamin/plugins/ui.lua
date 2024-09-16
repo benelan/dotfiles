@@ -1,3 +1,5 @@
+---Plugins to make things purrty
+
 local res = require("jamin.resources")
 
 return {
@@ -18,6 +20,7 @@ return {
       vim.g.gruvbox_material_foreground = "original"
       vim.g.gruvbox_material_ui_contrast = "high"
       vim.g.gruvbox_material_float_style = "dim"
+      vim.g.gruvbox_material_menu_selection_background = "blue"
       vim.g.gruvbox_material_current_word = "grey background"
       -- vim.g.gruvbox_material_inlay_hints_background = "dimmed"
       vim.g.gruvbox_material_diagnostic_virtual_text = "highlighted" -- "grey", "colored"

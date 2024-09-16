@@ -41,13 +41,33 @@ keymap(
   "Put empty line below"
 )
 
--- Move Lines
-keymap("n", "<M-j>", "<CMD>m .+1<CR>==", "Move line down")
-keymap("n", "<M-k>", "<CMD>m .-2<CR>==", "Move line up")
-keymap("i", "<M-j>", "<esc><CMD>m .+1<CR>==gi", "Move line down")
-keymap("i", "<M-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
-keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", "Move line down")
-keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", "Move line up")
+-- Delete marks on current line
+keymap("n", "dm", function()
+  local cur_line = vim.fn.line(".")
+  -- Delete buffer local mark
+  for _, mark in ipairs(vim.fn.getmarklist("%")) do
+    if mark.pos[2] == cur_line and mark.mark:match("[a-zA-Z]") then
+      vim.api.nvim_buf_del_mark(0, string.sub(mark.mark, 2, #mark.mark))
+      return
+    end
+  end
+  -- Delete global marks
+  local cur_buf = vim.api.nvim_win_get_buf(vim.api.nvim_get_current_win())
+  for _, mark in ipairs(vim.fn.getmarklist()) do
+    if mark.pos[1] == cur_buf and mark.pos[2] == cur_line and mark.mark:match("[a-zA-Z]") then
+      vim.api.nvim_buf_del_mark(0, string.sub(mark.mark, 2, #mark.mark))
+      return
+    end
+  end
+end, "Mark on Current Line")
+
+-- Move Lines (accepts count in normal and visual modes)
+keymap("i", "<A-j>", "<esc><CMD>m .+1<CR>==gi", "Move line down")
+keymap("i", "<A-k>", "<esc><CMD>m .-2<CR>==gi", "Move line up")
+keymap("n", "<A-j>", "<CMD>execute 'move .+' . v:count1<CR>==", "Move line down")
+keymap("n", "<A-k>", "<CMD>execute 'move .-' . (v:count1 + 1)<CR>==", "Move line up")
+keymap("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<CR>gv=gv", "Move line down")
+keymap("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<CR>gv=gv", "Move line up")
 
 -- Switch quickfix list
 keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
@@ -82,43 +102,9 @@ keymap(
   "Previous diagnostic warning"
 )
 
-local virtual_text_enabled = true
-keymap("n", "<leader>sv", function()
-  virtual_text_enabled = not virtual_text_enabled
-  vim.diagnostic.config({
-    virtual_text = virtual_text_enabled and require("jamin.resources").diagnostics.virtual_text
-      or false,
-  })
-  print(
-    string.format(
-      "%s %s",
-      "diagnostic virtual text",
-      virtual_text_enabled and "enabled" or "disabled"
-    )
-  )
-end, "Toggle diagnostic virtual text")
-
--- toggle treesitter highlighting
-keymap("n", "<leader>sh", function()
-  if vim.b.ts_highlight then
-    vim.treesitter.stop()
-    print("treesitter highlighting stopped")
-  else
-    vim.treesitter.start()
-    print("treesitter highlighting started")
-  end
-end, "Toggle treesitter highlighting")
-
 -- vsc*de
 if vim.g.vscode then
-  -- https://github.com/vscode-neovim/vscode-neovim/wiki/Plugins#vim-commentary
-  keymap({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary")
-  keymap("n", "gcc", "<Plug>VSCodeCommentaryLine")
-
   keymap("n", "grr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
   keymap("n", "grn", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
-
   keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
 end
-
-require("jamin.utils").cowboy()

@@ -70,9 +70,9 @@
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
     log = true
-    ; options: nvimdiff, diffconflicts, fugitive
+    ; options: vimdiff, nvimdiff, diffconflicts, fugitive
     tool = vimdiff
-    conflictStyle = diff3
+    ; conflictStyle = diff3
 
 [mergetool]
     hideResolved = true
@@ -87,6 +87,10 @@
     ; The layout option is available since git v2.37
     ; layout = LOCAL,MERGED,REMOTE+LOCAL,BASE,REMOTE/MERGED
     cmd = vim $LOCAL $MERGED $REMOTE -fdc \"set nohlsearch | wincmd l \
+        | nnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>' \
+        | xnoremap <expr> <Tab> &diff ? '<ESC>/<<<<<<<<CR>V/>>>>>>><CR>ozt' : '<Tab>' \
+        | nnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>' \
+        | xnoremap <expr> <S-Tab> &diff ? '<ESC>?>>>>>>><CR>V?<<<<<<<<CR>zt' : '<S-Tab>' \
         | xnoremap <nowait> <expr> [ &diff ? ':diffget LOCAL <BAR> diffupdate<CR>' : '[' \
         | xnoremap <nowait> <expr> ] &diff ? ':diffget REMOTE <BAR> diffupdate<CR>' : ']' \
         | xnoremap <nowait> <expr> \\ &diff ? ':diffget BASE <BAR> diffupdate<CR>' : '\\' \
@@ -97,15 +101,12 @@
 [mergetool "fugitive"]
     trustExitCode = true
     ; http://vimcasts.org/episodes/fugitive-vim-resolving-merge-conflicts-with-vimdiff/
-    cmd = vim -f +'packadd vim-fugitive \
-        | xnoremap <nowait> <expr> [ &diff ? ':diffget //2 <BAR> diffupdate<CR>' : '[' \
-        | xnoremap <nowait> <expr> ] &diff ? ':diffget //3 <BAR> diffupdate<CR>' : ']' \
-        | Gvdiffsplit!' $MERGED
+    cmd = vim -fc \"packadd vim-fugitive | Gvdiffsplit!\" $MERGED
 
 [mergetool "diffconflicts"]
     trustExitCode = true
     ; $DOTFILES/bin/diffconflicts
-    cmd = diffconflicts nvim $BASE $LOCAL $REMOTE $MERGED
+    cmd = diffconflicts $EDITOR $BASE $LOCAL $REMOTE $MERGED
 
 
 [rebase]
@@ -152,18 +153,19 @@
     pushInsteadOf = "git://gist.github.com/"
 
 [alias]
-    o = !git open &
-    y = !git o -p | cb
+    o = !nohup git open >/dev/null 2>&1 </dev/null &
+    y = !git open -p | cb
 
     a = add
     all = add --all
 
     b = branch
     bd = branch -D
+    bo = branch -u origin HEAD
 
     c = commit --verbose
     call = commit --verbose --all
-    cm = commit --verbose -m
+    cm = commit --verbose --message
     ca = commit --verbose --amend
     cane = commit --verbose --amend --no-edit
 
@@ -212,10 +214,11 @@
     ma = merge --abort
     mm = !git merge "$(git bdefault)"
     mom = !git fetch && git merge "origin/$(git bdefault)"
-    mt = mergetool
+    mt = mergetool --tool diffconflicts
 
     p = push
-    puoc = push -u origin HEAD
+    po = push -u origin HEAD
+    pu = push -u upstream HEAD
 
     pl = pull --rebase --autostash
     plum = !git pull --rebase --autostash upstream "$(git bdefault)"

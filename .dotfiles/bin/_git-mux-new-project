@@ -1,0 +1,13 @@
+#! /usr/bin/env sh
+
+# This script is a hook than runs after git-mux creates a project, which is a
+# tmux session or wezterm workspace. See `man git-mux` for more information,
+# specifically the "$GIT_MUX_NEW_SESSION_CMD" configuration variable.
+
+if [ -n "$TMUX" ]; then
+    tmux rename-window scratch
+elif [ -n "$WEZTERM_PANE" ]; then
+    wezterm cli set-tab-title scratch
+fi
+
+git fetch --all --prune 2>/dev/null

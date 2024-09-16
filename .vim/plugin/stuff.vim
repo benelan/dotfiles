@@ -4,7 +4,33 @@ let g:loaded_jamin_stuff = 1
 " Settings {{{1
 "" misc globals {{{2
 let g:is_posix = 1
+let g:qf_disable_statusline = 1
 let g:rust_recommended_style = 0
+let g:markdown_recommended_style = 0
+
+" Helps with syntax highlighting by specifying filetypes
+" for common abbreviations used in markdown fenced code blocks
+let g:markdown_fenced_languages = [
+    \ 'html', 'toml', 'yaml', 'json', 'sql', 'diff', 'vim', 'lua', 'go', 'rust',
+    \ 'python', 'css', 'scss', 'sass', 'sh', 'awk', 'yml=yaml', 'py=python',
+    \ 'shell=sh', 'bash=sh', 'ts=typescript', 'js=javascript',
+    \ 'tsx=typescriptreact', 'jsx=javascriptreact'
+\ ]
+
+"" netrw globals {{{2
+let g:netrw_banner = 0
+let g:netrw_altfile = 1
+let g:netrw_preview = 1
+let g:netrw_special_syntax = 1
+let g:netrw_winsize = 25
+let g:netrw_hide = 1
+
+" hide the "../" and "./" lines in netrw
+let g:netrw_list_hide = '^\.\+\/'
+
+if filereadable($VIMRUNTIME . '/autoload/netrw_gitignore.vim') && expand($GIT_DIR) != expand($HOME . '/.git')
+    let g:netrw_list_hide=netrw_gitignore#Hide() .. ',' .. g:netrw_list_hide
+endif
 
 "" tmux integration {{{2
 " Intelligently navigate tmux panes and Vim splits using the same keys.

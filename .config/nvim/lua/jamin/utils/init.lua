@@ -44,7 +44,11 @@ function M.cowboy()
     local map = key
     vim.keymap.set("n", key, function()
       if vim.v.count > 0 then count = 0 end
-      if count >= 10 and vim.bo.buftype ~= "nofile" and not vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype) then
+      if
+        count >= 10
+        and vim.bo.buftype ~= "nofile"
+        and not vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype)
+      then
         ok, id = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
           icon = "🤠",
           replace = id,
@@ -61,6 +65,13 @@ function M.cowboy()
       end
     end, { expr = true, silent = true })
   end
+end
+
+function M.setup()
+  require("jamin.utils.rooter").setup()
+  require("jamin.utils.togglers").setup()
+  require("jamin.utils.async_make").setup()
+  require("jamin.utils.obsidian").setup()
 end
 
 return M

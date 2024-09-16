@@ -86,7 +86,26 @@ mkdir -p -m 700 "$TEMP"
         esac
 
     fi
-} | diff-to-quickfix >"$QFLIST"
+} | exec awk '
+    /^diff/ {
+        in_hunk=0
+    }
+    /^\+\+\+ / {
+        fname=substr($2, 2)
+    }
+
+    /^@@ / {
+        in_hunk=1
+        nr=substr($3, 2)
+        sub(/,.*/, "", nr)
+        printf(".%s:%s:%s\n", fname, nr, $0)
+        next
+    }
+
+    in_hunk {
+        printf("%s\n", $0)
+    }
+' >"$QFLIST"
 
 if [ ! -s "$QFLIST" ]; then
     printf 'No %s changes.\n' "$mode" 1>&2

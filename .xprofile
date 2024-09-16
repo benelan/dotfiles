@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# shellcheck disable=2086
 
 # start notifications daemon
 [ -x /usr/bin/dunst ] && /usr/bin/dunst >/dev/null 2>&1 &
@@ -45,4 +44,5 @@ wallpaper="$(xdg-user-dir PICTURES)/Wallpapers/current"
     /usr/bin/feh --no-fehbg --bg-center --image-bg "#3c3836" "$wallpaper"
 
 # local stuff
+# shellcheck disable=1091
 [ -r "$HOME/.xprofile.local" ] && . "$HOME/.xprofile.local"

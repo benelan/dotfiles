@@ -1,44 +1,6 @@
+---Plugins for text completion and snippet expansion
+
 local res = require("jamin.resources")
-local augroup = vim.api.nvim_create_augroup("jamin_completion_plugin_tweaks", {})
-
-local function use_copilot(dir)
-  local project = dir or vim.uv.cwd()
-  if not project then return end
-
-  return (vim.env.COPILOT == "1" and string.match(project, vim.env.DEV) ~= nil)
-    or (vim.env.COPILOT ~= "0" and string.match(project, vim.env.WORK) ~= nil)
-end
-
-local function toggle_copilot(dir)
-  local should_use = use_copilot(dir)
-
-  local has_copilot_client, copilot_client = pcall(require, "copilot.client")
-  if not has_copilot_client then return end
-
-  local is_attached = copilot_client.buf_is_attached()
-
-  if is_attached == "Offline" and should_use then
-    vim.cmd.Copilot("enable")
-  elseif is_attached == "Online" and not should_use then
-    vim.cmd.Copilot("disable")
-  end
-end
-
-local function use_codeium(dir)
-  local project = dir or vim.uv.cwd()
-  if not project then return end
-
-  return vim.env.CODEIUM == "1"
-    and string.match(project, vim.env.WORK) == nil
-    and (
-      string.match(project, vim.env.DEV) ~= nil
-      or string.match(project, vim.fn.stdpath("config") --[[@as string]]) ~= nil
-    )
-end
-
-local function toggle_codeium(event)
-  vim.cmd.Codeium(use_codeium(event.file) and "Enable" or "Disable")
-end
 
 return {
   -----------------------------------------------------------------------------
@@ -66,20 +28,6 @@ return {
     "petertriho/cmp-git",
     ft = { "markdown", "gitcommit", "octo" },
     opts = { filetypes = { "markdown", "gitcommit", "octo" } },
-    config = function(_, opts)
-      require("cmp_git").setup(opts)
-
-      -- The gh cli creates markdown files in `/tmp` when creating/editing issues/prs/comments. Not
-      -- sure why, but cwd ends up being `/tmp` when gh opens the editor. That prevents cmp-git from
-      -- working, since it doesn't know the repo to query for completion items.
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "markdown" },
-        group = augroup,
-        callback = function(ev)
-          if string.match(ev.file, "/tmp/%d+%.md") then vim.cmd.cd("-") end
-        end,
-      })
-    end,
   },
 
   -----------------------------------------------------------------------------
@@ -122,7 +70,7 @@ return {
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<C-t>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
+          ["<C-Y>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
           ["<C-y>"] = cmp.mapping(
             cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
             { "i", "s", "c" }
@@ -216,12 +164,10 @@ return {
               -- colorize completion items for tailwind classes
               local has_tw, tw = pcall(require, "tailwind-tools.cmp")
               local tw_hl_group
-              if has_tw then
-                tw_hl_group = tw.lspkind_format(entry, vim_item).kind_hl_group
-                if tw_hl_group then vim_item.kind_hl_group = tw_hl_group end
-              end
+              if has_tw then tw_hl_group = tw.lspkind_format(entry, vim_item).kind_hl_group end
 
               if tw_hl_group then
+                vim_item.kind_hl_group = tw_hl_group
                 vim_item.menu_hl_group = tw_hl_group
               elseif vim_item.kind then
                 vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
@@ -277,14 +223,14 @@ return {
           {
             name = "git",
             entry_filter = function(_, ctx)
-              if not ctx.filetype == "markdown" then return true end
+              if ctx.filetype ~= "markdown" then return true end
 
               local bufpath = vim.api.nvim_buf_get_name(ctx.bufnr)
               local bufname = string.lower(vim.fs.basename(bufpath))
               local enable_files = { "contributing.md", "changelog.md", "readme.md" }
 
-              return vim.list_contains(enable_files, string.lower(bufname))
-                -- the gh cli creates files in /tmp when editing issues/prs/comments
+              return vim.list_contains(enable_files, bufname)
+                -- the gh cli creates markdown files in /tmp when editing issues/prs/comments
                 or string.match(bufpath, "/tmp/%d+%.md")
             end,
             group_index = 1,
@@ -425,7 +371,7 @@ return {
             elseif vim.g.codeium_enabled then
               vim.g.codeium_tab_fallback = [[:nohlsearch | diffupdate | syntax sync fromstart
 ]]
-              vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
+              vim.api.nvim_feedkeys(vim.fn["codeium#AcceptNextLine"](), "n", true)
               vim.g.codeium_tab_fallback = nil
             elseif has_cmp and cmp.visible() then
               cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
@@ -464,117 +410,6 @@ return {
           desc = "Luasnip choice, copilot toggle auto_trigger, or codeium suggest",
         },
       }
-    end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- "github/copilot.vim", -- official Copilot plugin written in vimscript
-  {
-    "zbirenbaum/copilot.lua", -- alternative written in Lua
-    cond = use_copilot(),
-    cmd = "Copilot",
-    event = "InsertEnter",
-
-    -- dependencies = {
-    --   {
-    --     "zbirenbaum/copilot-cmp", -- integrates Copilot with cmp
-    --     enabled = false,
-    --     config = function()
-    --       vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-    --       require("copilot_cmp").setup()
-    --     end,
-    --   },
-    -- },
-
-    config = function()
-      vim.api.nvim_create_autocmd("DirChanged", {
-        group = augroup,
-        callback = function(event) toggle_copilot(event.file) end,
-      })
-
-      local filetypes = {}
-
-      for _, ft in ipairs(res.filetypes.excluded) do
-        filetypes[ft] = false
-      end
-
-      for _, ft in ipairs(res.filetypes.writing) do
-        filetypes[ft] = false
-      end
-
-      local has_copilot_cmp = pcall(require, "copilot_cmp")
-
-      require("copilot").setup({
-        filetypes = filetypes,
-        panel = {
-          enabled = not has_copilot_cmp,
-          layout = { position = "right", ratio = 0.3 },
-          keymap = {
-            jump_next = "]",
-            jump_prev = "[",
-            refresh = "<CR>",
-            accept = "<Tab>",
-          },
-        },
-        suggestion = {
-          enabled = not has_copilot_cmp and not vim.g.codeium_enabled,
-          auto_trigger = true,
-          keymap = {
-            accept = false, -- remapped below to add fallback
-            accept_word = "<M-l>",
-          },
-        },
-      })
-    end,
-
-    keys = {
-      {
-        "<Tab>",
-        function()
-          if require("copilot.suggestion").is_visible() then
-            require("copilot.suggestion").accept()
-          elseif vim.g.codeium_enabled then
-            vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "n", true)
-          else
-            vim.api.nvim_feedkeys(
-              vim.api.nvim_replace_termcodes("<Tab>", true, false, true),
-              "n",
-              false
-            )
-          end
-        end,
-        mode = "i",
-        desc = "Copilot accept",
-      },
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  -- Codeium is a free Copilot alternative - https://codeium.com/
-  {
-    "Exafunction/codeium.vim",
-    cond = use_codeium(),
-    event = "VimEnter",
-    cmd = "Codeium",
-
-    config = function()
-      vim.api.nvim_create_autocmd("DirChanged", {
-        group = augroup,
-        callback = function(event) toggle_codeium(event.file) end,
-      })
-
-      local filetypes = {}
-
-      for _, ft in ipairs(res.filetypes.excluded) do
-        filetypes[ft] = false
-      end
-
-      for _, ft in ipairs(res.filetypes.writing) do
-        filetypes[ft] = false
-      end
-
-      vim.g.codeium_filetypes = filetypes
-      vim.g.codeium_enabled = true
     end,
   },
 }

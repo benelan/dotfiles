@@ -1,6 +1,5 @@
 return function(args)
   local client = vim.lsp.get_client_by_id(args.data.client_id)
-
   if client == nil then return end
 
   -- disable formatting for some LSP servers in favor of better standalone programs
@@ -15,10 +14,6 @@ return function(args)
     client.server_capabilities.documentRangeFormattingProvider = false
   end
 
-  -- setup stuff specific to an LSP server
-  local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)
-  if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
-
   -- setup lsp keymaps
   local bufmap = function(mode, lhs, rhs, desc)
     vim.keymap.set(mode, lhs, rhs, {
@@ -29,7 +24,7 @@ return function(args)
     })
   end
 
-  bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
+  -- bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
   bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
   bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
@@ -54,6 +49,10 @@ return function(args)
     bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
   end
 
+  if client.supports_method("textDocument/typeDefinition") then
+    bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
+  end
+
   if client.supports_method("textDocument/references") then
     bufmap("n", "grr", vim.lsp.buf.references, "LSP references")
   end
@@ -64,10 +63,6 @@ return function(args)
 
   if client.supports_method("workspace/willRenameFiles") then
     bufmap("n", "grN", require("jamin.lsp").rename_file, "LSP Rename file")
-  end
-
-  if client.supports_method("textDocument/typeDefinition") then
-    bufmap("n", "grt", vim.lsp.buf.type_definition, "LSP type definition")
   end
 
   if client.supports_method("textDocument/implementation") then
@@ -124,4 +119,8 @@ return function(args)
   if client.supports_method("textDocument/documentHighlight") then
     require("jamin.lsp.words").setup({ enabled = true, buf = args.buf })
   end
+
+  -- setup stuff specific to an LSP server
+  local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)
+  if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
 end

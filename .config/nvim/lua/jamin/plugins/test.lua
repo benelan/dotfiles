@@ -1,3 +1,5 @@
+---Plugins for unit testing integration
+
 local res = require("jamin.resources")
 
 return {

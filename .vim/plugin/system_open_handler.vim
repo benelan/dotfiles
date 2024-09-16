@@ -65,8 +65,8 @@ endfunction
 
 " Open github repo of an (n)vim plugin {{{1
 function! s:open_vim_plugin(text)
-    " only attempt to match in package.json files
-    if expand("%:p") =~# stdpath("config")
+    " only attempt to match plugins in files from (n)vim config directories
+    if expand("%:p") =~# stdpath("config") || expand("%:p") =~# expand($HOME) . '/.vim'
         let l:pattern='"\([a-zA-Z0-9_\-.]*\/[a-zA-Z0-9_\-.]*\)"'
         let l:match = matchlist(a:text, l:pattern)
 
@@ -115,23 +115,21 @@ function! s:open_gh_issue(text)
 endfunction
 
 " Plug function {{{1
-" equivalent to NeoVim's `vim.startswith`
+" equivalent to neovim's `vim.startswith`
 function! s:starts_with(longer, shorter) abort
     return a:longer[0:len(a:shorter)-1] ==# a:shorter
 endfunction
 
-" Opens files/urls/issues under the cursor.
-" If nothing is found it checks the whole line.
-" When in a package.json file, it opens npmjs.com
-" to the dep on the current line.
+" Opens files/urls/issues under the cursor. If nothing is found it checks the
+" whole line. When in a package.json file, it opens npmjs.com to the dep on
+" the current line.
 function! s:handle_system_open()
     let l:file=expand('<cfile>')
     let l:word=expand('<cWORD>')
     let l:line=getline(".")
 
-    " don't allow the # or ? to expand() when matching
-    " the pattern for a path, since it can prevent
-    " GitHub numbers and URL params/hashes from opening
+    " don't allow the # or ? to expand() when matching the pattern for a path,
+    " since it can prevent GitHub numbers and URL params/hashes from opening
     if !s:starts_with('#', l:file) &&
         \ !s:starts_with('?', l:file) &&
         \ s:open_path(expand(l:file))

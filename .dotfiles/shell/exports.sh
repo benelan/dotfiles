@@ -53,8 +53,13 @@ export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
 
-supports x-terminal-emulator && export TERMINAL="x-terminal-emulator"
-# supports wezterm && TERMINAL="wezterm"
+# if supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+#     export TERMINAL="foot"
+if supports x-terminal-emulator; then
+    export TERMINAL="x-terminal-emulator"
+elif supports wezterm; then
+    export TERMINAL="wezterm"
+fi
 
 TERM_BROWSER="sensible-browser"
 if supports w3m; then
@@ -111,7 +116,7 @@ export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 if supports go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/.go"
-    export GOFLAGS="-trimpath -buildvcs=false"
+    export GOFLAGS="-trimpath" # -buildvcs=false
 fi
 
 # javascript {{{1
@@ -172,6 +177,13 @@ supports rg && export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 
 # https://github.com/junegunn/fzf
 if supports fzf; then
+    export FZF_COMPLETION_TRIGGER=',,'
+
+    export FZF_CTRL_R_OPTS='
+        --bind "ctrl-y:execute-silent(echo -n {2..} | cb)+abort"
+        --header "(ctrl-y: copy)"
+    '
+
     export FZF_DEFAULT_OPTS='
         --cycle --reverse --highlight-line --info=right
         --preview-window="right,wrap,border-thinblock,<75(down)"
@@ -184,7 +196,8 @@ if supports fzf; then
     '
 
     # alternative gruvbox colorscheme
-    # --color "bg+:#3c3836,bg:#32302f,spinner:#fb4934,hl:#928374,fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934,marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934"'
+    # --color "bg+:#3c3836,bg:#32302f,fg:#ebdbb2,fg+:#ebdbb2,hl+:#fb4934,hl:#928374,header:#928374"
+    # --color "spinner:#fb4934,info:#8ec07c,pointer:#fb4934,marker:#fb4934,prompt:#fb4934"
 
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
@@ -246,8 +259,7 @@ if supports git-mux; then
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
 
     # shell commands or an executable on PATH to run after a new worktree or session is created
-    # shellcheck disable=2016
-    export GIT_MUX_NEW_SESSION_CMD='[ -n "$TMUX" ] && tmux rename-window scratch; git fetch --all --prune 2>/dev/null; history -d -1 >/dev/null 2>&1; clear -x'
+    export GIT_MUX_NEW_SESSION_CMD='_git-mux-new-session; history -d -1 >/dev/null 2>&1; clear -x'
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 

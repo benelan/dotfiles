@@ -1,4 +1,4 @@
-if exists('g:loaded_jamin_foldtext') || &cp | finish | endif
+if exists('g:loaded_jamin_foldtext') || &cp || has('nvim') | finish | endif
 let g:loaded_jamin_foldtext = 1
 
 " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html

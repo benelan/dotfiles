@@ -3,13 +3,14 @@ local utils = require("utils")
 local M = {}
 
 ---@param config Config
-function M.apply_config(config)
+function M.setup(config)
   if string.match(wezterm.target_triple, "windows") then
-    config.default_domain = "WSL:Ubuntu-22.04"
+    config.default_domain = "WSL:Ubuntu-24.04"
   else
     local home = utils.basename(wezterm.home_dir)
     config.unix_domains = { { name = "git-mux" } }
     config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
+    config.default_workspace = home
   end
 
   -- Using wezterm TERM requires additional setup
@@ -34,15 +35,15 @@ function M.apply_config(config)
   config.warn_about_missing_glyphs = false
 
   config.adjust_window_size_when_changing_font_size = false
-  config.window_decorations = "RESIZE"
   config.window_background_opacity = 0.90
   config.window_padding = { left = 3, right = 0, top = 0, bottom = 0 }
-  config.inactive_pane_hsb = { saturation = 0.8, brightness = 0.8 }
+  config.inactive_pane_hsb = { saturation = 0.9, brightness = 0.9 }
 
   config.tab_max_width = 70
   config.use_fancy_tab_bar = false
   config.tab_bar_at_bottom = true
   config.show_new_tab_button_in_tab_bar = false
+  config.prefer_to_spawn_tabs = true
 
   config.color_scheme = "GruvboxDark"
   local palette = wezterm.get_builtin_color_schemes()[config.color_scheme]
@@ -75,13 +76,17 @@ function M.apply_config(config)
 
   config.launch_menu = {
     { args = { "btop" } },
-    { args = { "gh-fzf" } },
+    { args = { "gh", "fzf" } },
+    { args = { "taskwarrior-tui" } },
+    { args = { "nm-fzf", "wifi" } },
+    { args = { "zk", "daily" } },
+    { args = { "zk", "edit", "--interactive" } },
     {
-      label = "GitHub Issues",
+      label = "Octo Issues",
       args = { "nvim", "-c", ":Octo issue list assignee=benelan state=OPEN" },
     },
     {
-      label = "GitHub Pull Requests",
+      label = "Octo PRs",
       args = { "nvim", "-c", ":Octo search is:open is:pr author:benelan sort:updated" },
     },
     {
@@ -111,7 +116,7 @@ function M.apply_config(config)
     },
     {
       label = "Edit Calcite",
-      cwd = wezterm.home_dir .. "/dev/work/calcite-design-system/main",
+      cwd = string.format("%s/dev", os.getenv("CALCITE")),
       args = { "nvim", "-c", ":Telescope git_files" },
     },
   }

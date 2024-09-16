@@ -77,7 +77,7 @@ widget:hover {
 }
 
 #custom-music {
- padding-left: 100px; 
+  padding: 0 75px; 
 }
 
 #mode {

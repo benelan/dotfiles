@@ -1,7 +1,5 @@
 if (exists("b:loaded")) | finish | endif | let b:loaded = 1
 
-let g:qf_disable_statusline = 1
-
 setlocal nowrap norelativenumber number
 set nobuflisted
 
@@ -14,16 +12,17 @@ let b:qf_isLoc = get(get(getwininfo(win_getid()), 0, {}), 'loclist', 0)
 if b:qf_isLoc == 1
     nnoremap <silent> <buffer> ( :lolder<CR>
     nnoremap <silent> <buffer> ) :lnewer<CR>
+    nnoremap <silent> <buffer> } :lnfile<CR><C-w>p
+    nnoremap <silent> <buffer> { :lpfile<CR><C-w>p
+    nnoremap <silent> <buffer> r :ldo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
     nnoremap <silent> <buffer> O <CR>:lclose<CR>
-    " begin search and replace
-    nnoremap <buffer> r :ldo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
 else
     nnoremap <silent> <buffer> ( :colder<CR>
     nnoremap <silent> <buffer> ) :cnewer<CR>
-    nnoremap <buffer> ]f :cnfile<CR>
-    nnoremap <buffer> [f :cpfile<CR>
+    nnoremap <silent> <buffer> } :cnfile<CR><C-w>p
+    nnoremap <silent> <buffer> { :cpfile<CR><C-w>p
+    nnoremap <silent> <buffer> r :cdo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
     nnoremap <silent> <buffer> O <CR>:cclose<CR>
-    nnoremap <buffer> r :cdo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
 endif
 
 " open entry in a new vertical window

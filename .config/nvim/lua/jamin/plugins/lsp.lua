@@ -1,3 +1,6 @@
+---Plugins for Language Server Protocal integration
+---https://microsoft.github.io/language-server-protocol/
+
 local res = require("jamin.resources")
 
 return {
@@ -40,6 +43,7 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     event = "BufReadPost",
+    build = ":MasonUpdate",
     dependencies = {
       "williamboman/mason.nvim",
       {
@@ -51,7 +55,7 @@ return {
         },
       },
     },
-    build = ":MasonUpdate",
+
     opts = {
       ensure_installed = res.lsp_servers,
       handlers = {
@@ -76,6 +80,9 @@ return {
                   },
                 },
               },
+            },
+            workspace = {
+              fileOperations = { didRename = true, willRename = true },
             },
           }
 
@@ -129,7 +136,7 @@ return {
           diagnostics.hadolint,
           diagnostics.actionlint.with({
             runtime_condition = function()
-              return string.match(vim.api.nvim_buf_get_name(0), "github/workflows")
+              return string.match(vim.api.nvim_buf_get_name(0), "github/workflows") ~= nil
             end,
           }),
 
@@ -203,21 +210,12 @@ return {
         table.insert(plugins, "typescript-svelte-plugin")
       end
 
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if not client or client.name ~= "typescript-tools" then return end
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers.ts_ls")
-          if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
-        end,
-      })
-
       return {
         handlers = handlers,
         settings = {
           tsserver_plugins = plugins,
           expose_as_code_action = "all",
-          jsx_close_tag = { enable = true },
+          jsx_close_tag = { enable = false }, -- replaced by https://github.com/windwp/nvim-ts-autotag
           tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
           complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
             or true,

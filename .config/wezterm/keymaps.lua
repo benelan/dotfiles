@@ -5,25 +5,25 @@ local git_mux = require("git-mux")
 local act = wezterm.action
 local M = {}
 
-function M.apply_to_config(config)
+function M.setup(config)
   config.disable_default_key_bindings = true
   config.leader = { key = " ", mods = "CTRL", timeout_milliseconds = 1500 }
 
   config.keys = {
-    -- {
-    --   key = "p",
-    --   mods = "LEADER|CTRL",
-    --   action = wezterm.action_callback(git_mux.project),
-    -- },
     {
       key = "p",
       mods = "LEADER|CTRL",
-      action = wezterm.action_callback(function(win)
-        local _, new_pane = win:mux_window():spawn_tab({})
-        wezterm.GLOBAL.git_mux_pane_id = new_pane:pane_id()
-        new_pane:send_text("git-mux project\n")
-      end),
+      action = wezterm.action_callback(git_mux.project),
     },
+    -- {
+    --   key = "p",
+    --   mods = "LEADER|CTRL",
+    --   action = wezterm.action_callback(function(win)
+    --     local _, new_pane = win:mux_window():spawn_tab({})
+    --     wezterm.GLOBAL.git_mux_pane_id = new_pane:pane_id()
+    --     new_pane:send_text("git-mux project\n")
+    --   end),
+    -- },
     {
       key = "t",
       mods = "LEADER|CTRL",
@@ -106,14 +106,15 @@ function M.apply_to_config(config)
     { key = "q", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
     { key = "Backspace", mods = "LEADER", action = act.ActivateLastTab },
 
-    { key = "8", mods = "LEADER", action = act.ActivateTab(8) },
-    { key = "7", mods = "LEADER", action = act.ActivateTab(7) },
-    { key = "6", mods = "LEADER", action = act.ActivateTab(6) },
-    { key = "5", mods = "LEADER", action = act.ActivateTab(5) },
-    { key = "4", mods = "LEADER", action = act.ActivateTab(4) },
-    { key = "3", mods = "LEADER", action = act.ActivateTab(3) },
-    { key = "2", mods = "LEADER", action = act.ActivateTab(2) },
-    { key = "1", mods = "LEADER", action = act.ActivateTab(1) },
+    { key = "9", mods = "LEADER", action = act.ActivateTab(8) },
+    { key = "8", mods = "LEADER", action = act.ActivateTab(7) },
+    { key = "7", mods = "LEADER", action = act.ActivateTab(6) },
+    { key = "6", mods = "LEADER", action = act.ActivateTab(5) },
+    { key = "5", mods = "LEADER", action = act.ActivateTab(4) },
+    { key = "4", mods = "LEADER", action = act.ActivateTab(3) },
+    { key = "3", mods = "LEADER", action = act.ActivateTab(2) },
+    { key = "2", mods = "LEADER", action = act.ActivateTab(1) },
+    { key = "1", mods = "LEADER", action = act.ActivateTab(0) },
 
     -- Pane management
     { key = "x", mods = "CTRL|ALT", action = act.CloseCurrentPane({ confirm = false }) },
@@ -128,6 +129,11 @@ function M.apply_to_config(config)
     { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
     { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
 
+    { key = "LeftArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Left", 5 }) },
+    { key = "RightArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Right", 5 }) },
+    { key = "UpArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Up", 5 }) },
+    { key = "DownArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Down", 5 }) },
+
     {
       key = "s",
       mods = "LEADER|CTRL",
@@ -138,6 +144,18 @@ function M.apply_to_config(config)
       mods = "LEADER|CTRL",
       action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
     },
+
+    {
+      key = '"',
+      mods = "LEADER|SHIFT",
+      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+    },
+    {
+      key = "%",
+      mods = "LEADER|SHIFT",
+      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+    },
+
     { key = "o", mods = "LEADER|CTRL", action = act.RotatePanes("CounterClockwise") },
     { key = "o", mods = "LEADER|ALT", action = act.RotatePanes("Clockwise") },
     {
@@ -180,13 +198,14 @@ function M.apply_to_config(config)
     { key = "=", mods = "CTRL|ALT", action = act.IncreaseFontSize },
     { key = "-", mods = "CTRL|ALT", action = act.DecreaseFontSize },
 
-    { key = "PageUp", mods = "LEADER", action = act.ScrollToTop },
-    { key = "PageDown", mods = "LEADER", action = act.ScrollToBottom },
-    { key = "UpArrow", mods = "LEADER", action = act.ScrollToPrompt(-1) },
-    { key = "DownArrow", mods = "LEADER", action = act.ScrollToPrompt(1) },
+    { key = "PageUp", mods = "LEADER", action = act.ScrollToBottom },
+    { key = "PageDown", mods = "LEADER", action = act.ScrollToTop },
+    { key = "PageUp", mods = "CTRL|ALT", action = act.ScrollToPrompt(-1) },
+    { key = "PageDown", mods = "CTRL|ALT", action = act.ScrollToPrompt(1) },
     { key = "r", mods = "LEADER", action = act.ReloadConfiguration },
     { key = "i", mods = "LEADER", action = act.CharSelect },
     { key = "/", mods = "LEADER", action = act.Search("CurrentSelectionOrEmptyString") },
+    { key = "/", mods = "CTRL|ALT", action = act.Search("CurrentSelectionOrEmptyString") },
     { key = ":", mods = "LEADER|SHIFT", action = act.ActivateCommandPalette },
     { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
     { key = "?", mods = "LEADER|SHIFT", action = act.ShowDebugOverlay },

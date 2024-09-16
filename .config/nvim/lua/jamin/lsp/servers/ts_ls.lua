@@ -23,48 +23,38 @@ local language_settings = {
   },
 }
 
-local function custom_stuff(args)
+local function custom_keys(args)
   ---@diagnostic disable: assign-type-mismatch
-  vim.keymap.set(
-    "n",
-    "<leader>lao",
-    function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
-      })
-    end,
-    { desc = "Organize imports", buffer = args.buf }
-  )
+  vim.keymap.set("n", "<localleader>i", function()
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
+    })
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+    })
+  end, { desc = "Cleanup imports", buffer = args.buf })
 
-  vim.keymap.set(
-    "n",
-    "<leader>lau",
-    function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
-      })
-    end,
-    { desc = "Remove unused variables", buffer = args.buf }
-  )
-
-  vim.keymap.set(
-    "n",
-    "<leader>lai",
-    function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
-      })
-    end,
-    { desc = "Add missing imports", buffer = args.buf }
-  )
+  vim.keymap.set("n", "<localleader>u", function()
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
+    })
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = { only = { "source.removeUnusedImports.ts" }, diagnostics = {} },
+    })
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = { only = { "source.fixAll.ts" }, diagnostics = {} },
+    })
+  end, { desc = "Remove unused variables/imports", buffer = args.buf })
   ---@diagnostic enable: assign-type-mismatch
 end
 
 return {
-  custom_attach = custom_stuff,
+  custom_attach = custom_keys,
   single_file_support = true,
   init_options = { preferences = language_settings.inlayHints },
   settings = {

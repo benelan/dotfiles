@@ -105,7 +105,7 @@ bindsym $mod+p sticky toggle
 bindsym $mod+f floating toggle
 
 # Enter fullscreen mode for the focused container
-bindsym $mod+m fullscreen toggle; inhibit_idle fullscreen
+bindsym $mod+m fullscreen toggle
 
 # Change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking

@@ -1,6 +1,50 @@
+---Plugins for writing markdown notes/documentation
+
+local res = require("jamin.resources")
+
 return {
   -----------------------------------------------------------------------------
-  -- Opens markdown preview in browser
+  -- Keymaps for plaintext tables
+  {
+    "dhruvasagar/vim-table-mode",
+    cmd = {
+      "TableModeToggle",
+      "TableModeEnable",
+      "TableModeDisable",
+      "TableModeRealign",
+      "Tableize",
+      "TableSort",
+      "TableAddFormula",
+      "TableEvalFormulaLine",
+    },
+    keys = { "<leader>tm", "<leader>tt", "<leader>T" },
+    init = function()
+      vim.g.table_mode_syntax = 0
+      vim.g.table_mode_corner = "|"
+      vim.g.table_mode_motion_right_map = "<Tab>"
+      vim.g.table_mode_motion_left_map = "<S-Tab>"
+    end,
+  },
+
+  -----------------------------------------------------------------------------
+  -- Keymaps for plaintext lists
+  {
+    "bullets-vim/bullets.vim",
+    ft = res.filetypes.writing,
+    init = function()
+      vim.g.bullets_enabled_file_types = res.filetypes.writing
+      vim.g.bullets_checkbox_markers = " x"
+      vim.g.bullets_outline_levels = { "ROM", "ABC", "num", "abc", "rom", "std-" }
+      vim.g.bullets_custom_mappings = {
+        { "vmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "nmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "nmap", "<leader>m<Tab>", "<Plug>(bullets-toggle-checkbox)" },
+      }
+    end,
+  },
+
+  -----------------------------------------------------------------------------
+  -- Open GitHub Flavored Markdown preview in the browser
   {
     "iamcco/markdown-preview.nvim",
     ft = "markdown",
@@ -12,50 +56,6 @@ return {
     config = function()
       vim.g.mkdp_browser = vim.env.ALT_BROWSER or vim.env.BROWSER or "o"
       vim.g.mkdp_auto_close = false
-    end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- Keymaps and utils for editing markdown files
-  {
-    "jakewvincent/mkdnflow.nvim",
-    ft = "markdown",
-    opts = function()
-      local has_zk_util, zk_util = pcall(require, "zk.util")
-      local link_style = has_zk_util
-          and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil
-          and "wiki"
-        or nil
-
-      return {
-        filetypes = { md = true, rmd = true, mdx = true, markdown = true },
-        to_do = { symbols = { " ", "x" } },
-        silent = true,
-        links = {
-          style = link_style,
-          transform_explicit = function(text) return text:gsub(" ", "-"):lower() end,
-        },
-        perspective = { priority = "root", fallback = "current", root_tell = ".git" },
-        mappings = {
-          MkdnEnter = { { "i", "n", "v" }, "<CR>" },
-          MkdnTab = { "i", "<Tab>" },
-          MkdnSTab = { "i", "<S-Tab>" },
-          MkdnGoBack = { "n", "[f" },
-          MKdnGoForward = { "n", "]f" },
-          MkdnIncreaseHeading = { "n", "_" },
-          MkdnDecreaseHeading = { "n", "+" },
-          MkdnFoldSection = { "n", "<leader>zr" },
-          MkdnUnfoldSection = { "n", "<leader>zm" },
-          MkdnCreateLinkFromClipboard = { { "n", "v" }, "<leader>P" },
-          MkdnToggleToDo = { { "n", "v" }, "<leader>m<Tab>" },
-          MkdnUpdateNumbering = { "n", "<leader>mn" },
-          MkdnMoveSource = { "n", "<leader>mrn" },
-          MkdnTableNewRowBelow = { "n", "<leader>mir" },
-          MkdnTableNewRowAbove = { "n", "<leader>miR" },
-          MkdnTableNewColAfter = { "n", "<leader>mic" },
-          MkdnTableNewColBefore = { "n", "<leader>miC" },
-        },
-      }
     end,
   },
 

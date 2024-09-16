@@ -1,5 +1,6 @@
 apparmor-profiles
 apparmor-utils
+archivemount
 bat
 btop
 clamav

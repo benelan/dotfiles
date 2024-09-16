@@ -8,7 +8,7 @@ nmap <buffer> xx <CR><CMD>Gread<BAR>write<BAR>bdelete<CR>
 " Stage all tracked files
 nmap <buffer> S  mtgUks`t:delmarks t<CR>
 
-nmap <buffer> <leader>pu <CMD>Git push -u origin HEAD<CR>
+nmap <buffer> <leader>po <CMD>Git push -u origin HEAD<CR>
 nmap <buffer> <leader>pl <CMD>Git pull --rebase<CR>
 
 autocmd BufEnter <buffer> if exists("*FugitiveDidChange") |

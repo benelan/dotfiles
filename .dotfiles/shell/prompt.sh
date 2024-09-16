@@ -40,8 +40,8 @@ export GIT_PS1_SHOWUPSTREAM="verbose"
 export GIT_PS1_DESCRIBE_STYLE="contains"
 
 # set the pre_prompt {{{1
-pre_prompt="\[${RESET}\]\n"
-pre_prompt+="\[${BOLD}\]\[${userStyle}\]$(
+__pre_prompt="\[${RESET}\]\n"
+__pre_prompt+="\[${BOLD}\]\[${userStyle}\]$(
     # replace username with (n)vim when using the builtin terminal
     if [ -n "$NVIM" ]; then
         echo "nvim"
@@ -51,59 +51,73 @@ pre_prompt+="\[${BOLD}\]\[${userStyle}\]$(
         echo "\u" # username
     fi
 )"
+__pre_prompt+="\[${RESET}\]"
 
-pre_prompt+="\[${RESET}\] at "
-pre_prompt+="\[${BOLD}\]\[${hostStyle}\]\h" # host
-pre_prompt+="\[${RESET}\] in "
-pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w" # PWD
-pre_prompt+="\[${RESET}\]"
+# https://wezfurlong.org/wezterm/config/lua/keyassignment/ScrollToPrompt.html
+__pre_prompt+="\e]133;P\e\\ " # OSC 133 - prompt
+__pre_prompt+="at"
+__pre_prompt+="\e]133;B\e\\ "
+__pre_prompt+="\[${BOLD}\]\[${hostStyle}\]\h" # host
+__pre_prompt+="\[${RESET}\]"
+__pre_prompt+=" in "
+__pre_prompt+="\[${BOLD}\]\[${BLUE}\]\w" # PWD
+__pre_prompt+="\[${RESET}\]"
 
 # set the post_prompt {{{1
-post_prompt="\n"
+__post_prompt="\n"
 
 # NOTE: this history number won't always be correct when ignoring duplicates
-# post_prompt+="\[${CYAN}\]!\!\[${RESET}\]"
+# __post_prompt+="\[${CYAN}\]!\!\[${RESET}\] "
 
-# show the shell level if its greater than 1 (or 2 if in tmux)
-# show the exit code of the previous command if it failed
-post_prompt+='$(
-    _exit="$?"
+__post_prompt+='$(
+    __exit="$?"
 
     if [ -z "$TMUX" ] && [ $SHLVL -gt 1 ] || [ $SHLVL -gt 2 ]; then
         printf "%sL%s " '"\"\[$MAGENTA\]\""' "$SHLVL"
     fi
 
-    if [ "$_exit" -ne 0 ]; then
-        printf "%s%s✘  " '"\"\[$RED\]\""' "$_exit";
+    if [ "$__exit" -ne 0 ]; then
+        printf "%s%s✘  " '"\"\[$RED\]\""' "$__exit";
     else
         printf "%s❱ " '"\"\[$GREEN\]\""'
     fi
 )'
 
-post_prompt+="\[${RESET}\]" # reset styling
+__post_prompt+="\[${RESET}\]"
 
-# setup git prompt {{{1
+# setup git info and bash history {{{1
 # shellcheck disable=2089
-PROMPT_COMMAND='__git_ps1 "${pre_prompt}" "${post_prompt}"'
+PROMPT_COMMAND='history -a; __git_ps1 "${__pre_prompt}" "${__post_prompt}"'
 
-# setup fasd {{{1
+# setup fasd integration {{{1
 if supports fasd; then
-    _fasd_prompt_func() {
-        eval "fasd --proc $(fasd --sanitize "$(history 1 |
-            sed "s/^[ ]*[0-9]*[ ]*//")")" >>"/dev/null" 2>&1
+    __prompt_fasd() {
+        eval "fasd --proc $(
+            fasd --sanitize "$(history 1 | sed "s/^[ ]*[0-9]*[ ]*//")"
+        )" >/dev/null 2>&1
     }
 
-    case $PROMPT_COMMAND in
-        *_fasd_prompt_func*) ;;
-        *) PROMPT_COMMAND="_fasd_prompt_func;$PROMPT_COMMAND" ;;
-    esac
+    PROMPT_COMMAND="__prompt_fasd; $PROMPT_COMMAND"
 fi
 
-# append session's history lines to file {{{1
-case $PROMPT_COMMAND in
-    *"history -a"*) ;;
-    *) PROMPT_COMMAND="history -a; $PROMPT_COMMAND" ;;
-esac
+# setup osc7 integration {{{1
+# https://codeberg.org/dnkl/foot/wiki#shell-integration
+__prompt_osc7() {
+    local strlen=${#PWD}
+    local encoded=""
+    local pos c o
+    for ((pos = 0; pos < strlen; pos++)); do
+        c=${PWD:$pos:1}
+        case "$c" in
+            [-/:_.!\'\(\)~[:alnum:]]) o="${c}" ;;
+            *) printf -v o '%%%02X' "'${c}" ;;
+        esac
+        encoded+="${o}"
+    done
+    printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
+}
+
+PROMPT_COMMAND="__prompt_osc7; $PROMPT_COMMAND"
 
 # setup PS2 {{{1
 # shellcheck disable=2090

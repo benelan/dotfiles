@@ -35,7 +35,7 @@ _has() { command -v "$1" >/dev/null 2>&1; }
 
 _dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
 
-_update_modules() { _dot submodule update --recursive --rebase --remote "$@"; }
+_update_modules() { (cd && _dot submodule update --recursive --rebase --remote "$@"); }
 
 # --------------------------------------------------------------------- }}}
 # Setup dotfiles                                                        {{{
@@ -51,13 +51,12 @@ setup_dotfiles() {
         exit 1
     fi
 
-    # any current, conflicting dotfiles will be moved here
+    # any preexisting, conflicting dotfiles will be moved here
     backup_dir="${DOTFILES:-$HOME/.dotfiles}-backup"
-    cache_dir="${DOTFILES:-$HOME/.dotfiles}/cache"
-    mkdir -p "$backup_dir" "$cache_dir"
+    mkdir -p "$backup_dir"
 
     # Don't use SSH to clone if there is no SSH key on the machine
-    # This is for when I spin up a new VM and don't want to login to GitHub
+    # This is for when I spin up a new VM and don't want to log in to GitHub
     if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
         repo_url="https://github.com/benelan/dotfiles"
     else
@@ -110,7 +109,8 @@ setup_dotfiles() {
             printf "\nChecked out dotfiles\n" >&2
         fi
     fi
-    unset files dirs repo_url backup_dir cache_dir
+
+    unset files dirs repo_url backup_dir
 
     # Make the bins and scripts executable
     printf "\n> Making scripts executable\n" >&2
@@ -118,9 +118,7 @@ setup_dotfiles() {
 
     # Must install libs before they can be pwn'd
     printf "\n> Installing git submodules\n\n" >&2
-    pushd ~
-    _dot submodule update --init --recursive
-    popd
+    (cd && _dot submodule update --init --recursive)
 
     bash -l
     printf "\n+ Setup complete!\n" >&2
@@ -137,7 +135,8 @@ install_language_rust() {
     if _has cargo && _has rustup; then
         rustup update
     else
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+            bash -s -y --no-modify-path
         export PATH="${PATH}:${HOME}/.cargo/bin"
     fi
 
@@ -340,13 +339,13 @@ install_packages_npm() {
 
 INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
 install_packages_vim() {
-    cd && _update_modules .vim
+    _update_modules .vim
 
     vim +"$(
         find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
             -exec basename --multiple {} \; |
             perl -pe 's/^/packadd /' | tr '\n' '|'
-    ) helptags ALL | quit"
+    ) helptags ALL | cquit" >/dev/null 2>&1 || true
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -393,7 +392,7 @@ install_packages_neovim() {
     )" -le ${#devdoc_sources[@]} ]; then
         nvim --headless +"DevdocsInstall ${devdoc_sources[*]}"
     else
-        nvim --headless +DevdocsUpdateAll
+        nvim --headless +DevdocsFetch +DevdocsUpdateAll
     fi
 }
 
@@ -814,38 +813,7 @@ install_ubuntu_apt-gui() {
 ## https://code.visualstudio.com/docs/setup/linux
 INSTALL_UBUNTU_VSCODE_DOC="Install Visual Studio Code text editor"
 install_ubuntu_vscode() {
-    if _has code; then
-        extensions=(
-            # "VisualStudioExptTeam.intellicode-api-usage-examples"
-            # "VisualStudioExptTeam.vscodeintellicode"
-            "asvetliakov.vscode-neovim"
-            # "bradlc.vscode-tailwindcss"
-            # "christian-kohler.path-intellisense"
-            # "dbaeumer.vscode-eslint"
-            # "eamodio.gitlens"
-            # "esbenp.prettier-vscode"
-            # "foam.foam-vscode"
-            # "formulahendry.auto-close-tag"
-            # "humao.rest-client"
-            # "mechatroner.rainbow-csv"
-            # "ms-azuretools.vscode-docker"
-            # "ms-vscode-remote.remote-containers"
-            # "ritwickdey.LiveServer"
-            "sainnhe.gruvbox-material"
-            # "streetsidesoftware.code-spell-checker"
-            # "stylelint.vscode-stylelint"
-            # "sumneko.lua"
-            # "svelte.svelte-vscode"
-            # "timonwong.shellcheck"
-            # "vscodevim.vim"
-            # "yzhang.markdown-all-in-one"
-        )
-
-        for extension in "${extensions[@]}"; do
-            code --install-extension "$extension"
-        done
-        unset extension
-    else
+    if ! _has code; then
         deb="$CACHE_DIR/vscode.deb"
 
         curl -ssLo "$deb" \
@@ -854,6 +822,37 @@ install_ubuntu_vscode() {
         sudo apt-get install -qq "$deb" || true
         unset deb
     fi
+
+    extensions=(
+        # "VisualStudioExptTeam.intellicode-api-usage-examples"
+        # "VisualStudioExptTeam.vscodeintellicode"
+        "asvetliakov.vscode-neovim"
+        # "bradlc.vscode-tailwindcss"
+        # "christian-kohler.path-intellisense"
+        # "dbaeumer.vscode-eslint"
+        # "eamodio.gitlens"
+        # "esbenp.prettier-vscode"
+        # "foam.foam-vscode"
+        # "formulahendry.auto-close-tag"
+        # "humao.rest-client"
+        # "mechatroner.rainbow-csv"
+        # "ms-azuretools.vscode-docker"
+        # "ms-vscode-remote.remote-containers"
+        # "ritwickdey.LiveServer"
+        "sainnhe.gruvbox-material"
+        # "streetsidesoftware.code-spell-checker"
+        # "stylelint.vscode-stylelint"
+        # "sumneko.lua"
+        # "svelte.svelte-vscode"
+        # "timonwong.shellcheck"
+        # "vscodevim.vim"
+        # "yzhang.markdown-all-in-one"
+    )
+
+    for extension in "${extensions[@]}"; do
+        code --install-extension "$extension"
+    done
+    unset extension
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1094,13 +1093,12 @@ INSTALL_UBUNTU_GH_DOC="Install the GitHub CLI"
 install_ubuntu_gh() {
     _has gh && return
 
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
-        sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &&
-        sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg &&
-        echo "deb [arch=$(dpkg --print-architecture) \
-          signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
-          https://cli.github.com/packages stable main" |
-        sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) &&
+        sudo mkdir -p -m 755 /etc/apt/keyrings &&
+        wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+        sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null &&
+        sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg &&
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
 
     sudo apt-get update -qq && sudo apt-get install -qq gh
 
@@ -1149,8 +1147,7 @@ install_ubuntu_brave() {
     sudo curl -fLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
-         https://brave-browser-apt-release.s3.brave.com/ stable main" |
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" |
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 
     sudo apt-get update -qq && sudo apt-get install -qq brave-browser
@@ -1577,10 +1574,24 @@ install_misc_vifm() {
     version=$(basename $(curl -sw "%{redirect_url}" \
         https://github.com/vifm/vifm/releases/latest))
 
-    curl -Lo "$BIN_DIR/vifm" \
+    curl -Lo ~/vifm.appimage \
         "https://github.com/vifm/vifm/releases/latest/download/vifm-$version-x86_64.AppImage"
 
-    chmod +x "$BIN_DIR/vifm"
+    chmod +x vifm.appimage
+
+    if ~/vifm.appimage -h >/dev/null 2>&1; then
+        mv ~/vifm.appimage "$BIN_DIR/vifm"
+    else
+        mkdir -p ~/.appimages
+        mv ~/vifm.appimage ~/.appimages/vifm.appimage
+        pushd ~/.appimages >/dev/null
+        ~/vifm.appimage --appimage-extract >/dev/null
+        rm -rf vifm-appimage
+        mv squashfs-root vifm-appimage
+        ln -s -f ~/.appimages/vifm-appimage/AppRun "$BIN_DIR/vifm"
+        rm vifm.appimage
+        popd >/dev/null
+    fi
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1680,6 +1691,8 @@ INSTALL_BUILD_FZF_DOC="Build and install fuzzy finder from source"
 install_build_fzf() {
     ! [ -d "$LIB/fzf" ] && return
     cd "$LIB/fzf" || return
+
+    ! supports go && install_language_go
 
     git fetch --all --tags --force --prune
     git reset --hard origin/master
@@ -1916,10 +1929,10 @@ ubuntu_installs() {
 ## Install i3 and related tools                                {{{
 i3_installs() {
     install_ubuntu_apt-i3
-    install_theme_rofi-config
     install_script_i3-volume
     install_script_i3-battery
     install_build_clipmenu
+    theme_installs
 
     if ! _has xidlehook; then
         install_language_rust
@@ -1947,10 +1960,9 @@ EOF
 ## Install sway and related tools                              {{{
 sway_installs() {
     install_ubuntu_apt-sway
-    install_theme_rofi-config
-    install_theme_wallpaper
     install_script_i3-volume
     install_script_i3-battery
+    theme_installs
     # install_build_tuigreet
 
     _has go && go install go.senan.xyz/cliphist@latest
@@ -1970,13 +1982,13 @@ theme_installs() {
 ## Shell scripts                                               {{{
 
 script_installs() {
-    install_script_completion
     install_script_fasd
     install_script_fff
     install_script_taskopen
     install_script_git-forgit
     install_script_git-jump
     install_script_git-open
+    install_script_completion
     # install_script_dircolors
     # install_script_git-extras
 }

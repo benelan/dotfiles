@@ -1,3 +1,5 @@
+---Plugins for navigating between buffers/files
+
 local res = require("jamin.resources")
 
 return {

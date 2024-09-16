@@ -56,7 +56,7 @@ aliases:
     !FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       --bind='alt-N:execute<nvim +\"Octo pr edit \$(echo {1} | cut -c 2-)\">+refresh-preview'
       --bind='alt-m:execute(gh pr merge --delete-branch --squash {1})+refresh-preview'
-      --bind='alt-v:execute(gh pr edit {1} --add-label \"pr ready for visual snapshots\" --remove-label \"pr ready for visual snapshots\")+refresh-preview'
+      --bind='alt-v:execute(gh pr edit {1} --remove-label \"pr ready for visual snapshots\" --add-label \"pr ready for visual snapshots\")+refresh-preview'
       --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
       --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
       --bind='alt-_:execute(gh pr review --request-changes {1})+refresh-preview'
@@ -65,8 +65,8 @@ aliases:
   itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i $*"
   ptruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh p $*"
 
-  ime: i --assignee @me
-  pme: p --assignee @me
+  ime: "i --assignee @me"
+  pme: "p --author @me"
 
   pcomment: pr comment --editor
   icomment: issue comment --editor

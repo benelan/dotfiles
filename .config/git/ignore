@@ -20,6 +20,7 @@
 .direnv
 .envrc
 .exrc
+.gp.md
 .nvim.lua
 .nvimrc
 node_modules/

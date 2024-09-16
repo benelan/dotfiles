@@ -164,7 +164,7 @@ if has("keymap")
     nnoremap - <CMD>packadd vifm.vim<CR><CMD>Vifm<CR>
 
     nnoremap <leader>gs <CMD>packadd vim-fugitive<CR><CMD>tab G<CR>
-    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>tab G commit --verbose<CR>
+    nnoremap <leader>gc <CMD>packadd vim-fugitive<CR><CMD>tab G commit -vv<CR>
     nnoremap <leader>gb <CMD>packadd vim-fugitive<CR><CMD>G blame<CR>
     nnoremap <leader>gd <CMD>packadd vim-fugitive<CR><CMD>Gvdiffsplit<CR>
     nnoremap <leader>gl <CMD>packadd vim-fugitive<CR><CMD>0Gclog --follow<CR>
@@ -176,9 +176,9 @@ if has("keymap")
     nnoremap <leader>gR <CMD>packadd vim-fugitive<CR><CMD>Gread<CR>
 
     nnoremap <leader>go <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse<CR>
-    vnoremap <leader>go <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse<CR>
     nnoremap <leader>gy <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse!<CR>
-    vnoremap <leader>gy <CMD>packadd vim-fugitive<BAR>packadd vim-rhubarb<CR><CMD>GBrowse!<CR>
+    vnoremap <leader>go :GBrowse<CR>
+    vnoremap <leader>gy :GBrowse!<CR>
 endif
 
 " Autocommands {{{1
@@ -360,7 +360,7 @@ endif
 
 " Fix modern terminal features
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\)'
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitty\)'
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"
@@ -458,21 +458,15 @@ if has("eval") && has("syntax")
     let g:gruvbox_material_background = "soft"
     let g:gruvbox_material_foreground = "original"
     let g:gruvbox_material_ui_contrast = "high"
-    let g:gruvbox_material_statusline_style = "material"
-    let g:gruvbox_material_diagnostic_virtual_text = "colored"
-    " let g:gruvbox_material_spell_foreground = "colored"
-    " let g:gruvbox_material_sign_column_background = "grey"
-    " let g:gruvbox_material_menu_selection_background = "orange"
-    " let g:gruvbox_material_current_word = "bold"
-    " let g:gruvbox_material_visual = "reverse"
+    let g:gruvbox_material_float_style = "dim"
+    let g:gruvbox_material_menu_selection_background = "blue"
 
     let g:gruvbox_material_better_performance = 1
-    let g:gruvbox_material_diagnostic_text_highlight = 0
-    let g:gruvbox_material_transparent_background = 1
+    let g:gruvbox_material_enable_bold = 1
+    let g:gruvbox_material_enable_italic = 1
     let g:gruvbox_material_disable_italic_comment = 1
-    " let g:gruvbox_material_enable_italic = 1
-    " let g:gruvbox_material_enable_bold = 1
-    " let g:gruvbox_material_disable_terminal_colors = 1
+    let g:gruvbox_material_disable_terminal_colors = 1
+    let g:gruvbox_material_transparent_background = 1
     " let g:gruvbox_material_dim_inactive_windows = 1
 
     colorscheme gruvbox-material

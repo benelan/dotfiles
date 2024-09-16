@@ -42,25 +42,25 @@
 #
 #   Tab1 is a two-way diff of just the conflicts. Resolve the conflicts here
 #   and save the file.
-#       +--------------------------------+
-#       |   LOCONFLICT   |   RECONFLICT  |
-#       +--------------------------------+
+#       +------------------+
+#       | XLOCAL | XREMOTE |
+#       +------------------+
 #   Tab2 is a three-way diff of the original files and the merge base. This is
 #   the traditional three-way diff. Although noisy, it is occasionally useful
 #   to view the three original states of the conflicting file before the merge.
-#       +--------------------------------+
-#       |  LOCAL   |   BASE   |  REMOTE  |
-#       +--------------------------------+
+#       +-----------------------+
+#       | LOCAL | BASE | REMOTE |
+#       +-----------------------+
 #   Tab3 is the in-progress merge that Git has written to the filesystem
 #   containing the conflict markers. I.e., the file you would normally edit by
 #   hand when not using a mergetool.
-#       +--------------------------------+
-#       |       <<<<<<< HEAD             |
-#       |        LOCONFLICT              |
-#       |       =======                  |
-#       |        RECONFLICT              |
-#       |       >>>>>>> someref          |
-#       +--------------------------------+
+#       +-----------------+
+#       | <<<<<<< HEAD    |
+#       | XLOCAL          |
+#       | =======         |
+#       | XREMOTE         |
+#       | >>>>>>> someref |
+#       +-----------------+
 #
 # Workflow:
 #
@@ -96,6 +96,8 @@ sed -E -e '/^<<<<<<< /,/^=======\r?$/d' -e '/^>>>>>>> /d' "${MERGED}" >"${XREMOT
 # Fire up vimdiff
 $CMD -f -R -d "${XLOCAL}" "${XREMOTE}" \
     -c "set noreadonly" \
+    -c "nnoremap <Tab>   ]c" \
+    -c "nnoremap <S-Tab> [c" \
     -c "vnoremap <leader>gr :diffget  <BAR> diffupdate<CR>" \
     -c "nnoremap <leader>gr :diffget  <BAR> diffupdate<CR>" \
     -c "nnoremap <leader>gR :%diffget <BAR> diffupdate<CR>" \

@@ -1,6 +1,12 @@
+---Plugins related to Treesitter (incremental syntax tree parser)
+
 local res = require("jamin.resources")
 
 return {
+  -- set commentstring based on treesitter node
+  { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
+
+  -----------------------------------------------------------------------------
   -- split/join treesitter nodes to multiple/single line(s)
   {
     "Wansmer/treesj",
@@ -11,33 +17,40 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- set commentstring based on treesitter node
-  { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
+  -- auto close and rename tags (html, jsx, etc.)
+  {
+    "windwp/nvim-ts-autotag",
+    ft = {
+      "astro",
+      "html",
+      "javascript",
+      "javascriptreact",
+      "markdown",
+      "svelte",
+      "typescript",
+      "typescriptreact",
+      "vue",
+      "xml",
+    },
+    opts = {
+      per_filetype = {
+        javascriptreact = { enable_close = false, enable_close_on_slash = true },
+        typescriptreact = { enable_close = false, enable_close_on_slash = true },
+      },
+    },
+  },
 
   -----------------------------------------------------------------------------
   -- shows the current scope
   {
     "nvim-treesitter/nvim-treesitter-context",
-    -- Pinned because the subsequent commit displays virtual text on the context and it doesn't get
-    -- cleared when the diagnostic is resolved. Scrolling up to the context line does clear it
+    -- https://github.com/nvim-treesitter/nvim-treesitter-context/issues/509
     commit = "8198ad4b01ca64b6f5c7a7253f52df3fe329be46",
     lazy = true,
-    opts = {
-      multiline_threshold = 1,
-      max_lines = 6,
-      -- separator = res.icons.ui.horizontal_separator
-    },
-
-    config = function(_, opts)
-      require("treesitter-context").setup(opts)
-      -- vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
-      vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { link = "Normal" })
-      vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "Folded" })
-    end,
-
+    opts = { multiline_threshold = 1, max_lines = 6 },
     keys = {
       {
-        "<leader>C",
+        "[C",
         function() require("treesitter-context").go_to_context() end,
         desc = "Treesitter context",
       },
@@ -95,7 +108,7 @@ return {
             local max_filesize = 500 * 1024 -- 500 KB
             local bufname = vim.api.nvim_buf_get_name(buf)
             local ok, stats = pcall(vim.uv.fs_stat, bufname)
-            if ok and stats and stats.size > max_filesize then return true end
+            return ok and stats and stats.size > max_filesize
           end,
           -- additional_vim_regex_highlighting = { "markdown" },
           -- disable = { "markdown", },
@@ -135,8 +148,8 @@ return {
               ["io"] = { query = "@loop.inner", desc = "inner loop" },
               ["ay"] = { query = "@conditional.outer", desc = "conditional" },
               ["iy"] = { query = "@conditional.inner", desc = "inner conditional" },
-              ["agc"] = { query = "@comment.*", desc = "comment" },
-              ["igc"] = { query = "@comment.*", desc = "comment" },
+              ["agc"] = { query = "@comment.outer", desc = "comment" },
+              ["igc"] = { query = "@comment.inner", desc = "inner comment" },
             },
           },
 

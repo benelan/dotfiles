@@ -1,7 +1,8 @@
 --- Runs makeprg asynchronously and populates the quickfix list with errors
--- adapted from https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+-- https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+local M = {}
 
-local function async_make(ctx)
+function M.async_make(ctx)
   local makeprg = vim.api.nvim_get_option_value("makeprg", { buf = 0 })
   local errorformat = vim.api.nvim_get_option_value("errorformat", { buf = 0 })
 
@@ -51,12 +52,15 @@ local function async_make(ctx)
   vim.g.async_make_job_id = job_id
 end
 
--- run makeprg asynchronously and populate quickfix list
-vim.api.nvim_create_user_command("Make", async_make, {
-  complete = "file",
-  nargs = "?",
-  desc = "Run make asynchronously",
-})
-keymap("n", "gM", "<CMD>Make<CR>", "Async make")
+function M.setup()
+  -- run makeprg asynchronously and populate quickfix list
+  vim.api.nvim_create_user_command("Make", M.async_make, {
+    complete = "file",
+    nargs = "?",
+    desc = "Run make asynchronously",
+  })
 
-return async_make
+  keymap("n", "gM", "<CMD>Make<CR>", "Async make")
+end
+
+return M
