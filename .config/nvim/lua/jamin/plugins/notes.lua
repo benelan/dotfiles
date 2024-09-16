@@ -3,9 +3,12 @@ return {
   -- Opens markdown preview in browser
   {
     "iamcco/markdown-preview.nvim",
-    build = "cd app && npm install && git reset --hard",
     ft = "markdown",
-    keys = { { "<leader>mp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" } },
+    build = "cd app && npx --yes yarn install && git reset --hard",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    keys = {
+      { "<leader>mp", "<CMD>MarkdownPreviewToggle<CR>", desc = "Markdown preview" },
+    },
     config = function()
       vim.g.mkdp_browser = vim.env.ALT_BROWSER or vim.env.BROWSER or "o"
       vim.g.mkdp_auto_close = false

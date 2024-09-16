@@ -198,12 +198,7 @@ command! bak :clone %c.bak
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
 " Markdown/TypeScript
-filetype {*.md,*.mdx,*.ts,*.tsx}
-            \ {Open in neovim} nvim %f,
-            \ {Open in vim} vim %f,
-            \ {Open in vi} vi %f,
-
-fileviewer {*.md,*.mdx,*.ts,*.tsx}
+filetype {*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.yml,*.yaml,*.xml},<text/*>
             \ {Open in neovim} nvim %f,
             \ {Open in vim} vim %f,
             \ {Open in vi} vi %f,

@@ -1700,7 +1700,12 @@ install_build_fzf() {
 INSTALL_BUILD_NEOVIM_DOC="Build and install neovim editor from source"
 install_build_neovim() {
     ! [ -d "$LIB/neovim" ] && return
+
     cd "$LIB/neovim" || return
+
+    # https://github.com/neovim/neovim/blob/master/BUILD.md#ubuntu--debian
+    _has apt-get && sudo apt-get install ninja-build gettext cmake unzip curl build-essential
+
     neovim_head="$(git rev-parse HEAD)"
 
     git fetch --all --tags --force

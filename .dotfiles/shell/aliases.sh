@@ -3,11 +3,11 @@
 # vim:filetype=sh foldmethod=marker:
 
 # General {{{1
-# rerun last command as sudo
-alias plz='sudo $(fc -ln -1)'
-
 # sudo with aliases
 alias sudo='sudo '
+
+# rerun last command as sudo
+alias plz='sudo $(fc -ln -1)'
 
 # delete to trashcan if possible
 if supports gio; then
@@ -47,10 +47,6 @@ supports colordiff && alias diff='colordiff'
 alias grep='grep --color=auto'
 alias tree='tree -C'
 
-# Show 256 TERM colors
-# shellcheck disable=2154
-alias colors='i=0 && while [ $i -lt 256 ]; do echo "$(printf "%03d" $i) $(tput setaf "$i"; tput setab "$i")$(printf %$((COLUMNS - 6))s | tr " " "=")$(tput op)" && i=$((i+1)); done'
-
 # Navigation {{{1
 alias -- -="cd -"
 alias ..="cd .."
@@ -86,27 +82,12 @@ if supports date; then
     alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
 fi
 
-# Displays detailed weather and forecast.
-wttr() { curl --silent --compressed --max-time 10 --url "https://wttr.in/$*"; }
-alias wthr='wttr "?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
-
 # Network/System {{{1
 alias vpn="nm-fzf vpn"
 alias wifi="nm-fzf wifi"
 
 # resume by default
 alias wget='wget -c'
-
-# searchable process list
-alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
-
-# get top processes eating memory
-# shellcheck disable=2142
-alias psmem='ps aux | sort -nrk 4 | awk '\''{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'\'''
-
-# get top processes eating cpu
-# shellcheck disable=2142
-alias pscpu='ps aux | sort -nrk 3 | awk '\''{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'\'''
 
 # Web Development {{{1
 if supports chromium-browser; then
@@ -126,10 +107,6 @@ if supports npm; then
 
     alias ncu="npx npm-check-updates"
     alias npxplz='npx $(fc -ln -1)'
-
-    # select an npm script to run from package.json using fzf
-    supports fzf && supports jq &&
-        alias fnr='npm run "$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"'
 
     # Complete these steps before using the aliases for switching between NPM
     # accounts:
@@ -179,15 +156,6 @@ fi
 alias g='git'
 alias d='dot'
 
-# toggle git env vars so I can use `git` instead of `dot`
-alias tdot='[ "$GIT_WORK_TREE" = ~ ] && unset GIT_DIR GIT_WORK_TREE || export GIT_DIR=~/.git GIT_WORK_TREE=~'
-
-# edit dotfiles with git plugins setup correctly. Search with Telescope if no args
-alias edot="EDITOR=nvim dot edit +\"if !len(argv()) | execute 'Telescope git_files' | endif\""
-
-# open Fugitive's status for the current or dotfiles repo
-alias G='if [ "$(git rev-parse --is-inside-work-tree)" = "false" ]; then (cd && dot edit +G +only); else $EDITOR +G +only; fi'
-
 # https://github.com/benelan/git-mux
 alias gx="git-mux"
 alias gxt="git-mux task"
@@ -213,23 +181,4 @@ if supports docker; then
 
     # prune everything
     alias dkprune='docker system prune -a'
-
-    # docker aliases for Calcite development {{{2
-    if [ "$WORK_MACHINE" = "1" ]; then
-        # I need to link these files to the current worktree
-        alias cc_link_files='pushd "$(npm prefix)" >/dev/null && ln -f "$CALCITE/Dockerfile"; ln -f "$CALCITE/.marksman.toml"; ln -f "$CALCITE/calcite-components.projections.json" "./packages/calcite-components/.projections.json"; popd >/dev/null'
-
-        alias cc_build_docker_image="docker build --tag calcite-components ."
-
-        # Create containers to run tests and the the dev server at the same time
-        # Use a bind mount so building/testing on file changes works correctly
-        _cmd="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
-
-        alias cc_start_in_docker="$_cmd --publish 3333:3333 --name calcite-components_start calcite-components npm --workspace=@esri/calcite-components start"
-        alias cc_test_in_docker="$_cmd --name calcite-components_test calcite-components npm --workspace=@esri/calcite-components run --workspace=@esri/calcite-components test:watch"
-        alias cc_run_in_docker="$_cmd --name calcite-components_run calcite-components npm --workspace=@esri/calcite-components run"
-
-        unset _cmd
-    fi
-    #}}}2
 fi

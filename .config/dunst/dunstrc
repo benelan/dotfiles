@@ -482,12 +482,17 @@
     set_stack_tag = "volume"
 
 [NetworkManager]
-    appname = NetworkManager
+    desktop_entry = nm-applet
     history_ignore = yes
     timeout = 1
     override_pause_level = 15
     # Set `yes` to skip display, `true` to skip display and history
     # skip_display = yes
+
+[teams]
+    desktop_entry = "com.github.IsmaelMartinez.teams_for_linux"
+    set_transient = no
+    frame_color = "#4B53BCFF"
 
 [gh-fzf]
     appname = gh-fzf

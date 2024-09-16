@@ -69,6 +69,65 @@ vman() { nvim "+hide Man $*"; }
 bm() { echo "$*" >>"$XDG_CONFIG_HOME/surfraw/bookmarks"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## Show 256 TERM colors                                       {{{
+
+colors() {
+    local i=0
+
+    while [ $i -lt 256 ]; do
+        echo "$(printf "%03d" $i) $(
+            tput setaf "$i"
+            tput setab "$i"
+        )$(printf %$((COLUMNS - 6))s | tr " " "=")$(tput op)"
+        i=$((i + 1))
+    done
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## displays detailed weather and forecast                     {{{
+
+wttr() {
+    local query="$*"
+
+    if [ "$query" = "-s" ]; then
+        query="?format=%l:+(%C)+%c++%t+\[%h,+%w\]"
+    fi
+
+    curl --silent --compressed --max-time 10 --url "https://wttr.in/$query"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## check if an array contains an specific element             {{{
+
+# This function searches an array for an exact match against the term passed
+# as the first argument to the function. This function exits as soon as
+# a match is found.
+#
+# Returns:
+#   0 when a match is found, otherwise 1.
+#
+# Examples:
+#   $ declare -a fruits=(apple orange pear mandarin)
+#
+#   $ _array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
+#   contains apple
+#
+#   $ if _array-contains-element pear "${fruits[@]}"; then
+#       echo "contains pear!"
+#     fi
+#   contains pear!
+#
+#
+_array-contains-element() {
+    local e element="${1?}"
+    shift
+    for e in "$@"; do
+        [[ "$e" == "${element}" ]] && return 0
+    done
+    return 1
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
 # --------------------------------------------------------------------- }}}
 # Filesystem                                                            {{{
@@ -140,11 +199,12 @@ fi
 # $ onmodify note.md md2html note
 if supports inotifywait; then
     onchange() {
+        local target notify_cmd="echo"
+
         target=${1:-.}
         shift
         printf "Watching %s for changes...\n" "$target"
 
-        notify_cmd="echo"
         supports notify-send && notify_cmd="notify-send"
 
         while inotifywait -qqre modify,close_write,moved_to,move_self \
@@ -152,7 +212,6 @@ if supports inotifywait; then
             bash -c "${*:-$notify_cmd 'changes detected' $target}"
             sleep 1
         done
-        unset target
     }
 fi
 
@@ -160,6 +219,8 @@ fi
 ## get gzipped file size                                      {{{
 
 gz() {
+    local orig gzip ratio saved
+
     orig=$(wc -c <"$1")
     gzip=$(gzip -c "$1" | wc -c)
     ratio=$(echo "$gzip * 100/ $orig" | bc -l)
@@ -167,20 +228,20 @@ gz() {
 
     printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" \
         "$orig" "$gzip" "$saved" "$ratio"
-    unset orig gzip ratio saved
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## create a data URL from a file                              {{{
 
 dataurl() {
+    local mimetype
+
     mimetype=$(file --mime-type "$1" | cut -d ' ' -f2)
     if [ "$mimetype" = "text/*" ]; then
         mimetype="${mimetype};charset=utf-8"
     fi
 
     echo "data:${mimetype};base64,$(openssl base64 -in "$1" | tr -d '\n')"
-    unset mimetype
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -204,6 +265,8 @@ pfind() {
 ## get the pid of the prccess listening on the provided port  {{{
 
 wtfport() {
+    local line pid pid_name
+
     line="$(lsof -i -P -n | grep LISTEN | grep ":$1")"
     pid=$(echo "$line" | awk '{print $2}')
     pid_name=$(echo "$line" | awk '{print $1}')
@@ -227,6 +290,30 @@ killport() { wtfport "$1" | xargs kill -9; }
 ## find real from shortened url                               {{{
 
 unshorten() { curl -sIL "$1" | sed -n 's/location: *//pi'; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## searchable process list                                    {{{
+
+# shellcheck disable=2009
+psg() { ps aux | grep -v grep | grep -i -e VSZ -e "$*"; }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## get top processes eating memory                            {{{
+
+psmem() {
+    ps aux |
+        sort -nrk 4 |
+        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## get top processes eating cpu                               {{{
+
+pscpu() {
+    ps aux |
+        sort -nrk 3 |
+        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'
+}
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## list hosts defined in ssh config                           {{{
@@ -285,10 +372,41 @@ cht() {
 # Git                                                                   {{{
 # --------------------------------------------------------------------- {|}
 
+## toggle git env vars so I can use `git` instead of `dot`    {{{
+tdot() {
+    if [ "$GIT_WORK_TREE" = ~ ]; then
+        unset GIT_DIR GIT_WORK_TREE
+    else
+        export GIT_DIR=~/.git GIT_WORK_TREE=~
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## edit dotfiles with git plugins setup correctly             {{{
+
+# searches with Telescope if no args are provided
+edot() {
+    EDITOR=nvim dot edit +"if !len(argv()) | execute 'Telescope git_files' | endif"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## open Fugitive's status for the current or dotfiles repo    {{{
+
+G() {
+    if [ "$(git rev-parse --is-inside-work-tree)" = "false" ]; then
+        (cd && dot edit +G +only)
+    else
+        $EDITOR +G +only
+    fi
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## delete squash merged branches                              {{{
 
 # from https://github.com/not-an-aardvark/git-delete-squashed
 gbprune() {
+    local TARGET_BRANCH branch mergeBase
+
     TARGET_BRANCH="${1:-$(g bdefault)}" &&
         git checkout -q "$TARGET_BRANCH" &&
         git for-each-ref refs/heads/ "--format=%(refname:short)" |
@@ -302,7 +420,6 @@ gbprune() {
                 ) -p "$mergeBase" -m _)
             ) == "-"* ]] &&
             git branch -D "$branch"; done
-
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -346,6 +463,8 @@ if supports fzf; then
     ## open bookmark with surfraw                             {{{
 
     fbm() {
+        local bookmark bookmark_name bookmark_gui_flag
+
         bookmark="$(awk NF "$XDG_CONFIG_HOME/surfraw/bookmarks" | fzf -e)"
         bookmark_name="$(awk '{print $1;}' <<<"$bookmark")"
         bookmark_gui_flag="$(awk '{print $4;}' <<<"$bookmark")"
@@ -353,7 +472,6 @@ if supports fzf; then
         if [ -z "$bookmark_name" ]; then
             surfraw "$bookmark_name" "$bookmark_gui_flag"
         fi
-        unset bookmark bookmark_name bookmark_gui_flag
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -395,13 +513,13 @@ if supports fzf; then
         fze() {
             [ $# -gt 0 ] && fasd -f -e "${EDITOR:-vim}" "$*" && return
 
+            local file
+
             file="$(
                 fasd -Rfl "$1" |
                     fzf --select-1 --exit-0 --no-sort --no-multi
             )" &&
                 ${EDITOR:-vim} "${file}" || return 1
-
-            unset file
         }
     fi
 
@@ -429,6 +547,7 @@ if supports fzf; then
             echo "Need a string to search for!"
             return 1
         fi
+
         rg --files-with-matches --no-messages "$*" |
             fzf --multi --no-select-1 --exit-0 --ansi \
                 --bind=ctrl-v:toggle-preview \
@@ -447,15 +566,17 @@ if supports fzf; then
     ## finds and kills a process pid                          {{{
 
     fkill() {
+        local pids
+
         if [ "$UID" != "0" ]; then
             pids="$(ps -f -u "$UID" | sed 1d | fzf -m | awk '{print $2}')"
         else
             pids="$(ps -ef | sed 1d | fzf -m | awk '{print $2}')"
         fi
+
         if [ -n "$pids" ]; then
             echo "$pids" | xargs kill -"${1:-9}"
         fi
-        unset pids
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -464,7 +585,8 @@ if supports fzf; then
     # usage: $ find_emoji | cb
     if supports jq; then
         function femoji() {
-            emojis="$DOTFILES/cache/emoji.json"
+            local emojis="$DOTFILES/cache/emoji.json"
+
             if [ ! -r "$emojis" ]; then
                 curl -sSLo "$emojis" \
                     https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json
@@ -474,7 +596,6 @@ if supports fzf; then
                 .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
             ] | @tsv
             ' | fzf --no-hscroll --prompt 'Search emojis > ' | cut -f1
-            unset emojis
         }
     fi
 
@@ -485,7 +606,53 @@ fi
 # Work                                                                  {{{
 # --------------------------------------------------------------------- {|}
 
+# select an npm script to run from package.json using fzf
+if supports fzf && supports jq; then
+    fnr() {
+        local script
+        script="$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"
+        [ -n "$script" ] && npm run "$script"
+    }
+fi
+
 if [ "$WORK_MACHINE" = "1" ]; then
+    # docker aliases for Calcite development                     {{{
+
+    # I need to link these files to the current worktree
+    cc_link_files() {
+        pushd "$(npm prefix)" >/dev/null
+        ln -f "$CALCITE/Dockerfile" .
+        ln -f "$CALCITE/.marksman.toml" .
+        ln -f "$CALCITE/calcite-components.projections.json" \
+            "./packages/calcite-components/.projections.json"
+        popd >/dev/null
+    }
+
+    cc_build_docker_image() { docker build --tag calcite-components .; }
+
+    # Create containers to run tests and the the dev server at the same time
+    # Use a bind mount so building/testing on file changes works correctly
+    __docker_cmd_prefix="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
+
+    cc_start_in_docker() {
+        $__docker_cmd_prefix --publish 3333:3333 \
+            --name calcite-components_start calcite-components \
+            npm --workspace=@esri/calcite-components start
+    }
+
+    cc_test_in_docker() {
+        $__docker_cmd_prefix --name calcite-components_test calcite-components \
+            npm --workspace=@esri/calcite-components run test:watch
+    }
+
+    cc_run_in_docker() {
+        $__docker_cmd_prefix --name calcite-components_run calcite-components \
+            npm --workspace=@esri/calcite-components run
+    }
+
+    unset __docker_cmd_prefix
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
     ## toggle a label used to run CC visual snapshots on PRs      {{{
 
     if supports gh; then
@@ -500,6 +667,8 @@ if [ "$WORK_MACHINE" = "1" ]; then
 
         pr_check() {
             set -e
+            local workflow branch run id conclusion choice
+
             workflow="${1:-"e2e"}"
             branch="${2:-"$(git symbolic-ref --short HEAD)"}"
 
@@ -546,6 +715,8 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # Make sure to build the calcite monorepo first, then run the script from
     # anywhere in the example app's directory.
     cc_install_pack() {
+        local worktree example
+
         worktree="${1:-main}"
         example=$(npm prefix)
 
@@ -574,7 +745,6 @@ if [ "$WORK_MACHINE" = "1" ]; then
 
         # install the local tarball(s)
         npm install "$example"/esri-calcite-components-*.tgz
-        unset example worktree
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -583,6 +753,8 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # Make sure to build the calcite monorepo first, then run the script from
     # anywhere in the example app's directory.
     cc_install_copy() {
+        local worktree example cc_path ccr_path
+
         worktree="${1:-main}"
         example=$(npm prefix)
 
@@ -607,6 +779,8 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # Make sure to build the calcite monorepo first, then run the script from
     # anywhere in the example app's directory.
     cc_install_link() {
+        local worktree example link_ccr
+
         worktree="${1:-main}"
         example=$(npm prefix)
 

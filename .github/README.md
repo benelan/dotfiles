@@ -76,8 +76,8 @@ Linux.
 ### Windows
 
 It's safe to assume nothing in this repo will work on Windows. However, I
-occasionally need Windows for my job and can confirm this setup works in WSL
-running Ubuntu.
+occasionally need Windows for my job and can confirm this setup works in
+[WSL running Ubuntu](https://ubuntu.com/desktop/wsl).
 
 ## Configuration
 
