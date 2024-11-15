@@ -8,10 +8,10 @@ return {
     dependencies = {
       "nvim-neotest/nvim-nio",
       "nvim-treesitter/nvim-treesitter",
-      -- "nvim-neotest/neotest-go",
       "nvim-neotest/neotest-jest",
       "marilari88/neotest-vitest",
-      { "benelan/neotest-stenciljs", dev = true },
+      -- { "benelan/neotest-stenciljs", dev = true },
+      -- "nvim-neotest/neotest-go",
     },
 
     config = function()
@@ -36,7 +36,7 @@ return {
         icons = require("jamin.resources").icons.test,
         adapters = {
           -- require("neotests-go"),
-          require("neotest-stenciljs")({ no_build = true }),
+          -- require("neotest-stenciljs")({ no_build = true }),
           require("neotest-vitest"),
           require("neotest-jest")({
             cwd = function(file)

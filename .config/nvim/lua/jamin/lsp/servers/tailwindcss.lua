@@ -1,6 +1,10 @@
 local util = require("lspconfig.util")
 
 return {
+  capabilities = {
+    workspace = { workspaceFolders = true },
+  },
+
   -- Only attach to buffers if a tailwind config file is found in the project.
   -- By default, tailwindcss attaches to buffers in all git repos or npm projects too.
   root_dir = function(fname)

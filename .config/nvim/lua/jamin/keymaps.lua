@@ -27,20 +27,6 @@ for _, char in ipairs(undo_after_chars) do
   keymap("i", char, char .. "<C-g>u")
 end
 
--- Add empty lines before and after cursor line
-keymap(
-  "n",
-  "[<space>",
-  "<CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>",
-  "Put empty line above"
-)
-keymap(
-  "n",
-  "]<space>",
-  "<CMD>call append(line('.'), repeat([''], v:count1))<CR>",
-  "Put empty line below"
-)
-
 -- Delete marks on current line
 keymap("n", "dm", function()
   local cur_line = vim.fn.line(".")
@@ -101,10 +87,3 @@ keymap(
   function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN, float = true }) end,
   "Previous diagnostic warning"
 )
-
--- vsc*de
-if vim.g.vscode then
-  keymap("n", "grr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
-  keymap("n", "grn", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
-  keymap("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
-end

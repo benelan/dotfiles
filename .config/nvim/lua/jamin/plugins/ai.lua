@@ -4,12 +4,17 @@ local M = {}
 local res = require("jamin.resources")
 local augroup = vim.api.nvim_create_augroup("jamin_completion_plugin_tweaks", {})
 
+-- true if environment variable `COPILOT = 1` and cwd is in any project
+-- true if environment variable `COPILOT != 0` and cwd is in a work project
+-- otherwise, return false
 function M.should_use_copilot(dir)
   local project = dir or vim.uv.cwd()
   return project ~= nil and (vim.env.COPILOT == "1" and string.match(project, vim.env.DEV) ~= nil)
     or (vim.env.COPILOT ~= "0" and string.match(project, vim.env.WORK) ~= nil)
 end
 
+-- true if environment variable `CODEIUM = 1` and cwd is in a non-work project or ~/.config/nvim
+-- otherwise, return false
 function M.should_use_codeium(dir)
   local project = dir or vim.uv.cwd()
   return project ~= nil
@@ -146,13 +151,10 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     cond = M.should_use_copilot(),
     branch = "canary",
-    dependencies = { "zbirenbaum/copilot.lua" },
     opts = {
-      -- show_help = false,
       insert_at_end = true,
       window = { border = res.icons.border },
       mappings = {
-        -- complete = { insert = "" },
         submit_prompt = { normal = "<C-s>" },
         accept_diff = { normal = "<C-y>", insert = "<C-y>" },
         reset = { normal = "<localleader>x", insert = "<M-x>" },
@@ -161,47 +163,37 @@ return {
         show_system_prompt = { normal = "<localleader>p" },
         show_user_selection = { normal = "<localleader>s" },
         show_help = { normal = "g?" },
-      }
+      },
     },
-    config = function(_, opts)
-      require("CopilotChat").setup(opts)
-      local has_cmp = pcall(require, "nvim-cmp")
-      if has_cmp then require("CopilotChat.integrations.cmp").setup() end
-    end,
 
     cmd = {
       "CopilotChat",
+      "CopilotChatAgents",
       "CopilotChatCommit",
-      "CopilotChatCommitStaged",
       "CopilotChatDocs",
       "CopilotChatExplain",
       "CopilotChatFix",
-      "CopilotChatFixDiagnostic",
       "CopilotChatLoad",
+      "CopilotChatModel",
       "CopilotChatOptimize",
       "CopilotChatReset",
       "CopilotChatReview",
       "CopilotChatTests",
       "CopilotChatToggle",
-      "CopilotChatModel",
-      "CopilotChatModels",
     },
 
     -- stylua: ignore
     keys = {
-      { "<leader>c", ":CopilotChatModel<CR>", desc = "Show current model (copilot chat)" },
-      { "<leader>cn", ":CopilotChatModels<CR>", desc = "Next model (copilot chat)" },
-      { "<leader>c<Tab>", ":CopilotChatToggle<CR>", desc = "Toggle vsplit (copilot chat)", mode = { "n", "v" } },
+      { "<leader>c", ":CopilotChatModels<CR>", desc = "Next model (copilot chat)" },
       { "<leader>c<CR>", ":CopilotChat<CR>", desc = "New (copilot chat)", mode = { "n", "v" } },
-      { "<leader>ce", ":CopilotChatExplain<CR>", desc = "Explain code (copilot chat)", mode = { "n", "v" } },
-      { "<leader>ct", ":CopilotChatTests<CR>", desc = "Generate tests (copilot chat)", mode = { "n", "v" } },
+      { "<leader>c<Tab>", ":CopilotChatToggle<CR>", desc = "Toggle vsplit (copilot chat)", mode = { "n", "v" } },
       { "<leader>cd", ":CopilotChatDocs<CR>", desc = "Generate docs (copilot chat)", mode = { "n", "v" } },
-      { "<leader>cr", ":CopilotChatReview<CR>", desc = "Review code (copilot chat)", mode = { "n", "v" } },
-      { "<leader>co", ":CopilotChatOptimize<CR>", desc = "Optimize code (copilot chat)", mode = { "n", "v" } },
-      { "<leader>cm", ":CopilotChatCommit<CR>", desc = "Generate commit message (copilot chat)", mode = { "v", "n" } },
-      { "<leader>cM", ":CopilotChatCommitStaged<CR>", desc = "Generate commit message for staged files (copilot chat)" },
+      { "<leader>ce", ":CopilotChatExplain<CR>", desc = "Explain code (copilot chat)", mode = { "n", "v" } },
       { "<leader>cf", ":CopilotChatFix<CR>", desc = "Fix code (copilot chat)", mode = { "v", "n" } },
-      { "<leader>cl", ":CopilotChatFixDiagnostic<CR>", desc = "Fix diagnostic (copilot chat)", mode = { "v", "n" } },
+      { "<leader>cm", ":CopilotChatCommit<CR>", desc = "Generate commit message (copilot chat)", mode = { "v", "n" } },
+      { "<leader>co", ":CopilotChatOptimize<CR>", desc = "Optimize code (copilot chat)", mode = { "n", "v" } },
+      { "<leader>cr", ":CopilotChatReview<CR>", desc = "Review code (copilot chat)", mode = { "n", "v" } },
+      { "<leader>ct", ":CopilotChatTests<CR>", desc = "Generate tests (copilot chat)", mode = { "n", "v" } },
       {
         "<leader>c/",
         function()
@@ -274,7 +266,7 @@ return {
           secret = {
             "bash",
             "-c",
-            "cat ~/.config/github-copilot/apps.json | sed -e 's/.*oauth_token...//;s/\".*//'",
+            "sed -e 's/.*oauth_token...//;s/\".*//' ~/.config/github-copilot/apps.json",
           },
         },
       },

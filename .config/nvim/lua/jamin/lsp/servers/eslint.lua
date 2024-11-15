@@ -1,5 +1,8 @@
 -- https://github.com/Microsoft/vscode-eslint?#settings-options
 return {
+  capabilities = {
+    workspace = { workspaceFolders = true },
+  },
   settings = {
     format = { enable = false },
     -- find the eslintrc when it's placed in a subdirectory

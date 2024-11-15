@@ -120,5 +120,6 @@
       "before": ["<C-V>"],
       "commands": ["editor.action.clipboardPasteAction"]
     }
-  ]
+  ],
+  "svelte.enable-ts-plugin": true
 }

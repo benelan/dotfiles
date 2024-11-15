@@ -11,9 +11,12 @@ return {
     )
   end,
 
-  -- Have to add this for yamlls to understand that we support line folding
   capabilities = {
+    workspace = {
+      didChangeConfiguration = { dynamicRegistration = true },
+    },
     textDocument = {
+      -- Have to add this for yamlls to understand that we support line folding
       foldingRange = {
         dynamicRegistration = false,
         lineFoldingOnly = true,

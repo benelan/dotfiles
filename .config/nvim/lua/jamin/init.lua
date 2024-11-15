@@ -57,19 +57,6 @@ require("jamin.utils").setup()
 require("jamin.lsp").setup()
 require("jamin.utils").cowboy()
 
--- Neovim embedded in VSCode
-if vim.g.vscode then
-  vim.cmd([[
-    source ~/.vim/plugin/keymaps.vim
-    source ~/.vim/plugin/autocmds.vim
-    source ~/.vim/plugin/stuff.vim
-    source ~/.vim/plugin/operators.vim
-    source ~/.vim/plugin/system_open_handler.vim
-  ]])
-
-  return -- skip loading neovim plugins
-end
-
 -------------------------------------------------------------------------------
 ----> Plugins
 -------------------------------------------------------------------------------

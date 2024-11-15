@@ -164,9 +164,13 @@ INSTALL_LANGUAGE_GO_DOC="Install Golang (only works on linux with x86_64 archite
 install_language_go() {
     _has go && return
 
-    # checksum will need to be updated when using a new go version
-    checksum="ba79d4526102575196273416239cca418a651e049c2b099f3159db85e7bade7d"
-    outfile="go1.22.4.linux-amd64.tar.gz"
+    version="1.23.3"
+    arch="linux-amd64"
+
+    # if changing version/arch, make sure to update checksum from https://go.dev/dl/
+    checksum="a0afb9744c00648bafb1b90b4aba5bdb86f424f02f9275399ce0c20b93a2c3a8"
+    outfile="go$version.$arch.tar.gz"
+
     curl -Lo "$outfile" "https://go.dev/dl/$outfile"
 
     if [ "$(shasum -a 256 "$outfile" | awk '{print $1}')" = "$checksum" ]; then
@@ -177,6 +181,8 @@ install_language_go() {
     else
         printf "\nchecksum does not match, please install golang manually:\nhttps://go.dev/doc/install"
     fi
+
+    unset checksum version arch outfile
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -341,6 +347,7 @@ INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
 install_packages_vim() {
     _update_modules .vim
 
+    # build the vim help tags from the updated plugin submodules
     vim +"$(
         find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
             -exec basename --multiple {} \; |
@@ -353,8 +360,10 @@ install_packages_vim() {
 
 INSTALL_PACKAGES_NEOVIM_DOC="Update/install neovim plugins and devdoc sources"
 install_packages_neovim() {
+    # install/update neovim plugins
     nvim --headless +"Lazy! sync" +qa
 
+    # install/update devdocs.io nvim plugin sources
     devdoc_sources=(
         "astro"
         "bash"
@@ -387,12 +396,15 @@ install_packages_neovim() {
         "webpack-5"
     )
 
-    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] && [ "$(
-        find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l
-    )" -le ${#devdoc_sources[@]} ]; then
+    installed_count="$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)"
+
+    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
+        [ "$installed_count" -le ${#devdoc_sources[@]} ]; then
         nvim --headless +"DevdocsInstall ${devdoc_sources[*]}"
     else
-        nvim --headless +DevdocsFetch +DevdocsUpdateAll
+        nvim --headless +"execute 'DevdocsFetch'     | execute '10sleep' \
+                        | execute 'DevdocsUpdateAll' | execute '180sleep' \
+                        | quit"
     fi
 }
 
@@ -824,33 +836,53 @@ install_ubuntu_vscode() {
     fi
 
     extensions=(
-        # "VisualStudioExptTeam.intellicode-api-usage-examples"
-        # "VisualStudioExptTeam.vscodeintellicode"
+
         "asvetliakov.vscode-neovim"
+        "eamodio.gitlens"
+        "sainnhe.gruvbox-material"
+        # "vscodevim.vim"
+        # "codeium.codeium"
+
+        "github.copilot"
+        "github.copilot-chat"
+        "github.remotehub"
+        "github.vscode-github-actions"
+        "github.vscode-pull-request-github"
+        "ms-vscode.vscode-github-issue-notebooks"
+
+        "ms-azuretools.vscode-docker"
+        "ms-vscode-remote.remote-containers"
+        # "ms-vscode-remote.remote-ssh"
+        # "ms-vscode-remote.remote-ssh-edit"
+        # "ms-vscode.live-server"
+        # "ms-vscode.remote-explorer"
+
         # "bradlc.vscode-tailwindcss"
+        # "christian-kohler.npm-intellisense"
         # "christian-kohler.path-intellisense"
         # "dbaeumer.vscode-eslint"
-        # "eamodio.gitlens"
+        # "editorconfig.editorconfig"
         # "esbenp.prettier-vscode"
         # "foam.foam-vscode"
         # "formulahendry.auto-close-tag"
+        # "golang.go"
         # "humao.rest-client"
         # "mechatroner.rainbow-csv"
-        # "ms-azuretools.vscode-docker"
-        # "ms-vscode-remote.remote-containers"
-        # "ritwickdey.LiveServer"
-        "sainnhe.gruvbox-material"
+        # "redhat.vscode-yaml"
         # "streetsidesoftware.code-spell-checker"
         # "stylelint.vscode-stylelint"
         # "sumneko.lua"
         # "svelte.svelte-vscode"
         # "timonwong.shellcheck"
-        # "vscodevim.vim"
+        # "visualstudioexptteam.intellicode-api-usage-examples"
+        # "visualstudioexptteam.vscodeintellicode"
+        # "vue.volar"
         # "yzhang.markdown-all-in-one"
+
     )
 
     for extension in "${extensions[@]}"; do
-        code --install-extension "$extension"
+        code --force --install-extension "$extension"
     done
     unset extension
 }
@@ -1259,6 +1291,17 @@ install_theme_wallpaper() {
             fi
             ;;
     esac
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Pop_OS! gtk theme                                   {{{
+
+INSTALL_THEME_GTK_DOC="Install Pop_OS! GTK theme for application windows"
+install_theme_gtk() {
+    ! _has apt-get && return
+    sudo add-apt-repository -y ppa:system76/pop
+    sudo apt-get update -qq
+    sudo apt-get install -qq pop-theme
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1717,7 +1760,7 @@ install_build_neovim() {
     cd "$LIB/neovim" || return
 
     # https://github.com/neovim/neovim/blob/master/BUILD.md#ubuntu--debian
-    _has apt-get && sudo apt-get install ninja-build gettext cmake unzip curl build-essential
+    _has apt-get && sudo apt-get install -qq ninja-build gettext cmake unzip curl build-essential
 
     neovim_head="$(git rev-parse HEAD)"
 
@@ -1795,7 +1838,7 @@ INSTALL_BUILD_TUIGREET_DOC="Install a simple greeter for the greetd login manage
 install_build_tuigreet() {
     # trying installing greetd with apt if it's not already installed
     if ! _has greetd; then
-        sudo apt-get install -qqy greetd || return
+        sudo apt-get install -qq greetd || return
         sudo useradd -M -G video greeter
         sudo chmod -R go+r /etc/greetd/
     fi

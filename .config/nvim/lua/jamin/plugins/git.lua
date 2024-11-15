@@ -153,12 +153,14 @@ return {
       },
       {
         "ih",
+        ---@diagnostic disable-next-line: redundant-parameter
         function() require("gitsigns").select_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
         desc = "inner git hunk (gitsigns)",
         mode = { "o", "x" },
       },
       {
         "<leader>hl",
+        ---@diagnostic disable-next-line: missing-parameter
         function() require("gitsigns").setloclist() end,
         desc = "Hunks to location list (gitsigns)",
       },
@@ -329,15 +331,15 @@ return {
         group = vim.api.nvim_create_augroup("jamin_octo_buffer_setup", {}),
         pattern = "octo://*",
         callback = function()
-          vim.keymap.set("n", "<leader>to", "<CMD>Octo review thread<CR>", {
+          vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {
             desc = "Open review thread (octo)",
             buffer = true,
           })
-          vim.keymap.set("n", "<leader>tr", "<CMD>Octo thread resolve<CR>", {
+          vim.keymap.set("n", "<localleader>tr", "<CMD>Octo thread resolve<CR>", {
             desc = "Resolve review thread (octo)",
             buffer = true,
           })
-          vim.keymap.set("n", "<leader>tu", "<CMD>Octo thread unresolve<CR>", {
+          vim.keymap.set("n", "<localleader>tu", "<CMD>Octo thread unresolve<CR>", {
             desc = "Unresolve review thread (octo)",
             buffer = true,
           })
@@ -393,19 +395,19 @@ return {
 
       -- Octo buffer keymaps
       {
-        "<leader>pC",
+        "<localleader>pC",
         "<CMD>Octo pr checks<CR>",
         desc = "Show pull request checks (octo)",
         ft = "octo",
       },
       {
-        "<leader>vp",
+        "<localleader>vp",
         "<CMD>Octo review comments<CR>",
         desc = "Show pending PR review comments (octo)",
         ft = "octo",
       },
       {
-        "<leader>vo",
+        "<localleader>vo",
         "<CMD>Octo review<CR>",
         desc = "Open PR review (octo)",
         ft = "octo",

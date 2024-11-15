@@ -29,6 +29,10 @@ vnoremap > >gv
 vnoremap & :&&<CR>
 nnoremap & :&&<CR>
 
+" Add empty lines before and after cursor line
+nnoremap ]<space> :call append(line('.'), repeat([''], v:count1))<CR>
+nnoremap [<space> :call append(line('.') - 1, repeat([''], v:count1))<CR>
+
 " When joining, do the right thing to join up function definitions
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 
@@ -70,7 +74,6 @@ if !has('nvim')
     nmap <silent> <leader>F gQ
     xmap <leader>F gQ
 endif
-
 
 "" TEXT OBJECTS {{{1
 " Use last changed or yanked text as an object
