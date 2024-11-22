@@ -17,6 +17,7 @@
     "~/.local/share/nvim/lazy/grug-far.nvim/lua",
     "~/.local/share/nvim/lazy/harpoon/lua",
     "~/.local/share/nvim/lazy/lazy.nvim/lua",
+    "~/.local/share/nvim/lazy/snacks.nvim/lua",
     "~/.local/share/nvim/lazy/mason-lspconfig.nvim/lua",
     "~/.local/share/nvim/lazy/mason.nvim/lua",
     "~/.local/share/nvim/lazy/neogen/lua",

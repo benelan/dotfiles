@@ -73,20 +73,6 @@ end
 
 -----------------------------------------------------------------------------
 
----Toggle diagnostics for the current buffer, or globally if called with a bang
----@param event table The event that triggered the command. If event.bang is true
-function M.diagnostic_toggle(event)
-  local vars = event.bang and vim.g or vim.b
-  vars.diagnostics_disabled = not vars.diagnostics_disabled
-  local cmd = vars.diagnostics_disabled and "disable" or "enable"
-  vim.api.nvim_echo({
-    {
-      string.format("%s diagnostics %sd", event.bang and "Global" or "Buffer", cmd),
-    },
-  }, false, {})
-  vim.schedule(function() vim.diagnostic[cmd](event.bang and nil or 0) end)
-end
-
 ---Toggle diagnostic virtual text for the current buffer
 local virtual_text_enabled = true
 function M.virtual_text_toggle()
@@ -102,17 +88,6 @@ function M.virtual_text_toggle()
       virtual_text_enabled and "enabled" or "disabled"
     )
   )
-end
-
----Toggle treesitter highlight for the current buffer
-function M.ts_highlight_toggle()
-  if vim.b.ts_highlight then
-    vim.treesitter.stop()
-    print("treesitter highlighting stopped")
-  else
-    vim.treesitter.start()
-    print("treesitter highlighting started")
-  end
 end
 
 -----------------------------------------------------------------------------
@@ -157,15 +132,6 @@ end
 -----------------------------------------------------------------------------
 
 function M.setup()
-  vim.api.nvim_create_user_command("DiagnosticToggle", M.diagnostic_toggle, {
-    bang = true,
-    desc = "Toggles diagnostics for the current buffer, or globally if called with a bang",
-  })
-
-  keymap("n", "<leader>sd", "<CMD>DiagnosticToggle<CR>", "Toggle buffer diagnostics")
-  keymap("n", "<leader>sD", "<CMD>DiagnosticToggle!<CR>", "Toggle global diagnostics")
-
-  keymap("n", "<leader>sh", M.ts_highlight_toggle, "Toggle treesitter highlights")
   keymap("n", "<leader>sv", M.virtual_text_toggle, "Toggle diagnostic virtual text")
   keymap("n", "<leader>su", M.ui_toggle, "Toggle UI noise")
 

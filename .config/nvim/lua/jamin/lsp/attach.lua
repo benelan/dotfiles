@@ -61,35 +61,12 @@ return function(args)
     bufmap("n", "grn", vim.lsp.buf.rename, "LSP rename")
   end
 
-  if client.supports_method("workspace/willRenameFiles") then
-    bufmap("n", "grN", require("jamin.lsp").rename_file, "LSP Rename file")
-  end
-
   if client.supports_method("textDocument/implementation") then
     bufmap("n", "gri", vim.lsp.buf.implementation, "LSP implementation")
   end
 
   if client.supports_method("textDocument/signatureHelp") then
     bufmap("i", "<C-s>", vim.lsp.buf.signature_help, "LSP signature help")
-  end
-
-  if
-    vim.lsp.inlay_hint
-    and vim.api.nvim_buf_is_valid(args.buf)
-    and vim.bo[args.buf].buftype == ""
-    and client.supports_method("textDocument/inlayHint")
-  then
-    bufmap(
-      "n",
-      "<leader>si",
-      function()
-        vim.lsp.inlay_hint.enable(
-          not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
-          { buf = args.buf }
-        )
-      end,
-      "Toggle LSP inlay hints"
-    )
   end
 
   if client.supports_method("textDocument/codeAction") then
@@ -115,10 +92,6 @@ return function(args)
   --   })
   --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
   -- end
-
-  if client.supports_method("textDocument/documentHighlight") then
-    require("jamin.lsp.words").setup({ enabled = true, buf = args.buf })
-  end
 
   -- setup stuff specific to an LSP server
   local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)

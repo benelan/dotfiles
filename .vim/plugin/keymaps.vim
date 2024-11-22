@@ -153,30 +153,6 @@ nnoremap <C-Down> :resize -5<CR>
 nnoremap <C-Up> :resize +5<CR>
 nnoremap <C-Right> :vertical resize +5<CR>
 
-"" TOGGLE OPTIONS {{{1
-nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
-nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
-nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
-nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
-nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
-nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
-
-nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
-        \ &colorcolumn == ""
-            \ ? &textwidth > 0 ? "+1" : "81"
-            \ :""
-    \ )<CR><CMD>set colorcolumn?<CR>
-
-nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
-        \ &conceallevel == "0" ? "2" : "0"
-    \ )<CR><CMD>set conceallevel?<CR>
-
-nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
-        \ &clipboard == "unnamed"
-            \ ? "unnamed,unnamedplus"
-            \ : "unnamed"
-    \ )<CR><CMD>set clipboard?<CR>
-
 "" SYSTEM CLIPBOARD {{{1
 for char in [ 'y', 'p', 'P' ]
     execute 'nnoremap <leader>' . char . ' "+' . char

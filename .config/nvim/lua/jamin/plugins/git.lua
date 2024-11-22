@@ -7,7 +7,6 @@ return {
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
     enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
-    dependencies = "vim-rhubarb",
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
     keys = {
@@ -47,27 +46,6 @@ return {
       --   end,
       -- })
     end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- Open file/selection in GitHub repo
-  {
-    dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
-    keys = {
-      {
-        "<leader>go",
-        ":GBrowse<CR>",
-        desc = "Open git object in browser (fugitive)",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>gy",
-        ":GBrowse!<CR>",
-        desc = "Yoink git object URL (fugitive)",
-        mode = { "n", "v" },
-      },
-    },
   },
 
   -----------------------------------------------------------------------------

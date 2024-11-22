@@ -148,6 +148,30 @@ if has("keymap")
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
 
+    "" toggle options {{{2
+    nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
+    nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
+    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
+    nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
+    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
+    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
+
+    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
+            \ &colorcolumn == ""
+                \ ? &textwidth > 0 ? "+1" : "81"
+                \ :""
+        \ )<CR><CMD>set colorcolumn?<CR>
+
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
+            \ &conceallevel == "0" ? "2" : "0"
+        \ )<CR><CMD>set conceallevel?<CR>
+
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
+            \ &clipboard == "unnamed"
+                \ ? "unnamed,unnamedplus"
+                \ : "unnamed"
+        \ )<CR><CMD>set clipboard?<CR>
+
     "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))
         set runtimepath+=~/dev/lib/fzf
@@ -229,6 +253,25 @@ if has("eval")
     "" toggle quickfix/location lists open/close {{{2
     com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
     nnoremap <C-q> <CMD>QfToggle<CR>
+
+
+    "" delete buffer without closing window {{{2
+    " https://stackoverflow.com/a/6271254
+    function s:BGoneHeathen(action, bang)
+    let l:cur = bufnr("%")
+    if buflisted(bufnr("#")) | buffer # | else | bnext | endif
+    if bufnr("%") == l:cur | new | endif
+    if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
+    endfunction
+
+    command! -bang -complete=buffer -nargs=? Bdelete
+        \ :call s:BGoneHeathen("bdelete", <q-bang>)
+
+    command! -bang -complete=buffer -nargs=? Bwipeout
+        \ :call s:BGoneHeathen("bwipeout", <q-bang>)
+
+    nnoremap <silent> <leader><BS> <CMD>Bdelete<CR>
+    nnoremap <silent> <leader>bd <CMD>Bdelete<CR>
 
     "" fzf user commands {{{2
     if isdirectory(expand("$LIB/fzf")) && executable("fzf")

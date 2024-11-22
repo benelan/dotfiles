@@ -100,20 +100,3 @@ if !has('nvim')
     xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
     xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
 endif
-
-"" delete buffer without closing window {{{2
-" https://stackoverflow.com/a/6271254
-function s:BGoneHeathen(action, bang)
-  let l:cur = bufnr("%")
-  if buflisted(bufnr("#")) | buffer # | else | bnext | endif
-  if bufnr("%") == l:cur | new | endif
-  if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
-endfunction
-
-command! -bang -complete=buffer -nargs=? Bdelete
-	\ :call s:BGoneHeathen("bdelete", <q-bang>)
-
-command! -bang -complete=buffer -nargs=? Bwipeout
-	\ :call s:BGoneHeathen("bwipeout", <q-bang>)
-
-nnoremap <silent> <leader><BS> <CMD>Bdelete<CR>
