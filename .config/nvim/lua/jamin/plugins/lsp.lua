@@ -107,70 +107,110 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- integrates formatters and linters
+  -- integrates CLI linters
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "mfussenegger/nvim-lint",
     event = "VeryLazy",
-    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+      local lint = require("lint")
 
-    opts = function()
-      local nls = require("null-ls")
-
-      local hover = nls.builtins.hover
-      local formatting = nls.builtins.formatting
-      local diagnostics = nls.builtins.diagnostics
-      local code_actions = nls.builtins.code_actions
-
-      local quiet_diagnostics = { virtual_text = false, signs = false }
-
-      return {
-        debug = false,
-        fallback_severity = vim.diagnostic.severity.HINT,
-        sources = {
-          hover.dictionary,
-          hover.printenv,
-
-          code_actions.gitrebase,
-          code_actions.shellcheck, -- still using null-ls for this
-
-          diagnostics.hadolint,
-          diagnostics.actionlint.with({
-            runtime_condition = function()
-              return string.match(vim.api.nvim_buf_get_name(0), "github/workflows") ~= nil
-            end,
-          }),
-
-          diagnostics.markdownlint.with({
-            prefer_local = "node_modules/.bin",
-            diagnostic_config = quiet_diagnostics,
-          }),
-
-          diagnostics.stylelint.with({
-            prefer_local = "node_modules/.bin",
-            diagnostic_config = quiet_diagnostics,
-            condition = function(utils)
-              return utils.root_has_file({
-                ".stylelintrc",
-                ".stylelintrc.js",
-                ".stylelintrc.json",
-                ".stylelintrc.yml",
-                "stylelint.config.js",
-                "node_modules/.bin/stylelint",
-              })
-            end,
-          }),
-
-          formatting.fixjson.with({ extra_filetypes = { "jsonc", "json5" } }),
-          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
-          formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
-          formatting.markdownlint,
-          formatting.stylua,
-          formatting.trim_whitespace,
-        },
+      lint.linters_by_ft = {
+        css = { "stylelint" },
+        scss = { "stylelint" },
+        dockerfile = { "hadolint" },
+        markdown = { "markdownlint" },
+        yaml = { "actionlint" },
+        -- sh = { "shellcheck" }, -- replaced by bashls
       }
+
+      vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave", "TextChanged" }, {
+        group = vim.api.nvim_create_augroup("jamin_linter", { clear = true }),
+        callback = function() lint.try_lint() end,
+      })
+
+      local quiet = { virtual_text = false, signs = false }
+
+      local markdownlint_ns = lint.get_namespace("markdownlint")
+      vim.diagnostic.config(quiet, markdownlint_ns)
+
+      local stylelint_ns = lint.get_namespace("stylelint")
+      vim.diagnostic.config(quiet, stylelint_ns)
     end,
   },
 
+  -----------------------------------------------------------------------------
+  -- integrates CLI formatters
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    keys = {
+      {
+        "<leader>F",
+        function() require("conform").format({ async = true }) end,
+        mode = "",
+        desc = "Format buffer",
+      },
+    },
+    opts = {
+      format_on_save = function(bufnr)
+        if not vim.g.autoformat or not vim.b[bufnr].autoformat then return end
+        if vim.tbl_contains(res.filetypes.excluded, vim.bo[bufnr].filetype) then return end
+        local has_format, format = pcall(require, "jamin.lsp.format")
+        if not has_format then return end
+        format.fix_typescript_issues(bufnr)
+        format.fix_eslint_issues(bufnr)
+        return { timeout_ms = 500, lsp_format = "fallback" }
+      end,
+      formatters_by_ft = {
+        -- "_" means filetypes w/o any other formatters configured
+        ["_"] = { "trim_whitespace" },
+        ["*"] = { "injected" },
+        -- runs multiple formatters sequentially
+        bash = { "shellcheck", "shfmt" },
+        sh = { "shellcheck", "shfmt" },
+        markdown = { "markdownlint", "prettier" },
+        css = { "stylelint", "prettier" },
+        scss = { "stylelint", "prettier" },
+        json = { "fixjson", "prettier" },
+        jsonc = { "fixjson", "prettier" },
+        javascript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        astro = { "prettier" },
+        svelte = { "prettier" },
+        vue = { "prettier" },
+        yaml = { "prettier" },
+        lua = { "stylua" },
+      },
+      default_format_opts = { lsp_format = "fallback" },
+      formatters = {
+        shfmt = {
+          prepend_args = { "-ci", "-i", "4" },
+        },
+        injected = {
+          options = {
+            lang_to_ext = {
+              bash = "sh",
+              graphql = "gql",
+              javascript = "js",
+              javascriptreact = "jsx",
+              markdown = "md",
+              perl = "pl",
+              python = "py",
+              ruby = "rb",
+              rust = "rs",
+              typescript = "ts",
+              typescriptreact = "tsx",
+              yaml = "yml",
+            },
+          },
+        },
+      },
+    },
+    init = function() vim.o.formatexpr = "v:lua.require'conform'.formatexpr()" end,
+  },
   -----------------------------------------------------------------------------
   -- JSON and YAML schema store for autocompletion and validation
   {

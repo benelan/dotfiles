@@ -139,8 +139,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_diagnostic_qflist", {}),
   callback = function(args)
-    if not vim.fn.filereadable(vim.fn.expand("%:p")) then return end
-
     local diagnostics = vim.diagnostic.get()
     local qflist = vim.fn.getqflist({ title = 0, id = 0, items = 0 })
 
