@@ -1356,7 +1356,7 @@ INSTALL_THEME_CONKY_CONFIG_DOC="Install pe-made conky widgets"
 install_theme_conky-config() {
     mkdir -p ~/.config/conky
 
-    curl -Lo "$(
+    curl -L "$(
         curl -s "https://api.github.com/repos/jxai/lean-conky-config/releases/latest" |
             jq -r ".tarball_url"
     )" | tar -C "$HOME/.config/conky" --overwrite --strip-components=1 -xzf -
@@ -1365,11 +1365,11 @@ install_theme_conky-config() {
 
     cat >"$HOME/.config/conky/local.conf" <<EOF
 conky.config = {
-    alignment = "bottom_right",
+    alignment = "top_right",
     own_window_transparent = true,
     own_window_type = "override",
     gap_x = T_.sr(20), -- horizontal gap from screen edge (default: 0)
-    gap_y = T_.sr(20), -- vertical gap from screen edge (default: 0)
+    gap_y = T_.sr(50), -- vertical gap from screen edge (default: 0)
     default_color = "ebdbb2", -- text color
     color0 = "b16286", -- clock color
     color1 = "d65d0e", -- heading 1 color
@@ -1378,7 +1378,7 @@ conky.config = {
 }
 
 lcc.config = { scale = 1.2 }
-lcc.panel = { "cpu", "memory" }
+lcc.panel = { "datetime", "system", "cpu", "memory" }
 
 -- vim: ft=lua
 EOF

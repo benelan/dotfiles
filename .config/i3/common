@@ -253,7 +253,7 @@ focus_follows_mouse no
 exec_always --no-startup-id ! pgrep -x dunst && dunst
 
 # Network manager applet
-exec_always --no-startup-id nm-applet --indicator
+exec_always --no-startup-id ! pgrep -x nm-applet && nm-applet --indicator
 
 # Low battery notification
 # https://github.com/rjekker/i3-battery-popup

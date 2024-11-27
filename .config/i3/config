@@ -106,6 +106,9 @@ exec --no-startup-id dex --autostart --environment i3
 
 exec --no-startup-id picom
 
+exec_always --no-startup-id command -v conky >/dev/null 2>&1 && \
+    ! pgrep -x conky && conky --daemonize
+
 # Bluetooth applet
 exec --no-startup-id blueman-applet
 
