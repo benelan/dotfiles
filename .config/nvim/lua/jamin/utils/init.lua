@@ -72,6 +72,7 @@ function M.setup()
   require("jamin.utils.togglers").setup()
   require("jamin.utils.async_make").setup()
   require("jamin.utils.obsidian").setup()
+  require("jamin.utils.statusline").setup()
 end
 
 return M

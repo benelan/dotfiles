@@ -375,6 +375,7 @@ M.icons = {
   },
   git = {
     status = "▎",
+    history = M.i("󰋚 "),
     branch = M.i("󰘬 "), -- ⛕  ⛙
     added = M.i("󰜄 ", "+"),
     changed = M.i("󱗝 ", "∗"),

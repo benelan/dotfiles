@@ -39,6 +39,8 @@ return {
         { "vmap", "<leader>mn", "<Plug>(bullets-renumber)" },
         { "nmap", "<leader>mn", "<Plug>(bullets-renumber)" },
         { "nmap", "<leader>m<Tab>", "<Plug>(bullets-toggle-checkbox)" },
+        { "inoremap", "<M-CR>", "<CR>" },
+        { "nnoremap", "<M-o>", "o" },
       }
     end,
   },

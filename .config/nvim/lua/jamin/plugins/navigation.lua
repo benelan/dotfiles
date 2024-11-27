@@ -139,7 +139,7 @@ return {
           desc = "Find files (telescope)",
         },
         {
-          "<leader>ft",
+          "<leader>fg",
           function() telescope_cwd("live_grep", { hidden = true }) end,
           desc = "Find text (telescope)",
         },

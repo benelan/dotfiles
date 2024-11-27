@@ -72,17 +72,48 @@ return {
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      dashboard = { enabled = true },
       quickfile = { enabled = true },
       words = { enabled = true },
-      statuscolumn = { enabled = false },
+      dashboard = {
+        enabled = vim.g.use_devicons,
+        sections = {
+          { section = "header" },
+          {
+            action = ":tab Git",
+            key = "s",
+            desc = "Git Status",
+            icon = res.icons.git.branch,
+            cwd = true,
+            padding = 1,
+          },
+          {
+            action = ":Flog",
+            key = "h",
+            desc = "Git History",
+            icon = res.icons.git.history,
+            cwd = true,
+            padding = 1,
+          },
+          { section = "keys", gap = 1, padding = 1 },
+          {
+            title = "Recent Files",
+            section = "recent_files",
+            cwd = true,
+            indent = 2,
+            -- gap = 1,
+            -- padding = 2,
+          },
+          -- { section = "startup" },
+        },
+      },
+      statuscolumn = { enabled = true },
       notifier = { enabled = false },
     },
     keys = {
       { "<leader><BS>", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bD", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
-      { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+      { "<leader>gB", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
       { "<leader>go", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
       {
         "<leader>gy",

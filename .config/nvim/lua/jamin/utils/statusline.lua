@@ -1,7 +1,6 @@
 local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
-
-vim.opt.statusline = "%!v:lua.JaminStatusLine()"
+local M = {}
 
 local highlights = {
   section_flags = "TabLineSel",
@@ -133,7 +132,7 @@ local function debug_state(fallback)
   return fallback and fallback() or ""
 end
 
-function JaminStatusLine()
+function M.render()
   return ""
     ---- left flags section ----------------------
     .. fmt_hl(highlights.section_flags)
@@ -158,16 +157,22 @@ function JaminStatusLine()
     .. "  %v:[%l/%L]  "
 end
 
--- update the git and diagnostic info in the statusline
-local augroup = vim.api.nvim_create_augroup("jamin_update_statusline", {})
+function M.setup()
+  -- update the git and diagnostic info in the statusline
+  local augroup = vim.api.nvim_create_augroup("jamin_update_statusline", {})
 
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
-  group = augroup,
-  command = "redrawstatus",
-})
+  vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    group = augroup,
+    command = "redrawstatus",
+  })
 
-vim.api.nvim_create_autocmd("User", {
-  pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate", "FugitiveChanged" },
-  group = augroup,
-  command = "redrawstatus",
-})
+  vim.api.nvim_create_autocmd("User", {
+    pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate", "FugitiveChanged" },
+    group = augroup,
+    command = "redrawstatus",
+  })
+
+  vim.o.statusline = "%!v:lua.require'jamin.utils.statusline'.render()"
+end
+
+return M

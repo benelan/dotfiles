@@ -56,20 +56,15 @@ return {
         callback = function(event) M.toggle_copilot(event.file) end,
       })
 
-      local filetypes = {}
-
-      for _, ft in ipairs(res.filetypes.excluded) do
-        filetypes[ft] = false
-      end
-
-      for _, ft in ipairs(res.filetypes.writing) do
-        filetypes[ft] = false
-      end
-
       local has_copilot_cmp = pcall(require, "copilot_cmp")
 
       require("copilot").setup({
-        filetypes = filetypes,
+        filetypes = vim
+          .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
+          :fold({}, function(acc, k)
+            acc[k] = false
+            return acc
+          end),
         panel = {
           enabled = not has_copilot_cmp,
           layout = { position = "right", ratio = 0.3 },
@@ -130,18 +125,13 @@ return {
         callback = function(event) M.toggle_codeium(event.file) end,
       })
 
-      local filetypes = {}
-
-      for _, ft in ipairs(res.filetypes.excluded) do
-        filetypes[ft] = false
-      end
-
-      for _, ft in ipairs(res.filetypes.writing) do
-        filetypes[ft] = false
-      end
-
-      vim.g.codeium_filetypes = filetypes
       vim.g.codeium_enabled = true
+      vim.g.codeium_filetypes = vim
+        .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
+        :fold({}, function(acc, k)
+          acc[k] = false
+          return acc
+        end)
     end,
   },
 
@@ -152,7 +142,6 @@ return {
     cond = M.should_use_copilot(),
     branch = "canary",
     opts = {
-      insert_at_end = true,
       window = { border = res.icons.border },
       mappings = {
         submit_prompt = { normal = "<C-s>" },

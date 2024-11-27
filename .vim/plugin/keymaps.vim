@@ -63,9 +63,7 @@ nnoremap <silent> <leader>- <CMD>execute (
 dig +1 128077
 dig -1 128078
 
-" Format the entire buffer preserving cursor location.
-" Requires the 'B' text object defined below.
-nmap <silent> gQ mtgqBg`tzz:delmarks t<CR>
+nmap <silent> gQ mzgggqG`z<CMD>delmarks z<CR>zz
 
 " Format selected text maintaining the selection.
 xmap gQ gq`[v`]V
@@ -137,7 +135,7 @@ nnoremap <leader><Delete> :bdelete<CR>
 nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
 " Managing tabs
-nnoremap <leader>tn :tabnew<CR>
+nnoremap <leader>tn :tab split<CR>
 nnoremap <leader>to :tabonly<CR>
 nnoremap <leader>tc :tabclose<CR>
 

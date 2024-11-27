@@ -97,7 +97,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -------------------------------------------------------------------------------
 -- set git env vars for the bare dotfiles repo when not in the dev directory
-vim.api.nvim_create_autocmd("VimEnter", {
+vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
   desc = "Special dotfiles setup",
   callback = function()

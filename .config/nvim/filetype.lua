@@ -10,7 +10,7 @@ vim.filetype.add({
   },
   pattern = {
     ["logs?%.?t?x?t?"] = "log",
-    ["tsconfig.*json"] = "jsonc",
+    ["tsconfig*.json"] = "jsonc",
     [".*/%.vscode/.*%.json"] = "jsonc",
     [".*%.conf"] = "conf",
     ["^.env.*"] = "bash",
