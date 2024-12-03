@@ -3,34 +3,6 @@
 local res = require("jamin.resources")
 
 return {
-  -- Generates doc annotations for a variety of filetypes
-  {
-    "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
-    cmd = "Neogen",
-
-    opts = {
-      snippet_engine = "luasnip",
-      languages = {
-        lua = { template = { annotation_convention = "emmylua" } },
-        vue = { template = { annotation_convention = "jsdoc" } },
-        astro = { template = { annotation_convention = "jsdoc" } },
-        svelte = { template = { annotation_convention = "jsdoc" } },
-        typescript = { template = { annotation_convention = "jsdoc" } },
-        typescriptreact = { template = { annotation_convention = "jsdoc" } },
-      },
-    },
-
-    keys = {
-      { "<leader>ra", "<CMD>Neogen<CR>", desc = "Add reference comment (neogen)" },
-      { "<leader>rm", "<CMD>Neogen func<CR>", desc = "Add method reference comment (neogen)" },
-      { "<leader>rc", "<CMD>Neogen class<CR>", desc = "Add class reference comment (neogen)" },
-      { "<leader>rt", "<CMD>Neogen type<CR>", desc = "Add type reference comment (neogen)" },
-      { "<leader>rb", "<CMD>Neogen file<CR>", desc = "Add buffer reference comment (neogen)" },
-    },
-  },
-
-  -----------------------------------------------------------------------------
   -- open rule documentation for linters
   {
     "chrisgrieser/nvim-rulebook",

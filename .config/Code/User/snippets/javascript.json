@@ -153,7 +153,7 @@
     "description": "Define `observedAttributes`"
   },
   "adoptedCallback (web components)": {
-    "prefix": "wc-adoptedCallback-wc",
+    "prefix": "adoptedCallback-wc",
     "body": ["static get adoptedCallback() {", "\t${1:// TODO}", "}", "$0"],
     "description": "Define `adoptedCallback`"
   },
@@ -167,12 +167,12 @@
     ],
     "description": "Define `attributeChangedCallback`"
   },
-  "web component slot": {
+  "slot (web components)": {
     "prefix": "slot-wc",
     "body": ["<slot>$0</slot>"],
     "description": "Define <slot>"
   },
-  "web component named slot": {
+  "named slot (web components)": {
     "prefix": "slot-named-wc",
     "body": ["<slot name=\"${1}\">${0}</slot>"],
     "description": "Define <slot> with name"

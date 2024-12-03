@@ -32,9 +32,21 @@ local function custom_keys(args)
     })
     vim.lsp.buf.code_action({
       apply = true,
-      context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+      context = { only = { "source.removeUnusedImports.ts" }, diagnostics = {} },
     })
   end, { desc = "Cleanup imports", buffer = args.buf })
+
+  vim.keymap.set(
+    "n",
+    "<localleader>o",
+    function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+      })
+    end,
+    { desc = "Organize imports", buffer = args.buf }
+  )
 
   vim.keymap.set("n", "<localleader>u", function()
     vim.lsp.buf.code_action({

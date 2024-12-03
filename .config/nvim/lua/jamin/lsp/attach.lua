@@ -31,7 +31,6 @@ return function(args)
   if client.supports_method("textDocument/formatting") then
     -- if the LSP server has formatting capabilities, use it for formatexpr
     vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
-    require("jamin.lsp.format").setup()
     bufmap(
       { "n", "v" },
       "<leader>F",
@@ -93,7 +92,25 @@ return function(args)
   --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
   -- end
 
+  -- populate lsp diagnostics for the whole project, not just open files
+  local has_workspace_diagnostics, workspace_diagnostics = pcall(require, "workspace-diagnostics")
+  if has_workspace_diagnostics then
+    if not vim.tbl_contains({ "typescript-tools", "ts_ls" }, client.name) then
+      -- tserver would become a WMD in big projects
+      workspace_diagnostics.populate_workspace_diagnostics(client, args.buf)
+    else
+      -- populate manually for smaller typescript projects
+      bufmap(
+        "n",
+        "<localleader>W",
+        function() workspace_diagnostics.populate_workspace_diagnostics(client, args.buf) end,
+        "Populate workspace diagnostics"
+      )
+    end
+  end
+
   -- setup stuff specific to an LSP server
   local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)
   if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
+
 end

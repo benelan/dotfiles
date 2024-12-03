@@ -61,7 +61,7 @@ return {
       handlers = {
         -- the zk.nvim and typescript-tools.nvim plugins setup the servers themselves,
         -- so make sure mason-lspconfig doesn't call the default handler
-        ts_ls = function() end,
+        -- ts_ls = function() end,
         zk = function() end,
 
         function(server_name)
@@ -154,13 +154,10 @@ return {
     },
     opts = {
       format_on_save = function(bufnr)
-        if not vim.g.autoformat or not vim.b[bufnr].autoformat then return end
-        if vim.tbl_contains(res.filetypes.excluded, vim.bo[bufnr].filetype) then return end
-        local has_format, format = pcall(require, "jamin.lsp.format")
-        if not has_format then return end
-        format.fix_typescript_issues(bufnr)
-        format.fix_eslint_issues(bufnr)
-        return { timeout_ms = 500, lsp_format = "fallback" }
+        return (vim.g.autoformat or vim.b[bufnr].autoformat)
+            and not vim.tbl_contains(res.filetypes.excluded, vim.bo[bufnr].filetype)
+            and { timeout_ms = 500, lsp_format = "fallback" }
+          or nil
       end,
       formatters_by_ft = {
         -- "_" means filetypes w/o any other formatters configured
@@ -221,50 +218,7 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- Lua implementation of typescript-language-server
-  {
-    "pmizio/typescript-tools.nvim",
-    ft = res.filetypes.webdev,
-    dependencies = { "neovim/nvim-lspconfig" },
-    opts = function()
-      local has_ts, ts = pcall(require, "jamin.lsp.servers.ts_ls")
-      local has_tst, api = pcall(require, "typescript-tools.api")
-
-      local handlers = has_tst
-          and has_ts
-          and {
-            ["textDocument/publishDiagnostics"] = api.filter_diagnostics(
-              ts.settings.diagnostics.ignoredCodes or {}
-            ),
-          }
-        or {}
-
-      local plugins = {}
-      if vim.tbl_contains(res.lsp_servers, "astro") then
-        table.insert(plugins, "@astrojs/ts-plugin")
-      end
-      if vim.tbl_contains(res.lsp_servers, "volar") then
-        table.insert(plugins, "@vue/typescript-plugin")
-      end
-      if vim.tbl_contains(res.lsp_servers, "svelte") then
-        table.insert(plugins, "typescript-svelte-plugin")
-      end
-
-      return {
-        handlers = handlers,
-        settings = {
-          tsserver_plugins = plugins,
-          expose_as_code_action = "all",
-          jsx_close_tag = { enable = false }, -- replaced by https://github.com/windwp/nvim-ts-autotag
-          tsserver_file_preferences = has_ts and ts.init_options.preferences or {},
-          complete_function_calls = has_ts and ts.settings.completions.completeFunctionCalls
-            or true,
-        },
-      }
-    end,
-  },
-
-  -----------------------------------------------------------------------------
+  -- integration with the tailwind LSP server
   {
     "luckasRanarison/tailwind-tools.nvim",
     event = "LspAttach",
@@ -272,4 +226,8 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {},
   },
+
+  -----------------------------------------------------------------------------
+  -- get diagnostics for the whole workspace rather than only open buffers
+  { "artemave/workspace-diagnostics.nvim", lazy = true, opts = {} },
 }

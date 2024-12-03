@@ -42,7 +42,6 @@ return {
     -- dependencies = {
     --   {
     --     "zbirenbaum/copilot-cmp", -- integrates Copilot with cmp
-    --     enabled = false,
     --     config = function()
     --       vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
     --       require("copilot_cmp").setup()
@@ -139,7 +138,7 @@ return {
   -- Copilot chat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    cond = M.should_use_copilot(),
+    -- cond = M.should_use_copilot(),
     branch = "canary",
     opts = {
       window = { border = res.icons.border },
@@ -192,131 +191,6 @@ return {
           )
         end,
         desc = "Find prompt actions (copilot chat)",
-      },
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  -- LLM Chat plugin (requires API key for a provider)
-  {
-    "robitx/gp.nvim",
-    cond = not M.should_use_copilot(),
-    cmd = {
-      "GpAgent",
-      "GpNextAgent",
-      "GpChatFinder",
-      "GpChatNew",
-      "GpChatToggle",
-      "GpChatPaste",
-      "GpAppend",
-      "GpPrepend",
-      "GpRewrite",
-      "GpVnew",
-    },
-
-    keys = {
-      { "<leader>c", ":GpAgent<CR>", desc = "Print agent (chat)" },
-      { "<leader>cn", ":GpNextAgent<CR>", desc = "Next model (chat)" },
-      { "<leader>c/", ":GpChatFinder<CR>", desc = "Find session (chat)" },
-      { "<leader>c<Tab>", ":GpChatToggle<CR>", desc = "Toggle (chat)", mode = { "n", "v" } },
-      { "<leader>c<CR>", ":GpVnew<CR>", desc = "New (chat)", mode = { "n", "v" } },
-      { "<leader>c[", ":GpPrepend<CR>", desc = "Prepend response (chat)", mode = { "n", "v" } },
-      { "<leader>c]", ":GpAppend<CR>", desc = "Append response (chat)", mode = { "n", "v" } },
-      { "<leader>c.", ":GpRewrite<CR>", desc = "Rewrite response (chat)", mode = { "n", "v" } },
-      { "<leader>ci", ":GpImplement<CR>", desc = "Implement code (chat)", mode = { "n", "v" } },
-      { "<leader>ct", ":GpTests<CR>", desc = "Generate tests (chat)", mode = { "n", "v" } },
-      { "<leader>cd", ":GpDocs<CR>", desc = "Generate docs (chat)", mode = { "n", "v" } },
-      { "<leader>co", ":GpOptimize<CR>", desc = "Optimize code (chat)", mode = { "n", "v" } },
-      { "<leader>cf", ":GpFix<CR>", desc = "Fix code (chat)", mode = { "n", "v" } },
-      {
-        "<leader>cr",
-        ":GpReview Please review this code, focusing specifically on its readability and maintainability.<CR>",
-        desc = "Review code (chat)",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>ce",
-        ":GpExplain Write an explanation for the provided code as paragraphs of text. "
-          .. "Do not return any code blocks in your explanation.<CR>",
-        desc = "Explain code (chat)",
-        mode = { "n", "v" },
-      },
-    },
-
-    opts = {
-      openai_api_key = {
-        "gpg",
-        "--decrypt",
-        vim.fs.normalize(vim.env.DOTFILES .. "/cache/openai.txt.gpg"),
-      },
-      providers = {
-        copilot = {
-          disable = false,
-          secret = {
-            "bash",
-            "-c",
-            "sed -e 's/.*oauth_token...//;s/\".*//' ~/.config/github-copilot/apps.json",
-          },
-        },
-      },
-      chat_prompt_buf_type = true,
-      chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<C-s>" },
-      chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<C-c>" },
-      chat_shortcut_new = { modes = { "n", "v", "x" }, shortcut = "<localleader>c" },
-      chat_shortcut_delete = { modes = { "n", "v", "x" }, shortcut = "<localleader>x" },
-      style_chat_finder_border = res.icons.border,
-      style_popup_border = res.icons.border,
-      hooks = {
-        Fix = function(gp, params)
-          local template = "I have the following code from {{filename}}:\n\n"
-            .. "{{filename}}:\n\n```{{filetype}}\n{{selection}}\n```\n"
-            .. "There is a problem in this code. Rewrite the code to show it with the bug fixed.\n"
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.rewrite, gp.get_command_agent(), template)
-        end,
-
-        Optimize = function(gp, params)
-          local template = "I have the following code from "
-            .. "```{{filetype}}\n{{selection}}\n```\n\n"
-            .. "Please optimize this code to improve performance and readablilty.\n"
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.rewrite, gp.get_command_agent(), template)
-        end,
-
-        Docs = function(gp, params)
-          local template = "I have the following code from "
-            .. "{{filename}}:\n\n```{{filetype}}\n{{selection}}\n```\n"
-            .. "Please respond with a docstring comment to prepend.\n"
-            .. "Pay attention to adding parameter and return types (if applicable), "
-            .. "and mention any errors that might be raised or returned, depending on the language.\n"
-            .. "Do not respond with anything except the docstring comment.\n"
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.prepend, gp.get_command_agent(), template)
-        end,
-
-        Tests = function(gp, params)
-          local template = "I have the following code from "
-            .. "{{filename}}:\n\n```{{filetype}}\n{{selection}}\n```\n"
-            .. "Please generate tests.\n"
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.vnew, gp.get_command_agent(), template)
-        end,
-
-        Explain = function(gp, params)
-          local template = "I have the following code from "
-            .. "{{filename}}:\n\n```{{filetype}}\n{{selection}}\n```\n"
-            .. res.prompts.explain
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.vnew("markdown"), gp.get_chat_agent(), template)
-        end,
-
-        Review = function(gp, params)
-          local template = "I have the following code from "
-            .. "{{filename}}:\n\n```{{filetype}}\n{{selection}}\n```\n"
-            .. res.prompts.review
-            .. "{{command}}"
-          gp.Prompt(params, gp.Target.vnew("markdown"), gp.get_command_agent(), template)
-        end,
       },
     },
   },
