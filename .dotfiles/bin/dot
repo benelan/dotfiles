@@ -42,6 +42,7 @@ _update_modules() { (cd && _dot submodule update --recursive --rebase --remote "
 # --------------------------------------------------------------------- {|}
 setup_dotfiles() {
     set -e
+    cd
 
     if [ -d ~/.git ]; then
         printf "%s\n  %s\n  %s" \
@@ -57,7 +58,7 @@ setup_dotfiles() {
 
     # Don't use SSH to clone if there is no SSH key on the machine
     # This is for when I spin up a new VM and don't want to log in to GitHub
-    if find ~/.ssh -type f -name '*.pub' | wc -l | xargs test 0 -eq; then
+    if find ~/.ssh -type f -name '*_git.pub' | wc -l | xargs test 0 -eq; then
         repo_url="https://github.com/benelan/dotfiles"
     else
         repo_url="git@github.com:benelan/dotfiles"
@@ -73,8 +74,6 @@ setup_dotfiles() {
     # $ dot add ~/.npmrc
     _dot config status.showUntrackedFiles no
 
-    # _dot branch --set-upstream-to=origin/master master
-
     if _dot checkout >/dev/null 2>&1; then
         printf "\nChecked out dotfiles\n" >&2
     else
@@ -83,15 +82,18 @@ setup_dotfiles() {
         files=$(_dot checkout 2>&1 | grep -e "^\s")
         printf "%s\n" "$files" >&2
 
-        dirs=$(
-            echo "$files" |
-                # Remove everything after the last "/" from file paths
-                awk 'BEGIN{FS=OFS="/"} {NF--} 1' |
-                # Files in $HOME will end up being blank lines
-                sed '/^[[:blank:]]*$/d'
-        )
-        # Using dirname is easier but won't work on OSX
-        # dirs=$(echo "$files" | xargs dirname)
+        if [ "$(uname)" = "Linux" ]; then
+            # I don't remember why this didn't work on osx
+            dirs=$(echo "$files" | xargs dirname)
+        else
+            dirs=$(
+                echo "$files" |
+                    # Remove everything after the last "/" from file paths
+                    awk 'BEGIN{FS=OFS="/"} {NF--} 1' |
+                    # Files in $HOME will end up being blank lines
+                    sed '/^[[:blank:]]*$/d'
+            )
+        fi
 
         # Create the directories in $backup_dir
         echo "$dirs" | xargs -I{} mkdir -p "$backup_dir/{}"
@@ -110,8 +112,6 @@ setup_dotfiles() {
         fi
     fi
 
-    unset files dirs repo_url backup_dir
-
     # Make the bins and scripts executable
     printf "\n> Making scripts executable\n" >&2
     [ -d ~/.dotfiles/bin/ ] && chmod +x ~/.dotfiles/bin/*
@@ -120,8 +120,14 @@ setup_dotfiles() {
     printf "\n> Installing git submodules\n\n" >&2
     (cd && _dot submodule update --init --recursive)
 
+    # make sure remote is setup correctly
+    _dot remote add -m master -t master origin "$repo_url" >/dev/null 2>&1 || true
+    _dot branch --set-upstream-to=origin/master master
+
     bash -l
+    cd -
     printf "\n+ Setup complete!\n" >&2
+    unset files dirs repo_url backup_dir
 }
 
 # --------------------------------------------------------------------- }}}
@@ -277,14 +283,22 @@ install_language_lua() {
 
 INSTALL_PACKAGES_CARGO_DOC="Install global Rust packages with cargo"
 install_packages_cargo() {
-    ! [ -r "$DEPS_DIR/cargo" ] && return
     install_language_rust
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        # shellcheck disable=2015
-        [ "${pkg:0:1}" != "#" ] && cargo install "$pkg" || true
-    done <"$DEPS_DIR/cargo"
-    unset pkg
+    deps=(
+        # bat
+        # diskonaut
+        # fd-find
+        git-delta
+        # hyperfine
+        # pastel
+        # procs
+        # ripgrep
+        # xsv
+    )
+
+    for dep in "${deps[@]}"; do cargo install "$dep" || true; done
+    unset deps
 
     # link batcat to bat due to package name conflict
     ! _has bat && _has batcat &&
@@ -300,14 +314,12 @@ install_packages_cargo() {
 
 INSTALL_PACKAGES_GO_DOC="Install global Golang packages"
 install_packages_go() {
-    ! [ -r "$DEPS_DIR/go" ] && return
     install_language_go
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        # shellcheck disable=2015
-        [ "${pkg:0:1}" != "#" ] && go install "$pkg" || true
-    done <"$DEPS_DIR/go"
-    unset pkg
+    deps=()
+
+    for dep in "${deps[@]}"; do go install "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -315,13 +327,12 @@ install_packages_go() {
 
 INSTALL_PACKAGES_PIP_DOC="Install global Python packages with pip3"
 install_packages_pip() {
-    ! [ -r "$DEPS_DIR/pip" ] && return
+    ! _has pip3 && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        # shellcheck disable=2015
-        [ "${pkg:0:1}" != "#" ] && pip3 install --user "$pkg" || true
-    done <"$DEPS_DIR/pip"
-    unset pkg
+    deps=()
+
+    for dep in "${deps[@]}"; do pip3 install --user "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -329,14 +340,18 @@ install_packages_pip() {
 
 INSTALL_PACKAGES_NPM_DOC="Install global Node packages with npm"
 install_packages_npm() {
-    ! [ -r "$DEPS_DIR/npm" ] && return
     install_language_node
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        # shellcheck disable=2015
-        [ "${pkg:0:1}" != "#" ] && npm install -g "$pkg" || true
-    done <"$DEPS_DIR/npm"
-    unset pkg
+    deps=(
+        build-sizes
+        pm2
+        readability-cli
+        ts-node
+        typescript
+    )
+
+    for dep in "${deps[@]}"; do npm install -g "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -365,35 +380,35 @@ install_packages_neovim() {
 
     # install/update devdocs.io nvim plugin sources
     devdoc_sources=(
-        "astro"
-        "bash"
-        "browser_support_tables"
-        "css"
-        "docker"
-        "dom"
-        "esbuild"
-        "gnu_make"
-        "go"
-        "html"
-        "http"
-        "javascript"
-        "jest"
-        "jq"
-        "jsdoc"
-        "lua-5.1"
-        "markdown"
-        "node"
-        "npm"
-        "react"
-        "sass"
-        "sqlite"
-        "svelte"
-        "svg"
-        "tailwindcss"
-        "typescript"
-        "vite"
-        "vue-3"
-        "webpack-5"
+        astro
+        bash
+        browser_support_tables
+        css
+        docker
+        dom
+        esbuild
+        gnu_make
+        go
+        html
+        http
+        javascript
+        jest
+        jq
+        jsdoc
+        lua-5.1
+        markdown
+        node
+        npm
+        react
+        sass
+        sqlite
+        svelte
+        svg
+        tailwindcss
+        typescript
+        vite
+        vue-3
+        webpack-5
     )
 
     installed_count="$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)"
@@ -682,13 +697,45 @@ install_script_git-extras() {
 ## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 INSTALL_UBUNTU_APT_CORE_DOC="Install essential apt packages"
 install_ubuntu_apt-core() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-core" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-core"
+    deps=(
+        apparmor-profiles
+        apparmor-utils
+        archivemount
+        bat
+        btop
+        clamav
+        curl
+        fd-find
+        git
+        gnupg
+        jq
+        lsb-release
+        make
+        mount
+        mutt
+        neofetch
+        pandoc
+        parallel
+        perl
+        ripgrep
+        sqlite3
+        surfraw-extras
+        taskwarrior
+        tmux
+        tree
+        unzip
+        vifm
+        vim
+        w3m
+        w3m-img
+        wget
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
 
     # link batcat to bat due to package name conflict
     ! _has bat && _has batcat &&
@@ -704,13 +751,28 @@ install_ubuntu_apt-core() {
 
 INSTALL_UBUNTU_APT_NETWORK_DOC="Install networking apt packages"
 install_ubuntu_apt-network() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-network" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-network"
+    deps=(
+        arp-scan
+        ca-certificates
+        cron
+        dnsutils
+        net-tools
+        nmap
+        openresolv
+        openssh-client
+        openssl
+        openvpn
+        rsync
+        socat
+        tcpdump
+        telnet
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -718,13 +780,29 @@ install_ubuntu_apt-network() {
 
 INSTALL_UBUNTU_APT_MEDIA_DOC="Install media apt packages"
 install_ubuntu_apt-media() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-media" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-media"
+    deps=(
+        cmus
+        dict
+        dict-devil
+        dict-folddoc
+        dict-gcide
+        dict-jargon
+        dict-vera
+        dict-wn
+        dictd
+        ffmpeg
+        handbrake-cli
+        newsboat
+        playerctl
+        qrencode
+        ffmpeg
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -732,13 +810,36 @@ install_ubuntu_apt-media() {
 
 INSTALL_UBUNTU_APT_BUILD_DOC="Install apt packages required for building"
 install_ubuntu_apt-build() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-build" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-build"
+    deps=(
+        autoconf
+        automake
+        build-essential
+        cmake
+        g++
+        gettext
+        libevent-dev
+        libfontconfig1-dev
+        libfreetype6-dev
+        libjson-perl
+        libreadline-dev
+        librsvg2-bin
+        libtool
+        libtool-bin
+        pkg-config
+        python3
+        python3-dev
+        python3-pip
+        python3-setuptools
+        python3-venv
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
+
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -747,13 +848,40 @@ install_ubuntu_apt-build() {
 ## https://i3wm.org/
 INSTALL_UBUNTU_APT_I3_DOC="Install apt packages used in the i3 window manager"
 install_ubuntu_apt-i3() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-i3" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-i3"
+    deps=(
+        acpi
+        blueman
+        brightnessctl
+        dex
+        dunst
+        feh
+        i3
+        i3lock
+        libpulse-dev
+        libx11-dev
+        libxcb-screensaver0-dev
+        libxcb-util-dev
+        libxcb-xfixes0-dev
+        libxcb1-dev
+        libxfixes-dev
+        libxkbcommon-dev
+        lm-sensors
+        lshw
+        maim
+        picom
+        pulseaudio-utils
+        wmctrl
+        xdotool
+        xinput
+        xsel
+        xss-lock
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -762,13 +890,65 @@ install_ubuntu_apt-i3() {
 ## https://swaywm.org/
 INSTALL_UBUNTU_APT_SWAY_DOC="Install apt packages used in the sway window manager"
 install_ubuntu_apt-sway() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-sway" ] && return
+    ! _has apt-get && return
 
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-sway"
+    deps=(
+        acpi
+        brightnessctl
+        dunst
+        greetd
+        grim
+        grimshot
+        i3status
+        lm-sensors
+        lshw
+        pulseaudio-utils
+        slurp
+        sway
+        swayidle
+        swaylock
+        # waybar
+        wl-clipboard
+    )
 
-    unset pkg
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install GUI apt packages                                    {{{
+
+INSTALL_UBUNTU_APT_GUI_DOC="Install GUI apt packages that for desktop machines"
+install_ubuntu_apt-gui() {
+    ! _has apt-get && return
+
+    deps=(
+        calibre
+        chromium-browser
+        # deepin-picker
+        gimp
+        # gir1.2-appindicator3-0.1
+        # gnome-shell-extension-appindicator
+        # gnome-tweaks
+        handbrake
+        imagemagick
+        inotify-tools
+        libnotify4
+        # lollypop
+        mpv
+        rofi
+        # sayonara
+        shotwell
+        thunderbird
+        vim-gui-common
+        vlc
+        wireshark
+    )
+
+    # install one at a time to prevent failure if a dep is missing from apt repo
+    for dep in "${deps[@]}"; do sudo apt-get install -qq "$dep" || true; done
+    unset deps
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -806,20 +986,6 @@ EOF
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install GUI apt packages                                    {{{
-
-INSTALL_UBUNTU_APT_GUI_DOC="Install GUI apt packages that for desktop machines"
-install_ubuntu_apt-gui() {
-    ! _has apt-get || ! [ -r "$DEPS_DIR/apt-gui" ] && return
-
-    while IFS="" read -r pkg || [ -n "$pkg" ]; do
-        sudo apt-get install -qq "$pkg" || true
-    done <"$DEPS_DIR/apt-gui"
-
-    unset pkg
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install VS Code                                             {{{
 
 ## https://code.visualstudio.com/docs/setup/linux
@@ -837,47 +1003,47 @@ install_ubuntu_vscode() {
 
     extensions=(
 
-        "asvetliakov.vscode-neovim"
-        "eamodio.gitlens"
-        "sainnhe.gruvbox-material"
-        # "vscodevim.vim"
-        # "codeium.codeium"
+        eamodio.gitlens
+        sainnhe.gruvbox-material
+        asvetliakov.vscode-neovim
+        # vscodevim.vim
+        # codeium.codeium
 
-        "github.copilot"
-        "github.copilot-chat"
-        "github.remotehub"
-        "github.vscode-github-actions"
-        "github.vscode-pull-request-github"
-        "ms-vscode.vscode-github-issue-notebooks"
+        github.copilot
+        github.copilot-chat
+        github.remotehub
+        github.vscode-github-actions
+        github.vscode-pull-request-github
+        ms-vscode.vscode-github-issue-notebooks
 
-        "ms-azuretools.vscode-docker"
-        "ms-vscode-remote.remote-containers"
-        # "ms-vscode-remote.remote-ssh"
-        # "ms-vscode-remote.remote-ssh-edit"
-        # "ms-vscode.live-server"
-        # "ms-vscode.remote-explorer"
+        ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-containers
+        # ms-vscode-remote.remote-ssh
+        # ms-vscode-remote.remote-ssh-edit
+        # ms-vscode.live-server
+        # ms-vscode.remote-explorer
 
-        # "bradlc.vscode-tailwindcss"
-        # "christian-kohler.npm-intellisense"
-        # "christian-kohler.path-intellisense"
-        # "dbaeumer.vscode-eslint"
-        # "editorconfig.editorconfig"
-        # "esbenp.prettier-vscode"
-        # "foam.foam-vscode"
-        # "formulahendry.auto-close-tag"
-        # "golang.go"
-        # "humao.rest-client"
-        # "mechatroner.rainbow-csv"
-        # "redhat.vscode-yaml"
-        # "streetsidesoftware.code-spell-checker"
-        # "stylelint.vscode-stylelint"
-        # "sumneko.lua"
-        # "svelte.svelte-vscode"
-        # "timonwong.shellcheck"
-        # "visualstudioexptteam.intellicode-api-usage-examples"
-        # "visualstudioexptteam.vscodeintellicode"
-        # "vue.volar"
-        # "yzhang.markdown-all-in-one"
+        # bradlc.vscode-tailwindcss
+        # christian-kohler.npm-intellisense
+        # christian-kohler.path-intellisense
+        # dbaeumer.vscode-eslint
+        # editorconfig.editorconfig
+        # esbenp.prettier-vscode
+        # foam.foam-vscode
+        # formulahendry.auto-close-tag
+        # golang.go
+        # humao.rest-client
+        # mechatroner.rainbow-csv
+        # redhat.vscode-yaml
+        # streetsidesoftware.code-spell-checker
+        # stylelint.vscode-stylelint
+        # sumneko.lua
+        # svelte.svelte-vscode
+        # timonwong.shellcheck
+        # visualstudioexptteam.intellicode-api-usage-examples
+        # visualstudioexptteam.vscodeintellicode
+        # vue.volar
+        # yzhang.markdown-all-in-one
 
     )
 
@@ -1725,7 +1891,7 @@ install_misc_yt-dlp() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
-# Git submodule install/build functions                                 {{{
+# Build from source install functions                                   {{{
 # --------------------------------------------------------------------- {|}
 
 ## Install fzf                                                 {{{
@@ -1906,6 +2072,7 @@ install_build_dunst() {
 
     # https://github.com/dunst-project/dunst/wiki/Dependencies#debian-and-ubuntu
     _has apt && sudo apt install -y \
+        doxygen \
         libdbus-1-dev \
         libx11-dev \
         libxinerama-dev \
@@ -1922,6 +2089,49 @@ install_build_dunst() {
 
     sudo make
     sudo make install
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install the latest version of tmux                         {{{
+# https://github.com/tmux/tmux/wiki/Installing
+
+INSTALL_BUILD_TMUX_DOC="Install tmux for managing terminal environments"
+install_build_tmux() {
+    if [ -d "$LIB/tmux" ]; then
+        git -C "$LIB/tmux/" fetch --all --prune --force
+    else
+        git clone https://github.com/tmux/tmux.git "$LIB/tmux"
+    fi
+
+    cd "$LIB/tmux" || return
+
+    latest_version="$(
+        git for-each-ref refs/tags \
+            --count=1 \
+            --sort=-taggerdate \
+            --format='%(refname:short)'
+    )"
+
+    if _has tmux && [ "$(tmux -V | awk '{print $NF}')" = "$latest_version" ]; then
+        echo "The latest version of tmux ($latest_version) is already installed" >&2
+        return
+    fi
+
+    _has apt && sudo apt install -y \
+        autoconf \
+        automake \
+        libevent \
+        ncurses \
+        libevent-dev \
+        ncurses-dev \
+        build-essential \
+        bison \
+        pkg-config
+
+    git checkout "$latest_version"
+    sh autogen.sh
+    ./configure
+    make && sudo make install
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1983,6 +2193,9 @@ i3_installs() {
         cargo install xidlehook --bins
     fi
 
+    sudo usermod -aG video "$USER"
+    sudo usermod -aG input "$USER"
+
     sudo mkdir -p /etc/X11/xorg.conf.d
     sudo tee /etc/X11/xorg.conf.d/30-touchpad.conf >/dev/null <<EOF
 Section "InputClass"
@@ -2008,6 +2221,9 @@ sway_installs() {
     install_script_i3-battery
     theme_installs
     # install_build_tuigreet
+
+    sudo usermod -aG video "$USER"
+    sudo usermod -aG input "$USER"
 
     _has go && go install go.senan.xyz/cliphist@latest
 }
@@ -2189,7 +2405,6 @@ deps_parse_flags() {
     BIN_DIR="$HOME/.local/bin"
     MAN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/man"
     COMPLETIONS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions"
-    DEPS_DIR="$DOTFILES/deps"
     CACHE_DIR="$DOTFILES/cache"
 
     mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR" "$COMPLETIONS_DIR"
