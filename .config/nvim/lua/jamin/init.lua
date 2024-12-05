@@ -55,7 +55,6 @@ require("jamin.keymaps")
 require("jamin.autocommands")
 require("jamin.utils").setup()
 require("jamin.lsp").setup()
-require("jamin.utils").cowboy()
 
 -------------------------------------------------------------------------------
 ----> Plugins

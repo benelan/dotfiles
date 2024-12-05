@@ -11,7 +11,7 @@ return {
       {
         "<leader>ri",
         function() require("rulebook").ignoreRule() end,
-        desc = "Add diagnostic ignore comment (rulebook)",
+        desc = "Ignore diagnostic (rulebook)",
       },
       {
         "<leader>rl",

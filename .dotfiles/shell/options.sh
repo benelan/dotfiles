@@ -176,7 +176,7 @@ if ((BASH_VERSINFO[0] >= 4)); then
         READLINE_POINT=${#READLINE_LINE}
     }
 
-    # Define shortcut keys: [Esc] [Esc]
-    bind -x '"\e\e": sudo-command-line'
+    # Define vim-style keymap using 's' for 'sudo' (see :help ins-completion) 
+    bind -x '"\C-xs": sudo-command-line'
 
 fi

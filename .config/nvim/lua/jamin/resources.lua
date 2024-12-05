@@ -41,6 +41,10 @@ M.filetypes = {
     "netrw",
     "octo",
     "qf",
+    "snacks_dashboard",
+    "snacks_notif",
+    "snacks_terminal",
+    "snacks_win",
     "undotree",
   },
   writing = {
@@ -258,8 +262,8 @@ M.icons = {
   ui = {
     docs = M.i(" ", "🖹 "),
     -- utf8 icons don't need fallbacks
-    prompt = "❱ ",
-    select = "➤  ",
+    prompt = "❱",
+    select = "➤ ",
     play = "⯈ ",
     skip = "⏩︎",
     x = "✘ ",
@@ -270,24 +274,26 @@ M.icons = {
     box_checked = "☑ ",
     box_crossed = "☒ ",
     box_dot = "🞔 ",
+    diamond = "◈ ",
+    bullseye = "◎ ",
     circle = "● ",
     collapsed = "🞂 ",
     expanded = "🞃 ",
-    eol = "⤶",
-    linebreak = "↳ ",
-    nbsp = "␣",
     extends = "»",
     precedes = "«",
-    ellipses = "…  ",
+    eol = "⤶",
+    linebreak = "↳ ",
     dot = "·",
     dot_outline = "◦",
+    ellipses = "…  ",
+    nbsp = "␣",
     horizontal_separator = "─",
     indentline = "▏",
     fill_slash = "╱",
     fill_shade = "░",
     fill_solid = "█",
     speech_bubble = "🗩 ",
-    user = "🯅", -- 🏄︎🏂︎ 🛉 🯅 🯆 🯈 🯇 🮲🮳👽︎
+    user = "👽︎", -- 🏄︎🏂︎ 🛉 🯅 🯆 🯈 🯇 🮲🮳👽︎
     storage = "⛁ ", -- 🗃 📚︎ 📟︎ ⛁ ⛃
     network = "🖧 ", -- 💻︎
     package = "📦︎",

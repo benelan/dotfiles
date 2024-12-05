@@ -102,6 +102,10 @@ bindsym $mod+y exec grim -s 3 -g "$(slurp)" -l 0 - | \
     tesseract - - --psm 6 \
         -c "load_system_dawg=0" \
         -c "load_freq_dawg=0" \
+        -c "language_model_penalty_punc=0" \
+        -c "language_model_penalty_case=0" \
+        -c "language_model_penalty_chartype=0" \
+        -c "language_model_penalty_spacing=0" \
         -c "preserve_interword_spaces=1" \
         -c "segment_nonalphabetic_script=1" | \
     wl-copy
@@ -154,8 +158,9 @@ bindsym $mod+Control+Space mode "mouse"
 assign [app_id="^firefox$"] $ws1
 # assign [app_id="^gnome-terminal-server$"] $ws2
 assign [app_id="^(file-roller|gedit|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
-assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|org\.inkscape\.Inkscape)$"] $ws6
+assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|calibre-gui|org\.inkscape\.Inkscape)$"] $ws6
 assign [app_id="^thunderbird(-esr)?$"] $ws8
+assign [app_id="^teams-for-linux$"] $ws10
 
 for_window [app_id="^mpv$" title=".*\.jpg - mpv$"] floating enable, resize set width 39 ppt height 40 ppt, move position 61 ppt 60 ppt, move scratchpad, scratchpad show
 for_window [app_id="^(vlc|mpv|firefox)$"] focus, inhibit_idle focus

@@ -82,6 +82,25 @@ return function(args)
     )
   end
 
+  if
+    vim.lsp.inlay_hint
+    and vim.api.nvim_buf_is_valid(args.buf)
+    and vim.bo[args.buf].buftype == ""
+    and client.supports_method("textDocument/inlayHint")
+  then
+    bufmap(
+      "n",
+      "<leader>si",
+      function()
+        vim.lsp.inlay_hint.enable(
+          not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
+          { buf = args.buf }
+        )
+      end,
+      "Toggle LSP inlay hints"
+    )
+  end
+
   -- -- setup codelens if supported by language server
   -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
   --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
@@ -95,11 +114,10 @@ return function(args)
   -- populate lsp diagnostics for the whole project, not just open files
   local has_workspace_diagnostics, workspace_diagnostics = pcall(require, "workspace-diagnostics")
   if has_workspace_diagnostics then
-    if not vim.tbl_contains({ "typescript-tools", "ts_ls" }, client.name) then
-      -- tserver would become a WMD in big projects
+    -- TODO: find a better way to exclude huge projects from loading all workspace diagnostics
+    if not vim.tbl_contains({ "eslint", "typescript-tools", "ts_ls" }, client.name) then
       workspace_diagnostics.populate_workspace_diagnostics(client, args.buf)
     else
-      -- populate manually for smaller typescript projects
       bufmap(
         "n",
         "<localleader>W",
@@ -112,5 +130,4 @@ return function(args)
   -- setup stuff specific to an LSP server
   local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)
   if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
-
 end

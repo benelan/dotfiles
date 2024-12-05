@@ -43,8 +43,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   callback = function()
     vim.wo.spell = true
     vim.wo.cursorline = false
-    vim.wo.wrap = true
     vim.wo.conceallevel = 2
+    -- vim.wo.wrap = true
 
     -- up/down home/end movement that handles wrapped lines better
     local opts = { expr = true, silent = true, buffer = true }
@@ -120,7 +120,7 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("jamin_janky_indentlines", {}),
   callback = function()
-    vim.opt.listchars = {
+    vim.opt_local.listchars = {
       tab = "|->",
       -- eol = res.icons.ui.eol,
       extends = res.icons.ui.extends,

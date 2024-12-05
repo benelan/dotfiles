@@ -6,7 +6,14 @@ that fit your workflows.
 
 ## Setup
 
-To install the dotfiles in your `$HOME` directory, run:
+Make sure `git` and `curl` are installed before running the dotfiles initialization script.
+For example, in Ubuntu:
+
+```sh
+sudo apt install -y git curl
+```
+
+Then run the dotfiles script, which installs everything in your `$HOME` directory:
 
 ```sh
 curl -sSL benelan.dev/s/dotfiles | sh

@@ -1,6 +1,10 @@
 if exists('loaded_jamin_keymaps') | finish | endif
 let loaded_jamin_keymaps = 1
 
+" thumbs up/down diagraphs
+dig +1 128077
+dig -1 128078
+
 "" GENERAL {{{1
 nnoremap <Backspace> <C-^>
 
@@ -15,8 +19,6 @@ tnoremap <Esc><Esc> <C-\><C-n>
 cnoremap <C-a> <Home>
 cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
 cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
-
-inoremap <C-c> <Esc>`^
 
 " Use the repeat operator on a visual selection.
 vnoremap . :normal .<CR>
@@ -59,10 +61,6 @@ nnoremap <silent> <leader>- <CMD>execute (
         \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
 \)<CR>
 
-" thumbs up/down diagraphs
-dig +1 128077
-dig -1 128078
-
 nmap <silent> gQ mzgggqG`z<CMD>delmarks z<CR>zz
 
 " Format selected text maintaining the selection.
@@ -95,6 +93,31 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
     execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
     execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
 endfor
+
+
+"" TOGGLE OPTIONS {{{1
+nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
+nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
+nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
+nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
+nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
+nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
+
+nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
+        \ &colorcolumn == ""
+            \ ? &textwidth > 0 ? "+1" : "81"
+            \ :""
+    \ )<CR><CMD>set colorcolumn?<CR>
+
+nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
+        \ &conceallevel == "0" ? "2" : "0"
+    \ )<CR><CMD>set conceallevel?<CR>
+
+nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
+        \ &clipboard == "unnamed"
+            \ ? "unnamed,unnamedplus"
+            \ : "unnamed"
+    \ )<CR><CMD>set clipboard?<CR>
 
 "" NAVIGATE LISTS {{{1
 " Argument list

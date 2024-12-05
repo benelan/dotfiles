@@ -1769,6 +1769,7 @@ install_build_neovim() {
     git checkout stable
 
     if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then
+        sudo make distclean
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
     else

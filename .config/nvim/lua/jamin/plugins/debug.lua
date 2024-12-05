@@ -221,7 +221,7 @@ return {
         if not dap.adapters[adapter] then
           dap.adapters[adapter] = {
             type = "server",
-            host = "127.0.0.1",
+            host = "localhost",
             port = "${port}",
             executable = {
               command = "js-debug-adapter",
@@ -255,8 +255,8 @@ return {
       for _, language in ipairs(res.filetypes.webdev) do
         dap.configurations[language] = {
           {
-            -- make sure to start up Chrome in debug mode first:
-            -- $ google-chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile
+            -- make sure to start up Chromium in debug mode first:
+            -- $ chromium-browser --remote-debugging-port=9222 --user-data-dir=remote-debug-profile
             name = "Attach to Chrome process (port 9222)",
             type = "pwa-chrome",
             request = "attach",

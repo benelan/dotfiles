@@ -1,6 +1,24 @@
 version: "1"
 git_protocol: ssh
 aliases:
+  co: pr checkout
+  ship: pr create --fill-first
+  pcomment: pr comment --editor
+  icomment: issue comment --editor
+
+  review: |
+    !gh pr view --comments $1 && gh pr diff $1 && gh pr review $1;
+    if [ $? -ne 0 ]; then
+      read -r -p "Open PR in [b]rowser or [v]im? [b/v/N] " REPLY
+      case $REPLY in
+        [yYbB]*) gh pr diff --web $1 ;;
+        [vV]*) nvim +"Octo issue edit $1" ;;
+      esac
+    fi
+
+  dl: '!GH_REPO="${3:-$GH_REPO}" gh api -H "accept: application/vnd.github.v3.raw" "repos/{owner}/{repo}/contents/$1" > "${2:-$1}"'
+
+  # https://github.com/benelan/gh-fzf
   w: fzf workflow
   v: fzf release
   R: fzf repo
@@ -58,8 +76,8 @@ aliases:
       --bind='alt-m:execute(gh pr merge --delete-branch --squash {1})+refresh-preview'
       --bind='alt-v:execute(gh pr edit {1} --remove-label \"pr ready for visual snapshots\" --add-label \"pr ready for visual snapshots\")+refresh-preview'
       --bind='alt-V:execute(gh pr edit --add-label \"skip visual snapshots\" {1})+refresh-preview'
-      --bind='alt-+:execute(gh pr review --approve --body \":+1:\" {1})+refresh-preview'
-      --bind='alt-_:execute(gh pr review --request-changes {1})+refresh-preview'
+      --bind='alt-R:execute(gh review {1})+refresh-preview'
+      --bind='alt-+:execute(echo \"Press ctrl-c to cancel pr approval...\" && sleep 1 && gh pr review --body \":+1:\" --approve {1})+refresh-preview'
     " gh fzf pr $*
 
   itruncated: "!GH_FZF_TRUNCATE_FIELDS=true gh i $*"
@@ -68,23 +86,7 @@ aliases:
   ime: "i --assignee @me"
   pme: "p --author @me"
 
-  pcomment: pr comment --editor
-  icomment: issue comment --editor
-
-  co: pr checkout
-  ship: pr create --fill-first
-  review: |
-    !gh pr view --comments $1 && gh pr diff $1 && gh pr review $1;
-    if [ $? -ne 0 ]; then
-      read -r -p "Open PR in browser? [y/N] " REPLY
-      case $REPLY in
-        [yY]*) gh pr diff --web $1 ;;
-      esac
-    fi
-
-  dl: '!GH_REPO="${3:-$GH_REPO}" gh api -H "accept: application/vnd.github.v3.raw" "repos/{owner}/{repo}/contents/$1" > "${2:-$1}"'
-
-  toreview: '!gh p -S\"review:required -is:draft\"'
+  toreview: '!gh p -S\"-review:approved -is:draft\"'
 
   todo: |
     !gh i --assignee @me --milestone \'$(
@@ -97,4 +99,6 @@ aliases:
 
   # https://github.com/meiji163/gh-notify
   n: '!FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --no-hscroll" gh notify "$@"'
+
+  # https://github.com/benelan/gh-notify-desktop
   nd: notify-desktop

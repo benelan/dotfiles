@@ -14,7 +14,11 @@
 -------------------->  :h map-listing  <---------------------------
 
 -- Clear search highlight and escape
-keymap({ "i", "n" }, "<ESC>", "<CMD>noh<CR><esc>", "Clear hls and escape")
+vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
+  vim.cmd.noh()
+  vim.snippet.stop()
+  return "<esc>"
+end, { expr = true, silent = true, noremap = true, desc = "Escape and Clear hlsearch" })
 
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<", "," }

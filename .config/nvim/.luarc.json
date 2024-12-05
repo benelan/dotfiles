@@ -24,9 +24,7 @@
     "$XDG_DATA_HOME/nvim/lazy/nvim-nio/lua",
     "$XDG_DATA_HOME/nvim/lazy/nvim-treesitter/lua",
     "$XDG_DATA_HOME/nvim/lazy/plenary.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/resession.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/snacks.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/trouble.nvim/lua"
+    "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua"
   ]
 }

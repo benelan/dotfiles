@@ -32,6 +32,7 @@ return {
       vim.g.gruvbox_material_disable_terminal_colors = 1
 
       local gruvbox_custom_colors = function()
+        local hl = vim.fn["gruvbox_material#highlight"]
         local alt_palette = vim.fn["gruvbox_material#get_palette"]("hard", "material", { x = {} })
         local palette = vim.fn["gruvbox_material#get_palette"](
           vim.g.gruvbox_material_background or "medium",
@@ -41,8 +42,6 @@ return {
             bg_orange = { "#5A3B0A", "130" },
           }
         )
-
-        local hl = vim.fn["gruvbox_material#highlight"]
 
         hl("DiffDelete", palette.bg5, palette.bg_diff_red)
         hl("DiffChange", palette.none, palette.bg_orange)
@@ -68,9 +67,7 @@ return {
 
         hl("CmpItemAbbrDeprecated", palette.grey1, palette.none, "strikethrough")
 
-        -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
         vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Boolean" })
-
         vim.cmd.highlight("ErrorMsg cterm=bold gui=bold")
       end
 
@@ -128,7 +125,6 @@ return {
     },
     opts = {
       progress = {
-        ignore = { "null-ls" },
         display = { done_icon = res.icons.ui.checkmark },
       },
       notification = {
@@ -150,6 +146,7 @@ return {
     config = function(_, opts)
       require("eyeliner").setup(opts)
       vim.api.nvim_set_hl(0, "EyelinerPrimary", { link = "Operator" })
+      vim.api.nvim_set_hl(0, "EyelinerSecondary", { link = "Boolean" })
     end,
   },
 }

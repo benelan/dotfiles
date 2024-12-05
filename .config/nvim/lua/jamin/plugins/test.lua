@@ -74,6 +74,7 @@ return {
             watch = true,
             no_build = false,
             jestCommand = "jest --watch ",
+            vitestCommand = "vitest --watch",
           })
         end,
         desc = "Watch nearest test",

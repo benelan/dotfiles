@@ -64,16 +64,45 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- lua utils
+  { "nvim-lua/plenary.nvim", lazy = true },
+
+  -----------------------------------------------------------------------------
+  -- quickfix/location list helper
+  {
+    "stevearc/qf_helper.nvim",
+    event = "FileType qf",
+    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
+    opts = {
+      quickfix = { default_bindings = false },
+      loclist = { default_bindings = false },
+    },
+    keys = {
+      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
+      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
+      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
+      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- various small QoL improvements
   {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
+
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
       quickfile = { enabled = true },
       words = { enabled = true },
+      scope = { enabled = true },
+      zen = {
+        enabled = false,
+        ---@type snacks.win.Config
+        win = { wo = { colorcolumn = "0" } },
+      },
       dashboard = {
         enabled = vim.g.use_devicons,
         sections = {
@@ -106,24 +135,33 @@ return {
           -- { section = "startup" },
         },
       },
-      statuscolumn = { enabled = true },
-      notifier = { enabled = false },
     },
+
     keys = {
       { "<leader><BS>", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bD", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
       { "<leader>gB", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-      { "<leader>go", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-      {
-        "<leader>gy",
-        function()
-          Snacks.gitbrowse({ open = function(url) vim.fn.setreg("+", url) end })
-        end,
-        desc = "Git Copy URL",
-        mode = { "n", "v" },
-      },
+      { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+      { "<leader>,", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+      { "<leader>sz", function() Snacks.zen() end, desc = "Toggle Zen Mode" },
+      { "<leader>sZ", function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
+      -- { "<leader>go", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
+      -- {
+      --   "<leader>gy",
+      --   function()
+      --     Snacks.gitbrowse({ notify = false, open = function(url) vim.fn.setreg("+", url) end })
+      --   end,
+      --   desc = "Git Copy URL",
+      --   mode = { "n", "v" },
+      -- },
       { "grN", function() Snacks.rename.rename_file() end, desc = "Rename File" },
+      { "<leader>sW", function() Snacks.toggle.words():toggle() end, desc = "Toggle lsp words" },
+      {
+        "<leader>sI",
+        function() Snacks.toggle.indent():toggle() end,
+        desc = "Toggle indent guides",
+      },
       {
         "]]",
         function() Snacks.words.jump(vim.v.count1) end,
@@ -136,25 +174,8 @@ return {
         desc = "Prev Reference",
         mode = { "n", "t" },
       },
-      {
-        "<leader>N",
-        desc = "Neovim News",
-        function()
-          Snacks.win({
-            file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-            width = 0.6,
-            height = 0.6,
-            wo = {
-              spell = false,
-              wrap = false,
-              signcolumn = "yes",
-              statuscolumn = " ",
-              conceallevel = 3,
-            },
-          })
-        end,
-      },
     },
+
     init = function()
       vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
@@ -163,46 +184,8 @@ return {
           _G.dd = function(...) Snacks.debug.inspect(...) end
           _G.bt = function() Snacks.debug.backtrace() end
           vim.print = _G.dd -- Override print to use snacks for `:=` command
-
-          -- Create some toggle mappings
-          Snacks.toggle.diagnostics():map("<leader>sd")
-          Snacks.toggle.treesitter():map("<leader>sh")
-          Snacks.toggle.inlay_hints():map("<leader>si")
-
-          Snacks.toggle.option("list", { name = "List Characters" }):map("<leader>sl")
-          Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>ss")
-          Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>sw")
-          Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>sn")
-          Snacks.toggle.option("cursorline", { name = "Cursor Line" }):map("<leader>sx")
-          Snacks.toggle.option("cursorcolumn", { name = "Cursor Column" }):map("<leader>sy")
-          Snacks.toggle.option("colorcolumn", { name = "Color Column" }):map("<leader>s|")
-          Snacks.toggle
-            .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-            :map("<leader>sc")
         end,
       })
     end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- lua utils
-  { "nvim-lua/plenary.nvim", lazy = true },
-
-  -----------------------------------------------------------------------------
-  -- quickfix/location list helper
-  {
-    "stevearc/qf_helper.nvim",
-    event = "FileType qf",
-    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
-    opts = {
-      quickfix = { default_bindings = false },
-      loclist = { default_bindings = false },
-    },
-    keys = {
-      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
-      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
-      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
-      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
-    },
   },
 }

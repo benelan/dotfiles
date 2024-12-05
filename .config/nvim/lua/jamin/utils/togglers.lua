@@ -4,7 +4,7 @@ local M = {}
 local floating_term_height, floating_term_width
 
 ---Toggle a persistent floating terminal window
-function M.floating_term_toggle()
+function M.terminal()
   local term_bufnr = vim.fn.bufnr("term://")
   local term_winnr = vim.fn.bufwinnr("term://")
   local curr_bufnr = vim.fn.bufnr("%")
@@ -42,7 +42,7 @@ end
 -----------------------------------------------------------------------------
 
 ---Toggle between the default and maximized height of the floating terminal
-function M.term_height_toggle()
+function M.terminal_height()
   local ui = vim.api.nvim_list_uis()[1]
   local default_size = math.floor(ui.height / 4)
   local maximized_size = ui.height - 7
@@ -57,7 +57,7 @@ function M.term_height_toggle()
 end
 
 ---Toggle between the default and maximized width of the floating terminal
-function M.term_width_toggle()
+function M.terminal_width()
   local ui = vim.api.nvim_list_uis()[1]
   local default_size = math.floor(ui.width / 3)
   local maximized_size = ui.width - 4
@@ -73,21 +73,47 @@ end
 
 -----------------------------------------------------------------------------
 
+local virtual_text_disabled = false
+
 ---Toggle diagnostic virtual text for the current buffer
-local virtual_text_enabled = true
-function M.virtual_text_toggle()
-  virtual_text_enabled = not virtual_text_enabled
+function M.diagnostics_virtual_text()
+  virtual_text_disabled = not virtual_text_disabled
   vim.diagnostic.config({
-    virtual_text = virtual_text_enabled and require("jamin.resources").diagnostics.virtual_text
-      or false,
+    virtual_text = virtual_text_disabled and false
+      or require("jamin.resources").diagnostics.virtual_text,
   })
-  print(
+  vim.notify(
     string.format(
       "%s %s",
-      "diagnostic virtual text",
-      virtual_text_enabled and "enabled" or "disabled"
+      "Diagnostic virtual text",
+      virtual_text_disabled and "enabled" or "disabled"
     )
   )
+end
+
+-----------------------------------------------------------------------------
+
+---Toggle diagnostics for the current buffer or globally
+---@param global boolean When true, toggle diagnostics globally (default is current buffer)
+M.diagnostics = function(global)
+  local scope = global and vim.g or vim.b
+  scope.diagnostics_disabled = not scope.diagnostics_disabled
+  local cmd = scope.diagnostics_disabled and "disable" or "enable"
+  vim.notify(string.format("%s diagnostics %sd", global and "Global" or "Buffer", cmd))
+  vim.schedule(function() vim.diagnostic[cmd](global and nil or 0) end)
+end
+
+-----------------------------------------------------------------------------
+
+---Toggle treesitter highlighting
+function M.ts_highlight()
+  if vim.b.ts_highlight then
+    vim.treesitter.stop()
+    vim.notify("treesitter highlighting stopped")
+  else
+    vim.treesitter.start()
+    vim.notify("treesitter highlighting started")
+  end
 end
 
 -----------------------------------------------------------------------------
@@ -95,7 +121,7 @@ end
 local ui_disabled = false
 
 ---Toggle a variety of UI options to reduce noise while presenting or coding
-function M.ui_toggle()
+function M.ui()
   -- toggle options
   vim.opt.relativenumber = ui_disabled
   vim.opt.number = ui_disabled
@@ -132,12 +158,15 @@ end
 -----------------------------------------------------------------------------
 
 function M.setup()
-  keymap("n", "<leader>sv", M.virtual_text_toggle, "Toggle diagnostic virtual text")
-  keymap("n", "<leader>su", M.ui_toggle, "Toggle UI noise")
+  keymap("n", "<leader>sD", function() M.diagnostics(true) end, "Toggle global diagnostics")
+  keymap("n", "<leader>sd", M.diagnostics, "Toggle buffer diagnostics")
+  keymap("n", "<leader>sv", M.diagnostics_virtual_text, "Toggle diagnostic virtual text")
+  keymap("n", "<leader>sh", M.ts_highlight, "Toggle treesitter highlight")
+  keymap("n", "<leader>su", M.ui, "Toggle UI noise")
 
-  keymap({ "n", "t" }, "<M-t>", M.floating_term_toggle, "Floating terminal")
-  keymap("t", "<M-h>", M.term_height_toggle, "Toggle floating terminal height")
-  keymap("t", "<M-w>", M.term_width_toggle, "Toggle floating terminal width")
+  keymap({ "n", "t" }, "<M-t>", M.terminal, "Floating terminal")
+  keymap("t", "<M-h>", M.terminal_height, "Toggle floating terminal height")
+  keymap("t", "<M-w>", M.terminal_width, "Toggle floating terminal width")
 end
 
 return M

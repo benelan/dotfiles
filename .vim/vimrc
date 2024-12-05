@@ -148,30 +148,6 @@ if has("keymap")
     tnoremap <S-Space> <Space>
     tnoremap <C-Space> <Space>
 
-    "" toggle options {{{2
-    nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
-    nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
-    nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
-    nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
-    nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
-    nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
-
-    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
-            \ &colorcolumn == ""
-                \ ? &textwidth > 0 ? "+1" : "81"
-                \ :""
-        \ )<CR><CMD>set colorcolumn?<CR>
-
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
-            \ &conceallevel == "0" ? "2" : "0"
-        \ )<CR><CMD>set conceallevel?<CR>
-
-    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
-            \ &clipboard == "unnamed"
-                \ ? "unnamed,unnamedplus"
-                \ : "unnamed"
-        \ )<CR><CMD>set clipboard?<CR>
-
     "" plugins {{{2
     if isdirectory(expand("$HOME/dev/lib/fzf"))
         set runtimepath+=~/dev/lib/fzf

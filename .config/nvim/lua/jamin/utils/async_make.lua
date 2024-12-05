@@ -17,7 +17,7 @@ function M.async_make(ctx)
   local cmd = vim.fn.expandcmd(makeprg .. " " .. (ctx.args or ""))
   local lines = {}
 
-  local function on_event(job_id, data, event)
+  local function on_event(_, data, event)
     if event == "stdout" or event == "stderr" then
       if data then vim.list_extend(lines, data) end
     end

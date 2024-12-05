@@ -1,5 +1,4 @@
 ---
-title: {{format-date now "%F"}}
 type: journal
 tags: []
 ---

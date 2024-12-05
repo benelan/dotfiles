@@ -29,7 +29,7 @@ return {
     local has_lsp, lspconfig = pcall(require, "lspconfig")
     if has_lsp then
       local util = lspconfig.util
-      return util.root_pattern("go.mod", ".git")(fname) or util.path.dirname(fname)
+      return util.root_pattern("go.mod", ".git")(fname) or vim.fs.dirname(fname)
     end
   end,
   flags = { allow_incremental_sync = true, debounce_text_changes = 500 },

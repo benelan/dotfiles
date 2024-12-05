@@ -44,8 +44,6 @@ return {
   -- shows the current scope
   {
     "nvim-treesitter/nvim-treesitter-context",
-    -- https://github.com/nvim-treesitter/nvim-treesitter-context/issues/509
-    commit = "8198ad4b01ca64b6f5c7a7253f52df3fe329be46",
     lazy = true,
     opts = { multiline_threshold = 1, max_lines = 6 },
     keys = {

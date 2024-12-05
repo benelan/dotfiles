@@ -53,8 +53,8 @@ bindsym $mod+XF86AudioLowerVolume exec --no-startup-id \
 # Dunst notification keybindings
 bindsym $mod+n exec dunstctl close
 bindsym $mod+Shift+n exec dunstctl close-all
-bindsym $mod+Control+n exec dunstctl context
-bindsym $mod+Control+Shift+n exec dunstctl action
+bindsym $mod+Control+n exec dunstctl action
+bindsym $mod+Control+Shift+n exec dunstctl context
 bindsym $mod+Mod1+n exec dunstctl history-pop
 bindsym $mod+Mod1+Shift+n exec dunstctl set-paused toggle
 

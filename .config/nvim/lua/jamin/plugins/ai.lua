@@ -139,7 +139,7 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     -- cond = M.should_use_copilot(),
-    branch = "canary",
+    branch = "main",
     opts = {
       window = { border = res.icons.border },
       mappings = {

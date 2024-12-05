@@ -251,6 +251,28 @@ return {
         if has_trouble then return trouble.add(...) end
       end
 
+      local function flash_jump(prompt_bufnr)
+        local has_flash, flash = pcall(require, "flash")
+        if has_flash then
+          return flash.jump({
+            pattern = "^",
+            label = { after = { 0, 0 } },
+            search = {
+              mode = "search",
+              exclude = {
+                function(win)
+                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+                end,
+              },
+            },
+            action = function(match)
+              local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+              picker:set_selection(match.pos[1] - 1)
+            end,
+          })
+        end
+      end
+
       -- use the same mappings in insert and normal mode
       local mappings = {
         ["<C-c>"] = "close",
@@ -267,6 +289,7 @@ return {
         ["<M-v>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = open_in_quickfix,
+        ["<C-s>"] = flash_jump,
         ["<M-t>"] = open_in_trouble,
         ["<M-T>"] = add_to_trouble,
       }
@@ -274,7 +297,7 @@ return {
       return {
         defaults = {
           prompt_prefix = string.format(" %s ", res.icons.ui.prompt),
-          selection_caret = string.format("%s ", res.icons.ui.select),
+          selection_caret = string.format("%s  ", res.icons.ui.select),
           multi_icon = res.icons.ui.checkmark,
           entry_prefix = string.rep(" ", 4),
           layout_config = { prompt_position = "top" },
@@ -406,25 +429,27 @@ return {
         "<M-h>",
         function()
           vim.cmd.Wcd()
-          require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
+          pcall(function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon toggle mark menu",
       },
       {
         "<M-m>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():add()
+          pcall(function() require("harpoon"):list():add() end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon add file",
       },
       {
         "<M-S-m>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():prepend()
+          pcall(function() require("harpoon"):list():prepend() end)
           vim.cmd.Rcd()
         end,
         desc = "Harpoon prepend file",
@@ -433,16 +458,17 @@ return {
         "<M-S-n>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():next()
+          pcall(function() require("harpoon"):list():next() end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select next mark",
       },
       {
         "<M-S-p>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():prev()
+          pcall(function() require("harpoon"):list():prev() end)
           vim.cmd.Rcd()
         end,
         desc = "Harpoon select previous mark",
@@ -451,45 +477,50 @@ return {
         "<M-a>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():select(1)
+          pcall(function() require("harpoon"):list():select(1) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select mark 1",
       },
       {
         "<M-s>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():select(2)
+          pcall(function() require("harpoon"):list():select(2) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select mark 2",
       },
       {
         "<M-d>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():select(3)
+          pcall(function() require("harpoon"):list():select(3) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select mark 3",
       },
       {
         "<M-f>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():select(4)
+          pcall(function() require("harpoon"):list():select(4) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select mark 4",
       },
       {
         "<M-g>",
         function()
           vim.cmd.Wcd()
-          require("harpoon"):list():select(5)
+          pcall(function() require("harpoon"):list():select(5) end)
           vim.cmd.Rcd()
         end,
+        silent = true,
         desc = "Harpoon select mark 5",
       },
     },

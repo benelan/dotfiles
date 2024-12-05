@@ -7,6 +7,7 @@ vim.filetype.add({
   filename = {
     [".eslintrc.json"] = "jsonc",
     [".markdownlintrc"] = "json",
+    [".textlintrc"] = "json",
   },
   pattern = {
     ["logs?%.?t?x?t?"] = "log",

@@ -44,8 +44,15 @@ return {
       "garymjr/nvim-snippets",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      { "andersevenrud/cmp-tmux", cond = vim.env.TMUX ~= nil },
-      { "lukas-reineke/cmp-rg", enabled = vim.fn.executable("rg") == 1 },
+      {
+        "andersevenrud/cmp-tmux",
+        enabled = vim.fn.executable("tmux") == 1,
+        cond = vim.env.TMUX ~= nil,
+      },
+      {
+        "lukas-reineke/cmp-rg",
+        enabled = vim.fn.executable("rg") == 1,
+      },
     },
 
     opts = function()
@@ -82,33 +89,6 @@ return {
             cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
             { "i", "s", "c" }
           ),
-
-          -- Next/previous result, but use Copilot or Codeium instead if installed
-          ["<C-j>"] = cmp.mapping(function(fallback)
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-            if has_copilot and not has_copilot_cmp then
-              copilot.next()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#CycleCompletions"](1)
-            elseif cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i" }),
-
-          ["<C-k>"] = cmp.mapping(function(fallback)
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-            if has_copilot and not has_copilot_cmp then
-              copilot.prev()
-            elseif vim.g.codeium_enabled then
-              return vim.fn["codeium#CycleCompletions"](-1)
-            elseif cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-              fallback()
-            end
-          end, { "i" }),
         },
 
         window = {
@@ -123,12 +103,12 @@ return {
             -- show the item's completion source in the results
             vim_item.menu = ({
               buffer = i("BUF"),
-              copilot = i("SNIP"),
+              copilot = i("AI"),
               snippets = i("SNIP"),
               dictionary = i("DICT"),
               git = i("GIT"),
               nvim_lsp = i("LSP"),
-              nvim_lsp_document_symbol = i("SYMB"),
+              nvim_lsp_document_symbol = i("LSP"),
               nvim_lsp_signature_help = i("SIG"),
               path = i("PATH"),
               rg = i("GREP"),
@@ -140,7 +120,6 @@ return {
             -- devicons require a patched font, e.g. from https://www.nerdfonts.com/
             if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
               local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
-
               if hl_group then vim_item.kind_hl_group = hl_group end
 
               if vim.g.use_devicons then
@@ -163,9 +142,12 @@ return {
                 vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
               end
 
-              -- use LSP kind icons for non-path completion items and specify a fallback icon
               if vim.g.use_devicons then
-                vim_item.kind = res.icons.lsp_kind[vim_item.kind] or res.icons.lsp_kind.Fallback
+                -- Use solid block instead of icon for tailwind color items to make swatches more usable
+                vim_item.kind = tw_hl_group and string.rep(res.icons.ui.fill_solid, 2)
+                  -- use LSP kind icons for non-path completion items and specify a fallback icon
+                  or res.icons.lsp_kind[vim_item.kind]
+                  or res.icons.lsp_kind.Fallback
               end
             end
 
@@ -290,24 +272,59 @@ return {
     },
 
     keys = function()
+      local has_cmp, cmp = pcall(require, "cmp")
+      local has_copilot_cmp = pcall(require, "copilot_cmp")
+      local has_copilot, copilot = pcall(require, "copilot.suggestion")
+
       -- The keymaps have Copilot/Codeium fallbacks for when there are no snippet actions
       return {
         {
+          "<C-j>",
+          function()
+            if has_copilot and not has_copilot_cmp then
+              return copilot.next()
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#CycleCompletions"](1)
+            elseif has_cmp and cmp.visible() then
+              return cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            elseif vim.snippet.active({ direction = 1 }) then
+              return vim.schedule(function() vim.snippet.jump(1) end)
+            else
+              return "<C-j>"
+            end
+          end,
+          expr = true,
+          mode = { "i", "s" },
+          desc = "Next copilot/codeium/cmp or snippet jump forward",
+        },
+
+        {
+          "<C-k>",
+          function()
+            if has_copilot and not has_copilot_cmp then
+              return copilot.prev()
+            elseif vim.g.codeium_enabled then
+              return vim.fn["codeium#CycleCompletions"](-1)
+            elseif has_cmp and cmp.visible() then
+              return cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            elseif vim.snippet.active({ direction = -1 }) then
+              return vim.schedule(function() vim.snippet.jump(-1) end)
+            else
+              return "<C-k>"
+            end
+          end,
+          expr = true,
+          mode = { "i", "s" },
+          desc = "Previous copilot/codeium/cmp or snippet jump backward",
+        },
+
+        {
           "<C-h>",
           function()
-            local has_cmp, cmp = pcall(require, "cmp")
-            local has_copilot_cmp = pcall(require, "copilot_cmp")
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
             if vim.snippet.active({ direction = -1 }) then
               vim.schedule(function() vim.snippet.jump(-1) end)
-            elseif has_copilot and not has_copilot_cmp then
-              if copilot.is_visible() then
-                copilot.dismiss()
-              else
-                local has_copilot_panel, copilot_panel = pcall(require, "copilot.panel")
-                if has_copilot_panel then copilot_panel.refresh() end
-              end
+            elseif has_copilot and not has_copilot_cmp and copilot.is_visible() then
+              copilot.dismiss()
             elseif vim.g.codeium_enabled then
               vim.api.nvim_feedkeys(vim.fn["codeium#Clear"](), "n", true)
             elseif has_cmp and cmp.visible() then
@@ -317,16 +334,12 @@ return {
             end
           end,
           mode = { "i", "s" },
-          desc = "Snippet jump back or copilot/codeium dismiss",
+          desc = "Snippet jump backward or dismiss copilot/codeium",
         },
 
         {
           "<C-l>",
           function()
-            local has_cmp, cmp = pcall(require, "cmp")
-            local has_copilot_cmp = pcall(require, "copilot_cmp")
-            local has_copilot, copilot = pcall(require, "copilot.suggestion")
-
             if vim.snippet.active({ direction = 1 }) then
               vim.schedule(function() vim.snippet.jump(1) end)
             elseif has_copilot and not has_copilot_cmp and copilot.is_visible() then
@@ -344,7 +357,7 @@ return {
             end
           end,
           mode = { "i", "s" },
-          desc = "Snippet jump forward or copilot/codeium accept",
+          desc = "Snippet jump forward or accept copilot/codeium",
         },
       }
     end,

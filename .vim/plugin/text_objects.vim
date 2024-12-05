@@ -1,4 +1,4 @@
-if exists('g:loaded_jamin_text_objects') || &cp | finish | endif
+if exists('g:loaded_jamin_text_objects') || &cp || has('nvim') | finish | endif
 let g:loaded_jamin_text_objects = 1
 
 " https://vimways.org/2018/transactions-pending/
@@ -51,9 +51,9 @@ endfunction
 
 "" keymaps {{{1
 " in indentation (indentation level without surrounding empty lines)
-xnoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
-onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
+xnoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
+onoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
 
 " around indentation (indentation level and any surrounding empty lines)
-xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
-onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
+xnoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>
+onoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>

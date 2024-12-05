@@ -35,12 +35,22 @@ return {
       vim.g.bullets_enabled_file_types = res.filetypes.writing
       vim.g.bullets_checkbox_markers = " x"
       vim.g.bullets_outline_levels = { "ROM", "ABC", "num", "abc", "rom", "std-" }
+      vim.g.bullets_set_mappings = false
       vim.g.bullets_custom_mappings = {
-        { "vmap", "<leader>mn", "<Plug>(bullets-renumber)" },
-        { "nmap", "<leader>mn", "<Plug>(bullets-renumber)" },
-        { "nmap", "<leader>m<Tab>", "<Plug>(bullets-toggle-checkbox)" },
+        { "imap", "<CR>", "<Plug>(bullets-newline)" },
+        { "inoremap", "<C-CR>", "<cr>" },
         { "inoremap", "<M-CR>", "<CR>" },
+        { "nmap", "o", "<Plug>(bullets-newline)" },
         { "nnoremap", "<M-o>", "o" },
+        { "nmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "vmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "nmap", "<leader>m<Tab>", "<Plug>(bullets-toggle-checkbox)" },
+        { "imap", "<C-t>", "<Plug>(bullets-demote)" },
+        { "imap", "<C-d>", "<Plug>(bullets-promote)" },
+        { "nmap", ">>", "<Plug>(bullets-demote)" },
+        { "nmap", "<<", "<Plug>(bullets-promote)" },
+        { "vmap", "<M->>", "<Plug>(bullets-demote)" },
+        { "vmap", "<M-<>", "<Plug>(bullets-promote)" },
       }
     end,
   },

@@ -6,6 +6,7 @@ return {
   -- the GOAT git plugin
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
+    dependencies = "vim-rhubarb",
     enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
@@ -49,6 +50,27 @@ return {
   },
 
   -----------------------------------------------------------------------------
+  -- Open file/selection in GitHub repo
+  {
+    dir = "~/.vim/pack/foo/opt/vim-rhubarb",
+    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
+    keys = {
+      {
+        "<leader>go",
+        ":GBrowse<CR>",
+        desc = "Open git object in browser (fugitive)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>gy",
+        ":GBrowse!<CR>",
+        desc = "Yoink git object URL (fugitive)",
+        mode = { "n", "v" },
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- [F]ugitive extension for viewing commit history [log]
   {
     "rbong/vim-flog",
@@ -70,6 +92,17 @@ return {
         mode = "v",
       },
     },
+    config = function()
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = { "floggraph" },
+        group = vim.api.nvim_create_augroup("jamin_floggraph_keymaps", {}),
+        callback = function(args)
+          local opts = { buffer = args.buf, noremap = true }
+          vim.keymap.set("n", "<M-d>", "<C-w>p<C-d><C-w>p", opts)
+          vim.keymap.set("n", "<M-u>", "<C-w>p<C-u><C-w>p", opts)
+        end,
+      })
+    end,
   },
 
   -----------------------------------------------------------------------------
@@ -259,7 +292,7 @@ return {
   -- GitHub integration, requires https://cli.github.com
   {
     "pwntester/octo.nvim",
-    -- dev = true,
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     enabled = vim.fn.executable("gh") == 1,
     cmd = "Octo",
     event = { { event = "BufReadCmd", pattern = "octo://*" } },
@@ -267,6 +300,7 @@ return {
     opts = {
       enable_builtin = true,
       default_merge_method = "squash",
+      default_delete_branch = true,
       default_to_projects_v2 = true,
       suppress_missing_scope = { projects_v2 = true },
       issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
@@ -278,9 +312,9 @@ return {
       reaction_viewer_hint_icon = res.i(nil, res.icons.ui.circle),
       repo_icon = res.i(nil, res.icons.ui.storage),
       user_icon = res.i(nil, res.icons.ui.user),
-      timeline_marker = res.i(nil, res.icons.ui.prompt),
       right_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
       left_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
+      timeline_marker = res.icons.ui.diamond,
       picker_config = {
         mappings = {
           open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },
@@ -304,11 +338,13 @@ return {
 
       vim.treesitter.language.register("markdown", "octo")
       vim.api.nvim_set_hl(0, "OctoBubble", { link = "CursorLine" })
+      vim.api.nvim_set_hl(0, "OctoStrikethrough", { fg = "#d3869b", strikethrough = true })
 
       vim.api.nvim_create_autocmd("BufEnter", {
         group = vim.api.nvim_create_augroup("jamin_octo_buffer_setup", {}),
         pattern = "octo://*",
         callback = function()
+          vim.opt.wrap = false
           vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {
             desc = "Open review thread (octo)",
             buffer = true,

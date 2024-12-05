@@ -1,4 +1,3 @@
-local res = require("jamin.resources")
 local M = {}
 
 --- Check parent directories for a target file
@@ -35,8 +34,6 @@ end
 
 -- from https://github.com/folke/dot/blob/master/nvim/lua/util/init.lua
 function M.cowboy()
-  ---@type table?
-  local id
   local ok = true
   for _, key in ipairs({ "h", "j", "k", "l" }) do
     local count = 0
@@ -44,20 +41,13 @@ function M.cowboy()
     local map = key
     vim.keymap.set("n", key, function()
       if vim.v.count > 0 then count = 0 end
-      if
-        count >= 10
-        and vim.bo.buftype ~= "nofile"
-        and not vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype)
-      then
-        ok, id = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
+      if count >= 10 and vim.bo.buftype ~= "nofile" then
+        ok = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
           icon = "🤠",
-          replace = id,
+          id = "cowboy",
           keep = function() return count >= 10 end,
         })
-        if not ok then
-          id = nil
-          return map
-        end
+        if not ok then return map end
       else
         count = count + 1
         reset_count()
@@ -73,6 +63,7 @@ function M.setup()
   require("jamin.utils.async_make").setup()
   require("jamin.utils.obsidian").setup()
   require("jamin.utils.statusline").setup()
+  require("jamin.utils").cowboy()
 end
 
 return M

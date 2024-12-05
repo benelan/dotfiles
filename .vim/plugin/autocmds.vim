@@ -143,7 +143,11 @@ augroup jamin_compilers_formatters
             \ | setlocal errorformat+=%C%*\\s%m
             \ | setlocal errorformat+=%-G%.%#
 
-    " Set up formatters
+
+    " Setup keyword programs
+    autocmd FileType vim,help setlocal keywordprg=:help
+
+    " Setup formatters
     if executable("npx")
         autocmd FileType json,yaml,markdown,mdx,css,scss,html,
             \astro,svelte,vue,{java,type}script{,react}

@@ -116,7 +116,7 @@ export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
 if supports go; then
     export GOROOT="/usr/local/go"
     export GOPATH="$HOME/.go"
-    export GOFLAGS="-trimpath" # -buildvcs=false
+    export GOFLAGS="-trimpath -buildvcs=false"
 fi
 
 # javascript {{{1

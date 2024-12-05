@@ -19,6 +19,8 @@
 !/.git{ignore,modules}
 !/.{dircolors,editorconfig,profile,xprofile,Xresources}
 !/dev/work/calcite-design-system/calcite-components.projections.json
+!/dev/lib/fzf
+!/dev/lib/neovim
 
 # ignore specific files within whitelisted directories
 /.config/vifm/vifm{-help,info}*

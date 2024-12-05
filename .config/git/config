@@ -287,6 +287,9 @@
     ; get the default branch
     bdefault = "!f() { (git remote set-head ${1:-origin} --auto || git remote set-head upstream --auto 2>/dev/null) | awk '{print $NF}'; }; f"
 
+    ; get the full list of branches
+    branches = "!f() { git for-each-ref refs/remotes refs/heads --sort=-committerdate --format='%(refname:short)' | awk '{gsub(\"^origin/(HEAD)?\",\"\")};!x[$0]++'; }; f"
+
     ; list of local branches and their most recent commit
     blist = branch --format='%(HEAD) %(color:yellow)%(refname:short)  %(color:reset)%(contents:subject)  %(color:magenta)(%(color:green)%(committerdate:relative)%(color:magenta))  %(color:magenta)<%(color:blue)%(authorname)%(color:magenta)>' --sort=-committerdate
 
@@ -314,20 +317,30 @@
     ; interactively add unstaged files using fzf
     fa = !FZF_DEFAULT_COMMAND='git ls-files --modified' \
         fzf --multi --no-sort \
-            --header='(enter: add) (alt-r: reset) (alt-x: restore) (alt-e: edit) (alt-o: open) (alt-y: copy)' \
+            --header='(enter: add) (alt-r: reset) (alt-X: restore) (alt-e: edit) (ctrl-o: open) (ctrl-y: copy)' \
             --preview='git diff --color=always {}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='alt-e:become($EDITOR {+})+abort' \
-            --bind='alt-o:execute(o {+})' \
-            --bind='alt-y:execute(echo {} | cb)' \
+            --bind='ctrl-o:execute-silent(o {+})' \
+            --bind='ctrl-y:execute-silent(cb<<<{})' \
             --bind='enter:execute(git add -- {+})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-r:execute(git reset -- {+})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
-            --bind='alt-x:execute(git restore -- {+})+reload(eval \"$FZF_DEFAULT_COMMAND\")'
+            --bind='alt-X:execute(git restore -- {+})+reload(eval \"$FZF_DEFAULT_COMMAND\")'
+
+    # interactively find/checkout/delete branches
+    fb =  !default_branch=$(git bdefault) FZF_DEFAULT_COMMAND=\"git branches\" \
+        fzf --multi --no-sort \
+            --header='(enter: checkout) (alt-X: delete) (ctrl-o: open pr) (ctrl-y: copy)' \
+            --preview=\"git diff $default_branch...{} --color=always 2>/dev/null || git diff $default_branch...origin/{} --color=always 2>/dev/null \" \
+            --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
+            --bind='enter:become(git checkout {})' \
+            --bind='ctrl-o:execute-silent(gh pr view --web {})' \
+            --bind='ctrl-y:execute-silent(cb<<<{})' \
+            --bind='alt-X:execute(echo {+} | xargs git branch -D)+reload(eval \"$FZF_DEFAULT_COMMAND\")'
 
     ; delete multiple branches
     fbd = !default_branch=$(git bdefault) \
-        && git for-each-ref refs/heads --sort=-committerdate \
-            --format='%(refname:short)' \
+        && git for-each-ref refs/heads --sort=-committerdate --format='%(refname:short)' \
         | fzf --ansi --multi --no-sort \
             --preview=\"git diff $default_branch...{1} --color=always\" \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
@@ -357,33 +370,33 @@
     fc = !git log --graph --color=always \
             --format='%C(cyan)%ad %C(auto)%d %s %C(black) %C(auto)%h ' \"$@\" \
         | fzf --ansi --no-sort --tiebreak=index \
-            --header='(enter: print sha) (alt-y: copy sha) (alt-o: checkout)' \
+            --header='(enter: print sha) (alt-o: checkout) (ctrl-y: copy sha)' \
             --preview='git show --color=always {-1}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='alt-o:become(git checkout {-1})' \
-            --bind='alt-y:become(echo {-1} | cb)' \
+            --bind='ctrl-y:execute-silent(cb<<<{-1})' \
             --bind='enter:become(echo {-1})' \
         || true
 
     ft = !FZF_DEFAULT_COMMAND='git tag --sort -version:refname' \
         fzf --no-sort --multi \
-            --header='(alt-x: delete) (alt-o: checkout)' \
+            --header='(alt-X: delete) (alt-o: checkout)' \
             --preview='git show --color=always {}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
-            --bind='alt-x:execute(git tag -d {})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
+            --bind='alt-X:execute(git tag -d {})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-o:become(git checkout {})'
 
     fst = !FZF_DEFAULT_COMMAND='git -c color.ui=always stash list \
             --pretty=\"%Cgreen%cr  %Creset%gs  %C(white dim)%h\"' \
         fzf --ansi --no-sort --no-multi --no-hscroll \
-            --header='(alt-x: drop) (alt-a: apply) (alt-o: checkout) (alt-f: fugitive)' \
+            --header='(alt-X: drop) (alt-a: apply) (alt-o: checkout) (alt-f: fugitive)' \
             --preview='git -c color.diff=always show {-1}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='enter:become(echo {-1})' \
             --bind='alt-a:become(git stash apply {n})' \
             --bind='alt-p:become(git stash pop {n})' \
             --bind='alt-f:execute:vim +\":packadd vim-fugitive | exe \\\"edit \\\".FugitiveFind({-1})\"' \
-            --bind='alt-x:execute(git stash drop {n})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
+            --bind='alt-X:execute(git stash drop {n})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-o:become(git stash branch stash-{-1} {n})'
 
     ;----------------------------------------------------------------------------
