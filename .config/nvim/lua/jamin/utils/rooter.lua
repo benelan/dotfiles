@@ -1,11 +1,10 @@
 --  Git (worktree) and Project (lsp) root finders, adopted from:
 -- https://github.com/akinsho/dotfiles/blob/main/.config/nvim/plugin/rooter.lua
---------------------------------------------------------------------------------
 local M = {}
 
 local root_markers = { "package.json", "Dockerfile", "Makefile" }
-local ignored_lsps = { "null-ls", "copilot", "eslint" }
-local ignored_paths = { "~/.local/share/nvim/lazy" }
+local ignored_lsps = { "copilot", "efm", "eslint" }
+local ignored_paths = { "~/.local" }
 
 -- Cache to use for speed up (at cost of possibly outdated results)
 local lsp_root_cache = {}
@@ -63,7 +62,7 @@ function M.project(args)
   -- Try cache and resort to searching upward for root directory
   local root = lsp_root_cache[path]
   if not root then
-    -- swapping the order will prefer matches to lsp roots vs root_names
+    -- swap the order to prefer lsp's root_dir vs the root_markers defined above
     root = get_file_root(root_markers, path)
       or get_lsp_root(args and args.buf and args.buf or 0, ignored_lsps)
   end
@@ -117,7 +116,7 @@ M.setup = function()
   -- keymaps for the user commands
   vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
   vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project (lsp) root" })
-  vim.keymap.set("n", "cd", "<CMD>lcd %:h <bar> pwd<CR>", { desc = "Change directory to buffer" })
+  vim.keymap.set("n", "cd", "<CMD>lcd %:h <BAR> pwd<CR>", { desc = "Change directory to buffer" })
 end
 
 return M
