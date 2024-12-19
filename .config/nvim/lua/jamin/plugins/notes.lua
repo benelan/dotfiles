@@ -2,6 +2,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -----------------------------------------------------------------------------
   -- Keymaps for plaintext tables

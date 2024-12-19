@@ -400,6 +400,7 @@ M.icons.test = {
   running_animated = M.icons.progress,
 }
 
+---@type vim.diagnostic.Opts
 M.diagnostics = {
   virtual_text = {
     severity = { min = vim.diagnostic.severity.WARN },

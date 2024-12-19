@@ -14,22 +14,9 @@ return {
       -- "nvim-neotest/neotest-go",
     },
 
-    config = function()
-      vim.diagnostic.config({
-        virtual_text = {
-          format = function(diagnostic)
-            -- Replace newline and tab characters with space for more compact diagnostics
-            ---@diagnostic disable-next-line: redundant-return-value
-            return diagnostic.message
-              :gsub("\n", " ")
-              :gsub("\t", " ")
-              :gsub("%s+", " ")
-              :gsub("^%s+", "")
-          end,
-        },
-      }, vim.api.nvim_create_namespace("neotest"))
-
-      require("neotest").setup({
+    opts = function()
+      ---@type neotest.Config
+      return {
         output = { open_on_run = true },
         status = { virtual_text = true },
         floating = { border = res.icons.border },
@@ -48,7 +35,25 @@ return {
             end,
           }),
         },
-      })
+      }
+    end,
+
+    config = function(_, opts)
+      require("neotest").setup(opts)
+
+      vim.diagnostic.config({
+        virtual_text = {
+          format = function(diagnostic)
+            -- Replace newline and tab characters with space for more compact diagnostics
+            ---@diagnostic disable-next-line: redundant-return-value
+            return diagnostic.message
+              :gsub("\n", " ")
+              :gsub("\t", " ")
+              :gsub("%s+", " ")
+              :gsub("^%s+", "")
+          end,
+        },
+      }, vim.api.nvim_create_namespace("neotest"))
     end,
 
     keys = {

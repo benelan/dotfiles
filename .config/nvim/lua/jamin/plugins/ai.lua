@@ -29,6 +29,7 @@ end
 function M.toggle_copilot(dir) vim.cmd.Copilot(M.should_use_copilot(dir) and "enable" or "disable") end
 function M.toggle_codeium(dir) vim.cmd.Codeium(M.should_use_codeium(dir) and "Enable" or "Disable") end
 
+---@type LazySpec
 return {
   utils = M,
   -----------------------------------------------------------------------------
@@ -57,32 +58,33 @@ return {
 
       local has_copilot_cmp = pcall(require, "copilot_cmp")
 
-      require("copilot").setup({
-        filetypes = vim
-          .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
-          :fold({}, function(acc, k)
-            acc[k] = false
-            return acc
-          end),
-        panel = {
-          enabled = not has_copilot_cmp,
-          layout = { position = "right", ratio = 0.3 },
-          keymap = {
-            jump_next = "]",
-            jump_prev = "[",
-            refresh = "<CR>",
-            accept = "<Tab>",
+      require("copilot")
+        .setup --[[@as copilot_config]]({
+          filetypes = vim
+            .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
+            :fold({}, function(acc, k)
+              acc[k] = false
+              return acc
+            end),
+          panel = {
+            enabled = not has_copilot_cmp,
+            layout = { position = "right", ratio = 0.3 },
+            keymap = {
+              jump_next = "]",
+              jump_prev = "[",
+              refresh = "<CR>",
+              accept = "<Tab>",
+            },
           },
-        },
-        suggestion = {
-          enabled = not has_copilot_cmp and not vim.g.codeium_enabled,
-          auto_trigger = true,
-          keymap = {
-            accept = false, -- remapped below to add fallback
-            accept_word = "<M-l>",
+          suggestion = {
+            enabled = not has_copilot_cmp and not vim.g.codeium_enabled,
+            auto_trigger = true,
+            keymap = {
+              accept = false, -- remapped below to add fallback
+              accept_word = "<M-l>",
+            },
           },
-        },
-      })
+        })
     end,
 
     keys = {
@@ -140,6 +142,7 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     -- cond = M.should_use_copilot(),
     branch = "main",
+    ---@type CopilotChat.config
     opts = {
       window = { border = res.icons.border },
       mappings = {

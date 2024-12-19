@@ -3,6 +3,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -- Installer/manager for language servers, linters, formatters, and debuggers
   {
@@ -10,6 +11,8 @@ return {
     lazy = true,
     build = ":MasonUpdate",
     keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
+
+    ---@type MasonSettings
     opts = {
       ensure_installed = res.mason_packages,
       ui = { border = res.icons.border, height = 0.8 },
@@ -45,6 +48,7 @@ return {
       },
     },
 
+    ---@type MasonLspconfigSettings
     opts = {
       ensure_installed = res.lsp_servers,
       handlers = {
@@ -57,6 +61,7 @@ return {
           local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
           local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server_name)
 
+          ---@type lsp.ClientCapabilities
           local capabilities_overrides = {
             telemetry = false,
             textDocument = {

@@ -2,6 +2,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -----------------------------------------------------------------------------
   -- completes words from a dictionary file
@@ -60,6 +61,7 @@ return {
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
       local has_copilot_cmp, copilot_comparators = pcall(require, "copilot_cmp.comparators")
 
+      ---@type cmp.ConfigSchema
       return {
         confirmation = { default_behavior = cmp.ConfirmBehavior.Replace },
         preselect = cmp.PreselectMode.None,
@@ -119,7 +121,7 @@ return {
             -- use devicons when completing paths (if enabled/installed)
             -- devicons require a patched font, e.g. from https://www.nerdfonts.com/
             if vim.tbl_contains({ "path" }, entry.source.name) and has_devicons then
-              local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
+              local icon, hl_group = devicons.get_icon(entry.completion_item.label)
               if hl_group then vim_item.kind_hl_group = hl_group end
 
               if vim.g.use_devicons then
@@ -236,8 +238,10 @@ return {
     end,
 
     config = function(_, opts)
-      require("cmp").setup(opts)
-      require("cmp").setup.cmdline({ "/", "?" }, {
+      ---@type cmp.Setup
+      local cmp_setup = require("cmp").setup
+      cmp_setup(opts)
+      cmp_setup.cmdline({ "/", "?" }, {
         -- mapping = require("cmp").mapping.preset.cmdline(),
         sources = {
           { name = "nvim_lsp_document_symbol" },
@@ -252,6 +256,7 @@ return {
   {
     "garymjr/nvim-snippets",
     dependencies = { "rafamadriz/friendly-snippets" },
+    ---@type snippets.config.Options
     opts = {
       friendly_snippets = true,
       global_snippets = { "all", "global" },

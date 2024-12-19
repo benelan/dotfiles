@@ -2,6 +2,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -- open rule documentation for linters
   {

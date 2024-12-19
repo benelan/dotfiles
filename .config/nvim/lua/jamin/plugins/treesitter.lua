@@ -2,6 +2,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -- set commentstring based on treesitter node
   { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
@@ -95,6 +96,7 @@ return {
         return n, p
       end)()
 
+      ---@type TSConfig
       return {
         ensure_installed = res.treesitter_parsers,
         indent = { enable = true },

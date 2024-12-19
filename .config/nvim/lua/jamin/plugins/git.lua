@@ -2,12 +2,13 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -- the GOAT git plugin
   {
     dir = "~/.vim/pack/foo/opt/vim-fugitive",
     dependencies = "vim-rhubarb",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-fugitive"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/vim-fugitive")) == 1,
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
     keys = {
@@ -53,7 +54,7 @@ return {
   -- Open file/selection in GitHub repo
   {
     dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/vim-rhubarb"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/vim-rhubarb")) == 1,
     keys = {
       {
         "<leader>go",
@@ -271,6 +272,7 @@ return {
       },
     },
 
+    ---@type Gitsigns.Config
     opts = {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
@@ -297,6 +299,7 @@ return {
     cmd = "Octo",
     event = { { event = "BufReadCmd", pattern = "octo://*" } },
 
+    ---@type OctoConfig
     opts = {
       enable_builtin = true,
       default_merge_method = "squash",

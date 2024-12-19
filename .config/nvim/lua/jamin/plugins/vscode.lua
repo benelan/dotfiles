@@ -52,6 +52,7 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
+---@type LazySpec
 return {
   {
     "nvim-treesitter/nvim-treesitter",

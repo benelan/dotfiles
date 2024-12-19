@@ -2,13 +2,14 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -----------------------------------------------------------------------------
   -- keymaps/autocmds/utils/etc from my vim config (too lazy to lua-ify everything)
   {
     dir = "~/.vim",
     priority = 90,
-    enabled = vim.fn.isdirectory("~/.vim"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim")) == 1,
     lazy = false,
     vscode = true,
   },
@@ -17,7 +18,7 @@ return {
   -- helps visualize and navigate the undo tree - see :h undo-tree
   {
     dir = "~/.vim/pack/foo/opt/undotree",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/opt/undotree"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/undotree")) == 1,
     cmd = "UndotreeToggle",
     keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
     init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
@@ -27,7 +28,7 @@ return {
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-eunuch"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-eunuch")) == 1,
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {

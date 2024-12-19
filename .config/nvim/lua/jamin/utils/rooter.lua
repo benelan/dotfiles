@@ -37,6 +37,7 @@ end
 ---@return string?
 ---@return string?
 local function get_lsp_root(buf, ignore)
+  ---@type vim.lsp.Client[]
   local clients = vim.lsp.get_clients({ bufnr = buf })
   if not next(clients) then return end
 

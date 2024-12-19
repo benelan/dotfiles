@@ -3,6 +3,7 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
   -- add print statements for debugging
   {
@@ -383,6 +384,7 @@ return {
           },
         },
 
+        ---@type dapui.Config
         opts = {
           expand_lines = false,
           controls = { enabled = false },

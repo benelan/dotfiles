@@ -2,13 +2,13 @@
 
 local res = require("jamin.resources")
 
+---@type LazySpec
 return {
-
   -----------------------------------------------------------------------------
   -- adds closing brackets only when pressing enter
   {
     dir = "~/.vim/pack/foo/start/vim-closer",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-closer"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-closer")) == 1,
     config = function()
       -- setup files that can contain javascript which aren't included by default
       vim.api.nvim_create_autocmd("FileType", {
@@ -28,7 +28,7 @@ return {
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-repeat"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-repeat")) == 1,
     event = "CursorHold",
   },
 
@@ -36,7 +36,7 @@ return {
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
   {
     dir = "~/.vim/pack/foo/start/vim-surround",
-    enabled = vim.fn.isdirectory("~/.vim/pack/foo/start/vim-surround"),
+    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-surround")) == 1,
     keys = { "cs", "ds", "ys" },
     config = function()
       vim.cmd([[
@@ -54,6 +54,8 @@ return {
   {
     "folke/flash.nvim",
     event = "CursorHold",
+
+    ---@type Flash.Config
     opts = {
       jump = { autojump = true },
       modes = { char = { enabled = false } },
@@ -65,6 +67,7 @@ return {
         ),
       },
     },
+
     keys = {
       -- default options: exact mode, multi window, all directions, with a backdrop
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
