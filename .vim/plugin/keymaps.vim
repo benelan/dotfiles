@@ -31,10 +31,6 @@ vnoremap > >gv
 vnoremap & :&&<CR>
 nnoremap & :&&<CR>
 
-" Add empty lines before and after cursor line
-nnoremap ]<space> :call append(line('.'), repeat([''], v:count1))<CR>
-nnoremap [<space> :call append(line('.') - 1, repeat([''], v:count1))<CR>
-
 " When joining, do the right thing to join up function definitions
 vnoremap J J:s/( /(/g<CR>:s/,)/)/g<CR>
 

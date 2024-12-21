@@ -111,30 +111,9 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
-
     keys = {
-      {
-        "]c",
-        function()
-          if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("next") end)
-          return "<Ignore>"
-        end,
-        expr = true,
-        mode = "n",
-        desc = "Next hunk (gitsigns)",
-      },
-      {
-        "[c",
-        function()
-          if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
-          return "<Ignore>"
-        end,
-        expr = true,
-        mode = "n",
-        desc = "Previous hunk (gitsigns)",
-      },
+      "]c",
+      "[c",
       {
         "]h",
         function()
@@ -274,6 +253,31 @@ return {
 
     ---@type Gitsigns.Config
     opts = {
+      on_attach = function(bufnr)
+        vim.keymap.set("n", "]c", function()
+          if vim.wo.diff then return "]c" end
+          vim.schedule(function() require("gitsigns").nav_hunk("next") end)
+          return "<Ignore>"
+        end, {
+          silent = true,
+          noremap = true,
+          expr = true,
+          buffer = bufnr,
+          desc = "Next hunk (gitsigns)",
+        })
+
+        vim.keymap.set("n", "[c", function()
+          if vim.wo.diff then return "[c" end
+          vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
+          return "<Ignore>"
+        end, {
+          silent = true,
+          noremap = true,
+          expr = true,
+          buffer = bufnr,
+          desc = "Previous hunk (gitsigns)",
+        })
+      end,
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
       preview_config = { border = res.icons.border },

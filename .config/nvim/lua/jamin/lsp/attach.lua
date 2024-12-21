@@ -2,6 +2,11 @@ return function(args)
   local client = vim.lsp.get_client_by_id(args.data.client_id)
   if client == nil then return end
 
+  if client:supports_method("textDocument/foldingRange") then
+    vim.wo.foldmethod = "expr"
+    vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+  end
+
   -- disable formatting for some LSP servers in favor of better standalone programs
   -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)
   if
@@ -28,7 +33,7 @@ return function(args)
   bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
   bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
-  if client.supports_method("textDocument/formatting") then
+  if client:supports_method("textDocument/formatting") then
     -- if the LSP server has formatting capabilities, use it for formatexpr
     vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
     bufmap(
@@ -39,37 +44,20 @@ return function(args)
     )
   end
 
-  if client.supports_method("textDocument/definition") then
+  if client:supports_method("textDocument/definition") then
     bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
     bufmap("n", "grp", require("jamin.lsp").peek_definition, "LSP peek definition")
   end
 
-  if client.supports_method("textDocument/declaration") then
+  if client:supports_method("textDocument/declaration") then
     bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
   end
 
-  if client.supports_method("textDocument/typeDefinition") then
+  if client:supports_method("textDocument/typeDefinition") then
     bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
   end
 
-  if client.supports_method("textDocument/references") then
-    bufmap("n", "grr", vim.lsp.buf.references, "LSP references")
-  end
-
-  if client.supports_method("textDocument/rename") then
-    bufmap("n", "grn", vim.lsp.buf.rename, "LSP rename")
-  end
-
-  if client.supports_method("textDocument/implementation") then
-    bufmap("n", "gri", vim.lsp.buf.implementation, "LSP implementation")
-  end
-
-  if client.supports_method("textDocument/signatureHelp") then
-    bufmap("i", "<C-s>", vim.lsp.buf.signature_help, "LSP signature help")
-  end
-
-  if client.supports_method("textDocument/codeAction") then
-    bufmap({ "n", "v" }, "gra", vim.lsp.buf.code_action, "Code action")
+  if client:supports_method("textDocument/codeAction") then
     bufmap(
       { "n", "v" },
       "ga",
@@ -86,7 +74,7 @@ return function(args)
     vim.lsp.inlay_hint
     and vim.api.nvim_buf_is_valid(args.buf)
     and vim.bo[args.buf].buftype == ""
-    and client.supports_method("textDocument/inlayHint")
+    and client:supports_method("textDocument/inlayHint")
   then
     bufmap(
       "n",

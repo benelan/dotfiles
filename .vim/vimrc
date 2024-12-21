@@ -135,6 +135,10 @@ if has("keymap")
 
     nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
 
+    " Add empty lines before and after cursor line
+    nnoremap ]<space> :call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap [<space> :call append(line('.') - 1, repeat([''], v:count1))<CR>
+
     "" misc insert/terminal/command mode keymaps {{{2
     inoremap <C-U> <C-G>u<C-U>
     inoremap <C-W> <C-G>u<C-W>

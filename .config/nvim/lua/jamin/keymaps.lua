@@ -35,7 +35,7 @@ end
 keymap("n", "dm", function()
   local cur_line = vim.fn.line(".")
   -- Delete buffer local mark
-  for _, mark in ipairs(vim.fn.getmarklist("%")) do
+  for _, mark in ipairs(vim.fn.getmarklist(0)) do
     if mark.pos[2] == cur_line and mark.mark:match("[a-zA-Z]") then
       vim.api.nvim_buf_del_mark(0, string.sub(mark.mark, 2, #mark.mark))
       return
@@ -67,27 +67,35 @@ keymap("n", "<M-i>", "<CMD>cnewer<CR>", "Next quickfix list")
 keymap(
   "n",
   "]e",
-  function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR, float = true }) end,
+  function()
+    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true })
+  end,
   "Next diagnostic error"
 )
 
 keymap(
   "n",
   "[e",
-  function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, float = true }) end,
+  function()
+    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true })
+  end,
   "Previous diagnostic error"
 )
 
 keymap(
   "n",
   "]w",
-  function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN, float = true }) end,
+  function()
+    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN, float = true })
+  end,
   "Next diagnostic warning"
 )
 
 keymap(
   "n",
   "[w",
-  function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN, float = true }) end,
+  function()
+    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN, float = true })
+  end,
   "Previous diagnostic warning"
 )
