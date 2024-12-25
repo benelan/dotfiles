@@ -59,9 +59,13 @@ keymap("n", "<A-k>", "<CMD>execute 'move .-' . (v:count1 + 1)<CR>==", "Move line
 keymap("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<CR>gv=gv", "Move line down")
 keymap("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<CR>gv=gv", "Move line up")
 
--- Switch quickfix list
-keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
+-- Change quickfix list
 keymap("n", "<M-i>", "<CMD>cnewer<CR>", "Next quickfix list")
+keymap("n", "<M-o>", "<CMD>colder<CR>", "Previous quickfix list")
+
+-- Change quickfix item
+keymap("n", "<M-n>", "<CMD>cnext<CR>", "Next quickfix item")
+keymap("n", "<M-p>", "<CMD>cprev<CR>", "Previous quickfix item")
 
 -- Goto diagnostics error/warning
 keymap(

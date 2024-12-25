@@ -71,6 +71,11 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 "" wipe all registers {{{2
 command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
+"" toggle quickfix/location lists open/close {{{2
+command! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
+
+nnoremap <C-q> <CMD>QfToggle<CR>
+
 "" save the value of the last visual selection {{{2
 function! VisualSelection(...) range
     let l:saved_reg = @"

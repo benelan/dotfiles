@@ -63,6 +63,7 @@ function M.setup()
   require("jamin.utils.async_make").setup()
   require("jamin.utils.obsidian").setup()
   require("jamin.utils.statusline").setup()
+  require("jamin.utils.qf_follow").setup()
   require("jamin.utils").cowboy()
 end
 

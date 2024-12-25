@@ -69,24 +69,6 @@ return {
   { "nvim-lua/plenary.nvim", lazy = true },
 
   -----------------------------------------------------------------------------
-  -- quickfix/location list helper
-  {
-    "stevearc/qf_helper.nvim",
-    event = "FileType qf",
-    cmd = { "QFToggle", "LLToggle", "QNext", "QPrev", "Cclear", "Lclear", "Keep", "Reject" },
-    opts = {
-      quickfix = { default_bindings = false },
-      loclist = { default_bindings = false },
-    },
-    keys = {
-      { "<M-n>", "<CMD>QNext<CR>", mode = "n", desc = "Next quickfix/location list item" },
-      { "<M-p>", "<CMD>QPrev<CR>", mode = "n", desc = "Previous quickfix/location list item" },
-      { "<C-q>", "<CMD>QFToggle!<CR>", mode = "n", desc = "Toggle quickfix" },
-      { "<M-q>", "<CMD>LLToggle!<CR>", mode = "n", desc = "Toggle location" },
-    },
-  },
-
-  -----------------------------------------------------------------------------
   -- various small QoL improvements
   {
     "folke/snacks.nvim",
