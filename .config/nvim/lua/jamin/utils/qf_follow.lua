@@ -1,5 +1,5 @@
----Follow the cursor's position in the quickfix list.
----Taken from: https://github.com/stevearc/quicker.nvim
+--- Follow the cursor's position in the quickfix list. Taken from: 
+--- https://github.com/stevearc/quicker.nvim/blob/e4fb0b1862284757561d1d51091cdee907585948/lua/quicker/follow.lua
 local M = {}
 
 ---@param loclist_win? integer Check if loclist is open for the given window. If nil, check quickfix.

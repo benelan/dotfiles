@@ -1,6 +1,6 @@
 {
   "StencilJS Component": {
-    "prefix": "Component-stencil",
+    "prefix": "class-stencil",
     "body": [
       "import { Component, Prop, h } from \"@stencil/core\";\n",
       "@Component({",
@@ -21,7 +21,7 @@
     "description": "StencilJS Component"
   },
   "StencilJS FunctionalComponent": {
-    "prefix": "FunctionalComponent-stencil",
+    "prefix": "functional-stencil",
     "body": [
       "import { FunctionalComponent, Prop, h } from \"@stencil/core\";\n",
       "interface ${1:Component}Props {",

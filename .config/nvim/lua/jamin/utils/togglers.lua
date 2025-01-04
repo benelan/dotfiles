@@ -79,8 +79,7 @@ local virtual_text_disabled = false
 function M.diagnostics_virtual_text()
   virtual_text_disabled = not virtual_text_disabled
   vim.diagnostic.config({
-    virtual_text = virtual_text_disabled and false
-      or require("jamin.resources").diagnostics.virtual_text,
+    virtual_text = not virtual_text_disabled and res.diagnostics.virtual_text or false,
   })
   vim.notify(
     string.format(

@@ -336,6 +336,12 @@ return {
         },
         pull_request = {
           open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" },
+          resolve_thread = { lhs = "<localleader>tr", desc = "resolve PR thread" },
+          unresolve_thread = { lhs = "<localleader>tu", desc = "unresolve PR thread" },
+        },
+        review_thread = {
+          resolve_thread = { lhs = "<localleader>tr", desc = "resolve PR thread" },
+          unresolve_thread = { lhs = "<localleader>tu", desc = "unresolve PR thread" },
         },
       },
     },
@@ -354,14 +360,6 @@ return {
           vim.opt.wrap = false
           vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {
             desc = "Open review thread (octo)",
-            buffer = true,
-          })
-          vim.keymap.set("n", "<localleader>tr", "<CMD>Octo thread resolve<CR>", {
-            desc = "Resolve review thread (octo)",
-            buffer = true,
-          })
-          vim.keymap.set("n", "<localleader>tu", "<CMD>Octo thread unresolve<CR>", {
-            desc = "Unresolve review thread (octo)",
             buffer = true,
           })
         end,

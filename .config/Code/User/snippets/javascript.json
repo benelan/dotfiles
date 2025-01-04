@@ -101,12 +101,12 @@
     "prefix": "onready-stencil",
     "body": [
       "(async () => {",
-      "  const tag = \"$1\";",
-      "  await customElements.whenDefined(tag);",
-      "  const el = await document.querySelector(tag).componentOnReady();",
-      "  requestAnimationFrame(() => {",
-      "    $0",
-      "  })",
+      "\tconst tag = \"$1\";",
+      "\tawait customElements.whenDefined(tag);",
+      "\tconst el = await document.querySelector(tag).componentOnReady();",
+      "\trequestAnimationFrame(() => {",
+      "\t\t$0",
+      "\t})",
       "})();"
     ],
     "description": "Wait for a StencilJS component to load before interacting with it."

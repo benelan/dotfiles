@@ -1,5 +1,5 @@
 --- Runs makeprg asynchronously and populates the quickfix list with errors
--- https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+--- https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
 local M = {}
 
 function M.async_make(ctx)

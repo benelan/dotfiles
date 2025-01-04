@@ -38,15 +38,6 @@ return {
     dir = "~/.vim/pack/foo/start/vim-surround",
     enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-surround")) == 1,
     keys = { "cs", "ds", "ys" },
-    config = function()
-      vim.cmd([[
-        " C-style comment
-        let g:surround_{char2nr('c')} = "/* \r */"
-        " markdown bold and strikethrough
-        let g:surround_{char2nr('8')} = "**\r**"
-        let g:surround_{char2nr('s')} = "~~\r~~"
-      ]])
-    end,
   },
 
   -----------------------------------------------------------------------------

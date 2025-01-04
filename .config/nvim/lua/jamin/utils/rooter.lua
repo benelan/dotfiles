@@ -1,5 +1,5 @@
---  Git (worktree) and Project (lsp) root finders, adopted from:
--- https://github.com/akinsho/dotfiles/blob/main/.config/nvim/plugin/rooter.lua
+---  Root finders with Git (worktree) and Project (lsp) sources. Adopted from:
+--- https://github.com/akinsho/dotfiles/blob/b1b7d58c9961f17af142700c6fd0fed501628745/.config/nvim/plugin/rooter.lua
 local M = {}
 
 local root_markers = { "package.json", "Dockerfile", "Makefile" }

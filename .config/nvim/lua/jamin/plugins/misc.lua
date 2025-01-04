@@ -84,7 +84,7 @@ return {
       zen = {
         enabled = false,
         ---@type snacks.win.Config
-        win = { wo = { colorcolumn = "0" } },
+        win = { wo = { colorcolumn = "" } },
       },
       dashboard = {
         enabled = vim.g.use_devicons,
@@ -97,6 +97,7 @@ return {
             icon = res.icons.git.branch,
             cwd = true,
             padding = 1,
+            enabled = function() return Snacks.git.get_root() ~= nil end,
           },
           {
             action = ":Flog",
@@ -105,6 +106,7 @@ return {
             icon = res.icons.git.history,
             cwd = true,
             padding = 1,
+            enabled = function() return Snacks.git.get_root() ~= nil end,
           },
           { section = "keys", gap = 1, padding = 1 },
           {
@@ -114,6 +116,12 @@ return {
             indent = 2,
             -- gap = 1,
             -- padding = 2,
+            filter = function(file)
+              return not vim.tbl_contains(
+                { "COMMIT_EDITMSG", "package-lock.json" },
+                vim.fs.basename(file)
+              )
+            end,
           },
           -- { section = "startup" },
         },
@@ -123,7 +131,8 @@ return {
     keys = {
       { "<leader><BS>", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
-      { "<leader>bD", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+      { "<leader>bD", function() Snacks.bufdelete.all() end, desc = "Delete All Buffers" },
+      { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
       { "<leader>gB", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
       { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
       { "<leader>,", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
@@ -160,6 +169,7 @@ return {
     },
 
     init = function()
+      vim.g.snacks_animate = false
       vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
         callback = function()

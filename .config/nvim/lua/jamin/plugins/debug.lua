@@ -36,7 +36,7 @@ return {
 
     keys = {
       {
-        "<leader>d<CR>",
+        "<leader>ds",
         function()
           local has_rooter, rooter = pcall(require, "jamin.utils.rooter")
 
@@ -70,37 +70,42 @@ return {
         desc = "Start/Continue (debug)",
       },
       {
-        "<leader>d<Space>",
+        "<leader>dp",
         function() require("dap").pause() end,
         desc = "Pause (debug)",
       },
       {
-        "<leader>d<Delete>",
+        "<leader>dt",
         function() require("dap").terminate() end,
         desc = "Terminate session (debug)",
       },
       {
-        "<leader>d<Tab>",
+        "<leader>db",
         function() require("dap").toggle_breakpoint() end,
         desc = "Toggle breakpoint (debug)",
       },
       {
-        "<leader>dL",
+        "<leader>dm",
         function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end,
         desc = "Log breakpoint (debug)",
       },
       {
-        "<leader>dC",
+        "<leader>dc",
         function() require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: ")) end,
         desc = "Conditional breakpoint (debug)",
       },
       {
-        "<leader>dX",
+        "<leader>de",
+        function() require("dap").set_exception_breakpoints() end,
+        desc = "Exception breakpoints (debug)",
+      },
+      {
+        "<leader>dx",
         function() require("dap").clear_breakpoints() end,
         desc = "Clear breakpoints (debug)",
       },
       {
-        "<leader>dQ",
+        "<leader>dq",
         function() require("dap").list_breakpoints() end,
         desc = "List breakpoints (debug)",
       },
@@ -111,7 +116,7 @@ return {
       },
       {
         "<leader>dj",
-        function() require("dap").step_into() end,
+        function() require("dap").step_into({ askForTargets = true }) end,
         desc = "Step into (debug)",
       },
       {
@@ -202,6 +207,11 @@ return {
       vscode.json_decode = function(str)
         return vim.json.decode(require("plenary.json").json_strip_comments(str, {}))
       end
+
+      dap.defaults.fallback.external_terminal = {
+        command = "/usr/bin/wezterm",
+        args = { "-e" },
+      }
 
       -------------------------------------------------------------------------
       -- Adapters

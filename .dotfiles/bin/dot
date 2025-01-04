@@ -381,25 +381,44 @@ install_packages_neovim() {
     # install/update devdocs.io nvim plugin sources
     devdoc_sources=(
         astro
+        # babel-7
         bash
         browser_support_tables
         css
+        # d3-7
         docker
         dom
+        # electron
         esbuild
+        eslint
+        # git
         gnu_make
         go
         html
+        # htmx
         http
         javascript
         jest
         jq
         jsdoc
+        # kubernetes
+        # lodash-4
         lua-5.1
         markdown
+        # moment
+        # moment_timezone
+        nextjs
+        nginx
+        # nginx_lua_module
         node
         npm
+        # playwright
+        # puppeteer
+        # python-3.13
         react
+        # react_native
+        # react_router
+        # rust
         sass
         sqlite
         svelte
@@ -407,8 +426,13 @@ install_packages_neovim() {
         tailwindcss
         typescript
         vite
+        vitest
         vue-3
-        webpack-5
+        # vue_router-4
+        # vueuse
+        # vuex-4
+        # web_extensions
+        # webpack-5
     )
 
     installed_count="$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)"
@@ -1931,7 +1955,9 @@ install_build_neovim() {
     neovim_head="$(git rev-parse HEAD)"
 
     git fetch --all --tags --force
-    git reset --hard origin/master
+    git reset --hard
+    git checkout origin/master
+    git pull origin master
     git checkout nightly
 
     if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then

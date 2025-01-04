@@ -357,7 +357,7 @@ return {
 
     opts = {
       settings = {
-        save_on_toggle = true,
+        -- save_on_toggle = true,
         sync_on_ui_close = true,
         key = function()
           -- Use a git remote url as the key for projects

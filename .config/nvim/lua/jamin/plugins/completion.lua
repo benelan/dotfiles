@@ -1,6 +1,7 @@
 ---Plugins for text completion and snippet expansion
 
 local res = require("jamin.resources")
+local cmp_fixes = require("jamin.utils.cmp_fixes")
 
 ---@type LazySpec
 return {
@@ -68,10 +69,10 @@ return {
 
         mapping = {
           -- add separate mappings for 'insert' and 'replace' completion confirmation behavior
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<C-Y>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { "i", "s" }),
+          ["<CR>"] = cmp_fixes.confirm({ select = false }),
+          ["<C-Y>"] = cmp.mapping(cmp_fixes.confirm({ select = true }), { "i", "s" }),
           ["<C-y>"] = cmp.mapping(
-            cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
+            cmp_fixes.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
             { "i", "s", "c" }
           ),
 
@@ -91,6 +92,10 @@ return {
             cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
             { "i", "s", "c" }
           ),
+        },
+
+        snippet = {
+          expand = function(item) return cmp_fixes.expand(item.body) end,
         },
 
         window = {
@@ -238,16 +243,16 @@ return {
     end,
 
     config = function(_, opts)
-      ---@type cmp.Setup
-      local cmp_setup = require("cmp").setup
-      cmp_setup(opts)
-      cmp_setup.cmdline({ "/", "?" }, {
-        -- mapping = require("cmp").mapping.preset.cmdline(),
-        sources = {
-          { name = "nvim_lsp_document_symbol" },
-          { name = "buffer" },
-        },
-      })
+      cmp_fixes.setup(opts)
+      require("cmp")
+        .setup--[[@as cmp.Setup]]
+        .cmdline({ "/", "?" }, {
+          -- mapping = require("cmp").mapping.preset.cmdline(),
+          sources = {
+            { name = "nvim_lsp_document_symbol" },
+            { name = "buffer" },
+          },
+        })
     end,
   },
 
@@ -260,7 +265,7 @@ return {
     opts = {
       friendly_snippets = true,
       global_snippets = { "all", "global" },
-      search_paths = { vim.fs.normalize("$XDG_CONFIG_HOME/Code/User/snippets") },
+      search_paths = { vim.fs.normalize("$XDG_CONFIG_HOME/Code/User") },
       extended_filetypes = {
         scss = { "css" },
         markdown = { "license" },
@@ -355,7 +360,7 @@ return {
               vim.api.nvim_feedkeys(vim.fn["codeium#AcceptNextLine"](), "n", true)
               vim.g.codeium_tab_fallback = nil
             elseif has_cmp and cmp.visible() then
-              cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
+              cmp_fixes.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
             else
               -- fallback to "redrawing" the buffer like readline's mapping
               vim.cmd("nohlsearch | diffupdate | syntax sync fromstart")

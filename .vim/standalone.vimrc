@@ -1,7 +1,8 @@
+" vim:filetype=vim:foldmethod=marker:
+source $VIMRUNTIME/defaults.vim
+
 " Settings                                                              {{{
 " --------------------------------------------------------------------- {|}
-
-source $VIMRUNTIME/defaults.vim
 
 set autoread confirm hidden lazyredraw ttyfast clipboard=unnamed t_vb=
 set linebreak smarttab expandtab shiftround softtabstop=4 shiftwidth=4
@@ -144,10 +145,10 @@ if has("keymap")
 
     " Format the entire buffer preserving cursor location.
     " Requires the 'B' text object defined below.
-    nmap <silent> <leader>F mtgqBg`tzz:delmarks t<CR>
+    nmap <silent> gQ mtgqBg`tzz:delmarks t<CR>
 
     " Format selected text maintaining the selection.
-    xmap <leader>F gq`[v`]V
+    xmap gQ gq`[v`]V
 
     nnoremap <BS> <C-^>
 
@@ -207,8 +208,8 @@ if has("keymap")
     onoremap al :<C-U>normal val<CR>
 
     " Line text objects excluding spaces/newlines
-    xnoremap il g_o0
-    onoremap il :<C-U>normal! vil<CR>
+    xnoremap il <Esc>^vg_
+    onoremap il <CMD>normal! ^vg_<CR>
 
     " Special character text objects
     for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
@@ -223,6 +224,8 @@ if has("keymap")
 
     " add closing brackets
     inoremap (<CR> (<CR>)<Esc>O
+    inoremap (;<CR> (<CR>);<Esc>O
+    inoremap (,<CR> (<CR>),<Esc>O
     inoremap {<CR> {<CR>}<Esc>O
     inoremap {;<CR> {<CR>};<Esc>O
     inoremap {,<CR> {<CR>},<Esc>O
@@ -376,7 +379,9 @@ endif
 if has("eval")
     "" sudo save the file                                         {{{
 
-    command! W execute "w !sudo tee % > /dev/null" <bar> edit!
+    if !has("nvim")
+        command! W execute "w !sudo tee % > /dev/null" <bar> edit!
+    endif
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle quickfix list open/close                            {{{
@@ -635,11 +640,11 @@ if has("eval")
     endfunction
 
     "" keymaps
-    xnoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
-    onoremap <silent> i<Tab> :<C-u>call <SID>inIndentationTextObject()<CR>
+    xnoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
+    onoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
 
-    xnoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
-    onoremap <silent> a<Tab> :<C-u>call <SID>aroundIndentationTextObject()<CR>
+    xnoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>
+    onoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
@@ -731,4 +736,72 @@ if has("eval")
     " TODO: make a surround operator via: c<motion>"<C-r><C-o>""<Esc>
 endif
 
-"----------------------------------------------------------------------}}}
+"---------------------------------------------------------------------- }}}
+" Terminal options                                                      {{{
+" --------------------------------------------------------------------- {|}
+" :help terminal-output-codes
+
+" Fix modern terminal features
+" https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitty\)'
+    " Styled and colored underline support
+    let &t_AU = "\e[58:5:%dm"
+    let &t_8u = "\e[58:2:%lu:%lu:%lum"
+    let &t_Us = "\e[4:2m"
+    let &t_Cs = "\e[4:3m"
+    let &t_ds = "\e[4:4m"
+    let &t_Ds = "\e[4:5m"
+    let &t_Ce = "\e[4:0m"
+
+    " Strikethrough
+    let &t_Ts = "\e[9m"
+    let &t_Te = "\e[29m"
+
+    " Enable true colors, see  :help xterm-true-color
+    let &t_8f = "\e[38:2:%lu:%lu:%lum"
+    let &t_8b = "\e[48:2:%lu:%lu:%lum"
+    let &t_RF = "\e]10;?\e\\"
+    let &t_RB = "\e]11;?\e\\"
+
+    " Enable bracketed paste mode, see  :help xterm-bracketed-paste
+    let &t_BE = "\e[?2004h"
+    let &t_BD = "\e[?2004l"
+    let &t_PS = "\e[200~"
+    let &t_PE = "\e[201~"
+
+    " Cursor control
+    if has("cursorshape")
+        " let &t_RS = "\eP$q q\e\\"
+        " let &t_RC = "\e[?12$p"
+        " let &t_VS = "\e[?12l"
+        " let &t_SH = "\e[%d q"
+        let &t_SI = "\e[6 q"
+        let &t_SR = "\e[4 q"
+        let &t_EI = "\e[2 q"
+    endif
+
+    " Enable focus event tracking, see  :help xterm-focus-event
+    let &t_fe = "\e[?1004h"
+    let &t_fd = "\e[?1004l"
+    execute "set <FocusGained>=\e[I"
+    execute "set <FocusLost>=\e[O"
+
+    " Window title
+    let &t_ST = "\e[22;2t"
+    let &t_RT = "\e[23;2t"
+
+    " Enable modified arrow keys, see  :help arrow_modifiers
+    execute "silent! set <xUp>=\e[@;*A"
+    execute "silent! set <xDown>=\e[@;*B"
+    execute "silent! set <xRight>=\e[@;*C"
+    execute "silent! set <xLeft>=\e[@;*D"
+
+    " vim hardcodes background color erase even if the terminfo file does
+    " not contain bce. This causes incorrect background rendering when
+    " using a color theme with a background color in terminals such as
+    " kitty that do not support background color erase.
+    let &t_ut=""
+
+endif
+
+" --------------------------------------------------------------------- }}}
