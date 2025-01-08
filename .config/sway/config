@@ -157,13 +157,16 @@ bindsym $mod+Control+Space mode "mouse"
 
 assign [app_id="^firefox$"] $ws1
 # assign [app_id="^gnome-terminal-server$"] $ws2
-assign [app_id="^(file-roller|gedit|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
-assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|calibre-gui|org\.inkscape\.Inkscape)$"] $ws6
+assign [app_id="^(file-roller|calibre-gui|gedit|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
+assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com.stremio.stremio|org\.inkscape\.Inkscape)$"] $ws6
 assign [app_id="^thunderbird(-esr)?$"] $ws8
 assign [app_id="^teams-for-linux$"] $ws10
 
-for_window [app_id="^mpv$" title=".*\.jpg - mpv$"] floating enable, resize set width 39 ppt height 40 ppt, move position 61 ppt 60 ppt, move scratchpad, scratchpad show
 for_window [app_id="^(vlc|mpv|firefox)$"] focus, inhibit_idle focus
+
+# NOTE: the only time I open images with mpv is via ytfzf to display thumbnails
+# https://github.com/pystardust/ytfzf#thumbnail-viewers
+for_window [app_id="^mpv$" title=".*\.jpg - mpv$"] floating enable, resize set width 39 ppt height 40 ppt, move position 61 ppt 60 ppt, move scratchpad, scratchpad show
 
 ### UI {{{1
 #

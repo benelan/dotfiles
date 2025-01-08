@@ -218,7 +218,7 @@ assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^Outlook \(PWA\)
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^GitHub"] $ws4
 assign [class="^(Brave-browser|Chromium|Google-chrome)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark)$"] $ws4
-assign [class="^(calibre|Gimp-\d+\.\d+|com\.sayonara-player\.Sayonara)$"] $ws6
+assign [class="^(Gimp-\d+\.\d+|com\.sayonara-player\.Sayonara)$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
 assign [class="^Proton Mail$"] $ws8
 

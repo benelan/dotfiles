@@ -976,6 +976,23 @@ install_ubuntu_apt-gui() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install flathub packages                                    {{{
+
+INSTALL_UBUNTU_FLATHUB_DOC="Install flathub packages"
+install_ubuntu_flathub() {
+    ! _has flatpak && return
+
+    deps=(
+        com.calibre_ebook.calibre
+        com.github.IsmaelMartinez.teams_for_linux
+        md.obsidian.Obsidian
+    )
+
+    for dep in "${deps[@]}"; do flatpak install --or-update -y flathub "$dep" || true; done
+    unset deps
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install and configure lightdm                               {{{
 
 ## https://github.com/canonical/lightdm
@@ -2174,6 +2191,7 @@ ubuntu_installs() {
     ## CLI install scripts (suitable for servers)
     install_ubuntu_apt-core
     install_ubuntu_apt-network
+    install_ubuntu_flathub
     install_ubuntu_docker
     install_ubuntu_rg
     install_ubuntu_fd
