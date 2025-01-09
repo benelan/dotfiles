@@ -1,22 +1,25 @@
+
+"query:---Favorites---:tags # \"favorites\""
 "query:---Frontend\ Blogs---:tags # \"blog\" and tags # \"frontend\" and tags # \"dev\""
-https://davidwalsh.name/feed/atom "blog" "dev" "frontend"
-https://raganwald.com/atom.xml "blog" "compsci" "frontend" "dev"
-https://www.joshwcomeau.com/rss.xml "blog" "css" "frontend" "dev"
-https://feeds.feedburner.com/philipwalton "blog" "frontend" "performance" "dev"
-https://lea.verou.me/feed/ "blog" "frontend" "dev"
-https://una.im/rss.xml "blog" "css" "frontend" "dev"
-https://addyosmani.com/rss.xml "~Addy Osmani" "blog" "frontend" "dev"
-https://feeds.feedburner.com/brad-frosts-blog "blog" "frontend" "dev"
-https://christianheilmann.com/feed/ "blog" "frontend" "dev"
+https://davidwalsh.name/feed/atom "blog" "dev" "frontend" "favorites"
+https://raganwald.com/atom.xml "blog" "compsci" "frontend" "dev" "favorites"
+https://www.joshwcomeau.com/rss.xml "blog" "css" "frontend" "dev" "favorites"
+https://feeds.feedburner.com/philipwalton "blog" "frontend" "performance" "dev" "favorites"
+https://lea.verou.me/feed/ "blog" "frontend" "dev" "favorites"
+https://una.im/rss.xml "blog" "css" "frontend" "dev" "favorites"
+https://addyosmani.com/rss.xml "~Addy Osmani" "blog" "frontend" "dev" "favorites"
+https://feeds.feedburner.com/brad-frosts-blog "blog" "frontend" "dev" "favorites"
+https://gomakethings.com/feed/index.xml "blog" "frontend" "dev" "favorites"
+https://www.bram.us/feed/ "blog" "frontend" "dev" "favorites"
+https://christianheilmann.com/feed/ "blog" "frontend" "dev" "favorites"
 https://daverupert.com/atom.xml "blog" "frontend" "dev"
-https://davidflanagan.com/feed.xml "blog" "frontend" "dev"
 https://ethanmarcotte.com/wrote/feed.xml "blog" "frontend" "dev"
 https://feeds.feedburner.com/csswizardry "blog" "frontend" "dev"
 https://jakearchibald.com/posts.rss "blog" "frontend" "dev"
-https://meiert.com/en/feed/ "blog" "frontend" "dev"
+https://meiert.com/en/feed/ ~"Jens Oliver Meiert" "blog" "frontend" "dev"
+https://davidflanagan.com/feed.xml "blog" "frontend" "dev"
 https://adactio.com/articles/rss "blog" "frontend" "dev"
 https://adactio.com/journal/rss "blog" "frontend" "dev"
-https://snook.ca/jonathan/index.rdf "blog" "frontend" "dev"
 https://kentcdodds.com/blog/rss.xml "blog" "frontend" "dev"
 https://markdotto.com/atom.xml "blog" "frontend" "dev"
 https://mathiasbynens.be/notes.atom "blog" "frontend" "dev"
@@ -24,24 +27,22 @@ https://humanwhocodes.com/feeds/blog.xml "blog" "frontend" "dev"
 https://rachelandrew.co.uk/archives/rss.php "blog" "frontend" "dev"
 https://remysharp.com/feed.xml "blog" "frontend" "dev"
 https://www.sarasoueidan.com/blog/index.xml "blog" "frontend" "dev"
-https://www.phpied.com/feed/ "blog" "frontend" "dev"
+https://www.stefanjudis.com/rss.xml "blog" "frontend" "dev" "favorites"
 https://timkadlec.com/remembers/atom.xml "blog" "frontend" "dev"
 https://trentwalton.com/feed.xml "blog" "frontend" "dev"
 https://www.zachleat.com/web/feed/ "blog" "frontend" "dev"
 https://overreacted.io/rss.xml "blog" "frontend" "dev"
+https://www.phpied.com/feed/ "blog" "frontend" "dev"
+https://flaviocopes.com/rss.xml "blog" "frontend" "dev"
 
-https://gomakethings.com/feed/index.xml "blog" "frontend" "dev"
-https://www.aaron-powell.com/posts/index.xml "blog" "frontend" "dev"
-https://adamsilver.io/atom.xml "blog" "frontend" "dev"
+https://adamsilver.io/atom.xml "blog" "frontend" "dev" "favorites"
 https://adrianroselli.com/feed "blog" "frontend" "dev"
 https://ishadeed.com/feed.xml "blog" "frontend" "dev"
-https://vuejsdevelopers.com/atom.xml "blog" "frontend" "dev"
 https://antoinevastel.com/feed.xml "~Antoine Vastel" "blog" "frontend" "dev"
 https://ashleynolan.co.uk/feed.xml "blog" "frontend" "dev"
 https://stegosource.com/feed/ "blog" "frontend" "dev"
 https://benfrain.com/feed/ "blog" "frontend" "dev"
 https://benmccormick.org/rss/ "blog" "frontend" "dev"
-https://www.bram.us/feed/ "blog" "frontend" "dev"
 https://remotesynthesis.com/feed.xml "blog" "frontend" "dev"
 https://www.brucelawson.co.uk/feed/ "blog" "frontend" "dev"
 https://bryanlrobinson.com/feed.xml "blog" "frontend" "dev"
@@ -66,7 +67,7 @@ https://hiddedevries.nl/rss/full/ "blog" "frontend" "dev"
 https://foobartel.com/stream/feed "blog" "frontend" "dev"
 https://hussein-alhammad.com/blog/rss.xml "blog" "frontend" "dev"
 https://bitsofco.de/rss/ "blog" "frontend" "dev"
-https://www.jackfranklin.co.uk/feed.xml "blog" "frontend" "dev"
+https://www.jackfranklin.co.uk/feed.xml "blog" "frontend" "dev" "favorites"
 https://jrsinclair.com/index.rss "blog" "frontend" "dev"
 https://feeds.feedburner.com/perishablepress "blog" "frontend" "dev"
 https://jameshfisher.com/feed.xml "blog" "frontend" "dev"
@@ -101,7 +102,6 @@ https://fossheim.io/feed.xml "blog" "frontend" "dev"
 https://www.scottohara.me/feed.xml "blog" "frontend" "dev"
 https://www.swyx.io/rss.xml "blog" "frontend" "dev"
 https://moderncss.dev/feed/ "~Paul Kinlan" "blog" "frontend" "dev"
-https://www.stefanjudis.com/rss.xml "blog" "frontend" "dev"
 https://blog.stephaniestimac.com/feed/feed.xml "blog" "frontend" "dev"
 https://stephaniewalter.design/feed/ "~Stephanie Walter" "blog" "design" "frontend" "dev"
 https://lihautan.com/rss.xml "blog" "frontend" "dev"
@@ -110,13 +110,12 @@ https://www.trysmudford.com/blog/index.xml "blog" "frontend" "dev"
 https://thecodebarbarian.com/feed.xml "blog" "frontend" "dev"
 https://viljamis.com/atom.xml "blog" "frontend" "dev"
 https://2019.wattenberger.com/rss "blog" "frontend" "dev"
-https://flaviocopes.com/rss.xml "blog" "frontend" "dev"
 https://giftegwuenu.com/rss.xml "blog" "frontend" "dev"
 https://kittygiraudel.com/rss/index.xml "blog" "frontend" "dev"
 https://sindresorhus.com/rss.xml "blog" "frontend" "dev"
-https://zellwk.com/rss.xml "blog" "frontend" "dev"
+https://zellwk.com/rss.xml "blog" "frontend" "dev" "favorites"
 
-https://odoe.net/rss.xml "~Rene Rubalcava" "blog" "frontend" "dev" "gis"
+https://odoe.net/rss.xml "~Rene Rubalcava" "blog" "frontend" "dev" "gis" "favorites"
 https://loige.co/rss.xml "blog" "frontend" "dev"
 https://meowni.ca/blog.xml "blog" "design" "dev" "frontend"
 https://evertpot.com/atom.xml "blog" "frontend" "linux" "dev"
@@ -127,13 +126,14 @@ https://blog.kewah.com/rss.xml "blog" "frontend" "dev"
 https://css-tricks.com/feed/ "blog" "frontend" "css"
 https://tympanus.net/codrops/feed/ "blog" "design" "frontend"
 https://www.smashingmagazine.com/feed "~Smashing Magazine" "blog" "frontend"
-https://www.30secondsofcode.org/feed "blog" "frontend"
+https://www.30secondsofcode.org/feed "blog" "frontend" "favorites"
 https://web.dev/feed.xml "blog" "frontend"
 
 "query:---Misc\ Tech\ Blogs---:tags !# \"frontend\" and tags # \"blog\" and tags # \"dev\""
-https://rachelbythebay.com/w/atom.xml "blog" "dev"
+https://rachelbythebay.com/w/atom.xml "blog" "dev" "favorites"
+https://jvns.ca/atom.xml "blog" "dev" "favorites"
 https://fasterthanli.me/index.xml "blog" "rust" "dev"
-https://matklad.github.io/feed.xml "blog" "dev"
+https://matklad.github.io/feed.xml "blog" "dev" "favorites"
 https://geohot.github.io/blog/feed "~George (geohot) Hotz" "blog" "philosophy" "dev"
 https://lukesmith.xyz/rss.xml "~Luke Smith" "blog" "linux" "philosophy" "dev"
 http://krebsonsecurity.com/feed/ "blog" "security" "dev"
@@ -142,13 +142,12 @@ https://danluu.com/atom.xml "~Dan Luu" "blog" "dev"
 https://www.troyhunt.com/rss/ "blog" "security" "dev"
 http://radek.io/rss.xml "blog" "product" "dev"
 https://drewdevault.com/blog/index.xml "blog" "linux" "dev"
-https://jvns.ca/atom.xml "blog" "dev"
 https://zachholman.com/atom.xml "blog" "dev"
 https://martinfowler.com/feed.atom "blog" "dev"
 https://www.schneier.com/blog/atom.xml "blog" "security" "dev"
 https://www.brendangregg.com/blog/rss.xml "blog" "linux" "dev"
 https://dave.cheney.net/feed "blog" "golang" "dev"
-https://blog.benjojo.co.uk/rss.xml "blog" "network" "dev"
+https://blog.benjojo.co.uk/rss.xml "blog" "network" "dev" "favorites"
 https://blog.codinghorror.com/rss/ "blog" "dev"
 https://www.benkuhn.net/index.xml "blog" "dev"
 https://begriffs.com/atom.xml "blog" "dev"
@@ -178,7 +177,7 @@ https://scvalex.net/atom.xml "blog" "dev"
 https://www.chrisatmachine.com/rss.xml "blog" "linux" "dev"
 
 "query:---Browsers\ &\ Standards\ News/Blogs---:tags # \"browser\" or tags # \"spec\""
-https://spreadprivacy.com/rss/ "blog" "frontend" "browser" "privacy"
+https://spreadprivacy.com/rss/ ~"DuckDuckGo Blog" "blog" "frontend" "browser" "privacy"
 https://brave.com/feed/ "blog" "frontend" "browser" "privacy"
 https://www.blog.google/products/chrome/rss "blog" "frontend" "browser"
 https://blog.chromium.org/feeds/posts/default "blog" "frontend" "browser"
@@ -206,7 +205,7 @@ https://tailwindcss.com/feeds/feed.xml "blog" "frontend" "library" "fav"
 "query:---Company\ Tech\ Blogs---:tags # \"company\""
 https://proton.me/blog/feed "blog" "security" "privacy" "company"
 https://blog.system76.com/rss.xml "blog" "linux" "company"
-https://github.blog/category/engineering/feed "blog" "frontend" "company"
+https://github.blog/category/engineering/feed ~"The GitHub Engineering Blog" "blog" "frontend" "company" "favorites"
 https://github.blog/feed/ "blog" "frontend" "company"
 https://netflixtechblog.com/feed "blog" "frontend" "company"
 https://blog.twitter.com/engineering/feed "~Twitter Engineering" "blog" "frontend" "company"
@@ -217,7 +216,7 @@ https://blog.cloudflare.com/rss/ "blog" "frontend" "company"
 https://codeascraft.com/feed/ "blog" "frontend" "company"
 https://calibreapp.com/blog/rss.xml "blog" "frontend" "company"
 https://cloudfour.com/feed/ "blog" "frontend" "company"
-https://www.debugbear.com/blog/feed/rss "blog" "frontend" "company"
+https://www.debugbear.com/blog/feed/rss "blog" "frontend" "company" "favorites"
 https://blog.logrocket.com/feed/ "blog" "frontend" "company"
 
 "query:---Tech\ News---:tags # \"news\""
@@ -231,18 +230,18 @@ https://javascriptweekly.com/rss/ "frontend" "news"
 https://frontendfoc.us/rss/ "frontend" "news"
 https://www.eff.org/rss.xml "blog" "privacy" "news" "fav"
 https://neovim.io/news.xml "blog" "news" "fav" "vim"
-https://dotfyle.com/this-week-in-neovim/rss.xml "blog" "news" "vim"
+https://dotfyle.com/this-week-in-neovim/rss.xml "blog" "news" "vim" "favorites"
 
 "query:---YouTube\ Channels---:tags # \"youtube\""
 https://www.youtube.com/feeds/videos.xml?channel_id=UCi8C7TNs2ohrc6hnRQ5Sn2w "youtube" "comedy" "tech"                     # Programmers are also human
 https://www.youtube.com/feeds/videos.xml?channel_id=UCgBVkKoOAr3ajSdFFLp13_A "youtube" "comedy" "tech"                     # KRAZAM
-https://www.youtube.com/feeds/videos.xml?channel_id=UC_-hYjoNe4PJNFa9iZ4lraA "youtube" "comedy" "business"                 # Good Work
+https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA "youtube" "software" "tech"                   # Fireship
+https://www.youtube.com/feeds/videos.xml?channel_id=UC2Xd-TjJByJyK2w1zNwY0zQ "youtube" "software"                          # Beyond Fireship
 https://www.youtube.com/feeds/videos.xml?channel_id=UC8ENHE5xdFSwx71u3fDH5Xw "youtube" "software"                          # ThePrimeagen
 https://www.youtube.com/feeds/videos.xml?channel_id=UCUyeluBRhGPCW4rPe_UvBZQ "youtube" "software"                          # ThePrimeTime
 https://www.youtube.com/feeds/videos.xml?channel_id=UCVk4b-svNJoeytrrlOixebQ "youtube" "coding" "vim"                      # TheVimeagen
 https://www.youtube.com/feeds/videos.xml?channel_id=UCd3dNckv1Za2coSaHGHl5aA "youtube" "vim"                               # TJ Devries
 https://www.youtube.com/feeds/videos.xml?channel_id=UCaSCt8s_4nfkRglWCvNSDrg "youtube" "coding"                            # Code Aesthetic
-https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA "youtube" "software" "tech"                   # Fireship
 https://www.youtube.com/feeds/videos.xml?channel_id=UC5--wS0Ljbin1TjWQX6eafA "youtube" "software"                          # bigboxSWE
 https://www.youtube.com/feeds/videos.xml?channel_id=UCWQaM7SpSECp9FELz-cHzuQ "youtube" "software" "vim"                    # Dreams of Code
 https://www.youtube.com/feeds/videos.xml?channel_id=UCUMwY9iS8oMyWDYIe6_RmoA "youtube" "software"                          # No Boilerplate
@@ -250,7 +249,6 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UC2WHjPDvbE6O328n17ZGcfg "yo
 https://www.youtube.com/feeds/videos.xml?channel_id=UCswG6FSbgZjbWtdf_hMLaow "youtobe" "frontend"                          # Matt Pocock
 https://www.youtube.com/feeds/videos.xml?channel_id=UCbRP3c757lWg9M-U7TyEkXA "youtube" "software"                          # Theo - t3.gg
 https://www.youtube.com/feeds/videos.xml?channel_id=UC6biysICWOJ-C3P4Tyeggzg "youtube" "linux" "software"                  # Low Level Learning
-https://www.youtube.com/feeds/videos.xml?channel_id=UC2Xd-TjJByJyK2w1zNwY0zQ "youtube" "software"                          # Beyond Fireship
 https://www.youtube.com/feeds/videos.xml?channel_id=UCtuO2h6OwDueF7h3p8DYYjQ "youtube" "tech"                              # Theo Rants
 https://www.youtube.com/feeds/videos.xml?channel_id=UCS97tchJDq17Qms3cux8wcA "youtube" "linux" "vim"                       # chris@machine
 https://www.youtube.com/feeds/videos.xml?channel_id=UCo71RUe6DX4w-Vd47rFLXPg "youtube" "vim"                               # typecraft
@@ -265,6 +263,18 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCSHZKyawb77ixDdsGog4iWA "yo
 https://www.youtube.com/feeds/videos.xml?channel_id=UC6zbKG1pqq2do-_oa9QFliA "youtube" "podcast" "security"                # Critical Thinking - Bug Bounty
 https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw "youtube" "math" "compsci"                    # 3Brown1Blue
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2C_jShtL725hvbm1arSV9w "youtube" "misc"                              # CGPGrey
+https://www.youtube.com/feeds/videos.xml?channel_id=UCrx2zrPjhGRi9TwszZiLwEg "youtube" "philosophy"                        # Horses
+https://www.youtube.com/feeds/videos.xml?channel_id=UC1KmNKYC1l0stjctkGswl6g "youtube" "philosophy"                        # After Skool
+https://www.youtube.com/feeds/videos.xml?channel_id=UCv_vLHiWVBh_FR9vbeuiY-A "youtube" "history"                           # Historia Civilis
+https://www.youtube.com/feeds/videos.xml?channel_id=UCuVLG9pThvBABcYCm7pkNkA "youtube" "climate"                           # Climate Town
+https://www.youtube.com/feeds/videos.xml?channel_id=UC7-Z34pbJ0ZAOJRmUCEz0Cg "youtube" "geography"                         # Geography By Geoff
+https://www.youtube.com/feeds/videos.xml?channel_id=UCFaSR7gUU39qJe-eDSiGY0A "youtube" "geography"                         # Geography Geek
+https://www.youtube.com/feeds/videos.xml?channel_id=UCmGSJVG3mCRXVOP4yZrU1Dw "youtube" "geography" "politics"              # Johnny Harris
+https://www.youtube.com/feeds/videos.xml?channel_id=UC7KbIaEOuY7H2j-cvhJ3mYA "youtube" "geography" "politics"              # Search Party
+https://www.youtube.com/feeds/videos.xml?channel_id=UCehBVAPy-bxmnbNARF-_tvA "youtube" "economics" "politics"              # More Perfect Union
+https://www.youtube.com/feeds/videos.xml?channel_id=UCJm2TgUqtK1_NLBrjNQ1P-w "youtube" "economics" "politics"              # Second Thought
+https://www.youtube.com/feeds/videos.xml?channel_id=UC_-hYjoNe4PJNFa9iZ4lraA "youtube" "economics" "comedy"                # Good Work
+https://www.youtube.com/feeds/videos.xml?channel_id=UCLuYADJ6hESLHX87JnsGbjA "youtube" "standup" "comedy"                  # Josh Johnson
 
 "query:---Podcasts---:tags #\"podcast\""
 https://feed.podbean.com/theboundingbox/feed.xml "podcast" "frontend" "gis"
