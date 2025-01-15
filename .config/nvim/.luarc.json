@@ -15,7 +15,7 @@
     "${3rd}/luassert/library",
     "$XDG_DATA_HOME/nvim/lazy/gitsigns.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/nvim-cmp/lua",
+    "$XDG_DATA_HOME/nvim/lazy/blink.cmp/lua",
     "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
     "$XDG_DATA_HOME/nvim/lazy/CopilotChat.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",

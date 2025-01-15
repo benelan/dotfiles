@@ -58,7 +58,7 @@ return {
         zk = function() end,
 
         function(server_name)
-          local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+          local has_cmp, cmp = pcall(require, "blink.cmp")
           local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server_name)
 
           ---@type lsp.ClientCapabilities
@@ -80,17 +80,9 @@ return {
             },
           }
 
-          local capabilities = vim.tbl_deep_extend(
-            "force",
-            {},
-            vim.lsp.protocol.make_client_capabilities(),
-            has_cmp and cmp_nvim_lsp.default_capabilities() or {},
-            capabilities_overrides
-          )
-
           local server_opts = vim.tbl_deep_extend(
             "force",
-            { capabilities = capabilities },
+            has_cmp and { capabilities = cmp.get_lsp_capabilities(capabilities_overrides) } or {},
             has_user_opts and user_opts or {}
           )
 
@@ -107,16 +99,6 @@ return {
     lazy = true,
     cond = vim.tbl_contains(res.lsp_servers, "yamlls")
       or vim.tbl_contains(res.lsp_servers, "jsonls"),
-  },
-
-  -----------------------------------------------------------------------------
-  -- integration with the tailwind LSP server
-  {
-    "luckasRanarison/tailwind-tools.nvim",
-    event = "LspAttach",
-    enabled = vim.tbl_contains(res.lsp_servers, "tailwindcss"),
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = {},
   },
 
   -----------------------------------------------------------------------------

@@ -40,23 +40,11 @@ return {
     cmd = "Copilot",
     event = "InsertEnter",
 
-    -- dependencies = {
-    --   {
-    --     "zbirenbaum/copilot-cmp", -- integrates Copilot with cmp
-    --     config = function()
-    --       vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-    --       require("copilot_cmp").setup()
-    --     end,
-    --   },
-    -- },
-
     config = function()
       vim.api.nvim_create_autocmd("DirChanged", {
         group = augroup,
         callback = function(event) M.toggle_copilot(event.file) end,
       })
-
-      local has_copilot_cmp = pcall(require, "copilot_cmp")
 
       require("copilot")
         .setup --[[@as copilot_config]]({
@@ -67,7 +55,6 @@ return {
               return acc
             end),
           panel = {
-            enabled = not has_copilot_cmp,
             layout = { position = "right", ratio = 0.3 },
             keymap = {
               jump_next = "]",
@@ -77,7 +64,7 @@ return {
             },
           },
           suggestion = {
-            enabled = not has_copilot_cmp and not vim.g.codeium_enabled,
+            enabled = not vim.g.codeium_enabled,
             auto_trigger = true,
             keymap = {
               accept = false, -- remapped below to add fallback
