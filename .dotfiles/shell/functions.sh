@@ -479,14 +479,14 @@ if supports fzf; then
 
     fcd() {
         cd "$(
-            fzf --no-multi --query="$*" --select-1 --exit-0 \
+            fzf --no-multi --query="$*" --select-1 \
                 --preview="${FZF_PREVIEW_CMD}" \
                 --preview-window='right:hidden:wrap' \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
                 --header='(view:ctrl-v) (sort:ctrl-x)' |
                 xargs dirname
-        )" || return
+        )" || return 1
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -498,7 +498,7 @@ if supports fzf; then
             # shellcheck disable=2016
             cd "$(
                 fasd -dl |
-                    fzf --tac --reverse --no-sort --no-multi --exit-0 \
+                    fzf --tac --reverse --no-sort --no-multi \
                         --select-1 --tiebreak=index --query="$*" \
                         --preview='tree -C {} | head -n $FZF_PREVIEW_LINES' \
                         --preview-window='right:hidden:wrap' \
@@ -517,7 +517,7 @@ if supports fzf; then
 
             file="$(
                 fasd -Rfl "$1" |
-                    fzf --select-1 --exit-0 --no-sort --no-multi
+                    fzf --select-1 --no-sort --no-multi
             )" &&
                 ${EDITOR:-vim} "${file}" || return 1
         }
@@ -529,7 +529,8 @@ if supports fzf; then
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
-        fzf --exit-0 --no-select-1 --multi --query="$*" \
+        FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --ignore --exclude .git --exclude node_modules' \
+            fzf --no-select-1 --multi --query="$*" \
             --preview="${FZF_PREVIEW_CMD}" \
             --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)' \
             --bind="ctrl-o:execute(o {+} >/dev/null 2>&1)" \
@@ -543,13 +544,13 @@ if supports fzf; then
     ## uses rg to find text in a file                         {{{
 
     fif() {
-        if [ ! "$#" -gt 0 ]; then
-            echo "Need a string to search for!"
+        if [ -z "$1" ]; then
+            echo "Error: missing a search query"
             return 1
         fi
 
         rg --files-with-matches --no-messages "$*" |
-            fzf --multi --no-select-1 --exit-0 --ansi \
+            fzf --multi --no-select-1 --ansi \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
                 --bind "ctrl-o:execute(o {})" \

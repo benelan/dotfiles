@@ -171,7 +171,7 @@
 
     co = checkout
     cob = checkout -b
-    com = !git checkout "$(git bdefault)"
+    com = !git checkout $(git bdefault)
 
     cl = clone
 
@@ -285,7 +285,7 @@
         }; f"
 
     ; get the default branch
-    bdefault = "!f() { (git remote set-head ${1:-origin} --auto || git remote set-head upstream --auto 2>/dev/null) | awk '{print $NF}'; }; f"
+    bdefault = "!f() { (git remote set-head ${1:-origin} --auto || git remote set-head upstream --auto 2>/dev/null) | awk '{print $NF}' | tr -d \"'\"; }; f"
 
     ; get the full list of branches
     branches = "!f() { git for-each-ref refs/remotes refs/heads --sort=-committerdate --format='%(refname:short)' | awk '{gsub(\"^origin/(HEAD)?\",\"\")};!x[$0]++'; }; f"

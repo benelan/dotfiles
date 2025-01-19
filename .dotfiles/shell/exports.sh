@@ -124,7 +124,7 @@ supports volta && export VOLTA_HOME="$HOME/.volta"
 supports bun && export BUN_INSTALL="$HOME/.bun"
 
 if supports node; then
-    export NODE_OPTIONS="--max-old-space-size=8192"
+    export NODE_OPTIONS="--max-old-space-size=8192 --no-deprecation"
 
     # Enable persistent REPL history for `node`.
     export NODE_REPL_HISTORY="$HOME/.node_history"
@@ -202,7 +202,7 @@ if supports fzf; then
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
     supports fd &&
-        export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --exclude node_modules'
+        export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore-vcs --exclude .git --exclude node_modules'
 fi
 
 # https://github.com/dylanaraps/fff
