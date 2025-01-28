@@ -3,43 +3,49 @@
 local res = require("jamin.resources")
 local has_cargo = vim.fn.executable("cargo") == 1
 
----@type LazySpec
-return {
+local spec = {
   {
     "saghen/blink.cmp",
     build = has_cargo and "cargo build --release" or nil,
     version = not has_cargo and "v0.*" or nil,
     event = "InsertEnter",
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      {
-        "mikavilpas/blink-ripgrep.nvim",
-        enabled = vim.fn.executable("rg") == 1,
-      },
-      {
-        "Kaiser-Yang/blink-cmp-git",
-        enabled = vim.fn.executable("gh") == 1,
-      },
-      {
-        "Kaiser-Yang/blink-cmp-dictionary",
-        enabled = vim.fn.filereadable("/usr/share/dict/words") == 1,
-      },
-    },
+    dependencies = { "rafamadriz/friendly-snippets" },
+    opts_extend = { "sources.default", "sources.per_filetype" },
 
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+      completion = {
+        accept = { auto_brackets = { enabled = false } },
+        menu = {
+          -- border = res.icons.border,
+          draw = {
+            gap = 2,
+            treesitter = { "lsp" },
+            columns = {
+              { "label", "label_description", gap = 1 },
+              { "kind_icon", "kind" },
+              { "source_name" },
+            },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          window = { border = res.icons.border },
+        },
+      },
+      signature = {
+        enabled = true,
+        window = { border = res.icons.border },
+      },
+      appearance = {
+        use_nvim_cmp_as_default = true,
+        nerd_font_variant = "normal",
+        kind_icons = res.icons.lsp_kind,
+      },
       sources = {
         cmdline = {},
-        default = {
-          "git",
-          "lsp",
-          "path",
-          "snippets",
-          "buffer",
-          "ripgrep",
-          "dictionary",
-        },
+        default = { "lsp", "path", "snippets", "buffer" },
         providers = {
           lsp = {
             name = " [LSP]",
@@ -54,32 +60,6 @@ return {
           path = {
             name = "[PATH]",
             score_offset = 15,
-          },
-          git = {
-            name = " [GIT]",
-            module = "blink-cmp-git",
-            score_offset = 100,
-            should_show_items = function()
-              return vim.tbl_contains({ "gitcommit", "markdown", "octo" }, vim.o.filetype)
-            end,
-          },
-          ripgrep = {
-            name = "[GREP]",
-            module = "blink-ripgrep",
-            min_keyword_length = 4,
-            max_items = 20,
-            score_offset = -10,
-            async = true,
-          },
-          dictionary = {
-            name = "[DICT]",
-            module = "blink-cmp-dictionary",
-            min_keyword_length = 3,
-            max_items = 20,
-            score_offset = -5,
-            opts = {
-              dictionary_files = { "/usr/share/dict/words" },
-            },
           },
           snippets = {
             name = "[SNIP]",
@@ -106,38 +86,6 @@ return {
           },
         },
       },
-
-      completion = {
-        accept = { auto_brackets = { enabled = false } },
-        menu = {
-          -- border = res.icons.border,
-          draw = {
-            gap = 2,
-            treesitter = { "lsp" },
-            columns = {
-              { "label", "label_description", gap = 1 },
-              { "kind_icon", "kind" },
-              { "source_name" },
-            },
-          },
-        },
-        documentation = {
-          auto_show = true,
-          window = { border = res.icons.border },
-        },
-      },
-
-      signature = {
-        enabled = true,
-        window = { border = res.icons.border },
-      },
-
-      appearance = {
-        use_nvim_cmp_as_default = true,
-        nerd_font_variant = "normal",
-        kind_icons = res.icons.lsp_kind,
-      },
-
       keymap = {
         preset = "default",
         ["<CR>"] = {},
@@ -205,3 +153,126 @@ return {
     },
   },
 }
+
+-----------------------------------------------------------------------------
+-- ripgrep provider
+if vim.fn.executable("rg") == 1 then
+  table.insert(spec, {
+    "saghen/blink.cmp",
+    dependencies = "mikavilpas/blink-ripgrep.nvim",
+    opts = {
+      sources = {
+        default = { "ripgrep" },
+        providers = {
+          ripgrep = {
+            name = "[GREP]",
+            module = "blink-ripgrep",
+            min_keyword_length = 4,
+            max_items = 20,
+            score_offset = -10,
+            async = true,
+          },
+        },
+      },
+    },
+  })
+end
+
+-----------------------------------------------------------------------------
+-- dictionary provider
+if vim.fn.filereadable("/usr/share/dict/words") == 1 then
+  table.insert(spec, {
+    "saghen/blink.cmp",
+    dependencies = "Kaiser-Yang/blink-cmp-dictionary",
+    opts = {
+      sources = {
+        default = { "dictionary" },
+        providers = {
+          dictionary = {
+            name = "[DICT]",
+            module = "blink-cmp-dictionary",
+            min_keyword_length = 3,
+            max_items = 20,
+            score_offset = -5,
+            opts = {
+              dictionary_files = { "/usr/share/dict/words" },
+              get_command_args = function(prefix)
+                return { "--filter=" .. prefix, "--sync", "--no-sort", "--ignore-case" }
+              end,
+            },
+          },
+        },
+      },
+    },
+  })
+end
+
+-----------------------------------------------------------------------------
+-- Git/GitHub provider
+if vim.fn.executable("gh") == 1 then
+  table.insert(spec, {
+    "saghen/blink.cmp",
+    dependencies = "Kaiser-Yang/blink-cmp-git",
+    opts = {
+      sources = {
+        default = { "git" },
+        providers = {
+          git = {
+            name = " [GIT]",
+            module = "blink-cmp-git",
+            score_offset = 100,
+            enabled = function()
+              local bufpath = vim.api.nvim_buf_get_name(0)
+              local bufname = string.lower(vim.fs.basename(bufpath))
+
+              if string.match(bufpath, "/.github/") then return true end
+
+              if vim.o.filetype == "markdown" then
+                local enabled_files = { "contributing.md", "changelog.md", "readme.md" }
+
+                return vim.list_contains(enabled_files, bufname)
+                  -- the gh cli creates markdown files in /tmp when editing issues/prs/comments
+                  or string.match(bufpath, "^/tmp/%d+%.md$")
+              end
+
+              return vim.tbl_contains({ "gitcommit", "octo" }, vim.o.filetype)
+            end,
+            opts = {
+              commit = { on_error = function(_, _) return true end },
+              git_centers = {
+                github = {
+                  issue = {
+                    get_command_args = {
+                      "issue",
+                      "list",
+                      "--limit",
+                      "200",
+                      "--search",
+                      "sort:updated",
+                      "--json",
+                      "number,title,state,body,createdAt,updatedAt,closedAt,author",
+                    },
+                  },
+                  pull_request = {
+                    get_command_args = {
+                      "pr",
+                      "list",
+                      "--limit",
+                      "100",
+                      "--search",
+                      "sort:updated",
+                      "--json",
+                      "number,title,state,body,createdAt,updatedAt,closedAt,author",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+end
+
+return spec

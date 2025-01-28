@@ -755,6 +755,7 @@ install_ubuntu_apt-core() {
         w3m
         w3m-img
         wget
+        wordnet
     )
 
     # install one at a time to prevent failure if a dep is missing from apt repo
@@ -808,14 +809,14 @@ install_ubuntu_apt-media() {
 
     deps=(
         cmus
-        dict
-        dict-devil
-        dict-folddoc
-        dict-gcide
-        dict-jargon
-        dict-vera
-        dict-wn
-        dictd
+        # dict
+        # dict-devil
+        # dict-folddoc
+        # dict-gcide
+        # dict-jargon
+        # dict-vera
+        # dict-wn
+        # dictd
         ffmpeg
         handbrake-cli
         newsboat
