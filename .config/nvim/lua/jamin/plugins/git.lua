@@ -112,8 +112,6 @@ return {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
     keys = {
-      "]c",
-      "[c",
       {
         "]h",
         function()
@@ -195,11 +193,6 @@ return {
         mode = "n",
       },
       {
-        "<leader>hu",
-        function() require("gitsigns").undo_stage_hunk() end,
-        desc = "Unstage hunk (gitsigns)",
-      },
-      {
         "<leader>hR",
         function() require("gitsigns").reset_buffer() end,
         desc = "Reset buffer (gitsigns)",
@@ -228,11 +221,6 @@ return {
         "<leader>hts",
         function() require("gitsigns").toggle_signs() end,
         desc = "Toggle signs (gitsigns)",
-      },
-      {
-        "<leader>htd",
-        function() require("gitsigns").toggle_deleted() end,
-        desc = "Toggle deleted line display (gitsigns)",
       },
       {
         "<leader>htw",
@@ -356,6 +344,7 @@ return {
       vim.api.nvim_create_autocmd("BufEnter", {
         group = vim.api.nvim_create_augroup("jamin_octo_buffer_setup", {}),
         pattern = "octo://*",
+        -- command = "if &diff | set nofoldenable | fi",
         callback = function()
           vim.opt.wrap = false
           vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {

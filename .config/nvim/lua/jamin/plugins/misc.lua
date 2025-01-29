@@ -44,7 +44,7 @@ return {
   -----------------------------------------------------------------------------
   -- programming wordlists for vim's builtin spellchecker
   {
-    "psliwka/vim-dirtytalk",
+    "benelan/vim-dirtytalk",
     event = "VeryLazy",
     build = {
       ":DirtytalkUpdate",

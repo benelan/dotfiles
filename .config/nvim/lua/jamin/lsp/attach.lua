@@ -29,8 +29,8 @@ return function(args)
     })
   end
 
-  -- bufmap("n", "gQ", vim.diagnostic.setqflist, "Quickfix list diagnostics")
-  bufmap("n", "gL", vim.diagnostic.setloclist, "Location list diagnostics")
+  bufmap("n", "g<C-q>", vim.diagnostic.setqflist, "Quickfix list diagnostics")
+  bufmap("n", "g<C-l>", vim.diagnostic.setloclist, "Location list diagnostics")
   bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
   if client:supports_method("textDocument/formatting") then
@@ -46,7 +46,6 @@ return function(args)
 
   if client:supports_method("textDocument/definition") then
     bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
-    bufmap("n", "grp", require("jamin.lsp").peek_definition, "LSP peek definition")
   end
 
   if client:supports_method("textDocument/declaration") then

@@ -1,4 +1,4 @@
---- Follow the cursor's position in the quickfix list. Taken from: 
+--- Follow the cursor's position in the quickfix list. Taken from:
 --- https://github.com/stevearc/quicker.nvim/blob/e4fb0b1862284757561d1d51091cdee907585948/lua/quicker/follow.lua
 local M = {}
 
@@ -26,7 +26,7 @@ M.seek_to_position = function()
 end
 
 ---Calculate the current buffer/cursor location in the quickfix list
----@param list QuickFixItem[]
+---@param list qf.item[]
 ---@return nil|integer
 M.calculate_pos = function(list)
   if vim.bo.buftype ~= "" then return end

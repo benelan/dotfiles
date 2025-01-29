@@ -221,7 +221,6 @@ return {
 
       for _, adapter in ipairs({
         "chrome",
-        "node",
         "node-terminal",
         "pwa-chrome",
         "pwa-extensionHost",
@@ -239,6 +238,19 @@ return {
               args = { "${port}" },
             },
           }
+        end
+      end
+
+      if not dap.adapters["node"] then
+        vscode.type_to_filetypes["node"] = res.filetypes.webdev
+        dap.adapters["node"] = function(cb, config)
+          if config.type == "node" then config.type = "pwa-node" end
+          local nativeAdapter = dap.adapters["pwa-node"]
+          if type(nativeAdapter) == "function" then
+            nativeAdapter(cb, config)
+          else
+            cb(nativeAdapter)
+          end
         end
       end
 

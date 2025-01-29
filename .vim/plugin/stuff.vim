@@ -10,7 +10,7 @@ let g:markdown_recommended_style = 0
 " Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
-    \ 'astro', 'vue', 'html', 'toml', 'yaml', 'json', 'jsonc', 'sql', 'diff', 
+    \ 'vue', 'html', 'toml', 'yaml', 'json', 'jsonc', 'sql', 'diff', 
     \ 'vim', 'lua', 'go', 'rust', 'python', 'css', 'scss', 'sass', 'sh', 'awk',
     \ 'yml=yaml', 'py=python', 'shell=sh', 'bash=sh', 'ts=typescript', 
     \ 'js=javascript', 'tsx=typescriptreact', 'jsx=javascriptreact'

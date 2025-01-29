@@ -23,8 +23,9 @@ function M.obsidian_open(event)
       absolute_filepath = vim.fn.fnamemodify(("%s/%s"):format(vim.env.NOTES, event.args), ":p")
 
       if vim.fn.filereadable(absolute_filepath) == 0 then
-        vim.api.nvim_err_writeln(
-          ("File not found at: '%s' or '%s'"):format(event.args, absolute_filepath)
+        vim.notify(
+          ("File not found at: '%s' or '%s'"):format(event.args, absolute_filepath),
+          "error"
         )
         return
       end
