@@ -11,7 +11,7 @@ export DEV="$HOME/dev"
 export LIB="$DEV/lib"
 export WORK="$DEV/work"
 export PERSONAL="$DEV/personal"
-export NOTES="$DEV/notes"
+export NOTES="$HOME/notes"
 export DOTFILES="$HOME/.dotfiles"
 export CALCITE="$WORK/calcite-design-system"
 

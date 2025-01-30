@@ -93,7 +93,7 @@ bindsym $mod+Control+k move workspace to output up
 bindsym $mod+Control+l move workspace to output right
 
 # Move the window to the bottom right corner (like picture [i]n picture mode)
-bindsym $mod+i floating enable; resize set width 39 ppt height 40 ppt; move position 61 ppt 60 ppt; sticky enable; move scratchpad; scratchpad show
+bindsym $mod+i floating enable; resize set width 40 ppt height 40 ppt; move position 60 ppt 60 ppt; sticky enable; move scratchpad; scratchpad show
 
 # Change focus between tiling / floating windows
 bindsym $mod+o focus mode_toggle

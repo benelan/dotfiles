@@ -1,4 +1,4 @@
-data.location=~/dev/notes/.task
+data.location=~/notes/.task
 hooks.location=~/.config/task/hooks
 
 nag=
