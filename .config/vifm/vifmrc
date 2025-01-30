@@ -400,7 +400,7 @@ filextype {*/},{.*/}
             \ {View in nautilus} nautilus %f &,
             \ {View in default file explorer} open %f &,
 
-fileviewer {*/},{.*/} tree -aCI .git/ -I node_modules/ -I dist/ --gitignore --nolinks %c
+fileviewer {*/},{.*/} tree -tarFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks %c
 
 " Syntax highlighting in preview
 "

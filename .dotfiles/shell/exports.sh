@@ -181,8 +181,16 @@ if supports fzf; then
 
     export FZF_CTRL_R_OPTS='
         --bind "ctrl-y:execute-silent(echo -n {2..} | cb)+abort"
-        --header "(ctrl-y: copy)"
-    '
+        --header "(ctrl-y: copy)"'
+
+    export FZF_CTRL_T_OPTS='
+        --walker-skip .git,node_modules,target,dist,build
+        --preview "bat -n --color=always {}"
+        --bind "ctrl-/:change-preview-window(down|hidden|)"'
+
+    export FZF_ALT_C_OPTS='
+        --walker-skip .git,node_modules,target,dist,build
+        --preview "tree -tarFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks {}"'
 
     export FZF_DEFAULT_OPTS='
         --cycle --reverse --highlight-line --info=right
