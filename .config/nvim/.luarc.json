@@ -31,6 +31,7 @@
     "$XDG_DATA_HOME/nvim/lazy/octo.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/plenary.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/snacks.nvim/lua",
+    "$XDG_DATA_HOME/nvim/lazy/orgmode/lua",
     "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua"
   ]
 }

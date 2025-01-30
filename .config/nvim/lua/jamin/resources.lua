@@ -153,6 +153,7 @@ M.treesitter_parsers = {
   "make",
   "markdown",
   "markdown_inline",
+  "org",
   -- "perl",
   "printf",
   "python",
