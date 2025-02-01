@@ -92,9 +92,6 @@ bindsym $mod+Control+j move workspace to output down
 bindsym $mod+Control+k move workspace to output up
 bindsym $mod+Control+l move workspace to output right
 
-# Move the window to the bottom right corner (like picture [i]n picture mode)
-bindsym $mod+i floating enable; resize set width 39 ppt height 40 ppt; move position 61 ppt 60 ppt; sticky enable; move scratchpad; scratchpad show
-
 # Change focus between tiling / floating windows
 bindsym $mod+o focus mode_toggle
 
@@ -212,7 +209,6 @@ workspace $ws9 output primary
 # Automatically open apps in specific workspaces
 # Find the class/app_id/etc of open windows with: $ swaymsg -t get_tree
 
-assign [class="^teams-for-linux$"] $ws10
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^Microsoft Teams"] $ws10
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^Outlook \(PWA\)"] $ws9
 assign [class="^(Brave-browser|Chromium|Google-chrome)$" title="^GitHub"] $ws4
@@ -254,6 +250,9 @@ exec_always --no-startup-id ! pgrep -x dunst && dunst
 
 # Network manager applet
 exec_always --no-startup-id ! pgrep -x nm-applet && nm-applet --indicator
+
+# Bluetooth manager applet
+exec_always --no-startup-id ! pgrep -x blueman-applet && blueman-applet
 
 # Low battery notification
 # https://github.com/rjekker/i3-battery-popup

@@ -57,7 +57,12 @@ bindsym $mod+Print exec ~/.config/rofi/applets/bin/screenshot.sh
 bindsym $mod+Shift+r restart; exec ". ~/.xprofile; [ -r ~/.xprofile.local ] && . ~/.xprofile.local"
 
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exiting i3 will end the X session, are you sure?' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -B 'Yes, exit i3' 'i3-msg exit'" \
+    -m 'Exiting i3 will end the X session, are you sure?'
+
+# Move the window to the bottom right corner (like picture [i]n picture mode)
+bindsym $mod+i floating enable; sticky enable; move scratchpad; scratchpad show; \
+    resize set width 45 ppt height 45 ppt; move position 55 ppt 55 ppt
 
 
 ### Window assignments {{{1
@@ -69,6 +74,7 @@ assign [class="^(file-roller|calibre|Gedit|Gnome-calculator|Gnome-calendar|Org\.
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb)$"] $ws6
 assign [title="^.* - mpv$"] $ws6
 assign [class="^thunderbird$"] $ws8
+assign [class="^teams-for-linux$"] $ws10
 
 for_window [title="^.* - mpv$"] focus
 for_window [class="^(vlc|firefox|Brave-browser)$"] focus

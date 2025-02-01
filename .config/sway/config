@@ -115,8 +115,25 @@ bindsym $mod+c exec grim -g "$(slurp -p)" -t ppm - | \
 convert - -format "%[pixel:p{0,0}]" txt:- | \
     tail -n 1 | cut -d " " -f 4 | wl-copy
 
+# change opacity  of current window
+bindsym $mod+Control+o exec swaymsg 'opacity minus 0.05'
+bindsym $mod+Control+Shift+o exec swaymsg 'opacity plus 0.05'
+bindsym $mod+Control+Mod1+o exec swaymsg 'opacity 0.25'
+bindsym $mod+Mod1+o exec swaymsg 'opacity 1'
+
+# Move the window to the bottom right corner (like picture [i]n picture mode)
+bindsym $mod+i floating enable; sticky enable; move scratchpad; scratchpad show; \
+    resize set width 45 ppt height 45 ppt; move position 55 ppt 55 ppt; \
+    exec swaymsg 'opacity 0.75'
+
+# Float window on top of another and add some opacity
+bindsym $mod+Shift+i floating enable; sticky disable; move scratchpad; scratchpad show; \
+    resize set width 100 ppt height 100 ppt; move position 0 ppt 0 ppt; \
+    exec swaymsg 'opacity 0.95';
+
 # Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e exec swaynag -t warning -m "Exiting sway will end the Wayland session, are you sure?" -B "Yes, exit sway" 'swaymsg exit'
+bindsym $mod+Shift+e exec swaynag -t warning -B "Yes, exit sway" 'swaymsg exit' \
+    -m "Exiting sway will end the Wayland session, are you sure?" 
 
 # Move cursor using keys
 mode "mouse" {
@@ -162,11 +179,18 @@ assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com.stremio.stremio|org\.inkscap
 assign [app_id="^thunderbird(-esr)?$"] $ws8
 assign [app_id="^teams-for-linux$"] $ws10
 
-for_window [app_id="^(vlc|mpv|firefox)$"] focus, inhibit_idle focus
+# Don't go idle and lock if the current window is fullscreen (or focused for specific apps)
+# TODO: make sure the 'focus' idle inhibitor takes priority over 'fullscreen'.
+# The 'fullscreen' idle inhibitor may need a negative look-ahead to exclude apps, e.g.
+# [app_id="^((?!(vlc|mpv|com.stremio.stremio|calibre-gui)).)*$"]
+for_window [title=".*"] inhibit_idle fullscreen
+for_window [app_id="^(vlc|mpv|com.stremio.stremio|calibre-gui)$"] focus, inhibit_idle focus
 
 # NOTE: the only time I open images with mpv is via ytfzf to display thumbnails
 # https://github.com/pystardust/ytfzf#thumbnail-viewers
-for_window [app_id="^mpv$" title=".*\.jpg - mpv$"] floating enable, resize set width 39 ppt height 40 ppt, move position 61 ppt 60 ppt, move scratchpad, scratchpad show
+for_window [app_id="^mpv$" title=".*\.jpg - mpv$"] floating enable, move scratchpad, scratchpad show, \
+    resize set width 39 ppt height 40 ppt, move position 61 ppt 60 ppt
+    
 
 ### UI {{{1
 #
@@ -222,9 +246,6 @@ bindswitch lid:off exec swaymsg "output * dpms off"; exec $lock
 
 # Turn on the display when the laptop lid is opened
 bindswitch lid:on exec swaymsg "output * dpms on"
-
-# Don't go idle and lock if the current window is fullscreen
-for_window [title=".*"] inhibit_idle fullscreen
 
 
 ### Startup processes {{{1
