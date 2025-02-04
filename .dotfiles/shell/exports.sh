@@ -16,7 +16,7 @@ export DOTFILES="$HOME/.dotfiles"
 export CALCITE="$WORK/calcite-design-system"
 
 # system settings {{{1
-export LESS="-diwMJRQ --incsearch --mouse --no-histdups --use-color"
+export LESS="-diwMJR --incsearch --mouse --no-histdups --use-color"
 export LESSHISTFILE=-
 
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr
@@ -53,12 +53,15 @@ export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
 
-# if supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-#     export TERMINAL="foot"
+# $ sudo update-alternatives --config x-terminal-emulator
 if supports x-terminal-emulator; then
     export TERMINAL="x-terminal-emulator"
 elif supports wezterm; then
     export TERMINAL="wezterm"
+elif supports kitty; then
+    export TERMINAL="kitty"
+elif supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    export TERMINAL="foot"
 fi
 
 TERM_BROWSER="sensible-browser"
@@ -195,7 +198,7 @@ if supports fzf; then
     export FZF_DEFAULT_OPTS='
         --cycle --reverse --highlight-line --info=right
         --preview-window="right,wrap,border-thinblock,<75(down)"
-        --bind "ctrl-v:toggle-preview,ctrl-x:toggle-sort"
+        --bind "ctrl-v:toggle-preview,ctrl-x:toggle-sort,ctrl-h:toggle-hscroll"
         --bind "alt-up:preview-page-up,alt-down:preview-page-down,alt-shift-up:preview-top,alt-shift-down:preview-bottom"
         --bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,ctrl-u:half-page-up,ctrl-d:half-page-down"
         --color "fg:#ebdbb2,fg+:#ebdbb2,bg:#282828,bg+:#3c3836,preview-bg:#1d2021,hl:#d3869b:bold,hl+:#d3869b"

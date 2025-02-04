@@ -7,7 +7,7 @@
 
 [user]
     name = Ben Elan
-    email = no-reply@benelan.dev
+    email = "no"-"reply"@"ben""elan"."d"e"v"
     signingKey = 4675D4844DB91AC6849FF5C10E54F3EFE936CE58
 
 [commit]

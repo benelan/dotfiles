@@ -28,7 +28,8 @@ goog() {
     curl -A Mozilla/4.0 -skLm 10 \
         "http://www.google.com/search?nfpr=\&q=$(echo "$*" | tr ' ' '+')" |
         grep -oP '\/url\?q=.+?&amp' |
-        sed 's/\/url?q=//;s/&amp//;s/\%/\\x/g'
+        grep -v 'google' |
+        perl -pe 's/\/url\?q=//; s/&amp//g; s/\%([[:xdigit:]]{2})/chr hex $1/ge'
 
     if [ -n "$TMUX" ] && supports _tmux-select; then
         _tmux-select
@@ -617,55 +618,30 @@ if supports fzf && supports jq; then
 fi
 
 if [ "$WORK_MACHINE" = "1" ]; then
-    # docker aliases for Calcite development                     {{{
-
-    # I need to link these files to the current worktree
+    # link some files to the current worktree                     {{{
     cc_link_files() {
         pushd "$(npm prefix)" >/dev/null
-        ln -f "$CALCITE/Dockerfile" .
         ln -f "$CALCITE/.marksman.toml" .
         ln -f "$CALCITE/calcite-components.projections.json" \
             "./packages/calcite-components/.projections.json"
         popd >/dev/null
     }
 
-    cc_build_docker_image() { docker build --tag calcite-components .; }
-
-    # Create containers to run tests and the the dev server at the same time
-    # Use a bind mount so building/testing on file changes works correctly
-    __docker_cmd_prefix="docker run --init --interactive --rm --cap-add SYS_ADMIN --volume .:/app:z --user $(id -u):$(id -g)"
-
-    cc_start_in_docker() {
-        $__docker_cmd_prefix --publish 3333:3333 \
-            --name calcite-components_start calcite-components \
-            npm --workspace=@esri/calcite-components start
-    }
-
-    cc_test_in_docker() {
-        $__docker_cmd_prefix --name calcite-components_test calcite-components \
-            npm --workspace=@esri/calcite-components run test:watch
-    }
-
-    cc_run_in_docker() {
-        $__docker_cmd_prefix --name calcite-components_run calcite-components \
-            npm --workspace=@esri/calcite-components run
-    }
-
-    unset __docker_cmd_prefix
-
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-    ## toggle a label used to run CC visual snapshots on PRs      {{{
+    ## GH cli functions specific to calcite design system         {{{
 
     if supports gh; then
+        # toggle a label used to run CC visual snapshots on PRs
         cc_visual_snapshots() {
             if [ "$(
                 gh repo view --json name -q ".name"
             )" = "calcite-design-system" ]; then
-                gh pr edit --remove-label "pr ready for visual snapshots"
-                gh pr edit --add-label "pr ready for visual snapshots"
+                gh pr edit --remove-label "pr ready for visual snapshots" "$1"
+                gh pr edit --add-label "pr ready for visual snapshots" "$1"
             fi
         }
 
+        # watch a PR check and prompt to rerun if it fails
         pr_check() {
             set -e
             local workflow branch run id conclusion choice
@@ -718,7 +694,7 @@ if [ "$WORK_MACHINE" = "1" ]; then
     cc_install_pack() {
         local worktree example
 
-        worktree="${1:-main}"
+        worktree="${1:-dev}"
         example=$(npm prefix)
 
         # clean test project

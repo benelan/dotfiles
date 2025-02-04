@@ -37,6 +37,12 @@ _dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
 
 _update_modules() { (cd && _dot submodule update --recursive --rebase --remote "$@"); }
 
+_gh_latest_version() {
+    basename "$(
+        curl -sw "%{redirect_url}" "https://github.com/$1/releases/latest"
+    )"
+}
+
 # --------------------------------------------------------------------- }}}
 # Setup dotfiles                                                        {{{
 # --------------------------------------------------------------------- {|}
@@ -435,10 +441,8 @@ install_packages_neovim() {
         # webpack-5
     )
 
-    installed_count="$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)"
-
-    if [ -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] &&
-        [ "$installed_count" -le ${#devdoc_sources[@]} ]; then
+    if [ ! -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] ||
+        [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -le ${#devdoc_sources[@]} ]; then
         nvim --headless +"DevdocsInstall ${devdoc_sources[*]}"
     else
         nvim --headless +"execute 'DevdocsFetch'     | execute '10sleep' \
@@ -822,7 +826,6 @@ install_ubuntu_apt-media() {
         newsboat
         playerctl
         qrencode
-        ffmpeg
     )
 
     # install one at a time to prevent failure if a dep is missing from apt repo
@@ -1192,57 +1195,6 @@ install_ubuntu_wezterm() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install rg/fd/bat/delta                                     {{{
-
-_install_rust_cli_deb_package() {
-    [ -z "$2" ] && echo "Missing args: <binary> <repo>" >&2 && return
-    binary="$1"
-    repo="$2"
-
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" "https://github.com/${repo}/releases/latest"
-    )")
-
-    # remove leading 'v'
-    version="${version#v}"
-
-    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$version" ]; then
-        echo "The latest version of $binary ($version) is already installed" >&2
-        return
-    fi
-
-    deb="${binary}_${version}_$(dpkg --print-architecture).deb"
-    curl -Lo "${CACHE_DIR:?}/${deb}" \
-        "https://github.com/${repo}/releases/latest/download/${deb}"
-
-    sudo apt-get install -qq "${CACHE_DIR:?}/${deb}"
-    exit_code="$?"
-
-    rm -f "${CACHE_DIR:?}/${deb}"
-    unset deb
-    return "$exit_code"
-}
-
-## https://github.com/BurntSushi/ripgrep#installation
-INSTALL_UBUNTU_RG_DOC="Install blazingly fast grep replacement"
-install_ubuntu_rg() {
-    if [ $(dpkg --print-architecture) != "amd64" ]; then
-        echo "ripgrep only provides a deb package for amd64" >&2
-    else
-        _install_rust_cli_deb_package rg BurntSushi/ripgrep
-    fi
-}
-
-INSTALL_UBUNTU_FD_DOC="Install blazingly fast find replacement"
-install_ubuntu_fd() { _install_rust_cli_deb_package fd sharkdp/fd; }
-
-INSTALL_UBUNTU_BAT_DOC="Install cat replacement with syntax highlighting"
-install_ubuntu_bat() { _install_rust_cli_deb_package bat sharkdp/bat; }
-
-INSTALL_UBUNTU_DELTA_DOC="Install git diff pager with syntax highlighting"
-install_ubuntu_delta() { _install_rust_cli_deb_package delta dandavison/delta; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Taskwarrior TUI                                     {{{
 
 ## https://github.com/kdheepak/taskwarrior-tui
@@ -1421,13 +1373,12 @@ install_theme_font() {
     FONTS_DIR="$XDG_DATA_HOME/fonts"
     mkdir -p "$FONTS_DIR"
     pushd "$FONTS_DIR" >/dev/null
-    VERSION="$(basename "$(curl -s -w "%{redirect_url}" \
-        https://github.com/ryanoasis/nerd-fonts/releases/latest)")"
+    latest_version="$(_gh_latest_version "ryanoasis/nerd-fonts")"
 
-    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/IosevkaNerdFont-Bold.ttf"
-    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/IosevkaNerdFont-BoldItalic.ttf"
-    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/IosevkaNerdFont-Regular.ttf"
-    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$VERSION/patched-fonts/Iosevka/IosevkaNerdFont-Italic.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$latest_version/patched-fonts/Iosevka/IosevkaNerdFont-Bold.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$latest_version/patched-fonts/Iosevka/IosevkaNerdFont-BoldItalic.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$latest_version/patched-fonts/Iosevka/IosevkaNerdFont-Regular.ttf"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/raw/$latest_version/patched-fonts/Iosevka/IosevkaNerdFont-Italic.ttf"
 
     # reload the font cache
     fc-cache -rf
@@ -1441,11 +1392,10 @@ install_theme_font() {
 INSTALL_THEME_FONT_COMPLETE_DOC="Install all weights of Iosevka Nerd Font"
 install_theme_font-complete() {
     FONTS_DIR="$XDG_DATA_HOME/fonts"
-    VERSION="$(basename "$(curl -s -w "%{redirect_url}" \
-        https://github.com/ryanoasis/nerd-fonts/releases/latest)")"
+    latest_version="$(_gh_latest_version "ryanoasis/nerd-fonts")"
 
     mkdir -p "$FONTS_DIR"
-    curl -LO "https://github.com/ryanoasis/nerd-fonts/releases/download/$VERSION/Iosevka.zip"
+    curl -LO "https://github.com/ryanoasis/nerd-fonts/releases/download/$latest_version/Iosevka.zip"
 
     unzip -oqd "$FONTS_DIR" Iosevka -x "*.md"
     rm Iosevka.zip
@@ -1492,11 +1442,11 @@ install_theme_wallpaper() {
             fi
             ;;
         *)
-            if [ -n "$WAYLAND_DISPLAY" ] && _has swaybg; then
-                swaybg --output "*" --mode fill --image "$current_wallpaper"
-            elif _has feh; then
-                feh --no-fehbg --bg-center --image-bg "#3c3836" "$current_wallpaper"
-            fi
+            # if [ -n "$WAYLAND_DISPLAY" ] && _has swaybg; then
+            #     swaybg --output "*" --mode fill --image "$current_wallpaper"
+            # elif _has feh; then
+            #     feh --no-fehbg --bg-center --image-bg "#3c3836" "$current_wallpaper"
+            # fi
             ;;
     esac
 }
@@ -1624,12 +1574,10 @@ _download_rust_cli_binary() {
     binary="$1"
     repo="$2"
 
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" "https://github.com/${repo}/releases/latest"
-    )")
+    latest_version="$(_gh_latest_version "$repo")"
 
-    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$version" ]; then
-        echo "The latest version of $binary ($version) is already installed" >&2
+    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$latest_version" ]; then
+        echo "The latest version of $binary ($latest_version) is already installed" >&2
         return
     fi
 
@@ -1650,18 +1598,57 @@ _download_rust_cli_binary() {
     fi
 
     mkdir -p "${CACHE_DIR:?}/$binary"
-    curl -L "https://github.com/${repo}/releases/latest/download/$(basename "$repo")-${version}-${machine}.tar.gz" |
+    curl -L "https://github.com/${repo}/releases/latest/download/$(basename "$repo")-${latest_version}-${machine}.tar.gz" |
         tar -C "${CACHE_DIR:?}/$binary" --overwrite --strip-components=1 -xzf -
 
     unset machine cpu kernel version binary repo
 }
 
+_install_rust_cli_deb_package() {
+    [ -z "$2" ] && echo "Missing args: <binary> <repo>" >&2 && return
+    binary="$1"
+    repo="$2"
+    latest_version="$(_gh_latest_version "$repo")"
+
+    # remove leading 'v'
+    latest_version="${latest_version#v}"
+
+    if _has "$binary" && [ "$(${binary} -V | awk '{print $2}')" = "$latest_version" ]; then
+        echo "The latest version of $binary ($latest_version) is already installed" >&2
+        return
+    fi
+
+    if [ "$binary" = "rg" ]; then # handles edge case
+        deb="ripgrep_${latest_version}-1_amd64.deb"
+    else
+        deb="${binary}_${latest_version}_$(dpkg --print-architecture).deb"
+    fi
+
+    curl -Lo "${CACHE_DIR:?}/${deb}" \
+        "https://github.com/${repo}/releases/latest/download/${deb}"
+
+    sudo apt-get install -qq "${CACHE_DIR:?}/${deb}"
+    exit_code="$?"
+
+    rm -f "${CACHE_DIR:?}/${deb}"
+    unset deb
+    return "$exit_code"
+}
+
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install ripgrep                                             {{{
+## https://github.com/BurntSushi/ripgrep#installation
 
 INSTALL_MISC_RG_DOC="Install blazingly fast grep replacement"
 install_misc_rg() {
-    _has dpkg && install_ubuntu_rg && return
+    if _has apt-get && _has dpkg; then
+        if [ $(dpkg --print-architecture) != "amd64" ]; then
+            echo "ripgrep only provides a deb package for amd64" >&2
+        else
+            _install_rust_cli_deb_package rg BurntSushi/ripgrep && return
+        fi
+    fi
+
     _download_rust_cli_binary rg BurntSushi/ripgrep
 
     mv "${CACHE_DIR:?}/rg/rg" "${BIN_DIR:?}/rg"
@@ -1677,9 +1664,10 @@ install_misc_rg() {
 
 INSTALL_MISC_FD_DOC="Install blazingly fast find replacement"
 install_misc_fd() {
-    if _has dpkg && install_ubuntu_fd; then
-        return
+    if _has apt-get && _has dpkg; then
+        _install_rust_cli_deb_package fd sharkdp/fd && return
     fi
+
     _download_rust_cli_binary fd sharkdp/fd
 
     mv "${CACHE_DIR:?}/fd/fd" "${BIN_DIR:?}/fd"
@@ -1696,7 +1684,10 @@ install_misc_fd() {
 
 INSTALL_MISC_BAT_DOC="Install cat replacement with syntax highlighting"
 install_misc_bat() {
-    _has dpkg && install_ubuntu_bat && return
+    if _has apt-get && _has dpkg; then
+        _install_rust_cli_deb_package bat sharkdp/bat && return
+    fi
+
     _download_rust_cli_binary bat sharkdp/bat
 
     mv "${CACHE_DIR:?}/bat/bat" "${BIN_DIR:?}/bat"
@@ -1713,7 +1704,10 @@ install_misc_bat() {
 
 INSTALL_MISC_DELTA_DOC="Install git diff pager with syntax highlighting"
 install_misc_delta() {
-    _has dpkg && install_ubuntu_delta && return
+    if _has apt-get && _has dpkg; then
+        _install_rust_cli_deb_package delta dandavison/delta && return
+    fi
+
     _download_rust_cli_binary delta dandavison/delta
 
     mv "${CACHE_DIR:?}/delta/delta" "${BIN_DIR:?}/delta"
@@ -1727,10 +1721,7 @@ install_misc_delta() {
 
 INSTALL_MISC_CLIPCAT_DOC="Install clipboard manager with rofi/fzf integration"
 install_misc_clipcat() {
-    version=$(basename "$(
-        curl -sw "%{redirect_url}" \
-            https://github.com/xrelkd/clipcat/releases/latest
-    )")
+    latest_version="$(_gh_latest_version "xrelkd/clipcat")"
 
     cpu="$(uname -m)"
     kernel="$(uname -s)"
@@ -1743,12 +1734,12 @@ install_misc_clipcat() {
         return
     fi
 
-    curl -L "https://github.com/xrelkd/clipcat/releases/download/${version}/clipcat-${version}-$cpu-unknown-linux-musl.tar.gz" |
+    curl -L "https://github.com/xrelkd/clipcat/releases/download/${latest_version}/clipcat-${latest_version}-$cpu-unknown-linux-musl.tar.gz" |
         tar -C "$BIN_DIR" --overwrite -xzf -
 
     rm -f ./README.md ./LICENSE
     chmod +x "$BIN_DIR/clipcat*"
-    unset cpu kernel version
+    unset cpu kernel latest_version
 
     clipcatctl completions bash >"$COMPLETIONS_DIR/clipcatctl"
     clipcat-menu completions bash >"$COMPLETIONS_DIR/clipcat-menu"
@@ -1779,6 +1770,13 @@ EOF
 
 INSTALL_MISC_JQ_DOC="Install command line json processor"
 install_misc_jq() {
+    latest_version="$(_gh_latest_version "jqlang/jq")"
+
+    if _has jq && [ "$(jq --version)" = "$latest_version" ]; then
+        echo "The latest version of jq ($latest_version) is already installed" >&2
+        return
+    fi
+
     curl -Lo "$BIN_DIR/jq" \
         https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64
     chmod +x "$BIN_DIR/jq"
@@ -1789,6 +1787,13 @@ install_misc_jq() {
 
 INSTALL_MISC_YQ_DOC="Install jq-like yaml/json/xml processor"
 install_misc_yq() {
+    latest_version="$(_gh_latest_version "mikefarah/yq")"
+
+    if _has yq && [ "$(yq --version)" = "$latest_version" ]; then
+        echo "The latest version of yq ($latest_version) is already installed" >&2
+        return
+    fi
+
     curl -Lo "$BIN_DIR/yq" \
         https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
     chmod +x "$BIN_DIR/yq"
@@ -1822,11 +1827,10 @@ install_misc_vifm() {
         return
     fi
 
-    version=$(basename $(curl -sw "%{redirect_url}" \
-        https://github.com/vifm/vifm/releases/latest))
+    latest_version="$(_gh_latest_version "vifm/vifm")"
 
     curl -Lo ~/vifm.appimage \
-        "https://github.com/vifm/vifm/releases/latest/download/vifm-$version-x86_64.AppImage"
+        "https://github.com/vifm/vifm/releases/latest/download/vifm-$latest_version-x86_64.AppImage"
 
     chmod +x vifm.appimage
 
@@ -1925,6 +1929,13 @@ install_misc_conky() {
 # https://github.com/yt-dlp/yt-dlp
 INSTALL_MISC_YT_DLP_DOC="Install latest version of youtube video downloader used by mpv"
 install_misc_yt-dlp() {
+    latest_version="$(_gh_latest_version "yt-dlp/yt-dlp")"
+
+    if _has yt-dlp && [ "$(yt-dlp --version)" = "$latest_version" ]; then
+        echo "The latest version of yt-dlp ($latest_version) is already installed" >&2
+        return
+    fi
+
     curl -Lo "$BIN_DIR/yt-dlp" \
         https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
     chmod +x "$BIN_DIR/yt-dlp"
@@ -2179,6 +2190,58 @@ install_build_tmux() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install the latest version of ImageMagick                   {{{
+
+INSTALL_BUILD_IMAGEMAGICK_DOC="Install ImageMagick for image utilities"
+install_build_imagemagick() {
+    latest_version="$(_gh_latest_version "imagemagick/imagemagick")"
+
+    if _has magick && [ "$latest_version" = "$(
+        magick --version | head -n1 | awk '{print $3}'
+    )" ]; then
+        echo "The latest version of ImageMagick ($latest_version) is already installed" >&2
+        return
+    fi
+
+    mkdir -p "$CACHE_DIR/imagemagick"
+    cd "$CACHE_DIR/imagemagick" || return
+
+    curl -L "$(
+        curl -s "https://api.github.com/repos/imagemagick/imagemagick/releases/latest" |
+            jq -r .tarball_url
+    )" | tar -C . --overwrite --strip-components=1 -xzf -
+
+    _has apt && sudo apt install -y \
+        autoconf \
+        build-essential \
+        pkg-config \
+        libfreetype6-dev \
+        libgif-dev \
+        libjpeg-dev \
+        liblcms2-dev \
+        libltdl-dev \
+        libpng-dev \
+        libtiff-dev \
+        libxml2-dev
+
+    ./configure \
+        --prefix=/usr/local \
+        --with-bzlib=yes \
+        --with-fontconfig=yes \
+        --with-freetype=yes \
+        --with-gslib=yes \
+        --with-gvc=yes \
+        --with-jpeg=yes \
+        --with-jp2=yes \
+        --with-png=yes \
+        --with-tiff=yes \
+        --with-xml=yes \
+        --with-gs-font-dir=yes
+
+    make -j
+    sudo make install
+    sudo ldconfig /usr/local/lib/
+}
 
 # --------------------------------------------------------------------- }}}
 # Dependency group install functions                                    {{{
@@ -2194,10 +2257,6 @@ ubuntu_installs() {
     install_ubuntu_apt-network
     install_ubuntu_flathub
     install_ubuntu_docker
-    install_ubuntu_rg
-    install_ubuntu_fd
-    install_ubuntu_bat
-    install_ubuntu_delta
     install_ubuntu_gh
     install_ubuntu_git
     install_ubuntu_glow
@@ -2210,7 +2269,7 @@ ubuntu_installs() {
         install_ubuntu_brave
         install_ubuntu_vscode
         install_ubuntu_wezterm
-        install_ubuntu_vivaldi
+        # install_ubuntu_vivaldi
 
         if [ -z "$WORK_MACHINE" ]; then
             # install_ubuntu_docker-desktop
@@ -2232,6 +2291,7 @@ i3_installs() {
     install_script_i3-battery
     install_build_clipmenu
     theme_installs
+    install_ubuntu_lightdm
 
     if ! _has xidlehook; then
         install_language_rust
@@ -2265,6 +2325,7 @@ sway_installs() {
     install_script_i3-volume
     install_script_i3-battery
     theme_installs
+    # install_ubuntu_lightdm
     # install_build_tuigreet
 
     sudo usermod -aG video "$USER"
@@ -2330,6 +2391,9 @@ build_installs() {
     install_ubuntu_apt-build
     install_build_neovim || true
     install_build_fzf || true
+    install_build_imagemagick || true
+    install_build_tmux || true
+    install_build_dunst || true
     install_packages_vim
 }
 
@@ -2342,6 +2406,10 @@ all_installs() {
     script_installs
     build_installs
     theme_installs
+    install_misc_rg
+    install_misc_bat
+    install_misc_fd
+    install_misc_delta
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

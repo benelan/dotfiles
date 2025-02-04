@@ -10,7 +10,7 @@ list.all.tags=1
 
 calendar.details=full
 calendar.holidays=sparse
-weekstart=monday
+# weekstart=monday
 
 context.work.read=project:work
 context.work.write=project:work
@@ -57,6 +57,8 @@ uda.taskwarrior-tui.keyconfig.previous-tab=h
 uda.taskwarrior-tui.task-report.next.filter=+READY
 uda.taskwarrior-tui.task-report.prompt-on-done=true
 uda.taskwarrior-tui.task-report.prompt-on-delete=true
+uda.taskwarrior-tui.task-report.prompt-on-undo=true
+uda.taskwarrior-tui.selection.reverse=yes
 
 # estimate value explanations
 # https://github.com/Esri/calcite-design-system/blob/main/CONTRIBUTING.md#estimates
@@ -66,7 +68,7 @@ uda.estimate.type=string
 
 # https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/ftw
 report.fuzzy.description=A report optimized for fuzzy finding with fzf
-report.fuzzy.columns=id,project,tags,description.oneline
+report.fuzzy.columns=id,project,tags,description.count
 report.fuzzy.labels=ID,Project,Tags,Description
 report.fuzzy.filter=status:pending
 report.fuzzy.sort=start-,due+,project+,urgency-

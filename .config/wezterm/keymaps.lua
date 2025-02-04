@@ -173,9 +173,10 @@ function M.setup(config)
     { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
     { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 
-    { key = "y", mods = "LEADER", action = act.QuickSelect },
     { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
     { key = "]", mods = "LEADER", action = act.PasteFrom("PrimarySelection") },
+    { key = "y", mods = "LEADER", action = act.QuickSelect },
+    { key = "y", mods = "LEADER|CTRL", action = act.QuickSelect },
 
     -- General mappings
     {

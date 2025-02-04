@@ -5,7 +5,7 @@
 # Copyright (c) 2020 Doron Behar [MIT License]
 
 # Default taskwarrior options
-ftw_tw_cmd='task rc.defaultwidth=0 rc.defaultheight=0 rc.verbose=nothing rc._forcecolor=on'
+ftw_tw_cmd='task rc.defaultwidth=0 rc.defaultheight=0 rc.verbose=nothing rc.color.alternate= rc._forcecolor=on'
 
 fzf_version="$(fzf --version | awk '{print $1}')"
 if [ "$(
@@ -28,9 +28,9 @@ Key            Action
 ===            ======
 ctrl-r         Reload the current report
 enter          Show task information
-alt-p          Toggle preview containing task information
+alt-P          Toggle preview containing task information
+alt-H          Toggle header containing help message
 alt-k          Show keybindings (this message)
-alt-h          Toggle header containing help message
 alt-a          Add a new task
 alt-d          Mark tasks as Done
 alt-e          Edit selected tasks with \$EDITOR
@@ -164,7 +164,7 @@ fi
 header="(ctrl-r: reload) (alt-a: add) (alt-d: done) (alt-e: edit) (alt-o: open)
 (alt-m: modify) (alt-u: undo) (alt-A: annotate) (alt-+: append) (alt-X: delete)
 (alt-r: change report) (alt-c: change context) (alt-q: reset filter/context)
-(alt-]: start) (alt-[: stop) (alt-p: toggle preview) (alt-h: toggle help)
+(alt-]: start) (alt-[: stop) (alt-P: toggle preview) (alt-H: toggle help)
 
 "
 # Every binding in fzf's interface below calls this script with an
@@ -178,7 +178,7 @@ while [ $? != 130 ]; do
         ftw_tw_args="$(cat "$ftw_current_filter")"
     else
         # otherwise this is the initial execution
-        ftw_tw_args="$*"
+        ftw_tw_args="${*-fuzzy}"
         # Save the current filter in our marker file for the next execution
         echo "$ftw_tw_args" >"$ftw_current_filter"
     fi
@@ -205,12 +205,12 @@ while [ $? != 130 ]; do
     # - Use {+f} instead of {+} because parsing a file is easier than a one liner
     $ftw_tw_cmd "$ftw_tw_args" | fzf --ansi \
         --header="$header" \
-        --preview-window="right:40%,wrap,hidden" \
-        --preview="task {1} | less" \
+        --preview-window="right:40%,wrap,hidden,<75(down,wrap,hidden)" \
+        --preview="$ftw_tw_cmd {1} | less" \
         --hscroll-off=9999999 \
         --multi \
-        --bind="alt-p:toggle-preview" \
-        --bind="alt-h:toggle-header" \
+        --bind="alt-P:toggle-preview" \
+        --bind="alt-H:toggle-header" \
         --bind="ctrl-r:reload(env _FTW_INTERNAL_ACTION=reload $0)" \
         --bind="alt-k:execute(env _FTW_INTERNAL_ACTION=keys $0 | less)+print-query" \
         --bind="enter:execute(env _FTW_TASK_ACTION=information $0 {+f} | less)" \

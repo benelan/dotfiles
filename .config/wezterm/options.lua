@@ -11,6 +11,7 @@ function M.setup(config)
     config.unix_domains = { { name = "git-mux" } }
     config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
     config.default_workspace = home
+    if os.getenv("$XDG_SESSION_TYPE") == "wayland" then config.enable_wayland = true end
   end
 
   -- Using wezterm TERM requires additional setup
@@ -79,18 +80,18 @@ function M.setup(config)
     { args = { "gh", "fzf" } },
     { args = { "taskwarrior-tui" } },
     { args = { "nm-fzf", "wifi" } },
-    { args = { "zk", "daily" } },
-    { args = { "zk", "edit", "--interactive" } },
+    { label = "Open daily note", args = { "zk", "daily" } },
+    { label = "Find note", args = { "zk", "edit", "--interactive" } },
     {
-      label = "Octo Issues",
+      label = "My GitHub issues (octo)",
       args = { "nvim", "-c", ":Octo issue list assignee=benelan state=OPEN" },
     },
     {
-      label = "Octo PRs",
+      label = "My GitHub PRs (octo)",
       args = { "nvim", "-c", ":Octo search is:open is:pr author:benelan sort:updated" },
     },
     {
-      label = "Fugitive Status",
+      label = "Fugitive status",
       args = {
         "nvim",
         "-c",
@@ -102,7 +103,7 @@ function M.setup(config)
       },
     },
     {
-      label = "Edit Dotfiles",
+      label = "Edit dotfiles",
       cwd = wezterm.home_dir,
       args = {
         "nvim",
@@ -115,7 +116,7 @@ function M.setup(config)
       },
     },
     {
-      label = "Edit Calcite",
+      label = "Edit Calcite files",
       cwd = string.format("%s/dev", os.getenv("CALCITE")),
       args = { "nvim", "-c", ":Telescope git_files" },
     },
