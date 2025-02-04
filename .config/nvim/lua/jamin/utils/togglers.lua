@@ -157,15 +157,25 @@ end
 -----------------------------------------------------------------------------
 
 function M.setup()
-  keymap("n", "<leader>sD", function() M.diagnostics(true) end, "Toggle global diagnostics")
-  keymap("n", "<leader>sd", M.diagnostics, "Toggle buffer diagnostics")
-  keymap("n", "<leader>sv", M.diagnostics_virtual_text, "Toggle diagnostic virtual text")
-  keymap("n", "<leader>sh", M.ts_highlight, "Toggle treesitter highlight")
-  keymap("n", "<leader>su", M.ui, "Toggle UI noise")
+  vim.keymap.set(
+    "n",
+    "<leader>sD",
+    function() M.diagnostics(true) end,
+    { desc = "Toggle global diagnostics" }
+  )
+  vim.keymap.set("n", "<leader>sd", M.diagnostics, { desc = "Toggle buffer diagnostics" })
+  vim.keymap.set(
+    "n",
+    "<leader>sv",
+    M.diagnostics_virtual_text,
+    { desc = "Toggle diagnostic virtual text" }
+  )
+  vim.keymap.set("n", "<leader>sh", M.ts_highlight, { desc = "Toggle treesitter highlight" })
+  vim.keymap.set("n", "<leader>su", M.ui, { desc = "Toggle UI noise" })
 
-  keymap({ "n", "t" }, "<M-t>", M.terminal, "Floating terminal")
-  keymap("t", "<M-h>", M.terminal_height, "Toggle floating terminal height")
-  keymap("t", "<M-w>", M.terminal_width, "Toggle floating terminal width")
+  vim.keymap.set({ "n", "t" }, "<M-t>", M.terminal, { desc = "Floating terminal" })
+  vim.keymap.set("t", "<M-h>", M.terminal_height, { desc = "Toggle floating terminal height" })
+  vim.keymap.set("t", "<M-w>", M.terminal_width, { desc = "Toggle floating terminal width" })
 end
 
 return M

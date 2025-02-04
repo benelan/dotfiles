@@ -2,7 +2,7 @@
 
 local M = {}
 local res = require("jamin.resources")
-local augroup = vim.api.nvim_create_augroup("jamin_completion_plugin_tweaks", {})
+local augroup = vim.api.nvim_create_augroup("jamin_toggle_ai_completion", {})
 
 -- true if environment variable `COPILOT = 1` and cwd is in any project
 -- true if environment variable `COPILOT != 0` and cwd is in a work project
@@ -29,6 +29,13 @@ end
 function M.toggle_copilot(dir) vim.cmd.Copilot(M.should_use_copilot(dir) and "enable" or "disable") end
 function M.toggle_codeium(dir) vim.cmd.Codeium(M.should_use_codeium(dir) and "Enable" or "Disable") end
 
+local ai_filetypes = vim
+  .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
+  :fold({}, function(acc, k)
+    acc[k] = false
+    return acc
+  end)
+
 ---@type LazySpec
 return {
   utils = M,
@@ -48,12 +55,7 @@ return {
 
       require("copilot")
         .setup --[[@as copilot_config]]({
-          filetypes = vim
-            .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
-            :fold({}, function(acc, k)
-              acc[k] = false
-              return acc
-            end),
+          filetypes = ai_filetypes,
           panel = {
             layout = { position = "right", ratio = 0.3 },
             keymap = {
@@ -114,12 +116,7 @@ return {
       })
 
       vim.g.codeium_enabled = true
-      vim.g.codeium_filetypes = vim
-        .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
-        :fold({}, function(acc, k)
-          acc[k] = false
-          return acc
-        end)
+      vim.g.codeium_filetypes = ai_filetypes
     end,
   },
 

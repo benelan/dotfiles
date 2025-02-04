@@ -41,7 +41,11 @@ function M.cowboy()
     local map = key
     vim.keymap.set("n", key, function()
       if vim.v.count > 0 then count = 0 end
-      if count >= 10 and vim.bo.buftype ~= "nofile" then
+      if
+        count >= 10
+        and vim.bo.buftype ~= "nofile"
+        and not vim.tbl_contains(require("jamin.resources").filetypes.excluded, vim.o.filetype)
+      then
         ok = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
           icon = "🤠",
           id = "cowboy",
@@ -64,7 +68,8 @@ function M.setup()
   require("jamin.utils.obsidian").setup()
   require("jamin.utils.statusline").setup()
   require("jamin.utils.qf_follow").setup()
-  require("jamin.utils").cowboy()
+  require("jamin.utils.gh").setup()
+  M.cowboy()
 end
 
 return M

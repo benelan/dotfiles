@@ -14,6 +14,9 @@ nnoremap N Nzzzv
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
+nnoremap L Lzz
+nnoremap H Hzz
+
 tnoremap <Esc><Esc> <C-\><C-n>
 
 cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"

@@ -80,7 +80,7 @@ function M.setup()
     desc = "Open a note in the Obsidian GUI app",
   })
 
-  keymap("n", "<leader>zO", "<CMD>OO<CR>", "Open note in Obsidian")
+  vim.keymap.set("n", "<leader>zO", "<CMD>OO<CR>", { desc = "Open note in Obsidian" })
 end
 
 return M

@@ -26,6 +26,7 @@ return function(args)
       silent = true,
       noremap = true,
       desc = desc,
+      nowait = true,
     })
   end
 
@@ -48,7 +49,13 @@ return function(args)
     bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
   end
 
-  if client:supports_method("textDocument/declaration") then
+  if client:supports_method("textDocument/rename") then
+    bufmap("n", "cd", vim.lsp.buf.rename, "LSP rename")
+  end
+
+  if client:supports_method("textDocument/implementation") then
+    bufmap("n", "gD", vim.lsp.buf.implementation, "LSP implementation")
+  elseif client:supports_method("textDocument/declaration") then
     bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
   end
 
@@ -56,16 +63,26 @@ return function(args)
     bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
   end
 
+  if client:supports_method("textDocument/references") then
+    bufmap(
+      "n",
+      "gr",
+      function() vim.lsp.buf.references({ includeDeclaration = false }) end,
+      "LSP references"
+    )
+  end
+
   if client:supports_method("textDocument/codeAction") then
+    bufmap({ "n", "v" }, "ga", function() vim.lsp.buf.code_action() end, "Code action")
     bufmap(
       { "n", "v" },
-      "ga",
+      "gA",
       function()
         vim.lsp.buf.code_action({
           context = { only = { "source", "refactor", "quickfix" } },
         })
       end,
-      "Code action (only source and quickfix)"
+      "Code action (source, refactor, and quickfix)"
     )
   end
 
@@ -95,7 +112,7 @@ return function(args)
   --     buffer = args.buf,
   --     callback = function() vim.lsp.codelens.refresh() end,
   --   })
-  --   bufmap("n", "grc", vim.lsp.codelens.run, "LSP codelens")
+  --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
   -- end
 
   -- populate lsp diagnostics for the whole project, not just open files

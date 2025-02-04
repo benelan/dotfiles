@@ -43,13 +43,16 @@ return {
       vim.g.bullets_set_mappings = false
       vim.g.bullets_custom_mappings = {
         { "imap", "<CR>", "<Plug>(bullets-newline)" },
-        { "inoremap", "<C-CR>", "<cr>" },
+        { "inoremap", "<C-CR>", "<CR>" },
         { "inoremap", "<M-CR>", "<CR>" },
         { "nmap", "o", "<Plug>(bullets-newline)" },
         { "nnoremap", "<M-o>", "o" },
-        { "nmap", "<leader>bn", "<Plug>(bullets-renumber)" },
-        { "vmap", "<leader>bn", "<Plug>(bullets-renumber)" },
-        { "nmap", "<leader>bx", "<Plug>(bullets-toggle-checkbox)" },
+        { "nmap", "<localleader>n", "<Plug>(bullets-renumber)" },
+        { "vmap", "<localleader>n", "<Plug>(bullets-renumber)" },
+        { "nmap", "<localleader>x", "<Plug>(bullets-toggle-checkbox)" },
+        { "nmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "vmap", "<leader>mn", "<Plug>(bullets-renumber)" },
+        { "nmap", "<leader>mx", "<Plug>(bullets-toggle-checkbox)" },
         { "imap", "<C-t>", "<Plug>(bullets-demote)" },
         { "imap", "<C-d>", "<Plug>(bullets-promote)" },
         { "nmap", ">>", "<Plug>(bullets-demote)" },
@@ -65,6 +68,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && npx --yes yarn install && git reset --hard",
+    ft = "markdown",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       {
@@ -72,7 +76,12 @@ return {
         "<CMD>MarkdownPreviewToggle<CR>",
         desc = "Markdown preview",
         ft = "markdown",
-        buffer = true,
+      },
+      {
+        "<localleader>p",
+        "<CMD>MarkdownPreviewToggle<CR>",
+        desc = "Markdown preview",
+        ft = "markdown",
       },
     },
     config = function()
@@ -112,10 +121,10 @@ return {
         callback = function()
           -- Add the key mappings only for Markdown files in a zk notebook.
           if has_zk_util and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil then
-            -- Override the global keymap to create the new note in the same directory as the current buffer.
+            -- Create the new note in the same directory as the current buffer.
             vim.keymap.set(
               "n",
-              "<leader>zn",
+              "<leader>znd",
               "<CMD>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>",
               { buffer = true, silent = true, noremap = true, desc = "New note (zk)" }
             )
@@ -129,7 +138,7 @@ return {
                 buffer = true,
                 silent = true,
                 noremap = true,
-                desc = "New note using selected title (zk)",
+                desc = "New note - title from selection (zk)",
               }
             )
 
@@ -142,7 +151,7 @@ return {
                 buffer = true,
                 silent = true,
                 noremap = true,
-                desc = "New note using selected content (zk)",
+                desc = "New note - content from selection (zk)",
               }
             )
 
@@ -164,14 +173,14 @@ return {
 
             vim.keymap.set(
               "v",
-              "<leader>z<CR>",
+              "<leader>zp",
               ":ZkInsertLinkAtSelection<CR>",
               { buffer = true, silent = true, noremap = true, desc = "Insert link (zk)" }
             )
 
             vim.keymap.set(
               "n",
-              "<leader>z<CR>",
+              "<leader>zp",
               "<CMD>ZkInsertLink<CR>",
               { buffer = true, silent = true, noremap = true, desc = "Insert link (zk)" }
             )

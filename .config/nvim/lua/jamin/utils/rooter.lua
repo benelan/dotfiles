@@ -1,10 +1,10 @@
----  Root finders with Git (worktree) and Project (lsp) sources. Adopted from:
+---  Root finders with git worktree and lsp marker sources. Adopted from:
 --- https://github.com/akinsho/dotfiles/blob/b1b7d58c9961f17af142700c6fd0fed501628745/.config/nvim/plugin/rooter.lua
 local M = {}
 
 local root_markers = { "package.json", "Dockerfile", "Makefile" }
 local ignored_lsps = { "copilot", "efm", "eslint" }
-local ignored_paths = { "~/.local" }
+local ignored_paths = { "~/.local", "~/.cache" }
 
 -- Cache to use for speed up (at cost of possibly outdated results)
 local lsp_root_cache = {}
@@ -57,7 +57,7 @@ local function get_lsp_root(buf, ignore)
 end
 
 function M.project(args)
-  local path = get_buf_dir(args)
+  local path = get_buf_dir(args) or vim.uv.cwd()
   if not path then return end
 
   -- Try cache and resort to searching upward for root directory
@@ -77,7 +77,7 @@ function M.project(args)
 end
 
 function M.worktree(args)
-  local path = get_buf_dir(args)
+  local path = get_buf_dir(args) or vim.uv.cwd()
   if not path then return end
 
   -- Try cache and resort to searching upward for root directory
@@ -100,24 +100,21 @@ M.setup = function()
   })
 
   -- Change directory to project root using LSP or file markers in `root_names`
-  vim.api.nvim_create_user_command(
-    "Rcd",
-    M.project,
-    { desc = "Change directory to project/lsp root" }
-  )
+  vim.api.nvim_create_user_command("Mcd", M.project, {
+    desc = "Change directory to lsp root [m]arker",
+  })
 
   -- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
   -- This is useful when working with monorepos, where the project root is not always the git root.
-  vim.api.nvim_create_user_command(
-    "Wcd",
-    M.worktree,
-    { desc = "Change directory to git work tree root" }
-  )
+  vim.api.nvim_create_user_command("Wcd", M.worktree, {
+    desc = "Change directory to git [w]ork tree root",
+  })
 
   -- keymaps for the user commands
-  vim.keymap.set("n", "c/", "<CMD>Wcd<CR>", { desc = "Change directory to git (worktree) root" })
-  vim.keymap.set("n", "cp", "<CMD>Rcd<CR>", { desc = "Change directory to project (lsp) root" })
-  vim.keymap.set("n", "cd", "<CMD>lcd %:h <BAR> pwd<CR>", { desc = "Change directory to buffer" })
+  vim.keymap.set("n", "c/", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current [f]ile" })
+  vim.keymap.set("n", "c/f", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current [f]ile" })
+  vim.keymap.set("n", "c/w", "<CMD>Wcd<CR><CMD>pwd<CR>", { desc = "cd to git [w]orktree root" })
+  vim.keymap.set("n", "c/m", "<CMD>Mcd<CR><CMD>pwd<CR>", { desc = "cd to lsp root [m]arker" })
 end
 
 return M

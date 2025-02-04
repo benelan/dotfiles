@@ -15,8 +15,8 @@ return {
     init = function()
       vim.g.vifm_drop_gone_buffers = true
       -- define keymap here to fix lazy loading related startup error
-      keymap("n", "-", "<CMD>Vifm<CR>", "Vifm")
-      keymap("n", "<M-->", "<CMD>Vifm<CR>", "Vifm")
+      vim.keymap.set("n", "-", "<CMD>Vifm<CR>", { desc = "Vifm" })
+      vim.keymap.set("n", "<M-->", "<CMD>Vifm<CR>", { desc = "Vifm" })
     end,
   },
 
@@ -77,6 +77,158 @@ return {
       },
     },
 
+    keys = function()
+      -- when a count N is given to a telescope mapping called through the following
+      -- function, the search is started in the Nth parent directory
+      local function telescope_cwd(picker, args)
+        require("telescope.builtin")[picker](
+          vim.tbl_extend("error", args or {}, { cwd = ("../"):rep(vim.v.count) .. "." })
+        )
+      end
+
+      return {
+        { "<leader>f", "<CMD>Telescope builtin<CR>", desc = "Telescope builtins" },
+        { "<leader>fr", "<CMD>Telescope oldfiles<CR>", desc = "Find recent files (telescope)" },
+        { "<leader>fb", "<CMD>Telescope buffers<CR>", desc = "Find buffers (telescope)" },
+        { "<leader>fc", "<CMD>Telescope commands<CR>", desc = "Find commands (telescope)" },
+        { "<leader>fk", "<CMD>Telescope keymaps<CR>", desc = "Find keymaps (telescope)" },
+        { "<leader>fh", "<CMD>Telescope help_tags<CR>", desc = "Find help tags (telescope)" },
+        { "<leader>fm", "<CMD>Telescope marks<CR>", desc = "Find marks (telescope)" },
+        { "<leader>fq", "<CMD>Telescope quickfix<CR>", desc = "Quickfix items (telescope)" },
+        {
+          "<leader>lQ",
+          "<CMD>Telescope quickfixhistory<CR>",
+          desc = "Quickfix history (telescope)",
+        },
+        {
+          "<leader>fD",
+          "<CMD>Telescope diagnostics<CR>",
+          desc = "Diagnostics (telescope)",
+        },
+        {
+          "<leader>fd",
+          "<CMD>Telescope diagnostics bufnr=0<CR>",
+          desc = " Buffer diagnostics (telescope)",
+        },
+        {
+          '<leader>f"',
+          "<CMD>Telescope registers<CR>",
+          desc = "Find register contents (telescope)",
+        },
+        {
+          "<leader>fj",
+          "<CMD>Telescope jumplist<CR>",
+          desc = "Find jumpmlist locations (telescope)",
+        },
+        {
+          "<leader>f.",
+          "<CMD>Telescope resume<CR>",
+          desc = "Resume previous fuzzy finding (telescope)",
+        },
+        {
+          "<leader>f:",
+          "<CMD>Telescope command_history<CR>",
+          desc = "Find command history (telescope)",
+        },
+
+        {
+          "<leader>fw",
+          function()
+            telescope_cwd("grep_string", { search = vim.fn.expand("<cword>"), hidden = true })
+          end,
+          desc = "Find word under cursor (telescope)",
+        },
+        {
+          "<leader>fW",
+          function()
+            telescope_cwd("grep_string", { search = vim.fn.expand("<cWORD>"), hidden = true })
+          end,
+          desc = "Find WORD under cursor (telescope)",
+        },
+        {
+          "<leader>ff",
+          function() telescope_cwd("find_files", { hidden = true }) end,
+          desc = "Find files (telescope)",
+        },
+        {
+          "<leader>fg",
+          function() telescope_cwd("live_grep", { hidden = true }) end,
+          desc = "Find text (telescope)",
+        },
+        {
+          "<C-p>",
+          function() telescope_cwd("find_files", { hidden = true }) end,
+          desc = "Find files (telescope)",
+        },
+        {
+          "<C-\\>",
+          function() telescope_cwd("live_grep", { hidden = true }) end,
+          desc = "Find text (telescope)",
+        },
+
+        -- LSP keymaps
+        {
+          "<leader>lr",
+          "<CMD>Telescope lsp_references<CR>",
+          desc = "LSP references (telescope)",
+          mode = { "n", "v" },
+        },
+        {
+          "<leader>ly",
+          "<CMD>Telescope lsp_type_definitions<CR>",
+          desc = "LSP type definitions (telescope)",
+        },
+        {
+          "<leader>li",
+          "<CMD>Telescope lsp_implementations<CR>",
+          desc = "LSP implementations (telescope)",
+        },
+
+        {
+          "<leader>lS",
+          function()
+            require("telescope.builtin").lsp_dynamic_workspace_symbols({
+              ignore_symbols = { "Boolean", "Number" },
+            })
+          end,
+          desc = "LSP workspace symbols (telescope)",
+        },
+        {
+          "<leader>ls",
+          function()
+            require("telescope.builtin").lsp_document_symbols({
+              ignore_symbols = { "Boolean", "Number" },
+            })
+          end,
+          desc = "LSP document symbols (telescope)",
+        },
+
+        -- Git keymaps
+        { "<C-g>", function() telescope_cwd("git_files") end, desc = "Git files (telescope)" },
+        {
+          "<leader>gf",
+          function() telescope_cwd("git_files") end,
+          desc = "Git files (telescope)",
+        },
+        { "<leader>gfb", "<CMD>Telescope git_branches<CR>", desc = "Git branches (telescope)" },
+        { "<leader>gfs", "<CMD>Telescope git_status<CR>", desc = "Git status (telescope)" },
+        { "<leader>gfS", "<CMD>Telescope git_stash<CR>", desc = "Git stash (telescope)" },
+        { "<leader>gfH", "<CMD>Telescope git_commits<CR>", desc = "Git history (telescope)" },
+        {
+          "<leader>gfh",
+          "<CMD>Telescope git_bcommits<CR>",
+          desc = "Git buffer history (telescope)",
+          mode = "n",
+        },
+        {
+          "<leader>gfh",
+          "<CMD>Telescope git_bcommits_range<CR>",
+          desc = "Git history (telescope)",
+          mode = "v",
+        },
+      }
+    end,
+
     opts = function()
       local function open_in_quickfix(...)
         require("telescope.actions").smart_send_to_qflist(...)
@@ -117,8 +269,10 @@ return {
         ["<C-k>"] = "move_selection_previous",
         ["<M-n>"] = "cycle_history_next",
         ["<M-p>"] = "cycle_history_prev",
+        ["<Up>"] = "cycle_history_next",
+        ["<Down>"] = "cycle_history_prev",
         ["<M-l>"] = require("telescope.actions.layout").cycle_layout_next,
-        ["<M-v>"] = require("telescope.actions.layout").toggle_preview,
+        ["<M-P>"] = require("telescope.actions.layout").toggle_preview,
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = open_in_quickfix,
         ["<C-s>"] = flash_jump,
@@ -155,7 +309,7 @@ return {
             mappings = {
               n = {
                 -- change directory in normal mode
-                ["cd"] = function(prompt_bufnr)
+                ["c/"] = function(prompt_bufnr)
                   require("telescope.actions").close(prompt_bufnr)
                   vim.cmd(
                     string.format(
@@ -260,7 +414,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon toggle mark menu",
@@ -270,7 +424,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():add() end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon add file",
@@ -280,7 +434,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():prepend() end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         desc = "Harpoon prepend file",
       },
@@ -289,7 +443,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():next() end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select next mark",
@@ -299,7 +453,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():prev() end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         desc = "Harpoon select previous mark",
       },
@@ -308,7 +462,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():select(1) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select mark 1",
@@ -318,7 +472,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():select(2) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select mark 2",
@@ -328,7 +482,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():select(3) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select mark 3",
@@ -338,7 +492,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():select(4) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select mark 4",
@@ -348,7 +502,7 @@ return {
         function()
           vim.cmd.Wcd()
           pcall(function() require("harpoon"):list():select(5) end)
-          vim.cmd.Rcd()
+          vim.cmd.Mcd()
         end,
         silent = true,
         desc = "Harpoon select mark 5",

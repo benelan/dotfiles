@@ -99,8 +99,8 @@ return {
         group = vim.api.nvim_create_augroup("jamin_floggraph_keymaps", {}),
         callback = function(args)
           local opts = { buffer = args.buf, noremap = true }
-          vim.keymap.set("n", "<M-d>", "<C-w>p<C-d><C-w>p", opts)
-          vim.keymap.set("n", "<M-u>", "<C-w>p<C-u><C-w>p", opts)
+          vim.keymap.set("n", "<C-f>", "<C-w>p<C-d><C-w>p", opts)
+          vim.keymap.set("n", "<C-b>", "<C-w>p<C-u><C-w>p", opts)
         end,
       })
     end,
@@ -142,7 +142,6 @@ return {
       },
       {
         "ih",
-        ---@diagnostic disable-next-line: redundant-parameter
         function() require("gitsigns").select_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
         desc = "inner git hunk (gitsigns)",
         mode = { "o", "x" },
@@ -326,10 +325,15 @@ return {
           open_in_browser = { lhs = "<C-o>", desc = "open PR in browser" },
           resolve_thread = { lhs = "<localleader>tr", desc = "resolve PR thread" },
           unresolve_thread = { lhs = "<localleader>tu", desc = "unresolve PR thread" },
+          review_start = { lhs = "<Nop>" },
+          review_resume = { lhs = "<Nop>" },
         },
         review_thread = {
           resolve_thread = { lhs = "<localleader>tr", desc = "resolve PR thread" },
           unresolve_thread = { lhs = "<localleader>tu", desc = "unresolve PR thread" },
+        },
+        submit_win = {
+          comment_review = { lhs = "<C-s>", desc = "comment review", mode = { "n", "i" } },
         },
       },
     },
@@ -346,7 +350,6 @@ return {
         pattern = "octo://*",
         -- command = "if &diff | set nofoldenable | fi",
         callback = function()
-          vim.opt.wrap = false
           vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {
             desc = "Open review thread (octo)",
             buffer = true,
@@ -359,7 +362,7 @@ return {
       -- Find possible actions
       { "<leader>o", "<CMD>Octo actions<CR>", desc = "Actions (octo)" },
 
-      -- -- native alternative to https://github.com/petertriho/cmp-git
+      -- -- native omni-completion alternative to https://github.com/Kaiser-Yang/blink-cmp-git
       -- { "@", "@<C-x><C-o>", mode = "i", ft = "octo" },
       -- { "#", "#<C-x><C-o>", mode = "i", ft = "octo" },
 
@@ -397,7 +400,11 @@ return {
         desc = "List my created pull requests (octo)",
       },
 
-      -- My repos and gists
+      --- Milestones
+      { "<leader>om", "<CMD>Octo milestone list<CR>", desc = "List milestones (octo)" },
+
+      -- My notifications, repos, and gists
+      { "<leader>on", "<CMD>Octo notification list<CR>", desc = "List my notifications (octo)" },
       { "<leader>or", "<CMD>Octo repo list<CR>", desc = "List my repos (octo)" },
       { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
 
@@ -409,15 +416,39 @@ return {
         ft = "octo",
       },
       {
-        "<localleader>vp",
-        "<CMD>Octo review comments<CR>",
-        desc = "Show pending PR review comments (octo)",
-        ft = "octo",
-      },
-      {
         "<localleader>vo",
         "<CMD>Octo review<CR>",
         desc = "Open PR review (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>vc",
+        "<CMD>Octo review commit<CR>",
+        desc = "Review specific commit (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>vp",
+        "<CMD>Octo review comments<CR>",
+        desc = "Show pending review comments (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>ma",
+        "<CMD>Octo milestone add<CR>",
+        desc = "Add milestone (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>md",
+        "<CMD>Octo milestone remove<CR>",
+        desc = "Remove milestone (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>mc",
+        "<CMD>Octo milestone create<CR>",
+        desc = "Create milestone (octo)",
         ft = "octo",
       },
     },

@@ -144,16 +144,23 @@ if has("keymap")
     vnoremap Y y
 
     " Format the entire buffer preserving cursor location.
-    " Requires the 'B' text object defined below.
-    nmap <silent> gQ mtgqBg`tzz:delmarks t<CR>
+    nmap <silent> gQ mzgggqG`z<CMD>delmarks z<CR>zz
 
     " Format selected text maintaining the selection.
     xmap gQ gq`[v`]V
+
+    if !has('nvim')
+        nmap <silent> <leader>F gQ
+        xmap <leader>F gQ
+    endif
 
     nnoremap <BS> <C-^>
 
     nnoremap n nzzzv
     nnoremap N Nzzzv
+
+    nnoremap L Lzz
+    nnoremap H Hzz
 
     nnoremap <C-u> <C-u>zz
     nnoremap <C-d> <C-d>zz
@@ -179,10 +186,6 @@ if has("keymap")
     vnoremap < <gv
     vnoremap > >gv
 
-    " Create a new line above/below the cursor
-    nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
-    nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
-
     " Toggle netrw file explorer
     nnoremap <silent> <leader>- <CMD>execute (
         \ &filetype ==# "netrw"
@@ -192,10 +195,19 @@ if has("keymap")
     \)<CR>
 
     " Change pwd to the buffer's directory
-    nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+    nnoremap c/ :<C-U>cd %:h <Bar> pwd<CR>
 
     cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
     cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
+
+    inoremap <C-U> <C-G>u<C-U>
+    inoremap <C-W> <C-G>u<C-W>
+
+    " exit insert mode in terminal buffers
+    tnoremap <Esc><Esc> <C-\><C-n>
+
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" text objects                                               {{{
 
     " Use last changed or yanked text as an object
     onoremap gv :<C-U>execute "normal! `[v`]"<CR>
@@ -219,22 +231,21 @@ if has("keymap")
         execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
     endfor
 
-    inoremap <C-U> <C-G>u<C-U>
-    inoremap <C-W> <C-G>u<C-W>
+    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    "" readline                                                   {{{
 
-    " add closing brackets
-    inoremap (<CR> (<CR>)<Esc>O
-    inoremap (;<CR> (<CR>);<Esc>O
-    inoremap (,<CR> (<CR>),<Esc>O
-    inoremap {<CR> {<CR>}<Esc>O
-    inoremap {;<CR> {<CR>};<Esc>O
-    inoremap {,<CR> {<CR>},<Esc>O
-    inoremap [<CR> [<CR>]<Esc>O
-    inoremap [;<CR> [<CR>];<Esc>O
-    inoremap [,<CR> [<CR>],<Esc>O
+    inoremap        <C-A> <C-O>^
+    inoremap   <C-X><C-A> <C-A>
+    cnoremap        <C-A> <Home>
+    cnoremap   <C-X><C-A> <C-A>
 
-    " exit insert mode in terminal buffers
-    tnoremap <Esc><Esc> <C-\><C-n>
+    inoremap <expr> <C-E> col('.')>strlen(getline('.'))<bar><bar>pumvisible()?"\<Lt>C-E>":"\<Lt>End>"
+
+    inoremap <expr> <C-B> getline('.')=~'^\s*$'&&col('.')>strlen(getline('.'))?"0\<Lt>C-D>\<Lt>Esc>kJs":"\<Lt>Left>"
+    cnoremap        <C-B> <Left>
+
+    inoremap <expr> <C-F> col('.')>strlen(getline('.'))?"\<Lt>C-F>":"\<Lt>Right>"
+    cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" system clipboard                                           {{{
@@ -306,6 +317,10 @@ if has("keymap")
     nnoremap ]t :tabnext<CR>
     nnoremap [T :tlast<CR>
     nnoremap ]T :tfirst<CR>
+
+    " Create a new line above/below the cursor
+    nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
+    nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" spelling                                                   {{{

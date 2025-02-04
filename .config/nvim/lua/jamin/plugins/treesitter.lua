@@ -99,7 +99,10 @@ return {
       ---@type TSConfig
       return {
         ensure_installed = res.treesitter_parsers,
-        indent = { enable = true },
+        indent = {
+          enable = true,
+          disable = { "yaml" },
+        },
         query_linter = { enable = true },
 
         highlight = {

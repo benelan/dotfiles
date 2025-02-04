@@ -60,7 +60,7 @@ function M.setup()
     desc = "Run make asynchronously",
   })
 
-  keymap("n", "gM", "<CMD>Make<CR>", "Async make")
+  vim.keymap.set("n", "gM", "<CMD>Make<CR>", { desc = "Async make" })
 end
 
 return M

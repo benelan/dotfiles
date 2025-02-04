@@ -133,7 +133,7 @@ if has("keymap")
     " Complete the command by choosing the register containing the macro.
     vnoremap @ :normal @
 
-    nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+    nnoremap c/ :<C-U>cd %:h <Bar> pwd<CR>
 
     " Add empty lines before and after cursor line
     nnoremap ]<space> :call append(line('.'), repeat([''], v:count1))<CR>
@@ -229,11 +229,6 @@ if has("eval")
             return ""
         endtry
     endfunction
-
-    "" toggle quickfix/location lists open/close {{{2
-    com! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
-    nnoremap <C-q> <CMD>QfToggle<CR>
-
 
     "" delete buffer without closing window {{{2
     " https://stackoverflow.com/a/6271254
@@ -383,7 +378,7 @@ endif
 
 " Fix modern terminal features
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitty\)'
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitty\|ghostty\)'
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"

@@ -77,7 +77,13 @@ local spec = {
                 html = { "javascript", "css" },
                 typescript = { "javascript" },
                 javascriptreact = { "javascript", "html" },
-                typescriptreact = { "javascript", "typescript", "javascriptreact", "html" },
+                typescriptreact = {
+                  "javascript",
+                  "typescript",
+                  "javascriptreact",
+                  "html",
+                  "stencil",
+                },
                 astro = { "javascript", "typescript", "html", "css" },
                 svelte = { "javascript", "typescript", "html", "css" },
                 vue = { "javascript", "typescript", "html", "css" },
@@ -222,6 +228,8 @@ if vim.fn.executable("gh") == 1 then
             module = "blink-cmp-git",
             score_offset = 100,
             enabled = function()
+              if vim.tbl_contains({ "gitcommit", "octo" }, vim.o.filetype) then return true end
+
               local bufpath = vim.api.nvim_buf_get_name(0)
               local bufname = string.lower(vim.fs.basename(bufpath))
 
@@ -235,35 +243,49 @@ if vim.fn.executable("gh") == 1 then
                   or string.match(bufpath, "^/tmp/%d+%.md$")
               end
 
-              return vim.tbl_contains({ "gitcommit", "octo" }, vim.o.filetype)
+              -- handles the octo PR review submission window
+              if vim.opt.previewwindow then
+                local alt_bufnr = vim.fn.bufnr("#")
+                if alt_bufnr > 0 then
+                  local alt_bufpath = vim.api.nvim_buf_get_name(alt_bufnr)
+                  return string.match(alt_bufpath, "^octo://.*")
+                end
+              end
+
+              return false
             end,
             opts = {
               commit = { on_error = function(_, _) return true end },
               git_centers = {
                 github = {
                   issue = {
-                    get_command_args = {
-                      "issue",
-                      "list",
-                      "--limit",
-                      "200",
-                      "--search",
-                      "sort:updated",
-                      "--json",
-                      "number,title,state,body,createdAt,updatedAt,closedAt,author",
-                    },
+                    get_command_args = function(command, token)
+                      local args = require("blink-cmp-git.default.github").issue.get_command_args(
+                        command,
+                        token
+                      )
+                      args[#args] = (
+                        command == "curl" and "https://api.github.com/repos/" or "repos/"
+                      )
+                        .. require("blink-cmp-git.utils").get_repo_owner_and_repo()
+                        .. "/issues?state=all&per_page=100&sort=updated&direction=desc"
+                      return args
+                    end,
                   },
                   pull_request = {
-                    get_command_args = {
-                      "pr",
-                      "list",
-                      "--limit",
-                      "100",
-                      "--search",
-                      "sort:updated",
-                      "--json",
-                      "number,title,state,body,createdAt,updatedAt,closedAt,author",
-                    },
+                    get_command_args = function(command, token)
+                      local args =
+                        require("blink-cmp-git.default.github").pull_request.get_command_args(
+                          command,
+                          token
+                        )
+                      args[#args] = (
+                        command == "curl" and "https://api.github.com/repos/" or "repos/"
+                      )
+                        .. require("blink-cmp-git.utils").get_repo_owner_and_repo()
+                        .. "/pulls?state=all&per_page=100&sort=updated&direction=desc"
+                      return args
+                    end,
                   },
                 },
               },
