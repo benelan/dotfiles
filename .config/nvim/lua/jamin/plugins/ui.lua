@@ -113,29 +113,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- display lsp progress and notifications
-  {
-    "j-hui/fidget.nvim",
-    event = "LspAttach",
-    keys = {
-      { "<leader>vh", "<CMD>Fidget history<CR>", desc = "View message history (fidget)" },
-      { "<leader>vd", "<CMD>Fidget clear_history<CR>", desc = "Delete message history (fidget)" },
-      { "<leader>vx", "<CMD>Fidget clear<CR>", desc = "Clear displayed notifications (fidget)" },
-      { "<leader>vn", "<CMD>Fidget suppress<CR>", desc = "Toggle notification display (fidget)" },
-      { "<leader>vp", "<CMD>Fidget lsp_suppress<CR>", desc = "Toggle LSP progress (fidget)" },
-    },
-    opts = {
-      progress = {
-        display = { done_icon = res.icons.ui.checkmark },
-      },
-      notification = {
-        override_vim_notify = true,
-        window = { winblend = 0, x_padding = 0 },
-      },
-    },
-  },
-
-  -----------------------------------------------------------------------------
   -- highlights the best character to f/F/t/T per word
   {
     "jinh0/eyeliner.nvim",

@@ -3,6 +3,7 @@
 local res = require("jamin.resources")
 
 local ui = vim.api.nvim_list_uis() or {}
+local width = #ui > 0 and ui[1].width or 80
 
 ---@type LazySpec
 return {
@@ -88,6 +89,56 @@ return {
           _G.dd = function(...) Snacks.debug.inspect(...) end
           _G.bt = function() Snacks.debug.backtrace() end
           vim.print = _G.dd -- Override print to use snacks for `:=` command
+
+          vim.api.nvim_set_hl(0, "SnacksNotifierMinimal", { link = "Normal" })
+          ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
+          local progress = vim.defaulttable()
+          vim.api.nvim_create_autocmd("LspProgress", {
+            ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+            callback = function(ev)
+              local client = vim.lsp.get_client_by_id(ev.data.client_id)
+              local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+              if
+                not client
+                or vim.tbl_contains({ "efm", "eslint", "copilot" }, client.name)
+                or type(value) ~= "table"
+              then
+                return
+              end
+              local p = progress[client.id]
+
+              for i = 1, #p + 1 do
+                if i == #p + 1 or p[i].token == ev.data.params.token then
+                  p[i] = {
+                    token = ev.data.params.token,
+                    msg = ("[%3d%%] %s%s"):format(
+                      value.kind == "end" and 100 or value.percentage or 100,
+                      value.title or "",
+                      value.message and (" **%s**"):format(value.message) or ""
+                    ),
+                    done = value.kind == "end",
+                  }
+                  break
+                end
+              end
+
+              local msg = {} ---@type string[]
+              progress[client.id] = vim.tbl_filter(
+                function(v) return table.insert(msg, v.msg) or not v.done end,
+                p
+              )
+
+              vim.notify(table.concat(msg, "\n"), "info", {
+                id = "lsp_progress",
+                title = client.name,
+                opts = function(notif)
+                  notif.style = "minimal"
+                  notif.icon = #progress[client.id] == 0 and res.icons.ui.checkmark
+                    or res.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #res.icons.progress + 1]
+                end,
+              })
+            end,
+          })
         end,
       })
     end,
@@ -98,6 +149,22 @@ return {
       quickfile = { enabled = true },
       words = { enabled = true },
       scope = { enabled = true },
+      notifier = {
+        enabled = vim.g.use_devicons,
+        level = vim.log.levels.INFO,
+        style = "minimal",
+        top_down = false,
+        margin = { top = 1, right = 0, bottom = 1 },
+        width = {
+          min = math.max(40, math.floor(width / 4)),
+          max = math.min(80, math.floor(width / 2)),
+        },
+        -- icons = {
+        --   error = res.icons.diagnostics[1],
+        --   warn = res.icons.diagnostics[2],
+        --   info = res.icons.diagnostics[3],
+        -- },
+      },
       zen = {
         enabled = false,
         ---@type snacks.win.Config
@@ -105,7 +172,7 @@ return {
       },
       dashboard = {
         enabled = vim.g.use_devicons,
-        width = #ui > 0 and math.max(60, math.floor(ui[1].width / 1.75)) or 60,
+        width = math.max(60, math.floor(width / 1.75)),
         sections = {
           {
             section = "header",
@@ -191,6 +258,9 @@ return {
           -- { section = "startup" },
         },
       },
+      styles = {
+        notification = { wo = { winblend = 10, wrap = true } },
+      },
     },
 
     -- stylua: ignore
@@ -207,6 +277,8 @@ return {
       { "<leader>sz", function() Snacks.zen() end, desc = "Toggle Zen Mode (snacks)" },
       { "<leader>sZ", function() Snacks.zen.zoom() end, desc = "Toggle Zoom (snacks)" },
       { "<leader>sI", function() Snacks.toggle.indent():toggle() end, desc = "Toggle indent guides (snacks)" },
+      { "<leader>vx", function() Snacks.notifier.hide() end, desc = "Hide notifications (snacks)" },
+      { "<leader>vh", function() Snacks.notifier.show_history() end, desc = "Show notifications history (snacks)" },
 
       -- lsp
       { "<leader>sW", function() Snacks.toggle.words():toggle() end, desc = "Toggle lsp words (snacks)" },
