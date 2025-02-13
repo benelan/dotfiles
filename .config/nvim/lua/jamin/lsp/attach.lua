@@ -45,18 +45,20 @@ return function(args)
     )
   end
 
+  if client:supports_method("textDocument/rename") then
+    bufmap("n", "cd", vim.lsp.buf.rename, "LSP change definition (rename)")
+  end
+
   if client:supports_method("textDocument/definition") then
     bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
   end
 
-  if client:supports_method("textDocument/rename") then
-    bufmap("n", "cd", vim.lsp.buf.rename, "LSP rename")
+  if client:supports_method("textDocument/declaration") then
+    bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
   end
 
   if client:supports_method("textDocument/implementation") then
-    bufmap("n", "gD", vim.lsp.buf.implementation, "LSP implementation")
-  elseif client:supports_method("textDocument/declaration") then
-    bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
+    bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
   end
 
   if client:supports_method("textDocument/typeDefinition") then
@@ -114,22 +116,6 @@ return function(args)
   --   })
   --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
   -- end
-
-  -- populate lsp diagnostics for the whole project, not just open files
-  local has_workspace_diagnostics, workspace_diagnostics = pcall(require, "workspace-diagnostics")
-  if has_workspace_diagnostics then
-    -- TODO: find a better way to exclude huge projects from loading all workspace diagnostics
-    if not vim.tbl_contains({ "eslint", "typescript-tools", "ts_ls" }, client.name) then
-      workspace_diagnostics.populate_workspace_diagnostics(client, args.buf)
-    else
-      bufmap(
-        "n",
-        "<localleader>W",
-        function() workspace_diagnostics.populate_workspace_diagnostics(client, args.buf) end,
-        "Populate workspace diagnostics"
-      )
-    end
-  end
 
   -- setup stuff specific to an LSP server
   local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)

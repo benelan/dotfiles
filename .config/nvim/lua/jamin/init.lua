@@ -39,21 +39,6 @@ vim.g.use_devicons = vim.env.NERD_ICONS ~= "0"
     or vim.env.WEZTERM_PANE ~= nil
   )
 
-if os.getenv("SSH_CLIENT") then
-  local osc52 = require("vim.ui.clipboard.osc52")
-  vim.g.clipboard = {
-    name = "OSC 52",
-    copy = {
-      ["+"] = osc52.copy("+"),
-      ["*"] = osc52.copy("*"),
-    },
-    paste = {
-      ["+"] = osc52.paste("+"),
-      ["*"] = osc52.paste("*"),
-    },
-  }
-end
-
 -- global functions
 _G.R = function(name) require("plenary.reload").reload_module(name) end
 

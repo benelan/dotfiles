@@ -4,6 +4,7 @@ local res = require("jamin.resources")
 
 local ui = vim.api.nvim_list_uis() or {}
 local width = #ui > 0 and ui[1].width or 80
+local height = #ui > 0 and ui[1].height or 40
 
 ---@type LazySpec
 return {
@@ -80,68 +81,104 @@ return {
           _G.bt = function() Snacks.debug.backtrace() end
           vim.print = _G.dd -- Override print to use snacks for `:=` command
 
-          vim.api.nvim_set_hl(0, "SnacksNotifierMinimal", { link = "Normal" })
-          ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
-          local progress = vim.defaulttable()
-          vim.api.nvim_create_autocmd("LspProgress", {
-            ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
-            callback = function(ev)
-              local client = vim.lsp.get_client_by_id(ev.data.client_id)
-              local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
-              if
-                not client
-                or vim.tbl_contains({ "efm", "eslint", "copilot" }, client.name)
-                or type(value) ~= "table"
-              then
-                return
-              end
-              local p = progress[client.id]
-
-              for i = 1, #p + 1 do
-                if i == #p + 1 or p[i].token == ev.data.params.token then
-                  p[i] = {
-                    token = ev.data.params.token,
-                    msg = ("[%3d%%] %s%s"):format(
-                      value.kind == "end" and 100 or value.percentage or 100,
-                      value.title or "",
-                      value.message and (" **%s**"):format(value.message) or ""
-                    ),
-                    done = value.kind == "end",
-                  }
-                  break
+          if vim.g.use_devicons then
+            vim.api.nvim_set_hl(0, "SnacksNotifierMinimal", { link = "Normal" })
+            ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
+            local progress = vim.defaulttable()
+            vim.api.nvim_create_autocmd("LspProgress", {
+              ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+              callback = function(ev)
+                local client = vim.lsp.get_client_by_id(ev.data.client_id)
+                local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+                if
+                  not client
+                  or vim.tbl_contains({ "efm", "eslint", "copilot" }, client.name)
+                  or type(value) ~= "table"
+                then
+                  return
                 end
-              end
-
-              local msg = {} ---@type string[]
-              progress[client.id] = vim.tbl_filter(
-                function(v) return table.insert(msg, v.msg) or not v.done end,
-                p
-              )
-
-              vim.notify(table.concat(msg, "\n"), "info", {
-                id = "lsp_progress",
-                title = client.name,
-                opts = function(notif)
-                  notif.style = "minimal"
-                  notif.icon = #progress[client.id] == 0 and res.icons.ui.checkmark
-                    or res.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #res.icons.progress + 1]
-                end,
-              })
-            end,
-          })
+                local p = progress[client.id]
+                for i = 1, #p + 1 do
+                  if i == #p + 1 or p[i].token == ev.data.params.token then
+                    p[i] = {
+                      token = ev.data.params.token,
+                      msg = ("[%3d%%] %s%s"):format(
+                        value.kind == "end" and 100 or value.percentage or 100,
+                        value.title or "",
+                        value.message and (" **%s**"):format(value.message) or ""
+                      ),
+                      done = value.kind == "end",
+                    }
+                    break
+                  end
+                end
+                local msg = {} ---@type string[]
+                progress[client.id] = vim.tbl_filter(
+                  function(v) return table.insert(msg, v.msg) or not v.done end,
+                  p
+                )
+                vim.notify(table.concat(msg, "\n"), "info", {
+                  id = "lsp_progress",
+                  title = client.name,
+                  opts = function(notif)
+                    notif.style = "minimal"
+                    notif.icon = #progress[client.id] == 0 and res.icons.ui.checkmark
+                      or res.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #res.icons.progress + 1]
+                  end,
+                })
+              end,
+            })
+          end
         end,
       })
     end,
 
     ---@type snacks.Config
     opts = {
+      styles = {
+        notification = {
+          wo = {
+            winblend = 0,
+            wrap = true,
+          },
+        },
+        snacks_image = {
+          border = res.icons.border,
+          relative = "editor",
+          row = 2,
+          col = 0.5,
+        },
+      },
+
       bigfile = { enabled = true },
       quickfile = { enabled = true },
       words = { enabled = true },
       scope = { enabled = true },
+
       scratch = {
         root = vim.fs.normalize("$NOTES/scratch"),
       },
+
+      zen = {
+        ---@type snacks.win.Config
+        win = {
+          wo = {
+            colorcolumn = "",
+            cursorline = false,
+            cursorcolumn = false,
+          },
+        },
+      },
+
+      image = {
+        enabled = true,
+        doc = {
+          inline = false,
+          max_width = math.floor(width / 2.25),
+          max_height = math.floor(height / 1.25),
+        },
+      },
+
       notifier = {
         enabled = vim.g.use_devicons,
         level = vim.log.levels.INFO,
@@ -152,19 +189,57 @@ return {
           min = math.max(40, math.floor(width / 4)),
           max = math.min(80, math.floor(width / 2)),
         },
+        height = {
+          max = math.min(40, math.floor(height / 2)),
+        },
         -- icons = {
         --   error = res.icons.diagnostics[1],
         --   warn = res.icons.diagnostics[2],
         --   info = res.icons.diagnostics[3],
         -- },
       },
-      zen = {
+
+      picker = {
         enabled = false,
-        ---@type snacks.win.Config
-        win = { wo = { colorcolumn = "", cursorline = false, cursorcolumn = false } },
+        icons = {
+          files = { enabled = vim.g.use_devicons },
+          git = { enabled = vim.g.use_devicons },
+        },
+        win = {
+          input = {
+            keys = {
+              ["<a-s>"] = { "flash", mode = { "n", "i" } },
+              ["s"] = { "flash" },
+            },
+          },
+        },
+        actions = {
+          flash = function(picker)
+            local has_flash, flash = pcall(require, "flash")
+            if not has_flash then return end
+            flash.jump({
+              pattern = "^",
+              label = { after = { 0, 0 } },
+              search = {
+                mode = "search",
+                exclude = {
+                  function(win)
+                    return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
+                  end,
+                },
+              },
+              action = function(match)
+                local idx = picker.list:row2idx(match.pos[1])
+                picker.list:_move(idx, true, true)
+              end,
+            })
+          end,
+        },
       },
+
       dashboard = {
         enabled = vim.g.use_devicons,
+        config = function(opts) opts.preset.keys[2].key = "i" end,
         width = math.max(60, math.floor(width / 1.75)),
         sections = {
           {
@@ -214,8 +289,8 @@ return {
             action = ":silent Octo notification",
             cmd = "gh notify -sn3",
             section = "terminal",
-            enabled = #ui > 0 and (ui[1].height or 0) >= 39,
-            key = "o",
+            enabled = #ui > 0 and (ui[1].height or 0) >= 39 and vim.fn.executable("gh") == 1,
+            key = "n",
             -- icon = res.icons.ui.alert,
             height = 3,
             indent = 2,
@@ -223,36 +298,8 @@ return {
             -- pane = 2,
             ttl = 5 * 60,
           },
-          {
-            title = "GitHub Issues",
-            action = ":silent Octo issue list",
-            cmd = "GH_PAGER=cat GH_FORCE_TTY=true gh issue list -L 3 | tail -n3",
-            section = "terminal",
-            key = "i",
-            height = 3,
-            indent = 2,
-            padding = 1,
-            pane = 2,
-            ttl = 5 * 60,
-            enabled = false,
-          },
-          {
-            title = "GitHub PRs",
-            action = ":silent Octo pr list",
-            cmd = "GH_PAGER=cat GH_FORCE_TTY=true gh pr list -L 3 | tail -n3",
-            section = "terminal",
-            key = "p",
-            height = 3,
-            indent = 2,
-            pane = 2,
-            ttl = 5 * 60,
-            enabled = false,
-          },
           -- { section = "startup" },
         },
-      },
-      styles = {
-        notification = { wo = { winblend = 10, wrap = true } },
       },
     },
 
@@ -277,14 +324,14 @@ return {
       { "<leader>sW", function() Snacks.toggle.words():toggle() end, desc = "Toggle lsp words (snacks)" },
       { "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference (snacks)", mode = { "n", "t" } },
       { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference (snacks)", mode = { "n", "t" } },
-      { "cp", function() Snacks.rename.rename_file() end, desc = "Change file's path via lsp (snacks)" },
+      { "cp", function() Snacks.rename.rename_file() end, desc = "LSP change path (rename file) (snacks)" },
       { "<leader>ld", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition (snacks picker)" },
 
       -- git
       { "<leader>gB", function() Snacks.git.blame_line() end, desc = "Git Blame Line (snacks)" },
       -- { "<leader>go", function() Snacks.gitbrowse() end, desc = "Git Browse (snacks)", mode = { "n", "v" } },
       -- { "<leader>gy", function() Snacks.gitbrowse({ notify = false, open = function(url) vim.fn.setreg("+", url) end }) end, desc = "Git Copy URL (snacks)", mode = { "n", "v" } },
-      { "<leader>gfL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line (snacks picker)" },
+      { "<leader>gfL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line (snacks picker)", mode = { "n", "x" } },
       { "<leader>gfl", function() Snacks.picker.git_log_file() end, desc = "Git Log File (snacks picker)" },
 
       -- explorer

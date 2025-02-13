@@ -1,7 +1,5 @@
 ---Plugins for buffer editing and movement
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
@@ -25,20 +23,11 @@ return {
   {
     "folke/flash.nvim",
     event = "CursorHold",
-
     ---@type Flash.Config
     opts = {
       jump = { autojump = true },
       modes = { char = { enabled = false } },
-      search = {
-        exclude = vim.tbl_extend(
-          "force",
-          res.filetypes.excluded,
-          { function(win) return not vim.api.nvim_win_get_config(win).focusable end }
-        ),
-      },
     },
-
     keys = {
       -- default options: exact mode, multi window, all directions, with a backdrop
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },

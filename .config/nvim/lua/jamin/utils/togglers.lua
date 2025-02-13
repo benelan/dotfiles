@@ -97,9 +97,15 @@ end
 M.diagnostics = function(global)
   local scope = global and vim.g or vim.b
   scope.diagnostics_disabled = not scope.diagnostics_disabled
-  local cmd = scope.diagnostics_disabled and "disable" or "enable"
-  vim.notify(string.format("%s diagnostics %sd", global and "Global" or "Buffer", cmd))
-  vim.schedule(function() vim.diagnostic[cmd](global and nil or 0) end)
+  local state = scope.diagnostics_disabled and "disable" or "enable"
+  vim.notify(string.format("%s diagnostics %sd", global and "Global" or "Buffer", state))
+  vim.schedule(
+    function()
+      vim.diagnostic.enable(not scope.diagnostics_disabled, {
+        bufnr = global and nil or 0,
+      })
+    end
+  )
 end
 
 -----------------------------------------------------------------------------
@@ -138,7 +144,7 @@ function M.ui()
   vim.opt.fillchars:append("eob:" .. (ui_disabled and res.icons.ui.fill_shade or " "))
 
   -- toggle lsp diagnostics
-  vim.schedule(function() vim.diagnostic[ui_disabled and "disable" or "enable"](nil) end)
+  vim.schedule(function() vim.diagnostic.enable(ui_disabled, { bufnr = nil }) end)
 
   -- redraw treesitter context which gets messed up
   if vim.fn.exists(":TSContextToggle") then

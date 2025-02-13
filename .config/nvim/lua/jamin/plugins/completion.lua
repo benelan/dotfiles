@@ -3,6 +3,17 @@
 local res = require("jamin.resources")
 local has_cargo = vim.fn.executable("cargo") == 1
 
+local columns = {
+  { "label", "label_description", gap = 1 },
+  { "source_name" },
+}
+
+if vim.g.use_devicons then
+  table.insert(columns, 1, { "kind_icon" })
+else
+  table.insert(columns, #columns, { "kind" })
+end
+
 local spec = {
   {
     "saghen/blink.cmp",
@@ -20,13 +31,9 @@ local spec = {
         menu = {
           -- border = res.icons.border,
           draw = {
-            gap = 2,
+            gap = vim.g.use_devicons and 1 or 2,
             treesitter = { "lsp" },
-            columns = {
-              { "label", "label_description", gap = 1 },
-              { "kind_icon", "kind" },
-              { "source_name" },
-            },
+            columns = columns,
           },
         },
         documentation = {
@@ -43,8 +50,10 @@ local spec = {
         nerd_font_variant = "normal",
         kind_icons = res.icons.lsp_kind,
       },
+      cmdline = {
+        enabled = false,
+      },
       sources = {
-        cmdline = {},
         default = { "lsp", "path", "snippets", "buffer" },
         providers = {
           lsp = {

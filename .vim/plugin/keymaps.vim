@@ -6,6 +6,9 @@ dig +1 128077
 dig -1 128078
 
 "" GENERAL {{{1
+nnoremap <C-s> <CMD>w<CR>
+nnoremap <C-s> <CMD>w<CR>
+
 nnoremap <Backspace> <C-^>
 
 nnoremap n nzzzv
@@ -13,9 +16,6 @@ nnoremap N Nzzzv
 
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
-
-nnoremap L Lzz
-nnoremap H Hzz
 
 tnoremap <Esc><Esc> <C-\><C-n>
 

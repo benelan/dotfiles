@@ -276,6 +276,7 @@ return {
         ["<M-m>"] = require("telescope.actions.layout").toggle_mirror,
         ["<C-q>"] = open_in_quickfix,
         ["<C-s>"] = flash_jump,
+        ["<M-s>"] = flash_jump,
       }
 
       return {
@@ -332,49 +333,17 @@ return {
 
   -----------------------------------------------------------------------------
   {
-    "ThePrimeagen/harpoon",
+    -- using my fork due to: https://github.com/ThePrimeagen/harpoon/issues/577
+    -- until the fix is merged: https://github.com/ThePrimeagen/harpoon/pull/572
+    "benelan/harpoon",
+    dev = true,
     event = "VeryLazy",
     branch = "harpoon2",
-    -- pinned commit due to: https://github.com/ThePrimeagen/harpoon/issues/577
-    commit = "e76cb03",
 
     opts = {
       settings = {
-        -- save_on_toggle = true,
+        save_on_toggle = true,
         sync_on_ui_close = true,
-        key = function()
-          -- Use a git remote url as the key for projects
-          local git_remotes = { "origin", "upstream" }
-
-          -- Fallback to the current working directory as the key
-          local cwd = vim.uv.cwd() or vim.uv.os_homedir() or ""
-
-          for _, remote in ipairs(git_remotes) do
-            local remote_url = vim.fn.trim(vim.fn.system("git remote get-url " .. remote))
-
-            if
-              vim.v.shell_error == 0
-              and remote_url
-              and not string.match(remote_url, "dotfiles")
-            then
-              if
-                -- Calcite Design System is a monorepo, so I append the basename
-                -- of cwd so I can mark files per package within the monorepo.
-                string.match(remote_url, "calcite%-design%-system")
-                -- Don't append cwd's basename if we're in the top level.
-                -- This ensures the marked files apply to all git worktrees,
-                -- which are in differently named directories.
-                and cwd ~= vim.fn.trim(vim.fn.system("git rev-parse --show-toplevel"))
-              then
-                return remote_url .. "~" .. vim.fs.basename(cwd)
-              end
-
-              return remote_url
-            end
-          end
-
-          return cwd
-        end,
       },
     },
 

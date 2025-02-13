@@ -335,6 +335,9 @@ return {
         submit_win = {
           comment_review = { lhs = "<C-s>", desc = "comment review", mode = { "n", "i" } },
         },
+        notification = {
+          read = { lhs = "<M-r>", desc = "mark notification as read", mode = { "n", "i" } },
+        },
       },
     },
 

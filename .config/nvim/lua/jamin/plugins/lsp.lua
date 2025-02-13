@@ -103,5 +103,22 @@ return {
 
   -----------------------------------------------------------------------------
   -- get diagnostics for the whole workspace rather than only open buffers
-  { "artemave/workspace-diagnostics.nvim", lazy = true, opts = {} },
+  {
+    "artemave/workspace-diagnostics.nvim",
+    lazy = true,
+    opts = {},
+    keys = {
+      {
+        "<leader>lw",
+        function()
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+            require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
+          end
+        end,
+        noremap = true,
+        silent = true,
+        desc = "LSP populate workspace diagnostics",
+      },
+    },
+  },
 }

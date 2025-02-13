@@ -1,4 +1,3 @@
-local has_lazy, lazy = pcall(require, "lazy.status")
 local icons = require("jamin.resources").icons
 local M = {}
 
@@ -107,6 +106,7 @@ end
 
 ---Show number of updatable plugins.
 local function lazy_updates(fallback)
+  local has_lazy, lazy = pcall(require, "lazy.status")
   return vim.g.use_devicons
       and has_lazy
       and lazy.has_updates()
