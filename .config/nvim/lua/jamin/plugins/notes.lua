@@ -2,11 +2,6 @@
 
 local res = require("jamin.resources")
 
-vim.g.bullets_enabled_file_types = vim.tbl_filter(
-  function(ft) return ft ~= "org" end,
-  res.filetypes.writing
-)
-
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
@@ -36,8 +31,9 @@ return {
   -- Keymaps for plaintext lists
   {
     "bullets-vim/bullets.vim",
-    ft = vim.g.bullets_enabled_file_types,
+    ft = res.filetypes.writing,
     init = function()
+      vim.g.bullets_enabled_file_types = res.filetypes.writing
       vim.g.bullets_checkbox_markers = " x"
       vim.g.bullets_outline_levels = { "ROM", "ABC", "num", "abc", "rom", "std-" }
       vim.g.bullets_set_mappings = false
@@ -188,147 +184,5 @@ return {
         end,
       })
     end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- Orgmode port for neovim
-  {
-    "nvim-orgmode/orgmode",
-    ft = "org",
-    cmd = "Org",
-    keys = { "<leader>ka", "<leader>kc" },
-    dependencies = {
-      {
-        "saghen/blink.cmp",
-        ---@type blink.cmp.Config
-        opts = {
-          sources = {
-            default = { "orgmode" },
-            providers = {
-              orgmode = {
-                name = " [ORG]",
-                module = "orgmode.org.autocompletion.blink",
-                score_offset = 100,
-                enabled = function() return vim.o.filetype == "org" end,
-              },
-            },
-          },
-        },
-      },
-    },
-    ---@type OrgConfigOpts
-    opts = {
-      mappings = { prefix = "<leader>k" }, -- [k]nowledge base
-      org_agenda_files = vim.env.NOTES .. "/org/**/*",
-      org_default_notes_file = vim.env.NOTES .. "/org/refile.org",
-      org_log_done = "note",
-      org_log_repeat = "note",
-      org_id_method = "ts",
-      org_log_into_drawer = "LOGBOOK",
-      org_hide_emphasis_markers = true,
-      -- org_deadline_warning_days = "28",
-      -- org_todo_keywords = { "TODO", "BLOCKED", "|", "DONE", "DELEGATED" },
-      org_capture_templates = {
-        j = {
-          description = "Journal",
-          template = "\n*** %<%Y-%m-%d> %<%A>\n**** %U\n\n%?",
-          target = vim.env.NOTES .. "/org/journal/%<%Y-%m>.org",
-        },
-      },
-      -- https://nvim-orgmode.github.io/configuration#org_agenda_custom_commands
-      org_agenda_custom_commands = {
-        c = {
-          description = "Combined view",
-          types = {
-            {
-              type = "tags_todo",
-              match = '+PRIORITY="A"',
-              org_agenda_overriding_header = "High priority todos",
-              org_agenda_todo_ignore_deadlines = "far",
-            },
-            {
-              type = "agenda",
-              org_agenda_overriding_header = "My daily agenda",
-              org_agenda_span = "day",
-            },
-            {
-              type = "tags",
-              match = "WORK",
-              org_agenda_overriding_header = "My work todos",
-              org_agenda_todo_ignore_scheduled = "all",
-            },
-            {
-              type = "agenda",
-              org_agenda_overriding_header = "Whole week overview",
-              org_agenda_span = "week",
-              org_agenda_start_on_weekday = 1,
-              org_agenda_remove_tags = true,
-            },
-          },
-        },
-        p = {
-          description = "Personal agenda",
-          types = {
-            {
-              type = "tags_todo",
-              org_agenda_overriding_header = "My personal todos",
-              org_agenda_category_filter_preset = "todos",
-              org_agenda_sorting_strategy = { "todo-state-up", "priority-down" },
-            },
-            {
-              type = "agenda",
-              org_agenda_overriding_header = "Personal projects agenda",
-              org_agenda_files = { vim.env.NOTES .. "/org/personal/**/*" },
-            },
-            {
-              type = "tags",
-              org_agenda_overriding_header = "Personal projects notes",
-              org_agenda_files = { vim.env.NOTES .. "/org/personal/**/*" },
-              org_agenda_tag_filter_preset = "NOTES-REFACTOR",
-            },
-          },
-        },
-      },
-      win_border = res.icons.border,
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  -- Orgmode extension that adds zettelkasten features (e.g. backlinks)
-  {
-    "chipsenkbeil/org-roam.nvim",
-    cmd = {
-      "RoamAddAlias",
-      "RoamAddOrigin",
-      "RoamRemoveAlias",
-      "RoamRemoveOrigin",
-      "RoamReset",
-      "RoamSave",
-      "RoamUpdate",
-    },
-    keys = { "<leader>kz" },
-    dependencies = { "nvim-orgmode/orgmode" },
-    opts = {
-      directory = vim.env.NOTES .. "/org",
-      bindings = { prefix = "<leader>kz" }, -- [k]nowledge [z]ettelkasten
-      extensions = { dailies = { directory = "daily" } },
-    },
-  },
-
-  -----------------------------------------------------------------------------
-  -- Orgmode telescope extension
-  {
-    "nvim-orgmode/telescope-orgmode.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "nvim-orgmode/orgmode",
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>kfh", "<CMD>Telescope orgmode search_headings<CR>", desc = "Search orgmode headings (telescope)" },
-      { "<leader>kfr", "<CMD>Telescope orgmode refile_heading<CR>", desc = "Refile orgmode heading (telescope)", ft = "org" },
-      { "<leader>kfl", "<CMD>Telescope orgmode insert_link<CR>", desc = "Insert orgmode link (telescope)", ft = "org" },
-    },
-    config = function() require("telescope").load_extension("orgmode") end,
   },
 }
