@@ -18,16 +18,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- helps visualize and navigate the undo tree - see :h undo-tree
-  {
-    dir = "~/.vim/pack/foo/opt/undotree",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/undotree")) == 1,
-    cmd = "UndotreeToggle",
-    keys = { { "<leader>u", "<CMD>UndotreeToggle<CR>" } },
-    init = function() vim.g.undotree_SetFocusWhenToggle = 1 end,
-  },
-
-  -----------------------------------------------------------------------------
   -- adds basic filesystem commands and some shebang utils
   {
     dir = "~/.vim/pack/foo/start/vim-eunuch",
@@ -149,6 +139,9 @@ return {
       quickfile = { enabled = true },
       words = { enabled = true },
       scope = { enabled = true },
+      scratch = {
+        root = vim.fs.normalize("$NOTES/scratch"),
+      },
       notifier = {
         enabled = vim.g.use_devicons,
         level = vim.log.levels.INFO,
@@ -301,9 +294,10 @@ return {
       -- picker
       { "<leader>fs", function() Snacks.picker.smart() end, desc = "Smart (snacks picker)" },
       { "<leader>fB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers (snacks picker)" },
-      { "<leader>fu", function() Snacks.picker.undo() end, desc = "Undo History (snacks picker)" },
       { "<leader>fy", function() Snacks.picker.cliphist() end, desc = "Clipboard History (snacks picker)" },
       { "<leader>fz", function() Snacks.picker.spelling() end, desc = "Spelling (snacks picker)" },
+      { "<leader>fu", function() Snacks.picker.undo() end, desc = "Undo History (snacks picker)" },
+      { "<leader>u", function() Snacks.picker.undo() end, desc = "Undo History (snacks picker)" },
     },
   },
 }

@@ -5,26 +5,6 @@ local res = require("jamin.resources")
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
-  -- adds closing brackets only when pressing enter
-  {
-    dir = "~/.vim/pack/foo/start/vim-closer",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-closer")) == 1,
-    config = function()
-      -- setup files that can contain javascript which aren't included by default
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("jamin_closer_javascript", {}),
-        pattern = { "svelte", "astro", "html" },
-        callback = function()
-          vim.b.closer = 1
-          vim.b.closer_flags = "([{;"
-          vim.b.closer_no_semi = "^\\s*\\(function\\|class\\|if\\|else\\)"
-          vim.b.closer_semi_ctx = ")\\s*{$"
-        end,
-      })
-    end,
-  },
-
-  -----------------------------------------------------------------------------
   -- makes a lot more keymaps dot repeatable
   {
     dir = "~/.vim/pack/foo/start/vim-repeat",
