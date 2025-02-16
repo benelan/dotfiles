@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=1090
+# shellcheck disable=1090,1091
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # Make sure the shell is interactive {{{1
@@ -13,8 +13,8 @@ esac
 ! shopt -q restricted_shell 2>/dev/null || return
 
 # Source shell aliases and functions {{{1
-[ -r ~/.dotfiles/shell/aliases.sh ] && . ~/.dotfiles/shell/aliases.sh
-[ -r ~/.dotfiles/shell/functions.sh ] && . ~/.dotfiles/shell/functions.sh
+[ -r "$DOTFILES/shell/aliases.sh" ] && . "$DOTFILES/shell/aliases.sh"
+[ -r "$DOTFILES/shell/functions.sh" ] && . "$DOTFILES/shell/functions.sh"
 
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
@@ -22,7 +22,7 @@ esac
 
 # Source bash options, prompt, completion, and local settings {{{1
 # The source order matters!
-for file in ~/.dotfiles/shell/{options,prompt,completion}.sh; do
+for file in "$DOTFILES"/shell/{options,prompt,completion}.sh; do
     [ -r "$file" ] && . "$file"
 done
 unset file

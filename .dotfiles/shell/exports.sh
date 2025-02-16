@@ -6,6 +6,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
+export TMPDIR="/tmp"
 
 export DEV="$HOME/dev"
 export LIB="$DEV/lib"
@@ -38,6 +39,23 @@ fi
 # Don't warn me about new mail
 unset -v MAILCHECK
 
+# wayland {{{2
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    [ "$XDG_SESSION_DESKTOP" = "sway" ] && export XDG_CURRENT_DESKTOP=sway
+    export ELECTRON_OZONE_PLATFORM_HINT=wayland
+    export SDL_VIDEODRIVER=wayland
+    export QT_QPA_PLATFORM=wayland
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+    export QT_AUTO_SCREEN_SCALE_FACTOR=1
+    export QT_ENABLE_HIGHDPI_SCALING=1
+    export _JAVA_AWT_WM_NONREPARENTING=1
+    export MOZ_ENABLE_WAYLAND=1
+    export MOZ_USE_XINPUT2=1
+    export MOZ_WEBRENDER=1
+    export NO_AT_BRIDGE=1
+    export GTK_USE_PORTAL=0 # https://github.com/swaywm/sway/issues/5732
+fi
+
 # default applications {{{1
 EDITOR="nano"
 if supports nvim; then
@@ -53,13 +71,12 @@ export VISUAL=$EDITOR
 export PAGER="less"
 export MANPAGER=$PAGER
 
-# $ sudo update-alternatives --config x-terminal-emulator
-if supports x-terminal-emulator; then
-    export TERMINAL="x-terminal-emulator"
-elif supports wezterm; then
+if supports wezterm; then
     export TERMINAL="wezterm"
 elif supports kitty; then
     export TERMINAL="kitty"
+elif supports x-terminal-emulator; then
+    export TERMINAL="x-terminal-emulator" # $ sudo update-alternatives --config x-terminal-emulator
 elif supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     export TERMINAL="foot"
 fi
@@ -193,7 +210,7 @@ if supports fzf; then
 
     export FZF_ALT_C_OPTS='
         --walker-skip .git,node_modules,target,dist,build
-        --preview "tree -tarFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks {}"'
+        --preview "tree -taFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks {}"'
 
     export FZF_DEFAULT_OPTS='
         --cycle --reverse --highlight-line --info=right

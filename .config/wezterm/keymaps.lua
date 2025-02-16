@@ -166,7 +166,6 @@ function M.setup(config)
     { key = "f", mods = "LEADER", action = act.PaneSelect },
 
     -- clipboard
-
     { key = "y", mods = "CTRL|ALT", action = act.QuickSelect },
     { key = "[", mods = "CTRL|ALT", action = act.ActivateCopyMode },
     { key = "]", mods = "CTRL|ALT", action = act.PasteFrom("PrimarySelection") },
@@ -198,11 +197,12 @@ function M.setup(config)
     { key = "0", mods = "CTRL|ALT", action = act.ResetFontSize },
     { key = "=", mods = "CTRL|ALT", action = act.IncreaseFontSize },
     { key = "-", mods = "CTRL|ALT", action = act.DecreaseFontSize },
-
-    { key = "PageUp", mods = "LEADER", action = act.ScrollToBottom },
-    { key = "PageDown", mods = "LEADER", action = act.ScrollToTop },
-    { key = "PageUp", mods = "CTRL|ALT", action = act.ScrollToPrompt(-1) },
-    { key = "PageDown", mods = "CTRL|ALT", action = act.ScrollToPrompt(1) },
+    { key = "PageUp", mods = "NONE", action = act.ScrollByPage(-1) },
+    { key = "PageDown", mods = "NONE", action = act.ScrollByPage(1) },
+    { key = "PageUp", mods = "CTRL", action = act.ScrollToPrompt(-1) },
+    { key = "PageDown", mods = "CTRL", action = act.ScrollToPrompt(1) },
+    { key = "PageUp", mods = "CTRL|ALT", action = act.ScrollToTop },
+    { key = "PageDown", mods = "CTRL|ALT", action = act.ScrollToBottom },
     { key = "r", mods = "LEADER", action = act.ReloadConfiguration },
     { key = "i", mods = "LEADER", action = act.CharSelect },
     { key = "/", mods = "LEADER", action = act.Search("CurrentSelectionOrEmptyString") },

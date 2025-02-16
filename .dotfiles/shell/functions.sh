@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # vim:filetype=sh foldmethod=marker:
+# shellcheck disable=2016
 
 # Utilities                                                             {{{
 # --------------------------------------------------------------------- {|}
@@ -434,13 +435,10 @@ if supports fzf; then
     ## setup the preview command for files and directories    {{{
 
     if supports bat; then
-        # shellcheck disable=2016
         FZF_PREVIEW_CMD='bat --color=always --plain --line-range :$FZF_PREVIEW_LINES {}'
     elif supports pygmentize; then
-        # shellcheck disable=2016
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {} | pygmentize -g'
     else
-        # shellcheck disable=2016
         FZF_PREVIEW_CMD='head -n $FZF_PREVIEW_LINES {}'
     fi
 
@@ -449,14 +447,13 @@ if supports fzf; then
 
     if supports fd; then
         # - The first argument to the function ($1) is the base path to start traversal
-        # - See the source code (completion.{bash,zsh}) for the details.
         _fzf_compgen_path() {
-            fd --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+            fd --no-ignore-parent --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
         }
 
         # Use fd to generate the list for directory completion
         _fzf_compgen_dir() {
-            fd --type d --hidden --follow --exclude "node_modules" --exclude ".git" . "$1"
+            fd --no-ignore-parent --hidden --follow --exclude "node_modules" --exclude ".git" --type d . "$1"
         }
     fi
 
@@ -496,7 +493,6 @@ if supports fzf; then
     if supports fasd; then
         # selectable cd to frecency directory using fasd
         fz() {
-            # shellcheck disable=2016
             cd "$(
                 fasd -dl |
                     fzf --tac --reverse --no-sort --no-multi \
@@ -621,7 +617,6 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # link some files to the current worktree                     {{{
     cc_link_files() {
         pushd "$(npm prefix)" >/dev/null
-        ln -f "$CALCITE/.marksman.toml" .
         ln -f "$CALCITE/calcite-components.projections.json" \
             "./packages/calcite-components/.projections.json"
         popd >/dev/null

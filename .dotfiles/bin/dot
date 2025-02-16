@@ -230,20 +230,36 @@ install_language_bun() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Deno  - https://docs.deno.com/runtime/                      {{{
+
+INSTALL_LANGUAGE_DENO_DOC="Install Deno, which is a more secure javascript runtime similar to Node"
+install_language_deno() {
+    _has deno && return
+
+    curl -fsSL https://deno.land/install.sh | sh
+    export PATH="${PATH}:${DENO_INSTALL_ROOT:-$HOME/.deno/bin}"
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Lua  - https://www.lua.org/download.html                    {{{
 
 INSTALL_LANGUAGE_LUA_DOC="Install Lua, LuaJIT (compiler), and LuaRocks (package manager)"
 install_language_lua() {
+    if _has apt-get; then
+        sudo apt-get install -qq lua5.1 luajit luarocks
+        return
+    fi
+
     if ! _has lua; then
-        curl -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
-        tar -zxf lua-5.4.6.tar.gz
-        cd lua-5.4.6 || return
+        curl -R -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
+        tar -zxf lua-5.1.5.tar.gz
+        cd lua-5.1.5 || return
 
         make linux test
         sudo make install
 
         cd ..
-        rm -rf lua-5.4.6 lua-5.4.6.tar.gz
+        rm -rf lua-5.1.5 lua-5.1.5.tar.gz
     fi
 
     ### LuaJIT (compiler)              {{{
@@ -264,16 +280,16 @@ install_language_lua() {
     ### Luarocks (Lua package manager) {{{
     ### https://luarocks.org#quick-start
     if ! _has luarocks; then
-        wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
-        tar zxpf luarocks-3.9.2.tar.gz
-        cd luarocks-3.9.2 || return
+        wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz
+        tar zxpf luarocks-3.11.1.tar.gz
+        cd luarocks-3.11.1 || return
 
-        ./configure --lua-version=5.4
+        ./configure --lua-version=5.1
         make
         sudo make install
 
         cd ..
-        rm -rf luarocks-3.9.2 luarocks-3.9.2.tar.gz
+        rm -rf luarocks-3.11.1 luarocks-3.11.1.tar.gz
     fi
 
     ###}}}
@@ -525,6 +541,10 @@ install_script_completion() {
             "$COMPLETIONS_DIR/fasd"
     fi
 
+    if _has wezterm; then
+        wezterm shell-completion --shell bash >"$COMPLETIONS_DIR/wezterm"
+    fi
+
     if _has pandoc; then
         pandoc --bash-completion >"$COMPLETIONS_DIR/pandoc"
     fi
@@ -548,9 +568,12 @@ install_script_completion() {
         npm completion >"$COMPLETIONS_DIR/npm"
     fi
 
+    if _has deno; then
+        deno completions bash >"$COMPLETIONS_DIR/deno"
+    fi
+
     if _has bun; then
-        curl -Lo "$COMPLETIONS_DIR/bun" \
-            https://raw.githubusercontent.com/oven-sh/bun/main/completions/bun.bash
+        bun completions >"$COMPLETIONS_DIR/bun"
     fi
 
     if _has yarn; then
@@ -720,7 +743,7 @@ install_script_git-extras() {
 # Ubuntu dependency install functions                                   {{{
 # --------------------------------------------------------------------- {|}
 
-## Install CLI apt packages                                    {{{
+## Install core CLI apt packages                               {{{
 
 ## https://manpages.ubuntu.com/manpages/jammy/man8/apt.8
 INSTALL_UBUNTU_APT_CORE_DOC="Install essential apt packages"
@@ -822,6 +845,7 @@ install_ubuntu_apt-media() {
         # dict-wn
         # dictd
         ffmpeg
+        gifsicle
         handbrake-cli
         newsboat
         playerctl
@@ -935,7 +959,7 @@ install_ubuntu_apt-sway() {
         sway
         swayidle
         swaylock
-        # waybar
+        waybar
         wl-clipboard
     )
 
@@ -972,6 +996,7 @@ install_ubuntu_apt-gui() {
         vim-gui-common
         vlc
         wireshark
+        zathura
     )
 
     # install one at a time to prevent failure if a dep is missing from apt repo
@@ -982,14 +1007,19 @@ install_ubuntu_apt-gui() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install flathub packages                                    {{{
 
+## https://flathub.org/
 INSTALL_UBUNTU_FLATHUB_DOC="Install flathub packages"
 install_ubuntu_flathub() {
     ! _has flatpak && return
 
     deps=(
-        com.calibre_ebook.calibre
+        io.github.ungoogled_software.ungoogled_chromium
         com.github.IsmaelMartinez.teams_for_linux
+        com.calibre_ebook.calibre
         md.obsidian.Obsidian
+        # com.vscodium.codium
+        # com.stremio.Stremio
+        # tv.kodi.Kodi
     )
 
     for dep in "${deps[@]}"; do flatpak install --or-update -y flathub "$dep" || true; done
@@ -1101,21 +1131,21 @@ install_ubuntu_vscode() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Proton VPN CLI                                      {{{
 
-## https://protonvpn.com/support/linux-vpn-tool/#debian
+## https://protonvpn.com/support/official-linux-vpn-ubuntu/
 INSTALL_UBUNTU_PROTONVPN_DOC="Install the Proton VPN CLI"
 install_ubuntu_protonvpn() {
     _has protonvpn-cli && return
-    deb="protonvpn-stable-release_1.0.3-3_all.deb"
+
+    deb="protonvpn-stable-release_1.0.6_all.deb"
+    checksum="e5e03976d0980bafdf07da2f71b14fbc883c091e72b16772199742c98473002f"
 
     curl -Lo "$CACHE_DIR/$deb" \
         "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
 
-    checksum="de7ef83a663049b5244736d3eabaacec003eb294a4d6024a8fbe0394f22cc4e5"
     echo "$checksum $CACHE_DIR/$deb" | sha256sum --check -
 
     if sudo apt-get install -qq "$CACHE_DIR/$deb"; then
-        sudo apt update
-        sudo apt-get install -y proton-vpn-gnome-desktop
+        sudo apt update && sudo apt-get install -y proton-vpn-gnome-desktop
     fi
 
     sudo wget -O "/etc/openvpn/update-resolv-conf" \
@@ -1164,7 +1194,8 @@ install_ubuntu_signal() {
     _has signal-desktop && return
     sudo mkdir -p /etc/apt/keyrings
 
-    curl -fsSL https://updates.signal.org/desktop/apt/keys.asc | sudo gpg --dearmor -o /etc/apt/keyrings/signal-desktop.gpg
+    curl -fsSL https://updates.signal.org/desktop/apt/keys.asc |
+        sudo gpg --dearmor -o /etc/apt/keyrings/signal-desktop.gpg
 
     echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal-desktop.gpg] https://updates.signal.org/desktop/apt xenial main' |
         sudo tee /etc/apt/sources.list.d/signal-xenial.list
@@ -1311,6 +1342,23 @@ install_ubuntu_gh() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install GitHub Desktop                                      {{{
+
+## https://github.com/shiftkey/desktop?tab=readme-ov-file#debianubuntu
+INSTALL_UBUNTU_GITHUB_DESKTOP_DOC="Install the GitHub Desktop client"
+install_ubuntu_github-desktop() {
+    _has github-desktop && return
+
+    wget -qO - https://apt.packages.shiftkey.dev/gpg.key |
+        gpg --dearmor |
+        sudo tee /usr/share/keyrings/shiftkey-packages.gpg >/dev/null
+
+    sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/shiftkey-packages.gpg] https://apt.packages.shiftkey.dev/ubuntu/ any main" > /etc/apt/sources.list.d/shiftkey-packages.list'
+
+    sudo apt-get update -qq && sudo apt-get install -qq github-desktop
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Glow CLI (Markdown rendering)                       {{{
 
 ## https://github.com/charmbracelet/glow
@@ -1336,7 +1384,7 @@ INSTALL_UBUNTU_BRAVE_DOC="Install Brave Browser"
 install_ubuntu_brave() {
     _has brave-browser && return
 
-    sudo curl -fLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" |
@@ -1637,8 +1685,8 @@ _install_rust_cli_deb_package() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install ripgrep                                             {{{
-## https://github.com/BurntSushi/ripgrep#installation
 
+## https://github.com/BurntSushi/ripgrep#installation
 INSTALL_MISC_RG_DOC="Install blazingly fast grep replacement"
 install_misc_rg() {
     if _has apt-get && _has dpkg; then
@@ -1924,9 +1972,8 @@ install_misc_conky() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install yt-dlp                                              {{{
-# Used via mpv from a newsboat macro for the youtube feeds I follow
 
-# https://github.com/yt-dlp/yt-dlp
+# Used by mpv to stream youtube videos - https://github.com/yt-dlp/yt-dlp
 INSTALL_MISC_YT_DLP_DOC="Install latest version of youtube video downloader used by mpv"
 install_misc_yt-dlp() {
     latest_version="$(_gh_latest_version "yt-dlp/yt-dlp")"
@@ -2054,8 +2101,8 @@ install_build_clipmenu() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install tuigreet for greetd login manager                   {{{
-# https://github.com/apognu/tuigreet
 
+# https://github.com/apognu/tuigreet
 INSTALL_BUILD_TUIGREET_DOC="Install a simple greeter for the greetd login manager"
 install_build_tuigreet() {
     # trying installing greetd with apt if it's not already installed
@@ -2101,8 +2148,8 @@ EOF
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install the latest version of dunst                         {{{
-# https://github.com/dunst-project/dunst#building
 
+# https://github.com/dunst-project/dunst#building
 INSTALL_BUILD_DUNST_DOC="Install dunst for managing desktop notifications"
 install_build_dunst() {
     if [ -d "$LIB/dunst" ]; then
@@ -2148,8 +2195,8 @@ install_build_dunst() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install the latest version of tmux                         {{{
-# https://github.com/tmux/tmux/wiki/Installing
 
+# https://github.com/tmux/tmux/wiki/Installing
 INSTALL_BUILD_TMUX_DOC="Install tmux for managing terminal environments"
 install_build_tmux() {
     if [ -d "$LIB/tmux" ]; then
@@ -2285,6 +2332,7 @@ ubuntu_installs() {
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install i3 and related tools                                {{{
+
 i3_installs() {
     install_ubuntu_apt-i3
     install_script_i3-volume
@@ -2320,6 +2368,7 @@ EOF
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install sway and related tools                              {{{
+
 sway_installs() {
     install_ubuntu_apt-sway
     install_script_i3-volume
