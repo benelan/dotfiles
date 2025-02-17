@@ -68,6 +68,7 @@ bindsym $mod+Shift+b exec "$HOME_BROWSER"
 
 # Use rofi as the launcher. Requires XWayland or the wl-roots compatible fork:
 # https://github.com/lbonn/rofi
+bindsym $mod+a exec rofi -show drun -theme ~/.config/rofi/fullscreen.rasi
 bindsym $mod+d exec rofi -show drun -theme ~/.config/rofi/classic.rasi
 bindsym $mod+space exec rofi -show drun -theme ~/.config/rofi/fancy.rasi
 bindsym $mod+Shift+grave exec BROWSER=firefox ~/.config/rofi/applets/bin/quicklinks.sh
