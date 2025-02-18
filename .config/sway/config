@@ -174,17 +174,17 @@ bindsym $mod+Control+Space mode "mouse"
 
 assign [app_id="^firefox$"] $ws1
 # assign [app_id="^gnome-terminal-server$"] $ws2
-assign [app_id="^(file-roller|calibre-gui|gedit|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
-assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com.stremio.stremio|org\.inkscape\.Inkscape)$"] $ws6
-assign [app_id="^thunderbird(-esr)?$"] $ws8
-assign [app_id="^teams-for-linux$"] $ws10
+assign [app_id="^(file-roller|calibre-gui|gedit|gnome-disks|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
+assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com\.stremio\.stremio|org\.inkscape\.Inkscape)$"] $ws6
+assign [app_id="^(thunderbird(-esr)?|Proton Mail)$"] $ws8
+assign [app_id="^(com\.github\.IsmaelMartinez\.teams_for_linux|teams-for-linux)$"] $ws10
 
 # Don't go idle and lock if the current window is fullscreen (or focused for specific apps)
 # TODO: make sure the 'focus' idle inhibitor takes priority over 'fullscreen'.
 # The 'fullscreen' idle inhibitor may need a negative look-ahead to exclude apps, e.g.
 # [app_id="^((?!(vlc|mpv|com.stremio.stremio|calibre-gui)).)*$"]
 for_window [title=".*"] inhibit_idle fullscreen
-for_window [app_id="^(vlc|mpv|com.stremio.stremio|calibre-gui)$"] focus, inhibit_idle focus
+for_window [app_id="^(vlc|mpv|com\.stremio\.stremio|calibre-gui)$"] focus, inhibit_idle focus
 
 # NOTE: the only time I open images with mpv is via ytfzf to display thumbnails
 # https://github.com/pystardust/ytfzf#thumbnail-viewers

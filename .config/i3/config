@@ -73,7 +73,7 @@ assign [class="^firefox$"] $ws1
 assign [class="^(file-roller|calibre|Gedit|Gnome-calculator|Gnome-calendar|Org\.gnome\.Nautilus)$"] $ws5
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb)$"] $ws6
 assign [title="^.* - mpv$"] $ws6
-assign [class="^thunderbird$"] $ws8
+assign [class="^(thunderbird|Proton Mail)$"] $ws8
 assign [class="^teams-for-linux$"] $ws10
 
 for_window [title="^.* - mpv$"] focus
