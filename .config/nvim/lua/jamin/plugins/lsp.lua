@@ -121,4 +121,13 @@ return {
       },
     },
   },
+
+  -----------------------------------------------------------------------------
+  -- LSP incremental rename
+  {
+    "smjonas/inc-rename.nvim",
+    opts = {},
+    event = "LspAttach",
+    cmd = "IncRename",
+  },
 }

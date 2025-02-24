@@ -71,6 +71,7 @@ require("lazy").setup("jamin.plugins", {
   dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
+    custom_keys = { ["<localleader>d"] = function(plugin) dd(plugin) end },
     border = require("jamin.resources").icons.border,
     backdrop = 100,
     icons = vim.g.use_devicons and {} or {

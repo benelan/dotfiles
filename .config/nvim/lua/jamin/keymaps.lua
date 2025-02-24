@@ -25,9 +25,18 @@ end
 -- Clear search highlight and escape
 vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   vim.cmd.noh()
+  vim.cmd.echo()
   vim.snippet.stop()
   return "<esc>"
 end, { expr = true, silent = true, noremap = true, desc = "Escape and Clear hlsearch" })
+
+-- don't save empty lines to the default register
+vim.keymap.set(
+  "n",
+  "dd",
+  function() return vim.fn.getline(".") == "" and '"_dd' or "dd" end,
+  { expr = true }
+)
 
 -- Add undo break points
 local undo_before_chars = { "[", "(", "{", "<", "," }
@@ -59,6 +68,11 @@ vim.keymap.set("n", "dm", function()
     end
   end
 end, { desc = "Mark on Current Line" })
+
+vim.keymap.set("n", "<leader>I", function()
+  vim.treesitter.inspect_tree()
+  vim.api.nvim_input("I")
+end, { desc = "Inspect Tree" })
 
 -- Move Lines (accepts count in normal and visual modes)
 vim.keymap.set("i", "<A-j>", "<esc><CMD>m .+1<CR>==gi", { desc = "Move line down" })

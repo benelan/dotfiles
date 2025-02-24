@@ -301,6 +301,16 @@ return {
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       reviews = { auto_show_threads = false },
       file_panel = { use_icons = vim.g.use_devicons },
+      runs = {
+        icons = {
+          pending = res.icons.test.pending,
+          in_progress = res.icons.test.running,
+          failed = res.icons.test.failed,
+          succeeded = res.icons.test.passed,
+          skipped = res.icons.test.skipped,
+          cancelled = res.icons.test.cancelled,
+        },
+      },
       outdated_icon = res.i(nil, res.icons.ui.clock),
       resolved_icon = res.i(nil, res.icons.ui.checkmark),
       reaction_viewer_hint_icon = res.i(nil, res.icons.ui.circle),
@@ -338,6 +348,10 @@ return {
         notification = {
           read = { lhs = "<M-r>", desc = "mark notification as read", mode = { "n", "i" } },
         },
+        runs = {
+          expand_step = { lhs = "<Tab>", desc = "expand workflow step" },
+          open_in_browser = { lhs = "<C-o>", desc = "open workflow run in browser" },
+        },
       },
     },
 
@@ -373,6 +387,9 @@ return {
       -- https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
       -- https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
       { "<leader>os", "<CMD>Octo search<CR>", desc = "Search (octo)" },
+
+      -- Workflow runs
+      { "<leader>ow", "<CMD>Octo run list<CR>", desc = "Workflow runs (octo)" },
 
       -- Issues
       { "<leader>oI", "<CMD>Octo issue create<CR>", desc = "Create issue (octo)" },
@@ -416,6 +433,12 @@ return {
         "<localleader>pC",
         "<CMD>Octo pr checks<CR>",
         desc = "Show pull request checks (octo)",
+        ft = "octo",
+      },
+      {
+        "<localleader>pr",
+        "<CMD>Octo pr runs<CR>",
+        desc = "Show pull request runs (octo)",
         ft = "octo",
       },
       {

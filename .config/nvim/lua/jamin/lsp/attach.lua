@@ -46,7 +46,8 @@ return function(args)
   end
 
   if client:supports_method("textDocument/rename") then
-    bufmap("n", "cd", vim.lsp.buf.rename, "LSP change definition (rename)")
+    bufmap("n", "<leader>rn", vim.lsp.buf.rename, "LSP change definition (rename)")
+    bufmap("n", "cd", ":IncRename ", "LSP change definition (inc-rename)")
   end
 
   if client:supports_method("textDocument/definition") then
@@ -108,11 +109,11 @@ return function(args)
   end
 
   -- -- setup codelens if supported by language server
-  -- if vim.lsp.codelens and client.supports_method "textDocument/codeLens" then
+  -- if vim.lsp.codelens and client:supports_method("textDocument/codeLens") then
   --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
   --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
   --     buffer = args.buf,
-  --     callback = function() vim.lsp.codelens.refresh() end,
+  --     callback = function() vim.lsp.codelens.refresh({ bufnr = args.buf }) end,
   --   })
   --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
   -- end

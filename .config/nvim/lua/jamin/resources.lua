@@ -306,6 +306,8 @@ M.icons = {
     settings = "🛠",
     pay = "💰︎",
     pin = "🖈",
+    info = "🛈",
+    cancel = "🛇",
     clock = "⏲",
     alert = "🕭",
     sleep = "🌜︎",
@@ -396,6 +398,8 @@ M.icons.test = {
   running = M.i("󰁚 ", M.icons.ui.play),
   skipped = M.i("󰍷 ", M.icons.ui.skip),
   failed = M.i("󰅚 ", M.icons.ui.x),
+  cancelled = M.i("󰜺 ", M.icons.ui.cancel),
+  pending = M.i("󰅐 ", M.icons.ui.clock),
   unknown = M.i("󰘥 ", M.icons.ui.question_mark),
   running_animated = M.icons.progress,
 }

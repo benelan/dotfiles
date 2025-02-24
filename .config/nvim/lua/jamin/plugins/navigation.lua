@@ -375,6 +375,18 @@ return {
           )
         end,
       })
+
+      for num = 1, 9 do
+        local key = tostring(num)
+        vim.keymap.set("n", "<leader>" .. key, function()
+          vim.cmd.Wcd()
+          pcall(function() require("harpoon"):list():select(num) end)
+          vim.cmd.Mcd()
+        end, {
+          desc = "Harpoon select mark " .. key,
+          silent = true,
+        })
+      end
     end,
 
     keys = {

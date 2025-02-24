@@ -152,8 +152,10 @@ return {
       "CopilotChatExplain",
       "CopilotChatFix",
       "CopilotChatLoad",
-      "CopilotChatModel",
+      "CopilotChatModels",
+      "CopilotChatOpen",
       "CopilotChatOptimize",
+      "CopilotChatPrompts",
       "CopilotChatReset",
       "CopilotChatReview",
       "CopilotChatTests",
@@ -162,9 +164,9 @@ return {
 
     -- stylua: ignore
     keys = {
-      { "<leader>c", ":CopilotChatModels<CR>", desc = "Next model (copilot chat)" },
-      { "<leader>c<CR>", ":CopilotChat<CR>", desc = "New (copilot chat)", mode = { "n", "v" } },
-      { "<leader>c<Tab>", ":CopilotChatToggle<CR>", desc = "Toggle vsplit (copilot chat)", mode = { "n", "v" } },
+      { "<leader>c<Tab>", ":CopilotChatToggle<CR>", desc = "Toggle (copilot chat)" },
+      { "<leader>cc", ":CopilotChatToggle<CR>", desc = "Toggle (copilot chat)" },
+      { "<leader>cx", ":CopilotChatReset<CR>", desc = "Reset (copilot chat)" },
       { "<leader>cd", ":CopilotChatDocs<CR>", desc = "Generate docs (copilot chat)", mode = { "n", "v" } },
       { "<leader>ce", ":CopilotChatExplain<CR>", desc = "Explain code (copilot chat)", mode = { "n", "v" } },
       { "<leader>cf", ":CopilotChatFix<CR>", desc = "Fix code (copilot chat)", mode = { "v", "n" } },
@@ -172,16 +174,10 @@ return {
       { "<leader>co", ":CopilotChatOptimize<CR>", desc = "Optimize code (copilot chat)", mode = { "n", "v" } },
       { "<leader>cr", ":CopilotChatReview<CR>", desc = "Review code (copilot chat)", mode = { "n", "v" } },
       { "<leader>ct", ":CopilotChatTests<CR>", desc = "Generate tests (copilot chat)", mode = { "n", "v" } },
-      {
-        "<leader>c/",
-        function()
-          if not pcall(require, "telescope") then return end
-          require("CopilotChat.integrations.telescope").pick(
-            require("CopilotChat.actions").prompt_actions()
-          )
-        end,
-        desc = "Find prompt actions (copilot chat)",
-      },
+      { "<leader>cp", ":CopilotChatPrompts<CR>", desc = "Select prompt action (copilot chat)", mode = { "n", "v" } },
+      { "<leader>cM", ":CopilotChatModels<CR>", desc = "Select model (copilot chat)" },
+      { "<leader>cs", ":CopilotChatSave ", desc = "Save chat (copilot chat)" },
+      { "<leader>cl", ":CopilotChatLoad ", desc = "Load saved chat (copilot chat)" },
     },
   },
 }

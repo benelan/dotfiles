@@ -134,6 +134,48 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 })
 
 -------------------------------------------------------------------------------
+---Conceal HTML class attributes. Ideal for big TailwindCSS class lists
+---Ref: https://gist.github.com/mactep/430449fd4f6365474bfa15df5c02d27b
+local conceal_ns = vim.api.nvim_create_namespace("class_conceal")
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "TextChanged", "InsertLeave" }, {
+  group = vim.api.nvim_create_augroup("class_conceal", { clear = true }),
+  pattern = { "*.tsx" },
+  callback = function(event)
+    local bufnr = event.buf or vim.api.nvim_get_current_buf()
+
+    local language_tree = vim.treesitter.get_parser(bufnr, "tsx")
+    if not language_tree then return end
+
+    local syntax_tree = language_tree:parse()
+    if not syntax_tree then return end
+
+    local root = syntax_tree[1]:root()
+
+    local ok, query = pcall(
+      vim.treesitter.query.parse,
+      "tsx",
+      [[
+    ((jsx_attribute
+        (property_identifier) @att_name (#eq? @att_name "class")
+        (string (string_fragment) @class_value)))
+    ]]
+    )
+    if not ok then dd(query) end
+
+    for _, captures, _ in query:iter_matches(root, bufnr, root:start(), root:end_(), {}) do
+      if captures[2] and captures[2][1] then
+        local start_row, start_col, end_row, end_col = captures[2][1]:range()
+        vim.api.nvim_buf_set_extmark(bufnr, conceal_ns, start_row, start_col + 3, {
+          end_line = end_row,
+          end_col = end_col,
+          conceal = res.icons.ui.extends, -- "%",
+        })
+      end
+    end
+  end,
+})
+
+-------------------------------------------------------------------------------
 -- https://github.com/neovim/nvim-lspconfig/issues/69
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_diagnostic_qflist", {}),
