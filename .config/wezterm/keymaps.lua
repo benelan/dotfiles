@@ -165,6 +165,19 @@ function M.setup(config)
     },
     { key = "f", mods = "LEADER", action = act.PaneSelect },
 
+    {
+      key = "u",
+      mods = "CTRL|ALT",
+      action = act.QuickSelectArgs({
+        patterns = { [[https?://[^\]",' ]+\w]] },
+        label = "Open URL",
+        action = wezterm.action_callback(function(window, pane)
+          local url = window:get_selection_text_for_pane(pane)
+          wezterm.open_with(url)
+        end),
+      }),
+    },
+
     -- clipboard
     { key = "y", mods = "CTRL|ALT", action = act.QuickSelect },
     { key = "[", mods = "CTRL|ALT", action = act.ActivateCopyMode },
@@ -197,8 +210,28 @@ function M.setup(config)
     { key = "0", mods = "CTRL|ALT", action = act.ResetFontSize },
     { key = "=", mods = "CTRL|ALT", action = act.IncreaseFontSize },
     { key = "-", mods = "CTRL|ALT", action = act.DecreaseFontSize },
-    { key = "PageUp", mods = "NONE", action = act.ScrollByPage(-1) },
-    { key = "PageDown", mods = "NONE", action = act.ScrollByPage(1) },
+    {
+      key = "PageUp",
+      action = wezterm.action_callback(function(win, pane)
+        -- if TUI (such as fullscreen fzf), send key to TUI,
+        -- otherwise scroll by page https://github.com/wez/wezterm/discussions/4101
+        if pane:is_alt_screen_active() then
+          win:perform_action(act.SendKey({ key = "PageUp" }), pane)
+        else
+          win:perform_action(act.ScrollByPage(-0.8), pane)
+        end
+      end),
+    },
+    {
+      key = "PageDown",
+      action = wezterm.action_callback(function(win, pane)
+        if pane:is_alt_screen_active() then
+          win:perform_action(act.SendKey({ key = "PageDown" }), pane)
+        else
+          win:perform_action(act.ScrollByPage(0.8), pane)
+        end
+      end),
+    },
     { key = "PageUp", mods = "CTRL", action = act.ScrollToPrompt(-1) },
     { key = "PageDown", mods = "CTRL", action = act.ScrollToPrompt(1) },
     { key = "PageUp", mods = "CTRL|ALT", action = act.ScrollToTop },
@@ -291,6 +324,8 @@ function M.setup(config)
       },
       { key = "n", mods = "NONE", action = act.CopyMode("NextMatch") },
       { key = "N", mods = "SHIFT", action = act.CopyMode("PriorMatch") },
+      { key = "n", mods = "CTRL", action = act.CopyMode("NextMatch") },
+      { key = "p", mods = "CTRL", action = act.CopyMode("PriorMatch") },
     }),
   }
 end

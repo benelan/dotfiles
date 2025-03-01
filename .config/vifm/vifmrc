@@ -498,11 +498,6 @@ nnoremap I cw<c-a>
 nnoremap cc cw<c-u>
 nnoremap A cw
 
-" Open console in current directory
-if $TERMINAL
-    nnoremap \t :!$TERMINAL 2>/dev/null &<cr>
-endif
-
 " Open editor to edit vifmrc and apply settings after returning to vifm
 nnoremap \c :write | edit $MYVIFMRC | restart full<cr>
 
@@ -569,14 +564,22 @@ nnoremap <A-u> <c-w>x
 " endif
 
 " Miscellaneous {{{1
-command! FZFfind : set noquickview
-        \| let $FZF_PICK = term('fd | fzf-tmux -p 80% 2>/dev/tty')
+command! FZFFile : set noquickview
+        \| let $FZF_PICK = term('fd --type file --unrestricted --follow | fzf-tmux -p 80% 2>/dev/tty')
         \| if $FZF_PICK != ''
         \|  execute system('[ -f "$FZF_PICK" ] && echo goto || echo cd')
         \     fnameescape($FZF_PICK)
         \| endif
 
-nnoremap <A-f> :FZFfind<cr>
+command! FZFDirectory : set noquickview
+        \| let $FZF_PICK = term('fd --type d --unrestricted --follow | fzf-tmux -p 80% 2>/dev/tty')
+        \| if $FZF_PICK != ''
+        \|  execute system('[ -f "$FZF_PICK" ] && echo goto || echo cd')
+        \     fnameescape($FZF_PICK)
+        \| endif
+
+nnoremap <A-f> :FZFFile<cr>
+nnoremap <A-d> :FZFDirectory<cr>
 
 nnoremap <C-a> ggvG<cr>
 nnoremap <A-i> <c-g>
@@ -594,10 +597,13 @@ nnoremap - :qa<cr>
 
 " Devicons require a patched font (or wezterm which ships with them)
 if expand($NERD_ICONS) != "0" && (expand($NERD_ICONS) == "1" || expand($WEZTERM_PANE) != "")
-  source ~/.config/vifm/scripts/icons.vifm
+    source ~/.config/vifm/scripts/icons.vifm
 endif
 
-"" load local config if it exists (filereadable requires vifm >= v0.13)
-"if filereadable(expand("$XDG_CONFIG_HOME/vifm/vifmrc.local"))
-"    source ~/.config/vifm/vifmrc.local
-"endif
+"" load local config if it exists (filereadable requires vifm version >= 0.13)
+"if system("vifm --version | head -n1 | sed 's/.*\s//; s/\.//; s/\..*//'") >= 13
+if system("vifm --version | head -n1 | awk '{print $2}' | tr -d '.'") >= 13
+    if filereadable(expand("$XDG_CONFIG_HOME/vifm/vifmrc.local"))
+        source $XDG_CONFIG_HOME/vifm/vifmrc.local
+    endif
+endif

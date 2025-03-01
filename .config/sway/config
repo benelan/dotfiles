@@ -174,6 +174,7 @@ bindsym $mod+Control+Space mode "mouse"
 
 assign [app_id="^firefox$"] $ws1
 # assign [app_id="^gnome-terminal-server$"] $ws2
+assign [app_id="^obsidian$"] $ws4
 assign [app_id="^(file-roller|calibre-gui|gedit|gnome-disks|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
 assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com\.stremio\.stremio|org\.inkscape\.Inkscape)$"] $ws6
 assign [app_id="^(thunderbird(-esr)?|Proton Mail)$"] $ws8

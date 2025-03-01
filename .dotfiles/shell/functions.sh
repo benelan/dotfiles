@@ -526,7 +526,7 @@ if supports fzf; then
     #   - CTRL-O to open with `open` command,
     #   - CTRL-E or Enter key to open with the $EDITOR
     feo() {
-        FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --ignore --exclude .git --exclude node_modules' \
+        FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore-parent --exclude .git --exclude node_modules' \
             fzf --no-select-1 --multi --query="$*" \
             --preview="${FZF_PREVIEW_CMD}" \
             --header='(ctrl-e:edit) (ctrl-o:open) (ctrl-v:view) (ctrl-x:sort)' \

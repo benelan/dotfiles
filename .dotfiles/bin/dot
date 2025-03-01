@@ -457,14 +457,21 @@ install_packages_neovim() {
         # webpack-5
     )
 
-    if [ ! -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] ||
-        [ "$(find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l)" -le ${#devdoc_sources[@]} ]; then
-        nvim --headless +"DevdocsInstall ${devdoc_sources[*]}"
+    if [ ! -d "$XDG_DATA_HOME/nvim/devdocs/docs" ] || [ "$(
+        find "$XDG_DATA_HOME/nvim/devdocs/docs" -type d | wc -l
+    )" -le ${#devdoc_sources[@]} ]; then
+        devdocs_action="DevdocsInstall ${devdoc_sources[*]}"
     else
-        nvim --headless +"execute 'DevdocsFetch'     | execute '10sleep' \
-                        | execute 'DevdocsUpdateAll' | execute '180sleep' \
-                        | quit"
+        devdocs_action="DevdocsUpdateAll"
     fi
+
+    nvim --headless +"execute 'DevdocsFetch' \
+                    | execute '10sleep' \
+                    | execute '$devdocs_action' \
+                    | execute '360sleep' \
+                    | quit" &>/dev/null &
+
+    unset devdocs_action devdoc_sources
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1016,7 +1023,7 @@ install_ubuntu_flathub() {
         io.github.ungoogled_software.ungoogled_chromium
         com.github.IsmaelMartinez.teams_for_linux
         com.calibre_ebook.calibre
-        md.obsidian.Obsidian
+        # md.obsidian.Obsidian
         # com.vscodium.codium
         # com.stremio.Stremio
         # tv.kodi.Kodi
@@ -1167,6 +1174,24 @@ install_ubuntu_protonmail() {
     sudo apt-get install -qq "$CACHE_DIR/$deb" || true
     rm -f "$CACHE_DIR/$deb"
     unset deb
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Obsidian                                            {{{
+
+## https://obsidian.md/download
+INSTALL_UBUNTU_OBSIDIAN_DOC="Install Obsidian desktop application for note taking"
+install_ubuntu_obsidian() {
+    _has obsidian && return
+
+    latest_version=$(_gh_latest_version "obsidianmd/obsidian-releases")
+    deb="obsidian_${latest_version:1}_amd64.deb"
+
+    curl -Lo "$CACHE_DIR/$deb" \
+        "https://github.com/obsidianmd/obsidian-releases/releases/download/${latest_version}/{$deb}"
+
+    sudo apt-get install -qq "$CACHE_DIR/$deb"
+    unset deb latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1431,6 +1456,7 @@ install_theme_font() {
     # reload the font cache
     fc-cache -rf
     popd >/dev/null
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1448,6 +1474,7 @@ install_theme_font-complete() {
     unzip -oqd "$FONTS_DIR" Iosevka -x "*.md"
     rm Iosevka.zip
     fc-cache -rf
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1649,7 +1676,7 @@ _download_rust_cli_binary() {
     curl -L "https://github.com/${repo}/releases/latest/download/$(basename "$repo")-${latest_version}-${machine}.tar.gz" |
         tar -C "${CACHE_DIR:?}/$binary" --overwrite --strip-components=1 -xzf -
 
-    unset machine cpu kernel version binary repo
+    unset machine cpu kernel version binary repo latest_version
 }
 
 _install_rust_cli_deb_package() {
@@ -1679,7 +1706,7 @@ _install_rust_cli_deb_package() {
     exit_code="$?"
 
     rm -f "${CACHE_DIR:?}/${deb}"
-    unset deb
+    unset deb latest_version
     return "$exit_code"
 }
 
@@ -1828,6 +1855,8 @@ install_misc_jq() {
     curl -Lo "$BIN_DIR/jq" \
         https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64
     chmod +x "$BIN_DIR/jq"
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1845,6 +1874,8 @@ install_misc_yq() {
     curl -Lo "$BIN_DIR/yq" \
         https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
     chmod +x "$BIN_DIR/yq"
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1895,6 +1926,8 @@ install_misc_vifm() {
         rm vifm.appimage
         popd >/dev/null
     fi
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1986,6 +2019,8 @@ install_misc_yt-dlp() {
     curl -Lo "$BIN_DIR/yt-dlp" \
         https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
     chmod +x "$BIN_DIR/yt-dlp"
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2003,6 +2038,13 @@ install_build_fzf() {
 
     ! supports go && install_language_go
 
+    latest_version="$(_gh_latest_version "junegunn/fzf")"
+
+    if _has fzf && [ "$latest_version" = "v$(fzf --version | awk '{print $1}')" ]; then
+        echo "The latest version of fzf ($latest_version) is already installed" >&2
+        return
+    fi
+
     git fetch --all --tags --force --prune
     git reset --hard origin/master
     git checkout "$(
@@ -2014,6 +2056,8 @@ install_build_fzf() {
 
     # GOFLAGS="$GOFLAGS -buildvcs=false"
     make && make install && chmod +x "$LIB/fzf/bin/fzf"
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2191,6 +2235,8 @@ install_build_dunst() {
 
     sudo make
     sudo make install
+
+    unset latest_version
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
