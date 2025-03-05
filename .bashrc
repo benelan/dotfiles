@@ -35,5 +35,8 @@ unset file
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 
 # ensure tmux is running in graphical environments (excluding wezterm)
-[ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] &&
-    [ -z "$WEZTERM_PANE" ] && supports git-mux && git-mux project "$PWD"
+if [ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && {
+    [ -z "$WEZTERM_PANE" ] || [ "$GIT_MUX_MULTIPLEXER" = "tmux" ]
+}; then
+    supports git-mux && git-mux project "$PWD"
+fi

@@ -281,6 +281,7 @@ export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
 if supports git-mux; then
     export GIT_MUX_LOGS="1"
     export GIT_MUX_LOG_LEVEL="WARN"
+    export GIT_MUX_MULTIPLEXER="tmux"
     export GIT_MUX_BRANCH_PREFIX="$_gh_user"
 
     export GIT_MUX_PROJECT_PARENTS="$PERSONAL $WORK $LIB"

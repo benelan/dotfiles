@@ -7,9 +7,9 @@ local M = {}
 
 function M.setup(config)
   config.disable_default_key_bindings = true
-  config.leader = { key = " ", mods = "CTRL", timeout_milliseconds = 1500 }
+  config.leader = { key = " ", mods = "CTRL|SHIFT", timeout_milliseconds = 1500 }
 
-  config.keys = {
+  config.keys = utils.merge_lists(config.keys or {}, {
     {
       key = "p",
       mods = "LEADER|CTRL",
@@ -51,13 +51,6 @@ function M.setup(config)
       ),
     },
 
-    -- Workspace management
-    { key = ")", mods = "LEADER|SHIFT", action = act.SwitchWorkspaceRelative(1) },
-    { key = "(", mods = "LEADER|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
-
-    ---@diagnostic disable-next-line: assign-type-mismatch
-    { key = "s", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
-
     {
       key = "Tab",
       mods = "LEADER",
@@ -91,48 +84,16 @@ function M.setup(config)
       }),
     },
 
-    -- Tab management
-    { key = "c", mods = "CTRL|ALT", action = act.SpawnTab("CurrentPaneDomain") },
-    { key = "q", mods = "CTRL|ALT", action = act.CloseCurrentTab({ confirm = true }) },
-    { key = "n", mods = "CTRL|ALT", action = act.ActivateTabRelative(1) },
-    { key = "p", mods = "CTRL|ALT", action = act.ActivateTabRelative(-1) },
-
-    { key = "w", mods = "LEADER", action = act.ShowTabNavigator },
-    { key = "c", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
-    { key = "n", mods = "LEADER", action = act.ActivateTabRelative(1) },
-    { key = "p", mods = "LEADER", action = act.ActivateTabRelative(-1) },
     { key = ">", mods = "LEADER|SHIFT", action = act.MoveTabRelative(1) },
     { key = "<", mods = "LEADER|SHIFT", action = act.MoveTabRelative(-1) },
     { key = "q", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
     { key = "Backspace", mods = "LEADER", action = act.ActivateLastTab },
 
-    { key = "9", mods = "LEADER", action = act.ActivateTab(8) },
-    { key = "8", mods = "LEADER", action = act.ActivateTab(7) },
-    { key = "7", mods = "LEADER", action = act.ActivateTab(6) },
-    { key = "6", mods = "LEADER", action = act.ActivateTab(5) },
-    { key = "5", mods = "LEADER", action = act.ActivateTab(4) },
-    { key = "4", mods = "LEADER", action = act.ActivateTab(3) },
-    { key = "3", mods = "LEADER", action = act.ActivateTab(2) },
-    { key = "2", mods = "LEADER", action = act.ActivateTab(1) },
-    { key = "1", mods = "LEADER", action = act.ActivateTab(0) },
-
-    -- Pane management
-    { key = "x", mods = "CTRL|ALT", action = act.CloseCurrentPane({ confirm = false }) },
-    { key = "h", mods = "CTRL|ALT", action = act.ActivatePaneDirection("Left") },
-    { key = "l", mods = "CTRL|ALT", action = act.ActivatePaneDirection("Right") },
-    { key = "k", mods = "CTRL|ALT", action = act.ActivatePaneDirection("Up") },
-    { key = "j", mods = "CTRL|ALT", action = act.ActivatePaneDirection("Down") },
-
-    { key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
+    { key = "f", mods = "LEADER", action = act.PaneSelect },
     { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
     { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
     { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
     { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
-
-    { key = "LeftArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Left", 5 }) },
-    { key = "RightArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Right", 5 }) },
-    { key = "UpArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Up", 5 }) },
-    { key = "DownArrow", mods = "CTRL|ALT", action = act.AdjustPaneSize({ "Down", 5 }) },
 
     {
       key = "s",
@@ -146,28 +107,8 @@ function M.setup(config)
     },
 
     {
-      key = '"',
-      mods = "LEADER|SHIFT",
-      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
-    },
-    {
-      key = "%",
-      mods = "LEADER|SHIFT",
-      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-    },
-
-    { key = "o", mods = "LEADER|CTRL", action = act.RotatePanes("CounterClockwise") },
-    { key = "o", mods = "LEADER|ALT", action = act.RotatePanes("Clockwise") },
-    {
-      key = "!",
-      mods = "LEADER|SHIFT",
-      action = act.PaneSelect({ mode = "MoveToNewTab" }),
-    },
-    { key = "f", mods = "LEADER", action = act.PaneSelect },
-
-    {
       key = "u",
-      mods = "CTRL|ALT",
+      mods = "LEADER",
       action = act.QuickSelectArgs({
         patterns = { [[https?://[^\]",' ]+\w]] },
         label = "Open URL",
@@ -178,22 +119,13 @@ function M.setup(config)
       }),
     },
 
-    -- clipboard
-    { key = "y", mods = "CTRL|ALT", action = act.QuickSelect },
-    { key = "[", mods = "CTRL|ALT", action = act.ActivateCopyMode },
-    { key = "]", mods = "CTRL|ALT", action = act.PasteFrom("PrimarySelection") },
-    { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
-    { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
-
-    { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
-    { key = "]", mods = "LEADER", action = act.PasteFrom("PrimarySelection") },
     { key = "y", mods = "LEADER", action = act.QuickSelect },
     { key = "y", mods = "LEADER|CTRL", action = act.QuickSelect },
 
     -- General mappings
     {
       key = "o",
-      mods = "CTRL|ALT",
+      mods = "LEADER",
       action = wezterm.action.QuickSelectArgs({
         label = "open url",
         patterns = { "https?://\\S+" },
@@ -205,11 +137,10 @@ function M.setup(config)
       }),
     },
 
-    { key = ";", mods = "CTRL|ALT", action = act.ActivateCommandPalette },
-    { key = "Enter", mods = "CTRL|ALT", action = act.ShowLauncher },
-    { key = "0", mods = "CTRL|ALT", action = act.ResetFontSize },
-    { key = "=", mods = "CTRL|ALT", action = act.IncreaseFontSize },
-    { key = "-", mods = "CTRL|ALT", action = act.DecreaseFontSize },
+    { key = "Enter", mods = "LEADER", action = act.ShowLauncher },
+    { key = "0", mods = "LEADER", action = act.ResetFontSize },
+    { key = "=", mods = "LEADER", action = act.IncreaseFontSize },
+    { key = "-", mods = "LEADER", action = act.DecreaseFontSize },
     {
       key = "PageUp",
       action = wezterm.action_callback(function(win, pane)
@@ -232,21 +163,37 @@ function M.setup(config)
         end
       end),
     },
-    { key = "PageUp", mods = "CTRL", action = act.ScrollToPrompt(-1) },
-    { key = "PageDown", mods = "CTRL", action = act.ScrollToPrompt(1) },
-    { key = "PageUp", mods = "CTRL|ALT", action = act.ScrollToTop },
-    { key = "PageDown", mods = "CTRL|ALT", action = act.ScrollToBottom },
-    { key = "r", mods = "LEADER", action = act.ReloadConfiguration },
     { key = "i", mods = "LEADER", action = act.CharSelect },
     { key = "/", mods = "LEADER", action = act.Search("CurrentSelectionOrEmptyString") },
-    { key = "/", mods = "CTRL|ALT", action = act.Search("CurrentSelectionOrEmptyString") },
-    { key = ":", mods = "LEADER|SHIFT", action = act.ActivateCommandPalette },
-    { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
     { key = "?", mods = "LEADER|SHIFT", action = act.ShowDebugOverlay },
+    { key = " ", mods = "LEADER|CTRL|SHIFT", action = act.ActivateCommandPalette },
+
+    -- root key table (no leader)
+    { key = "Enter", mods = "CTRL|SHIFT", action = act.ShowLauncher },
+    { key = "PageUp", mods = "CTRL|SHIFT", action = act.ScrollToPrompt(-1) },
+    { key = "PageDown", mods = "CTRL|SHIFT", action = act.ScrollToPrompt(1) },
+    -- { key = "h", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Left") },
+    -- { key = "l", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Right") },
+    -- { key = "k", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Up") },
+    -- { key = "j", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Down") },
+    -- { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab({ confirm = true }) },
+    -- { key = "n", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
+    -- { key = "p", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
+    -- { key = "x", mods = "CTRL|SHIFT", action = act.CloseCurrentPane({ confirm = false }) },
+
+    -- { key = "[", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
+    -- { key = "]", mods = "CTRL|SHIFT", action = act.PasteFrom("PrimarySelection") },
+    -- { key = "/", mods = "CTRL|SHIFT", action = act.Search("CurrentSelectionOrEmptyString") },
+    { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
+    { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
+    { key = "y", mods = "CTRL|SHIFT", action = act.QuickSelect },
+    { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
+    { key = "=", mods = "CTRL|SHIFT", action = act.IncreaseFontSize },
+    { key = "-", mods = "CTRL|SHIFT", action = act.DecreaseFontSize },
 
     -- Key table keymaps
     {
-      key = "Enter",
+      key = "r",
       mods = "LEADER",
       action = act.ActivateKeyTable({
         name = "pane_management",
@@ -256,7 +203,7 @@ function M.setup(config)
         replace_current = false,
       }),
     },
-  }
+  })
 
   config.key_tables = {
     pane_management = {
@@ -265,6 +212,10 @@ function M.setup(config)
       { key = "RightArrow", action = act.AdjustPaneSize({ "Right", 5 }) },
       { key = "UpArrow", action = act.AdjustPaneSize({ "Up", 5 }) },
       { key = "DownArrow", action = act.AdjustPaneSize({ "Down", 5 }) },
+      { key = "b", action = act.AdjustPaneSize({ "Left", 5 }) },
+      { key = "f", action = act.AdjustPaneSize({ "Right", 5 }) },
+      { key = "u", action = act.AdjustPaneSize({ "Up", 5 }) },
+      { key = "d", action = act.AdjustPaneSize({ "Down", 5 }) },
       { key = "h", action = act.ActivatePaneDirection("Left") },
       { key = "l", action = act.ActivatePaneDirection("Right") },
       { key = "k", action = act.ActivatePaneDirection("Up") },
@@ -278,6 +229,11 @@ function M.setup(config)
       {
         key = "/",
         mods = "NONE",
+        action = act.Search("CurrentSelectionOrEmptyString"),
+      },
+      {
+        key = "/",
+        mods = "SHIFT",
         action = act.Search("CurrentSelectionOrEmptyString"),
       },
       {

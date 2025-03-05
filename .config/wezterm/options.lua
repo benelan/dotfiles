@@ -8,8 +8,8 @@ function M.setup(config)
     config.default_domain = "WSL:Ubuntu-24.04"
   else
     local home = utils.basename(wezterm.home_dir)
-    config.unix_domains = { { name = "git-mux" } }
-    config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
+    -- config.unix_domains = { { name = "git-mux" } }
+    -- config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
     config.default_workspace = home
     if os.getenv("$XDG_SESSION_TYPE") == "wayland" then config.enable_wayland = true end
   end
@@ -40,20 +40,14 @@ function M.setup(config)
   config.window_padding = { left = 3, right = 0, top = 0, bottom = 0 }
   config.inactive_pane_hsb = { saturation = 0.9, brightness = 0.9 }
 
-  config.tab_max_width = 70
-  config.use_fancy_tab_bar = false
-  config.tab_bar_at_bottom = true
-  config.show_new_tab_button_in_tab_bar = false
+  config.hide_tab_bar_if_only_one_tab = true
   config.prefer_to_spawn_tabs = true
 
   config.color_scheme = "GruvboxDark"
-  local palette = wezterm.get_builtin_color_schemes()[config.color_scheme]
+  local palette = wezterm.color.get_builtin_schemes()[config.color_scheme] --[[@as Palette]]
 
   config.colors = {
-    cursor_bg = palette.foreground,
-    cursor_fg = palette.background,
-    cursor_border = palette.foreground,
-    compose_cursor = palette.brights[4],
+    compose_cursor = palette.brights[1],
     quick_select_label_fg = { Color = palette.brights[2] },
     quick_select_match_fg = { Color = palette.brights[7] },
     split = palette.brights[7],
@@ -63,14 +57,13 @@ function M.setup(config)
         fg_color = palette.foreground,
         intensity = "Bold",
       },
-      inactive_tab_edge = "transparent",
       inactive_tab_hover = {
+        fg_color = palette.ansi[1],
         bg_color = palette.brights[1],
-        fg_color = palette.background,
       },
       new_tab_hover = {
+        fg_color = palette.ansi[1],
         bg_color = palette.brights[1],
-        fg_color = palette.background,
       },
     },
   }
