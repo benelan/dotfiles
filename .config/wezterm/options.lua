@@ -8,7 +8,7 @@ function M.setup(config)
     config.default_domain = "WSL:Ubuntu-24.04"
   else
     local home = utils.basename(wezterm.home_dir)
-    -- config.unix_domains = { { name = "git-mux" } }
+    config.unix_domains = { { name = "git-mux" } }
     -- config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
     config.default_workspace = home
     if os.getenv("$XDG_SESSION_TYPE") == "wayland" then config.enable_wayland = true end

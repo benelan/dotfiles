@@ -7,7 +7,7 @@ if wezterm.config_builder then config = wezterm.config_builder() end
 
 package.path = string.format("%s/?/lua/?.lua;%s", os.getenv("PERSONAL"), package.path)
 
-require("tmux").keybinds(config)
+-- require("tmux").statusline(config)
 require("options").setup(config)
 require("keymaps").setup(config)
 require("git-mux").setup()

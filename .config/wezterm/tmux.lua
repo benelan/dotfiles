@@ -1,5 +1,4 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
-local utils = require("utils")
 local act = wezterm.action
 local M = {}
 
@@ -10,7 +9,6 @@ function M.statusline(config)
   config.show_new_tab_button_in_tab_bar = false
   config.hide_tab_bar_if_only_one_tab = false
   config.prefer_to_spawn_tabs = true
-  config.colors = config.colors or {}
 
   wezterm.on("update-status", function(window)
     local mode = window:active_key_table() or ""
@@ -20,19 +18,20 @@ function M.statusline(config)
   end)
 end
 
-function M.keybinds(config)
+function M.default_keybinds()
   -- config.disable_default_key_bindings = true
-  config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1500 }
+  -- config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1500 }
 
-  local defaults = {
+  return {
+    -- {
+    --   key = config.leader.key,
+    --   mods = "LEADER|" .. config.leader.mods,
+    --   action = act.SendKey({ key = config.leader.key, mods = config.leader.mods }),
+    -- },
+
     { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
     { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 
-    {
-      key = config.leader.key,
-      mods = "LEADER|" .. config.leader.mods,
-      action = act.SendKey({ key = config.leader.key, mods = config.leader.mods }),
-    },
     { key = ":", mods = "LEADER|SHIFT", action = act.ActivateCommandPalette },
     { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
     { key = "r", mods = "LEADER", action = act.ReloadConfiguration },
@@ -95,13 +94,6 @@ function M.keybinds(config)
     { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
     { key = "]", mods = "LEADER", action = act.PasteFrom("PrimarySelection") },
   }
-
-  config.keys = utils.merge_lists(defaults, config.keys or {})
-end
-
-function M.setup(config)
-  M.statusline(config)
-  M.keybinds(config)
 end
 
 return M

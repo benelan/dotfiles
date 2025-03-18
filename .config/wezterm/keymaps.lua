@@ -1,4 +1,5 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
+local tmux = require("tmux")
 local utils = require("utils")
 local git_mux = require("git-mux")
 
@@ -9,7 +10,7 @@ function M.setup(config)
   config.disable_default_key_bindings = true
   config.leader = { key = " ", mods = "CTRL|SHIFT", timeout_milliseconds = 1500 }
 
-  config.keys = utils.merge_lists(config.keys or {}, {
+  config.keys = {
     {
       key = "p",
       mods = "LEADER|CTRL",
@@ -203,7 +204,8 @@ function M.setup(config)
         replace_current = false,
       }),
     },
-  })
+    table.unpack(tmux.default_keybinds()),
+  }
 
   config.key_tables = {
     pane_management = {
