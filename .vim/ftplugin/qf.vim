@@ -14,14 +14,14 @@ if b:qf_isLoc == 1
     nnoremap <silent> <buffer> ) :lnewer<CR>
     nnoremap <silent> <buffer> } :lnfile<CR><C-w>p
     nnoremap <silent> <buffer> { :lpfile<CR><C-w>p
-    nnoremap <silent> <buffer> r :ldo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
+    nnoremap <silent> <buffer> s :ldo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
     nnoremap <silent> <buffer> O <CR>:lclose<CR>
 else
     nnoremap <silent> <buffer> ( :colder<CR>
     nnoremap <silent> <buffer> ) :cnewer<CR>
     nnoremap <silent> <buffer> } :cnfile<CR><C-w>p
     nnoremap <silent> <buffer> { :cpfile<CR><C-w>p
-    nnoremap <silent> <buffer> r :cdo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
+    nnoremap <silent> <buffer> s :cdo exe 's/' <BAR> update<C-Left><C-Left><Left><Left>
     nnoremap <silent> <buffer> O <CR>:cclose<CR>
 endif
 

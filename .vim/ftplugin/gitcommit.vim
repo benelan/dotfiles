@@ -4,3 +4,5 @@ setlocal colorcolumn=72
 
 nnoremap ]c <CMD>call search('^@@', 'W')<CR>
 nnoremap [c <CMD>call search('^@@', 'Wb')<CR>
+nnoremap ) <CMD>call search('^@@', 'W')<CR>
+nnoremap ( <CMD>call search('^@@', 'Wb')<CR>

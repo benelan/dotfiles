@@ -6,3 +6,4 @@ let b:_ex_convert_links_md2wiki = '%s/\v\[(.{-})\]\((https)@!(.{-})\)/[[\3|\1]]/
 " bold and strikethrough mappings for https://github.com/tpope/vim-surround
 let b:surround_{char2nr('8')} = "**\r**"
 let b:surround_{char2nr('s')} = "~~\r~~"
+let b:surround_{char2nr('c')} = "<!-- \r -->"
