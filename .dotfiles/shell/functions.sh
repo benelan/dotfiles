@@ -477,13 +477,13 @@ if supports fzf; then
 
     fcd() {
         cd "$(
-            fzf --no-multi --query="$*" --select-1 \
-                --preview="${FZF_PREVIEW_CMD}" \
+            FZF_DEFAULT_COMMAND='fd --type d --follow --hidden --no-ignore-parent --exclude .git --exclude node_modules' \
+                fzf --no-multi --query="$*" --select-1 \
+                --preview="tree -taFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks {}" \
                 --preview-window='right:hidden:wrap' \
                 --bind=ctrl-v:toggle-preview \
                 --bind=ctrl-x:toggle-sort \
-                --header='(view:ctrl-v) (sort:ctrl-x)' |
-                xargs dirname
+                --header='(view:ctrl-v) (sort:ctrl-x)'
         )" || return 1
     }
 
@@ -727,7 +727,7 @@ if [ "$WORK_MACHINE" = "1" ]; then
     cc_install_copy() {
         local worktree example cc_path ccr_path
 
-        worktree="${1:-main}"
+        worktree="${1:-dev}"
         example=$(npm prefix)
 
         cc_path="$example/node_modules/@esri/calcite_components/"
@@ -735,7 +735,7 @@ if [ "$WORK_MACHINE" = "1" ]; then
         mkdir -p "$cc_path" "$ccr_path"
 
         # copy calcite-components dist
-        cp -r "$CALCITE/$worktree/packages/calcite-components/dist" "$cc_path"
+        cp -r "$CALCITE/$worktree/packages/calcite-components"/{dist,hydrate} "$cc_path"
 
         # copy calcite-components-react dist if the test app has react as a dep
         if supports jq && [ "$(
@@ -751,21 +751,20 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # Make sure to build the calcite monorepo first, then run the script from
     # anywhere in the example app's directory.
     cc_install_link() {
-        local worktree example link_ccr
+        local worktree example
 
-        worktree="${1:-main}"
+        worktree="${1:-dev}"
         example=$(npm prefix)
 
         npm unlink @esri/calcite-components @esri/calcite-components-react
-        npm link --prefix "$CALCITE/$worktree" --workspace "@esri/calcite-components"
-        npm link --prefix "$CALCITE/$worktree" --workspace "@esri/calcite-components-react"
 
-        # only link calcite-components-react if the test app has react as a dep
-        supports jq && [ "$(
-            jq '.dependencies | has("react")' "$example/package.json"
-        )" = "true" ] && link_ccr=1
+        (cd "$CALCITE/$worktree/packages/calcite-components" && npm link)
+        (cd "$CALCITE/$worktree/packages/calcite-components-react" && npm link)
 
-        npm link @esri/calcite-components ${link_ccr:+@esri/calcite-components-react}
+        npm link @esri/calcite-components "$(supports jq && [ "$(
+            # only link calcite-components-react if the test app has react as a dep
+            jq '.dependencies | has("react")' "$example/package.json" 2>/dev/null
+        )" = "true" ] && echo "@esri/calcite-components-react")"
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
