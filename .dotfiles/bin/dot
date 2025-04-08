@@ -377,7 +377,6 @@ install_packages_npm() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-
 ## Install vim plugins                                         {{{
 
 INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
@@ -2240,7 +2239,7 @@ install_build_dunst() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install the latest version of tmux                         {{{
+## Install the latest version of tmux                          {{{
 
 # https://github.com/tmux/tmux/wiki/Installing
 INSTALL_BUILD_TMUX_DOC="Install tmux for managing terminal environments"
@@ -2335,6 +2334,8 @@ install_build_imagemagick() {
     sudo make install
     sudo ldconfig /usr/local/lib/
 }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 
 # --------------------------------------------------------------------- }}}
 # Dependency group install functions                                    {{{
@@ -2601,21 +2602,18 @@ install_dependency() {
 ## Parse dependency flags and run install functions            {{{
 
 deps_parse_flags() {
-    if [ -z "$LIB" ] || [ -z "$DOTFILES" ]; then
-        printf "\$LIB and/or \$DOTFILES environment variable(s) not set, exiting.\n" >&2
-        exit 1
-    fi
-
     if [ -z "$*" ]; then
         deps_help "at least one flag is required"
     fi
 
+    LIB="${LIB:-$HOME/dev/lib}"
+    DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
     BIN_DIR="$HOME/.local/bin"
     MAN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/man"
     COMPLETIONS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions"
     CACHE_DIR="$DOTFILES/cache"
 
-    mkdir -p "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR" "$COMPLETIONS_DIR"
+    mkdir -p "$LIB" "$DOTFILES" "$BIN_DIR" "$MAN_DIR/man1" "$MAN_DIR/man5" "$CACHE_DIR" "$COMPLETIONS_DIR"
 
     while getopts :Bb:Uu:Ll:Ss:Tt:Pp:m:nAWXh opt; do
         case $opt in
@@ -2665,11 +2663,8 @@ main() {
         # install and/or update dependencies
         deps) shift && deps_parse_flags "$@" ;;
 
-        # support for sudo
-        sudo) shift && sudo "$@" ;;
-
-        # clone a repo to the directory I keep 3rd part libraries
-        get) shift && git clone "$1" "${LIB:?}/$(basename "$1" .git)" ;;
+        # clone a repo to the directory where I keep 3rd part libraries
+        cl | clone) shift && git clone "$1" "${LIB:?}/$(basename "$1" .git)" ;;
 
         # creates env vars in (n)vim so git plugins work with the bare dotfiles repo
         edit)
