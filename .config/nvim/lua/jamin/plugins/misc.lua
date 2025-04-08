@@ -92,7 +92,7 @@ return {
                 local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
                 if
                   not client
-                  or vim.tbl_contains({ "efm", "eslint", "copilot" }, client.name)
+                  or vim.tbl_contains({ "null-ls", "efm", "eslint", "copilot" }, client.name)
                   or type(value) ~= "table"
                 then
                   return

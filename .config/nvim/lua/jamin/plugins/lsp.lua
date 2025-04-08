@@ -130,4 +130,84 @@ return {
     event = "LspAttach",
     cmd = "IncRename",
   },
+
+  -----------------------------------------------------------------------------
+  -- integrates formatters and linters (null-ls.nvim successor)
+  {
+    -- forked due to https://github.com/nvimtools/none-ls.nvim/issues/58
+    "benelan/none-ls.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+
+    opts = function()
+      local nls = require("null-ls")
+
+      -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
+      local hover = nls.builtins.hover
+      local formatting = nls.builtins.formatting
+      local diagnostics = nls.builtins.diagnostics
+      local code_actions = nls.builtins.code_actions
+
+      local quiet_diagnostics = { virtual_text = false, signs = false }
+
+      return {
+        debug = false,
+        fallback_severity = vim.diagnostic.severity.HINT,
+        sources = {
+          hover.dictionary,
+          hover.printenv,
+
+          code_actions.gitrebase,
+          code_actions.shellcheck,
+          code_actions.eslint.with({ prefer_local = "node_modules/.bin" }),
+
+          diagnostics.hadolint,
+          diagnostics.actionlint.with({
+            runtime_condition = function()
+              return vim.api
+                .nvim_buf_get_name(vim.api.nvim_get_current_buf())
+                :match("%.github/workflows") ~= nil
+            end,
+          }),
+
+          diagnostics.markdownlint.with({
+            diagnostic_config = quiet_diagnostics,
+            prefer_local = "node_modules/.bin",
+            extra_args = {
+              "--disable",
+              "blanks-around-fences",
+              "no-duplicate-heading",
+              "line-length",
+              "first-line-heading",
+              "no-inline-html",
+              "single-title",
+            },
+          }),
+
+          diagnostics.stylelint.with({
+            diagnostic_config = quiet_diagnostics,
+            prefer_local = "node_modules/.bin",
+            condition = function(utils)
+              return utils.root_has_file({
+                ".editorconfig",
+                ".stylelintrc",
+                ".stylelintrc.js",
+                ".stylelintrc.json",
+                ".stylelintrc.yml",
+                "stylelint.config.js",
+                "node_modules/.bin/stylelint",
+              })
+            end,
+          }),
+
+          formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
+          formatting.stylelint.with({ prefer_local = "node_modules/.bin" }),
+          formatting.markdownlint.with({ prefer_local = "node_modules/.bin" }),
+          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
+          formatting.stylua,
+          formatting.fixjson,
+        },
+      }
+    end,
+  },
 }

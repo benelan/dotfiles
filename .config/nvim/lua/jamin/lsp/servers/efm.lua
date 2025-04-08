@@ -10,16 +10,12 @@ local prettier = {
   formatCanRange = true,
   formatStdin = true,
   formatCommand = [[
-    cmd="prettier"
-    bin="$(npm root)/.bin/$cmd"
-    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
-        --config-precedence prefer-file \
-        ${--range-start:charStart} \
-        ${--range-end:charEnd} \
-        --stdin \
-        --stdin-filepath '${INPUT}'
+    npx prettier ${--range-start:charStart} ${--range-end:charEnd} \
+      --config-precedence prefer-file \
+      --stdin --stdin-filepath '${INPUT}'
   ]],
   rootMarkers = {
+    ".editorconfig",
     ".prettierrc",
     ".prettierrc.js",
     ".prettierrc.cjs",
@@ -38,14 +34,7 @@ local eslint = {
   lintSource = "eslint",
   lintStdin = true,
   lintIgnoreExitCode = true,
-  lintCommand = [[
-    cmd="eslint"
-    bin="$(npm root)/.bin/$cmd"
-    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
-        --format visualstudio \
-        --stdin \
-        --stdin-filename ${INPUT}
-  ]],
+  lintCommand = "npx eslint --format visualstudio --stdin --stdin-filename ${INPUT}",
   lintFormats = { "%f(%l,%c): %tarning %m", "%f(%l,%c): %rror %m" },
   rootMarkers = {
     ".eslintrc",
@@ -62,19 +51,13 @@ local stylelint = {
   lintSource = "stylelint",
   lintStdin = true,
   lintIgnoreExitCode = true,
-  lintCommand = [[
-    cmd="stylelint
-    bin="$(npm root)/.bin/$cmd"
-    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") \
-      --no-color \
-      --formatter compact \
-      --stdin  \
-      --stdin-filename ${INPUT}
-  ]],
+  lintCommand = "npx stylelint --no-color --formatter compact --stdin --stdin-filename ${INPUT}",
   lintFormats = {
     "%.%#: line %l, col %c, %trror - %m",
     "%.%#: line %l, col %c, %tarning - %m",
   },
+  formatCommand = "npx stylelint --fix --stdin --stdin-filename ${INPUT}",
+  formatStdin = true,
   requireMarker = true,
   rootMarkers = {
     ".editorconfig",
@@ -91,11 +74,7 @@ local markdownlint = {
   lintSource = "markdownlint",
   lintStdin = true,
   lintIgnoreExitCode = true,
-  lintCommand = [[
-    cmd="markdownlint"
-    bin="$(npm root)/.bin/$cmd"
-    $([ -n "$(command -v $bin)" ] && echo "$bin" || echo "$cmd") --stdin
-  ]],
+  lintCommand = "npx --package=markdownlint-cli markdownlint --stdin",
   lintFormats = { "%f:%l %m", "%f:%l:%c %m", "%f: %l: %m" },
 }
 
@@ -120,6 +99,13 @@ local luacheck = {
 local shfmt = {
   formatStdin = true,
   formatCommand = "shfmt",
+  rootMarkers = { ".editorconfig" },
+}
+
+-- https://github.com/anordal/shellharden
+local shellharden = {
+  formatStdin = true,
+  formatCommand = "shellharden --transform ''",
 }
 
 -- using lsp instead - https://github.com/bash-lsp/bash-language-server
@@ -188,7 +174,7 @@ local fixjson = {
 
 local languages = {
   astro = { prettier },
-  bash = { shfmt },
+  bash = { shfmt }, -- shellcheck, shellharden
   css = { stylelint, prettier },
   dockerfile = { hadolint },
   -- go = { golangci_lint },
@@ -199,10 +185,10 @@ local languages = {
   json = { fixjson, prettier },
   json5 = { prettier },
   jsonc = { fixjson, prettier },
-  lua = { stylua },
+  lua = { stylua }, -- luacheck
   markdown = { markdownlint, prettier },
   scss = { stylelint, prettier },
-  sh = { shfmt },
+  sh = { shfmt }, -- shellcheck, shellharden
   svelte = { prettier },
   typescript = { prettier },
   typescriptreact = { prettier },
