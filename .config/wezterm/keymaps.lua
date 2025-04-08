@@ -1,11 +1,12 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
-local tmux = require("tmux")
 local utils = require("utils")
+local tmux = require("tmux")
 local git_mux = require("git-mux")
 
 local act = wezterm.action
 local M = {}
 
+---@param config Config
 function M.setup(config)
   config.disable_default_key_bindings = true
   config.leader = { key = " ", mods = "CTRL|SHIFT", timeout_milliseconds = 1500 }
@@ -90,7 +91,7 @@ function M.setup(config)
     { key = "q", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
     { key = "Backspace", mods = "LEADER", action = act.ActivateLastTab },
 
-    { key = "f", mods = "LEADER", action = act.PaneSelect },
+    { key = "f", mods = "LEADER", action = act.PaneSelect({ mode = "Activate" }) },
     { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
     { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
     { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
@@ -164,7 +165,11 @@ function M.setup(config)
         end
       end),
     },
-    { key = "i", mods = "LEADER", action = act.CharSelect },
+    {
+      key = "i",
+      mods = "LEADER",
+      action = act.CharSelect({ copy_to = "ClipboardAndPrimarySelection" }),
+    },
     { key = "/", mods = "LEADER", action = act.Search("CurrentSelectionOrEmptyString") },
     { key = "?", mods = "LEADER|SHIFT", action = act.ShowDebugOverlay },
     { key = " ", mods = "LEADER|CTRL|SHIFT", action = act.ActivateCommandPalette },
@@ -204,6 +209,8 @@ function M.setup(config)
         replace_current = false,
       }),
     },
+
+    -- tmux defaults
     table.unpack(tmux.default_keybinds()),
   }
 

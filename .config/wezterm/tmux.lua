@@ -2,6 +2,8 @@ local wezterm = require("wezterm") --[[@as Wezterm]]
 local act = wezterm.action
 local M = {}
 
+---Setup Wezterm's tab bar to look like a tmux statusline.
+---@param config Config
 function M.statusline(config)
   config.tab_max_width = 70
   config.use_fancy_tab_bar = false
@@ -18,10 +20,17 @@ function M.statusline(config)
   end)
 end
 
+---Get Wezterm's equivalent of the default tmux keybindings.
+---```lua
+---config.disable_default_key_bindings = true
+---config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1500 }
+---config.keys = {
+--- table.unpack(require("tmux").default_keybinds()),
+--- -- add your own keybinds here...
+---}
+---```
+---@return Key[]
 function M.default_keybinds()
-  -- config.disable_default_key_bindings = true
-  -- config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1500 }
-
   return {
     -- {
     --   key = config.leader.key,
