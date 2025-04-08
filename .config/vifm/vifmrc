@@ -154,7 +154,7 @@ execute 'mark c' fnameescape($CALCITE)
 
 " :com[mand][!] command_name action
 command! df df -h %m 2> /dev/null
-command! diff nvim -d %f %F
+command! diff nvim -d -- %f %F
 command! zip zip -r %c.zip %f
 command! unzip unzip %f
 command! run !! ./%f
@@ -196,11 +196,11 @@ command! bak :clone %c.bak
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
-" Markdown/TypeScript
-filetype {*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.yml,*.yaml,*.xml},<text/*>
-            \ {Open in neovim} nvim %f,
-            \ {Open in vim} vim %f,
-            \ {Open in vi} vi %f,
+" Code
+filetype {*.astro,*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.svelte,*.vue,*.yml,*.yaml,*.xml},<text/*>
+            \ {Open in neovim} nvim -- %f,
+            \ {Open in vim} vim -- %f,
+            \ {Open in vi} vi -- %f,
 
 " Pdf
 filetype {*.pdf},<application/pdf>
@@ -248,9 +248,9 @@ fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
 
 " Web
 filetype {*.xhtml,*.html,*.htm},<text/html>
-            \ {Open in neovim} nvim %f,
-            \ {Open in vim} vim %f,
-            \ {Open in vi} vi %f,
+            \ {Open in neovim} nvim -- %f,
+            \ {Open in vim} vim -- %f,
+            \ {Open in vi} vi -- %f,
             \ {View in default browser} o %f,
             \ {Open with firefox} firefox %f &,
             \ {Open with brave-browser} brave-browser %f &,
@@ -309,7 +309,7 @@ filetype {*.sha256} {Check SHA256 hash sum} sha256sum -c %f %S,
 filetype {*.sha512} {Check SHA512 hash sum} sha512sum -c %f %S,
 
 " GPG signature
-filetype {*.asc,*.gpg},<application/pgp-signature> {Open with neovim} nvim %c,
+filetype {*.asc,*.gpg},<application/pgp-signature> {Open with neovim} nvim -- %c,
 
 " GPG signature
 fileviewer {*.asc,*.gpg},<application/pgp-signature> gpg --decrypt --dry-run %c
@@ -470,7 +470,7 @@ qnoremap <silent> <C-w>k q:if paneisat('bottom') | execute '!tmux select-pane -U
 qnoremap <silent> <C-w>l q:if paneisat('left')   | execute '!tmux select-pane -R %i' | else | execute 'wincmd l' | endif<cr>
 
 " Open file in new instance of neovim
-nnoremap o :!nvim %f<cr>
+nnoremap o :!nvim -- %f<cr>
 " Open file in existing instance of neovim if possible
 if executable("nvr")
     nnoremap O :!nvr --remote %f<cr>
