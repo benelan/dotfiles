@@ -36,7 +36,7 @@ The `dot` script has the following custom subcommands:
 
 - `init`: Initialize the dotfiles bare repo, as mentioned [above](#setup).
 
-- `clone`: Clone a repo to the `$LIB` directory (see [`exports.sh`]](../.dotfiles/shell/exports.sh)) instead of `$PWD`.
+- `clone`: Clone a repo to the `$LIB` directory (see [`exports.sh`](../.dotfiles/shell/exports.sh)) instead of `$PWD`.
 
 - `deps`: Install various dependencies, including development tools, GUI apps, shell scripts, fonts, themes, and more.
   See `dot deps -h` for usage info.
