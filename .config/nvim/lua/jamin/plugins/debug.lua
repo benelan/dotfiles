@@ -11,6 +11,7 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = { "DeleteDebugPrints", "ToggleCommentDebugPrints" },
     keys = { { "g?", mode = { "n", "v", "o" } } },
+    ---@type debugprint.GlobalOptions
     opts = {
       keymaps = {
         normal = {
@@ -57,11 +58,11 @@ return {
             local project_launch = string.format("%s/%s", rooter.project(), cwd_launch)
 
             if vim.fn.filereadable(project_launch) == 1 then
-              vscode.load_launchjs(project_launch, adapter_fts)
+              vscode.load_launchjs(project_launch, adapter_fts) ---@diagnostic disable-line: deprecated
             end
 
             if vim.fn.filereadable(worktree_launch) == 1 then
-              vscode.load_launchjs(worktree_launch, adapter_fts)
+              vscode.load_launchjs(worktree_launch, adapter_fts) ---@diagnostic disable-line: deprecated
             end
           end
 

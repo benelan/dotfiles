@@ -381,7 +381,10 @@ M.icons = {
     stopped = M.i("󰿅 ", "S"),
   },
   git = {
-    status = "▎",
+    status = "┃", -- "▎",
+    status_changedelete = "┇",
+    status_topdelete = "▔",
+    status_delete = "━",
     branch = M.i("󰘬 "), -- ⛕  ⛙
     diff = M.i(" "),
     log = M.i(" "),

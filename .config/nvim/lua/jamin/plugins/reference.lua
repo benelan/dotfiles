@@ -7,6 +7,7 @@ return {
   -- open rule documentation for linters
   {
     "chrisgrieser/nvim-rulebook",
+    ---@type rulebook.config
     opts = {},
     keys = {
       {

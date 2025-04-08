@@ -26,12 +26,14 @@
     "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
     "$XDG_DATA_HOME/nvim/lazy/nvim-lspconfig/lua",
     "$XDG_DATA_HOME/nvim/lazy/nvim-nio/lua",
-    "$XDG_DATA_HOME/nvim/lazy/nvim-snippets/lua",
     "$XDG_DATA_HOME/nvim/lazy/nvim-treesitter/lua",
     "$XDG_DATA_HOME/nvim/lazy/octo.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/plenary.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/snacks.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/orgmode/lua",
-    "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua"
+    "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua",
+    "$XDG_DATA_HOME/nvim/lazy/debugprint.nvim/lua",
+    "$XDG_DATA_HOME/nvim/lazy/harpoon/lua",
+    "$XDG_DATA_HOME/nvim/lazy/nvim-rulebook/lua",
+    "$XDG_DATA_HOME/nvim/lazy/none-ls.nvim/lua"
   ]
 }

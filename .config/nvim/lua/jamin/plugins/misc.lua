@@ -154,6 +154,7 @@ return {
       quickfile = { enabled = true },
       words = { enabled = true },
       scope = { enabled = true },
+      statuscolumn = { enabled = true },
 
       scratch = {
         root = vim.fs.normalize("$NOTES/scratch"),
@@ -171,7 +172,7 @@ return {
       },
 
       image = {
-        enabled = true,
+        enabled = vim.env.WEZTERM_PANE and not vim.env.TMUX,
         doc = {
           inline = false,
           max_width = math.floor(width / 2.25),
@@ -287,7 +288,7 @@ return {
           {
             title = "GitHub Notifications",
             action = ":silent Octo notification",
-            cmd = "gh notify -sn3",
+            cmd = "gh notify -psn3",
             section = "terminal",
             enabled = #ui > 0 and (ui[1].height or 0) >= 39 and vim.fn.executable("gh") == 1,
             key = "n",

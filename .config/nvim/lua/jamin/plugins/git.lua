@@ -114,30 +114,22 @@ return {
     keys = {
       {
         "]h",
-        function()
-          require("gitsigns").nav_hunk("next", { wrap = false, preview = true, target = "all" })
-        end,
+        function() require("gitsigns").nav_hunk("next", { wrap = false, preview = true }) end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[h",
-        function()
-          require("gitsigns").nav_hunk("prev", { wrap = false, preview = true, target = "all" })
-        end,
+        function() require("gitsigns").nav_hunk("prev", { wrap = false, preview = true }) end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "]H",
-        function()
-          require("gitsigns").nav_hunk("last", { wrap = false, preview = true, target = "all" })
-        end,
+        function() require("gitsigns").nav_hunk("last", { wrap = false, preview = true }) end,
         desc = "Last hunk (gitsigns)",
       },
       {
         "[H",
-        function()
-          require("gitsigns").nav_hunk("first", { wrap = false, preview = true, target = "all" })
-        end,
+        function() require("gitsigns").nav_hunk("first", { wrap = false, preview = true }) end,
         desc = "First hunk (gitsigns)",
       },
       {
@@ -243,7 +235,7 @@ return {
       on_attach = function(bufnr)
         vim.keymap.set("n", "]c", function()
           if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("next") end)
+          vim.schedule(function() require("gitsigns").nav_hunk("next", { target = "all" }) end)
           return "<Ignore>"
         end, {
           silent = true,
@@ -255,7 +247,7 @@ return {
 
         vim.keymap.set("n", "[c", function()
           if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("prev") end)
+          vim.schedule(function() require("gitsigns").nav_hunk("prev", { target = "all" }) end)
           return "<Ignore>"
         end, {
           silent = true,
@@ -271,12 +263,16 @@ return {
       signs = {
         add = { text = res.icons.git.status },
         change = { text = res.icons.git.status },
-        untracked = { text = res.icons.git.status },
+        changedelete = { text = res.icons.git.status_changedelete },
+        topdelete = { text = res.icons.git.status_topdelete },
+        delete = { text = res.icons.git.status_delete },
       },
       signs_staged = {
         add = { text = res.icons.git.status },
         change = { text = res.icons.git.status },
-        untracked = { text = res.icons.git.status },
+        changedelete = { text = res.icons.git.status_changedelete },
+        topdelete = { text = res.icons.git.status_topdelete },
+        delete = { text = res.icons.git.status_delete },
       },
     },
   },
@@ -301,6 +297,7 @@ return {
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       reviews = { auto_show_threads = false },
       file_panel = { use_icons = vim.g.use_devicons },
+      use_timeline_icons = vim.g.use_devicons,
       runs = {
         icons = {
           pending = res.icons.test.pending,
@@ -318,7 +315,7 @@ return {
       user_icon = res.i(nil, res.icons.ui.user),
       right_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
       left_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
-      timeline_marker = res.icons.ui.diamond,
+      timeline_marker = res.i(nil, res.icons.ui.diamond),
       picker_config = {
         mappings = {
           open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },
@@ -420,8 +417,12 @@ return {
         desc = "List my created pull requests (octo)",
       },
 
-      --- Milestones
+      -- Milestones
       { "<leader>om", "<CMD>Octo milestone list<CR>", desc = "List milestones (octo)" },
+
+      -- Discussions
+      { "<leader>odl", "<CMD>Octo discussion list<CR>", desc = "List discussions (octo)" },
+      { "<leader>ods", "<CMD>Octo discussion search<CR>", desc = "Search discussions (octo)" },
 
       -- My notifications, repos, and gists
       { "<leader>on", "<CMD>Octo notification list<CR>", desc = "List my notifications (octo)" },
@@ -429,6 +430,12 @@ return {
       { "<leader>og", "<CMD>Octo gist list<CR>", desc = "List my gists (octo)" },
 
       -- Octo buffer keymaps
+      {
+        "<localleader>cy",
+        "<CMD>Octo comment url<CR>",
+        desc = "Copy comment url (octo)",
+        ft = "octo",
+      },
       {
         "<localleader>pC",
         "<CMD>Octo pr checks<CR>",

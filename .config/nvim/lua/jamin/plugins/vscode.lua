@@ -35,19 +35,20 @@ end
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   callback = function()
+    -- stylua: ignore
     if vim.g.vscode then
-      vim.keymap.set("n", "u", "<Cmd>call VSCodeNotify('undo')<CR>")
-      vim.keymap.set("n", "<C-r>", "<Cmd>call VSCodeNotify('redo')<CR>")
+      vim.keymap.set("n", "u", "<CMD>lua require('vscode').action('undo')<CR>")
+      vim.keymap.set("n", "<C-r>", "<CMD>lua require('vscode').action('redo')<CR>")
 
-      vim.keymap.set("n", "grr", "<CMD>call VSCodeNotify('editor.action.goToReferences')<CR>")
-      vim.keymap.set("n", "grn", "<CMD>call VSCodeNotify('editor.action.rename')<CR>")
-      vim.keymap.set("n", "grs", "<CMD>VSCodeNotify(workbench.action.gotoSymbol')<CR>")
+      vim.keymap.set("n", "gr", "<CMD>lua require('vscode').action('editor.action.goToReferences')<CR>")
+      vim.keymap.set("n", "cd", "<CMD>lua require('vscode').action('editor.action.rename')<CR>")
+      vim.keymap.set("n", "gS", "<CMD>lua require('vscode').action('workbench.action.gotoSymbol')<CR>")
 
-      vim.keymap.set("n", "<leader>ff", "<CMD>call VSCodeNotify('workbench.action.quickOpen')<CR>")
-      vim.keymap.set("n", "<leader>/", "<CMD>call VSCodeNotify('workbench.action.findInFiles')<CR>")
+      vim.keymap.set("n", "<leader>ff", "<CMD>lua require('vscode').action('workbench.action.quickOpen')<CR>")
+      vim.keymap.set("n", "<leader>/", "<CMD>lua require('vscode').action('workbench.action.findInFiles')<CR>")
 
-      vim.keymap.set("n", "[t", "<Cmd>call VSCodeNotify('workbench.action.previousEditor')<CR>")
-      vim.keymap.set("n", "]t", "<Cmd>call VSCodeNotify('workbench.action.nextEditor')<CR>")
+      vim.keymap.set("n", "[t", "<CMD>lua require('vscode').action('workbench.action.previousEditor')<CR>")
+      vim.keymap.set("n", "]t", "<CMD>lua require('vscode').action('workbench.action.nextEditor')<CR>")
     end
   end,
 })

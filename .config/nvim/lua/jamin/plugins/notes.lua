@@ -107,8 +107,13 @@ return {
       { "<leader>zf", ":ZkMatch<CR>", desc = "Find selection in notes (zk)", mode = "v" },
     },
 
-    config = function()
-      require("zk").setup({ picker = "telescope" })
+    opts = {
+      picker = "telescope"
+    },
+
+    config = function(_, opts)
+      require("zk").setup(opts)
+
       local has_zk_util, zk_util = pcall(require, "zk.util")
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
