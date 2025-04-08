@@ -58,10 +58,12 @@ include ~/.config/i3/common
 input "type:touchpad" {
     dwt enabled
     tap disabled
+    events disabled_on_external_mouse
     natural_scroll enabled
-    middle_emulation enabled
-    click_method clickfinger
     scroll_method two_finger
+    click_method button_areas
+    left_handed enabled
+    middle_emulation enabled
     accel_profile adaptive
     pointer_accel 0.25
 }
@@ -124,7 +126,7 @@ bindsym $mod+Mod1+o exec swaymsg 'opacity 1'
 # Move the window to the bottom right corner (like picture [i]n picture mode)
 bindsym $mod+i floating enable; sticky enable; move scratchpad; scratchpad show; \
     resize set width 45 ppt height 45 ppt; move position 55 ppt 55 ppt; \
-    exec swaymsg 'opacity 0.75'
+    exec swaymsg 'opacity 0.8'
 
 # Float window on top of another and add some opacity
 bindsym $mod+Shift+i floating enable; sticky disable; move scratchpad; scratchpad show; \
@@ -251,6 +253,7 @@ bindswitch lid:on exec swaymsg "output * dpms on"
 
 ### Startup processes {{{1
 #
-# Clipboard history manager
-# https://github.com/sentriz/cliphist
+exec xrdb -load ~/.Xresources
+
+# Clipboard history manager - https://github.com/sentriz/cliphist
 exec exec wl-paste --watch cliphist store
