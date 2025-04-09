@@ -348,6 +348,7 @@ return {
         runs = {
           expand_step = { lhs = "<Tab>", desc = "expand workflow step" },
           open_in_browser = { lhs = "<C-o>", desc = "open workflow run in browser" },
+          rerun = { lhs = "<C-a>", desc = "rerun workflow" },
         },
       },
     },
@@ -360,10 +361,19 @@ return {
       vim.api.nvim_set_hl(0, "OctoStrikethrough", { fg = "#d3869b", strikethrough = true })
 
       vim.api.nvim_create_autocmd("BufEnter", {
-        group = vim.api.nvim_create_augroup("jamin_octo_buffer_setup", {}),
-        pattern = "octo://*",
+        group = vim.api.nvim_create_augroup("jamin_octo_review_keymaps", { clear = true }),
+        pattern = { "octo://*", "OctoChangedFiles-*" },
         -- command = "if &diff | set nofoldenable | fi",
         callback = function()
+          vim.keymap.set("n", "<M-j>", "]t", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-k>", "[t", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-n>", "]q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-S-p>", "[q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-S-n>", "]Q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-S-p>", "[Q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<Tab>", "<localleader><space>]q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<S-Tab>", "<localleader><space>[q", { buffer = true, remap = true })
+          vim.keymap.set("n", "-", "<localleader>b", { buffer = true, remap = true })
           vim.keymap.set("n", "<localleader>to", "<CMD>Octo review thread<CR>", {
             desc = "Open review thread (octo)",
             buffer = true,

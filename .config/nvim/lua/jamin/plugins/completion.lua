@@ -210,6 +210,7 @@ if vim.fn.filereadable("/usr/share/dict/words") == 1 then
             max_items = 20,
             score_offset = -5,
             opts = {
+              first_case_insensitive = true,
               dictionary_files = { "/usr/share/dict/words" },
               get_command_args = function(prefix)
                 return { "--filter=" .. prefix, "--sync", "--no-sort", "--ignore-case" }

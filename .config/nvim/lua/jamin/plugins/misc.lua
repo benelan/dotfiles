@@ -320,6 +320,7 @@ return {
       { "<leader>sI", function() Snacks.toggle.indent():toggle() end, desc = "Toggle indent guides (snacks)" },
       { "<leader>vx", function() Snacks.notifier.hide() end, desc = "Hide notifications (snacks)" },
       { "<leader>vh", function() Snacks.notifier.show_history() end, desc = "Show notifications history (snacks)" },
+      { "<leader>vi", function() Snacks.image.hover() end, desc = "Show image under cursor (snacks)" },
 
       -- lsp
       { "<leader>sW", function() Snacks.toggle.words():toggle() end, desc = "Toggle lsp words (snacks)" },
