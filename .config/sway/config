@@ -61,9 +61,9 @@ input "type:touchpad" {
     events disabled_on_external_mouse
     natural_scroll enabled
     scroll_method two_finger
-    click_method button_areas
+    click_method clickfinger
     left_handed enabled
-    middle_emulation enabled
+    middle_emulation disabled
     accel_profile adaptive
     pointer_accel 0.25
 }
