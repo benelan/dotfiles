@@ -3,7 +3,7 @@
 local M = {}
 
 local root_markers = { "package.json", "Dockerfile", "Makefile" }
-local ignored_lsps = { "copilot", "efm", "eslint" }
+local ignored_lsps = { "null-ls", "efm", "eslint", "copilot" }
 local ignored_paths = { "~/.local", "~/.cache" }
 
 -- Cache to use for speed up (at cost of possibly outdated results)
