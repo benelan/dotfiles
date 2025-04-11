@@ -196,8 +196,8 @@ command! bak :clone %c.bak
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
-" Code
-filetype {*.astro,*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.svelte,*.vue,*.yml,*.yaml,*.xml},<text/*>
+" Plain Text
+filetype {*.astro,*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.svelte,*.vue,*.yml,*.yaml,*.xml,*.srt,*.sub},<text/*>
             \ {Open in neovim} nvim -- %f,
             \ {Open in vim} vim -- %f,
             \ {Open in vi} vi -- %f,
