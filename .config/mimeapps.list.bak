@@ -190,7 +190,6 @@ x-scheme-handler/http=brave-browser.desktop
 x-scheme-handler/https=brave-browser.desktop
 x-scheme-handler/mailto=proton-mail.desktop
 x-scheme-handler/mid=proton-mail.desktop
-x-scheme-handler/msteams=teams.desktop
 x-scheme-handler/webcal=proton-mail.desktop
 x-scheme-handler/webcals=proton-mail.desktop
 

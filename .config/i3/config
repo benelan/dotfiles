@@ -74,7 +74,6 @@ assign [class="^(file-roller|calibre|Gedit|Gnome-calculator|Gnome-calendar|Org\.
 assign [class="^(Shotwell|Inkscape|vlc|Lollypop|Ghb)$"] $ws6
 assign [title="^.* - mpv$"] $ws6
 assign [class="^(thunderbird|Proton Mail)$"] $ws8
-assign [class="^teams-for-linux$"] $ws10
 
 for_window [title="^.* - mpv$"] focus
 for_window [class="^(vlc|firefox|Brave-browser)$"] focus

@@ -49,12 +49,6 @@ Environment Variables:
   TEAMS_BROWSER
       The browser to use for opening the Teams web application. Only used when
       the desktop app is not installed. Defaults to "\$BROWSER".
-
-Troubleshooting:
-  If you are using the Teams desktop application, try adding the following line
-  under [Default Applications] in ~/.config/mimeapps.list
-      x-scheme-handler/msteams=teams.desktop
-
 EOF
     fi
     exit 0
@@ -111,7 +105,18 @@ editor_msg() {
 }
 
 create_msg() {
-    if has xdg-open; then
+    # Use the desktop app if installed, otherwise open in browser
+    if has teams; then
+        OPEN_CMD="teams"
+    elif has teams-for-linux; then # Snap
+        OPEN_CMD="teams-for-linux"
+    elif has com.github.IsmaelMartinez.teams_for_linux; then # Flatpak
+        OPEN_CMD="com.github.IsmaelMartinez.teams_for_linux"
+    elif has "$TEAMS_BROWSER"; then # Teams-specific browser environment variable
+        OPEN_CMD="$TEAMS_BROWSER"
+    elif has "$BROWSER"; then
+        OPEN_CMD="$BROWSER"
+    elif has xdg-open; then
         OPEN_CMD="xdg-open"
     elif has open; then
         OPEN_CMD="open"
@@ -119,26 +124,8 @@ create_msg() {
         OPEN_CMD="wslview"
     fi
 
-    # Use the desktop app if installed, otherwise open in browser
-    if has teams; then
-        TEAMS_URI="msteams:"
-
-        if [ -z "$OPEN_CMD" ]; then
-            help "One of 'xdg-open', 'open', or 'wslview' executables is required to open the desktop Microsoft Teams app"
-        fi
-    else
-        TEAMS_URI="https://teams.microsoft.com"
-
-        # Use a browser if set via environment variables
-        if has "$TEAMS_BROWSER"; then
-            OPEN_CMD="$TEAMS_BROWSER"
-        elif has "$BROWSER"; then
-            OPEN_CMD="$BROWSER"
-        fi
-
-        if [ -z "$OPEN_CMD" ]; then
-            help "One of 'xdg-open', 'open', 'wslview' executables or 'TEAMS_BROWSER', 'BROWSER' environment variables is required to open the Microsoft Teams web app"
-        fi
+    if [ -z "$OPEN_CMD" ]; then
+        help "One of 'xdg-open', 'open', 'wslview' executables or 'TEAMS_BROWSER', 'BROWSER' environment variables is required to open the Microsoft Teams web app"
     fi
 
     if has nohup; then
@@ -146,12 +133,7 @@ create_msg() {
         trap "rm -f ./nohup.out ~/nohup.out" INT TERM EXIT
     fi
 
-    $OPEN_CMD "$(
-        printf "%s/l/chat/0/0?users=%s&message=%s" \
-            "$TEAMS_URI" \
-            "$TEAMS_USERS" \
-            "$TEAMS_MESSAGE"
-    )" 2>/dev/null
+    $OPEN_CMD "https://teams.microsoft.com/l/chat/0/0?users=$TEAMS_USERS&message=$TEAMS_MESSAGE" >/dev/null 2>&1 &
 }
 
 # Parse args and execute {{{1
@@ -184,6 +166,5 @@ main() {
 
     create_msg
 }
-
 
 main "$@"

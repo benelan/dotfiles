@@ -213,6 +213,7 @@ assign [class="^(Brave-browser|Chromium|Google-chrome)$"] $ws3
 assign [class="^(Code|obsidian|Wireshark)$"] $ws4
 assign [class="^(Gimp-\d+\.\d+|com\.sayonara-player\.Sayonara)$"] $ws6
 assign [class="^(discord|Signal)$"] $ws7
+assign [class="^teams-for-linux$"] $ws10
 
 # libre office window's don't have a class on startup so they need to be moved afterwards
 for_window [class="^libreoffice-(startcenter|writer|calc|impress|draw|math)$"] move window to workspace $ws5
