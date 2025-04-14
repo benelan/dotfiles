@@ -2077,7 +2077,7 @@ install_build_neovim() {
     git reset --hard
     git checkout origin/master
     git pull origin master
-    git checkout nightly
+    git checkout stable
 
     if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then
         sudo make distclean
