@@ -308,3 +308,13 @@ if [ -n "$(
 )" ]; then
     export NERD_ICONS=1
 fi
+
+# disable telemetry {{{1
+export DO_NOT_TRACK=1              # https://consoledonottrack.com/
+export NEXT_TELEMETRY_DISABLED=1   # https://nextjs.org/telemetry#how-do-i-opt-out
+export NUXT_TELEMETRY_DISABLED=1   # https://github.com/nuxt/telemetry#opting-out
+export GATSBY_TELEMETRY_DISABLED=1 # https://www.gatsbyjs.com/docs/telemetry/#how-to-opt-out
+export CARBON_TELEMETRY_DISABLED=1 # https://carbondesignsystem.com/help/faq#how-do-i-opt-out
+export NG_CLI_ANALYTICS=false      # https://github.com/angular/angular-cli/blob/main/docs/design/analytics.md#disabling-usage-analytics
+export SAM_CLI_TELEMETRY=0         # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html
+export CHECKPOINT_DISABLE=1        # https://www.prisma.io/docs/orm/tools/prisma-cli#how-to-opt-out-of-data-collection
