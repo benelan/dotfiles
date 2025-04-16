@@ -147,15 +147,9 @@ supports bun && export BUN_INSTALL="$HOME/.bun"
 
 if supports node; then
     export NODE_OPTIONS="--max-old-space-size=8192 --no-deprecation"
-
-    # Enable persistent REPL history for `node`.
-    export NODE_REPL_HISTORY="$HOME/.node_history"
-
-    # Allow 32³ entries the default is 1000.
-    export NODE_REPL_HISTORY_SIZE="32768"
-
-    # Use sloppy mode by default, matching web browsers.
-    export NODE_REPL_MODE="sloppy"
+    export NODE_REPL_HISTORY="$HOME/.node_history" # Enable persistent REPL history for `node`.
+    export NODE_REPL_HISTORY_SIZE="32768"          # Allow 32³ entries the default is 1000.
+    export NODE_REPL_MODE="sloppy"                 # Use sloppy mode by default, matching web browsers.
 fi
 
 # misc tools {{{1
@@ -275,9 +269,10 @@ _gh_icon="$XDG_DATA_HOME/icons/Gruvbox-Plus-Dark/apps/scalable/github.svg"
 export GH_FZF_BRANCH_PREFIX="$_gh_user/"
 export GH_FZF_BRANCH_ADD_ISSUE_NUMBER="-"
 
-[ -f "$_gh_icon" ] &&
-    export GH_FZF_NOTIFY_ICON="$_gh_icon" &&
+if [ -f "$_gh_icon" ]; then
+    export GH_FZF_NOTIFY_ICON="$_gh_icon"
     export GH_ND_ICON="$_gh_icon"
+fi
 
 # https://github.com/benelan/git-mux
 if supports git-mux; then

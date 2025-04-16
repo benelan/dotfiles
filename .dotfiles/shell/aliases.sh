@@ -93,7 +93,7 @@ alias wget='wget -c'
 
 # Web Development {{{1
 if supports chromium-browser; then
-    alias debug_chromium='chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile'
+    alias debug_chromium="chromium-browser --remote-debugging-port=9222 --user-data-dir=$DOTFILES/cache/remote-debug-profile"
 fi
 
 # node/npm

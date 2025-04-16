@@ -305,7 +305,8 @@ psg() { ps aux | grep -v grep | grep -i -e VSZ -e "$*"; }
 psmem() {
     ps aux |
         sort -nrk 4 |
-        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'
+        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}' |
+        tac
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -314,7 +315,8 @@ psmem() {
 pscpu() {
     ps aux |
         sort -nrk 3 |
-        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}'
+        awk '{a[NR]=$0}END{for(x=1;x<NR;x++){if(x==1)print a[NR];print a[x]}}' |
+        tac
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -567,9 +569,9 @@ if supports fzf; then
         local pids
 
         if [ "$UID" != "0" ]; then
-            pids="$(ps -f -u "$UID" | sed 1d | fzf -m | awk '{print $2}')"
+            pids="$(ps -f -u "$UID" | sed 1d | fzf -m --select-nth 2)"
         else
-            pids="$(ps -ef | sed 1d | fzf -m | awk '{print $2}')"
+            pids="$(ps -ef | sed 1d | fzf -m --select-nth 2)"
         fi
 
         if [ -n "$pids" ]; then
@@ -590,10 +592,8 @@ if supports fzf; then
                     https://raw.githubusercontent.com/b4b4r07/emoji-cli/master/dict/emoji.json
             fi
 
-            jq <"$emojis" -r '.[] | [
-                .emoji, .description, "\(.aliases | @csv)", "\(.tags | @csv)"
-            ] | @tsv
-            ' | fzf --no-hscroll --prompt 'Search emojis > ' | cut -f1
+            jq <"$emojis" -r '.[] | [.emoji, .description, (.tags | @csv)] | @tsv' |
+                fzf --prompt 'Search emojis > ' -d '\t' --no-hscroll --accept-nth 1
         }
     fi
 
@@ -617,6 +617,7 @@ if [ "$WORK_MACHINE" = "1" ]; then
     # link some files to the current worktree                     {{{
     cc_link_files() {
         pushd "$(npm prefix)" >/dev/null
+        ln -f "../.marksman.toml" ".marksman.toml"
         ln -f "$CALCITE/calcite-components.projections.json" \
             "./packages/calcite-components/.projections.json"
         popd >/dev/null
@@ -628,12 +629,10 @@ if [ "$WORK_MACHINE" = "1" ]; then
     if supports gh; then
         # toggle a label used to run CC visual snapshots on PRs
         cc_visual_snapshots() {
-            if [ "$(
-                gh repo view --json name -q ".name"
-            )" = "calcite-design-system" ]; then
-                gh pr edit --remove-label "pr ready for visual snapshots" "$1"
-                gh pr edit --add-label "pr ready for visual snapshots" "$1"
-            fi
+            [ "$(gh repo view --json name -q ".name")" = "calcite-design-system" ] &&
+                gh pr edit "$1" \
+                    --remove-label "pr ready for visual snapshots" \
+                    --add-label "pr ready for visual snapshots"
         }
 
         # watch a PR check and prompt to rerun if it fails
@@ -705,15 +704,13 @@ if [ "$WORK_MACHINE" = "1" ]; then
             --workspace "@esri/calcite-components" \
             --pack-destination "$example"
 
-        # pack calcite-components-react if the test project has react as a dep
-        if supports jq && [ "$(
-            jq '.dependencies | has("react")' "$example/package.json"
-        )" = "true" ]; then
+        supports jq &&
+            # pack calcite-components-react if the test project has react as a dep
+            [ "$(jq '.dependencies | has("react")' "$example/package.json")" = "true" ] &&
             npm pack \
                 --prefix "$CALCITE/$worktree" \
                 --workspace "@esri/calcite-components-react" \
                 --pack-destination "$example"
-        fi
 
         # install the local tarball(s)
         npm install "$example"/esri-calcite-components-*.tgz
@@ -737,12 +734,10 @@ if [ "$WORK_MACHINE" = "1" ]; then
         # copy calcite-components dist
         cp -r "$CALCITE/$worktree/packages/calcite-components"/{dist,hydrate} "$cc_path"
 
-        # copy calcite-components-react dist if the test app has react as a dep
-        if supports jq && [ "$(
-            jq '.dependencies | has("react")' "$example/package.json"
-        )" = "true" ]; then
+        supports jq &&
+            # copy calcite-components-react dist if the test app has react as a dep
+            [ "$(jq '.dependencies | has("react")' "$example/package.json")" = "true" ] &&
             cp -r "$CALCITE/$worktree/packages/calcite-components-react/dist" "$ccr_path"
-        fi
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -761,10 +756,12 @@ if [ "$WORK_MACHINE" = "1" ]; then
         (cd "$CALCITE/$worktree/packages/calcite-components" && npm link)
         (cd "$CALCITE/$worktree/packages/calcite-components-react" && npm link)
 
-        npm link @esri/calcite-components "$(supports jq && [ "$(
-            # only link calcite-components-react if the test app has react as a dep
-            jq '.dependencies | has("react")' "$example/package.json" 2>/dev/null
-        )" = "true" ] && echo "@esri/calcite-components-react")"
+        npm link @esri/calcite-components "$(
+            supports jq &&
+                # only link calcite-components-react if the test app has react as a dep
+                [ "$(jq '.dependencies | has("react")' "$example/package.json")" = "true" ] &&
+                echo "@esri/calcite-components-react"
+        )"
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
