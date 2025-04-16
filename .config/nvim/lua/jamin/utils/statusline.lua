@@ -35,7 +35,7 @@ local function format_numeric_state(data)
       table.insert(output, item.value)
 
       template = template .. "%%#%s#"
-      template = template .. (vim.g.use_devicons and "%s%d  " or "[%s%d]")
+      template = template .. (vim.g.have_nerd_font and "%s%d  " or "[%s%d]")
     end
   end
 
@@ -50,7 +50,7 @@ local function buffer_diagnostics(fallback)
   for severity, text in ipairs(icons.diagnostics) do
     table.insert(data, {
       highlight = "StatusLineDiagnosticSev" .. severity,
-      icon = text .. (vim.g.use_devicons and "" or ":"),
+      icon = text .. (vim.g.have_nerd_font and "" or ":"),
       value = vim.tbl_count(vim.diagnostic.get(0, { severity = severity })),
     })
   end
@@ -107,7 +107,7 @@ end
 ---Show number of updatable plugins.
 local function lazy_updates(fallback)
   local has_lazy, lazy = pcall(require, "lazy.status")
-  return vim.g.use_devicons
+  return vim.g.have_nerd_font
       and has_lazy
       and lazy.has_updates()
       and string.format("  %s%s  ", fmt_hl(highlights.lazy), lazy.updates())

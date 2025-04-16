@@ -81,7 +81,7 @@ return {
           _G.bt = function() Snacks.debug.backtrace() end
           vim.print = _G.dd -- Override print to use snacks for `:=` command
 
-          if vim.g.use_devicons then
+          if vim.g.have_nerd_font then
             vim.api.nvim_set_hl(0, "SnacksNotifierMinimal", { link = "Normal" })
             ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
             local progress = vim.defaulttable()
@@ -151,7 +151,7 @@ return {
       },
 
       bigfile = { enabled = true },
-      quickfile = { enabled = true },
+      -- quickfile = { enabled = true }, -- started causing inconsistent visual artifacts
       words = { enabled = true },
       scope = { enabled = true },
       statuscolumn = { enabled = true },
@@ -172,6 +172,7 @@ return {
       },
 
       image = {
+        -- experienced image placement issues in tmux
         enabled = vim.env.WEZTERM_PANE and not vim.env.TMUX,
         doc = {
           inline = false,
@@ -181,7 +182,7 @@ return {
       },
 
       notifier = {
-        enabled = vim.g.use_devicons,
+        enabled = vim.g.have_nerd_font,
         level = vim.log.levels.INFO,
         style = "minimal",
         top_down = false,
@@ -203,8 +204,8 @@ return {
       picker = {
         enabled = false,
         icons = {
-          files = { enabled = vim.g.use_devicons },
-          git = { enabled = vim.g.use_devicons },
+          files = { enabled = vim.g.have_nerd_font },
+          git = { enabled = vim.g.have_nerd_font },
         },
         win = {
           input = {
@@ -239,7 +240,7 @@ return {
       },
 
       dashboard = {
-        enabled = vim.g.use_devicons,
+        enabled = vim.g.have_nerd_font,
         config = function(opts) opts.preset.keys[2].key = "i" end,
         width = math.max(60, math.floor(width / 1.75)),
         sections = {

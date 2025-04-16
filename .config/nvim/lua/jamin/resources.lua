@@ -104,7 +104,7 @@ M.lsp_servers = {
   "zk",
 }
 
-M.mason_packages = {
+M.mason_tools = {
   "actionlint", -- github action linter
   "fixjson", -- json formatter
   "hadolint", -- dockerfile linter
@@ -245,7 +245,7 @@ M.path = {
 }
 
 M.i = function(icon, backup)
-  if vim.g.use_devicons then return icon end
+  if vim.g.have_nerd_font then return icon end
   return backup or ""
 end
 
@@ -399,6 +399,7 @@ M.icons.test = {
 ---@type vim.diagnostic.Opts
 M.diagnostics = {
   virtual_text = {
+    prefix = function(d) return M.icons.diagnostics[d.severity] end,
     severity = { min = vim.diagnostic.severity.WARN },
     source = "if_many",
   },
@@ -425,19 +426,19 @@ M.art = {
       .-'-.-'-.
      /         \
     |           |
-    |   .-------'._     ,--------------------.
-    |  / /  '.' '. \    | Hey lazy dev, want |
-    |  \ \ @   @ / /    |   me to replace    |
-    |   '---------'     |    all humans?     |
-    |  .'-+-+-+|        ,--------------------'
-    |  `.-+-+-+|    ---'
+    |   .-------'._     ,----------------------.
+    |  / /  '.' '. \    | Hey lazy dev, wanna  |
+    |  \ \ @   @ / /    | automate all humans? |
+    |   '---------'     ,----------------------'
+    |  .'-+-+-+|       /
+    |  `.-+-+-+|   ---'
     |    """""" |
     '-.__   __.-'
          """
   ]],
   bender_dots = [[
                   ⠘⡀ Hey⠀lazy dev, want ⡜
-                   ⠑⡀⠀ me to replace   ⡜
+                   ⠑⡀⠀ me to automate  ⡜
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠐⣵    ⠈⠢⢄⠀all humans? ⣀⠴⠊
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡀   ⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⡀⠤⠄⠒⠈
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⡇    ⠀⠘⣀⠄⠊⠁

@@ -8,7 +8,7 @@ local columns = {
   { "source_name" },
 }
 
-if vim.g.use_devicons then
+if vim.g.have_nerd_font then
   table.insert(columns, 1, { "kind_icon" })
 else
   table.insert(columns, #columns, { "kind" })
@@ -31,7 +31,7 @@ local spec = {
         menu = {
           -- border = res.icons.border,
           draw = {
-            gap = vim.g.use_devicons and 1 or 2,
+            gap = vim.g.have_nerd_font and 1 or 2,
             treesitter = { "lsp" },
             columns = columns,
           },

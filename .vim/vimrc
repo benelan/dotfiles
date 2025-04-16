@@ -140,6 +140,37 @@ if has("keymap")
     nnoremap ]<space> :call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<space> :call append(line('.') - 1, repeat([''], v:count1))<CR>
 
+    "" navigating lists {{{2
+    " Argument list
+    nnoremap [a :previous<CR>
+    nnoremap ]a :next<CR>
+    nnoremap [A :last<CR>
+    nnoremap ]A :first<CR>
+
+    " Buffer list
+    nnoremap [b :bprevious<CR>
+    nnoremap ]b :bnext<CR>
+    nnoremap [B :blast<CR>
+    nnoremap ]B :bfirst<CR>
+
+    " Quickfix list
+    nnoremap [q :cprevious<CR>
+    nnoremap ]q :cnext<CR>
+    nnoremap [Q :clast<CR>
+    nnoremap ]Q :cfirst<CR>
+
+    " Location list
+    nnoremap [l :lprevious<CR>
+    nnoremap ]l :lnext<CR>
+    nnoremap [L :llast<CR>
+    nnoremap ]L :lfirst<CR>
+
+    " Tab list
+    nnoremap [t :tabprevious<CR>
+    nnoremap ]t :tabnext<CR>
+    nnoremap [T :tlast<CR>
+    nnoremap ]T :tfirst<CR>
+
     "" misc insert/terminal/command mode keymaps {{{2
     inoremap <C-U> <C-G>u<C-U>
     inoremap <C-W> <C-G>u<C-W>

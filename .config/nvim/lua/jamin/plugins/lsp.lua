@@ -14,7 +14,7 @@ return {
 
     ---@type MasonSettings
     opts = {
-      ensure_installed = res.mason_packages,
+      ensure_installed = res.mason_tools,
       ui = { border = res.icons.border, height = 0.8 },
     },
 
@@ -106,11 +106,20 @@ return {
   {
     "artemave/workspace-diagnostics.nvim",
     lazy = true,
-    opts = {},
+    opts = {
+      workspace_files = function()
+        return vim.fn.split(
+          -- the default runs `git ls-files` from the toplevel, which melts my machine in monorepos
+          vim.fn.system("git ls-files " .. require("jamin.utils.rooter").project()),
+          "\n"
+        )
+      end,
+    },
     keys = {
       {
         "<leader>lw",
         function()
+          -- get diagnostics from all lsp clients attached to the current buffer
           for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
             require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
           end

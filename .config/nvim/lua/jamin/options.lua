@@ -1,7 +1,6 @@
 local has_res, res = pcall(require, "jamin.resources")
 
-vim.opt.mouse = ""
-vim.opt.clipboard = "unnamed"
+vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamed"
 vim.opt.updatetime = 150
 vim.opt.confirm = true
 vim.opt.virtualedit:append("block")

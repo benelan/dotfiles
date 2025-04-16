@@ -11,7 +11,7 @@ let g:markdown_recommended_style = 0
 " Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
-    \ 'vue', 'html', 'toml', 'yaml', 'json', 'jsonc', 'sql', 'diff', 
+    \ 'vue', 'html', 'toml', 'yaml', 'json', 'jsonc', 'sql', 'diff', 'help',
     \ 'vim', 'lua', 'go', 'rust', 'python', 'css', 'scss', 'sass', 'sh', 'awk',
     \ 'yml=yaml', 'py=python', 'shell=sh', 'bash=sh', 'ts=typescript', 
     \ 'js=javascript', 'tsx=typescriptreact', 'jsx=javascriptreact'
@@ -73,7 +73,7 @@ command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
 command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 "" toggle quickfix/location lists open/close {{{2
-command! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W><C-W>"
+command! QfToggle exe "if empty(filter(getwininfo(), 'v:val.quickfix'))|cope|else|ccl|lcl|endif|norm <C-W>p"
 
 nnoremap <C-q> <CMD>QfToggle<CR>
 

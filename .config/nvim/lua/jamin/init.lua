@@ -32,7 +32,7 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
 })
 
 -- icons can be turned on/off per machine using the environment variable
-vim.g.use_devicons = vim.env.NERD_ICONS ~= "0"
+vim.g.have_nerd_font = vim.env.NERD_ICONS ~= "0"
   and (
     vim.env.NERD_ICONS == "1"
     -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
@@ -67,14 +67,14 @@ vim.opt.rtp:prepend(lazypath)
 -- load the plugin specs
 require("lazy").setup("jamin.plugins", {
   change_detection = { notify = false },
-  checker = { enabled = vim.g.use_devicons, notify = false },
+  checker = { enabled = vim.g.have_nerd_font, notify = false },
   dev = { path = vim.env.LIB, fallback = true },
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
     custom_keys = { ["<localleader>d"] = function(plugin) dd(plugin) end },
     border = require("jamin.resources").icons.border,
     backdrop = 100,
-    icons = vim.g.use_devicons and {} or {
+    icons = vim.g.have_nerd_font and {} or {
       cmd = "",
       config = "",
       event = "",

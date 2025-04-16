@@ -8,7 +8,7 @@ dig -1 128078
 
 "" GENERAL {{{1
 nnoremap <C-s> <CMD>w<CR>
-nnoremap <C-s> <CMD>w<CR>
+inoremap <C-s> <CMD>w<CR>
 
 nnoremap <Backspace> <C-^>
 
@@ -131,37 +131,6 @@ nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
             \ ? "unnamed,unnamedplus"
             \ : "unnamed"
     \ )<CR><CMD>set clipboard?<CR>
-
-"" NAVIGATE LISTS {{{1
-" Argument list
-nnoremap [a :previous<CR>
-nnoremap ]a :next<CR>
-nnoremap [A :last<CR>
-nnoremap ]A :first<CR>
-
-" Buffer list
-nnoremap [b :bprevious<CR>
-nnoremap ]b :bnext<CR>
-nnoremap [B :blast<CR>
-nnoremap ]B :bfirst<CR>
-
-" Quickfix list
-nnoremap [q :cprevious<CR>
-nnoremap ]q :cnext<CR>
-nnoremap [Q :clast<CR>
-nnoremap ]Q :cfirst<CR>
-
-" Location list
-nnoremap [l :lprevious<CR>
-nnoremap ]l :lnext<CR>
-nnoremap [L :llast<CR>
-nnoremap ]L :lfirst<CR>
-
-" Tab list
-nnoremap [t :tabprevious<CR>
-nnoremap ]t :tabnext<CR>
-nnoremap [T :tlast<CR>
-nnoremap ]T :tfirst<CR>
 
 "" BUFFERS, TABS, AND WINDOWS {{{1
 " close buffer
