@@ -1,3 +1,4 @@
+" vim:foldmethod=marker:filetype=vim:
 " Settings {{{1
 
 source $VIMRUNTIME/defaults.vim

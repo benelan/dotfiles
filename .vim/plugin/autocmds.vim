@@ -1,3 +1,4 @@
+" vim:foldmethod=marker:filetype=vim:
 if exists('loaded_jamin_autocmds') || !has("autocmd") | finish | endif
 let loaded_jamin_autocmds = 1
 

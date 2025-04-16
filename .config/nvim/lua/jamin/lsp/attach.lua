@@ -2,10 +2,10 @@ return function(args)
   local client = vim.lsp.get_client_by_id(args.data.client_id)
   if client == nil then return end
 
-  if client:supports_method("textDocument/foldingRange") then
-    vim.wo.foldmethod = "expr"
-    vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
-  end
+  -- if client:supports_method("textDocument/foldingRange") then
+  --   vim.wo.foldmethod = "expr"
+  --   vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+  -- end
 
   -- disable formatting for some LSP servers in favor of better standalone programs
   -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)

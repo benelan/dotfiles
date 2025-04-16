@@ -60,24 +60,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 -------------------------------------------------------------------------------
--- workaround for: https://github.com/nvim-telescope/telescope.nvim/issues/699
-vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
-  group = vim.api.nvim_create_augroup("jamin_ts_fold_workaround", {}),
-  callback = function()
-    if vim.wo.diff or vim.tbl_contains(res.filetypes.excluded, vim.bo.filetype) then return end
-
-    if vim.tbl_contains(res.filetypes.marker_folds, vim.bo.filetype) then
-      vim.wo.foldmethod = "marker"
-    elseif vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
-      vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    else
-      vim.wo.foldmethod = "indent"
-    end
-  end,
-})
-
--------------------------------------------------------------------------------
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("jamin_auto_create_dir", {}),

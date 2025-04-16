@@ -72,17 +72,6 @@ M.filetypes = {
     "typescriptreact",
     "vue",
   },
-  marker_folds = {
-    "",
-    "conf",
-    "text",
-    "swayconfig",
-    "i3config",
-    "sh",
-    "tmux",
-    "vim",
-    "vifm",
-  },
 }
 
 M.lsp_servers = {

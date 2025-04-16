@@ -1,3 +1,4 @@
+" vim:foldmethod=marker:filetype=vim:
 if exists('g:loaded_jamin_stuff') || &cp | finish | endif
 let g:loaded_jamin_stuff = 1
 
