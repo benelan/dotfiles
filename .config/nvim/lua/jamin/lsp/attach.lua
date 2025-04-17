@@ -46,8 +46,7 @@ return function(args)
   end
 
   if client:supports_method("textDocument/rename") then
-    bufmap("n", "<leader>rn", vim.lsp.buf.rename, "LSP change definition (rename)")
-    bufmap("n", "cd", ":IncRename ", "LSP change definition (inc-rename)")
+    bufmap("n", "cd", vim.lsp.buf.rename, "LSP change definition (rename)")
   end
 
   if client:supports_method("textDocument/definition") then

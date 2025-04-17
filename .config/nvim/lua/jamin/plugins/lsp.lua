@@ -132,15 +132,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- LSP incremental rename
-  {
-    "smjonas/inc-rename.nvim",
-    opts = {},
-    event = "LspAttach",
-    cmd = "IncRename",
-  },
-
-  -----------------------------------------------------------------------------
   -- integrates formatters and linters (null-ls.nvim successor)
   {
     -- forked due to https://github.com/nvimtools/none-ls.nvim/issues/58
