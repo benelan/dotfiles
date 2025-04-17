@@ -153,16 +153,16 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Move workspace to current output and switch to it
-bindsym $mod+1 [workspace="^\$ws1$"] move workspace to output current; workspace number $ws1
-bindsym $mod+2 [workspace="^\$ws2$"] move workspace to output current; workspace number $ws2
-bindsym $mod+3 [workspace="^\$ws3$"] move workspace to output current; workspace number $ws3
-bindsym $mod+4 [workspace="^\$ws4$"] move workspace to output current; workspace number $ws4
-bindsym $mod+5 [workspace="^\$ws5$"] move workspace to output current; workspace number $ws5
-bindsym $mod+6 [workspace="^\$ws6$"] move workspace to output current; workspace number $ws6
-bindsym $mod+7 [workspace="^\$ws7$"] move workspace to output current; workspace number $ws7
-bindsym $mod+8 [workspace="^\$ws8$"] move workspace to output current; workspace number $ws8
-bindsym $mod+9 [workspace="^\$ws9$"] move workspace to output current; workspace number $ws9
-bindsym $mod+0 [workspace="^\$ws10$"] move workspace to output current; workspace number $ws10
+bindsym $mod+1 [workspace=$ws1] move workspace to output current; workspace number $ws1
+bindsym $mod+2 [workspace=$ws2] move workspace to output current; workspace number $ws2
+bindsym $mod+3 [workspace=$ws3] move workspace to output current; workspace number $ws3
+bindsym $mod+4 [workspace=$ws4] move workspace to output current; workspace number $ws4
+bindsym $mod+5 [workspace=$ws5] move workspace to output current; workspace number $ws5
+bindsym $mod+6 [workspace=$ws6] move workspace to output current; workspace number $ws6
+bindsym $mod+7 [workspace=$ws7] move workspace to output current; workspace number $ws7
+bindsym $mod+8 [workspace=$ws8] move workspace to output current; workspace number $ws8
+bindsym $mod+9 [workspace=$ws9] move workspace to output current; workspace number $ws9
+bindsym $mod+0 [workspace=$ws10] move workspace to output current; workspace number $ws10
 
 # Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
