@@ -301,7 +301,7 @@ if [ -n "$(
         -name "*Nerd*Font*.ttf" \
         -readable -print -quit 2>/dev/null
 )" ]; then
-    export NERD_ICONS=1
+    export NERD_FONT=1
 fi
 
 # disable telemetry {{{1

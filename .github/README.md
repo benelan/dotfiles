@@ -96,9 +96,9 @@ functionality.
 
 - `CODEIUM` - Use the Codeium (free Copilot alternative) plugin in Neovim.
 
-- `NERD_ICONS` - Use developer icons in Neovim/Vim/Vifm/etc. [Wezterm ships with NerdFont glyphs], so the icons are
+- `NERD_FONT` - Use developer icons in Neovim/Vim/Vifm/etc. [Wezterm ships with Nerd Font glyphs], so the icons are
   displayed by default unless explicitly disabled by setting the option to `0`. If you don't use Wezterm, make sure to
-  install a [NerdFont] (e.g. `dot deps -t font`) before enabling the icons by setting the option to `1`.
+  install a [Nerd Font] (e.g. `dot deps -t font`) before enabling the icons by setting the option to `1`.
 
 ## Credits
 
@@ -114,8 +114,8 @@ I learned and stole a lot from the following sources. There are credits/links in
 
 [Atlassian tutorial]: https://www.atlassian.com/git/tutorials/dotfiles
 [GNU stow]: https://www.gnu.org/software/stow/
-[NerdFont]: https://www.nerdfonts.com/
+[Nerd Font]: https://www.nerdfonts.com/
 [WSL running Ubuntu]: https://ubuntu.com/desktop/wsl
-[Wezterm ships with NerdFont glyphs]: https://wezfurlong.org/wezterm/config/lua/wezterm/nerdfonts.html
+[Wezterm ships with Nerd Font glyphs]: https://wezfurlong.org/wezterm/config/lua/wezterm/nerdfonts.html
 [apt dependency lists]: https://github.com/benelan/dotfiles/blob/4c9a56310effe37ad5f483d9d87fcff85d82ce1c/.dotfiles/bin/dot#L753-L1012
 [switch to the GNU version]: https://ryanparman.com/posts/2019/using-gnu-command-line-tools-in-macos-instead-of-freebsd-tools/

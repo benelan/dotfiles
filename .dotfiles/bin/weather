@@ -75,7 +75,7 @@ get_icon() {
     icon=$(get_prop '.weather[0].icon')
 
     # https://openweathermap.org/weather-conditions
-    if [ -n "$NERD_ICONS" ]; then
+    if [ -n "$NERD_FONT" ]; then
         # Nerd Font icons - https://www.nerdfonts.com/
         ICON_01D="󰖙 "
         ICON_01N="󰖔 "

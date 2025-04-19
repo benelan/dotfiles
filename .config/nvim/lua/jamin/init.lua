@@ -32,9 +32,9 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
 })
 
 -- icons can be turned on/off per machine using the environment variable
-vim.g.have_nerd_font = vim.env.NERD_ICONS ~= "0"
+vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
   and (
-    vim.env.NERD_ICONS == "1"
+    vim.env.NERD_FONT == "1"
     -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
     or vim.env.WEZTERM_PANE ~= nil
   )

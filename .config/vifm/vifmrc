@@ -596,7 +596,7 @@ nnoremap ]t :tabnext<cr>:view!<cr>
 nnoremap - :qa<cr>
 
 " Devicons require a patched font (or wezterm which ships with them)
-if expand($NERD_ICONS) != "0" && (expand($NERD_ICONS) == "1" || expand($WEZTERM_PANE) != "")
+if expand($NERD_FONT) != "0" && (expand($NERD_FONT) == "1" || expand($WEZTERM_PANE) != "")
     source ~/.config/vifm/scripts/icons.vifm
 endif
 
