@@ -1,6 +1,7 @@
-data.location=~/dev/notes/.task
-hooks.location=~/.config/task/hooks
+data.location=$NOTES/.task
+hooks.location=$XDG_CONFIG_HOME/task/hooks/
 
+news.version=2.6.0
 nag=
 search.case.sensitive=0
 verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,filter,override,recur
@@ -12,23 +13,28 @@ calendar.details=full
 calendar.holidays=sparse
 # weekstart=monday
 
+uda.priority.default=M
+urgency.tags.coefficient=0
+urgency.project.coefficient=0.5
+
 context.work.read=project:work
 context.work.write=project:work
 context.home.read=project:home
 context.home.write=project:home
 
-uda.priority.default=M
-urgency.tags.coefficient=0
-urgency.project.coefficient=0.5
+context.done_last_week.read=( end>=monday-2w and end<monday-1w )
+context.done_last_week.write=( end>=monday-2w and end<monday-1w )
+context.done_this_week.read=( end>=monday-1w and end<monday )
+context.done_this_week.write=( end>=monday-1w and end<monday )
+context.done_yesterday.read=( end>=yesterday and end<today )
+context.done_yesterday.write=( end>=yesterday and end<today )
 
-context.today=( ( ( scheduled<tomorrow or due<tomorrow or +next or +ACTIVE ) and status:pending and -WAITING ) or end>=today )
-context.tomorrow=( ( scheduled.none: or scheduled>=tomorrow ) and ( due.none: or due>=tomorrow ) and ( scheduled<tomorrow+1d or due<tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
-context.soon=( ( ( scheduled.none: and -later ) or scheduled>=tomorrow+1d ) and ( ( due.none: and -later ) or due>=tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
-context.later=( +later and status:pending and -WAITING )
-
-context.done_yesterday=( end>=yesterday and end<today )
-context.done_this_week=( end>=monday-1w and end<monday )
-context.done_last_week=( end>=monday-2w and end<monday-1w )
+context.soon.read=( ( ( scheduled.none: and -later ) or scheduled>=tomorrow+1d ) and ( ( due.none: and -later ) or due>=tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
+context.soon.write=( ( ( scheduled.none: and -later ) or scheduled>=tomorrow+1d ) and ( ( due.none: and -later ) or due>=tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
+context.today.read=( ( ( scheduled<tomorrow or due<tomorrow or +next or +ACTIVE ) and status:pending and -WAITING ) or end>=today )
+context.today.write=( ( ( scheduled<tomorrow or due<tomorrow or +next or +ACTIVE ) and status:pending and -WAITING ) or end>=today )
+context.tomorrow.read=( ( scheduled.none: or scheduled>=tomorrow ) and ( due.none: or due>=tomorrow ) and ( scheduled<tomorrow+1d or due<tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
+context.tomorrow.write=( ( scheduled.none: or scheduled>=tomorrow ) and ( due.none: or due>=tomorrow ) and ( scheduled<tomorrow+1d or due<tomorrow+1d ) and -ACTIVE and status:pending and -WAITING )
 
 color.tagged=
 color.active=color2
