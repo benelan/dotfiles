@@ -9,7 +9,11 @@ local M = {}
 ---@param config Config
 function M.setup(config)
   config.disable_default_key_bindings = true
-  config.leader = { key = " ", mods = "CTRL|SHIFT", timeout_milliseconds = 1500 }
+  config.leader = {
+    key = " ",
+    mods = wezterm.GLOBAL.multiplexer == "wezterm" and "CTRL" or "CTRL|SHIFT",
+    timeout_milliseconds = 1500,
+  }
 
   config.keys = {
     {

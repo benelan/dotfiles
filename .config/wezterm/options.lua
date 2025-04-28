@@ -7,11 +7,14 @@ function M.setup(config)
   if string.match(wezterm.target_triple, "windows") then
     config.default_domain = "WSL:Ubuntu-24.04"
   else
+    if os.getenv("XDG_SESSION_TYPE") == "wayland" then config.enable_wayland = true end
+
     local home = utils.basename(wezterm.home_dir)
-    config.unix_domains = { { name = "git-mux" } }
-    -- config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
     config.default_workspace = home
-    if os.getenv("$XDG_SESSION_TYPE") == "wayland" then config.enable_wayland = true end
+    config.unix_domains = { { name = "git-mux" } }
+    if wezterm.GLOBAL.multiplexer == "wezterm" then
+      config.default_gui_startup_args = { "connect", "git-mux", "--workspace", home }
+    end
   end
 
   -- Using wezterm TERM requires additional setup

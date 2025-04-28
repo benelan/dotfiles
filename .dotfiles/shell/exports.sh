@@ -285,7 +285,7 @@ if supports git-mux; then
     export GIT_MUX_PROJECTS="$NOTES $DOTFILES $XDG_CONFIG_HOME/nvim $HOME/.vim"
 
     # shell commands or an executable on PATH to run after a new worktree or session is created
-    export GIT_MUX_NEW_SESSION_CMD='_git-mux-new-session; history -d -1 >/dev/null 2>&1; clear -x'
+    export GIT_MUX_NEW_SESSION_CMD='_git-mux-new-project; history -d -1 >/dev/null 2>&1; clear -x'
     export GIT_MUX_NEW_WORKTREE_CMD="_git-mux-new-worktree; history -d -1 >/dev/null 2>&1; clear -x"
 fi
 
