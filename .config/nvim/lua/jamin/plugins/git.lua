@@ -114,22 +114,22 @@ return {
     keys = {
       {
         "]h",
-        function() require("gitsigns").nav_hunk("next", { wrap = false, preview = true }) end,
+        function() require("gitsigns").nav_hunk("next", { wrap = true, preview = true }) end,
         desc = "Next hunk (gitsigns)",
       },
       {
         "[h",
-        function() require("gitsigns").nav_hunk("prev", { wrap = false, preview = true }) end,
+        function() require("gitsigns").nav_hunk("prev", { wrap = true, preview = true }) end,
         desc = "Previous hunk (gitsigns)",
       },
       {
         "]H",
-        function() require("gitsigns").nav_hunk("last", { wrap = false, preview = true }) end,
+        function() require("gitsigns").nav_hunk("last", { wrap = true, preview = true }) end,
         desc = "Last hunk (gitsigns)",
       },
       {
         "[H",
-        function() require("gitsigns").nav_hunk("first", { wrap = false, preview = true }) end,
+        function() require("gitsigns").nav_hunk("first", { wrap = true, preview = true }) end,
         desc = "First hunk (gitsigns)",
       },
       {
@@ -228,35 +228,32 @@ return {
         function() require("gitsigns").toggle_numhl() end,
         desc = "Toggle number highlight (gitsigns)",
       },
+      {
+        "]c",
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            require("gitsigns").nav_hunk("next", { wrap = false, target = "all" })
+          end
+        end,
+        desc = "Next hunk (gitsigns)",
+      },
+      {
+        "[c",
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            require("gitsigns").nav_hunk("prev", { wrap = false, target = "all" })
+          end
+        end,
+        desc = "Next hunk (gitsigns)",
+      },
     },
 
     ---@type Gitsigns.Config
     opts = {
-      on_attach = function(bufnr)
-        vim.keymap.set("n", "]c", function()
-          if vim.wo.diff then return "]c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("next", { target = "all" }) end)
-          return "<Ignore>"
-        end, {
-          silent = true,
-          noremap = true,
-          expr = true,
-          buffer = bufnr,
-          desc = "Next hunk (gitsigns)",
-        })
-
-        vim.keymap.set("n", "[c", function()
-          if vim.wo.diff then return "[c" end
-          vim.schedule(function() require("gitsigns").nav_hunk("prev", { target = "all" }) end)
-          return "<Ignore>"
-        end, {
-          silent = true,
-          noremap = true,
-          expr = true,
-          buffer = bufnr,
-          desc = "Previous hunk (gitsigns)",
-        })
-      end,
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
       preview_config = { border = res.icons.border },

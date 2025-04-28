@@ -111,10 +111,9 @@ M.setup = function()
   })
 
   -- keymaps for the user commands
-  vim.keymap.set("n", "c/", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current [f]ile" })
-  vim.keymap.set("n", "c/f", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current [f]ile" })
-  vim.keymap.set("n", "c/w", "<CMD>Wcd<CR><CMD>pwd<CR>", { desc = "cd to git [w]orktree root" })
-  vim.keymap.set("n", "c/m", "<CMD>Mcd<CR><CMD>pwd<CR>", { desc = "cd to lsp root [m]arker" })
+  vim.keymap.set("n", "cd", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current file" })
+  vim.keymap.set("n", "c/", "<CMD>Wcd<CR><CMD>pwd<CR>", { desc = "cd to git worktree root" })
+  vim.keymap.set("n", "cm", "<CMD>Mcd<CR><CMD>pwd<CR>", { desc = "cd to lsp root marker" })
 end
 
 return M

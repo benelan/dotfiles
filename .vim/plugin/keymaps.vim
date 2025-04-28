@@ -2,9 +2,22 @@
 if exists('loaded_jamin_keymaps') | finish | endif
 let loaded_jamin_keymaps = 1
 
-" thumbs up/down diagraphs
-dig +1 128077
-dig -1 128078
+" emoji digraphs
+dig ~~ 128591 " 🙏
+dig !! 128293 " 🔥
+dig @@ 128064 " 👀
+dig ## 128679 " 🚧
+dig $$ 127942 " 🏆
+dig %% 128175 " 💯
+dig ^^ 128640 " 🚀
+dig && 127867 " 🍻
+dig ** 127881 " 🎉
+dig (( 128533 " 😕
+dig )) 128516 " 😄
+dig -- 128078 " 👎
+dig __ 128078 " 👎
+dig ++ 128077 " 👍
+dig == 128077 " 👍
 
 "" GENERAL {{{1
 nnoremap <C-s> <CMD>w<CR>

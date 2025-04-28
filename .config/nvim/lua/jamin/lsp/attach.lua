@@ -45,10 +45,6 @@ return function(args)
     )
   end
 
-  if client:supports_method("textDocument/rename") then
-    bufmap("n", "cd", vim.lsp.buf.rename, "LSP change definition (rename)")
-  end
-
   if client:supports_method("textDocument/definition") then
     bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
   end
@@ -57,28 +53,14 @@ return function(args)
     bufmap("n", "gD", vim.lsp.buf.declaration, "LSP declaration")
   end
 
-  if client:supports_method("textDocument/implementation") then
-    bufmap("n", "gI", vim.lsp.buf.implementation, "LSP implementation")
-  end
-
   if client:supports_method("textDocument/typeDefinition") then
     bufmap("n", "gy", vim.lsp.buf.type_definition, "LSP type definition")
   end
 
-  if client:supports_method("textDocument/references") then
-    bufmap(
-      "n",
-      "gr",
-      function() vim.lsp.buf.references({ includeDeclaration = false }) end,
-      "LSP references"
-    )
-  end
-
   if client:supports_method("textDocument/codeAction") then
-    bufmap({ "n", "v" }, "ga", function() vim.lsp.buf.code_action() end, "Code action")
     bufmap(
       { "n", "v" },
-      "gA",
+      "ga",
       function()
         vim.lsp.buf.code_action({
           context = { only = { "source", "refactor", "quickfix" } },

@@ -327,8 +327,7 @@ return {
       { "<leader>sW", function() Snacks.toggle.words():toggle() end, desc = "Toggle lsp words (snacks)" },
       { "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference (snacks)", mode = { "n", "t" } },
       { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference (snacks)", mode = { "n", "t" } },
-      { "cp", function() Snacks.rename.rename_file() end, desc = "LSP change path (rename file) (snacks)" },
-      { "<leader>rN", function() Snacks.rename.rename_file() end, desc = "LSP change path (rename file) (snacks)" },
+      { "grN", function() Snacks.rename.rename_file() end, desc = "LSP rename file (snacks)" },
       { "<leader>ld", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition (snacks picker)" },
 
       -- git
