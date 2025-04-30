@@ -56,6 +56,12 @@ if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     export GTK_USE_PORTAL=0 # https://github.com/swaywm/sway/issues/5732
 fi
 
+if supports fcitx5; then
+    export XMODIFIERS=@im=fcitx
+    export GTK_IM_MODULE=fcitx
+    export QT_IM_MODULE=fcitx
+fi
+
 # default applications {{{1
 EDITOR="nano"
 if supports nvim; then
