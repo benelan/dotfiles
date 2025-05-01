@@ -188,11 +188,11 @@
     ; edit the files changed locally (staged and unstaged)
     e = !$EDITOR $(git diff --name-only HEAD | sort -u)
 
-    ; edit modified (unstaged) files
-    eu = !$EDITOR $(git diff --name-only | sort -u)
+    ; edit modified files (working tree)
+    ew = !$EDITOR $(git diff --name-only | sort -u)
 
-    ; edit staged files
-    es = !$EDITOR $(git diff --name-only --staged | sort -u)
+    ; edit staged files (index)
+    ei = !$EDITOR $(git diff --name-only --staged | sort -u)
 
     ; edit unmerged files (usually due to a merge conflict)
     ex = !$EDITOR $(git ls-files --unmerged | cut -f2 | sort -u)
@@ -313,6 +313,12 @@
 
     ; FZF
     ;----------------------------------------------------------------------------
+
+    fe = !git ls-files | fzf --multi \
+            --preview='bat --color=always --plain --line-range :$FZF_PREVIEW_LINES {}' \
+            --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
+            --bind='enter:become($EDITOR {+})+abort' \
+
 
     ; interactively add unstaged files using fzf
     fa = !FZF_DEFAULT_COMMAND='git ls-files --modified' \
