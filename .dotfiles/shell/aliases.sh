@@ -24,9 +24,10 @@ alias f="vifm"
 alias e='${EDITOR:-vim}'
 alias se='sudo ${EDITOR:-vim}'
 
-# minimum usable vim options
-alias vmin="vim --noplugin -u DEFAULTS +'set rnu nu hid ar ai si scs ic et ts=4 sw=4 bs=2 | nnoremap Y y$'"
-alias v="vim --noplugin -u $HOME/.vim/standalone.vimrc"
+# start vim with the default settings, plus a few others:
+# loadplugins, relativenumber, number, hidden, autoread, autoindent,
+# smartindent, smartcase, ignorecase, expandtab, tabstop/shiftwidth/backspace=2
+alias v="vim -u DEFAULTS --cmd 'set lpl rnu nu hid ar ai si scs ic et ts=2 sw=2 bs=2 | nmap Y y$'"
 
 # list all files/dirs, short format, sort by time
 alias l="ls -Art --color --group-directories-first"

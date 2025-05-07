@@ -14,6 +14,7 @@
 !/.w3m/**
 
 # whitelist dotfiles that aren't in the directories above
+!/.vimrc
 !/.*{.conf,rc}
 !/.bash_{profile,logout}
 !/.git{ignore,modules}

@@ -9,20 +9,9 @@ local height = #ui > 0 and ui[1].height or 40
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
-  -- keymaps/autocmds/utils/etc from my vim config (too lazy to lua-ify everything)
-  {
-    dir = "~/.vim",
-    priority = 90,
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim")) == 1,
-    lazy = false,
-    vscode = true,
-  },
-
-  -----------------------------------------------------------------------------
   -- adds basic filesystem commands and some shebang utils
   {
-    dir = "~/.vim/pack/foo/start/vim-eunuch",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-eunuch")) == 1,
+    "tpope/vim-eunuch",
     event = "BufNewFile",
     -- stylua: ignore
     cmd = {

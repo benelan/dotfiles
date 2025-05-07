@@ -6,9 +6,8 @@ local res = require("jamin.resources")
 return {
   -- the GOAT git plugin
   {
-    dir = "~/.vim/pack/foo/opt/vim-fugitive",
-    dependencies = "vim-rhubarb",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/vim-fugitive")) == 1,
+    "tpope/vim-fugitive",
+    dependencies = "tpope/vim-rhubarb",
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
     keys = {
@@ -53,8 +52,7 @@ return {
   -----------------------------------------------------------------------------
   -- Open file/selection in GitHub repo
   {
-    dir = "~/.vim/pack/foo/opt/vim-rhubarb",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/vim-rhubarb")) == 1,
+    "tpope/vim-rhubarb",
     keys = {
       {
         "<leader>go",

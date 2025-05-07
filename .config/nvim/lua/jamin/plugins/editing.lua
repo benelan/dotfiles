@@ -4,19 +4,11 @@
 return {
   -----------------------------------------------------------------------------
   -- makes a lot more keymaps dot repeatable
-  {
-    dir = "~/.vim/pack/foo/start/vim-repeat",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-repeat")) == 1,
-    event = "CursorHold",
-  },
+  { "tpope/vim-repeat", event = "CursorHold" },
 
   -----------------------------------------------------------------------------
   -- adds keymaps for surrounding text objects with quotes, brackets, etc.
-  {
-    dir = "~/.vim/pack/foo/start/vim-surround",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/vim-surround")) == 1,
-    keys = { "cs", "ds", "ys" },
-  },
+  { "tpope/vim-surround", keys = { "cs", "ds", "ys" } },
 
   -----------------------------------------------------------------------------
   -- quickly jump around

@@ -401,7 +401,7 @@ if has("eval")
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" toggle quickfix list open/close                            {{{
 
-    command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif|normal <C-W><C-W>"
+    command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif|normal <C-W>p"
     nnoremap <C-q> <CMD>QfToggle<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -447,13 +447,13 @@ if has("eval")
         if buflisted(l:cur) | execute(a:action.a:bang." ".l:cur) | endif
     endfunction
 
-    command! -bang -complete=buffer -nargs=? Bdelete
+    command! -bang -complete=buffer -nargs=? BDelete
         \ :call s:BgoneHeathen("bdelete", <q-bang>)
 
-    command! -bang -complete=buffer -nargs=? Bwipeout
+    command! -bang -complete=buffer -nargs=? BWipeout
         \ :call s:BgoneHeathen("bwipeout", <q-bang>)
 
-    nnoremap <silent> <leader><BS> :Bdelete<CR>
+    nnoremap <silent> <leader><BS> :BDelete<CR>
     nnoremap <silent> <leader><Delete> :bdelete<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
@@ -519,14 +519,14 @@ if has("eval")
             \ | echohl None
     endfu
 
-    command! Gdiff call s:StageDiff()
+    command! GDiff call s:StageDiff()
 
-    nnoremap <silent> <leader>gd :Gdiff<CR>
+    nnoremap <silent> <leader>gd :GDiff<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Show Git blame window                                      {{{
 
-    command! Gblame :exe 'tabnew +'. line('.') .' %'
+    command! GBlameWindow :exe 'tabnew +'. line('.') .' %'
         \| :53vnew
         \| :setl buftype=nofile bufhidden=wipe nobuflisted
         \| :exe 'r !git blame -f --date=relative -- '. expand('#:p:~:.')
@@ -536,12 +536,12 @@ if has("eval")
         \| :windo setl nofoldenable nowrap
         \| :windo setl scrollbind
 
-    nnoremap <silent> <leader>gb :Gblame<CR>
+    nnoremap <silent> <leader>gb :GBlameWindow<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
     "" Show full commit for current line                          {{{
 
-    command! Gannotateline :call
+    command! GBlameLine :call
         \ printf("!git blame -l -L %s,+1 -- %s \| awk '{ print $1 }' \|
         \ xargs git show --summary --stat --pretty=fuller --patch",
         \     getpos('.')[1],
@@ -549,7 +549,7 @@ if has("eval")
         \ ->execute("")
     endif
 
-    nnoremap <silent> <leader>gl :Gannotateline<CR>
+    nnoremap <silent> <leader>gl :GBlameLine<CR>
 
     "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 
@@ -575,7 +575,7 @@ if has("autocmd")
         autocmd VimEnter * clearjumps
 
         " Clear actively used file marks to prevent jumping to other projects
-        autocmd VimEnter *  delmarks REQAZ
+        autocmd VimEnter *  delmarks REWQAZ
 
         " Set up keywordprg to open devdocs
         autocmd FileType {java,type}script{,react},vue,svelte,astro
@@ -772,11 +772,11 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitt
     let &t_Ts = "\e[9m"
     let &t_Te = "\e[29m"
 
-    " Enable true colors, see  :help xterm-true-color
-    let &t_8f = "\e[38:2:%lu:%lu:%lum"
-    let &t_8b = "\e[48:2:%lu:%lu:%lum"
-    let &t_RF = "\e]10;?\e\\"
-    let &t_RB = "\e]11;?\e\\"
+    " " Enable true colors, see  :help xterm-true-color
+    " let &t_8f = "\e[38:2:%lu:%lu:%lum"
+    " let &t_8b = "\e[48:2:%lu:%lu:%lum"
+    " let &t_RF = "\e]10;?\e\\"
+    " let &t_RB = "\e]11;?\e\\"
 
     " Enable bracketed paste mode, see  :help xterm-bracketed-paste
     let &t_BE = "\e[?2004h"

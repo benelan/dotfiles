@@ -66,12 +66,9 @@ let _macro_lowercase_word = 'guiw'
 let _macro_lowercase_WORD = 'guiW'
 
 " Toggle netrw file explorer
-nnoremap <silent> <leader>- <CMD>execute (
-    \ &filetype ==# "netrw"
-        \ ? "bdelete"
-        \ : ":Explore " . expand("%:h") .
-        \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
-\)<CR>
+nnoremap <leader>e :Lexplore<CR>
+nnoremap <silent> - <CMD>execute  ":Explore " . expand("%:h") . "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"<CR>
+nnoremap <silent> <leader>- <CMD>execute (&filetype ==# "netrw" ? "bdelete" : "norm -")<CR>
 
 nmap <silent> gQ mzgggqG`z<CMD>delmarks z<CR>zz
 
@@ -129,21 +126,9 @@ nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
 nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
 nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
-        \ &colorcolumn == ""
-            \ ? &textwidth > 0 ? "+1" : "81"
-            \ :""
-    \ )<CR><CMD>set colorcolumn?<CR>
-
-nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
-        \ &conceallevel == "0" ? "2" : "0"
-    \ )<CR><CMD>set conceallevel?<CR>
-
-nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
-        \ &clipboard == "unnamed"
-            \ ? "unnamed,unnamedplus"
-            \ : "unnamed"
-    \ )<CR><CMD>set clipboard?<CR>
+nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (&colorcolumn == "" ? (&textwidth > 0 ? "+1" : "81") : "")<CR><CMD>set colorcolumn?<CR>
+nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR><CMD>set conceallevel?<CR>
+nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (&clipboard == "unnamed" ? "unnamed,unnamedplus" : "unnamed")<CR><CMD>set clipboard?<CR>
 
 "" BUFFERS, TABS, AND WINDOWS {{{1
 " close buffer
@@ -203,7 +188,7 @@ inoremap <C-l> <C-O>:nohlsearch<CR><C-O>:diffupdate<CR><C-O>:syntax sync fromsta
 
 "" EX COMMANDS {{{1
 " start ex command for vimgrep on word under cursor
-nnoremap <leader>wf :<C-U>vimgrep /\<<C-r><C-w>\>\c/j **<S-Left><S-Left><Right>
+nnoremap <leader>wg :<C-U>vimgrep /\<<C-r><C-w>\>\c/j **<S-Left><S-Left><Right>
 
 " replace word under cursor in whole buffer
 nnoremap <leader>wr :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>

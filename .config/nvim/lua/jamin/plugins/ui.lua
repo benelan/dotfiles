@@ -5,8 +5,7 @@ local res = require("jamin.resources")
 ---@type LazySpec
 return {
   {
-    dir = "~/.vim/pack/foo/start/gruvbox-material",
-    enabled = vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/start/gruvbox-material/")) == 1,
+    "sainnhe/gruvbox-material",
     lazy = false,
     priority = 100,
 

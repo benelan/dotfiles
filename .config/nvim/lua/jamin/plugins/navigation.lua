@@ -6,9 +6,8 @@ local res = require("jamin.resources")
 return {
   -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
   {
-    dir = "~/.vim/pack/foo/opt/vifm.vim",
-    enabled = vim.fn.executable("vifm") == 1
-      and vim.fn.isdirectory(vim.fs.normalize("~/.vim/pack/foo/opt/vifm.vim")) == 1,
+    "vifm/vifm.vim",
+    enabled = false,
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "-", "<CMD>Vifm<CR>" } },
