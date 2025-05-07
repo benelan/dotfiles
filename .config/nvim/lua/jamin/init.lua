@@ -42,6 +42,9 @@ vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
 -- global functions
 _G.R = function(name) require("plenary.reload").reload_module(name) end
 
+-- diagnostic configuration
+vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
+
 -------------------------------------------------------------------------------
 ----> Modules
 -------------------------------------------------------------------------------
@@ -50,7 +53,6 @@ require("jamin.options")
 require("jamin.keymaps")
 require("jamin.autocommands")
 require("jamin.utils").setup()
-require("jamin.lsp").setup()
 
 -------------------------------------------------------------------------------
 ----> Plugins

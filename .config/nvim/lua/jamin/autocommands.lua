@@ -1,6 +1,13 @@
 local res = require("jamin.resources")
 
 -------------------------------------------------------------------------------
+-- setup lsp stuff
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("jamin_lsp_stuff", {}),
+  callback = require("jamin.lsp"),
+})
+
+-------------------------------------------------------------------------------
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),

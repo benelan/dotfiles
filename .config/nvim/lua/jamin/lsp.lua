@@ -99,7 +99,47 @@ return function(args)
   --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
   -- end
 
-  -- setup stuff specific to an LSP server
-  local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. client.name)
-  if has_user_opts and user_opts.custom_attach then user_opts.custom_attach(args) end
+  -- keymaps for typescript code actions
+  if client.name == "ts_ls" then
+    ---@diagnostic disable: assign-type-mismatch
+    bufmap(
+      "n",
+      "<localleader>i",
+      function()
+        vim.lsp.buf.code_action({
+          apply = true,
+          context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
+        })
+      end,
+      "Cleanup imports"
+    )
+
+    bufmap(
+      "n",
+      "<localleader>o",
+      function()
+        vim.lsp.buf.code_action({
+          apply = true,
+          context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+        })
+      end,
+      "Organize imports"
+    )
+
+    bufmap("n", "<localleader>u", function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
+      })
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = { only = { "source.removeUnusedImports.ts" }, diagnostics = {} },
+      })
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = {only = {"source.fixAll.ts"}, diagnostics = {}},
+      })
+    end, "Remove unused variables/imports")
+    ---@diagnostic enable: assign-type-mismatch
+  end
 end

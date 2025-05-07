@@ -5,6 +5,16 @@ local res = require("jamin.resources")
 
 ---@type LazySpec
 return {
+  {
+    "neovim/nvim-lspconfig",
+    keys = {
+      { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
+      { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
+      { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- Installer/manager for language servers, linters, formatters, and debuggers
   {
     "williamboman/mason.nvim",
@@ -36,58 +46,13 @@ return {
     "williamboman/mason-lspconfig.nvim",
     event = "BufReadPost",
     build = ":MasonUpdate",
-    dependencies = {
-      "williamboman/mason.nvim",
-      {
-        "neovim/nvim-lspconfig",
-        keys = {
-          { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
-          { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
-          { "<leader>l<Tab>", "<CMD>LspRestart<CR>", desc = "LSP restart" },
-        },
-      },
-    },
+    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
 
     ---@type MasonLspconfigSettings
     opts = {
       ensure_installed = res.lsp_servers,
-      handlers = {
-        -- the zk.nvim and typescript-tools.nvim plugins setup the servers themselves,
-        -- so make sure mason-lspconfig doesn't call the default handler
-        -- ts_ls = function() end,
-        zk = function() end,
-
-        function(server_name)
-          local has_cmp, cmp = pcall(require, "blink.cmp")
-          local has_user_opts, user_opts = pcall(require, "jamin.lsp.servers." .. server_name)
-
-          ---@type lsp.ClientCapabilities
-          local capabilities_overrides = {
-            telemetry = false,
-            textDocument = {
-              codeLens = { dynamicRegistration = false },
-              completion = {
-                completionItem = {
-                  snippetSupport = true,
-                  resolveSupport = {
-                    properties = { "documentation", "detail", "additionalTextEdits" },
-                  },
-                },
-              },
-            },
-            workspace = {
-              fileOperations = { didRename = true, willRename = true },
-            },
-          }
-
-          local server_opts = vim.tbl_deep_extend(
-            "force",
-            has_cmp and { capabilities = cmp.get_lsp_capabilities(capabilities_overrides) } or {},
-            has_user_opts and user_opts or {}
-          )
-
-          require("lspconfig")[server_name].setup(server_opts)
-        end,
+      automatic_enable = {
+        exclude = { "zk" },
       },
     },
   },

@@ -105,6 +105,30 @@ M.lsp_servers = {
 }
 
 M.mason_tools = {
+  -- "astro-language-server",
+  -- "bash-language-server",
+  -- "css-lsp",
+  -- -- "docker-compose-language-service",
+  -- "dockerfile-language-server",
+  -- -- "emmet-language-server",
+  -- "eslint-lsp",
+  -- "gopls",
+  -- "html-lsp",
+  -- "json-lsp",
+  -- "lua-language-server",
+  -- "marksman",
+  -- -- "mdx-analyzer",
+  -- -- "pyright",
+  -- -- "rust-analyzer",
+  -- -- "sqlls",
+  -- "svelte-language-server",
+  -- "tailwindcss-language-server",
+  -- "taplo",
+  -- "typescript-language-server",
+  -- "vim-language-server",
+  -- "vue-language-server",
+  -- "yaml-language-server",
+  -- "zk",
   "actionlint", -- github action linter
   "fixjson", -- json formatter
   "hadolint", -- dockerfile linter
