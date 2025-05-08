@@ -1,14 +1,13 @@
 " vim:filetype=vim:foldmethod=marker:
 source $VIMRUNTIME/defaults.vim
 
-" Settings                                                              {{{
-" --------------------------------------------------------------------- {|}
-
+" SETTINGS {{{1
 set autoread confirm hidden lazyredraw ttyfast clipboard=unnamed t_vb=
 set linebreak smarttab expandtab shiftround softtabstop=4 shiftwidth=4
 set ignorecase smartcase autoindent smartindent laststatus=2
 set number relativenumber splitbelow splitright foldmethod=indent foldlevel=99
-set complete-=i path-=/usr/include path+=** define= include=
+set path-=/usr/include path+=** define= include=
+set complete-=i completeopt=longest,menuone,preview 
 
 if has("persistent_undo")
     set undofile
@@ -46,7 +45,7 @@ if exists("+breakindent")
     set breakindent
 endif
 
-set wildmode=list:longest,full
+set wildmode=longest:full,full
 if exists("+wildignorecase")
     set wildignorecase
 endif
@@ -75,8 +74,7 @@ endif
 set listchars=tab:\|->
 if has("multi_byte_encoding")
     set listchars+=extends:»,precedes:«
-    set listchars+=multispace:·\ ,trail:·
-    set listchars+=nbsp:␣,eol:⤶
+    set listchars+=trail:·,nbsp:␣,eol:⤶
     let &showbreak= "…  "
     set fillchars+=diff:╱
 else
@@ -86,27 +84,25 @@ endif
 
 set statusline=[%n]%m%r%h%w%q%y\ %f\ %=\ %v:[%l/%L]
 
-" colorscheme desert
-hi! link TabLineFill Statusline
+"colorscheme desert
+hi! Visual cterm=NONE ctermfg=black ctermbg=grey
+hi! Search cterm=NONE ctermfg=black ctermbg=blue
 
-"" markdown settings                                          {{{
-
+" MARKDOWN {{{2
 let g:markdown_recommended_style = 0
 
 " Helps with syntax highlighting by specifying filetypes
 " for common abbreviations used in markdown fenced code blocks
 let g:markdown_fenced_languages = [
-    \ 'html', 'xml', 'toml', 'yaml', 'json', 'sql',
-    \ 'diff', 'vim', 'lua', 'python', 'go', 'rust',
-    \ 'css', 'scss', 'sass', 'sh', 'bash', 'awk',
-    \ 'yml=yaml', 'shell=sh', 'py=python',
+    \ 'html', 'xml', 'toml', 'yaml', 'json', 'jsonc', 'sql',
+    \ 'diff', 'vim', 'help', 'lua', 'python', 'go', 'rust',
+    \ 'css', 'scss', 'sass', 'sh', 'awk',
+    \ 'yml=yaml', 'shell=sh', 'bash=sh', 'py=python',
     \ 'ts=typescript', 'tsx=typescriptreact',
     \ 'js=javascript', 'jsx=javascriptreact'
     \ ]
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" netrw settings                                             {{{
-
+" NETRW {{{2
 let g:netrw_banner = 0
 let g:netrw_altfile = 1
 " let g:netrw_keepdir = 0
@@ -115,31 +111,44 @@ let g:netrw_usetab = 1
 let g:netrw_winsize = 25
 let g:netrw_preview = 1
 let g:netrw_special_syntax = 1
+let g:netrw_hide = 1
+
+" hide the "../" and "./" lines in netrw
+let g:netrw_list_hide = '^\.\+\/'
 
 if exists("*netrw_gitignore#Hide")
     let g:netrw_list_hide = netrw_gitignore#Hide()
 endif
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-"" misc settings                                              {{{
-
+" MISC {{{2
 let g:is_posix = 1
 let g:qf_disable_statusline = 1
 let g:ft_man_no_sect_fallback = 1
 let g:ft_man_folding_enable = 1
 
-"" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+" EMOJI DIGRAPHS {{{2
+dig ~~ 128591 " 🙏
+dig !! 128293 " 🔥
+dig @@ 128064 " 👀
+dig ## 128679 " 🚧
+dig $$ 127942 " 🏆
+dig %% 128175 " 💯
+dig ^^ 128640 " 🚀
+dig && 127867 " 🍻
+dig ** 127881 " 🎉
+dig (( 128533 " 😕
+dig )) 128516 " 😄
+dig -- 128078 " 👎
+dig __ 128078 " 👎
+dig ++ 128077 " 👍
+dig == 128077 " 👍
 
-" --------------------------------------------------------------------- }}}
-" Keymaps                                                               {{{
-" --------------------------------------------------------------------- {|}
-
+" KEYMAPS {{{1
 if has("keymap")
     let mapleader = " "
     let maplocalleader = "\\"
 
-    "" general keymaps                                            {{{
-
+    " GENERAL {{{2
     nnoremap Y y$
     vnoremap Y y
 
@@ -156,14 +165,10 @@ if has("keymap")
 
     nnoremap <BS> <C-^>
 
-    nnoremap n nzzzv
-    nnoremap N Nzzzv
-
-    nnoremap L Lzz
-    nnoremap H Hzz
-
-    nnoremap <C-u> <C-u>zz
-    nnoremap <C-d> <C-d>zz
+    " nnoremap n nzzzv
+    " nnoremap N Nzzzv
+    " nnoremap <C-u> <C-u>zz
+    " nnoremap <C-d> <C-d>zz
 
     " move line(s) up and down
     nnoremap <Down> <CMD>m .+1<CR>==
@@ -187,15 +192,13 @@ if has("keymap")
     vnoremap > >gv
 
     " Toggle netrw file explorer
-    nnoremap <silent> <leader>- <CMD>execute (
-        \ &filetype ==# "netrw"
-            \ ? "bdelete"
-            \ : ":Explore " . expand("%:h") .
-            \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
-    \)<CR>
+    nnoremap <leader>e :Lexplore<CR>
+    nnoremap <silent> - <CMD>execute  ":Explore " . expand("%:h") . "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"<CR>
+    nnoremap <silent> <leader>- <CMD>execute (&filetype ==# "netrw" ? "bdelete" : "norm -")<CR>
 
     " Change pwd to the buffer's directory
-    nnoremap c/ :<C-U>cd %:h <Bar> pwd<CR>
+    nnoremap cd :<C-U>cd %:h <Bar> pwd<CR>
+    nnoremap cp :lcd -<cr><bar>:pwd<cr>
 
     cnoremap <expr> <C-n> wildmenumode() ? "\<C-n>" : "\<Down>"
     cnoremap <expr> <C-p> wildmenumode() ? "\<C-p>" : "\<Up>"
@@ -206,9 +209,7 @@ if has("keymap")
     " exit insert mode in terminal buffers
     tnoremap <Esc><Esc> <C-\><C-n>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" text objects                                               {{{
-
+    " TEXT OBJECTS {{{2
     " Use last changed or yanked text as an object
     onoremap gv :<C-U>execute "normal! `[v`]"<CR>
 
@@ -231,10 +232,7 @@ if has("keymap")
         execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
     endfor
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" readline                                                   {{{
-
-    inoremap        <C-A> <C-O>^
+    " READLINE {{{
     inoremap   <C-X><C-A> <C-A>
     cnoremap        <C-A> <Home>
     cnoremap   <C-X><C-A> <C-A>
@@ -247,8 +245,7 @@ if has("keymap")
     inoremap <expr> <C-F> col('.')>strlen(getline('.'))?"\<Lt>C-F>":"\<Lt>Right>"
     cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" system clipboard                                           {{{
+    " SYSTEM CLIPBOARD {{{2
 
     for char in [ 'y', 'p', 'P' ]
         execute 'nnoremap <leader>' . char . ' "+' . char
@@ -265,8 +262,7 @@ if has("keymap")
     nnoremap s "_s
     nnoremap S "_S
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" clear search highlights and reset syntax                   {{{
+    " RESET UI {{{2
 
     nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>
                 \:diffupdate<CR>:syntax sync fromstart<CR><C-l>
@@ -277,17 +273,17 @@ if has("keymap")
     inoremap <C-l> <C-O>:nohlsearch<CR><C-O>
                 \:diffupdate<CR><C-O>:syntax sync fromstart<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" git difftool keymaps for staging hunks                     {{{
+    " GREP/REPLACE WORD {{{2
+    nnoremap <leader>wg :<C-U>vimgrep /\<<C-r><C-w>\>\c/j **<S-Left><S-Left><Right>
+    nnoremap <leader>wr :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 
+    " GIT DIFF {{{2
     nnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
     vnoremap <expr> <leader>gr &diff ? ':diffget<BAR>diffupdate<CR>' : '<leader>gr'
     nnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
     vnoremap <expr> <leader>gw &diff ? ':diffput<CR>' : '<leader>gw'
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" lists - next/prev                                          {{{
-
+    " NEXT/PREV LIST ITEM {{{2
     "" Argument list
     nnoremap [a :previous<CR>
     nnoremap ]a :next<CR>
@@ -322,9 +318,7 @@ if has("keymap")
     nnoremap ]<Space> <CMD>call append(line('.'), repeat([''], v:count1))<CR>
     nnoremap [<Space> <CMD>call append(line('.') - 1, repeat([''], v:count1))<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" spelling                                                   {{{
-
+    " SPELLING {{{2
     " fix the next/previous misspelled word
     nnoremap [S [s1z=
     nnoremap ]S ]s1z=
@@ -335,9 +329,7 @@ if has("keymap")
     " fix the previous misspelled word w/o moving cursor
     inoremap <M-z> <C-g>u<Esc>[s1z=`]a<C-g>u
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" buffers, tabs, and windows                                 {{{
-
+    "" BUFFERS, TABS, WINDOWS 
     "" pick buffer to jump to
     nnoremap <leader>bj :<C-U>buffers<CR>:buffer<Space>
 
@@ -359,54 +351,37 @@ if has("keymap")
     nnoremap <C-Up> :resize +5<CR>
     nnoremap <C-Right> :vertical resize +5<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle options                                             {{{
-
+    " TOGGLE OPTIONS {{{2
     nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
     nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
     nnoremap <leader>ss <CMD>set spell!<CR><CMD>set spell?<CR>
     nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
     nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
 
-    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (
-            \ &colorcolumn == ""
-                \ ? &textwidth > 0 ? &textwidth : "79"
-                \ :""
-        \ )<CR><CMD>set colorcolumn?<CR>
+    nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . 
+                \(&colorcolumn == "" ? &textwidth > 0 ? &textwidth : "79" :"")
+                \<CR><CMD>set colorcolumn?<CR>
 
-    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (
-            \ &conceallevel == "0" ? "2" : "0"
-        \ )<CR><CMD>set conceallevel?<CR>
+    nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" .
+                \(&conceallevel == "0" ? "2" : "0")<CR><CMD>set conceallevel?<CR>
 
-    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (
-            \ &clipboard == "unnamed"
-                \ ? "unnamed,unnamedplus"
-                \ : "unnamed"
-        \ )<CR><CMD>set clipboard?<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
+    nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . 
+                \(&clipboard == "unnamed" ? "unnamed,unnamedplus" : "unnamed")
+                \<CR><CMD>set clipboard?<CR>
 endif
 
-" --------------------------------------------------------------------- }}}
-" Functions and user commands                                           {{{
-" --------------------------------------------------------------------- {|}
-
+" FUNCTIONS AND USER COMMANDS {{{1
 if has("eval")
-    "" sudo save the file                                         {{{
-
+    " SUDO SAVE THE FILE {{{2
     if !has("nvim")
         command! W execute "w !sudo tee % > /dev/null" <bar> edit!
     endif
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" toggle quickfix list open/close                            {{{
-
+    " TOGGLE QUICKFIX LIST OPEN/CLOSE {{{2
     command! QfToggle execute "if empty(filter(getwininfo(), 'v:val.quickfix'))|copen|else|cclose|endif|normal <C-W>p"
     nnoremap <C-q> <CMD>QfToggle<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" save the value of the last visual selection                {{{
-
+    " NEXT/PREV INSTANCE OF VISUAL SELECTION {{{2
     function! VisualSelection(...) range
         let l:saved_reg = @"
         execute "normal! vgvy"
@@ -429,16 +404,14 @@ if has("eval")
 
     " neovim has this built in now
     if !has("nvim")
-        xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
         xnoremap <silent> * :<C-u>call VisualSelection()<CR>/<C-R>=@/<CR><CR>
+        xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
     endif
 
     " Use the function to search/replace visually selected text
-    xnoremap <silent> # :<C-u>call VisualSelection()<CR>?<C-R>=@/<CR><CR>
+    xnoremap <silent> = :<C-u>call VisualSelection("replace")<CR>/<C-R>=@/<CR><CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" delete buffer without closing window                       {{{
-
+    " DELETE BUFFER WITHOUT CLOSING WINDOW {{{2
     function s:BgoneHeathen(action, bang)
         let l:cur = bufnr("%")
         let l:alt = bufnr("#")
@@ -456,9 +429,7 @@ if has("eval")
     nnoremap <silent> <leader><BS> :BDelete<CR>
     nnoremap <silent> <leader><Delete> :bdelete<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" go to next/previous merge conflict hunks                   {{{
-
+    " NEXT/PREV MERGE CONFLICT HUNKS {{{2
     "" from https://github.com/tpope/vim-unimpaired
     function! s:findConflict(reverse) abort
         call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
@@ -467,9 +438,7 @@ if has("eval")
     nnoremap <silent> [C :<C-U>call <SID>findConflict(1)<CR>
     nnoremap <silent> ]C :<C-U>call <SID>findConflict(0)<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" diff and stage hunks                                       {{{
-
+    " GIT DIFF AND STAGE HUNKS {{{2
     "" from https://github.com/whiteinge/dotfiles/blob/master/.vim/autoload/stagediff.vim
     function! s:WriteToIndex(fname)
         try
@@ -523,9 +492,7 @@ if has("eval")
 
     nnoremap <silent> <leader>gd :GDiff<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" Show Git blame window                                      {{{
-
+    " SHOW GIT BLAME WINDOW {{{2
     command! GBlameWindow :exe 'tabnew +'. line('.') .' %'
         \| :53vnew
         \| :setl buftype=nofile bufhidden=wipe nobuflisted
@@ -533,14 +500,13 @@ if has("eval")
         \   ." | awk '{ print $1, substr($0, index($0, \"(\") + 1) }'"
         \| 1delete
         \| :exe line('.', win_getid(winnr('#')))
+        \| :windo 1
         \| :windo setl nofoldenable nowrap
         \| :windo setl scrollbind
 
     nnoremap <silent> <leader>gb :GBlameWindow<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" Show full commit for current line                          {{{
-
+    " SHOW COMMIT FOR CURRENT LINE {{{2
     command! GBlameLine :call
         \ printf("!git blame -l -L %s,+1 -- %s \| awk '{ print $1 }' \|
         \ xargs git show --summary --stat --pretty=fuller --patch",
@@ -551,12 +517,7 @@ if has("eval")
 
     nnoremap <silent> <leader>gl :GBlameLine<CR>
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-" --------------------------------------------------------------------- }}}
-" Autocommands                                                          {{{
-" --------------------------------------------------------------------- {|}
-
+" AUTOCOMMANDS {{{1
 if has("autocmd")
     augroup vimrc
         autocmd!
@@ -564,18 +525,29 @@ if has("autocmd")
         " equalize window sizes when vim is resized
         autocmd VimResized * wincmd =
 
+        " list continuation for text files
+        autocmd FileType markdown,text,gitcommit,mail
+                \ setlocal formatoptions+=r comments=b:*,b:-,b:+,n:>
+
         autocmd FileType * setlocal formatoptions-=o
 
         autocmd FileType qf,help,man,netrw
-                    \ set nobuflisted
-                    \ | nnoremap <silent> <buffer> q :q<CR>
-                    \ | nnoremap <silent> <buffer> gq :bd!<CR>
+                    \ set nobuflisted | nnoremap <silent> <buffer> q :bd!<CR>
+
+        autocmd QuickFixCmdPost [^l]* nested cwindow
+        autocmd QuickFixCmdPost l* nested lwindow
+
+        autocmd BufEnter term://* startinsert
+        autocmd BufLeave term://* stopinsert
 
         " Clear jumplist on startup
         autocmd VimEnter * clearjumps
 
         " Clear actively used file marks to prevent jumping to other projects
         autocmd VimEnter *  delmarks REWQAZ
+
+        " Setup keyword programs
+        autocmd FileType vim,help setlocal keywordprg=:help
 
         " Set up keywordprg to open devdocs
         autocmd FileType {java,type}script{,react},vue,svelte,astro
@@ -600,15 +572,10 @@ if has("autocmd")
     augroup END
 endif
 
-"-----------------------------------------------------------------------}}}
-" Text objects                                                          {{{
-"-----------------------------------------------------------------------{|}
-
+" TEXT OBJECTS {{{1
 if has("eval")
-    "" Indentation                                                 {{{
-    "" https://vimways.org/2018/transactions-pending/
-
-    "" inside (without surrounding empty lines)
+    " https://vimways.org/2018/transactions-pending/
+    " inside (without surrounding empty lines)
     function! s:inIndentationTextObject()
         let l:magic = &magic
         set magic
@@ -634,7 +601,7 @@ if has("eval")
         let &magic = l:magic
     endfunction
 
-    "" around (with surrounding empty lines)
+    " around (with surrounding empty lines)
     function! s:aroundIndentationTextObject()
         let l:magic = &magic
         set magic
@@ -654,22 +621,18 @@ if has("eval")
         let &magic = l:magic
     endfunction
 
-    "" keymaps
+    " keymaps
     xnoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
     onoremap <silent> ii :<C-u>call <SID>inIndentationTextObject()<CR>
 
     xnoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>
     onoremap <silent> ai :<C-u>call <SID>aroundIndentationTextObject()<CR>
-
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 endif
 
-" --------------------------------------------------------------------- }}}
-" Operatorfuncs                                                         {{{
-" --------------------------------------------------------------------- {|}
-
+" OPERATORFUNCS {{{1
+" TODO: make a surround operator via: c<motion>"<C-r><C-o>""<Esc>
 if has("eval")
-    "" Substitute operator                                        {{{
+    "" SUBSTITUTE OPERATOR {{{2
     "" Substitute text selected with a motion with the contents
     "" of a register in a repeatable way.
     "" https://dev.sanctum.geek.nz/cgit/vim-replace-operator
@@ -725,8 +688,7 @@ if has("eval")
     nnoremap <expr> gs <SID>operator_substitute(v:register)
     vnoremap <expr> gs <SID>operator_substitute(v:register)
 
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-    "" Colon operator                                             {{{
+    "" COLON OPERATOR {{{2
     "" Use an external program to execute a command
     " https://dev.sanctum.geek.nz/cgit/vim-colon-operator
     function! ColonOperator(type) abort
@@ -746,19 +708,12 @@ if has("eval")
     endfunction
 
     nnoremap <expr> g: <SID>operators_colon()
-    "" - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
-
-    " TODO: make a surround operator via: c<motion>"<C-r><C-o>""<Esc>
 endif
 
-"---------------------------------------------------------------------- }}}
-" Terminal options                                                      {{{
-" --------------------------------------------------------------------- {|}
-" :help terminal-output-codes
-
-" Fix modern terminal features
+" TERMINAL OPTIONS {{{1
+" Fix modern terminal features - :help terminal-output-codes
 " https://sw.kovidgoyal.net/kitty/faq/#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
-if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitty\)'
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\|wezterm\|foot\|kitty\)'
     " Styled and colored underline support
     let &t_AU = "\e[58:5:%dm"
     let &t_8u = "\e[58:2:%lu:%lu:%lum"
@@ -773,6 +728,7 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitt
     let &t_Te = "\e[29m"
 
     " " Enable true colors, see  :help xterm-true-color
+    " let &termguicolors = v:true
     " let &t_8f = "\e[38:2:%lu:%lu:%lum"
     " let &t_8b = "\e[48:2:%lu:%lu:%lum"
     " let &t_RF = "\e]10;?\e\\"
@@ -795,15 +751,15 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitt
         let &t_EI = "\e[2 q"
     endif
 
+    " Window title
+    let &t_ST = "\e[22;2t"
+    let &t_RT = "\e[23;2t"
+
     " Enable focus event tracking, see  :help xterm-focus-event
     let &t_fe = "\e[?1004h"
     let &t_fd = "\e[?1004l"
     execute "set <FocusGained>=\e[I"
     execute "set <FocusLost>=\e[O"
-
-    " Window title
-    let &t_ST = "\e[22;2t"
-    let &t_RT = "\e[23;2t"
 
     " Enable modified arrow keys, see  :help arrow_modifiers
     execute "silent! set <xUp>=\e[@;*A"
@@ -817,6 +773,8 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|xterm\|wezterm\|foot\|kitt
     " kitty that do not support background color erase.
     let &t_ut=""
 
+    hi! SpellBad cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkred
+    hi! SpellCap cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkyellow
+    hi! SpellRare cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkcyan
+    hi! SpellLocal cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkmagenta
 endif
-
-" --------------------------------------------------------------------- }}}
