@@ -248,6 +248,7 @@ return {
         end,
         desc = "Next hunk (gitsigns)",
       },
+      { "q", "<CMD>bd!<CR>", ft = "gitsigns-blame" }
     },
 
     ---@type Gitsigns.Config

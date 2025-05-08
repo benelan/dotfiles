@@ -5,12 +5,6 @@ let loaded_jamin_autocmds = 1
 "" miscellaneous autocmds {{{1
 augroup jamin_misc
     autocmd!
-    " equalize window sizes when vim is resized
-    autocmd VimResized * wincmd =
-
-    " autocmd BufWritePost * if exists("*FugitiveDidChange") |
-    "             \ call FugitiveDidChange() | endif
-
     " Clear jumplist on startup
     autocmd VimEnter * clearjumps
 
@@ -26,16 +20,14 @@ augroup jamin_misc
     autocmd FileType * setlocal formatoptions-=o
 
     autocmd FileType qf,help,man,netrw,git
-                \ set nobuflisted
-                \ | nnoremap <silent> <buffer> q :q<CR>
-                \ | nnoremap <silent> <buffer> gq :bd!<CR>
+                \ set nobuflisted | nnoremap <silent> <buffer> q :bd!<CR>
 
     autocmd QuickFixCmdPost [^l]* nested cwindow
     autocmd QuickFixCmdPost l* nested lwindow
 
     autocmd BufEnter term://* startinsert
     autocmd BufLeave term://* stopinsert
-    augroup END
+augroup END
 
 "" set global marks by filetype when leaving buffers {{{1
 augroup jamin_global_marks
@@ -114,8 +106,8 @@ augroup jamin_global_marks
                 \ normal! mN
 augroup END
 
-"" set makeprg or use a builtin compiler when possible {{{1
-augroup jamin_compilers_formatters
+"" setup compilers, formatters, etc. per filetype {{{1
+augroup jamin_setup_filetypes
     autocmd!
 
     " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler
@@ -125,25 +117,6 @@ augroup jamin_compilers_formatters
     autocmd FileType yaml compiler yamllint
     autocmd FileType css,scss compiler stylelint
     autocmd FileType javascript{,react},vue,svelte,astro compiler eslint
-
-    autocmd BufNew *.{test,spec,e2e}.[jt]s{,x} compiler jest
-    autocmd BufNew {support,scripts}/*.ts compiler ts-node
-
-    " https://github.com/fatih/vim-go/blob/master/compiler/go.vim
-    autocmd FileType go
-            \ if filereadable("makefile") || filereadable("Makefile")
-            \ | setlocal makeprg=make
-            \ | else
-            \ | setlocal makeprg=go\ build
-            \ | endif
-            \ | setlocal errorformat=%-G#\ %.%#
-            \ | setlocal errorformat+=%-G%.%#panic:\ %m
-            \ | setlocal errorformat+=%Ecan\'t\ load\ package:\ %m
-            \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:%c:\ %m
-            \ | setlocal errorformat+=%A%\\%%(%[%^:]%\\+:\ %\\)%\\?%f:%l:\ %m
-            \ | setlocal errorformat+=%C%*\\s%m
-            \ | setlocal errorformat+=%-G%.%#
-
 
     " Setup keyword programs
     autocmd FileType vim,help setlocal keywordprg=:help
@@ -164,4 +137,84 @@ augroup jamin_compilers_formatters
         autocmd FileType lua
             \ setlocal formatprg=stylua\ --color=Never\ --stdin-filepath=%\ -\ 2>/dev/null
     endif
+
+    " Setup variables for plugins and utilities
+    autocmd FileType lua let b:surround_{char2nr('c')} = "--[[\r]]"
+
+    autocmd FileType markdown
+                \| let b:surround_{char2nr('8')} = "**\r**"
+                \| let b:surround_{char2nr('s')} = "~~\r~~"
+                \| let b:surround_{char2nr('c')} = "<!-- \r -->"
+                \| let b:_ex_convert_links_wiki2md = '%s/\v\[\[(.{-})\|(.{-})\]\]/[\2\](\1)/g'
+                \| let b:_ex_convert_links_md2wiki = '%s/\v\[(.{-})\]\((https)@!(.{-})\)/[[\3|\1]]/g'
+
+    autocmd FileType {type,java}script{,react},vue,svelte,astro
+                \  let b:surround_{char2nr('c')} = "/* \r */"
+                \| let b:_ex_convert_imports_esm2cjs = '%s/import \(.*\) from \([^;]\+\)/const \1 = require(\2)/g'
+                \| let b:_ex_convert_imports_cjs2esm = '%s/const \([^=]\+\)= require(\([^)]\+\))/import \1from \2/g'
+augroup END
+
+" Vim global plugin for selecting the file you actually want to open
+" https://github.com/EinfachToll/DidYouMean
+" Maintainer: Daniel Schemala <istjanichtzufassen@gmail.com>
+" License: MIT
+augroup did_you_mean
+    function! s:filter_out_swapfile(matched_files)
+        silent! redir => swapfile
+            silent swapname
+        redir END
+        let swapfile = fnamemodify(swapfile[1:], ':p')
+
+        return filter(a:matched_files, 'fnamemodify(v:val, ":p") != swapfile')
+    endfunction
+
+    function! s:didyoumean()
+        if filereadable(expand("%"))
+            " Another BufNewFile event might have handled this already.
+            return
+        endif
+
+        try
+            " As of Vim 7.4, glob() has an optional parameter to split, but not
+            " everybody is using 7.4 yet
+            let matching_files = split(glob(expand("%")."*", 0), '\n')
+
+            if !len(matching_files)
+                let matching_files = split(glob(expand("%")."*", 1), '\n')
+            endif
+
+            let matching_files = s:filter_out_swapfile(matching_files)
+
+            if empty(matching_files)
+                return
+            endif
+        catch
+            return
+        endtry
+
+        let shown_items = ['Did you mean:']
+
+        for i in range(1, len(matching_files))
+            call add(shown_items, i.'. '.matching_files[i-1])
+        endfor
+
+        unsilent let selected_number = inputlist(shown_items)
+
+        if selected_number >= 1 && selected_number <= len(matching_files)
+            let empty_buffer_nr = bufnr("%")
+
+            execute ":edit " . fnameescape(matching_files[selected_number-1])
+            execute ":silent bdelete " . empty_buffer_nr
+
+            " trigger some autocommands manually which are normally triggered when
+            " executing ':edit file', but apparently not here. Don't know why.
+            silent doautocmd BufReadPre
+            silent doautocmd BufRead
+            silent doautocmd BufReadPost
+            silent doautocmd TextChanged
+        endif
+    endfunction
+
+    autocmd!
+    autocmd BufNewFile * call s:didyoumean()
 augroup END

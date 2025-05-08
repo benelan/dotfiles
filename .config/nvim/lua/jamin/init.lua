@@ -39,9 +39,6 @@ vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
     or vim.env.WEZTERM_PANE ~= nil
   )
 
--- global functions
-_G.R = function(name) require("plenary.reload").reload_module(name) end
-
 -- diagnostic configuration
 vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
 
@@ -53,7 +50,12 @@ require("jamin.options")
 require("jamin.keymaps")
 require("jamin.autocommands")
 require("jamin.lsp")
-require("jamin.utils").setup()
+
+require("jamin.utils.rooter").setup()
+require("jamin.utils.togglers").setup()
+require("jamin.utils.statusline").setup()
+require("jamin.utils.qf_follow").setup()
+require("jamin.utils.gh").setup()
 
 -------------------------------------------------------------------------------
 ----> Plugins

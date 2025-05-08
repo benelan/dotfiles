@@ -42,33 +42,6 @@ if exists('$TMUX')
 endif
 
 " Functions and user commands {{{1
-"" utility functions {{{2
-function! s:warn(msg)
-  echohl WarningMsg | echom a:msg | echohl None
-endfunction
-
-"" open GitHub PR in browser for <arg> or current {{{2
-" See $ gh pr view --help
-function! s:GitHubPR(bang, args) abort
-    if !executable("gh")
-        return s:warn("gh cli required: https://cli.github.com")
-    endif
-
-    if a:bang && has('clipboard')
-        let s:url = substitute(
-            \   system("gh pr view --json url --jq '.url' -- " . a:args),
-            \   '\n\+$', '', ''
-            \ )
-        echom s:url
-
-        let @+ = s:url
-    else
-        execute system("gh pr view --web --" . a:args)
-    endif
-endfunction
-
-command! -bang -nargs=? PR call s:GitHubPR(<bang>0, <q-args>)
-
 "" wipe all registers {{{2
 command! WipeRegisters for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 

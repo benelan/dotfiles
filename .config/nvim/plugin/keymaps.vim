@@ -20,16 +20,12 @@ dig ++ 128077 " 👍
 dig == 128077 " 👍
 
 "" GENERAL {{{1
-nnoremap <C-s> <CMD>w<CR>
-inoremap <C-s> <CMD>w<CR>
-
 nnoremap <Backspace> <C-^>
 
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
-nnoremap <C-u> <C-u>zz
-nnoremap <C-d> <C-d>zz
+" nnoremap n nzzzv
+" nnoremap N Nzzzv
+" nnoremap <C-u> <C-u>zz
+" nnoremap <C-d> <C-d>zz
 
 tnoremap <Esc><Esc> <C-\><C-n>
 
@@ -117,7 +113,6 @@ for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', 
     execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
 endfor
 
-
 "" TOGGLE OPTIONS {{{1
 nnoremap <leader>sl <CMD>set list!<CR><CMD>set list?<CR>
 nnoremap <leader>sn <CMD>set relativenumber!<CR><CMD>set relativenumber?<CR>
@@ -126,9 +121,17 @@ nnoremap <leader>sw <CMD>set wrap!<CR><CMD>set wrap?<CR>
 nnoremap <leader>sx <CMD>set cursorline!<CR><CMD>set cursorline?<CR>
 nnoremap <leader>sy <CMD>set cursorcolumn!<CR><CMD>set cursorcolumn?<CR>
 
-nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . (&colorcolumn == "" ? (&textwidth > 0 ? "+1" : "81") : "")<CR><CMD>set colorcolumn?<CR>
-nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . (&conceallevel == "0" ? "2" : "0")<CR><CMD>set conceallevel?<CR>
-nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . (&clipboard == "unnamed" ? "unnamed,unnamedplus" : "unnamed")<CR><CMD>set clipboard?<CR>
+nnoremap <silent> <leader>sc <CMD>execute "set conceallevel=" . 
+            \(&conceallevel == "0" ? "2" : "0")
+            \<CR><CMD>set conceallevel?<CR>
+
+nnoremap <silent> <leader>s\| <CMD>execute "set colorcolumn=" . 
+            \(&colorcolumn == "" ? (&textwidth > 0 ? "+1" : "81") : "")
+            \<CR><CMD>set colorcolumn?<CR>
+
+nnoremap <silent> <leader>sY <CMD>execute "set clipboard=" . 
+            \(&clipboard == "unnamed" ? "unnamed,unnamedplus" : "unnamed")
+            \<CR><CMD>set clipboard?<CR>
 
 "" BUFFERS, TABS, AND WINDOWS {{{1
 " close buffer

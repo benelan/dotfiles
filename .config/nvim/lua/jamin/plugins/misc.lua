@@ -143,11 +143,6 @@ return {
       -- quickfile = { enabled = true }, -- started causing inconsistent visual artifacts
       words = { enabled = true },
       scope = { enabled = true },
-      statuscolumn = { enabled = true },
-
-      scratch = {
-        root = vim.fs.normalize("$NOTES/scratch"),
-      },
 
       zen = {
         ---@type snacks.win.Config

@@ -17,7 +17,8 @@ vim.opt.path = res.path.include
 vim.opt.wildignore = res.path.ignore
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
-vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
+vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert", "popup", "fuzzy" }
+vim.opt.inccommand = "split"
 
 -- https://github.com/wez/wezterm/issues/4607
 if vim.env.WEZTERM_PANE ~= nil then vim.opt.termsync = false end
@@ -34,7 +35,18 @@ vim.opt.colorcolumn = "81"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 
-vim.opt.diffopt:append("algorithm:histogram,foldcolumn:1,linematch:60,context:8,indent-heuristic")
+vim.opt.diffopt = {
+  "internal",
+  "filler",
+  "closeoff",
+  "algorithm:histogram",
+  "foldcolumn:1",
+  "linematch:60",
+  "context:8",
+  "indent-heuristic",
+  "vertical",
+}
+
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 

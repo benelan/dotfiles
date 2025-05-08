@@ -41,10 +41,12 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = res.filetypes.writing,
   group = vim.api.nvim_create_augroup("jamin_writing_files", {}),
   callback = function()
-    vim.wo.spell = true
-    vim.wo.cursorline = false
-    vim.wo.conceallevel = 2
-    -- vim.wo.wrap = true
+    vim.opt_local.spell = true
+    vim.opt_local.cursorline = false
+    vim.opt_local.conceallevel = 2
+    -- vim.opt_local.wrap = true
+    vim.opt_local.formatoptions:append("r")
+    vim.opt_local.comments = "b:*,b:-,b:+,n:>"
 
     -- up/down home/end movement that handles wrapped lines better
     local opts = { expr = true, silent = true, buffer = true }
