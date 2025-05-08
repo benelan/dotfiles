@@ -35,7 +35,7 @@ _has() { command -v "$1" >/dev/null 2>&1; }
 
 _dot() { /usr/bin/git --git-dir="$HOME"/.git/ --work-tree="$HOME" "$@"; }
 
-_update_modules() { (cd && _dot submodule update --recursive --rebase --remote "$@"); }
+_update_modules() { (cd && _dot submodule update --recursive --rebase --remote); }
 
 _gh_latest_version() {
     basename "$(
@@ -379,17 +379,17 @@ install_packages_npm() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install vim plugins                                         {{{
 
-INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
-install_packages_vim() {
-    _update_modules .vim
-
-    # build the vim help tags from the updated plugin submodules
-    vim +"$(
-        find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
-            -exec basename --multiple {} \; |
-            perl -pe 's/^/packadd /' | tr '\n' '|'
-    ) helptags ALL | cquit" >/dev/null 2>&1 || true
-}
+# INSTALL_PACKAGES_VIM_DOC="Update vim plugins from source and build helptags"
+# install_packages_vim() {
+#     _update_modules .vim
+#
+#     # build the vim help tags from the updated plugin submodules
+#     vim +"$(
+#         find ~/.vim/pack/foo/opt -maxdepth 1 -mindepth 1 -type d \
+#             -exec basename --multiple {} \; |
+#             perl -pe 's/^/packadd /' | tr '\n' '|'
+#     ) helptags ALL | cquit" >/dev/null 2>&1 || true
+# }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install neovim plugins                                      {{{
@@ -822,6 +822,7 @@ install_ubuntu_apt-network() {
         openssh-client
         openssl
         openvpn
+        rclone
         rsync
         socat
         tcpdump
@@ -855,7 +856,7 @@ install_ubuntu_apt-media() {
         handbrake-cli
         newsboat
         playerctl
-        qrencode
+        # qrencode
     )
 
     # install one at a time to prevent failure if a dep is missing from apt repo
@@ -1233,13 +1234,15 @@ install_ubuntu_signal() {
 ## https://wezfurlong.org/wezterm/install/linux.html
 INSTALL_UBUNTU_WEZTERM_DOC="Install WezTerm terminal emulator"
 install_ubuntu_wezterm() {
-    deb="wezterm-nightly.Ubuntu22.04.deb"
+    version="$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')"
+    deb="wezterm-nightly.Ubuntu${version:-22.04}.deb"
+
     curl -Lo "$CACHE_DIR/$deb" \
         "https://github.com/wez/wezterm/releases/download/nightly/$deb"
 
     sudo apt-get install -qq "${CACHE_DIR:?}/${deb}" || true
     rm -f "${CACHE_DIR:?}/${deb}"
-    unset deb
+    unset deb version
 
     # https://wezfurlong.org/wezterm/config/lua/config/term.html
     tempfile=$(mktemp) &&

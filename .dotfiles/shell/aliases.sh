@@ -109,7 +109,7 @@ if supports npm; then
     alias nib='rm -rf "$(npm prefix)/{node_modules,dist,build,package-lock.json}" && npm install && npm run build'
 
     alias ncu="npx npm-check-updates"
-    alias npxplz='npx $(fc -ln -1)'
+    alias nplz='npx $(fc -ln -1)'
 
     # Complete these steps before using the aliases for switching between NPM
     # accounts:
@@ -149,7 +149,6 @@ if supports task; then
     alias ta="task add"
 
     supports taskopen && alias to="taskopen"
-    supports tasksh && alias tsh="tasksh"
     supports taskwarrior-tui && alias tui="taskwarrior-tui"
 
     [ -d "$NOTES" ] && alias ts='(cd && git sync-changes "$NOTES" ".task/" "chore(task): sync")'

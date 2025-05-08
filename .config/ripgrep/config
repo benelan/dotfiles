@@ -20,9 +20,6 @@ dts:*.d.ts
 style:*.{css,scss,sass,less,stylus}
 
 --type-add
-spec:*.{spec,test}.{ts,tsx,js,jsx}
-
---type-add
 test:*.{spec,test,e2e}.{ts,tsx,js,jsx}
 
 --type-add

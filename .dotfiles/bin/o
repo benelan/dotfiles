@@ -6,19 +6,11 @@
 # Uses `os-detect` to determine the operating system
 # https://github.com/benelan/dotfiles/blob/master/.dotfiles/bin/os-detect
 
-quiet() {
-    if supports nohup; then
-        nohup "$@" >/dev/null 2>&1 </dev/null &
-    else
-        "$@"
-    fi
-}
-
 case "$(os-detect)" in
-    windows_wsl) quiet wslview "${*:-.}" ;;
-    windows_cygwin) quiet cygstart "${*:-.}" ;;
-    windows_m*) quiet start "${*:-.}" ;;
-    osx) quiet open "${*:-.}" ;;
-    linux*) quiet xdg-open "${*:-.}" ;;
+    windows_wsl) wslview "${*:-.}" ;;
+    windows_cygwin) cygstart "${*:-.}" ;;
+    windows_m*) start "${*:-.}" ;;
+    osx) open "${*:-.}" ;;
+    linux*) xdg-open "${*:-.}" ;;
     *) echo "Unknown operating system and open command, please log an issue" && exit 1 ;;
 esac

@@ -5,23 +5,6 @@
 # Utilities                                                             {{{
 # --------------------------------------------------------------------- {|}
 
-## search history                                             {{{
-
-hist() {
-    grep --color=always "$*" "$HISTFILE" |
-        less --no-init --raw-control-chars --quiet
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## search for text within the current directory               {{{
-
-s() {
-    grep --color=always "$*" --ignore-case --recursive \
-        --exclude-dir=".git" --exclude-dir="node_modules" . |
-        less --no-init --raw-control-chars --quiet
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## google from the command line                               {{{
 
 # https://leahneukirchen.org/dotfiles/bin/goog
@@ -41,11 +24,6 @@ goog() {
 ## make one or more directories and cd into the last one      {{{
 
 mcd() { mkdir -p -- "$@" && cd -- "$_" || return 1; }
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## shhhhhh                                                    {{{
-
-shh() { nohup "$@" >/dev/null 2>&1 </dev/null & }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 # use neovim as a manpager                                    {{{
@@ -135,37 +113,9 @@ _array-contains-element() {
 # Filesystem                                                            {{{
 # --------------------------------------------------------------------- {|}
 
-## fff wrapper that changes to directory on exit              {{{
-
-if supports fff; then
-    ff() {
-        fff "$@"
-        cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")" || return
-    }
-fi
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## format JSON and sort fields                                {{{
-
-# arg1: input file
-# arg2: output file, defaults to input file
-fmtjson() {
-    jq '.' -sSM "$1" |
-        jq 'reduce .[] as  $obj ({}; . * $obj)' -M >/tmp/fmt.json &&
-        mv /tmp/fmt.json "${2:-"$1"}"
-
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## pandoc functions for converting between text filetypes     {{{
 
 if supports pandoc; then
-    # Open a markdown file in the less pager
-    mdp() {
-        pandoc -s -f gfm -t man "${@:--}" | man -l -
-        # use groff on mac: . . . . . . . | groff -T utf8 -man | less
-    }
-
     # Convert markdown to HTML
     md2html() {
         mkdir -p "$DOTFILES/cache/pandoc"
@@ -198,16 +148,19 @@ fi
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## run a command when a target file is modified               {{{
 
-# $ onmodify note.md md2html note
+# $ onchange note.md md2html note
 if supports inotifywait; then
     onchange() {
-        local target notify_cmd="echo"
-
-        target=${1:-.}
+        local target=${1:-.} notify_cmd="echo"
         shift
-        printf "Watching %s for changes...\n" "$target"
 
-        supports notify-send && notify_cmd="notify-send"
+        if supports dunstify; then
+            notify_cmd="dunstify"
+        elif notify-send; then
+            notify_cmd="notify-send"
+        fi
+
+        printf "Watching %s for changes...\n" "$target"
 
         while inotifywait -qqre modify,close_write,moved_to,move_self \
             --exclude '.git|node_modules|dist' "$target"; do
@@ -218,35 +171,6 @@ if supports inotifywait; then
 fi
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## get gzipped file size                                      {{{
-
-gz() {
-    local orig gzip ratio saved
-
-    orig=$(wc -c <"$1")
-    gzip=$(gzip -c "$1" | wc -c)
-    ratio=$(echo "$gzip * 100/ $orig" | bc -l)
-    saved=$(echo "($orig - $gzip) * 100/ $orig" | bc -l)
-
-    printf "orig: %d bytes\ngzip: %d bytes\nsave: %2.0f%% (%2.0f%%)\n" \
-        "$orig" "$gzip" "$saved" "$ratio"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-## create a data URL from a file                              {{{
-
-dataurl() {
-    local mimetype
-
-    mimetype=$(file --mime-type "$1" | cut -d ' ' -f2)
-    if [ "$mimetype" = "text/*" ]; then
-        mimetype="${mimetype};charset=utf-8"
-    fi
-
-    echo "data:${mimetype};base64,$(openssl base64 -in "$1" | tr -d '\n')"
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  }}}
 ## recursively search parent directory for file               {{{
 
 # param 1: name of file or directory to find
@@ -369,6 +293,11 @@ cht() {
         echo "$*"
     )"
 }
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+## search duckduckgo bangs                                    {{{
+
+supports ddgr && bang() { ddgr --gui-browser --noprompt "\!$*"; }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 
@@ -580,10 +509,11 @@ if supports fzf; then
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
-    ## find an emoji                                          {{{
+    ## functions that need json parsed by jq                  {{{
 
-    # usage: $ find_emoji | cb
     if supports jq; then
+        # find an emoji, run an npm command
+        # usage: $ find_emoji | cb
         function femoji() {
             local emojis="$DOTFILES/cache/emoji.json"
 
@@ -595,7 +525,35 @@ if supports fzf; then
             jq <"$emojis" -r '.[] | [.emoji, .description, (.tags | @csv)] | @tsv' |
                 fzf --prompt 'Search emojis > ' -d '\t' --no-hscroll --accept-nth 1
         }
+
+        # select an npm script to run from package.json
+        fnr() {
+            local script
+            script="$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"
+            [ -n "$script" ] && npm run "$script"
+        }
     fi
+
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
+    ## fzf wrapper around cht.sh                              {{{
+
+    fcht() {
+        languages="astro bash css golang html javascript lua nodejs perl python react rust svelte tmux typescript vimscript vue zig"
+
+        commands="apt awk basename cargo cat chmod chown cp cp docker docker-compose find fzf git git-commit git-rebase git-status git-worktree grep head jq kill less ls lsof make man mv npm ps rename rg rm sed sort ssh stow tail tar tr xargs"
+
+        # shellcheck disable=2086
+        selected="$(printf '%s\n%s\n' $languages $commands | fzf)"
+        [ -z "$selected" ] && return
+
+        printf "Enter Query: "
+        read -r query
+        query="$(echo "$query" | tr ' ' '+')"
+        echo "$commands" | grep -qw "$selected" && separator="~" || separator="/"
+
+        tmux neww bash -c "curl -s cht.sh/$selected$separator$query | $PAGER"
+        unset languages commands selected query separator
+    }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 fi
@@ -604,23 +562,14 @@ fi
 # Work                                                                  {{{
 # --------------------------------------------------------------------- {|}
 
-# select an npm script to run from package.json using fzf
-if supports fzf && supports jq; then
-    fnr() {
-        local script
-        script="$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"
-        [ -n "$script" ] && npm run "$script"
-    }
-fi
-
 if [ "$WORK_MACHINE" = "1" ]; then
     # link some files to the current worktree                     {{{
     cc_link_files() {
-        pushd "$(npm prefix)" >/dev/null
+        pushd "$(npm prefix)" >/dev/null || return
         ln -f "../.marksman.toml" ".marksman.toml"
         ln -f "$CALCITE/calcite-components.projections.json" \
             "./packages/calcite-components/.projections.json"
-        popd >/dev/null
+        popd >/dev/null || return
     }
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
@@ -633,50 +582,6 @@ if [ "$WORK_MACHINE" = "1" ]; then
                 gh pr edit "$1" \
                     --remove-label "pr ready for visual snapshots" \
                     --add-label "pr ready for visual snapshots"
-        }
-
-        # watch a PR check and prompt to rerun if it fails
-        pr_check() {
-            set -e
-            local workflow branch run id conclusion choice
-
-            workflow="${1:-"e2e"}"
-            branch="${2:-"$(git symbolic-ref --short HEAD)"}"
-
-            run="$(
-                gh run list \
-                    --limit 1 \
-                    --branch "$branch" \
-                    --workflow "$workflow" \
-                    --json 'databaseId,conclusion' \
-                    --jq '.[].databaseId,.[].conclusion'
-            )"
-
-            id="$(echo "$run" | head -n1)"
-
-            # conclusion is an empty string if the workflow is still running
-            if [ "$(echo "$run" | wc -l)" = 1 ]; then
-                echo "Waiting for \"$workflow\" workflow run to complete..."
-                gh run watch "$id"
-                conclusion="$(
-                    gh run view "$id" --json 'conclusion' --jq '.conclusion'
-                )"
-            else
-                conclusion="$(echo "$run" | tail -n1)"
-            fi
-
-            echo "\"$workflow\" workflow run conclusion: ${conclusion}"
-
-            if [ "$conclusion" = "failure" ]; then
-                echo "Displaying logs for the failed jobs..."
-                gh run view "$id" --log-failed
-
-                read -rp " Rerun \"$workflow\" workflow? [y/N]: " choice
-                case "$choice" in
-                    y* | Y*) gh run rerun "$id" ;;
-                    *) return 1 ;;
-                esac
-            fi
         }
     fi
 

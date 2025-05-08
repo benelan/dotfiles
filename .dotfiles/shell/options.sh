@@ -164,8 +164,7 @@ if ((BASH_VERSINFO[0] >= 4)); then
     #     shopt -s direxpand
     # fi
 
-    # toggle sudo at the beginning of the current or the
-    # previous command by hitting the ESC key twice
+    # toggle sudo at the beginning of the current or the previous command
     sudo-command-line() {
         [ ${#READLINE_LINE} -eq 0 ] && READLINE_LINE=$(fc -l -n -1 | xargs)
         if [[ $READLINE_LINE == sudo\ * ]]; then
