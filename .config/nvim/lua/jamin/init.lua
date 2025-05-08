@@ -52,6 +52,7 @@ vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
 require("jamin.options")
 require("jamin.keymaps")
 require("jamin.autocommands")
+require("jamin.lsp")
 require("jamin.utils").setup()
 
 -------------------------------------------------------------------------------

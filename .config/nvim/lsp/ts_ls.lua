@@ -24,7 +24,6 @@ local language_settings = {
 }
 
 return {
-  custom_attach = custom_keys,
   single_file_support = true,
   init_options = { preferences = language_settings.inlayHints },
   settings = {

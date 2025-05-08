@@ -7,6 +7,7 @@ local res = require("jamin.resources")
 return {
   {
     "neovim/nvim-lspconfig",
+    event = "BufReadPost",
     keys = {
       { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
       { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
@@ -17,7 +18,7 @@ return {
   -----------------------------------------------------------------------------
   -- Installer/manager for language servers, linters, formatters, and debuggers
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     lazy = true,
     build = ":MasonUpdate",
     keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
@@ -38,23 +39,6 @@ return {
         end
       end)
     end,
-  },
-
-  -----------------------------------------------------------------------------
-  -- integrates mason and lspconfig
-  {
-    "williamboman/mason-lspconfig.nvim",
-    event = "BufReadPost",
-    build = ":MasonUpdate",
-    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
-
-    ---@type MasonLspconfigSettings
-    opts = {
-      ensure_installed = res.lsp_servers,
-      automatic_enable = {
-        exclude = { "zk" },
-      },
-    },
   },
 
   -----------------------------------------------------------------------------

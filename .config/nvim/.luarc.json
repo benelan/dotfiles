@@ -19,7 +19,6 @@
     "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
     "$XDG_DATA_HOME/nvim/lazy/CopilotChat.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
-    "$XDG_DATA_HOME/nvim/lazy/mason-lspconfig.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/mason.nvim/lua",
     "$XDG_DATA_HOME/nvim/lazy/neotest/lua",
     "$XDG_DATA_HOME/nvim/lazy/nvim-dap-ui/lua",
