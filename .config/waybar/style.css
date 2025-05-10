@@ -70,6 +70,7 @@ widget:hover {
 #mode,
 #clock,
 #custom-weather,
+#custom-github,
 #custom-music,
 #custom-cmus {
   padding: 0 10px;
@@ -130,7 +131,7 @@ widget:hover {
 }
 
 #tray {
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 #tray>.passive {

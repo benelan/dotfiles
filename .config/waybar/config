@@ -7,7 +7,7 @@
 
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "custom/music"],
-    "modules-center": ["clock", "custom/weather"],
+    "modules-center": ["clock", "custom/weather", "custom/github"],
     "modules-right": [
         "temperature",
         "cpu",
@@ -90,7 +90,7 @@
         "format": "",
         "format-warning": "󰆼 {percentage}%",
         "format-critical": "󰆼 {percentage}%",
-        // "format-alt": "CPU: {percentage}%",
+        // "format-alt": "MEM: {percentage}%",
         "format-alt-click": "click-right",
         "tooltip-format": "{avail:0.1f} GiB available, used {used:0.1f}/{total:0.1f} GiB"
     },
@@ -243,5 +243,17 @@
         "return-type": "json",
         "exec": "weather waybar",
         "exec-if": "command -v weather >/dev/null 2>&1"
+    },
+
+    "custom/github": {
+        "format": "󰊤 {}",
+        "format-alt": "GH: {}",
+        "interval": 61,
+        "tooltip": false,
+        "format-alt-click": "click-right",
+        "on-click": "$BROWSER 'https://github.com/notifications?query=reason%3Aparticipating+is%3Aunread+'",
+        "on-click-middle": "gh notify-desktop -Cp",
+        "exec": "cat ~/.local/state/gh-notify-desktop/unread_count",
+        "exec-if": "[ -r ~/.local/state/gh-notify-desktop/unread_count ]"
     }
 }
