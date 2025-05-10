@@ -69,6 +69,8 @@ local spec = {
           path = {
             name = "[PATH]",
             score_offset = 15,
+            -- Path sources triggered by "/" interfere with CopilotChat.nvim commands
+            enabled = function() return vim.bo.filetype ~= "copilot-chat" end,
           },
           snippets = {
             name = "[SNIP]",

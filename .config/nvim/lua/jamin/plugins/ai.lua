@@ -54,7 +54,7 @@ return {
       })
 
       require("copilot")
-        .setup --[[@as copilot_config]]({
+        .setup --[[@as CopilotConfig]]({
           filetypes = ai_filetypes,
           panel = {
             layout = { position = "right", ratio = 0.3 },
@@ -124,25 +124,113 @@ return {
   -- Copilot chat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    -- cond = M.should_use_copilot(),
-    branch = "main",
-    ---@type CopilotChat.config
-    opts = {
-      window = { border = res.icons.border },
-      mappings = {
-        submit_prompt = { normal = "<C-s>" },
-        reset = { normal = "<localleader>x", insert = "<M-x>" },
-        toggle_sticky = { normal = "<localleader>s" },
-        quickfix_answers = { normal = "<localleader>qa" },
-        quickfix_diffs = { normal = "<localleader>qd" },
-        jump_to_diff = { normal = "<localleader><Tab>" },
-        yank_diff = { normal = "<localleader>y" },
-        show_diff = { normal = "<localleader>d" },
-        show_info = { normal = "<localleader>i" },
-        show_context = { normal = "<localleader>c" },
-        show_help = { normal = "g?" },
-      },
-    },
+    opts = function()
+      local user = vim.env.USER or "User"
+
+      ---@type CopilotChat.config
+      return {
+        model = os.getenv("OPENAI_API_KEY") and not M.should_use_copilot() and "gpt-4.1:openai"
+          or nil,
+        question_header = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
+        window = { border = res.icons.border },
+        mappings = {
+          submit_prompt = { normal = "<C-s>" },
+          reset = { normal = "<localleader>x", insert = "<M-x>" },
+          toggle_sticky = { normal = "<localleader>s" },
+          clear_stickies = { normal = "<localleader>S" },
+          quickfix_answers = { normal = "<localleader>qa" },
+          quickfix_diffs = { normal = "<localleader>qd" },
+          jump_to_diff = { normal = "<Tab>" },
+          yank_diff = { normal = "<localleader>y" },
+          show_diff = { normal = "<localleader>d" },
+          show_info = { normal = "<localleader>i" },
+          show_context = { normal = "<localleader>c" },
+          show_help = { normal = "g?" },
+        },
+        providers = {
+          openai = not os.getenv("OPENAI_API_KEY") and nil
+            or {
+              prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
+              prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
+
+              get_url = function() return "https://api.openai.com/v1/chat/completions" end,
+
+              get_headers = function()
+                return {
+                  Authorization = "Bearer " .. os.getenv("OPENAI_API_KEY"),
+                  ["Content-Type"] = "application/json",
+                }
+              end,
+
+              get_models = function(headers)
+                local response, err =
+                  require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
+                    headers = headers,
+                    json_response = true,
+                  })
+                if err then error(err) end
+                return vim
+                  .iter(response.body.data)
+                  :filter(function(model)
+                    --stylua: ignore
+                    local exclude_patterns = { "audio", "babbage", "dall%-e", "davinci", "embedding", "image", "moderation", "realtime", "transcribe", "tts", "whisper" }
+                    for _, pattern in ipairs(exclude_patterns) do
+                      if model.id:match(pattern) then return false end
+                    end
+                    return true
+                  end)
+                  :map(function(model) return { id = model.id, name = model.id } end)
+                  :totable()
+              end,
+
+              embed = function(inputs, headers)
+                local response, err =
+                  require("CopilotChat.utils").curl_post("https://api.openai.com/v1/embeddings", {
+                    headers = headers,
+                    json_request = true,
+                    json_response = true,
+                    body = {
+                      model = "text-embedding-3-small",
+                      input = inputs,
+                    },
+                  })
+                if err then error(err) end
+                return response.body.data
+              end,
+            },
+        },
+
+        ---@diagnostic disable: missing-return, missing-return-value
+        callback = function(response)
+          local chat = require("CopilotChat")
+
+          if vim.g.copilot_chat_title then
+            chat.save(vim.g.copilot_chat_title)
+            return
+          end
+
+          local prompt = [[
+          Generate a very short and concise title (max 5 words) for this chat, based on the following answer to my query:
+
+          ```
+          %s
+          ```
+
+          Your response should be filepath-friendly and shouldn't contain any other text, just the title. 
+          ]]
+
+          -- use AI to generate prompt title based on first AI response to user question
+          chat.ask(vim.trim(prompt:format(response)), {
+            headless = true, -- disable updating chat buffer and history with this question
+            callback = function(gen_response)
+              vim.g.copilot_chat_title = vim.trim(gen_response)
+              print("Chat title set to: " .. vim.g.copilot_chat_title)
+              chat.save(vim.g.copilot_chat_title)
+            end,
+          })
+        end,
+      }
+    end,
 
     cmd = {
       "CopilotChat",
@@ -166,7 +254,6 @@ return {
     keys = {
       { "<leader>c<Tab>", ":CopilotChatToggle<CR>", desc = "Toggle (copilot chat)" },
       { "<leader>cc", ":CopilotChatToggle<CR>", desc = "Toggle (copilot chat)" },
-      { "<leader>cx", ":CopilotChatReset<CR>", desc = "Reset (copilot chat)" },
       { "<leader>cd", ":CopilotChatDocs<CR>", desc = "Generate docs (copilot chat)", mode = { "n", "v" } },
       { "<leader>ce", ":CopilotChatExplain<CR>", desc = "Explain code (copilot chat)", mode = { "n", "v" } },
       { "<leader>cf", ":CopilotChatFix<CR>", desc = "Fix code (copilot chat)", mode = { "v", "n" } },
@@ -178,6 +265,14 @@ return {
       { "<leader>cM", ":CopilotChatModels<CR>", desc = "Select model (copilot chat)" },
       { "<leader>cs", ":CopilotChatSave ", desc = "Save chat (copilot chat)" },
       { "<leader>cl", ":CopilotChatLoad ", desc = "Load saved chat (copilot chat)" },
+      {
+        "<leader>cx",
+        function()
+          vim.g.copilot_chat_title = nil
+          require("CopilotChat").reset()
+        end,
+        desc = "Reset (copilot chat)",
+      },
     },
   },
 }

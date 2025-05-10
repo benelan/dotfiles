@@ -186,7 +186,7 @@ return {
       },
 
       picker = {
-        enabled = false,
+        ui_select = true,
         icons = {
           files = { enabled = vim.g.have_nerd_font },
           git = { enabled = vim.g.have_nerd_font },
