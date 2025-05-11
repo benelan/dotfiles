@@ -54,6 +54,98 @@ return {
   { "nvim-lua/plenary.nvim", lazy = true },
 
   -----------------------------------------------------------------------------
+  -- search/replace in multiple files
+  {
+    "MagicDuck/grug-far.nvim",
+    ---@type grug.far.Options
+    opts = {
+      headerMaxWidth = 80,
+      resultsSeparatorLineChar = res.icons.ui.horizontal_separator,
+      spinnerStates = vim.g.have_nerd_font and nil or false,
+      icons = { enabled = vim.g.have_nerd_font },
+      keymaps = {
+        close = { n = "q", i = "<C-c>" },
+      },
+    },
+    cmd = "GrugFar",
+    keys = {
+      {
+        "<leader>R",
+        function()
+          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+          require("grug-far").open({
+            transient = true,
+            prefills = {
+              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+            },
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Find and Replace (grug-far)",
+      },
+      {
+        "<BS>",
+        function()
+          require("grug-far").get_instance(0):open_location()
+          require("grug-far").get_instance(0):close()
+        end,
+        desc = "Open result and close grug-far",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>F",
+        function()
+          local state =
+            unpack(require("grug-far").get_instance(0):toggle_flags({ "--fixed-strings" }) or {})
+          vim.notify("grug-far: toggled --fixed-strings " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --fixed-strings",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>H",
+        function()
+          local state =
+            unpack(require("grug-far").get_instance(0):toggle_flags({ "--hidden" }) or {})
+          vim.notify("grug-far: toggled --hidden " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --hidden",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>S",
+        function()
+          local state =
+            unpack(require("grug-far").get_instance(0):toggle_flags({ "--case-sensitive" }) or {})
+          vim.notify("grug-far: toggled --case-sensitive " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --case-sensitive",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>W",
+        function()
+          local state =
+            unpack(require("grug-far").get_instance(0):toggle_flags({ "--word-regexp" }) or {})
+          vim.notify("grug-far: toggled --word-regexp " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --word-regexp",
+        ft = "grug-far",
+      },
+      {
+        "<localleader>M",
+        function()
+          local state =
+            unpack(require("grug-far").get_instance(0):toggle_flags({ "--multiline" }) or {})
+          vim.notify("grug-far: toggled --multiline " .. (state and "ON" or "OFF"))
+        end,
+        desc = "Toggle --multiline",
+        ft = "grug-far",
+      },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- schweet treats from folke
   {
     "folke/snacks.nvim",
