@@ -85,17 +85,16 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
   desc = "Special dotfiles setup",
   callback = function()
-    local cwd = vim.uv.cwd()
-    local home = vim.uv.os_homedir()
+    local cwd = vim.uv.cwd() or vim.fs.normalize(vim.env.PWD)
+    local home = vim.uv.os_homedir() or vim.fs.normalize(vim.env.HOME)
+    local dev = vim.fs.normalize(vim.env.DEV or "~/dev") -- contains all git repos
 
     local home_ok, inside_home = pcall(vim.startswith, cwd, home)
-    local dev_ok, inside_dev = pcall(vim.startswith, cwd, vim.fs.normalize(vim.env.DEV))
+    local dev_ok, inside_dev = pcall(vim.startswith, cwd, dev)
+    if not home_ok or not dev_ok then return end
 
-    if home_ok and inside_home and dev_ok and not inside_dev then
-      vim.env.GIT_WORK_TREE = home
-      vim.env.GIT_DIR = home .. "/.git"
-      return
-    end
+    vim.env.GIT_WORK_TREE = inside_home and not inside_dev and home or nil
+    vim.env.GIT_DIR = inside_home and not inside_dev and home .. "/.git" or nil
   end,
 })
 
