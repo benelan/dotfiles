@@ -106,7 +106,6 @@ return {
           hover.dictionary,
           hover.printenv,
 
-          code_actions.gitrebase,
           code_actions.shellcheck,
           code_actions.eslint.with({ prefer_local = "node_modules/.bin" }),
 
