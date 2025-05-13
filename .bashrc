@@ -37,6 +37,6 @@ unset file
 # ensure tmux is running in graphical environments (excluding wezterm)
 if [ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && {
     [ -z "$WEZTERM_PANE" ] || [ "$GIT_MUX_MULTIPLEXER" = "tmux" ]
-}; then
-    supports git-mux && git-mux project "$PWD"
+} && supports git-mux; then
+    git-mux project "$PWD"
 fi

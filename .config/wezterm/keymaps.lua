@@ -15,7 +15,7 @@ function M.setup(config)
     timeout_milliseconds = 1500,
   }
 
-  config.keys = {
+  config.keys = utils.merge_lists(tmux.default_keybinds(), {
     {
       key = "p",
       mods = "LEADER|CTRL",
@@ -213,10 +213,7 @@ function M.setup(config)
         replace_current = false,
       }),
     },
-
-    -- tmux defaults
-    table.unpack(tmux.default_keybinds()),
-  }
+  })
 
   config.key_tables = {
     pane_management = {
