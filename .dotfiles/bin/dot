@@ -1029,8 +1029,12 @@ install_ubuntu_flathub() {
         # tv.kodi.Kodi
     )
 
-    for dep in "${deps[@]}"; do flatpak install --or-update -y flathub "$dep" || true; done
+    for dep in "${deps[@]}"; do
+        flatpak install --or-update -y flathub "$dep" || true
+    done
     unset deps
+
+    flatpak update -y
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2377,7 +2381,8 @@ ubuntu_installs() {
         fi
     fi
 
-    sudo apt-get update -qq && sudo apt-get upgrade -qq && sudo apt-get autoremove -qq
+    sudo apt-get update -qq && sudo apt-get upgrade -qq &&
+        sudo apt-get autoremove -qq && sudo apt autoclean -qq && sudo apt autopurge -qq
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2478,8 +2483,7 @@ packages_installs() {
     install_packages_go
     install_packages_npm
     install_packages_pip
-    install_packages_vim
-    # install_packages_neovim
+    install_packages_neovim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -2493,7 +2497,6 @@ build_installs() {
     install_build_imagemagick || true
     install_build_tmux || true
     install_build_dunst || true
-    install_packages_vim
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

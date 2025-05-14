@@ -39,9 +39,6 @@ vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
     or vim.env.WEZTERM_PANE ~= nil
   )
 
--- diagnostic configuration
-vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
-
 -------------------------------------------------------------------------------
 ----> Modules
 -------------------------------------------------------------------------------

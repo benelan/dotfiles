@@ -105,4 +105,8 @@ function M.default_keybinds()
   }
 end
 
+function M.apply_to_config(config)
+  if wezterm.GLOBAL.multiplexer == "wezterm" then M.statusline(config) end
+end
+
 return M

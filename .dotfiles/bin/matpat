@@ -83,14 +83,14 @@ if [ -z "$MATPAT_COPY_CMD" ]; then
 fi
 
 if [ -z "$MATPAT_OPEN_CMD" ]; then
-    if has wslview; then
+    if [ -n "$BROWSER" ]; then
+        MATPAT_OPEN_CMD="$BROWSER" # Customizable
+    elif has wslview; then
         MATPAT_OPEN_CMD="wslview" # Windows (WSL)
     elif has xdg-open; then
         MATPAT_OPEN_CMD="xdg-open" # Linux
     elif has open; then
         MATPAT_OPEN_CMD="open" # OSX
-    else
-        MATPAT_OPEN_CMD="$BROWSER" # Fallback
     fi
     logger "INFO " "MATPAT_OPEN_CMD environment variable is not set, defaulting to \"$MATPAT_OPEN_CMD\""
 fi

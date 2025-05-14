@@ -1,13 +1,13 @@
 local wezterm = require("wezterm") --[[@as Wezterm]]
 local utils = require("utils")
 local tmux = require("tmux")
-local git_mux = require("git-mux")
+local git_mux = wezterm.plugin.require("https://github.com/benelan/git-mux")
 
 local act = wezterm.action
 local M = {}
 
 ---@param config Config
-function M.setup(config)
+function M.apply_to_config(config)
   config.disable_default_key_bindings = true
   config.leader = {
     key = " ",

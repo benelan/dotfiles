@@ -3,7 +3,7 @@ local utils = require("utils")
 local M = {}
 
 ---@param config Config
-function M.setup(config)
+function M.apply_to_config(config)
   if string.match(wezterm.target_triple, "windows") then
     config.default_domain = "WSL:Ubuntu-24.04"
   else

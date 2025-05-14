@@ -179,10 +179,10 @@ nnoremap [S <CMD>set spell<CR>[s1z=
 nnoremap ]S <CMD>set spell<CR>]s1z=
 
 " fix the misspelled word under the cursor
-nnoremap <M-z> <CMD>set spell<CR>1z=
+nnoremap <M-s> <CMD>set spell<CR>1z=
 
 " fix the previous misspelled word w/o moving cursor
-inoremap <M-z> <CMD>set spell<CR><C-g>u<Esc>[s1z=`]a<C-g>u
+inoremap <M-s> <CMD>set spell<CR><C-g>u<Esc>[s1z=`]a<C-g>u
 
 "" RESET UI {{{1
 nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>

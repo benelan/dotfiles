@@ -7,7 +7,7 @@ local res = require("jamin.resources")
 return {
   {
     "neovim/nvim-lspconfig",
-    event = "BufReadPost",
+    lazy = false,
     keys = {
       { "<leader>ll", "<CMD>LspInfo<CR>", desc = "LSP info" },
       { "<leader>lL", "<CMD>LspLog<CR>", desc = "LSP logs" },
@@ -19,7 +19,7 @@ return {
   -- Installer/manager for language servers, linters, formatters, and debuggers
   {
     "mason-org/mason.nvim",
-    lazy = true,
+    event = "VeryLazy",
     build = ":MasonUpdate",
     keys = { { "<leader>lm", "<CMD>Mason<CR>", desc = "Mason" } },
 
@@ -86,7 +86,6 @@ return {
     -- forked due to https://github.com/nvimtools/none-ls.nvim/issues/58
     "benelan/none-ls.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
 
     opts = function()
       local nls = require("null-ls")

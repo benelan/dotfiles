@@ -8,15 +8,15 @@ set $mod Mod4
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "01"
-set $ws2 "02"
-set $ws3 "03"
-set $ws4 "04"
-set $ws5 "05"
-set $ws6 "06"
-set $ws7 "07"
-set $ws8 "08"
-set $ws9 "09"
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
 set $ws10 "10"
 
 # Set primary gruvbox colorscheme colors
@@ -179,6 +179,7 @@ assign [app_id="^firefox$"] $ws1
 assign [app_id="^obsidian$"] $ws4
 assign [app_id="^(file-roller|calibre-gui|gedit|gnome-disks|gnome-calculator|gnome-calendar|org\.gnome\.Nautilus)$"] $ws5
 assign [app_id="^(mpv|vlc|shotwell|lollypop|ghb|com\.stremio\.stremio|org\.inkscape\.Inkscape)$"] $ws6
+assign [app_id="^(signal)$"] $ws7
 assign [app_id="^(thunderbird(-esr)?|Proton Mail)$"] $ws8
 assign [app_id="^(com\.github\.IsmaelMartinez\.teams_for_linux|teams-for-linux)$"] $ws10
 

@@ -4,7 +4,7 @@ local M = {}
 local res = require("jamin.resources")
 local augroup = vim.api.nvim_create_augroup("jamin_toggle_ai_completion", {})
 
--- true if environment variable `COPILOT = 1` and cwd is in any project
+-- true if environment variable `COPILOT == 1` and cwd is in any project
 -- true if environment variable `COPILOT != 0` and cwd is in a work project
 -- otherwise, return false
 function M.should_use_copilot(dir)
@@ -13,7 +13,7 @@ function M.should_use_copilot(dir)
     or (vim.env.COPILOT ~= "0" and string.match(project, vim.env.WORK) ~= nil)
 end
 
--- true if environment variable `CODEIUM = 1` and cwd is in a non-work project or ~/.config/nvim
+-- true if environment variable `CODEIUM == 1` and cwd is in a non-work project or ~/.config/nvim
 -- otherwise, return false
 function M.should_use_codeium(dir)
   local project = dir or vim.uv.cwd()
@@ -125,12 +125,12 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     opts = function()
-      local user = vim.env.USER or "User"
+      local user = vim.env.USER or "user"
+      local openai_api_key = os.getenv("OPENAI_API_KEY")
 
       ---@type CopilotChat.config
       return {
-        model = os.getenv("OPENAI_API_KEY") and not M.should_use_copilot() and "gpt-4.1:openai"
-          or nil,
+        model = openai_api_key and not M.should_use_copilot() and "gpt-4.1:openai" or nil,
         question_header = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
         window = { border = res.icons.border },
         mappings = {
@@ -148,7 +148,7 @@ return {
           show_help = { normal = "g?" },
         },
         providers = {
-          openai = not os.getenv("OPENAI_API_KEY") and nil
+          openai = not openai_api_key and nil
             or {
               prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
               prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
@@ -157,7 +157,7 @@ return {
 
               get_headers = function()
                 return {
-                  Authorization = "Bearer " .. os.getenv("OPENAI_API_KEY"),
+                  Authorization = "Bearer " .. openai_api_key,
                   ["Content-Type"] = "application/json",
                 }
               end,
@@ -210,7 +210,7 @@ return {
           end
 
           local prompt = [[
-          Generate a very short and concise title (max 5 words) for this chat, based on the following answer to my query:
+          Generate a very short and concise title (max 5 words) for this chat, based on this answer to my query:
 
           ```
           %s

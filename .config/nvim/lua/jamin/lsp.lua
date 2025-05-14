@@ -1,5 +1,8 @@
 local res = require("jamin.resources")
 
+-- diagnostic configuration
+vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
+
 vim.lsp.config("*", {
   capabilities = {
     textDocument = {
@@ -88,7 +91,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         "ga",
         function()
           vim.lsp.buf.code_action({
-            context = { only = { "source", "refactor", "quickfix" } },
+            context = { only = { "", "source", "refactor", "quickfix" } },
           })
         end,
         "Code action (source, refactor, and quickfix)"

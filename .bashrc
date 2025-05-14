@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: foldmethod=marker:
 # shellcheck disable=1090,1091
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
@@ -25,14 +26,17 @@ esac
 for file in "$DOTFILES"/shell/{options,prompt,completion}.sh; do
     [ -r "$file" ] && . "$file"
 done
-unset file
 
 # Add any environment-specific stuff to ~/.local.bashrc (it's gitignored).
 [ -r ~/.bashrc.local ] && . ~/.bashrc.local
 
 # Setup miscellaneous tools and integrations {{{1
-# setup broot shell integration so `cd` works
+# broot shell integration so `cd` works
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
+
+# fzf bash completion and key bindings
+[ -r ~/dev/lib/fzf/shell/completion.bash ] && . ~/dev/lib/fzf/shell/completion.bash
+[ -r ~/dev/lib/fzf/shell/key-bindings.bash ] && . ~/dev/lib/fzf/shell/key-bindings.bash
 
 # ensure tmux is running in graphical environments (excluding wezterm)
 if [ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && {

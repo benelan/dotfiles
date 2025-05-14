@@ -149,7 +149,7 @@ local spec = {
           "snippet_forward",
           function(cmp)
             local has_copilot, copilot = pcall(require, "copilot.suggestion")
-            if has_copilot and not copilot.is_visible() then
+            if has_copilot and copilot.is_visible() then
               return copilot.accept_line()
             elseif vim.g.codeium_enabled then
               -- fallback to "redrawing" the buffer like readline's mapping
@@ -282,15 +282,16 @@ if vim.fn.executable("gh") == 1 then
             module = "blink-cmp-git",
             score_offset = 100,
             enabled = function()
-              if vim.tbl_contains({ "gitcommit", "octo" }, vim.o.filetype) then return true end
+              if vim.tbl_contains({ "gitcommit", "octo" }, vim.bo.filetype) then return true end
 
               local bufpath = vim.api.nvim_buf_get_name(0)
-              local bufname = string.lower(vim.fs.basename(bufpath))
 
-              if string.match(bufpath, "/.github/") then return true end
+              if string.match(bufpath, "/%.github/") then return true end
 
-              if vim.o.filetype == "markdown" then
-                local enabled_files = { "contributing.md", "changelog.md", "readme.md" }
+              if vim.bo.filetype == "markdown" then
+                -- stylua: ignore
+                local enabled_files = { "changelog.md", "code_of_conduct.md", "contributing.md", "license.md", "readme.md", "security.md" }
+                local bufname = string.lower(vim.fs.basename(bufpath))
 
                 return vim.list_contains(enabled_files, bufname)
                   -- the gh cli creates markdown files in /tmp when editing issues/prs/comments
@@ -301,8 +302,7 @@ if vim.fn.executable("gh") == 1 then
               if vim.opt.previewwindow then
                 local alt_bufnr = vim.fn.bufnr("#")
                 if alt_bufnr > 0 then
-                  local alt_bufpath = vim.api.nvim_buf_get_name(alt_bufnr)
-                  return string.match(alt_bufpath, "^octo://.*")
+                  return string.match(vim.api.nvim_buf_get_name(alt_bufnr), "^octo://.*")
                 end
               end
 

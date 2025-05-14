@@ -61,29 +61,29 @@ end
 
 ---Show added/removed/changed line count via Gitsigns.
 local function gitsigns_state(fallback)
-  return vim.b.gitsigns_status_dict
-      and string.format(
-        "  %s  ",
-        format_numeric_state({
-          {
-            highlight = highlights.git_added,
-            icon = icons.git.added,
-            value = vim.b.gitsigns_status_dict.added,
-          },
-          {
-            highlight = highlights.git_removed,
-            icon = icons.git.removed,
-            value = vim.b.gitsigns_status_dict.removed,
-          },
-          {
-            highlight = highlights.git_changed,
-            icon = icons.git.changed,
-            value = vim.b.gitsigns_status_dict.changed,
-          },
-        })
-      )
-    or fallback and fallback()
-    or ""
+  if vim.b.gitsigns_status_dict then
+    local git_status = format_numeric_state({
+      {
+        highlight = highlights.git_added,
+        icon = icons.git.added,
+        value = vim.b.gitsigns_status_dict.added,
+      },
+      {
+        highlight = highlights.git_removed,
+        icon = icons.git.removed,
+        value = vim.b.gitsigns_status_dict.removed,
+      },
+      {
+        highlight = highlights.git_changed,
+        icon = icons.git.changed,
+        value = vim.b.gitsigns_status_dict.changed,
+      },
+    })
+
+    if git_status ~= "" then return string.format("  %s  ", git_status) end
+  end
+
+  return fallback and fallback() or ""
 end
 
 ---Show HEAD ref name via Gitsigns.
@@ -123,7 +123,7 @@ local function debug_state(fallback)
     if has_dap then
       local dap_status = dap.status() ---@diagnostic disable-line: undefined-field
 
-      if not vim.tbl_contains({ "", nil }, dap_status) then
+      if dap_status and dap_status ~= "" then
         return string.format("  %s%s  ", fmt_hl(highlights.dap), dap_status)
       end
     end

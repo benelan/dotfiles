@@ -63,13 +63,11 @@ if supports fcitx5; then
 fi
 
 # default applications {{{1
-EDITOR="nano"
+EDITOR="vi"
 if supports nvim; then
     EDITOR="nvim"
 elif supports vim; then
     EDITOR="vim"
-elif supports vi; then
-    EDITOR="vi"
 fi
 
 export EDITOR
@@ -81,32 +79,27 @@ if supports wezterm; then
     export TERMINAL="wezterm"
 elif supports x-terminal-emulator; then
     export TERMINAL="x-terminal-emulator" # $ sudo update-alternatives --config x-terminal-emulator
-elif supports kitty; then
-    export TERMINAL="kitty"
 elif supports alacritty; then
     export TERMINAL="alacritty"
 elif supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     export TERMINAL="foot"
 fi
 
-TERM_BROWSER="sensible-browser"
-if supports w3m; then
+if supports www-browser; then
+    TERM_BROWSER="www-browser"
+elif supports w3m; then
     TERM_BROWSER="w3m"
 elif supports lynx; then
     TERM_BROWSER="lynx"
-elif supports links2; then
-    TERM_BROWSER="links2"
-elif supports www-browser; then
-    TERM_BROWSER="www-browser"
 fi
 
 BROWSER="sensible-browser"
 if supports brave-browser; then
     BROWSER="brave-browser"
-elif supports vivaldi; then
-    BROWSER="vivaldi"
 elif supports chromium-browser; then
     BROWSER="chromium-browser"
+elif supports vivaldi; then
+    BROWSER="vivaldi"
 elif supports google-chrome; then
     BROWSER="google-chrome"
 elif supports firefox; then
@@ -116,26 +109,23 @@ elif supports x-www-browser; then
 fi
 
 HOME_BROWSER=$BROWSER
-if supports firefox && [ $BROWSER != "firefox" ]; then
+if supports firefox; then
     HOME_BROWSER="firefox"
-elif supports vivaldi && [ $BROWSER != "vivaldi" ]; then
+elif supports app.zen_browser.zen; then
+    HOME_BROWSER="app.zen_browser.zen"
+elif supports vivaldi; then
     HOME_BROWSER="vivaldi"
-elif supports chromium-browser && [ $BROWSER != "chromium-browser" ]; then
+elif supports chromium-browser; then
     HOME_BROWSER="chromium-browser"
-elif supports google-chrome && [ $BROWSER != "google-chrome" ]; then
-    HOME_BROWSER="google-chrome"
 fi
 
-ALT_BROWSER=$HOME_BROWSER
-if supports vivaldi &&
-    [ $HOME_BROWSER != "vivaldi" ] && [ $BROWSER != "vivaldi" ]; then
-    ALT_BROWSER="vivaldi"
-elif supports chromium-browser &&
-    [ $HOME_BROWSER != "chromium-browser" ] && [ $BROWSER != "chromium-browser" ]; then
-    ALT_BROWSER="chromium-browser"
-elif supports google-chrome &&
-    [ $HOME_BROWSER != "google-chrome" ] && [ $BROWSER != "google-chrome" ]; then
+ALT_BROWSER=$BROWSER
+if supports google-chrome; then
     ALT_BROWSER="google-chrome"
+elif supports vivaldi; then
+    ALT_BROWSER="vivaldi"
+elif supports chromium-browser; then
+    ALT_BROWSER="chromium-browser"
 fi
 
 export BROWSER TERM_BROWSER ALT_BROWSER HOME_BROWSER
@@ -265,7 +255,6 @@ export GH_NOTIFY_MARK_ALL_READ_KEY="alt-backspace"
 export GH_NOTIFY_OPEN_BROWSER_KEY="ctrl-o"
 
 # my tools {{{1
-supports matpat && export MATPAT_OPEN_CMD="$BROWSER"
 supports _tmux-select && export TMUX_SELECT_COPY_CMD="cb"
 
 _gh_user="$(git config --global github.user || echo "benelan")"
@@ -300,12 +289,9 @@ unset _gh_user _gh_icon
 export NM_FZF_APPLET_AUTH=1
 
 # nerd font icons {{{1
-if [ -n "$(
-    find "$XDG_DATA_HOME/fonts" \
-        -type f \
-        -name "*Nerd*Font*.ttf" \
-        -readable -print -quit 2>/dev/null
-)" ]; then
+if [ -z "$NERD_FONT" ] &&
+    [ -n "$(find "$XDG_DATA_HOME/fonts" -name "*Nerd*Font*.ttf" \
+        -type f -readable -print -quit 2>/dev/null)" ]; then
     export NERD_FONT=1
 fi
 

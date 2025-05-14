@@ -16,10 +16,6 @@ if [[ -z "${BASH_COMPLETION_VERSINFO-}" &&
     fi
 fi
 
-# source bash completion and key bindings for fzf
-[ -r ~/dev/lib/fzf/shell/completion.bash ] && . ~/dev/lib/fzf/shell/completion.bash
-[ -r ~/dev/lib/fzf/shell/key-bindings.bash ] && . ~/dev/lib/fzf/shell/key-bindings.bash
-
 # Load git completion so it can be applied to aliases
 if ! declare -F __git_complete >/dev/null 2>&1; then
     _completion_loader git >/dev/null 2>&1

@@ -18,7 +18,6 @@ vim.opt.wildignore = res.path.ignore
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert", "popup", "fuzzy" }
-vim.opt.inccommand = "split"
 
 -- https://github.com/wez/wezterm/issues/4607
 if vim.env.WEZTERM_PANE ~= nil then vim.opt.termsync = false end
@@ -31,7 +30,6 @@ vim.opt.laststatus = 3
 vim.opt.relativenumber = true
 vim.opt.number = true
 vim.opt.signcolumn = "yes"
-vim.opt.colorcolumn = "81"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 

@@ -102,7 +102,7 @@ M.lsp_servers = {
   "ts_ls",
   -- "typos_lsp",
   "vimls",
-  "volar",
+  "vue_ls",
   "yamlls",
   -- "zk",
 }

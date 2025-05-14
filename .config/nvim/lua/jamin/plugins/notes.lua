@@ -108,7 +108,7 @@ return {
     },
 
     opts = {
-      picker = "telescope"
+      picker = "telescope",
     },
 
     config = function(_, opts)

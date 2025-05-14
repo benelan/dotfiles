@@ -51,11 +51,17 @@ function! JaminTabLine()
         let bufnr = buflist[winnr - 1]
         let bufname = bufname(bufnr)
         let bufmodified = getbufvar(bufnr, "&mod")
+        let filetype = getbufvar(bufnr, "&ft")
+
+        let tabname = fnamemodify(bufname, ":t")
+        if tabname == ""
+            let tabname="[" . (filetype != "" ? filetype : "No Name") . "]"
+        endif
 
         let s .= "%" . tab . "T"
         let s .= (tab == tabpagenr() ? "%#TabLineSel#" : "%#TabLine#")
-        let s .= " " .bufnr . ":[" . (bufname == "" ? "No Name" : fnamemodify(bufname, ":t")) . "]"
-        let s .= (bufmodified ? " [+] " : " ")
+        let s .= " " . tabname
+        let s .= (bufmodified ? " ●  " : " ")
 
         if tab != tabpagenr("$") && tab != tabpagenr() && tab + 1 != tabpagenr() 
             let s .= "│" "▕
@@ -65,6 +71,6 @@ function! JaminTabLine()
     let s .= "%#TabLineFill#"
     let s .= "%=" . "%( %{BufferInfo()} %)"
     let s .= "%#TabLine#" . "%<%( %{TabCWD()} %)"
-    let s .= "%#TabLineFill#" . "%( %{TabCount()} %)"
+    " let s .= "%#TabLineFill#" . "%( %{TabCount()} %)"
     return s
 endfunction

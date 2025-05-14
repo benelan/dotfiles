@@ -1,17 +1,21 @@
 ---@see Types: https://github.com/benelan/wezterm-types
 ---@type Wezterm
 local wezterm = require("wezterm")
-local config = {}
+local config = wezterm.config_builder and wezterm.config_builder() or {}
 
-if wezterm.config_builder then config = wezterm.config_builder() end
-
-package.path = string.format("%s/?/lua/?.lua;%s", os.getenv("PERSONAL"), package.path)
+local git_mux = wezterm.plugin.require("https://github.com/benelan/git-mux")
 wezterm.GLOBAL.multiplexer = os.getenv("GIT_MUX_MULTIPLEXER") or "wezterm"
 
-require("options").setup(config)
-require("keymaps").setup(config)
-require("git-mux").setup()
+local has_local_pre, local_pre = pcall(require, "local_pre")
+local has_local_post, local_post = pcall(require, "local_post")
 
-if wezterm.GLOBAL.multiplexer == "wezterm" then require("tmux").statusline(config) end
+if has_local_pre then local_pre.apply_to_config(config) end
+
+require("options").apply_to_config(config)
+require("keymaps").apply_to_config(config)
+require("tmux").apply_to_config(config)
+git_mux.apply_to_config(config)
+
+if has_local_post then local_post.apply_to_config(config) end
 
 return config
