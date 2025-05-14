@@ -248,7 +248,7 @@ return {
         end,
         desc = "Next hunk (gitsigns)",
       },
-      { "q", "<CMD>bd!<CR>", ft = "gitsigns-blame" }
+      { "q", "<CMD>bd!<CR>", ft = "gitsigns-blame" },
     },
 
     ---@type Gitsigns.Config
@@ -270,6 +270,10 @@ return {
         topdelete = { text = res.icons.git.status_topdelete },
         delete = { text = res.icons.git.status_delete },
       },
+      on_attach = function(bufnr)
+        ---@diagnostic disable-next-line: redundant-return-value
+        if vim.tbl_contains(res.filetypes.excluded, vim.bo[bufnr].filetype) then return false end
+      end,
     },
   },
 
