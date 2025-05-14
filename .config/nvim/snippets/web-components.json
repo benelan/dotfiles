@@ -1,0 +1,106 @@
+{
+  "skeleton (web components)": {
+    "prefix": "wc",
+    "body": [
+      "class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} extends HTMLElement {",
+      "\tconstructor() {",
+      "\t\tsuper();",
+      "\t\t${2:// TODO}",
+      "\t}\n",
+      "\tconnectedCallback() {",
+      "\t\t${3:// TODO}",
+      "\t}\n",
+      "\tdisconnectedCallback() {",
+      "\t\t${4:// TODO}",
+      "\t}\n",
+      "\tattributeChangedCallback(name, oldValue, newValue) {",
+      "\t\t${4:// TODO}",
+      "\t}\n",
+      "\tadoptedCallback() {",
+      "\t\t${5:// TODO}",
+      "\t}\n",
+      "}",
+      "",
+      "const tagName = \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/g}\"",
+      "",
+      "if(!window.customElements.get(tagName)) {",
+      "\twindow.customElements.define(tagName, ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g});",
+      "}",
+      "$0"
+    ],
+    "description": "Skeleton for a basic Web Component"
+  },
+  "connectedCallback (web components)": {
+    "prefix": "connectedCallback-wc",
+    "body": [
+      "connectedCallback() {",
+      "\tsuper.connectedCallback();",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Generate connectedCallback(): Invoked when a component is added to the document's DOM."
+  },
+  "disconnectedCallback (web components)": {
+    "prefix": "disconnectedCallback-wc",
+    "body": [
+      "disconnectedCallback() {",
+      "\tsuper.disconnectedCallback();",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Generate disconnectedCallback(): Invoked when a component is removed from the document's DOM."
+  },
+  "adoptedCallback (web components)": {
+    "prefix": "adoptedCallback-wc",
+    "body": [
+      "adoptedCallback() {",
+      "\tsuper.adoptedCallback();",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Generate adoptedCallback(): Invoked when a component is moved to a new document."
+  },
+  "attributeChangedCallback (web components)": {
+    "prefix": "attributeChangedCallback-wc",
+    "body": [
+      "attributeChangedCallback(name, oldValue, newValue) {",
+      "\tsuper.attributeChangedCallback(name, oldValue, newValue);",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Generate attributeChangedCallback(): Invoked when component attribute changes."
+  },
+  "observedAttributes (web components)": {
+    "prefix": "observedAttributes-wc",
+    "body": [
+      "static get observedAttributes() {",
+      "\t$0",
+      "\treturn ['${1:attributeName}'];",
+      "}"
+    ],
+    "description": "Generate observedAttributes getter: Returns an array containing the names of the attributes you want to observe."
+  },
+  "dispatchEvent (web components)": {
+    "prefix": [
+      "dispatchEvent",
+      "fire"
+    ],
+    "body": [
+      "this.dispatchEvent(new CustomEvent('${1:eventName}', { detail: ${2:data}}));${0}"
+    ]
+  },
+  "slot (web components)": {
+    "prefix": "slot-wc",
+    "body": [
+      "<slot>$0</slot>"
+    ],
+    "description": "Define <slot>"
+  },
+  "named slot (web components)": {
+    "prefix": "slot-named-wc",
+    "body": [
+      "<slot name=\"${1}\">${0}</slot>"
+    ],
+    "description": "Define <slot> with a name"
+  }
+}

@@ -28,15 +28,5 @@
       "\t</script>",
       "</html>"
     ]
-  },
-  "web component slot": {
-    "prefix": "slot",
-    "body": ["<slot>$0</slot>"],
-    "description": "Define <slot>"
-  },
-  "web component named slot": {
-    "prefix": "slot-named",
-    "body": ["<slot name=\"${1}\">${0}</slot>"],
-    "description": "Define <slot> with name"
   }
 }

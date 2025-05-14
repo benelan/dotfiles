@@ -1,7 +1,6 @@
 ---Plugins for text completion and snippet expansion
 
 local res = require("jamin.resources")
-local has_cargo = vim.fn.executable("cargo") == 1
 
 local columns = {
   { "label", "label_description", gap = 1 },
@@ -17,8 +16,7 @@ end
 local spec = {
   {
     "saghen/blink.cmp",
-    build = has_cargo and "cargo build --release" or nil,
-    version = not has_cargo and "v0.*" or nil,
+    version = "v1.*",
     event = "InsertEnter",
     dependencies = { "rafamadriz/friendly-snippets" },
     opts_extend = { "sources.default", "sources.per_filetype" },
@@ -58,46 +56,46 @@ local spec = {
         providers = {
           lsp = {
             name = " [LSP]",
-            score_offset = 10,
-            fallbacks = { "blink-ripgrep" },
+            fallbacks = { "buffer", "ripgrep" },
+            -- https://cmp.saghen.dev/recipes.html#exclude-keywords-constants-from-autocomplete
+            transform_items = function(_, items)
+              local kinds = require("blink.cmp.types").CompletionItemKind
+              return vim.tbl_filter(
+                function(item) return not vim.tbl_contains({ kinds.Keyword, kinds.Text }, item.kind) end,
+                items
+              )
+            end,
           },
           buffer = {
             name = " [BUF]",
-            score_offset = 5,
-            fallbacks = { "blink-ripgrep" },
+            opts = {
+              -- https://cmp.saghen.dev/recipes.html#buffer-completion-from-all-open-buffers
+              get_bufnrs = function()
+                return vim.tbl_filter(
+                  function(bufnr) return vim.bo[bufnr].buftype == "" end,
+                  vim.api.nvim_list_bufs()
+                )
+              end,
+            },
           },
           path = {
             name = "[PATH]",
-            score_offset = 15,
             -- Path sources triggered by "/" interfere with CopilotChat.nvim commands
             enabled = function() return vim.bo.filetype ~= "copilot-chat" end,
           },
           snippets = {
             name = "[SNIP]",
             min_keyword_length = 1,
-            score_offset = 10,
+            score_offset = 1,
             opts = {
               clipboard_register = "+",
-              global_snippets = { "all", "global" },
-              search_paths = { vim.fs.normalize("$XDG_CONFIG_HOME/Code/User/snippets") },
+              global_snippets = {},
               extended_filetypes = {
-                scss = { "css" },
-                markdown = { "license" },
-                sh = { "license" },
-                text = { "license" },
+                javascript = { "jsdoc" },
+                javascriptreact = { "jsdoc" },
+                typescript = { "javascript", "jsdoc" },
+                typescriptreact = { "javascript", "jsdoc" },
                 html = { "javascript", "css" },
-                typescript = { "javascript" },
-                javascriptreact = { "javascript", "html" },
-                typescriptreact = {
-                  "javascript",
-                  "typescript",
-                  "javascriptreact",
-                  "html",
-                  "stencil",
-                },
-                astro = { "javascript", "typescript", "html", "css" },
-                svelte = { "javascript", "typescript", "html", "css" },
-                vue = { "javascript", "typescript", "html", "css" },
               },
             },
           },
@@ -186,7 +184,7 @@ if vim.fn.executable("rg") == 1 then
             module = "blink-ripgrep",
             min_keyword_length = 4,
             max_items = 20,
-            score_offset = -10,
+            score_offset = -5,
             async = true,
           },
         },
@@ -197,10 +195,25 @@ end
 
 -----------------------------------------------------------------------------
 -- dictionary provider
-if vim.fn.filereadable("/usr/share/dict/words") == 1 then
+local dict_dir = vim.fn.stdpath("config") .. "/dictionary"
+local words_file = dict_dir .. "/words.txt"
+
+if vim.fn.isdirectory(dict_dir) == 1 then
   table.insert(spec, {
     "saghen/blink.cmp",
-    dependencies = "Kaiser-Yang/blink-cmp-dictionary",
+    dependencies = {
+      {
+        "Kaiser-Yang/blink-cmp-dictionary",
+        build = {
+          string.format(
+            "! [ -f %s ] && curl -Lo %s "
+              .. "https://raw.githubusercontent.com/dwyl/english-words/refs/heads/master/words_alpha.txt",
+            words_file,
+            words_file
+          ),
+        },
+      },
+    },
     opts = {
       sources = {
         default = { "dictionary" },
@@ -209,14 +222,43 @@ if vim.fn.filereadable("/usr/share/dict/words") == 1 then
             name = "[DICT]",
             module = "blink-cmp-dictionary",
             min_keyword_length = 3,
-            max_items = 20,
-            score_offset = -5,
+            score_offset = -3,
+            max_items = function()
+              return vim.tbl_contains(res.filetypes.writing, vim.bo.filetype) and 40 or 5
+            end,
             opts = {
               first_case_insensitive = true,
-              dictionary_files = { "/usr/share/dict/words" },
+              dictionary_directories = { dict_dir },
               get_command_args = function(prefix)
                 return { "--filter=" .. prefix, "--sync", "--no-sort", "--ignore-case" }
               end,
+            },
+          },
+        },
+      },
+    },
+  })
+end
+
+-----------------------------------------------------------------------------
+-- tmux pane content provider
+if os.getenv("TMUX") then
+  table.insert(spec, {
+    "saghen/blink.cmp",
+    dependencies = "mgalliou/blink-cmp-tmux",
+    opts = {
+      sources = {
+        default = { "tmux" },
+        providers = {
+          tmux = {
+            name = "[TMUX]",
+            module = "blink-cmp-tmux",
+            min_keyword_length = 2,
+            score_offset = -3,
+            max_items = 20,
+            opts = {
+              -- capture_history = true,
+              all_panes = true,
             },
           },
         },

@@ -25,6 +25,7 @@
 
 # ignore specific files within whitelisted directories
 /.config/vifm/vifm{-help,info}*
+/.config/nvim/dictionary/
 /.dotfiles/cache/
 /.vim/.netrwhist
 /.vim/after/syntax/*/gruvbox_material.vim

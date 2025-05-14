@@ -1,0 +1,42 @@
+{
+  "name": "@benelan/snippets",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "markdown",
+          "text",
+          "sh",
+          "bash"
+        ],
+        "path": "./license.json"
+      },
+      {
+        "language": [
+          "html",
+          "javascript"
+        ],
+        "path": "./web-components.json"
+      },
+      {
+        "language": [
+          "html"
+        ],
+        "path": "./html.json"
+      },
+      {
+        "language": [
+          "javascript",
+          "javascriptreact",
+          "vue",
+          "svelte",
+          "astro"
+        ],
+        "path": "./javascript.json"
+      }
+    ]
+  }
+}
