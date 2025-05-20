@@ -85,7 +85,7 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "CursorMoved", "BufEnter" }, {
     desc = "Scroll to nearest location in quickfix",
     pattern = "*",
-    group = vim.api.nvim_create_augroup("jamin_qf_follow", {}),
+    group = vim.api.nvim_create_augroup("jamin.qf_follow", {}),
     callback = function() M.seek_to_position() end,
   })
 end

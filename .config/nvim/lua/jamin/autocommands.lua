@@ -1,13 +1,13 @@
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-  group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),
+  group = vim.api.nvim_create_augroup("jamin.yank_highlight", {}),
   callback = function() (vim.hl or vim.highlight).on_yank({ higroup = "Visual", timeout = 250 }) end,
 })
 
 -------------------------------------------------------------------------------
 -- check if file changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = vim.api.nvim_create_augroup("jamin_checktime", {}),
+  group = vim.api.nvim_create_augroup("jamin.checktime", {}),
   callback = function()
     if vim.o.buftype ~= "nofile" then vim.cmd.checktime() end
   end,
@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 -------------------------------------------------------------------------------
 -- resize splits if window got resized
 vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = vim.api.nvim_create_augroup("jamin_resize_splits", {}),
+  group = vim.api.nvim_create_augroup("jamin.resize_splits", {}),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
     vim.cmd.tabdo("wincmd =")
@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 -- set the OSC7 escape code when changing directories
 -- https://wezfurlong.org/wezterm/shell-integration.html
 vim.api.nvim_create_autocmd({ "DirChanged" }, {
-  group = vim.api.nvim_create_augroup("jamin_set_osc7", {}),
+  group = vim.api.nvim_create_augroup("jamin.set_osc7", {}),
   command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 -- set options for writing filetypes
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = Jamin.filetypes.writing,
-  group = vim.api.nvim_create_augroup("jamin_writing_files", {}),
+  group = vim.api.nvim_create_augroup("jamin.writing_files", {}),
   callback = function()
     vim.opt_local.spell = true
     vim.opt_local.cursorline = false
@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 -------------------------------------------------------------------------------
 -- if necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("jamin_auto_create_dir", {}),
+  group = vim.api.nvim_create_augroup("jamin.auto_create_dir", {}),
   callback = function(event)
     if event.match:match("^%w%w+://") then return end
 
@@ -79,7 +79,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -------------------------------------------------------------------------------
 -- set git env vars for the bare dotfiles repo when not in the dev directory
 vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
-  group = vim.api.nvim_create_augroup("jamin_dotfiles", {}),
+  group = vim.api.nvim_create_augroup("jamin.dotfiles", {}),
   desc = "Special dotfiles setup",
   callback = function()
     local cwd = vim.uv.cwd() or vim.fs.normalize(vim.env.PWD)
@@ -98,7 +98,7 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 -------------------------------------------------------------------------------
 -- use listchars like an indentline plugin
 vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = vim.api.nvim_create_augroup("jamin_janky_indentlines", {}),
+  group = vim.api.nvim_create_augroup("jamin.janky_indentlines", {}),
   callback = function()
     vim.opt_local.listchars = {
       -- eol = Jamin.icons.ui.eol,
@@ -158,7 +158,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "TextChanged", "Insert
 -------------------------------------------------------------------------------
 -- https://github.com/neovim/nvim-lspconfig/issues/69
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
-  group = vim.api.nvim_create_augroup("jamin_diagnostic_qflist", {}),
+  group = vim.api.nvim_create_augroup("jamin.diagnostic_qflist", {}),
   callback = function(args)
     local diagnostics = vim.diagnostic.get()
     local qflist = vim.fn.getqflist({ title = 0, id = 0, items = 0 })

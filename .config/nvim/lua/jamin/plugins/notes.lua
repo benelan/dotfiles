@@ -116,7 +116,7 @@ return {
 
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = { "markdown" },
-        group = vim.api.nvim_create_augroup("jamin_zk_keymaps", {}),
+        group = vim.api.nvim_create_augroup("jamin.zk_keymaps", {}),
         callback = function()
           -- Add the key mappings only for Markdown files in a zk notebook.
           if has_zk_util and zk_util.notebook_root(vim.fn.expand("%:p")) ~= nil then

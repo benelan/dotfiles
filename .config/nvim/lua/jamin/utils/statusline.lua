@@ -159,7 +159,7 @@ end
 
 function M.setup()
   -- update the git and diagnostic info in the statusline
-  local augroup = vim.api.nvim_create_augroup("jamin_update_statusline", {})
+  local augroup = vim.api.nvim_create_augroup("jamin.update_statusline", {})
 
   vim.api.nvim_create_autocmd("DiagnosticChanged", {
     group = augroup,

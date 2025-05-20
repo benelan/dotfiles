@@ -71,7 +71,7 @@ return {
 
       vim.api.nvim_create_autocmd({ "ColorScheme" }, {
         pattern = "gruvbox-material",
-        group = vim.api.nvim_create_augroup("jamin_gruvbox_custom_colors", {}),
+        group = vim.api.nvim_create_augroup("jamin.gruvbox_custom_colors", {}),
         callback = gruvbox_custom_colors,
       })
 

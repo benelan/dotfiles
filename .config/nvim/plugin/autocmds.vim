@@ -3,7 +3,7 @@ if exists('loaded_jamin_autocmds') || !has("autocmd") | finish | endif
 let loaded_jamin_autocmds = 1
 
 "" miscellaneous autocmds {{{1
-augroup jamin_misc
+augroup jamin.misc
     autocmd!
     " Clear jumplist on startup
     autocmd VimEnter * clearjumps
@@ -30,7 +30,7 @@ augroup jamin_misc
 augroup END
 
 "" set global marks by filetype when leaving buffers {{{1
-augroup jamin_global_marks
+augroup jamin.global_marks
     autocmd!
     " Clear actively used file marks to prevent jumping to other projects
     autocmd VimEnter *  delmarks REWQAZ
@@ -107,7 +107,7 @@ augroup jamin_global_marks
 augroup END
 
 "" setup compilers, formatters, etc. per filetype {{{1
-augroup jamin_setup_filetypes
+augroup jamin.setup_filetypes
     autocmd!
 
     " Use some of the pre-defined compilers, see $VIMRUNTIME/compiler

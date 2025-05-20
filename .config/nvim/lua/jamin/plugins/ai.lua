@@ -1,7 +1,7 @@
 ---Plugins for AI completion and chat
 
 local M = {}
-local augroup = vim.api.nvim_create_augroup("jamin_toggle_ai_completion", {})
+local augroup = vim.api.nvim_create_augroup("jamin.toggle_ai_completion", {})
 
 -- true if environment variable `COPILOT == 1` and cwd is in any project
 -- true if environment variable `COPILOT != 0` and cwd is in a work project

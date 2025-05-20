@@ -41,7 +41,7 @@ vim.lsp.config("*", {
 vim.lsp.enable(Jamin.lsp_servers)
 
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("jamin_lsp_stuff", {}),
+  group = vim.api.nvim_create_augroup("jamin.lsp_stuff", {}),
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client == nil then return end
@@ -136,7 +136,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- -- setup codelens if supported by language server
     -- if vim.lsp.codelens and client:supports_method("textDocument/codeLens") then
     --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-    --     group = vim.api.nvim_create_augroup("jamin_refresh_codelens", {}),
+    --     group = vim.api.nvim_create_augroup("jamin.refresh_codelens", {}),
     --     buffer = args.buf,
     --     callback = function() vim.lsp.codelens.refresh({ bufnr = args.buf }) end,
     --   })

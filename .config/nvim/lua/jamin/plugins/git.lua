@@ -37,7 +37,7 @@ return {
     -- config = function()
     --   vim.api.nvim_create_autocmd({ "User" }, {
     --     pattern = { "LazyInstall", "LazyUpdate", "LazySync", "GitSignsUpdate" },
-    --     group = vim.api.nvim_create_augroup("jamin_fugitive_reload_status", {}),
+    --     group = vim.api.nvim_create_augroup("jamin.fugitive_reload_status", {}),
     --     callback = function(args)
     --       if vim.g.loaded_fugitive and vim.fn.exists("*FugitiveDidChange") then
     --         vim.fn["FugitiveDidChange"](args.data and args.data.buffer or nil)
@@ -92,7 +92,7 @@ return {
     config = function()
       vim.api.nvim_create_autocmd({ "FileType" }, {
         pattern = { "floggraph" },
-        group = vim.api.nvim_create_augroup("jamin_floggraph_keymaps", {}),
+        group = vim.api.nvim_create_augroup("jamin.floggraph_keymaps", {}),
         callback = function(args)
           local opts = { buffer = args.buf, noremap = true }
           vim.keymap.set("n", "<C-f>", "<C-w>p<C-d><C-w>p", opts)
@@ -359,7 +359,7 @@ return {
       vim.api.nvim_set_hl(0, "OctoStrikethrough", { fg = "#d3869b", strikethrough = true })
 
       vim.api.nvim_create_autocmd("BufEnter", {
-        group = vim.api.nvim_create_augroup("jamin_octo_review_keymaps", { clear = true }),
+        group = vim.api.nvim_create_augroup("jamin.octo_review_keymaps", { clear = true }),
         pattern = { "octo://*", "OctoChangedFiles-*" },
         -- command = "if &diff | set nofoldenable | fi",
         callback = function()
