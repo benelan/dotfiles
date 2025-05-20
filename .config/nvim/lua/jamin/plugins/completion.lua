@@ -195,48 +195,51 @@ end
 -- dictionary provider
 local dict_dir = vim.fn.stdpath("config") .. "/dictionary"
 local words_file = dict_dir .. "/words.txt"
+local words_url = "https://benelan.dev/s/wordlist.txt"
 
-if vim.fn.isdirectory(dict_dir) == 1 then
-  table.insert(spec, {
-    "saghen/blink.cmp",
-    dependencies = {
-      {
-        "Kaiser-Yang/blink-cmp-dictionary",
-        build = {
-          string.format(
-            "! [ -f %s ] && curl -Lo %s "
-              .. "https://raw.githubusercontent.com/dwyl/english-words/refs/heads/master/words_alpha.txt",
-            words_file,
-            words_file
-          ),
-        },
+table.insert(spec, {
+  "saghen/blink.cmp",
+  dependencies = {
+    {
+      "Kaiser-Yang/blink-cmp-dictionary",
+      build = {
+        "mkdir -p " .. dict_dir,
+        string.format(
+          -- download word list and remove words with less than 4 characters
+          "! [ -f %s ] && curl -L %s | awk '{if(length() >= 4) print $0}' > %s",
+          words_file,
+          words_url,
+          words_file
+        ),
       },
     },
-    opts = {
-      sources = {
-        default = { "dictionary" },
-        providers = {
-          dictionary = {
-            name = "[DICT]",
-            module = "blink-cmp-dictionary",
-            min_keyword_length = 3,
-            score_offset = -3,
-            max_items = function()
-              return vim.tbl_contains(Jamin.filetypes.writing, vim.bo.filetype) and 40 or 5
+  },
+  opts = {
+    sources = {
+      default = { "dictionary" },
+      providers = {
+        dictionary = {
+          name = "[DICT]",
+          module = "blink-cmp-dictionary",
+          min_keyword_length = 3,
+          score_offset = function()
+            return vim.tbl_contains(Jamin.filetypes.writing, vim.bo.filetype) and 1 or -3
+          end,
+          max_items = function()
+            return vim.tbl_contains(Jamin.filetypes.writing, vim.bo.filetype) and 20 or 5
+          end,
+          opts = {
+            first_case_insensitive = true,
+            dictionary_directories = { dict_dir },
+            get_command_args = function(prefix)
+              return { "--filter=" .. prefix, "--sync", "--no-sort", "--ignore-case" }
             end,
-            opts = {
-              first_case_insensitive = true,
-              dictionary_directories = { dict_dir },
-              get_command_args = function(prefix)
-                return { "--filter=" .. prefix, "--sync", "--no-sort", "--ignore-case" }
-              end,
-            },
           },
         },
       },
     },
-  })
-end
+  },
+})
 
 -----------------------------------------------------------------------------
 -- tmux pane content provider
