@@ -272,6 +272,8 @@ M.path = {
   },
 }
 
+M.ui = vim.api.nvim_list_uis()[1] or { width = 80, height = 40 }
+
 M.i = function(icon, backup)
   if vim.g.have_nerd_font then return icon end
   return backup or ""
@@ -422,26 +424,6 @@ M.icons.test = {
   pending = M.i("󰅐 ", M.icons.ui.clock),
   unknown = M.i("󰘥 ", M.icons.ui.question_mark),
   running_animated = M.icons.progress,
-}
-
----@type vim.diagnostic.Opts
-M.diagnostics = {
-  virtual_text = {
-    prefix = function(d) return M.icons.diagnostics[d.severity] end,
-    severity = { min = vim.diagnostic.severity.WARN },
-    source = "if_many",
-  },
-  signs = { text = M.icons.diagnostics },
-  float = {
-    border = M.icons.border,
-    header = "",
-    prefix = "",
-    focusable = true,
-    source = true,
-  },
-  severity_sort = true,
-  underline = true,
-  update_in_insert = false,
 }
 
 M.art = {

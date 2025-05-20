@@ -1,7 +1,5 @@
 ---Plugins for writing markdown notes/documentation
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
@@ -31,9 +29,9 @@ return {
   -- Keymaps for plaintext lists
   {
     "bullets-vim/bullets.vim",
-    ft = res.filetypes.writing,
+    ft = Jamin.filetypes.writing,
     init = function()
-      vim.g.bullets_enabled_file_types = res.filetypes.writing
+      vim.g.bullets_enabled_file_types = Jamin.filetypes.writing
       vim.g.bullets_checkbox_markers = " x"
       vim.g.bullets_outline_levels = { "ROM", "ABC", "num", "abc", "rom", "std-" }
       vim.g.bullets_set_mappings = false

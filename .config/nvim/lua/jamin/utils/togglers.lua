@@ -1,4 +1,3 @@
-local res = require("jamin.resources")
 local M = {}
 
 local floating_term_height, floating_term_width
@@ -22,7 +21,7 @@ function M.terminal()
     row = ui.height - 3,
     anchor = "SE",
     style = "minimal",
-    border = res.icons.border,
+    border = Jamin.icons.border,
   }
 
   if term_winnr > 0 and win_count > 1 then
@@ -79,7 +78,7 @@ local virtual_text_disabled = false
 function M.diagnostics_virtual_text()
   virtual_text_disabled = not virtual_text_disabled
   vim.diagnostic.config({
-    virtual_text = not virtual_text_disabled and res.diagnostics.virtual_text or false,
+    virtual_text = not virtual_text_disabled and Jamin.diagnostics.virtual_text or false,
   })
   vim.notify(
     string.format(
@@ -141,7 +140,7 @@ function M.ui()
   vim.opt.laststatus = ui_disabled and 3 or 0
   vim.opt.showtabline = ui_disabled and 2 or 0
 
-  vim.opt.fillchars:append("eob:" .. (ui_disabled and res.icons.ui.fill_shade or " "))
+  vim.opt.fillchars:append("eob:" .. (ui_disabled and Jamin.icons.ui.fill_shade or " "))
 
   -- toggle lsp diagnostics
   vim.schedule(function() vim.diagnostic.enable(ui_disabled, { bufnr = nil }) end)

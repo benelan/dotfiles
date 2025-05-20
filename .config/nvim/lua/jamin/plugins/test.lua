@@ -1,7 +1,5 @@
 ---Plugins for unit testing integration
 
-local res = require("jamin.resources")
-
 return {
   {
     "nvim-neotest/neotest",
@@ -19,8 +17,8 @@ return {
       return {
         output = { open_on_run = true },
         status = { virtual_text = true },
-        floating = { border = res.icons.border },
-        icons = require("jamin.resources").icons.test,
+        floating = { border = Jamin.icons.border },
+        icons = Jamin.icons.test,
         adapters = {
           -- require("neotests-go"),
           -- require("neotest-stenciljs")({ no_build = true }),

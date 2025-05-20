@@ -1,7 +1,6 @@
 ---Plugins for AI completion and chat
 
 local M = {}
-local res = require("jamin.resources")
 local augroup = vim.api.nvim_create_augroup("jamin_toggle_ai_completion", {})
 
 -- true if environment variable `COPILOT == 1` and cwd is in any project
@@ -30,7 +29,7 @@ function M.toggle_copilot(dir) vim.cmd.Copilot(M.should_use_copilot(dir) and "en
 function M.toggle_codeium(dir) vim.cmd.Codeium(M.should_use_codeium(dir) and "Enable" or "Disable") end
 
 local ai_filetypes = vim
-  .iter(vim.list_extend(vim.deepcopy(res.filetypes.excluded), res.filetypes.writing))
+  .iter(vim.list_extend(vim.deepcopy(Jamin.filetypes.excluded), Jamin.filetypes.writing))
   :fold({}, function(acc, k)
     acc[k] = false
     return acc
@@ -132,7 +131,7 @@ return {
       return {
         model = openai_api_key and not M.should_use_copilot() and "gpt-4.1:openai" or nil,
         question_header = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
-        window = { border = res.icons.border },
+        window = { border = Jamin.icons.border },
         mappings = {
           submit_prompt = { normal = "<C-s>" },
           reset = { normal = "<localleader>x", insert = "<M-x>" },

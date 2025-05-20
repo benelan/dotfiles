@@ -1,7 +1,5 @@
 ---Plugins for navigating between buffers/files
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
@@ -280,9 +278,9 @@ return {
 
       return {
         defaults = {
-          prompt_prefix = string.format(" %s ", res.icons.ui.prompt),
-          selection_caret = string.format("%s  ", res.icons.ui.select),
-          multi_icon = res.icons.ui.checkmark,
+          prompt_prefix = string.format(" %s ", Jamin.icons.ui.prompt),
+          selection_caret = string.format("%s  ", Jamin.icons.ui.select),
+          multi_icon = Jamin.icons.ui.checkmark,
           entry_prefix = string.rep(" ", 4),
           layout_config = { prompt_position = "top" },
           sorting_strategy = "ascending",

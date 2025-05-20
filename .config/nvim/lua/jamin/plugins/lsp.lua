@@ -1,8 +1,6 @@
 ---Plugins for Language Server Protocal integration
 ---https://microsoft.github.io/language-server-protocol/
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   {
@@ -25,8 +23,8 @@ return {
 
     ---@type MasonSettings
     opts = {
-      ensure_installed = res.mason_tools,
-      ui = { border = res.icons.border, height = 0.8 },
+      ensure_installed = Jamin.mason_tools,
+      ui = { border = Jamin.icons.border, height = 0.8 },
     },
 
     config = function(_, opts)
@@ -46,8 +44,8 @@ return {
   {
     "b0o/SchemaStore.nvim",
     lazy = true,
-    cond = vim.tbl_contains(res.lsp_servers, "yamlls")
-      or vim.tbl_contains(res.lsp_servers, "jsonls"),
+    cond = vim.tbl_contains(Jamin.lsp_servers, "yamlls")
+      or vim.tbl_contains(Jamin.lsp_servers, "jsonls"),
   },
 
   -----------------------------------------------------------------------------

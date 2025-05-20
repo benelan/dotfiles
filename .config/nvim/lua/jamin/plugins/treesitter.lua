@@ -1,7 +1,5 @@
 ---Plugins related to Treesitter (incremental syntax tree parser)
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -- set commentstring based on treesitter node
@@ -98,7 +96,7 @@ return {
 
       ---@type TSConfig
       return {
-        ensure_installed = res.treesitter_parsers,
+        ensure_installed = Jamin.treesitter_parsers,
         indent = {
           enable = true,
           disable = { "yaml" },
@@ -130,7 +128,7 @@ return {
         textobjects = {
           lsp_interop = {
             enable = true,
-            border = res.icons.border,
+            border = Jamin.icons.border,
             peek_definition_code = {
               ["<leader>vf"] = "@function.outer",
               ["<leader>vc"] = "@class.outer",

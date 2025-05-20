@@ -1,6 +1,3 @@
-local res = require("jamin.resources")
-
--------------------------------------------------------------------------------
 -- highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin_yank_highlight", {}),
@@ -38,7 +35,7 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 -------------------------------------------------------------------------------
 -- set options for writing filetypes
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = res.filetypes.writing,
+  pattern = Jamin.filetypes.writing,
   group = vim.api.nvim_create_augroup("jamin_writing_files", {}),
   callback = function()
     vim.opt_local.spell = true
@@ -104,13 +101,13 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("jamin_janky_indentlines", {}),
   callback = function()
     vim.opt_local.listchars = {
-      -- eol = res.icons.ui.eol,
-      nbsp = res.icons.ui.nbsp,
-      extends = res.icons.ui.extends,
-      precedes = res.icons.ui.precedes,
-      trail = res.icons.ui.fill_shade,
-      tab = res.icons.ui.separator_dotted .. " ",
-      leadmultispace = res.icons.ui.separator
+      -- eol = Jamin.icons.ui.eol,
+      nbsp = Jamin.icons.ui.nbsp,
+      extends = Jamin.icons.ui.extends,
+      precedes = Jamin.icons.ui.precedes,
+      trail = Jamin.icons.ui.fill_shade,
+      tab = Jamin.icons.ui.separator_dotted .. " ",
+      leadmultispace = Jamin.icons.ui.separator
         .. string.rep(" ", vim.api.nvim_get_option_value("shiftwidth", { scope = "local" }) - 1),
     }
   end,
@@ -151,7 +148,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "TextChanged", "Insert
         vim.api.nvim_buf_set_extmark(bufnr, conceal_ns, start_row, start_col + 3, {
           end_line = end_row,
           end_col = end_col,
-          conceal = res.icons.ui.extends, -- "%",
+          conceal = Jamin.icons.ui.extends, -- "%",
         })
       end
     end

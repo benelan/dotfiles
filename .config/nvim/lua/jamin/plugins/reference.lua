@@ -1,7 +1,5 @@
 ---Plugins for viewing and adding API references
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -- open rule documentation for linters
@@ -59,10 +57,6 @@ return {
     },
 
     opts = function()
-      -- calculate the width and height of the floating window
-      local ui = vim.api.nvim_list_uis()[1] or { width = 160, height = 120 }
-      local width = math.floor(ui.width / 2)
-
       -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
       local glow_opts = vim.fn.executable("glow") ~= 1 and {}
         or {
@@ -96,13 +90,13 @@ return {
         },
         float_win = {
           relative = "editor",
-          width = width,
-          height = ui.height - 7,
-          col = ui.width - 1,
-          row = ui.height - 3,
+          width = math.floor(Jamin.ui.width / 2),
+          height = Jamin.ui.height - 7,
+          col = Jamin.ui.width - 1,
+          row = Jamin.ui.height - 3,
           anchor = "SE",
           style = "minimal",
-          border = res.icons.border,
+          border = Jamin.icons.border,
         },
         after_open = function(bufnr)
           vim.keymap.set("n", "q", "<CMD>bd!<CR>", { buffer = bufnr })

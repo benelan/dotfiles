@@ -1,7 +1,5 @@
 ---Plugins to make things purrty
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   {
@@ -117,7 +115,7 @@ return {
     "jinh0/eyeliner.nvim",
     event = "VeryLazy",
     opts = {
-      disabled_filetypes = res.filetypes.excluded,
+      disabled_filetypes = Jamin.filetypes.excluded,
       disabled_buftypes = { "nofile", "help", "quickfix", "terminal" },
     },
     config = function(_, opts)

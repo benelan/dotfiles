@@ -1,7 +1,5 @@
 ---Plugins for text completion and snippet expansion
 
-local res = require("jamin.resources")
-
 local columns = {
   { "label", "label_description", gap = 1 },
   { "source_name" },
@@ -27,7 +25,7 @@ local spec = {
       completion = {
         accept = { auto_brackets = { enabled = false } },
         menu = {
-          -- border = res.icons.border,
+          -- border = Jamin.icons.border,
           draw = {
             gap = vim.g.have_nerd_font and 1 or 2,
             treesitter = { "lsp" },
@@ -36,17 +34,17 @@ local spec = {
         },
         documentation = {
           auto_show = true,
-          window = { border = res.icons.border },
+          window = { border = Jamin.icons.border },
         },
       },
       signature = {
         enabled = true,
-        window = { border = res.icons.border },
+        window = { border = Jamin.icons.border },
       },
       appearance = {
         use_nvim_cmp_as_default = true,
         nerd_font_variant = "normal",
-        kind_icons = res.icons.lsp_kind,
+        kind_icons = Jamin.icons.lsp_kind,
       },
       cmdline = {
         enabled = false,
@@ -224,7 +222,7 @@ if vim.fn.isdirectory(dict_dir) == 1 then
             min_keyword_length = 3,
             score_offset = -3,
             max_items = function()
-              return vim.tbl_contains(res.filetypes.writing, vim.bo.filetype) and 40 or 5
+              return vim.tbl_contains(Jamin.filetypes.writing, vim.bo.filetype) and 40 or 5
             end,
             opts = {
               first_case_insensitive = true,

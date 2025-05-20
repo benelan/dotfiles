@@ -1,4 +1,3 @@
-local icons = require("jamin.resources").icons
 local M = {}
 
 local highlights = {
@@ -47,7 +46,7 @@ end
 local function buffer_diagnostics(fallback)
   local data = {}
 
-  for severity, text in ipairs(icons.diagnostics) do
+  for severity, text in ipairs(Jamin.icons.diagnostics) do
     table.insert(data, {
       highlight = "StatusLineDiagnosticSev" .. severity,
       icon = text .. (vim.g.have_nerd_font and "" or ":"),
@@ -65,17 +64,17 @@ local function gitsigns_state(fallback)
     local git_status = format_numeric_state({
       {
         highlight = highlights.git_added,
-        icon = icons.git.added,
+        icon = Jamin.icons.git.added,
         value = vim.b.gitsigns_status_dict.added,
       },
       {
         highlight = highlights.git_removed,
-        icon = icons.git.removed,
+        icon = Jamin.icons.git.removed,
         value = vim.b.gitsigns_status_dict.removed,
       },
       {
         highlight = highlights.git_changed,
-        icon = icons.git.changed,
+        icon = Jamin.icons.git.changed,
         value = vim.b.gitsigns_status_dict.changed,
       },
     })
@@ -88,7 +87,8 @@ end
 
 ---Show HEAD ref name via Gitsigns.
 local function gitsigns_head(fallback)
-  return vim.b.gitsigns_head and string.format("  %s%s  ", icons.git.branch, vim.b.gitsigns_head)
+  return vim.b.gitsigns_head
+      and string.format("  %s%s  ", Jamin.icons.git.branch, vim.b.gitsigns_head)
     or fallback and fallback()
     or ""
 end
@@ -98,7 +98,7 @@ local function fugitive_head(fallback)
   if vim.g.loaded_fugitive and vim.fn.exists("*fugitive#Head") then
     local head = vim.fn["fugitive#Head"]()
 
-    if head ~= "" then return string.format("  %s%s  ", icons.git.branch, head) end
+    if head ~= "" then return string.format("  %s%s  ", Jamin.icons.git.branch, head) end
   end
 
   return fallback and fallback() or ""

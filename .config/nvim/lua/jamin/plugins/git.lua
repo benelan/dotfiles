@@ -1,7 +1,5 @@
 ---Plugins for Git and GitHub integration
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -- the GOAT git plugin
@@ -255,24 +253,24 @@ return {
     opts = {
       current_line_blame_formatter = ' <author> (<author_time:%R>) - "<summary>" : <abbrev_sha>',
       current_line_blame_opts = { virt_text_pos = "right_align", ignore_whitespace = true },
-      preview_config = { border = res.icons.border },
+      preview_config = { border = Jamin.icons.border },
       signs = {
-        add = { text = res.icons.git.status },
-        change = { text = res.icons.git.status },
-        changedelete = { text = res.icons.git.status_changedelete },
-        topdelete = { text = res.icons.git.status_topdelete },
-        delete = { text = res.icons.git.status_delete },
+        add = { text = Jamin.icons.git.status },
+        change = { text = Jamin.icons.git.status },
+        changedelete = { text = Jamin.icons.git.status_changedelete },
+        topdelete = { text = Jamin.icons.git.status_topdelete },
+        delete = { text = Jamin.icons.git.status_delete },
       },
       signs_staged = {
-        add = { text = res.icons.git.status },
-        change = { text = res.icons.git.status },
-        changedelete = { text = res.icons.git.status_changedelete },
-        topdelete = { text = res.icons.git.status_topdelete },
-        delete = { text = res.icons.git.status_delete },
+        add = { text = Jamin.icons.git.status },
+        change = { text = Jamin.icons.git.status },
+        changedelete = { text = Jamin.icons.git.status_changedelete },
+        topdelete = { text = Jamin.icons.git.status_topdelete },
+        delete = { text = Jamin.icons.git.status_delete },
       },
       on_attach = function(bufnr)
         ---@diagnostic disable-next-line: redundant-return-value
-        if vim.tbl_contains(res.filetypes.excluded, vim.bo[bufnr].filetype) then return false end
+        if vim.tbl_contains(Jamin.filetypes.excluded, vim.bo[bufnr].filetype) then return false end
       end,
     },
   },
@@ -300,22 +298,22 @@ return {
       use_timeline_icons = vim.g.have_nerd_font,
       runs = {
         icons = {
-          pending = res.icons.test.pending,
-          in_progress = res.icons.test.running,
-          failed = res.icons.test.failed,
-          succeeded = res.icons.test.passed,
-          skipped = res.icons.test.skipped,
-          cancelled = res.icons.test.cancelled,
+          pending = Jamin.icons.test.pending,
+          in_progress = Jamin.icons.test.running,
+          failed = Jamin.icons.test.failed,
+          succeeded = Jamin.icons.test.passed,
+          skipped = Jamin.icons.test.skipped,
+          cancelled = Jamin.icons.test.cancelled,
         },
       },
-      outdated_icon = res.i(nil, res.icons.ui.clock),
-      resolved_icon = res.i(nil, res.icons.ui.checkmark),
-      reaction_viewer_hint_icon = res.i(nil, res.icons.ui.circle),
-      repo_icon = res.i(nil, res.icons.ui.storage),
-      user_icon = res.i(nil, res.icons.ui.user),
-      right_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
-      left_bubble_delimiter = res.i(nil, res.icons.ui.fill_solid),
-      timeline_marker = res.i(nil, res.icons.ui.diamond),
+      outdated_icon = Jamin.i(nil, Jamin.icons.ui.clock),
+      resolved_icon = Jamin.i(nil, Jamin.icons.ui.checkmark),
+      reaction_viewer_hint_icon = Jamin.i(nil, Jamin.icons.ui.circle),
+      repo_icon = Jamin.i(nil, Jamin.icons.ui.storage),
+      user_icon = Jamin.i(nil, Jamin.icons.ui.user),
+      right_bubble_delimiter = Jamin.i(nil, Jamin.icons.ui.fill_solid),
+      left_bubble_delimiter = Jamin.i(nil, Jamin.icons.ui.fill_solid),
+      timeline_marker = Jamin.i(nil, Jamin.icons.ui.diamond),
       picker_config = {
         mappings = {
           open_in_browser = { lhs = "<C-o>", desc = "open issue in browser" },

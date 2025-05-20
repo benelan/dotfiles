@@ -1,8 +1,6 @@
 ---Plugins for print debugging and the Debug Adapter Protocol
 ---https://microsoft.github.io/debug-adapter-protocol/
 
-local res = require("jamin.resources")
-
 ---@type LazySpec
 return {
   -- add print statements for debugging
@@ -45,13 +43,13 @@ return {
             local vscode = require("dap.ext.vscode")
             local cwd_launch = ".vscode/launch.json"
             local adapter_fts = {
-              ["chrome"] = res.filetypes.webdev,
-              ["node"] = res.filetypes.webdev,
-              ["node-terminal"] = res.filetypes.webdev,
-              ["pwa-chrome"] = res.filetypes.webdev,
-              ["pwa-extensionHost"] = res.filetypes.webdev,
-              ["pwa-msedge"] = res.filetypes.webdev,
-              ["pwa-node"] = res.filetypes.webdev,
+              ["chrome"] = Jamin.filetypes.webdev,
+              ["node"] = Jamin.filetypes.webdev,
+              ["node-terminal"] = Jamin.filetypes.webdev,
+              ["pwa-chrome"] = Jamin.filetypes.webdev,
+              ["pwa-extensionHost"] = Jamin.filetypes.webdev,
+              ["pwa-msedge"] = Jamin.filetypes.webdev,
+              ["pwa-node"] = Jamin.filetypes.webdev,
             }
 
             local worktree_launch = string.format("%s/%s", rooter.worktree(), cwd_launch)
@@ -228,7 +226,7 @@ return {
         "pwa-msedge",
         "pwa-node",
       }) do
-        vscode.type_to_filetypes[adapter] = res.filetypes.webdev
+        vscode.type_to_filetypes[adapter] = Jamin.filetypes.webdev
         if not dap.adapters[adapter] then
           dap.adapters[adapter] = {
             type = "server",
@@ -243,7 +241,7 @@ return {
       end
 
       if not dap.adapters["node"] then
-        vscode.type_to_filetypes["node"] = res.filetypes.webdev
+        vscode.type_to_filetypes["node"] = Jamin.filetypes.webdev
         dap.adapters["node"] = function(cb, config)
           if config.type == "node" then config.type = "pwa-node" end
           local nativeAdapter = dap.adapters["pwa-node"]
@@ -276,7 +274,7 @@ return {
       end
 
       -- web dev configs
-      for _, language in ipairs(res.filetypes.webdev) do
+      for _, language in ipairs(Jamin.filetypes.webdev) do
         dap.configurations[language] = {
           {
             -- make sure to start up Chromium in debug mode first:
@@ -349,35 +347,35 @@ return {
       -------------------------------------------------------------------------
 
       vim.fn.sign_define("DapBreakpoint", {
-        text = res.icons.debug.breakpoint,
+        text = Jamin.icons.debug.breakpoint,
         texthl = "Aqua",
         linehl = "",
         numhl = "",
       })
 
       vim.fn.sign_define("DapBreakpointCondition", {
-        text = res.icons.debug.breakpoint_condition,
+        text = Jamin.icons.debug.breakpoint_condition,
         texthl = "DiagnosticSignWarn",
         linehl = "",
         numhl = "",
       })
 
       vim.fn.sign_define("DapBreakpointRejected", {
-        text = res.icons.debug.breakpoint_rejected,
+        text = Jamin.icons.debug.breakpoint_rejected,
         texthl = "DiagnosticSignError",
         linehl = "",
         numhl = "",
       })
 
       vim.fn.sign_define("DapLogPoint", {
-        text = res.icons.debug.logpoint,
+        text = Jamin.icons.debug.logpoint,
         texthl = "DiagnosticSignInfo",
         linehl = "",
         numhl = "",
       })
 
       vim.fn.sign_define("DapStopped", {
-        text = res.icons.debug.stopped,
+        text = Jamin.icons.debug.stopped,
         texthl = "Purple",
         linehl = "Visual",
         numhl = "Purple",

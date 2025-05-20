@@ -1,8 +1,24 @@
-local res = require("jamin.resources")
-
 -- diagnostic configuration
-vim.diagnostic.config(vim.deepcopy(require("jamin.resources").diagnostics))
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = function(d) return Jamin.icons.diagnostics[d.severity] end,
+    severity = { min = vim.diagnostic.severity.WARN },
+    source = "if_many",
+  },
+  signs = { text = Jamin.icons.diagnostics },
+  float = {
+    border = Jamin.icons.border,
+    header = "",
+    prefix = "",
+    focusable = true,
+    source = true,
+  },
+  severity_sort = true,
+  underline = true,
+  update_in_insert = false,
+})
 
+-- additional lsp configuration
 vim.lsp.config("*", {
   capabilities = {
     textDocument = {
@@ -22,7 +38,7 @@ vim.lsp.config("*", {
   },
 })
 
-vim.lsp.enable(res.lsp_servers)
+vim.lsp.enable(Jamin.lsp_servers)
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("jamin_lsp_stuff", {}),

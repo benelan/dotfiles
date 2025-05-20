@@ -1,11 +1,5 @@
 ---Plugins that don't fit in one of the other categories
 
-local res = require("jamin.resources")
-
-local ui = vim.api.nvim_list_uis() or {}
-local width = #ui > 0 and ui[1].width or 80
-local height = #ui > 0 and ui[1].height or 40
-
 ---@type LazySpec
 return {
   -----------------------------------------------------------------------------
@@ -60,7 +54,7 @@ return {
     ---@type grug.far.Options
     opts = {
       headerMaxWidth = 80,
-      resultsSeparatorLineChar = res.icons.ui.horizontal_separator,
+      resultsSeparatorLineChar = Jamin.icons.ui.horizontal_separator,
       spinnerStates = vim.g.have_nerd_font and nil or false,
       icons = { enabled = vim.g.have_nerd_font },
       keymaps = {
@@ -203,8 +197,8 @@ return {
                   title = client.name,
                   opts = function(notif)
                     notif.style = "minimal"
-                    notif.icon = #progress[client.id] == 0 and res.icons.ui.checkmark
-                      or res.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #res.icons.progress + 1]
+                    notif.icon = #progress[client.id] == 0 and Jamin.icons.ui.checkmark
+                      or Jamin.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #Jamin.icons.progress + 1]
                   end,
                 })
               end,
@@ -224,7 +218,7 @@ return {
           },
         },
         snacks_image = {
-          border = res.icons.border,
+          border = Jamin.icons.border,
           relative = "editor",
           row = 2,
           col = 0.5,
@@ -252,8 +246,8 @@ return {
         enabled = vim.env.WEZTERM_PANE and not vim.env.TMUX,
         doc = {
           inline = false,
-          max_width = math.floor(width / 2.25),
-          max_height = math.floor(height / 1.25),
+          max_width = math.floor(Jamin.ui.width / 2.25),
+          max_height = math.floor(Jamin.ui.height / 1.25),
         },
       },
 
@@ -264,16 +258,16 @@ return {
         top_down = false,
         margin = { top = 1, right = 0, bottom = 1 },
         width = {
-          min = math.max(40, math.floor(width / 4)),
-          max = math.min(80, math.floor(width / 2)),
+          min = math.max(40, math.floor(Jamin.ui.width / 4)),
+          max = math.min(80, math.floor(Jamin.ui.width / 2)),
         },
         height = {
-          max = math.min(40, math.floor(height / 2)),
+          max = math.min(40, math.floor(Jamin.ui.height / 2)),
         },
         -- icons = {
-        --   error = res.icons.diagnostics[1],
-        --   warn = res.icons.diagnostics[2],
-        --   info = res.icons.diagnostics[3],
+        --   error = Jamin.icons.diagnostics[1],
+        --   warn = Jamin.icons.diagnostics[2],
+        --   info = Jamin.icons.diagnostics[3],
         -- },
       },
 
@@ -318,7 +312,7 @@ return {
       dashboard = {
         enabled = vim.g.have_nerd_font,
         config = function(opts) opts.preset.keys[2].key = "i" end,
-        width = math.max(60, math.floor(width / 1.75)),
+        width = math.max(60, math.floor(Jamin.ui.width / 1.75)),
         sections = {
           {
             section = "header",
@@ -328,7 +322,7 @@ return {
             action = ":tab Git",
             key = "s",
             desc = "Git Status",
-            icon = res.icons.git.diff,
+            icon = Jamin.icons.git.diff,
             cwd = true,
             padding = 1,
             enabled = function() return Snacks.git.get_root() ~= nil end,
@@ -337,7 +331,7 @@ return {
             action = ":Flog",
             key = "h",
             desc = "Git History",
-            icon = res.icons.git.log,
+            icon = Jamin.icons.git.log,
             cwd = true,
             padding = 1,
             enabled = function() return Snacks.git.get_root() ~= nil end,
@@ -354,7 +348,7 @@ return {
             indent = 2,
             -- gap = 1,
             padding = 1,
-            -- icon = res.icons.ui.pin,
+            -- icon = Jamin.icons.ui.pin,
             filter = function(file)
               return not vim.tbl_contains(
                 { "COMMIT_EDITMSG", "package-lock.json" },
@@ -367,9 +361,9 @@ return {
             action = ":silent Octo notification",
             cmd = "gh notify -psn3",
             section = "terminal",
-            enabled = #ui > 0 and (ui[1].height or 0) >= 39 and vim.fn.executable("gh") == 1,
+            enabled = Jamin.ui.height >= 39 and vim.fn.executable("gh") == 1,
             key = "n",
-            -- icon = res.icons.ui.alert,
+            -- icon = Jamin.icons.ui.alert,
             height = 3,
             indent = 2,
             -- padding = 1,

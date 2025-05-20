@@ -39,6 +39,8 @@ vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
     or vim.env.WEZTERM_PANE ~= nil
   )
 
+_G.Jamin = require("jamin.resources")
+
 -------------------------------------------------------------------------------
 ----> Modules
 -------------------------------------------------------------------------------
@@ -74,7 +76,7 @@ require("lazy").setup("jamin.plugins", {
   install = { colorscheme = { "gruvbox-material", "gruvbox", "retrobox", "habamax" } },
   ui = {
     custom_keys = { ["<localleader>d"] = function(plugin) dd(plugin) end },
-    border = require("jamin.resources").icons.border,
+    border = Jamin.icons.border,
     backdrop = 100,
     icons = vim.g.have_nerd_font and {} or {
       cmd = "",

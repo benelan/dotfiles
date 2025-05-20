@@ -24,7 +24,7 @@ return {
 
   -- filetypes = vim.tbl_deep_extend(
   --   "force",
-  --   require("jamin.resources").filetypes.webdev,
+  --   Jamin.filetypes.webdev,
   --   { "css", "scss" }
   -- ),
 }

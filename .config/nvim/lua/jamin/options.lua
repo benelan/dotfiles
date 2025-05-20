@@ -1,5 +1,3 @@
-local has_res, res = pcall(require, "jamin.resources")
-
 vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamed"
 vim.opt.updatetime = 150
 vim.opt.confirm = true
@@ -12,9 +10,9 @@ vim.opt.formatoptions:remove("t")
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.suffixes:append(res.path.suffixes)
-vim.opt.path = res.path.include
-vim.opt.wildignore = res.path.ignore
+vim.opt.suffixes:append(Jamin.path.suffixes)
+vim.opt.path = Jamin.path.include
+vim.opt.wildignore = Jamin.path.ignore
 vim.opt.wildignorecase = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert", "popup", "fuzzy" }
@@ -72,10 +70,8 @@ else
   vim.opt.dictionary:append("spell")
 end
 
-if has_res then
-  vim.opt.showbreak = res.icons.ui.linebreak
-  vim.opt.fillchars = { eob = res.icons.ui.fill_shade, diff = res.icons.ui.fill_slash }
-end
+vim.opt.showbreak = Jamin.icons.ui.linebreak
+vim.opt.fillchars = { eob = Jamin.icons.ui.fill_shade, diff = Jamin.icons.ui.fill_slash }
 
 if vim.fn.executable("rg") == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden --smart-case"
