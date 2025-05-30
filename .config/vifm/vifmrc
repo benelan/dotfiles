@@ -450,7 +450,7 @@ filetype * o
 nnoremap S :shell<cr>
 
 " Display sorting dialog
-nnoremap s :sort<cr>
+nnoremap x :sort<cr>
 
 " Toggle visibility of preview window
 vnoremap w :view<cr>gv
