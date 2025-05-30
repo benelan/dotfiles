@@ -25,8 +25,13 @@ set relativenumber
 
 set notitle
 
-set grepprg='rg --vimgrep --hidden'
-set findprg='fd --hidden %A %s'
+if executable('fd')
+    set findprg='fd --hidden %A %s'
+endif
+
+if executable('rg')
+    set grepprg='rg --vimgrep --hidden'
+endif
 
 " ignore .git directory on :find
 "set findprg='find %s %a -print ,
@@ -46,7 +51,7 @@ set syscalls
 " I recommend not changing this until you are familiar with vifm.
 " This probably shouldn't be an option.
 set trash
-set trashdir=%r/.vifm_trash,$HOME/.local/share/Trash/files
+set trashdir=%r/.vifm-trash-%u,$XDG_DATA_HOME/Trash/files,$XDG_DATA_HOME/vifm/Trash,%r/.vifm-trash
 
 " This is how many directories to store in the directory history.
 set history=400
@@ -56,8 +61,8 @@ set undolevels=1000
 
 " What should be saved automatically on restarting vifm.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
-set vifminfo=dhistory,chistory,state,tui,shistory,
-            \phistory,fhistory,dirstack,registers,bookmarks,bmarks
+set vifminfo=dhistory,chistory,state,tui,tabs,shistory,ehistory,
+            \phistory,fhistory,dirstack,registers,bookmarks,bmarks,mchistory
 
 " Automatically resolve symbolic links on l or Enter.
 set followlinks
@@ -204,10 +209,12 @@ filetype {*.astro,*.md,*.mdx,*.ts,*.tsx,*.json,*.jsonc,*.json5,*.svelte,*.vue,*.
 
 " Pdf
 filetype {*.pdf},<application/pdf>
-        \ {View in zathura} zathura %c %i &,
-        \ {View in default app} o %c &
+            \ {View in zathura} zathura %c %i &,
+            \ {View in default app} o %c &
 
-fileviewer {*.pdf},<application/pdf> pdftotext -nopgbrk %c -
+fileviewer {*.pdf},<application/pdf>
+            \ sixel-preview pdf %c %pw %ph %pd %pc,
+            \ pdftotext -nopgbrk %c -
 
 " PostScript
 filetype {*.ps,*.eps,*.ps.gz},<application/postscript>
@@ -245,6 +252,7 @@ fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
             \*.fl[icv],*.m2v,*.mov,*.webm,*.mts,*.m4v,*.r[am],*.qt,*.divx,
             \*.as[fx],*.unknown_video},<video/*>
             \ ffprobe -hide_banner -pretty %c 2>&1,
+            \ sixel-preview video %c %pw %ph %px %pd %pc,
 
 " Web
 filetype {*.xhtml,*.html,*.htm},<text/html>
@@ -284,11 +292,12 @@ filetype {*.blend} {Open in Blender} blender %c,
 filetype {*.sh3d} {Open in Sweet Home 3D} sweethome3d %c:p,
 
 filetype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
-            \ {View in feh} feh %f,
-            \ {View in ImageMagick} display %f,
+            \ {View in feh} feh -F %f,
             \ {View in default image viewer} open %f,
 
-fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*> identify %f
+fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+            \ sixel-preview image %c %pw %ph %pd %pc,
+            \ identify %f
 
 " OpenRaster
 filetype {*.ora} {Edit in MyPaint} mypaint %f,
@@ -444,8 +453,18 @@ nnoremap S :shell<cr>
 nnoremap s :sort<cr>
 
 " Toggle visibility of preview window
-nnoremap w :view<cr>
 vnoremap w :view<cr>gv
+" https://wiki.vifm.info/index.php/Single-pane_preview
+nnoremap <silent> w : if &quickview && !layoutis('only')
+            \|     view
+            \| else
+            \|     if layoutis('only')
+            \|         if &lines + 50 < &columns | vsplit | else | split | endif
+            \|     endif
+            \|     view!
+            \|     execute 'qnoremap w q:view|only|qunmap w<lt>cr>'
+            \| endif
+            \| <cr>
 
 " Scroll preview window
 nnoremap <C-f> <C-w>w15j<C-w>w
@@ -479,6 +498,7 @@ else
     nmap O o
 endif
 
+" https://wiki.vifm.info/index.php/How_to_copy_path_to_current_file/directory_to_system_clipboard
 " yank current directory path into the clipboard
 nnoremap yd :!echo -n %d | cb %i<cr>
             \:echo expand('%"d') "is yanked to clipboard"<cr>
@@ -492,6 +512,8 @@ nnoremap yn :!echo -n %c | cb %i<cr>
 nnoremap yr :!echo -n %c:r | cb %i<cr>
             \:echo expand('%"c:r') "is yanked to clipboard"<cr>
 
+" Open file in the background using its default program
+nnoremap gb :file &<cr>l
 
 " Mappings for faster renaming
 nnoremap I cw<c-a>
@@ -564,6 +586,7 @@ nnoremap <A-u> <c-w>x
 " endif
 
 " Miscellaneous {{{1
+" https://wiki.vifm.info/index.php/How_to_integrate_fzf_for_fuzzy_finding
 command! FZFFile : set noquickview
         \| let $FZF_PICK = term('fd --type file --unrestricted --follow | fzf-tmux -p 80% 2>/dev/tty')
         \| if $FZF_PICK != ''

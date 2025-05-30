@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Generate image, pdf, and video (thumbnail) previews via sixel
+# https://wiki.vifm.info/index.php/How_to_preview_images
+
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/vifm/sixel-previews"
+mkdir -p "$cache_dir"
+
+pw=$(($3 * 8))
+ph=$(($4 * 14))
+
+checksum=$(cat "$2" - <<<"$pw $ph" | sha256sum - | awk '{print $1}')
+
+if [ -f "$cache_dir/$checksum" ]; then
+    exec cat "$cache_dir/$checksum"
+    exit 0
+fi
+
+image() {
+    # shellcheck disable=2207,2016
+    dim=($(exiftool -p '$ImageWidth $ImageHeight' "$1"))
+
+    w=${dim[0]}
+    h=${dim[1]}
+
+    height=auto
+    width=auto
+
+    if [ "$pw" -lt "$w" ] && [ "$ph" -lt "$h" ]; then
+        newh=$(echo "($h*$pw)/$w" | bc)
+        # neww=$(echo "($w*$ph)/$h" | bc)
+
+        if [ "$newh" -le "$ph" ]; then
+            width="$pw"
+        else
+            height="$ph"
+        fi
+    elif [ "$pw" -lt "$w" ]; then
+        width=$pw
+    elif [ "$ph" -lt "$h" ]; then
+        height="$ph"
+    fi
+
+    img2sixel ${STY:+"-P"} --width="$width" --height="$height" "$1"
+}
+
+case "$1" in
+    image) preview_img="$2" ;;
+    video) ffmpegthumbnailer -i "$2" -o "$cache_dir/$checksum" -s 0 -q 5 2>/dev/null ;;
+    pdf) pdftoppm -jpeg -f 1 -singlefile "$2" "$cache_dir/$checksum" 2>/tmp/null ;;
+    epub) epub-thumbnailer "$2" "$cache_dir/$checksum" 1024 2>/tmp/null ;;
+    *) exit 1 ;;
+esac
+
+image "${preview_img:-"$cache_dir/$checksum.jpg"}" | tee "$cache_dir/$checksum"

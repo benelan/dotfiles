@@ -526,6 +526,11 @@ install_script_completion() {
             https://raw.githubusercontent.com/wfxr/forgit/master/completions/git-forgit.bash
     fi
 
+    if _has vifm; then
+        curl -Lo "$COMPLETIONS_DIR/vifm" \
+            https://raw.githubusercontent.com/vifm/vifm/refs/heads/master/data/shell-completion/bash/vifm
+    fi
+
     if _has broot; then
         curl -Lo "$COMPLETIONS_DIR/broot" \
             https://dystroy.org/broot/download/completion/broot.bash
@@ -1914,18 +1919,18 @@ install_misc_vifm() {
 
     latest_version="$(_gh_latest_version "vifm/vifm")"
 
-    curl -Lo ~/vifm.appimage \
+    curl -Lo ./vifm.appimage \
         "https://github.com/vifm/vifm/releases/latest/download/vifm-$latest_version-x86_64.AppImage"
 
-    chmod +x vifm.appimage
+    chmod +x ./vifm.appimage
 
-    if ~/vifm.appimage -h >/dev/null 2>&1; then
-        mv ~/vifm.appimage "$BIN_DIR/vifm"
+    if ./vifm.appimage -h >/dev/null 2>&1; then
+        mv ./vifm.appimage "$BIN_DIR/vifm"
     else
         mkdir -p ~/.appimages
-        mv ~/vifm.appimage ~/.appimages/vifm.appimage
+        mv ./vifm.appimage ~/.appimages/vifm.appimage
         pushd ~/.appimages >/dev/null
-        ~/vifm.appimage --appimage-extract >/dev/null
+        ./vifm.appimage --appimage-extract >/dev/null
         rm -rf vifm-appimage
         mv squashfs-root vifm-appimage
         ln -s -f ~/.appimages/vifm-appimage/AppRun "$BIN_DIR/vifm"
@@ -1933,7 +1938,13 @@ install_misc_vifm() {
         popd >/dev/null
     fi
 
+    if [ -d "$COMPLETIONS_DIR" ]; then
+        curl -Lo "$COMPLETIONS_DIR/vifm" \
+            https://raw.githubusercontent.com/vifm/vifm/refs/heads/master/data/shell-completion/bash/vifm
+    fi
+
     unset latest_version
+
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

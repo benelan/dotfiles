@@ -5,7 +5,6 @@ return {
   -- vifm (vi file manager) is the most vim-like CLI file explorer I've found
   {
     "vifm/vifm.vim",
-    enabled = false,
     ft = "vifm",
     cmd = { "Vifm", "TabVifm", "SplitVifm", "VsplitVifm" },
     keys = { { "<M-->", "<CMD>Vifm<CR>" }, { "-", "<CMD>Vifm<CR>" } },

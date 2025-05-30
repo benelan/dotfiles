@@ -62,9 +62,13 @@ let _macro_lowercase_word = 'guiw'
 let _macro_lowercase_WORD = 'guiW'
 
 " Toggle netrw file explorer
-nnoremap <leader>e :Lexplore<CR>
-nnoremap <silent> - <CMD>execute  ":Explore " . expand("%:h") . "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"<CR>
-nnoremap <silent> <leader>- <CMD>execute (&filetype ==# "netrw" ? "bdelete" : "norm -")<CR>
+nnoremap <silent> <leader>e :Lexplore<CR>
+nnoremap <silent> <leader>- <CMD>execute (
+    \ &filetype ==# "netrw"
+        \ ? "bdelete"
+        \ : ":Explore " . expand("%:h") .
+        \   "<BAR>silent! echo search('^\s*" . expand("%:t") . "')"
+\)<CR>
 
 nmap <silent> gQ mzgggqG`z<CMD>delmarks z<CR>zz
 
