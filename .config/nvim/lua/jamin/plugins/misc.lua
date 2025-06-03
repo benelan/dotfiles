@@ -48,7 +48,17 @@ return {
   { "nvim-lua/plenary.nvim", lazy = true },
 
   -----------------------------------------------------------------------------
-  -- search/replace in multiple files
+  -- persistent undo history
+  {
+    "kevinhwang91/nvim-fundo",
+    event = "VeryLazy",
+    dependencies = "kevinhwang91/promise-async",
+    build = { function() require("fundo").install() end },
+    opts = {},
+  },
+
+  -----------------------------------------------------------------------------
+  -- search/replace in multiple files using ripgrep
   {
     "MagicDuck/grug-far.nvim",
     ---@type grug.far.Options
