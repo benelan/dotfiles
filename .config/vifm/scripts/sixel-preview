@@ -16,9 +16,9 @@ if [ -f "$cache_dir/$checksum" ]; then
     exit 0
 fi
 
-image() {
+image_to_sixel() {
     # shellcheck disable=2207,2016
-    dim=($(exiftool -p '$ImageWidth $ImageHeight' "$1"))
+    dim=($(exiftool -p '$ImageWidth $ImageHeight' "$1" 2>/dev/null))
 
     w=${dim[0]}
     h=${dim[1]}
@@ -41,15 +41,24 @@ image() {
         height="$ph"
     fi
 
-    img2sixel ${STY:+"-P"} --width="$width" --height="$height" "$1"
+    if [ -n "$TMUX" ]; then
+        printf "\033Ptmux;\033\033]"
+        img2sixel --width="$width" --height="$height" "$1" 2>/dev/null |
+            sed 's/\x1b/\x1b\x1b/g'
+        printf "\a\033\\"
+    else
+        img2sixel ${STY:+"-P"} --width="$width" --height="$height" "$1" 2>/dev/null
+    fi
 }
 
 case "$1" in
-    image) preview_img="$2" ;;
-    video) ffmpegthumbnailer -i "$2" -o "$cache_dir/$checksum" -s 0 -q 5 2>/dev/null ;;
+    image) image="$2" ;;
+    video) ffmpegthumbnailer -i "$2" -o "$cache_dir/$checksum.jpg" -s 0 -q 5 2>/dev/null ;;
     pdf) pdftoppm -jpeg -f 1 -singlefile "$2" "$cache_dir/$checksum" 2>/dev/null ;;
     epub) epub-thumbnailer "$2" "$cache_dir/$checksum" 1024 2>/dev/null ;;
     *) exit 1 ;;
 esac
 
-image "${preview_img:-"$cache_dir/$checksum.jpg"}" | tee "$cache_dir/$checksum"
+image_to_sixel "${image:-"$cache_dir/$checksum.jpg"}" >"$cache_dir/$checksum"
+
+exec cat "$cache_dir/$checksum"
