@@ -47,8 +47,8 @@ image() {
 case "$1" in
     image) preview_img="$2" ;;
     video) ffmpegthumbnailer -i "$2" -o "$cache_dir/$checksum" -s 0 -q 5 2>/dev/null ;;
-    pdf) pdftoppm -jpeg -f 1 -singlefile "$2" "$cache_dir/$checksum" 2>/tmp/null ;;
-    epub) epub-thumbnailer "$2" "$cache_dir/$checksum" 1024 2>/tmp/null ;;
+    pdf) pdftoppm -jpeg -f 1 -singlefile "$2" "$cache_dir/$checksum" 2>/dev/null ;;
+    epub) epub-thumbnailer "$2" "$cache_dir/$checksum" 1024 2>/dev/null ;;
     *) exit 1 ;;
 esac
 

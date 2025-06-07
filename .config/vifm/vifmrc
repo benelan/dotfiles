@@ -1,9 +1,7 @@
 " vim:filetype=vifm foldmethod=marker:
-" Sample configuration file for vifm (last updated: 2 June, 2023)
-" You can edit this file by hand.
-" The " character at the beginning of a line comments out the line.
-" Blank lines are ignored.
-" The basic format for each item is shown with an example.
+"
+" Sample configuration file for vifm (last updated: 11 May, 2025)
+" https://github.com/vifm/vifm/blob/master/data/vifmrc
 
 " Main settings {{{1
 " Command used to edit files in various contexts.  The default is vim.
@@ -616,7 +614,14 @@ nnoremap [t :tabprevious<cr>:view!<cr>
 " switch to tab to the right
 nnoremap ]t :tabnext<cr>:view!<cr>
 
-nnoremap - :qa<cr>
+" close vifm
+nnoremap <ESC> :qa<cr>
+nnoremap <BS> :qa<cr>
+nnoremap <Delete> :qa<cr>
+nnoremap Q :qa<cr>
+
+" old habit from using netrw
+nnoremap - h
 
 " Devicons require a patched font (or wezterm which ships with them)
 if expand($NERD_FONT) != "0" && (expand($NERD_FONT) == "1" || expand($WEZTERM_PANE) != "")
