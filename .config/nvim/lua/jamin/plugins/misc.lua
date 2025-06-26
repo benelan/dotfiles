@@ -61,6 +61,7 @@ return {
   -- search/replace in multiple files using ripgrep
   {
     "MagicDuck/grug-far.nvim",
+    cond = vim.fn.executable("rg") == 1,
     ---@type grug.far.Options
     opts = {
       headerMaxWidth = 80,

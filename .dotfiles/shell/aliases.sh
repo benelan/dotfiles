@@ -135,7 +135,7 @@ alias afk="loginctl lock-session"
 
 if supports apt; then
     alias apti='sudo apt-get install'
-    alias aptup='sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoremove && sudo apt-get autoclean && sudo apt-get purge'
+    alias aptup='sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade && sudo apt-get autoremove && sudo apt-get autoclean && sudo apt-get purge'
 fi
 
 if supports systemctl; then

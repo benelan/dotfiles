@@ -319,7 +319,7 @@ tdot() {
 
 # searches with Telescope if no args are provided
 edot() {
-    EDITOR=nvim dot edit +"if !len(argv()) | execute 'Telescope git_files' | endif"
+    EDITOR=nvim dot edit +"if !len(argv()) | execute 'lua Snacks.picker.git_files()' | endif"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
