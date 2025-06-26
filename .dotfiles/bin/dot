@@ -960,6 +960,7 @@ install_ubuntu_apt-sway() {
         acpi
         brightnessctl
         dunst
+        gammastep
         greetd
         grim
         grimshot
@@ -972,6 +973,7 @@ install_ubuntu_apt-sway() {
         swayidle
         swaylock
         waybar
+        wf-recorder
         wl-clipboard
     )
 

@@ -117,7 +117,7 @@ bindsym $mod+c exec grim -g "$(slurp -p)" -t ppm - | \
 convert - -format "%[pixel:p{0,0}]" txt:- | \
     tail -n 1 | cut -d " " -f 4 | wl-copy
 
-# change opacity  of current window
+# change opacity of current window
 bindsym $mod+Control+o exec swaymsg 'opacity minus 0.05'
 bindsym $mod+Control+Shift+o exec swaymsg 'opacity plus 0.05'
 bindsym $mod+Control+Mod1+o exec swaymsg 'opacity 0.25'
@@ -258,3 +258,6 @@ exec xrdb -load ~/.Xresources
 
 # Clipboard history manager - https://github.com/sentriz/cliphist
 exec exec wl-paste --watch cliphist store
+
+# Location-based screen color adjustment - https://gitlab.com/chinstrap/gammastep 
+exec_always --no-startup-id ! pgrep -x gammastep && gammastep -m wayland -b 1.0:0.9

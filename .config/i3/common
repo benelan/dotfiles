@@ -66,14 +66,17 @@ bindsym $mod+t workspace number $ws2; exec "$TERMINAL"
 bindsym $mod+b exec "$BROWSER"
 bindsym $mod+Shift+b exec "$HOME_BROWSER"
 
-# Use rofi as the launcher. Requires XWayland or the wl-roots compatible fork:
-# https://github.com/lbonn/rofi
+# Use rofi as the main launcher
+# Requires XWayland or the wl-roots compatible fork: https://github.com/lbonn/rofi
 bindsym $mod+a exec rofi -show drun -theme ~/.config/rofi/fullscreen.rasi
 bindsym $mod+d exec rofi -show drun -theme ~/.config/rofi/classic.rasi
 bindsym $mod+space exec rofi -show drun -theme ~/.config/rofi/fancy.rasi
 bindsym $mod+Shift+grave exec BROWSER=firefox ~/.config/rofi/applets/bin/quicklinks.sh
 bindsym $mod+End exec ~/.config/rofi/applets/bin/powermenu.sh
 bindsym $mod+grave exec music rofi
+
+# Toggle Ulauncher
+bindsym $mod+u exec ulauncher-toggle
 
 # Change focus
 bindsym $mod+h focus left
@@ -217,6 +220,7 @@ assign [class="^teams-for-linux$"] $ws10
 
 # libre office window's don't have a class on startup so they need to be moved afterwards
 for_window [class="^libreoffice-(startcenter|writer|calc|impress|draw|math)$"] move window to workspace $ws5
+for_window [class="^Ulauncher$"] floating enable
 
 
 ### UI {{{1
@@ -250,6 +254,10 @@ exec_always --no-startup-id ! pgrep -x nm-applet && nm-applet --indicator
 
 # Bluetooth manager applet
 exec_always --no-startup-id ! pgrep -x blueman-applet && blueman-applet
+
+# Ulauncher
+exec_always --no-startup-id ! pgrep ulauncher && \
+    env GDK_BACKEND=x11 ulauncher --hide-window --no-window-shadow
 
 # Low battery notification
 # https://github.com/rjekker/i3-battery-popup

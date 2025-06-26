@@ -486,8 +486,6 @@
     history_ignore = true
     timeout = 1
     override_pause_level = 15
-    # Set `yes` to skip display, `true` to skip display and history
-    # skip_display = yes
 
 [teams]
     desktop_entry = "com.github.IsmaelMartinez.teams_for_linux"
@@ -504,6 +502,11 @@
     appname = gh-notify-desktop
     # action_name = web
     override_pause_level = 45
+
+[ulauncher-devdocs]
+    summary = ^Ulauncher Devdocs$
+    history_ignore = true
+    skip_display = yes
 
 #[script-test]
 #    summary = "*script*"
