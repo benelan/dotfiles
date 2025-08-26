@@ -615,7 +615,6 @@ nnoremap [t :tabprevious<cr>:view!<cr>
 nnoremap ]t :tabnext<cr>:view!<cr>
 
 " close vifm
-nnoremap <ESC> :qa<cr>
 nnoremap <BS> :qa<cr>
 nnoremap <Delete> :qa<cr>
 nnoremap Q :qa<cr>
@@ -629,8 +628,7 @@ if expand($NERD_FONT) != "0" && (expand($NERD_FONT) == "1" || expand($WEZTERM_PA
 endif
 
 "" load local config if it exists (filereadable requires vifm version >= 0.13)
-"if system("vifm --version | head -n1 | sed 's/.*\s//; s/\.//; s/\..*//'") >= 13
-if system("vifm --version | head -n1 | awk '{print $2}' | tr -d '.'") >= 13
+if system("vifm --version | head -n1 | sed 's/.*\s//; s/\.//; s/\..*//'") >= 13
     if filereadable(expand("$XDG_CONFIG_HOME/vifm/vifmrc.local"))
         source $XDG_CONFIG_HOME/vifm/vifmrc.local
     endif

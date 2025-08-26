@@ -127,7 +127,7 @@ return {
       local user = vim.env.USER or "user"
       local openai_api_key = os.getenv("OPENAI_API_KEY")
 
-      ---@type CopilotChat.config
+      ---@type CopilotChat.config.Config
       return {
         model = openai_api_key and not M.should_use_copilot() and "gpt-4.1:openai" or nil,
         question_header = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
@@ -163,6 +163,7 @@ return {
 
               get_models = function(headers)
                 local response, err =
+                  ---@diagnostic disable-next-line: deprecated
                   require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
                     headers = headers,
                     json_response = true,
@@ -181,25 +182,9 @@ return {
                   :map(function(model) return { id = model.id, name = model.id } end)
                   :totable()
               end,
-
-              embed = function(inputs, headers)
-                local response, err =
-                  require("CopilotChat.utils").curl_post("https://api.openai.com/v1/embeddings", {
-                    headers = headers,
-                    json_request = true,
-                    json_response = true,
-                    body = {
-                      model = "text-embedding-3-small",
-                      input = inputs,
-                    },
-                  })
-                if err then error(err) end
-                return response.body.data
-              end,
             },
         },
 
-        ---@diagnostic disable: missing-return, missing-return-value
         callback = function(response)
           local chat = require("CopilotChat")
 
@@ -222,7 +207,7 @@ return {
           chat.ask(vim.trim(prompt:format(response)), {
             headless = true, -- disable updating chat buffer and history with this question
             callback = function(gen_response)
-              vim.g.copilot_chat_title = vim.trim(gen_response)
+              vim.g.copilot_chat_title = vim.trim(gen_response.content)
               print("Chat title set to: " .. vim.g.copilot_chat_title)
               chat.save(vim.g.copilot_chat_title)
             end,

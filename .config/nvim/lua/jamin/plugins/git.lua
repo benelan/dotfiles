@@ -111,6 +111,13 @@ return {
     event = "VeryLazy",
     keys = {
       {
+        "ih",
+        function() require("gitsigns").select_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
+        desc = "inner git hunk (gitsigns)",
+        mode = { "o", "x" },
+      },
+      ---@diagnostic disable: param-type-mismatch
+      {
         "]h",
         function() require("gitsigns").nav_hunk("next", { wrap = true, preview = true }) end,
         desc = "Next hunk (gitsigns)",
@@ -131,21 +138,37 @@ return {
         desc = "First hunk (gitsigns)",
       },
       {
-        "ih",
-        function() require("gitsigns").select_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
-        desc = "inner git hunk (gitsigns)",
-        mode = { "o", "x" },
+        "]c",
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            require("gitsigns").nav_hunk("next", { wrap = false, target = "all" })
+          end
+        end,
+        desc = "Next hunk (gitsigns)",
       },
       {
-        "<leader>hl",
-        ---@diagnostic disable-next-line: missing-parameter
-        function() require("gitsigns").setloclist() end,
-        desc = "Hunks to location list (gitsigns)",
+        "[c",
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            require("gitsigns").nav_hunk("prev", { wrap = false, target = "all" })
+          end
+        end,
+        desc = "Next hunk (gitsigns)",
       },
       {
         "<leader>hq",
         function() require("gitsigns").setqflist("all") end,
         desc = "Hunks to quickfix list (gitsigns)",
+      },
+      ---@diagnostic enable: param-type-mismatch
+      {
+        "<leader>hl",
+        function() require("gitsigns").setloclist() end,
+        desc = "Hunks to location list (gitsigns)",
       },
       {
         "<leader>hp",
@@ -225,28 +248,6 @@ return {
         "<leader>htn",
         function() require("gitsigns").toggle_numhl() end,
         desc = "Toggle number highlight (gitsigns)",
-      },
-      {
-        "]c",
-        function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "]c", bang = true })
-          else
-            require("gitsigns").nav_hunk("next", { wrap = false, target = "all" })
-          end
-        end,
-        desc = "Next hunk (gitsigns)",
-      },
-      {
-        "[c",
-        function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "[c", bang = true })
-          else
-            require("gitsigns").nav_hunk("prev", { wrap = false, target = "all" })
-          end
-        end,
-        desc = "Next hunk (gitsigns)",
       },
       { "q", "<CMD>bd!<CR>", ft = "gitsigns-blame" },
     },

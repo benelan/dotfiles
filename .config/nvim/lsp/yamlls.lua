@@ -1,6 +1,6 @@
 return {
   -- lazy-load SchemaStore when needed
-  on_new_config = function(new_config)
+  before_init = function(_, new_config)
     local has_schemastore, schemastore = pcall(require, "schemastore")
     if not has_schemastore then return end
 

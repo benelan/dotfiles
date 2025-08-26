@@ -40,7 +40,7 @@ return {
           local has_rooter, rooter = pcall(require, "jamin.utils.rooter")
 
           if has_rooter then
-            local vscode = require("dap.ext.vscode")
+            local dap_vscode = require("dap.ext.vscode") ---@diagnostic disable-line: different-requires
             local cwd_launch = ".vscode/launch.json"
             local adapter_fts = {
               ["chrome"] = Jamin.filetypes.webdev,
@@ -56,11 +56,11 @@ return {
             local project_launch = string.format("%s/%s", rooter.project(), cwd_launch)
 
             if vim.fn.filereadable(project_launch) == 1 then
-              vscode.load_launchjs(project_launch, adapter_fts) ---@diagnostic disable-line: deprecated
+              dap_vscode.load_launchjs(project_launch, adapter_fts) ---@diagnostic disable-line: deprecated
             end
 
             if vim.fn.filereadable(worktree_launch) == 1 then
-              vscode.load_launchjs(worktree_launch, adapter_fts) ---@diagnostic disable-line: deprecated
+              dap_vscode.load_launchjs(worktree_launch, adapter_fts) ---@diagnostic disable-line: deprecated
             end
           end
 
@@ -199,11 +199,11 @@ return {
 
     config = function()
       local dap = require("dap")
-      local vscode = require("dap.ext.vscode")
+      local dap_vscode = require("dap.ext.vscode") ---@diagnostic disable-line: different-requires
       vim.g.loaded_dap = true
 
       ---@diagnostic disable-next-line: duplicate-set-field
-      vscode.json_decode = function(str)
+      dap_vscode.json_decode = function(str)
         return vim.json.decode(require("plenary.json").json_strip_comments(str, {}))
       end
 
@@ -226,7 +226,7 @@ return {
         "pwa-msedge",
         "pwa-node",
       }) do
-        vscode.type_to_filetypes[adapter] = Jamin.filetypes.webdev
+        dap_vscode.type_to_filetypes[adapter] = Jamin.filetypes.webdev
         if not dap.adapters[adapter] then
           dap.adapters[adapter] = {
             type = "server",
@@ -241,7 +241,7 @@ return {
       end
 
       if not dap.adapters["node"] then
-        vscode.type_to_filetypes["node"] = Jamin.filetypes.webdev
+        dap_vscode.type_to_filetypes["node"] = Jamin.filetypes.webdev
         dap.adapters["node"] = function(cb, config)
           if config.type == "node" then config.type = "pwa-node" end
           local nativeAdapter = dap.adapters["pwa-node"]

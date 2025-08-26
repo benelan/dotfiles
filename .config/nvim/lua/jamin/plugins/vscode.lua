@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     if not vim.g.vscode then return end
 
-    local vscode = require("vscode")
+    local vscode = require("vscode") ---@diagnostic disable-line: different-requires
     local function action(cmd)
       return function() vscode.action(cmd) end
     end

@@ -370,10 +370,24 @@ install_packages_npm() {
         readability-cli
         ts-node
         typescript
+        prettier
+        stylelint
+        markdownlint-cli
+        fixjson
+
+        # bash-language-server
+        # yaml-language-server
+        # vim-language-server
+        # typescript-language-server
+        vue-language-server
+        # svelte-language-server
+        # @astrojs/language-server
+        # @tailwindcss/language-server
+        # vscode-langservers-extracted
+        # dockerfile-language-server-nodejs
     )
 
-    for dep in "${deps[@]}"; do npm install -g "$dep" || true; done
-    unset deps
+    npm install -g "${deps[@]}" || true
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

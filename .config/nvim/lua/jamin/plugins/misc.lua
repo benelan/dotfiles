@@ -72,7 +72,7 @@ return {
         close = { n = "q", i = "<C-c>" },
       },
     },
-    cmd = "GrugFar",
+    cmd = { "GrugFar", "GrugFarWithin" },
     keys = {
       {
         "<leader>R",

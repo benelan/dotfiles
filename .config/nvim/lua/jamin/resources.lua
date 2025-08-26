@@ -129,7 +129,7 @@ M.mason_tools = {
   "taplo",
   "typescript-language-server",
   "vim-language-server",
-  "vue-language-server",
+  -- "vue-language-server", -- v3 has install errors due to my bare repo dotfiles setup. Install via npm instead
   "yaml-language-server",
   "zk",
 

@@ -5,7 +5,7 @@ return {
   -- open rule documentation for linters
   {
     "chrisgrieser/nvim-rulebook",
-    ---@type rulebook.config
+    ---@type Rulebook.Config
     opts = {},
     keys = {
       {
@@ -22,6 +22,18 @@ return {
         "<leader>ry",
         function() require("rulebook").yankDiagnosticCode() end,
         desc = "Yank diagnostic code (rulebook)",
+      },
+      {
+        "<leader>rf",
+        function() require("rulebook").suppressFormatter() end,
+        desc = "Suppress formatter (rulebook)",
+        mode = { "n", "x" },
+      },
+      {
+        "<leader>rp",
+        function() require("rulebook").prettifyError() end,
+        desc = "Prettify error (rulebook)",
+        ft = Jamin.filetypes.webdev,
       },
     },
   },
