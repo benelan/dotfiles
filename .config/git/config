@@ -65,7 +65,7 @@
     prompt = false
 
 [difftool "fugitive"]
-    cmd = vim -f +'packadd vim-fugitive | Gvdiffsplit!' $MERGED
+    cmd = $EDITOR +'Gvdiffsplit!' $MERGED
 
 [merge]
     ; Include summaries of merged commits in newly created merge commit messages.
@@ -101,7 +101,7 @@
 [mergetool "fugitive"]
     trustExitCode = true
     ; http://vimcasts.org/episodes/fugitive-vim-resolving-merge-conflicts-with-vimdiff/
-    cmd = vim -fc \"packadd vim-fugitive | Gvdiffsplit!\" $MERGED
+    cmd = $EDITOR +'Gvdiffsplit!' $MERGED
 
 [mergetool "diffconflicts"]
     trustExitCode = true
@@ -376,10 +376,11 @@
     fc = !git log --graph --color=always \
             --format='%C(cyan)%ad %C(auto)%d %s %C(black) %C(auto)%h ' \"$@\" \
         | fzf --ansi --no-sort --tiebreak=index \
-            --header='(enter: print sha) (alt-o: checkout) (ctrl-y: copy sha)' \
+            --header='(enter: print sha) (ctrl-y: copy sha) (alt-o: checkout) (alt-f: fugitive)' \
             --preview='git show --color=always {-1}' \
             --preview-window='right,50%,wrap,~2,<60(down,40%,wrap)' \
             --bind='alt-o:become(git checkout {-1})' \
+            --bind='alt-f:execute:FUGITIVE=1 nvim +\":exe \\\"edit \\\".FugitiveFind({-1})\"' \
             --bind='ctrl-y:execute-silent(cb<<<{-1})' \
             --bind='enter:become(echo {-1})' \
         || true
@@ -401,7 +402,7 @@
             --bind='enter:become(echo {-1})' \
             --bind='alt-a:become(git stash apply {n})' \
             --bind='alt-p:become(git stash pop {n})' \
-            --bind='alt-f:execute:vim +\":packadd vim-fugitive | exe \\\"edit \\\".FugitiveFind({-1})\"' \
+            --bind='alt-f:execute:FUGITIVE=1 nvim +\":exe \\\"edit \\\".FugitiveFind({-1})\"' \
             --bind='alt-X:execute(git stash drop {n})+reload(eval \"$FZF_DEFAULT_COMMAND\")' \
             --bind='alt-o:become(git stash branch stash-{-1} {n})'
 

@@ -7,6 +7,7 @@ return {
   -- the GOAT git plugin
   {
     "tpope/vim-fugitive",
+    lazy = vim.env.FUGITIVE == nil,
     dependencies = "tpope/vim-rhubarb",
     event = { { event = "BufReadCmd", pattern = "fugitive://*" } },
 
