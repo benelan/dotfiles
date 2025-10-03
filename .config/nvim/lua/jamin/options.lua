@@ -3,8 +3,7 @@ vim.opt.updatetime = 150
 vim.opt.confirm = true
 vim.opt.virtualedit:append("block")
 vim.opt.nrformats:append("unsigned")
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldmethod = "indent"
 vim.opt.foldlevelstart = 99
 vim.opt.formatoptions:remove("t")
 

@@ -85,7 +85,7 @@ return {
     keys = {
       {
         "[C",
-        function() require("treesitter-context").go_to_context() end,
+        function() require("treesitter-context").go_to_context(vim.v.count1) end,
         desc = "Treesitter context",
       },
       {
@@ -147,17 +147,19 @@ return {
         callback = function(ev)
           if not have(ev.match) then return end
 
-          -- highlighting
           if vim.tbl_get(opts, "highlight", "enable") ~= false then pcall(vim.treesitter.start) end
 
-          -- indents
           if vim.tbl_get(opts, "indent", "enable") ~= false and have(ev.match, "indents") then
-            vim.b.indentexpr = "v:lua.LazyVim.treesitter.indentexpr()"
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
           end
 
-          -- folds
-          if vim.tbl_get(opts, "folds", "enable") ~= false and have(ev.match, "folds") then
-            vim.b.foldexpr = "v:lua.LazyVim.treesitter.foldexpr()"
+          if
+            vim.tbl_get(opts, "folds", "enable") ~= false
+            and not vim.tbl_contains({ "typescriptreact", "javascriptreact", "vue" }, ev.match)
+            and have(ev.match, "folds")
+          then
+            vim.wo.foldmethod = "expr"
+            vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
           end
         end,
       })
@@ -166,8 +168,10 @@ return {
     end,
   },
 
+  -----------------------------------------------------------------------------
+  -- adds more textobjects via treesitter
   {
-    "nvim-treesitter/nvim-treesitter-textobjects", -- more text objects
+    "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
     event = "VeryLazy",
     opts = {
@@ -175,7 +179,7 @@ return {
         lookahead = true,
         keys = {
           select_textobject = {
-            ["aa"] = "@parameter.outer", -- argument
+            ["aa"] = "@parameter.outer",
             ["ia"] = "@parameter.inner",
             ["ac"] = "@class.outer",
             ["ic"] = "@class.inner",
@@ -198,16 +202,12 @@ return {
             ["]y"] = "@conditional.outer",
             ["]o"] = "@loop.outer",
             ["]gc"] = "@comment.*",
-            ["]Z"] = "@fold",
-            query_group = "folds",
           },
           goto_previous_start = {
             ["[m"] = "@function.outer",
             ["[y"] = "@conditional.outer",
             ["[o"] = "@loop.outer",
             ["[gc"] = "@comment.*",
-            ["[Z"] = "@fold",
-            query_group = "folds",
           },
           goto_next_end = {
             ["]M"] = "@function.outer",
@@ -226,7 +226,7 @@ return {
       swap = {
         keys = {
           swap_next = {
-            ["]<M-a>"] = "@parameter.inner", -- argument
+            ["]<M-a>"] = "@parameter.inner",
             ["]<M-m>"] = "@function.outer",
             ["]<M-e>"] = "@element",
             ["]<M-v>"] = "@variable",
@@ -242,8 +242,7 @@ return {
     },
 
     config = function(_, opts)
-      local TS = require("nvim-treesitter-textobjects")
-      TS.setup(opts)
+      require("nvim-treesitter-textobjects").setup(opts)
 
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("jamin_treesitter_textobjects", { clear = true }),
@@ -254,7 +253,11 @@ return {
             for method, keymaps in pairs(items.keys) do
               for key, query in pairs(keymaps) do
                 vim.keymap.set(
-                  { "n", "x", "o" },
+                  {
+                    action ~= "select" and "n" or nil,
+                    action ~= "swap" and "x" or nil,
+                    action ~= "swap" and "o" or nil,
+                  },
                   key,
                   function()
                     require("nvim-treesitter-textobjects." .. action)[method](query, "textobjects")
