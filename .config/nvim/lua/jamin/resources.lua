@@ -108,6 +108,8 @@ M.lsp_servers = {
 }
 
 M.mason_tools = {
+  "tree-sitter-cli",
+
   "astro-language-server",
   "bash-language-server",
   "css-lsp",
