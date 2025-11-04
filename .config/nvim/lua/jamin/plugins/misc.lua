@@ -85,7 +85,7 @@ return {
             },
           })
         end,
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         desc = "Find and Replace (grug-far)",
       },
       {
@@ -171,7 +171,10 @@ return {
             vim.api.nvim_set_hl(0, "SnacksNotifierMinimal", { link = "Normal" })
             ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
             local progress = vim.defaulttable()
+            local group = vim.api.nvim_create_augroup("LspProgress", {})
+
             vim.api.nvim_create_autocmd("LspProgress", {
+              group = group,
               ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
               callback = function(ev)
                 local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -183,6 +186,7 @@ return {
                 then
                   return
                 end
+
                 local p = progress[client.id]
                 for i = 1, #p + 1 do
                   if i == #p + 1 or p[i].token == ev.data.params.token then
@@ -203,15 +207,30 @@ return {
                   function(v) return table.insert(msg, v.msg) or not v.done end,
                   p
                 )
+                local final_message = vim.tbl_isempty(progress[client.id])
                 vim.notify(table.concat(msg, "\n"), "info", {
-                  id = "lsp_progress",
+                  id = "lsp_progress:" .. tostring(client.id),
                   title = client.name,
+                  timeout = final_message,
+                  history = final_message,
                   opts = function(notif)
                     notif.style = "minimal"
-                    notif.icon = #progress[client.id] == 0 and Jamin.icons.ui.checkmark
+                    notif.icon = final_message and Jamin.icons.ui.checkmark
                       or Jamin.icons.progress[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #Jamin.icons.progress + 1]
                   end,
                 })
+              end,
+            })
+
+            vim.api.nvim_create_autocmd("LspDetach", {
+              group = group,
+              ---@param ev {data: {client_id: integer}}
+              callback = function(ev)
+                local client = vim.lsp.get_client_by_id(ev.data.client_id)
+                if not client or client:is_stopped() then
+                  progress[ev.data.client_id] = nil
+                  Snacks.notifier.hide("lsp_progress:" .. tostring(ev.data.client_id))
+                end
               end,
             })
           end
@@ -240,6 +259,16 @@ return {
       -- quickfile = { enabled = true }, -- started causing inconsistent visual artifacts
       words = { enabled = true },
       scope = { enabled = true },
+
+      gh = {
+        keys = {
+          select = { "<cr>", "gh_actions", desc = "Select Action" },
+          edit = { "<localleader>e", "gh_edit", desc = "Edit" },
+          comment = { "<localleader>c", "gh_comment", desc = "Add Comment" },
+          close = { "<localleader>x", "gh_close", desc = "Close" },
+          reopen = { "<localleader>o", "gh_reopen", desc = "Reopen" },
+        },
+      },
 
       zen = {
         ---@type snacks.win.Config
@@ -372,7 +401,7 @@ return {
             action = ":silent Octo notification",
             cmd = "gh notify -psn3",
             section = "terminal",
-            enabled = Jamin.ui.height >= 39 and vim.fn.executable("gh") == 1,
+            enabled = false, -- Jamin.ui.height >= 39 and vim.fn.executable("gh") == 1,
             key = "n",
             -- icon = Jamin.icons.ui.alert,
             height = 3,
@@ -409,26 +438,78 @@ return {
       { "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference (snacks)", mode = { "n", "t" } },
       { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference (snacks)", mode = { "n", "t" } },
       { "grN", function() Snacks.rename.rename_file() end, desc = "LSP rename file (snacks)" },
-      { "<leader>ld", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition (snacks picker)" },
 
       -- git
       { "<leader>gB", function() Snacks.git.blame_line() end, desc = "Git Blame Line (snacks)" },
-      -- { "<leader>go", function() Snacks.gitbrowse() end, desc = "Git Browse (snacks)", mode = { "n", "v" } },
-      -- { "<leader>gy", function() Snacks.gitbrowse({ notify = false, open = function(url) vim.fn.setreg("+", url) end }) end, desc = "Git Copy URL (snacks)", mode = { "n", "v" } },
-      { "<leader>gfL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line (snacks picker)", mode = { "n", "x" } },
-      { "<leader>gfl", function() Snacks.picker.git_log_file() end, desc = "Git Log File (snacks picker)" },
+      -- { "<leader>go", function() Snacks.gitbrowse({ what = "file" }) end, desc = "Git Browse (snacks)", mode = { "n", "x" } },
+      -- { "<leader>gy", function() Snacks.gitbrowse({ what = "file", notify = false, open = function(url) vim.fn.setreg("+", url) end }) end, desc = "Git Copy URL (snacks)", mode = { "n", "x" } },
 
       -- explorer
       { "<leader>fe", function() Snacks.picker.explorer({ cwd = Snacks.git.get_root() }) end, desc = "Explorer - root (snacks)" },
       { "<leader>fE", function() Snacks.picker.explorer() end, desc = "Explorer - cwd (snacks)" },
 
       -- picker
+      { "<C-p>", function() Snacks.picker.smart() end, desc = "Find Files (snacks picker)" },
+      { "<leader>f", function() Snacks.picker.pickers() end, desc = "Pickers (snacks picker)" },
+      { "<leader>;", function() Snacks.picker.buffers() end, desc = "Buffers (snacks picker)" },
+      { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers (snacks picker)" },
+      { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files (snacks picker)" },
+      { "<leader>fo", function() Snacks.picker.recent() end, desc = "Oldfiles (snacks picker)" },
+      { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent (snacks picker)" },
       { "<leader>fs", function() Snacks.picker.smart() end, desc = "Smart (snacks picker)" },
-      { "<leader>fB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers (snacks picker)" },
-      { "<leader>fy", function() Snacks.picker.cliphist() end, desc = "Clipboard History (snacks picker)" },
-      { "<leader>fz", function() Snacks.picker.spelling() end, desc = "Spelling (snacks picker)" },
+      { "<leader>f.", function() Snacks.picker.resume() end, desc = "Resume (snacks picker)" },
+      { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History (snacks picker)" },
+      { "<leader>f:", function() Snacks.picker.command_history() end, desc = "Command History (snacks picker)" },
+      { "<leader>fD", function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics (snacks picker)" },
+      { "<leader>fH", function() Snacks.picker.highlights() end, desc = "Highlights (snacks picker)" },
+      { "<leader>fM", function() Snacks.picker.man() end, desc = "Man Pages (snacks picker)" },
+      { "<leader>fa", function() Snacks.picker.autocmds() end, desc = "Autocmds (snacks picker)" },
+      { "<leader>fd", function() Snacks.picker.diagnostics() end, desc = "Diagnostics (snacks picker)" },
+      { "<leader>fc", function() Snacks.picker.commands() end, desc = "Commands (snacks picker)" },
+      { "<leader>fh", function() Snacks.picker.help() end, desc = "Help Pages (snacks picker)" },
+      { "<leader>fj", function() Snacks.picker.jumps() end, desc = "Jumps (snacks picker)" },
+      { "<leader>fk", function() Snacks.picker.keymaps() end, desc = "Keymaps (snacks picker)" },
+      { "<leader>fl", function() Snacks.picker.loclist() end, desc = "Location List (snacks picker)" },
+      { "<leader>fm", function() Snacks.picker.marks() end, desc = "Marks (snacks picker)" },
+      { "<leader>fq", function() Snacks.picker.qflist() end, desc = "Quickfix List (snacks picker)" },
       { "<leader>fu", function() Snacks.picker.undo() end, desc = "Undo History (snacks picker)" },
       { "<leader>u", function() Snacks.picker.undo() end, desc = "Undo History (snacks picker)" },
+      { "<leader>fy", function() Snacks.picker.cliphist() end, desc = "Clipboard History (snacks picker)" },
+      { "<leader>fz", function() Snacks.picker.spelling() end, desc = "Spelling (snacks picker)" },
+      { '<leader>f"', function() Snacks.picker.registers() end, desc = "Registers (snacks picker)" },
+
+      -- picker > grep
+      { "<C-\\>", function() Snacks.picker.grep() end, desc = "Grep (snacks picker)" },
+      { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep (snacks picker)" },
+      { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep (snacks picker)" },
+      { "<leader>fB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers (snacks picker)" },
+      { "<leader>fL", function() Snacks.picker.lines() end, desc = "Buffer Lines (snacks picker)" },
+      { "<leader>fw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word (snacks picker)", mode = { "n", "x" } },
+
+      -- picker > LSP
+      { "<leader>lS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols (snacks picker)" },
+      { "<leader>ld", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition (snacks picker)" },
+      { "<leader>li", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation (snacks picker)" },
+      { "<leader>lr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References (snacks picker)", mode = { "n", "x" } },
+      { "<leader>ls", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols (snacks picker)" },
+      { "<leader>ly", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition (snacks picker)" },
+
+      -- picker > git
+      { "<C-g>", function() Snacks.picker.git_files() end, desc = "Find Git Files (snacks picker)" },
+      { "<leader>gf", function() Snacks.picker.git_files() end, desc = "Find Git Files (snacks picker)" },
+      { "<leader>gfb", function() Snacks.picker.git_branches() end, desc = "Git Branches (snacks picker)" },
+      { "<leader>gfh", function() Snacks.picker.git_log() end, desc = "Git Log (snacks picker)" },
+      { "<leader>gfL", function() Snacks.picker.git_log_file() end, desc = "Git Log File (snacks picker)" },
+      { "<leader>gfl", function() Snacks.picker.git_log_line() end, desc = "Git Log Line (snacks picker)", mode = { "n", "x" } },
+      { "<leader>gfs", function() Snacks.picker.git_status() end, desc = "Git Status (snacks picker)" },
+      { "<leader>gfS", function() Snacks.picker.git_stash() end, desc = "Git Stash (snacks picker)" },
+      { "<leader>gfd", function() Snacks.picker.git_diff({ base = "origin", group = true }) end, desc = "Git Diff (origin)" },
+
+      -- picker > github
+      { "<leader>gfi", function() Snacks.picker.gh_issue() end, desc = "GitHub Issues (open)" },
+      { "<leader>gfp", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
+      { "<leader>gfI", function() Snacks.picker.gh_issue({ state = "all" }) end, desc = "GitHub Issues (all)" },
+      { "<leader>gfP", function() Snacks.picker.gh_pr({ state = "all" }) end, desc = "GitHub Pull Requests (all)" },
     },
   },
 }

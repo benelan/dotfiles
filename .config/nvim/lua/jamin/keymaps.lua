@@ -49,6 +49,20 @@ for _, char in ipairs(undo_after_chars) do
   vim.keymap.set("i", char, char .. "<C-g>u")
 end
 
+-- Add comment above/below cursor
+vim.keymap.set(
+  "n",
+  "gco",
+  "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>",
+  { desc = "Add Comment Below" }
+)
+vim.keymap.set(
+  "n",
+  "gcO",
+  "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>",
+  { desc = "Add Comment Above" }
+)
+
 -- Delete marks on current line
 vim.keymap.set("n", "dm", function()
   local cur_line = vim.fn.line(".")
@@ -106,38 +120,17 @@ vim.keymap.set("n", "<M-n>", "<CMD>cnext<CR>", { desc = "Next quickfix item" })
 vim.keymap.set("n", "<M-p>", "<CMD>cprev<CR>", { desc = "Previous quickfix item" })
 
 -- Goto diagnostics error/warning
-vim.keymap.set(
-  "n",
-  "]e",
-  function()
-    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true })
-  end,
-  { desc = "Next diagnostic error" }
-)
+local diagnostic_goto = function(next, severity)
+  return function()
+    vim.diagnostic.jump({
+      count = (next and 1 or -1) * vim.v.count1,
+      severity = severity and vim.diagnostic.severity[severity] or nil,
+      float = true,
+    })
+  end
+end
 
-vim.keymap.set(
-  "n",
-  "[e",
-  function()
-    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true })
-  end,
-  { desc = "Previous diagnostic error" }
-)
-
-vim.keymap.set(
-  "n",
-  "]w",
-  function()
-    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN, float = true })
-  end,
-  { desc = "Next diagnostic warning" }
-)
-
-vim.keymap.set(
-  "n",
-  "[w",
-  function()
-    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN, float = true })
-  end,
-  { desc = "Previous diagnostic warning" }
-)
+vim.keymap.set("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Previous Error" })
+vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
+vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Preiousv Warning" })

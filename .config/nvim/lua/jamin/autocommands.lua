@@ -33,6 +33,54 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 })
 
 -------------------------------------------------------------------------------
+-- go to last loc when opening a buffer
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = vim.api.nvim_create_augroup("jamin.last_loc", {}),
+  callback = function(event)
+    local exclude = vim.tbl_extend("force", Jamin.filetypes.excluded, { "gitcommit" })
+    local buf = event.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].jamin_last_loc then return end
+    vim.b[buf].jamin_last_loc = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= lcount then pcall(vim.api.nvim_win_set_cursor, 0, mark) end
+  end,
+})
+
+-------------------------------------------------------------------------------
+-- close some filetypes with <q>
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("jamin.close_with_q", {}),
+  pattern = {
+    "PlenaryTestPopup",
+    "checkhealth",
+    "git",
+    "gitsigns-blame",
+    "grug-far",
+    "help",
+    "lspinfo",
+    "man",
+    "neotest-output",
+    "neotest-output-panel",
+    "neotest-summary",
+    "qf",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+      end, {
+        buffer = event.buf,
+        silent = true,
+        desc = "Quit buffer",
+      })
+    end)
+  end,
+})
+
+-------------------------------------------------------------------------------
 -- set options for writing filetypes
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = Jamin.filetypes.writing,

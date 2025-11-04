@@ -147,7 +147,9 @@ return {
         callback = function(ev)
           if not have(ev.match) then return end
 
-          if vim.tbl_get(opts, "highlight", "enable") ~= false then pcall(vim.treesitter.start) end
+          if vim.tbl_get(opts, "highlight", "enable") ~= false then
+            pcall(vim.treesitter.start, ev.buf)
+          end
 
           if vim.tbl_get(opts, "indent", "enable") ~= false and have(ev.match, "indents") then
             vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

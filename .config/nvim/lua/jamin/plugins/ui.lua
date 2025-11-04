@@ -52,7 +52,7 @@ return {
         hl("StatusLineDiagnosticSev1", palette.red, palette.bg3) -- error
         hl("StatusLineDiagnosticSev2", palette.yellow, palette.bg3) -- warning
         hl("StatusLineDiagnosticSev3", palette.blue, palette.bg3) -- info
-        hl("StatusLineDiagnosticSev4", palette.green, palette.bg3) -- hint
+        hl("StatusLineDiagnosticSev4", palette.purple, palette.bg3) -- hint
 
         hl("StatusLineGitChange", alt_palette.orange, palette.bg3)
         hl("StatusLineGitAdd", alt_palette.green, palette.bg3)

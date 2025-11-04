@@ -1,6 +1,7 @@
 vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamed"
 vim.opt.updatetime = 150
 vim.opt.confirm = true
+vim.opt.mouse = ""
 vim.opt.virtualedit:append("block")
 vim.opt.nrformats:append("unsigned")
 vim.opt.foldmethod = "indent"

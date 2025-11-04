@@ -130,8 +130,10 @@ return {
       ---@type CopilotChat.config.Config
       return {
         model = openai_api_key and not M.should_use_copilot() and "gpt-4.1:openai" or nil,
-        question_header = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
-        window = { border = Jamin.icons.border },
+        headers = {
+          user = ("## %s%s "):format(user:sub(1, 1):upper(), user:sub(2)),
+        },
+        window = { border = Jamin.icons.border, width = 0.4 },
         mappings = {
           submit_prompt = { normal = "<C-s>" },
           reset = { normal = "<localleader>x", insert = "<M-x>" },
@@ -163,8 +165,7 @@ return {
 
               get_models = function(headers)
                 local response, err =
-                  ---@diagnostic disable-next-line: deprecated
-                  require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
+                  require("CopilotChat.utils.curl").get("https://api.openai.com/v1/models", {
                     headers = headers,
                     json_response = true,
                   })
@@ -173,7 +174,7 @@ return {
                   .iter(response.body.data)
                   :filter(function(model)
                     --stylua: ignore
-                    local exclude_patterns = { "audio", "babbage", "dall%-e", "davinci", "embedding", "image", "moderation", "realtime", "transcribe", "tts", "whisper" }
+                    local exclude_patterns = { "audio", "babbage", "dall%-e", "davinci", "embedding", "image", "moderation", "realtime", "sora", "transcribe", "tts", "whisper" }
                     for _, pattern in ipairs(exclude_patterns) do
                       if model.id:match(pattern) then return false end
                     end

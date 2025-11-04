@@ -282,9 +282,12 @@ return {
             name = "Attach to Chrome process (port 9222)",
             type = "pwa-chrome",
             request = "attach",
+            sourceMaps = true,
             cwd = vim.uv.cwd(),
             port = 9222,
             webRoot = "${workspaceFolder}",
+            skipFiles = { "<node_internals>/**", "node_modules/**" },
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
           },
 
           {
@@ -295,6 +298,8 @@ return {
             url = url_prompt,
             webRoot = vim.uv.cwd(),
             userDataDir = false,
+            skipFiles = { "<node_internals>/**", "node_modules/**" },
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
           },
 
           {
@@ -322,6 +327,7 @@ return {
             sourceMaps = true,
             protocol = "inspector",
             skipFiles = { "<node_internals>/**", "node_modules/**" },
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
           },
 
           {

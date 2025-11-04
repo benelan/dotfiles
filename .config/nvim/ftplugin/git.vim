@@ -34,11 +34,8 @@ endfunction
 function! s:add_mappings() abort
   nnoremap <buffer> ]q :cnext <BAR> :call <sid>diff_current_quickfix_entry()<CR>
   nnoremap <buffer> [q :cprevious <BAR> :call <sid>diff_current_quickfix_entry()<CR>
-
-  if has("nvim")
-    nnoremap <buffer> <M-n> :cnext <BAR> :call <sid>diff_current_quickfix_entry()<CR>
-    nnoremap <buffer> <M-q> :cprevious <BAR> :call <sid>diff_current_quickfix_entry()<CR>
-  endif
+  nnoremap <buffer> <M-n> :cnext <BAR> :call <sid>diff_current_quickfix_entry()<CR>
+  nnoremap <buffer> <M-q> :cprevious <BAR> :call <sid>diff_current_quickfix_entry()<CR>
 
   " Reset quickfix height. Sometimes it messes up after selecting another item
   11copen

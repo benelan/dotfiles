@@ -84,9 +84,14 @@ endif
 
 set statusline=[%n]%m%r%h%w%q%y\ %f\ %=\ %v:[%l/%L]
 
+" COLORSCHEME {{{2
 "colorscheme desert
 hi! Visual cterm=NONE ctermfg=black ctermbg=grey
 hi! Search cterm=NONE ctermfg=black ctermbg=blue
+hi! SpellBad cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkred
+hi! SpellCap cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkyellow
+hi! SpellRare cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkcyan
+hi! SpellLocal cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkmagenta
 
 " MARKDOWN {{{2
 let g:markdown_recommended_style = 0
@@ -246,7 +251,6 @@ if has("keymap")
     cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
 
     " SYSTEM CLIPBOARD {{{2
-
     for char in [ 'y', 'p', 'P' ]
         execute 'nnoremap <leader>' . char . ' "+' . char
         execute 'vnoremap <leader>' . char . ' "+' . char
@@ -263,7 +267,6 @@ if has("keymap")
     nnoremap S "_S
 
     " RESET UI {{{2
-
     nnoremap <leader><C-l>  :<C-u>nohlsearch<CR>
                 \:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 
@@ -772,9 +775,4 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|wezterm\|foot\|kitty\)'
     " using a color theme with a background color in terminals such as
     " kitty that do not support background color erase.
     let &t_ut=""
-
-    hi! SpellBad cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkred
-    hi! SpellCap cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkyellow
-    hi! SpellRare cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkcyan
-    hi! SpellLocal cterm=undercurl ctermfg=NONE ctermbg=NONE ctermul=darkmagenta
 endif

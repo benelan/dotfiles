@@ -23,6 +23,7 @@ local language_settings = {
   },
 }
 
+---@type vim.lsp.ClientConfig
 return {
   single_file_support = true,
   init_options = { preferences = language_settings.inlayHints },
@@ -40,4 +41,9 @@ return {
       },
     },
   },
+
+  on_init = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
 }

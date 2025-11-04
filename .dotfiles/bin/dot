@@ -379,9 +379,9 @@ install_packages_npm() {
         # yaml-language-server
         # vim-language-server
         # typescript-language-server
-        vue-language-server
         # svelte-language-server
         # @astrojs/language-server
+        # @vue/language-server
         # @tailwindcss/language-server
         # vscode-langservers-extracted
         # dockerfile-language-server-nodejs
@@ -2115,6 +2115,8 @@ install_build_neovim() {
 
     if [ "$(git rev-parse HEAD)" != "$neovim_head" ]; then
         sudo make distclean
+        sudo make clean
+        sudo rm -rf /usr/local/share/nvim/
         sudo make CMAKE_BUILD_TYPE=Release
         sudo make install
     else

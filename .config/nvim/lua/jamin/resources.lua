@@ -78,7 +78,7 @@ M.filetypes = {
 }
 
 M.lsp_servers = {
-  "astro",
+  -- "astro",
   "bashls",
   "cssls",
   -- "docker_compose_language_service",
@@ -102,7 +102,7 @@ M.lsp_servers = {
   "ts_ls",
   -- "typos_lsp",
   "vimls",
-  "vue_ls",
+  -- "vue_ls",
   "yamlls",
   -- "zk",
 }
@@ -110,7 +110,7 @@ M.lsp_servers = {
 M.mason_tools = {
   "tree-sitter-cli",
 
-  "astro-language-server",
+  -- "astro-language-server",
   "bash-language-server",
   "css-lsp",
   -- "docker-compose-language-service",
@@ -131,7 +131,7 @@ M.mason_tools = {
   "taplo",
   "typescript-language-server",
   "vim-language-server",
-  -- "vue-language-server", -- v3 has install errors due to my bare repo dotfiles setup. Install via npm instead
+  -- "vue-language-server",
   "yaml-language-server",
   "zk",
 

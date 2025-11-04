@@ -2,7 +2,7 @@
 vim.diagnostic.config({
   virtual_text = {
     prefix = function(d) return Jamin.icons.diagnostics[d.severity] end,
-    severity = { min = vim.diagnostic.severity.WARN },
+    current_line = true,
     source = "if_many",
   },
   signs = { text = Jamin.icons.diagnostics },
@@ -50,18 +50,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     --   vim.wo.foldmethod = "expr"
     --   vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
     -- end
-
-    -- disable formatting for some LSP servers in favor of better standalone programs
-    -- e.g.  prettier, stylua (using null-ls, efm-langserver, conform, etc.)
-    if
-      vim.tbl_contains(
-        { "typescript-tools", "ts_ls", "eslint", "jsonls", "html", "lua_ls", "bashls" },
-        client.name
-      )
-    then
-      client.server_capabilities.documentFormattingProvider = false
-      client.server_capabilities.documentRangeFormattingProvider = false
-    end
 
     -- setup lsp keymaps
     local bufmap = function(mode, lhs, rhs, desc)
@@ -151,6 +139,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         "<localleader>i",
         function()
           vim.lsp.buf.code_action({
+            client = client,
             apply = true,
             context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
           })
@@ -163,6 +152,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         "<localleader>o",
         function()
           vim.lsp.buf.code_action({
+            client = client,
             apply = true,
             context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
           })
@@ -172,14 +162,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
       bufmap("n", "<localleader>u", function()
         vim.lsp.buf.code_action({
+          client = client,
           apply = true,
           context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
         })
         vim.lsp.buf.code_action({
+          client = client,
           apply = true,
           context = { only = { "source.removeUnusedImports.ts" }, diagnostics = {} },
         })
         vim.lsp.buf.code_action({
+          client = client,
           apply = true,
           context = { only = { "source.fixAll.ts" }, diagnostics = {} },
         })

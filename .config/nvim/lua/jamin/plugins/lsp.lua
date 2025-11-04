@@ -145,12 +145,12 @@ return {
             end,
           }),
 
-          formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
+          formatting.fixjson,
+          formatting.stylua,
+          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
           formatting.stylelint.with({ prefer_local = "node_modules/.bin" }),
           formatting.markdownlint.with({ prefer_local = "node_modules/.bin" }),
-          formatting.shfmt.with({ extra_args = { "-i", "4", "-ci" } }),
-          formatting.stylua,
-          formatting.fixjson,
+          formatting.prettier.with({ prefer_local = "node_modules/.bin" }),
         },
       }
     end,

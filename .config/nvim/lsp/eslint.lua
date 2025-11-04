@@ -1,4 +1,5 @@
 -- https://github.com/Microsoft/vscode-eslint?#settings-options
+---@type vim.lsp.ClientConfig
 return {
   capabilities = {
     workspace = { workspaceFolders = true },
@@ -19,4 +20,9 @@ return {
       "vue",
     },
   },
+
+  on_init = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
 }

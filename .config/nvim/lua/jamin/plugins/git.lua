@@ -274,7 +274,6 @@ return {
         delete = { text = Jamin.icons.git.status_delete },
       },
       on_attach = function(bufnr)
-        ---@diagnostic disable-next-line: redundant-return-value
         if vim.tbl_contains(Jamin.filetypes.excluded, vim.bo[bufnr].filetype) then return false end
       end,
     },
@@ -314,8 +313,10 @@ return {
       outdated_icon = Jamin.i(nil, Jamin.icons.ui.clock),
       resolved_icon = Jamin.i(nil, Jamin.icons.ui.checkmark),
       reaction_viewer_hint_icon = Jamin.i(nil, Jamin.icons.ui.circle),
-      repo_icon = Jamin.i(nil, Jamin.icons.ui.storage),
       user_icon = Jamin.i(nil, Jamin.icons.ui.user),
+      ghost_icon = Jamin.i(nil, Jamin.icons.ui.user),
+      copilot_icon = Jamin.i(nil, Jamin.icons.lsp_kind.Copilot),
+      dependabot_icon = Jamin.i(nil, Jamin.icons.ui.package),
       right_bubble_delimiter = Jamin.i(nil, Jamin.icons.ui.fill_solid),
       left_bubble_delimiter = Jamin.i(nil, Jamin.icons.ui.fill_solid),
       timeline_marker = Jamin.i(nil, Jamin.icons.ui.diamond),
@@ -348,10 +349,19 @@ return {
         notification = {
           read = { lhs = "<M-r>", desc = "mark notification as read", mode = { "n", "i" } },
         },
+        discussion = {
+          open_in_browser = { lhs = "<C-o>", desc = "open discussion in browser" },
+        },
+        release = {
+          open_in_browser = { lhs = "<C-o>", desc = "open release in browser" },
+        },
+        repo = {
+          open_in_browser = { lhs = "<C-o>", desc = "open repo in browser" },
+        },
         runs = {
-          expand_step = { lhs = "<Tab>", desc = "expand workflow step" },
           open_in_browser = { lhs = "<C-o>", desc = "open workflow run in browser" },
           rerun = { lhs = "<C-a>", desc = "rerun workflow" },
+          expand_step = { lhs = "<Tab>", desc = "expand workflow step" },
         },
       },
     },
@@ -371,7 +381,7 @@ return {
           vim.keymap.set("n", "<M-j>", "]t", { buffer = true, remap = true })
           vim.keymap.set("n", "<M-k>", "[t", { buffer = true, remap = true })
           vim.keymap.set("n", "<M-n>", "]q", { buffer = true, remap = true })
-          vim.keymap.set("n", "<M-S-p>", "[q", { buffer = true, remap = true })
+          vim.keymap.set("n", "<M-p>", "[q", { buffer = true, remap = true })
           vim.keymap.set("n", "<M-S-n>", "]Q", { buffer = true, remap = true })
           vim.keymap.set("n", "<M-S-p>", "[Q", { buffer = true, remap = true })
           vim.keymap.set("n", "<Tab>", "<localleader><space>]q", { buffer = true, remap = true })
