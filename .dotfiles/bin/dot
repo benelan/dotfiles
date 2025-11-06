@@ -1116,24 +1116,28 @@ install_ubuntu_vscode() {
         # vscodevim.vim
         # codeium.codeium
 
-        github.copilot
-        github.copilot-chat
+        # github.copilot
+        # github.copilot-chat
         github.remotehub
         github.vscode-github-actions
         github.vscode-pull-request-github
         ms-vscode.vscode-github-issue-notebooks
-
-        ms-azuretools.vscode-docker
-        ms-vscode-remote.remote-containers
-        # ms-vscode-remote.remote-ssh
-        # ms-vscode-remote.remote-ssh-edit
         # ms-vscode.live-server
         # ms-vscode.remote-explorer
+        # ms-vscode-remote.remote-ssh
+        # ms-vscode-remote.remote-ssh-edit
+        # ms-vscode-remote.remote-containers
+        ms-azuretools.vscode-containers
+        ms-azuretools.vscode-docker
+
+        visualstudioexptteam.vscodeintellicode
+        visualstudioexptteam.intellicode-api-usage-examples
 
         # bradlc.vscode-tailwindcss
         # christian-kohler.npm-intellisense
         # christian-kohler.path-intellisense
         # dbaeumer.vscode-eslint
+        # docker.docker
         # editorconfig.editorconfig
         # esbenp.prettier-vscode
         # foam.foam-vscode
@@ -1147,8 +1151,6 @@ install_ubuntu_vscode() {
         # sumneko.lua
         # svelte.svelte-vscode
         # timonwong.shellcheck
-        # visualstudioexptteam.intellicode-api-usage-examples
-        # visualstudioexptteam.vscodeintellicode
         # vue.volar
         # yzhang.markdown-all-in-one
 

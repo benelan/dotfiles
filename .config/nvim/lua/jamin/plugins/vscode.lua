@@ -37,30 +37,32 @@ vim.api.nvim_create_autocmd("User", {
     if not vim.g.vscode then return end
 
     local vscode = require("vscode") ---@diagnostic disable-line: different-requires
-    local function action(cmd)
-      return function() vscode.action(cmd) end
+    local function call(cmd)
+      return function() vscode.call(cmd) end
     end
 
     vim.opt.clipboard = "unnamedplus"
 
-    vim.keymap.set("n", "u", action("undo"))
-    vim.keymap.set("n", "<C-r>", action("redo"))
+    -- vim.keymap.set("n", "u", call("undo"))
+    -- vim.keymap.set("n", "<C-r>", call("redo"))
 
-    vim.keymap.set("n", "[t", action("workbench.action.previousEditor"))
-    vim.keymap.set("n", "]t", action("workbench.action.nextEditor"))
-    vim.keymap.set("n", "]c", action("workbench.action.editor.nextChange"))
-    vim.keymap.set("n", "[c", action("workbench.action.editor.previousChange"))
-    vim.keymap.set("n", "]d", action("editor.action.marker.next"))
-    vim.keymap.set("n", "[d", action("editor.action.marker.prev"))
+    vim.keymap.set("n", "[t", call("workbench.action.previousEditor"))
+    vim.keymap.set("n", "]t", call("workbench.action.nextEditor"))
+    vim.keymap.set("n", "]c", call("workbench.action.editor.nextChange"))
+    vim.keymap.set("n", "[c", call("workbench.action.editor.previousChange"))
+    vim.keymap.set("n", "]d", call("editor.action.marker.next"))
+    vim.keymap.set("n", "[d", call("editor.action.marker.prev"))
 
-    vim.keymap.set("n", "<leader>F", action("editor.action.formatDocument"))
-    vim.keymap.set("v", "<leader>F", action("editor.action.formatSelection"))
+    vim.keymap.set("n", "gpd", call("editor.action.peekDefinition"))
+    vim.keymap.set("n", "<leader>F", call("editor.action.formatDocument"))
+    vim.keymap.set("v", "<leader>F", call("editor.action.formatSelection"))
 
-    vim.keymap.set("n", "<leader>ls", action("workbench.action.gotoSymbol"))
-    vim.keymap.set("n", "<leader>ff", action("workbench.action.quickOpen"))
-    vim.keymap.set("n", "<leader>fb", action("workbench.action.showAllEditors"))
-    vim.keymap.set("n", "<leader>fg", action("workbench.action.findInFiles"))
-    vim.keymap.set("n", "<leader>/", action("workbench.action.findInFiles"))
+    vim.keymap.set("n", "<leader>gs", call("workbench.view.scm"))
+    vim.keymap.set("n", "<leader>ls", call("workbench.action.gotoSymbol"))
+    vim.keymap.set("n", "<leader>ff", call("workbench.action.quickOpen"))
+    vim.keymap.set("n", "<leader>fb", call("workbench.action.showAllEditors"))
+    vim.keymap.set("n", "<leader>fg", call("workbench.action.findInFiles"))
+    vim.keymap.set("n", "<leader>/", call("workbench.action.findInFiles"))
   end,
 })
 

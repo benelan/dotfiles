@@ -1,5 +1,6 @@
 {
   "telemetry.telemetryLevel": "off",
+  "keyboard.dispatch": "keyCode",
   "window.zoomLevel": 1,
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.wordWrap": "off",
@@ -30,7 +31,8 @@
   "extensions.autoUpdate": false,
   "extensions.autoCheckUpdates": true,
   "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
+    "asvetliakov.vscode-neovim": 1,
+    "vscodevim.vim": 1
   },
   "files.eol": "\n",
   "files.defaultLanguage": "${activeEditorLanguage}",
@@ -39,12 +41,6 @@
   "git.autofetch": true,
   "git.confirmSync": false,
   "git.allowForcePush": false,
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.surveys.enabled": false,
-  "terminal.external.linuxExec": "wezterm",
-  "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "search.smartCase": true,
   "search.exclude": {
     "**/node_modules": true,
@@ -52,6 +48,8 @@
     "**/dist": true,
     "*.min.js": true
   },
+  "terminal.external.linuxExec": "wezterm",
+  "terminal.external.windowsExec": "C:\\Program Files\\Git\\bin\\bash.exe",
   "workbench.colorTheme": "Gruvbox Material Dark",
   "gruvboxMaterial.darkPalette": "original",
   "gruvboxMaterial.darkWorkbench": "flat",
@@ -60,28 +58,27 @@
       "mode": "auto"
     }
   ],
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
   "[lua]": {
     "editor.defaultFormatter": "sumneko.lua"
   },
-  "Lua.diagnostics.globals": ["vim"],
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "svelte.enable-ts-plugin": true,
   "Lua.format.enable": true,
   "Lua.telemetry.enable": false,
+  "Lua.diagnostics.globals": ["vim"],
   "Lua.completion.callSnippet": "Both",
   "Lua.completion.keywordSnippet": "Both",
-  "liveServer.settings.donotShowInfoMsg": true,
-  "vim.easymotion": false,
   "vim.enableNeovim": true,
-  "vim.highlightedyank.enable": true,
   "vim.hlsearch": true,
-  "vim.incsearch": true,
+  "vim.highlightedyank.enable": true,
   "vim.showMarksInGutter": true,
   "vim.smartRelativeLine": true,
-  "vim.surround": true,
-  "vim.targets.bracketObjects.enable": true,
   "vim.targets.enable": true,
+  "vim.targets.bracketObjects.enable": true,
   "vim.targets.smartQuotes.enable": true,
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
@@ -89,30 +86,12 @@
   "vim.leader": "<space>",
   "vim.normalModeKeyBindings": [
     {
-      "before": ["<leader>", "<C-l>"],
-      "commands": [":nohl"]
-    },
-    {
-      "before": ["<leader>", "e"],
-      "commands": ["workbench.explorer.fileView.focus"]
-    },
-    {
       "before": ["Z", "Z"],
       "commands": [":wq"]
     },
     {
       "before": ["Z", "Q"],
       "commands": [":q!"]
-    },
-    {
-      "before": ["g", "c"],
-      "commands": ["editor.action.commentLine"]
-    }
-  ],
-  "vim.visualModeKeyBindingsNonRecursive": [
-    {
-      "before": ["g", "c"],
-      "commands": ["editor.action.commentLine"]
     }
   ],
   "vim.insertModeKeyBindings": [
@@ -121,5 +100,5 @@
       "commands": ["editor.action.clipboardPasteAction"]
     }
   ],
-  "svelte.enable-ts-plugin": true
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue"
 }

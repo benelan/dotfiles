@@ -68,6 +68,10 @@
     "command": "workbench.action.closeActiveEditor"
   },
   {
+    "key": "alt-t",
+    "command": "workbench.action.terminal.toggleTerminal"
+  },
+  {
     "key": "alt+a",
     "command": "explorer.newFile"
   },
