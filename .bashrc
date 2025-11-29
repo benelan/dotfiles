@@ -13,17 +13,13 @@ esac
 # work, because Bash doesn't set that flag until after .bashrc has evaluated.
 ! shopt -q restricted_shell 2>/dev/null || return
 
-# Source shell aliases and functions {{{1
-[ -r "$DOTFILES/shell/aliases.sh" ] && . "$DOTFILES/shell/aliases.sh"
-[ -r "$DOTFILES/shell/functions.sh" ] && . "$DOTFILES/shell/functions.sh"
-
 # shellcheck disable=2128
 [ -n "$BASH_VERSINFO" ] || return   # Check version array exists (>=2.0)
 ((BASH_VERSINFO[0] >= 3)) || return # Check actual major version number
 
-# Source bash options, prompt, completion, and local settings {{{1
+# Source bash aliases, functions, options, prompt, completion {{{1
 # The source order matters!
-for file in "$DOTFILES"/shell/{options,prompt,completion}.sh; do
+for file in "$DOTFILES"/shell/{aliases,functions,options,prompt,completion}.sh; do
     [ -r "$file" ] && . "$file"
 done
 
@@ -31,6 +27,9 @@ done
 [ -r ~/.bashrc.local ] && . ~/.bashrc.local
 
 # Setup miscellaneous tools and integrations {{{1
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 # broot shell integration so `cd` works
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 

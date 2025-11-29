@@ -272,10 +272,11 @@ ips() {
     )"
 
     printf "%s\n" "External IP (Public IP): $(
-        dig +short myip.opendns.com @resolver1.opendns.com ||
-            curl -s ifconfig.co ||
-            curl -s checkip.amazonaws.com ||
+        # dig +short myip.opendns.com @resolver1.opendns.com ||
+        # dig +short txt ch whoami.cloudflare @1.0.0.1 ||
+        curl -s checkip.amazonaws.com ||
             curl -s ipinfo.io/ip ||
+            curl -s ifconfig.co ||
             curl -s icanhazip.com ||
             curl -s smart-ip.net/myip ||
             (curl -s pasteip.me/api/cli/ && echo) ||
@@ -317,7 +318,7 @@ tdot() {
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}}}
 ## edit dotfiles with git plugins setup correctly             {{{
 
-# searches with Telescope if no args are provided
+# searches with Snacks if no args are provided
 edot() {
     EDITOR=nvim dot edit +"if !len(argv()) | execute 'lua Snacks.picker.git_files()' | endif"
 }
@@ -498,9 +499,9 @@ if supports fzf; then
         local pids
 
         if [ "$UID" != "0" ]; then
-            pids="$(ps -f -u "$UID" | sed 1d | fzf -m --select-nth 2)"
+            pids="$(ps -f -u "$UID" | sed 1d | fzf -m --accept-nth 2)"
         else
-            pids="$(ps -ef | sed 1d | fzf -m --select-nth 2)"
+            pids="$(ps -ef | sed 1d | fzf -m --accept-nth 2)"
         fi
 
         if [ -n "$pids" ]; then
@@ -531,6 +532,16 @@ if supports fzf; then
             local script
             script="$(jq -r ".scripts | keys[] " <package.json | sort | fzf)"
             [ -n "$script" ] && npm run "$script"
+        }
+
+        ## format JSON and sort fields
+        # arg1: input file
+        # arg2: output file, defaults to input file
+        fmtjson() {
+            jq '.' -sSM "$1" |
+                jq 'reduce .[] as  $obj ({}; . * $obj)' -M >/tmp/fmt.json &&
+                mv /tmp/fmt.json "${2:-"$1"}"
+
         }
     fi
 

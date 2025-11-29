@@ -70,12 +70,12 @@ has() { command -v "$1" >/dev/null 2>&1; }
 if [ -z "$MATPAT_COPY_CMD" ]; then
     if has /mnt/c/Windows/System32/clip.exe; then
         MATPAT_COPY_CMD="/mnt/c/Windows/System32/clip.exe" # Windows (WSL)
+    elif has wl-copy && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        MATPAT_COPY_CMD="wl-copy" # Linux (Wayland)
     elif has xsel; then
         MATPAT_COPY_CMD="xsel -bi" # Linux (X11)
     elif has xclip; then
         MATPAT_COPY_CMD="xclip -selection clipboard" # Linux (X11)
-    elif has wl-copy; then
-        MATPAT_COPY_CMD="wl-copy" # Linux (Wayland)
     elif has pbcopy; then
         MATPAT_COPY_CMD="pbcopy" # OSX
     fi
@@ -203,6 +203,7 @@ main() {
     fi
 
     pattern="select"
+    all_patterns="uri ip_address git_sha_range git_sha"
 
     while getopts p:tsh opt; do
         case $opt in
@@ -226,14 +227,18 @@ main() {
     shift "$((OPTIND - 1))"
 
     case $pattern in
-        a | all) match_pattern uri ip_address git_sha_range git_sha ;;
         i | ip | ip_address) match_pattern ip_address ;;
         r | range | git_sha_range) match_pattern git_sha_range ;;
         s | sha | git_sha) match_pattern git_sha ;;
         u | uri | url) match_pattern uri ;;
+        a | all)
+            # shellcheck disable=SC2086
+            match_pattern $all_patterns
+            ;;
         select)
-            # shellcheck disable=2046
-            match_pattern $(select_pattern)
+            selected_pattern="$(select_pattern)"
+            [ "$selected_pattern" = "all" ] && selected_pattern="$all_patterns"
+            match_pattern "$selected_pattern"
             ;;
         *) help "unknown pattern: \"$pattern\"" ;;
     esac
