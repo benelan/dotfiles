@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# vim:filetype=sh foldmethod=marker:
+# vim:set foldmethod=marker:
 
 # directories {{{1
 export XDG_CONFIG_HOME="$HOME/.config"

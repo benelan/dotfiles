@@ -1,4 +1,4 @@
-" vim:foldmethod=marker:filetype=vim:
+" vim:set foldmethod=marker:
 if exists('g:loaded_jamin_system_open_handler') || &cp | finish | endif
 let g:loaded_jamin_system_open_handler = 1
 

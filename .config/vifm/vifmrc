@@ -1,4 +1,4 @@
-" vim:filetype=vifm foldmethod=marker:
+" vim:set filetype=vifm foldmethod=marker:
 "
 " Sample configuration file for vifm (last updated: 11 May, 2025)
 " https://github.com/vifm/vifm/blob/master/data/vifmrc

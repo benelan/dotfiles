@@ -1,4 +1,4 @@
-# vim:filetype=dircolors foldmethod=marker:
+# vim:set filetype=dircolors foldmethod=marker:
 # Designed for dircolors (GNU coreutils) 5.97
 
 # Below are the color init strings for the basic file types. A color init

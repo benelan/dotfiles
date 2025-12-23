@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#vim:filetype=sh foldmethod=marker:
+# vim:set foldmethod=marker:
 
 # Adopted from:
 # https://github.com/niraj998/dotfiles/blob/454fe793e8960a024945fc93134ee810a30fe0d6/.config/rofi/music/music

@@ -1,5 +1,5 @@
+# vim:set filetype=swayconfig foldmethod=marker:
 # Read `man 5 sway` for a complete reference.
-# vim:foldmethod=marker:filetype=swayconfig:
 
 ### Variables {{{1
 #

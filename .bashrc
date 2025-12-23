@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vim: foldmethod=marker:
+# vim:set foldmethod=marker:
 # shellcheck disable=1090,1091
 # ~/.bashrc: executed by bash(1) for non-login shells.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# vim:filetype=sh foldmethod=marker:
+# vim:set foldmethod=marker:
 
 # Util functions {{{1
 # expand arg1 to an environment variable {{{2

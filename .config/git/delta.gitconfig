@@ -1,4 +1,4 @@
-; vim:ft=gitconfig:
+; vim:set filetype=gitconfig:
 
 [core]
     pager = "bash -c '{                                                \

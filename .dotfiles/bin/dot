@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vim:filetype=sh foldmethod=marker:
+# vim:set filetype=sh foldmethod=marker:
 # shellcheck disable=2046,2034
 
 # Ben Elan's dotfiles and dependency management script.
@@ -1626,6 +1626,8 @@ install_theme_conky-config() {
     rm -rf ~/.config/conky/{LICENSE,VERSION,.gitignore,*.example,.*.cfg,*.jpg}
 
     cat >"$HOME/.config/conky/local.conf" <<EOF
+-- vim:set filetype=lua:
+
 conky.config = {
     alignment = "top_right",
     own_window_transparent = true,
@@ -1641,8 +1643,6 @@ conky.config = {
 
 lcc.config = { scale = 1.2 }
 lcc.panel = { "datetime", "system", "cpu", "memory" }
-
--- vim: ft=lua
 EOF
 }
 

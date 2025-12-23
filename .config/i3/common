@@ -1,4 +1,4 @@
-# vim:foldmethod=marker:filetype=i3config:
+# vim:set filetype=i3config foldmethod=marker:
 #
 # This file is included by both the i3 and sway configs
 

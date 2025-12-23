@@ -1,4 +1,4 @@
-# vim:foldmethod=marker:filetype=i3config:
+# vim:set filetype=i3config foldmethod=marker:
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!

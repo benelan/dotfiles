@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-#vim:filetype=sh foldmethod=marker:
+# vim:set foldmethod=marker:
 set -o errexit
 
 # Print, copy, or open text matching a specified pattern.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vim:filetype=sh foldmethod=marker:
+# vim:set foldmethod=marker:
 # shellcheck disable=2016
 
 # show readline mode {{{1

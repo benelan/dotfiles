@@ -1,4 +1,4 @@
-" vim:filetype=vifm foldmethod=marker:
+" vim:set filetype=vifm foldmethod=marker:
 
 " gruvbox color scheme approximation for vifm {{{1
 

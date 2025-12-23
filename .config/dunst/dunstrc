@@ -1,3 +1,4 @@
+# vim:set filetype=cfg:
 # See dunst(5) for all configuration options
 
 [global]
@@ -511,5 +512,3 @@
 #[script-test]
 #    summary = "*script*"
 #    script = dunst_test.sh
-
-# vim: ft=cfg

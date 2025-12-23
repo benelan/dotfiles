@@ -1,3 +1,4 @@
+# vim:set filetype=muttrc:
 # gruvbox dark (contrast dark medium):
 # https://github.com/potamides/dotfiles/blob/master/.config/mutt/colors.muttrc
 #
@@ -105,5 +106,3 @@ color body color214 color235 "^gpg: There is no indication that the signature be
 color body color214 color235 "^gpg: can't handle these multiple signatures"
 color body color214 color235 "^gpg: signature verification suppressed"
 color body color214 color235 "^gpg: invalid node with packet of type"
-
-# vi: ft=muttrc

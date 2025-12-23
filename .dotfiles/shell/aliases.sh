@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
+# vim:set foldmethod=marker:
 # shellcheck disable=2139
-# vim:filetype=sh foldmethod=marker:
 
 # General {{{1
 # sudo with aliases

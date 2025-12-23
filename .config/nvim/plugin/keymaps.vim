@@ -1,4 +1,4 @@
-" vim:foldmethod=marker:filetype=vim:
+" vim:set foldmethod=marker:
 if exists('loaded_jamin_keymaps') | finish | endif
 let loaded_jamin_keymaps = 1
 

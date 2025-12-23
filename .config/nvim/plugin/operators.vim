@@ -1,4 +1,4 @@
-" vim:foldmethod=marker:filetype=vim:
+" vim:set foldmethod=marker:
 if exists('loaded_jamin_operators') || &compatible || v:version < 700
   finish
 endif
