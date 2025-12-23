@@ -27,9 +27,6 @@ done
 [ -r ~/.bashrc.local ] && . ~/.bashrc.local
 
 # Setup miscellaneous tools and integrations {{{1
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
 # broot shell integration so `cd` works
 [ -r ~/.config/broot/launcher/bash/br ] && . ~/.config/broot/launcher/bash/br
 

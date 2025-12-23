@@ -316,6 +316,7 @@ install_packages_cargo() {
         # pastel
         # procs
         # ripgrep
+        tree-sitter-cli@0.25.10
         # xsv
     )
 
@@ -338,7 +339,9 @@ INSTALL_PACKAGES_GO_DOC="Install global Golang packages"
 install_packages_go() {
     install_language_go
 
-    deps=()
+    deps=(
+        # github.com/zquestz/s@latest
+    )
 
     for dep in "${deps[@]}"; do go install "$dep" || true; done
     unset deps

@@ -108,8 +108,6 @@ M.lsp_servers = {
 }
 
 M.mason_tools = {
-  "tree-sitter-cli",
-
   -- "astro-language-server",
   "bash-language-server",
   "css-lsp",
@@ -168,7 +166,6 @@ M.treesitter_parsers = {
   "jsdoc",
   "json",
   "json5",
-  "jsonc",
   -- "jq",
   -- "latex",
   "lua",

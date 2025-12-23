@@ -74,6 +74,9 @@ export GPG_TTY
 # generate LS_COLORS
 [ -r ~/.dircolors ] && supports dircolors && eval "$(dircolors ~/.dircolors)"
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 # Use a more compact format for the `time` builtin's output
 # TIMEFORMAT='real:%lR user:%lU sys:%lS'
 

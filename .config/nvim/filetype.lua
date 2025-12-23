@@ -17,6 +17,5 @@ vim.filetype.add({
     [".*/%.vscode/.*%.json"] = "jsonc",
     [".*%.conf"] = "conf",
     ["^.env.*"] = "bash",
-    [".*mutt-.*"] = "mail",
   },
 })
