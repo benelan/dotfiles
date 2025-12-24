@@ -77,12 +77,16 @@ export MANPAGER=$PAGER
 
 if supports wezterm; then
     export TERMINAL="wezterm"
-elif supports x-terminal-emulator; then
-    export TERMINAL="x-terminal-emulator" # $ sudo update-alternatives --config x-terminal-emulator
+elif supports ghostty; then
+    export TERMINAL="ghostty"
 elif supports alacritty; then
     export TERMINAL="alacritty"
+elif supports kitty; then
+    export TERMINAL="kitty"
 elif supports foot && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     export TERMINAL="foot"
+elif supports x-terminal-emulator; then
+    export TERMINAL="x-terminal-emulator" # $ sudo update-alternatives --config x-terminal-emulator
 fi
 
 if supports www-browser; then

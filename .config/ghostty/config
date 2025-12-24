@@ -1,0 +1,11 @@
+# vim:set filetype=cfg:
+
+theme = "Gruvbox Dark"
+bold-color = "bright"
+font-family = "Iosevka Nerd Font"
+font-size = 15
+background-opacity = 0.9
+window-padding-x = 0
+window-padding-y = 0
+window-padding-balance = true
+confirm-close-surface = false
