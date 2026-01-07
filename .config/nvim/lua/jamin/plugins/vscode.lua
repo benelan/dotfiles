@@ -1,8 +1,8 @@
--- requires the VSCode Neovim extension:
--- https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim
---
--- lazy spec yoinked from LazyVim:
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/vscode.lua
+---VSCode integration, requires the VSCode Neovim extension:
+---https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim
+---
+---LazySpec yoinked from LazyVim:
+---https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/vscode.lua
 
 if not vim.g.vscode then return {} end
 

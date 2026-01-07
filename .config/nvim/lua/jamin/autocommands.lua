@@ -1,11 +1,11 @@
--- highlight on yank
+---Highlight on yank
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   group = vim.api.nvim_create_augroup("jamin.yank_highlight", {}),
   callback = function() (vim.hl or vim.highlight).on_yank({ higroup = "Visual", timeout = 250 }) end,
 })
 
 -------------------------------------------------------------------------------
--- check if file changed externally
+---Check if file changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = vim.api.nvim_create_augroup("jamin.checktime", {}),
   callback = function()
@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 })
 
 -------------------------------------------------------------------------------
--- resize splits if window got resized
+---Resize splits if window got resized
 vim.api.nvim_create_autocmd({ "VimResized" }, {
   group = vim.api.nvim_create_augroup("jamin.resize_splits", {}),
   callback = function()
@@ -25,15 +25,15 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 })
 
 -------------------------------------------------------------------------------
--- set the OSC7 escape code when changing directories
--- https://wezfurlong.org/wezterm/shell-integration.html
+---Set the OSC7 escape code when changing directories
+---https://wezfurlong.org/wezterm/shell-integration.html
 vim.api.nvim_create_autocmd({ "DirChanged" }, {
   group = vim.api.nvim_create_augroup("jamin.set_osc7", {}),
   command = [[call chansend(v:stderr, printf("\033]7;%s\033", v:event.cwd))]],
 })
 
 -------------------------------------------------------------------------------
--- go to last loc when opening a buffer
+---Go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = vim.api.nvim_create_augroup("jamin.last_loc", {}),
   callback = function(event)
@@ -48,7 +48,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 })
 
 -------------------------------------------------------------------------------
--- close some filetypes with <q>
+---Close some filetypes with <q>
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("jamin.close_with_q", {}),
   pattern = {
@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -------------------------------------------------------------------------------
--- set options for writing filetypes
+---Set options for writing filetypes
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = Jamin.filetypes.writing,
   group = vim.api.nvim_create_augroup("jamin.writing_files", {}),
@@ -107,7 +107,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 -------------------------------------------------------------------------------
--- if necessary, create directories when saving file
+---If necessary, create directories when saving file
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("jamin.auto_create_dir", {}),
   callback = function(event)
@@ -125,7 +125,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -------------------------------------------------------------------------------
--- set git env vars for the bare dotfiles repo when not in the dev directory
+---Set git env vars for the bare dotfiles repo when not in the dev directory
 vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   group = vim.api.nvim_create_augroup("jamin.dotfiles", {}),
   desc = "Special dotfiles setup",
@@ -144,7 +144,7 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 })
 
 -------------------------------------------------------------------------------
--- use listchars like an indentline plugin
+---Use listchars like an indentline plugin
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("jamin.janky_indentlines", {}),
   callback = function()
@@ -204,7 +204,8 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "TextChanged", "Insert
 })
 
 -------------------------------------------------------------------------------
--- https://github.com/neovim/nvim-lspconfig/issues/69
+---Auto-updating quickfix list of diagnostics
+---https://github.com/neovim/nvim-lspconfig/issues/69
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("jamin.diagnostic_qflist", {}),
   callback = function(args)

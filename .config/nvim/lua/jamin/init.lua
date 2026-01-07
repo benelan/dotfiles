@@ -5,7 +5,7 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- prevent unused builtins from loading
+-- Prevent unused builtins from loading
 vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 0 or 1 end, {
   "2html_plugin",
   "gzip",
@@ -31,11 +31,11 @@ vim.tbl_map(function(p) vim.g["loaded_" .. p] = vim.endswith(p, "provider") and 
   "zipPlugin",
 })
 
--- icons can be turned on/off per machine using the environment variable
+-- Icons can be turned on/off per machine using the environment variable
 vim.g.have_nerd_font = vim.env.NERD_FONT ~= "0"
   and (
     vim.env.NERD_FONT == "1"
-    -- nerd font glyphs are shipped with wezterm so patched fonts aren't required
+    -- Nerd Font glyphs are shipped with wezterm so patched fonts aren't required
     or vim.env.WEZTERM_PANE ~= nil
   )
 
@@ -60,7 +60,7 @@ require("jamin.utils.gh").setup()
 ----> Plugins
 -------------------------------------------------------------------------------
 
--- bootstrap lazy.nvim if it isn't installed
+-- Bootstrap lazy.nvim if it isn't installed
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -68,7 +68,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- load the plugin specs
+-- Load the plugin specs
 require("lazy").setup("jamin.plugins", {
   change_detection = { notify = false },
   checker = { enabled = vim.g.have_nerd_font, notify = false },

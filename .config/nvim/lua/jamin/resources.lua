@@ -1,5 +1,178 @@
 local M = {}
 
+M.ui = vim.api.nvim_list_uis()[1] or { width = 80, height = 40 }
+
+M.i = function(icon, backup)
+  if vim.g.have_nerd_font then return icon end
+  return backup or ""
+end
+
+M.icons = {
+  ui = {
+    docs = M.i(" ", "🖹 "),
+    -- utf8 icons don't need fallbacks
+    prompt = "❱",
+    select = "➤ ",
+    play = "⯈ ",
+    skip = "⏩︎",
+    x = "✘ ",
+    checkmark = "✔ ",
+    question_mark = "？",
+    square = "■ ",
+    box = "☐ ",
+    box_checked = "☑ ",
+    box_crossed = "☒ ",
+    box_dot = "🞔 ",
+    diamond = "◈ ",
+    bullseye = "◎ ",
+    circle = "● ",
+    collapsed = "🞂 ",
+    expanded = "🞃 ",
+    extends = "»",
+    precedes = "«",
+    eol = "⤶",
+    linebreak = "↳ ",
+    dot = "·",
+    dot_outline = "◦",
+    ellipses = "…  ",
+    nbsp = "␣",
+    indentline = "▏",
+    separator = "│",
+    separator_dotted = "┊",
+    separator_horizontal = "─",
+    fill_slash = "╱",
+    fill_shade = "░",
+    fill_solid = "█",
+    speech_bubble = "🗩",
+    user = "👽︎", -- 🏄︎🏂︎ 🛉 🯅 🯆 🯈 🯇 🮲🮳👽︎
+    storage = "⛁", -- 🗃 📚︎ 📟︎ ⛁ ⛃
+    network = "🖧", -- 💻︎
+    package = "📦︎",
+    edit = "🖉",
+    security = "🛡",
+    settings = "🛠",
+    pay = "💰︎",
+    pin = "🖈",
+    info = "🛈",
+    cancel = "🛇",
+    clock = "⏲",
+    alert = "🕭",
+    sleep = "🌜︎",
+    awake = "⛾",
+    search = "🔍︎",
+    key = "🗝",
+    globe = "🌎︎",
+    map = "🗺",
+  },
+  lsp_kind = {
+    Array = M.i(""),
+    Boolean = M.i("󰨙"), --   ◩
+    Class = M.i(""), --     
+    Codeium = M.i("󰘦"),
+    Color = M.i(""),
+    Comment = M.i(""),
+    Control = M.i(""),
+    Component = M.i(""),
+    Conditional = M.i(""),
+    Constant = M.i("󰏿"), -- 󰭸
+    Constructor = M.i(""), --   
+    Copilot = M.i("󰊤"), --   
+    Enum = M.i(""),
+    EnumMember = M.i(""),
+    Error = M.i("󰛉"), -- 
+    Event = M.i(""),
+    Field = M.i("󰓽"), --   
+    File = M.i(""),
+    Folder = M.i(""),
+    Fragment = M.i(""),
+    Function = M.i("󰡱"), -- 󰊕 󰡱  
+    Interface = M.i(""), --   
+    Key = M.i(""), -- 󰌋    🗝
+    Keyword = M.i(""), -- 
+    Macro = M.i(""),
+    TypeAlias = M.i(""),
+    Method = M.i("󰡱"),
+    StaticMethod = M.i("󰡱"),
+    Module = M.i(""), --   󰋺  󰶮  
+    Namespace = M.i("󰦮"), -- 
+    Null = M.i("󰟢"), -- 
+    Number = M.i("󰎠"), --   
+    Object = M.i("󰅩"),
+    Operator = M.i(""),
+    Package = M.i(""),
+    Property = M.i("󰓽"), -- 
+    Reference = M.i(""),
+    Snippet = M.i("󰆐"), -- 󱄽      󰆐  󰩫  ✀
+    Spell = M.i("󰓆"),
+    String = M.i(""), -- 󱀍  
+    Struct = M.i(""),
+    Text = M.i(""), -- 󰦨  󰈍
+    TypeParameter = M.i(""),
+    Parameter = M.i(""),
+    Unit = M.i(""),
+    Value = M.i(""), --  󰠱
+    Variable = M.i(""),
+    Fallback = M.i(""), -- 󰒅  󰒉
+  },
+  diagnostics = {
+    [vim.diagnostic.severity.ERROR] = M.i("󰅝 ", "E"),
+    [vim.diagnostic.severity.WARN] = M.i("󰀪 ", "W"),
+    [vim.diagnostic.severity.INFO] = M.i("󰋽 ", "I"),
+    [vim.diagnostic.severity.HINT] = M.i("󰰀 ", "H"),
+  },
+  debug = {
+    breakpoint = M.i("󰆤 ", "B"),
+    breakpoint_condition = M.i("󱄶 ", "C"),
+    breakpoint_rejected = M.i("󰽅 ", "R"),
+    logpoint = M.i("󰆣 ", "L"),
+    stopped = M.i("󰿅 ", "S"),
+  },
+  git = {
+    status = "┃", -- "▎",
+    status_changedelete = "┇",
+    status_topdelete = "▔",
+    status_delete = "━",
+    branch = M.i("󰘬 "), -- ⛕  ⛙
+    diff = M.i(" "),
+    log = M.i(" "),
+    added = M.i("󰜄 ", "+"),
+    changed = M.i("󱗝 ", "∗"),
+    removed = M.i("󰛲 ", "‒"),
+  },
+  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+  border = M.i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
+}
+
+M.icons.test = {
+  passed = M.i("󰗡 ", M.icons.ui.checkmark),
+  running = M.i("󰁚 ", M.icons.ui.play),
+  skipped = M.i("󰍷 ", M.icons.ui.skip),
+  failed = M.i("󰅚 ", M.icons.ui.x),
+  cancelled = M.i("󰜺 ", M.icons.ui.cancel),
+  pending = M.i("󰅐 ", M.icons.ui.clock),
+  unknown = M.i("󰘥 ", M.icons.ui.question_mark),
+  running_animated = M.icons.progress,
+}
+
+M.diagnostics = {
+  virtual_text = {
+    prefix = function(d) return M.icons.diagnostics[d.severity] end,
+    current_line = true,
+    source = "if_many",
+  },
+  signs = { text = M.icons.diagnostics },
+  float = {
+    border = M.icons.border,
+    header = "",
+    prefix = "",
+    focusable = true,
+    source = true,
+  },
+  severity_sort = true,
+  underline = true,
+  update_in_insert = false,
+}
+
 M.filetypes = {
   excluded = {
     "",
@@ -269,160 +442,6 @@ M.path = {
     "dist/*",
     "node_modules/*",
   },
-}
-
-M.ui = vim.api.nvim_list_uis()[1] or { width = 80, height = 40 }
-
-M.i = function(icon, backup)
-  if vim.g.have_nerd_font then return icon end
-  return backup or ""
-end
-
-M.icons = {
-  ui = {
-    docs = M.i(" ", "🖹 "),
-    -- utf8 icons don't need fallbacks
-    prompt = "❱",
-    select = "➤ ",
-    play = "⯈ ",
-    skip = "⏩︎",
-    x = "✘ ",
-    checkmark = "✔ ",
-    question_mark = "？",
-    square = "■ ",
-    box = "☐ ",
-    box_checked = "☑ ",
-    box_crossed = "☒ ",
-    box_dot = "🞔 ",
-    diamond = "◈ ",
-    bullseye = "◎ ",
-    circle = "● ",
-    collapsed = "🞂 ",
-    expanded = "🞃 ",
-    extends = "»",
-    precedes = "«",
-    eol = "⤶",
-    linebreak = "↳ ",
-    dot = "·",
-    dot_outline = "◦",
-    ellipses = "…  ",
-    nbsp = "␣",
-    indentline = "▏",
-    separator = "│",
-    separator_dotted = "┊",
-    separator_horizontal = "─",
-    fill_slash = "╱",
-    fill_shade = "░",
-    fill_solid = "█",
-    speech_bubble = "🗩",
-    user = "👽︎", -- 🏄︎🏂︎ 🛉 🯅 🯆 🯈 🯇 🮲🮳👽︎
-    storage = "⛁", -- 🗃 📚︎ 📟︎ ⛁ ⛃
-    network = "🖧", -- 💻︎
-    package = "📦︎",
-    edit = "🖉",
-    security = "🛡",
-    settings = "🛠",
-    pay = "💰︎",
-    pin = "🖈",
-    info = "🛈",
-    cancel = "🛇",
-    clock = "⏲",
-    alert = "🕭",
-    sleep = "🌜︎",
-    awake = "⛾",
-    search = "🔍︎",
-    key = "🗝",
-    globe = "🌎︎",
-    map = "🗺",
-  },
-  lsp_kind = {
-    Array = M.i(""),
-    Boolean = M.i("󰨙"), --   ◩
-    Class = M.i(""), --     
-    Codeium = M.i("󰘦"),
-    Color = M.i(""),
-    Comment = M.i(""),
-    Control = M.i(""),
-    Component = M.i(""),
-    Conditional = M.i(""),
-    Constant = M.i("󰏿"), -- 󰭸
-    Constructor = M.i(""), --   
-    Copilot = M.i("󰊤"), --   
-    Enum = M.i(""),
-    EnumMember = M.i(""),
-    Error = M.i("󰛉"), -- 
-    Event = M.i(""),
-    Field = M.i("󰓽"), --   
-    File = M.i(""),
-    Folder = M.i(""),
-    Fragment = M.i(""),
-    Function = M.i("󰡱"), -- 󰊕 󰡱  
-    Interface = M.i(""), --   
-    Key = M.i(""), -- 󰌋    🗝
-    Keyword = M.i(""), -- 
-    Macro = M.i(""),
-    TypeAlias = M.i(""),
-    Method = M.i("󰡱"),
-    StaticMethod = M.i("󰡱"),
-    Module = M.i(""), --   󰋺  󰶮  
-    Namespace = M.i("󰦮"), -- 
-    Null = M.i("󰟢"), -- 
-    Number = M.i("󰎠"), --   
-    Object = M.i("󰅩"),
-    Operator = M.i(""),
-    Package = M.i(""),
-    Property = M.i("󰓽"), -- 
-    Reference = M.i(""),
-    Snippet = M.i("󰆐"), -- 󱄽      󰆐  󰩫  ✀
-    Spell = M.i("󰓆"),
-    String = M.i(""), -- 󱀍  
-    Struct = M.i(""),
-    Text = M.i(""), -- 󰦨  󰈍
-    TypeParameter = M.i(""),
-    Parameter = M.i(""),
-    Unit = M.i(""),
-    Value = M.i(""), --  󰠱
-    Variable = M.i(""),
-    Fallback = M.i(""), -- 󰒅  󰒉
-  },
-  diagnostics = {
-    [vim.diagnostic.severity.ERROR] = M.i("󰅝 ", "E"),
-    [vim.diagnostic.severity.WARN] = M.i("󰀪 ", "W"),
-    [vim.diagnostic.severity.INFO] = M.i("󰋽 ", "I"),
-    [vim.diagnostic.severity.HINT] = M.i("󰰀 ", "H"),
-  },
-  debug = {
-    breakpoint = M.i("󰆤 ", "B"),
-    breakpoint_condition = M.i("󱄶 ", "C"),
-    breakpoint_rejected = M.i("󰽅 ", "R"),
-    logpoint = M.i("󰆣 ", "L"),
-    stopped = M.i("󰿅 ", "S"),
-  },
-  git = {
-    status = "┃", -- "▎",
-    status_changedelete = "┇",
-    status_topdelete = "▔",
-    status_delete = "━",
-    branch = M.i("󰘬 "), -- ⛕  ⛙
-    diff = M.i(" "),
-    log = M.i(" "),
-    added = M.i("󰜄 ", "+"),
-    changed = M.i("󱗝 ", "∗"),
-    removed = M.i("󰛲 ", "‒"),
-  },
-  progress = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-  border = M.i({ "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }, "rounded"),
-}
-
-M.icons.test = {
-  passed = M.i("󰗡 ", M.icons.ui.checkmark),
-  running = M.i("󰁚 ", M.icons.ui.play),
-  skipped = M.i("󰍷 ", M.icons.ui.skip),
-  failed = M.i("󰅚 ", M.icons.ui.x),
-  cancelled = M.i("󰜺 ", M.icons.ui.cancel),
-  pending = M.i("󰅐 ", M.icons.ui.clock),
-  unknown = M.i("󰘥 ", M.icons.ui.question_mark),
-  running_animated = M.icons.progress,
 }
 
 M.art = {

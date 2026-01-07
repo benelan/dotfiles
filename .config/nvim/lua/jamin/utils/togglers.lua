@@ -147,8 +147,8 @@ function M.ui()
 
   -- redraw treesitter context which gets messed up
   if vim.fn.exists(":TSContextToggle") then
-    vim.cmd.TSContextToggle()
-    vim.cmd.TSContextToggle()
+    vim.cmd.TSContext("Toggle")
+    vim.cmd.TSContext("Toggle")
   end
 
   -- toggle eyeliner.nvim highlighting

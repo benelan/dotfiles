@@ -1,19 +1,6 @@
----------->             Mapping  Modes                  <----------
--------------------------------------------------------------------
--->    <Space>     Normal, Visual, Select and Operator-pending    |
--->          n     Normal                                         |
--->          v     Visual and Select                              |
--->          s     Select                                         |
--->          x     Visual                                         |
--->          o     Operator-pending                               |
--->          !     Insert and Command-line                        |
--->          i     Insert                                         |
--->          l     Insert, Command-line and LanArg                |
--->          c     Command-line                                   |
--->          t     Terminal-Job                                   |
 -------------------->  :h map-listing  <---------------------------
 
--- make all keymaps silent by default
+-- Make all keymaps silent by default
 local keymap_set = vim.keymap.set
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.keymap.set = function(mode, lhs, rhs, opts)
@@ -30,7 +17,7 @@ vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   return "<esc>"
 end, { expr = true, silent = true, noremap = true, desc = "Escape and Clear hlsearch" })
 
--- don't save empty lines to the default register
+-- Don't save empty lines to the default register
 vim.keymap.set(
   "n",
   "dd",
@@ -67,7 +54,7 @@ vim.keymap.set(
 vim.keymap.set("n", "dm", function()
   local cur_line = vim.fn.line(".")
   -- Delete buffer local mark
-  for _, mark in ipairs(vim.fn.getmarklist(0)) do
+  for _, mark in ipairs(vim.fn.getmarklist(vim.fn.bufnr())) do
     if mark.pos[2] == cur_line and mark.mark:match("[a-zA-Z]") then
       vim.api.nvim_buf_del_mark(0, string.sub(mark.mark, 2, #mark.mark))
       return

@@ -2,7 +2,7 @@
 --- https://github.com/akinsho/dotfiles/blob/b1b7d58c9961f17af142700c6fd0fed501628745/.config/nvim/plugin/rooter.lua
 local M = {}
 
-local root_markers = { "package.json", "Dockerfile", "Makefile" }
+local root_markers = { "package.json", "Dockerfile", "Makefile", ".luarc.json" }
 local ignored_lsps = { "null-ls", "efm", "eslint", "copilot" }
 local ignored_paths = { "~/.local", "~/.cache" }
 
@@ -104,15 +104,15 @@ M.setup = function()
     desc = "Change directory to lsp root [m]arker",
   })
 
-  -- Change directory to the git [w]orktree's root (fugitive already claimed Gcd)
-  -- This is useful when working with monorepos, where the project root is not always the git root.
+  -- Change directory to the project's (git [w]orktree) root
+  -- This is useful when working with monorepos, where the lsp root is not always the git root.
   vim.api.nvim_create_user_command("Wcd", M.worktree, {
-    desc = "Change directory to git [w]ork tree root",
+    desc = "Change directory to git [w]orktree root",
   })
 
   -- keymaps for the user commands
   vim.keymap.set("n", "cd", "<CMD>lcd %:h<CR><CMD>pwd<CR>", { desc = "cd to current file" })
-  vim.keymap.set("n", "c/", "<CMD>Wcd<CR><CMD>pwd<CR>", { desc = "cd to git worktree root" })
+  vim.keymap.set("n", "cp", "<CMD>Wcd<CR><CMD>pwd<CR>", { desc = "cd to project (worktree) root" })
   vim.keymap.set("n", "cm", "<CMD>Mcd<CR><CMD>pwd<CR>", { desc = "cd to lsp root marker" })
 end
 

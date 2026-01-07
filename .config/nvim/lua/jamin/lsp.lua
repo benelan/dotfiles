@@ -1,24 +1,7 @@
--- diagnostic configuration
-vim.diagnostic.config({
-  virtual_text = {
-    prefix = function(d) return Jamin.icons.diagnostics[d.severity] end,
-    current_line = true,
-    source = "if_many",
-  },
-  signs = { text = Jamin.icons.diagnostics },
-  float = {
-    border = Jamin.icons.border,
-    header = "",
-    prefix = "",
-    focusable = true,
-    source = true,
-  },
-  severity_sort = true,
-  underline = true,
-  update_in_insert = false,
-})
+---Setup diagnostic configuration
+vim.diagnostic.config(Jamin.diagnostics)
 
--- additional lsp configuration
+---Add additional LSP capabilities
 vim.lsp.config("*", {
   capabilities = {
     textDocument = {
@@ -38,8 +21,10 @@ vim.lsp.config("*", {
   },
 })
 
+---Enable LSPs
 vim.lsp.enable(Jamin.lsp_servers)
 
+---Setup LSP related stuff on attach
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("jamin.lsp_stuff", {}),
   callback = function(args)
@@ -51,7 +36,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     --   vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
     -- end
 
-    -- setup lsp keymaps
+    -- Setup lsp buffer keymaps
     local bufmap = function(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, {
         buffer = args.buf,
@@ -67,7 +52,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     bufmap("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
 
     if client:supports_method("textDocument/formatting") then
-      -- if the LSP server has formatting capabilities, use it for formatexpr
+      -- Set formatexpr if the LSP server has formatting capabilities
       vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
       bufmap(
         { "n", "v" },
@@ -94,9 +79,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         { "n", "v" },
         "ga",
         function()
-          vim.lsp.buf.code_action({
-            context = { only = { "", "source", "refactor", "quickfix" } },
-          })
+          vim.lsp.buf.code_action({ context = { only = { "", "source", "refactor", "quickfix" } } })
         end,
         "Code action (source, refactor, and quickfix)"
       )
@@ -121,7 +104,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       )
     end
 
-    -- -- setup codelens if supported by language server
+    -- -- Setup codelens if supported by language server
     -- if vim.lsp.codelens and client:supports_method("textDocument/codeLens") then
     --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
     --     group = vim.api.nvim_create_augroup("jamin.refresh_codelens", {}),
@@ -131,7 +114,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     --   bufmap("n", "gC", vim.lsp.codelens.run, "LSP codelens")
     -- end
 
-    -- keymaps for typescript code actions
+    -- Keymaps for typescript code actions
     if client.name == "ts_ls" then
       ---@diagnostic disable: assign-type-mismatch
       bufmap(
