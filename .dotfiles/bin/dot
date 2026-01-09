@@ -308,6 +308,7 @@ install_packages_cargo() {
     install_language_rust
 
     deps=(
+        # alacritty
         # bat
         # diskonaut
         # fd-find
@@ -341,6 +342,7 @@ install_packages_go() {
 
     deps=(
         # github.com/zquestz/s@latest
+        # go.senan.xyz/cliphist@latest
     )
 
     for dep in "${deps[@]}"; do go install "$dep" || true; done
@@ -1540,6 +1542,7 @@ install_theme_wallpaper() {
         sudo cp "$profile" /usr/share/pixmaps/faces/
 
     case "$XDG_CURRENT_DESKTOP" in
+        sway) ;;
         *gnome* | *GNOME*)
             if _has gsettings; then
                 gsettings set org.gnome.desktop.background picture-uri \
@@ -1549,11 +1552,9 @@ install_theme_wallpaper() {
             fi
             ;;
         *)
-            # if [ -n "$WAYLAND_DISPLAY" ] && _has swaybg; then
-            #     swaybg --output "*" --mode fill --image "$current_wallpaper"
-            # elif _has feh; then
-            #     feh --no-fehbg --bg-center --image-bg "#3c3836" "$current_wallpaper"
-            # fi
+            if _has feh; then
+                feh --no-fehbg --bg-center --image-bg "#3c3836" "$current_wallpaper"
+            fi
             ;;
     esac
 }
