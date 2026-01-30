@@ -43,6 +43,24 @@ return {
   { "folke/ts-comments.nvim", event = "VeryLazy", opts = {} },
 
   -----------------------------------------------------------------------------
+  -- Movement keymaps for treesitter units
+  {
+    "aaronik/treewalker.nvim",
+    cmd = "Treewalker",
+    opts = {},
+    keys = {
+      { "<M-w>", "<CMD>Treewalker Up<CR>" },
+      { "<M-e>", "<CMD>Treewalker Down<CR>" },
+      { "<M-q>", "<CMD>Treewalker Left<CR>" },
+      { "<M-r>", "<CMD>Treewalker Right<CR>" },
+      { "<M-S-w>", "<CMD>Treewalker SwapUp<CR>" },
+      { "<M-S-e>", "<CMD>Treewalker SwapDown<CR>" },
+      { "<M-S-q>", "<CMD>Treewalker SwapLeft<CR>" },
+      { "<M-S-r>", "<CMD>Treewalker SwapRight<CR>" },
+    },
+  },
+
+  -----------------------------------------------------------------------------
   -- split/join treesitter nodes to multiple/single line(s)
   {
     "Wansmer/treesj",
