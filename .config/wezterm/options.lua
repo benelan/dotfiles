@@ -44,7 +44,7 @@ function M.apply_to_config(config)
   config.inactive_pane_hsb = { saturation = 0.9, brightness = 0.9 }
 
   config.hide_tab_bar_if_only_one_tab = true
-  config.prefer_to_spawn_tabs = true
+  -- config.prefer_to_spawn_tabs = true
 
   config.color_scheme = "GruvboxDark"
   local palette = wezterm.color.get_builtin_schemes()[config.color_scheme] --[[@as Palette]]

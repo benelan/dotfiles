@@ -407,7 +407,8 @@ filextype {*/},{.*/}
             \ {View in nautilus} nautilus %f &,
             \ {View in default file explorer} open %f &,
 
-fileviewer {*/},{.*/} tree -taFCI .git/ -I node_modules/ -I dist/ --gitignore --filesfirst --nolinks %c
+fileviewer {*/},{.*/},{../} tree -taFCI .git/ -I node_modules/ -I dist/ --filesfirst --nolinks %c
+ "fileviewer {*/},{.*/},{../} eza -aT --group-directories-first --no-quotes --color=always --git --git-ignore -I .git/ -I node_modules/ -I dist/ --level=3 %c
 
 " Syntax highlighting in preview
 "
