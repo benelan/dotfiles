@@ -34,6 +34,9 @@ done
 [ -r ~/dev/lib/fzf/shell/completion.bash ] && . ~/dev/lib/fzf/shell/completion.bash
 [ -r ~/dev/lib/fzf/shell/key-bindings.bash ] && . ~/dev/lib/fzf/shell/key-bindings.bash
 
+# https://mise.jdx.dev/getting-started.html#activate-mise
+supports mise && eval "$(mise activate bash)"
+
 # ensure tmux is running in graphical environments (excluding wezterm)
 if [ -n "$DISPLAY" ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && {
     [ -z "$WEZTERM_PANE" ] || [ "$GIT_MUX_MULTIPLEXER" = "tmux" ]

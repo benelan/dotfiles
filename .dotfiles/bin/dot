@@ -1436,6 +1436,24 @@ install_ubuntu_glow() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Install Mise                                                {{{
+
+## https://mise.jdx.dev/getting-started.html
+INSTALL_UBUNTU_MISE_DOC="Install Mise for managing runtime installations, tasks, and environments"
+install_ubuntu_mise() {
+    _has mise && return
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+
+    curl -fsSL https://mise.jdx.dev/gpg-key.pub |
+        sudo tee /etc/apt/keyrings/mise-archive-keyring.asc 1>/dev/null
+
+    echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mise.jdx.dev/deb stable main" |
+        sudo tee /etc/apt/sources.list.d/mise.list 1>/dev/null
+
+    sudo apt-get update -qq && sudo apt install -qq mise
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Brave Browser                                       {{{
 
 ## https://brave.com/linux/#debian-ubuntu-mint
@@ -2396,6 +2414,7 @@ ubuntu_installs() {
     install_ubuntu_gh
     install_ubuntu_git
     install_ubuntu_glow
+    install_ubuntu_mise
     # install_ubuntu_taskwarrior-tui
 
     ## GUI install scripts
