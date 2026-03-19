@@ -1009,7 +1009,7 @@ install_ubuntu_apt-gui() {
     ! _has apt-get && return
 
     deps=(
-        calibre
+        # calibre
         chromium-browser
         # deepin-picker
         gimp
@@ -1049,6 +1049,7 @@ install_ubuntu_flathub() {
         io.github.ungoogled_software.ungoogled_chromium
         com.github.IsmaelMartinez.teams_for_linux
         com.calibre_ebook.calibre
+        app.zen_browser.zen
         # md.obsidian.Obsidian
         # com.vscodium.codium
         # com.stremio.Stremio
@@ -1061,6 +1062,10 @@ install_ubuntu_flathub() {
     unset deps
 
     flatpak update -y
+
+    sudo flatpak override --filesystem="$HOME/.themes"
+    sudo flatpak override --filesystem="$HOME/.icons"
+    flatpak override --user --filesystem="$XDG_CONFIG_HOME/gtk-4.0"
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
@@ -1175,8 +1180,8 @@ INSTALL_UBUNTU_PROTONVPN_DOC="Install the Proton VPN CLI"
 install_ubuntu_protonvpn() {
     _has protonvpn-cli && return
 
-    deb="protonvpn-stable-release_1.0.6_all.deb"
-    checksum="e5e03976d0980bafdf07da2f71b14fbc883c091e72b16772199742c98473002f"
+    deb="protonvpn-stable-release_1.0.8_all.deb"
+    checksum="0b14e71586b22e498eb20926c48c7b434b751149b1f2af9902ef1cfe6b03e180"
 
     curl -Lo "$CACHE_DIR/$deb" \
         "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/$deb"
@@ -1187,9 +1192,9 @@ install_ubuntu_protonvpn() {
         sudo apt update && sudo apt-get install -y proton-vpn-gnome-desktop
     fi
 
-    sudo wget -O "/etc/openvpn/update-resolv-conf" \
-        "https://raw.githubusercontent.com/ProtonVPN/scripts/master/update-resolv-conf.sh"
-    sudo chmod +x "/etc/openvpn/update-resolv-conf"
+    curl -fsSL https://raw.githubusercontent.com/ProtonVPN/scripts/master/update-resolv-conf.sh |
+        sudo tee /etc/openvpn/update-resolv-conf >/dev/null
+    sudo chmod +x /etc/openvpn/update-resolv-conf
 
     unset deb checksum
 }
@@ -1249,13 +1254,12 @@ install_ubuntu_discord() {
 INSTALL_UBUNTU_SIGNAL_DOC="Install Signal desktop messaging application"
 install_ubuntu_signal() {
     _has signal-desktop && return
-    sudo mkdir -p /etc/apt/keyrings
 
     curl -fsSL https://updates.signal.org/desktop/apt/keys.asc |
-        sudo gpg --dearmor -o /etc/apt/keyrings/signal-desktop.gpg
+        sudo gpg --dearmor -o /usr/share/keyrings/signal-desktop-keyring.gpg
 
-    echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal-desktop.gpg] https://updates.signal.org/desktop/apt xenial main' |
-        sudo tee /etc/apt/sources.list.d/signal-xenial.list
+    curl -fsSL https://updates.signal.org/static/desktop/apt/signal-desktop.sources |
+        sudo tee /etc/apt/sources.list.d/signal-desktop.sources >/dev/null
 
     sudo apt-get update -qq && sudo apt-get install -qq signal-desktop
 }
@@ -1375,12 +1379,12 @@ INSTALL_UBUNTU_GH_DOC="Install the GitHub CLI"
 install_ubuntu_gh() {
     _has gh && return
 
-    (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) &&
-        sudo mkdir -p -m 755 /etc/apt/keyrings &&
-        wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+    sudo mkdir -p -m 755 /etc/apt/keyrings &&
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
         sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null &&
         sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg &&
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |
+        sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
 
     sudo apt-get update -qq && sudo apt-get install -qq gh
 
@@ -1401,36 +1405,19 @@ install_ubuntu_gh() {
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
-## Install GitHub Desktop                                      {{{
-
-## https://github.com/shiftkey/desktop?tab=readme-ov-file#debianubuntu
-INSTALL_UBUNTU_GITHUB_DESKTOP_DOC="Install the GitHub Desktop client"
-install_ubuntu_github-desktop() {
-    _has github-desktop && return
-
-    wget -qO - https://apt.packages.shiftkey.dev/gpg.key |
-        gpg --dearmor |
-        sudo tee /usr/share/keyrings/shiftkey-packages.gpg >/dev/null
-
-    sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/shiftkey-packages.gpg] https://apt.packages.shiftkey.dev/ubuntu/ any main" > /etc/apt/sources.list.d/shiftkey-packages.list'
-
-    sudo apt-get update -qq && sudo apt-get install -qq github-desktop
-}
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
 ## Install Glow CLI (Markdown rendering)                       {{{
 
 ## https://github.com/charmbracelet/glow
 INSTALL_UBUNTU_GLOW_DOC="Install Glow for rendering markdown in the terminal"
 install_ubuntu_glow() {
     _has glow && return
-    sudo mkdir -p /etc/apt/keyrings
+    sudo mkdir -p -m 755 /etc/apt/keyrings
 
     curl -fsSL https://repo.charm.sh/apt/gpg.key |
         sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
 
     echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" |
-        sudo tee /etc/apt/sources.list.d/charm.list
+        sudo tee /etc/apt/sources.list.d/charm.list 1>/dev/null
 
     sudo apt-get update -qq && sudo apt-get install -qq glow
 }
@@ -1461,11 +1448,11 @@ INSTALL_UBUNTU_BRAVE_DOC="Install Brave Browser"
 install_ubuntu_brave() {
     _has brave-browser && return
 
-    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
-        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg |
+        sudo tee /usr/share/keyrings/brave-browser-archive-keyring.gpg >/dev/null
 
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" |
-        sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-browser.sources |
+        sudo tee /etc/apt/sources.list.d/brave-browser-release.sources >/dev/null
 
     sudo apt-get update -qq && sudo apt-get install -qq brave-browser
 }
