@@ -4,7 +4,7 @@
 # Util functions {{{1
 # expand arg1 to an environment variable {{{2
 # Usage: _expand_var PATH -> $PATH
-_expand_var() { env | sed -n "s/^$1=//p"; }
+_expand_var() { /usr/bin/env | /usr/bin/sed -n "s/^$1=//p"; }
 
 # remove an entry from PATH {{{2
 # Usage: path_remove /path/to/bin [PATH]

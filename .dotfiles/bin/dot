@@ -130,6 +130,10 @@ setup_dotfiles() {
     _dot remote add -m master -t master origin "$repo_url" >/dev/null 2>&1 || true
     _dot branch --set-upstream-to=origin/master master
 
+    if [ "$(uname -s)" = "Darwin" ]; then
+        install_packages_homebrew
+    fi
+
     bash -l
     cd -
     printf "\n+ Setup complete!\n" >&2
@@ -490,6 +494,21 @@ install_packages_neovim() {
                     | quit" &>/dev/null &
 
     unset devdocs_action devdoc_sources
+}
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}
+## Homebrew packages - https://brew.sh/                        {{{
+
+INSTALL_PACKAGES_HOMEBREW_DOC="Install Mac packages with homebrew"
+install_packages_homebrew() {
+    if ! _has brew; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    brew bundle --global
+    chsh -s /opt/homebrew/bin/bash
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.profile.local
+    echo 'PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"' >>~/.bashrc.local
 }
 
 ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }}}

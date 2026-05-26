@@ -1,0 +1,51 @@
+# vim:ft=ruby
+
+if OS.mac?
+  brew 'noti'                          # utility to display notifications from scripts
+  brew 'trash'                         # rm, but put in the trash rather than completely delete
+
+  # Applications
+  cask 'ghostty'                       # a better terminal emulator
+  cask 'wezterm'                       # a better terminal emulator
+  cask 'karabiner-elements'            # keyboard customizer
+  cask 'nikitabobko/tap/aerospace'     # a tiling window manager
+
+  # Fonts
+  cask 'font-iosevka-nerd-font'
+elsif OS.linux?
+  brew 'xclip'                         # access to clipboard (similar to pbcopy/pbpaste)
+end
+
+# Latest versions of some core utilities
+brew 'coreutils'                       # GNU core utils
+brew 'git'                             # Git version control
+brew 'vim'                             # Vim editor
+brew 'bash'                            # bash shell
+brew 'zsh'                             # zsh shell
+brew 'grep'                            # grep
+
+# packages
+brew 'bat'                             # better cat
+brew 'btop'                            # a top alternative
+brew 'cloc'                            # lines of code counter
+brew 'entr'                            # file watcher / command runner
+brew 'eza'                             # ls alternative
+brew 'fd'                              # find alternative
+brew 'fzf'                             # Fuzzy file searcher, used in scripts and in vim
+brew 'gh'                              # GitHub CLI
+brew 'git-delta'                       # a better git diff
+brew 'glow'                            # markdown viewer
+brew 'gnupg'                           # GPG
+brew 'gum'                             # fancy UI utilities
+brew 'highlight'                       # code syntax highlighting
+brew 'jq'                              # work with JSON files in shell scripts
+brew 'lua'                             # lua language
+brew 'mise'                            # mise-en-place dev env tool
+brew 'neovim'                          # A better vim
+brew 'python'                          # python (latest)
+brew 'ripgrep'                         # very fast file searcher
+brew 'tree'                            # pretty-print directory contents
+brew 'tree-sitter-cli'                 # treesitter cli (for neovim)
+brew 'vifm'                            # cli file explorer
+brew 'wdiff'                           # word differences in text files
+brew 'wget'                            # internet file retriever

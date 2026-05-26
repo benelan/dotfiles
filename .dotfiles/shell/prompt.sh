@@ -9,6 +9,15 @@ bind "set emacs-mode-string \"E \""
 bind "set vi-cmd-mode-string \"C \""
 bind "set vi-ins-mode-string \"I \""
 
+if ! supports __git_ps1; then
+    if ! [ -r "$DOTFILES/cache/git-prompt.sh" ]; then
+        curl -Lo "$DOTFILES/cache/git-prompt.sh" \
+            https://raw.githubusercontent.com/git/git/refs/heads/master/contrib/completion/git-prompt.sh
+    fi
+
+    . "$DOTFILES/cache/git-prompt.sh"
+fi
+
 # trim long paths if possible {{{1
 if ((BASH_VERSINFO[0] >= 4)); then
     PROMPT_DIRTRIM=4

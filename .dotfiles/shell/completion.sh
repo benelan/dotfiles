@@ -13,6 +13,12 @@ if [[ -z "${BASH_COMPLETION_VERSINFO-}" &&
         . /usr/share/bash-completion/bash_completion
     elif [ -r /etc/bash_completion ]; then
         . /etc/bash_completion
+    elif [ -r "$DOTFILES/cache/git-completion.bash" ]; then
+        . "$DOTFILES/cache/git-completion.bash"
+    else
+        curl -Lo ~/.dotfiles/cache/git-completion.bash \
+            https://raw.githubusercontent.com/git/git/refs/heads/master/contrib/completion/git-completion.bash
+        . "$DOTFILES/cache/git-completion.bash"
     fi
 fi
 
