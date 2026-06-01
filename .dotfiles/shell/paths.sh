@@ -91,3 +91,17 @@ path -a "/usr/sbin"
 path -a "/usr/bin"
 path -a "/sbin"
 path -a "/bin"
+
+# Homebrew paths
+if [ "$(uname -p)" = "arm" ]; then
+    HOMEBREW_PREFIX="/opt/homebrew"
+else
+    HOMEBREW_PREFIX="/usr/local"
+fi
+
+path -p "$HOMEBREW_PREFIX/bin"
+path -p "$HOMEBREW_PREFIX/sbin"
+path -p "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin"
+path -p "$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin"
+path -p "$HOMEBREW_PREFIX/opt/grep/libexec/gnubin"
+path -p "$HOMEBREW_PREFIX/opt/python/libexec/bin"

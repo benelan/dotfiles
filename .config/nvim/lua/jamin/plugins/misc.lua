@@ -31,7 +31,11 @@ return {
         vim.fn.stdpath("config")
       ),
     },
-    config = function() vim.opt.spelllang:append("programming") end,
+    config = function()
+      if vim.fn.filereadable(vim.fn.stdpath("data") .. "/spell/programming.utf-8.spl") == 1 then
+        vim.opt.spelllang:append("programming")
+      end
+    end,
   },
 
   -----------------------------------------------------------------------------

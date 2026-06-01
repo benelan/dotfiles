@@ -9,6 +9,7 @@ if OS.mac?
   cask 'wezterm'                       # a better terminal emulator
   cask 'karabiner-elements'            # keyboard customizer
   cask 'nikitabobko/tap/aerospace'     # a tiling window manager
+  cask 'caffeine'                      # keep desktop awake
 
   # Fonts
   cask 'font-iosevka-nerd-font'
@@ -18,16 +19,19 @@ end
 
 # Latest versions of some core utilities
 brew 'coreutils'                       # GNU core utils
-brew 'git'                             # Git version control
-brew 'vim'                             # Vim editor
 brew 'bash'                            # bash shell
 brew 'zsh'                             # zsh shell
-brew 'grep'                            # grep
+brew 'git'                             # git version control
+brew 'grep'                            # grep utility
+brew 'gnu-sed'                         # sed utility
+brew 'vim'                             # vim text editor
 
-# packages
+# Other packages
+brew 'bash-completion@2'               # completion for bash
 brew 'bat'                             # better cat
 brew 'btop'                            # a top alternative
 brew 'cloc'                            # lines of code counter
+brew 'dict'                            # dictionary server protocol
 brew 'entr'                            # file watcher / command runner
 brew 'eza'                             # ls alternative
 brew 'fd'                              # find alternative
@@ -36,16 +40,21 @@ brew 'gh'                              # GitHub CLI
 brew 'git-delta'                       # a better git diff
 brew 'glow'                            # markdown viewer
 brew 'gnupg'                           # GPG
-brew 'gum'                             # fancy UI utilities
 brew 'highlight'                       # code syntax highlighting
 brew 'jq'                              # work with JSON files in shell scripts
 brew 'lua'                             # lua language
 brew 'mise'                            # mise-en-place dev env tool
 brew 'neovim'                          # A better vim
+brew 'pinentry-mac'                    # GPG
 brew 'python'                          # python (latest)
 brew 'ripgrep'                         # very fast file searcher
+brew 'rsync'                           # backup utility
+brew 'task'                            # taskwarrior (todo list)
+brew 'tmux'                            # terminal multiplexer
 brew 'tree'                            # pretty-print directory contents
 brew 'tree-sitter-cli'                 # treesitter cli (for neovim)
 brew 'vifm'                            # cli file explorer
+brew 'w3m'                             # cli web browser
 brew 'wdiff'                           # word differences in text files
 brew 'wget'                            # internet file retriever
+brew 'wordnet'                         # dictionary utility

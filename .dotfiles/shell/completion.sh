@@ -13,12 +13,8 @@ if [[ -z "${BASH_COMPLETION_VERSINFO-}" &&
         . /usr/share/bash-completion/bash_completion
     elif [ -r /etc/bash_completion ]; then
         . /etc/bash_completion
-    elif [ -r "$DOTFILES/cache/git-completion.bash" ]; then
-        . "$DOTFILES/cache/git-completion.bash"
-    else
-        curl -Lo ~/.dotfiles/cache/git-completion.bash \
-            https://raw.githubusercontent.com/git/git/refs/heads/master/contrib/completion/git-completion.bash
-        . "$DOTFILES/cache/git-completion.bash"
+    elif [ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
+        . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
     fi
 fi
 
@@ -71,6 +67,7 @@ function _complete_aliases() {
         alias_defn="${line#*=\'}" # alias definition
         alias_defn="${alias_defn%\'}"
         alias_cmd="${alias_defn%%[[:space:]]*}" # first word of alias
+        # shellcheck disable=2053
         if [[ ${alias_defn} == ${alias_cmd} ]]; then
             alias_args=''
         else
@@ -106,6 +103,7 @@ function _complete_aliases() {
             # avoid recursive call loops by ignoring our own functions
             if [[ "${compl_func#_"$namespace"::}" == "$compl_func" ]]; then
                 compl_wrapper="_${namespace}::${alias_name}"
+                # shellcheck disable=2145
                 echo "function $compl_wrapper {
                         local compl_word=\${2?}
                         local prec_word=\${3?}

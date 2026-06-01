@@ -3,7 +3,7 @@
 theme = "Gruvbox Dark"
 bold-color = "bright"
 font-family = "Iosevka Nerd Font"
-font-size = 15
+font-size = 18
 background-opacity = 0.9
 window-padding-x = 0
 window-padding-y = 0

@@ -97,7 +97,7 @@ elif supports lynx; then
     TERM_BROWSER="lynx"
 fi
 
-BROWSER="sensible-browser"
+BROWSER="o"
 if supports brave-browser; then
     BROWSER="brave-browser"
 elif supports chromium-browser; then
@@ -295,7 +295,7 @@ export NM_FZF_APPLET_AUTH=1
 # nerd font icons {{{1
 if [ -z "$NERD_FONT" ] &&
     [ -n "$(find "$XDG_DATA_HOME/fonts" -name "*Nerd*Font*.ttf" \
-        -type f -readable -print -quit 2>/dev/null)" ]; then
+        -type f -print -quit 2>/dev/null)" ]; then
     export NERD_FONT=1
 fi
 
