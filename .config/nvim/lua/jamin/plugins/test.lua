@@ -73,8 +73,7 @@ return {
           require("neotest").run.run({
             watch = true,
             no_build = false,
-            jestCommand = "jest --watch ",
-            vitestCommand = "vitest --watch",
+            extra_args = { "--watch" },
           })
         end,
         desc = "Watch nearest test",

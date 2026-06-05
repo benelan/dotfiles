@@ -62,6 +62,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
       )
     end
 
+    if client:supports_method("textDocument/hover") then
+      bufmap(
+        "n",
+        "K",
+        function() vim.lsp.buf.hover({ border = Jamin.icons.border }) end,
+        "LSP hover"
+      )
+    end
+
     if client:supports_method("textDocument/definition") then
       bufmap("n", "gd", vim.lsp.buf.definition, "LSP definition")
     end

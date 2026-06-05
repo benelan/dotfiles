@@ -149,7 +149,7 @@ return {
           show_help = { normal = "g?" },
         },
         providers = {
-          openai = not openai_api_key and nil
+          openai = not openai_api_key and {}
             or {
               prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
               prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,

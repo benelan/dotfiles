@@ -23,16 +23,12 @@ return {
   {
     "benelan/vim-dirtytalk",
     event = "VeryLazy",
-    build = {
-      ":DirtytalkUpdate",
-      string.format(
-        "cp -f %s/site/spell/programming.utf-8.spl %s/spell",
-        vim.fn.stdpath("data"),
-        vim.fn.stdpath("config")
-      ),
-    },
+    cmd = "DirtytalkUpdate",
+    build = ":DirtytalkUpdate",
     config = function()
-      if vim.fn.filereadable(vim.fn.stdpath("data") .. "/spell/programming.utf-8.spl") == 1 then
+      if
+        vim.fn.filereadable(vim.fn.stdpath("data") .. "/site/spell/programming.utf-8.spl") == 1
+      then
         vim.opt.spelllang:append("programming")
       end
     end,

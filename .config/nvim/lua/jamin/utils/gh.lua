@@ -46,7 +46,11 @@ end
 function M.clear() vim.diagnostic.reset(ns) end
 
 function M.setup()
-  vim.keymap.set("n", "<leader>opq", function() M.comments() end, {
+  vim.keymap.set("n", "<leader>opq", function()
+    local has_rooter, rooter = pcall(require, "jamin.utils.rooter")
+    if has_rooter then rooter.worktree(vim.uv.cwd()) end
+    M.comments()
+  end, {
     desc = "Load GitHub PR comments to diagnostics",
     silent = true,
     noremap = true,

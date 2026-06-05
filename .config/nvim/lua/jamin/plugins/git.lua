@@ -298,7 +298,7 @@ return {
       issues = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       pull_requests = { order_by = { field = "UPDATED_AT", direction = "DESC" } },
       reviews = { auto_show_threads = false },
-      file_panel = { use_icons = vim.g.have_nerd_font },
+      file_panel = { icons = vim.g.have_nerd_font },
       use_timeline_icons = vim.g.have_nerd_font,
       runs = {
         icons = {
