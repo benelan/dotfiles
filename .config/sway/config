@@ -139,34 +139,42 @@ bindsym $mod+Shift+e exec swaynag -t warning -B "Yes, exit sway" 'swaymsg exit' 
 
 # Move cursor using keys
 mode "mouse" {
+    bindsym h seat - cursor move -100   0
+    bindsym j seat - cursor move   0  100
+    bindsym k seat - cursor move   0 -100
+    bindsym l seat - cursor move  100   0
+
     bindsym Shift+h seat - cursor move -10   0
     bindsym Shift+j seat - cursor move   0  10
     bindsym Shift+k seat - cursor move   0 -10
     bindsym Shift+l seat - cursor move  10   0
+
+    bindsym $mod+Shift+h seat - cursor move -25   0
+    bindsym $mod+Shift+j seat - cursor move   0  25
+    bindsym $mod+Shift+k seat - cursor move   0 -25
+    bindsym $mod+Shift+l seat - cursor move  25   0
 
     bindsym $mod+h seat - cursor move -50   0
     bindsym $mod+j seat - cursor move   0  50
     bindsym $mod+k seat - cursor move   0 -50
     bindsym $mod+l seat - cursor move  50   0
 
-    bindsym h seat - cursor move -100   0
-    bindsym j seat - cursor move   0  100
-    bindsym k seat - cursor move   0 -100
-    bindsym l seat - cursor move  100   0
-
     bindsym Control+h seat - cursor move -400   0
     bindsym Control+j seat - cursor move   0  400
     bindsym Control+k seat - cursor move   0 -400
     bindsym Control+l seat - cursor move  400   0
 
-    bindsym Space seat - cursor press button1
-    bindsym $mod+Space seat - cursor press button2
-    bindsym Return seat - cursor press button1, mode "default"
+    bindsym --no-repeat Space seat - cursor press button1
+    bindsym --no-repeat --release Space seat - cursor release button1
+    bindsym --no-repeat Shift+Space seat - cursor press button2
+    bindsym --no-repeat --release Shift+Space seat - cursor release button2
+    bindsym --no-repeat Return seat - cursor press button1, mode "default"
+    bindsym --no-repeat --release Return seat - cursor release button1, mode "default"
     bindsym Escape mode "default"
     bindsym q mode "default"
 }
 
-bindsym $mod+Control+Space mode "mouse"
+bindsym $mod+Shift+Space mode "mouse"
 
 
 ### Window assignments {{{1
