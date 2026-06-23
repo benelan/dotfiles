@@ -321,7 +321,6 @@ install_packages_cargo() {
         # pastel
         # procs
         # ripgrep
-        tree-sitter-cli@0.25.10
         # xsv
     )
 

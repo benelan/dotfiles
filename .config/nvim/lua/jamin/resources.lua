@@ -300,6 +300,7 @@ M.mason_tools = {
   "svelte-language-server",
   "tailwindcss-language-server",
   "taplo",
+  "tree-sitter-cli",
   "typescript-language-server",
   "vim-language-server",
   -- "vue-language-server",
