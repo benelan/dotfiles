@@ -15,6 +15,7 @@ export PERSONAL="$DEV/personal"
 export NOTES="$DEV/notes"
 export DOTFILES="$HOME/.dotfiles"
 export CALCITE="$WORK/calcite-design-system"
+export CALCITE_DOCUMENTATION="$WORK/calcite-documentation"
 
 # system settings {{{1
 export LESS="-diwMJR --incsearch --mouse --no-histdups --use-color"

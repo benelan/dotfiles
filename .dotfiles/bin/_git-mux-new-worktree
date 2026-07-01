@@ -15,8 +15,8 @@ for _file in $_link_files; do
     cp "../$_file" . >/dev/null 2>&1 || true
 done
 
-if [ -r ../calcite-components.projections.json ] && [ -d packages/calcite-components ]; then
-    cp ../calcite-components.projections.json packages/calcite-components/.projections.json >/dev/null 2>&1 || true
+if [ -r ../calcite-components.projections.json ] && [ -d packages/components ]; then
+    cp ../calcite-components.projections.json packages/components/.projections.json >/dev/null 2>&1 || true
 fi
 
 if _has make && [ -r Makefile ]; then
