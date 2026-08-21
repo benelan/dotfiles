@@ -252,8 +252,8 @@ if has("keymap")
 
     " SYSTEM CLIPBOARD {{{2
     for char in [ 'y', 'p', 'P' ]
-        execute 'nnoremap <leader>' . char . ' "+' . char
-        execute 'vnoremap <leader>' . char . ' "+' . char
+        execute 'nmap <leader>' . char . ' "+' . char
+        execute 'vmap <leader>' . char . ' "+' . char
     endfor
 
     nnoremap <leader>Y "+y$
@@ -776,3 +776,46 @@ if !has('gui_running') && &term =~ '^\%(screen\|tmux\|wezterm\|foot\|kitty\)'
     " kitty that do not support background color erase.
     let &t_ut=""
 endif
+
+" WAYLAND CLIPBOARD {{{1
+" https://github.com/jasonccox/vim-wayland-clipboard
+if !empty("WAYLAND_DISPLAY") && executable("wl-copy")
+    function! s:WaylandYank()
+        if v:event['regname'] == '+' ||
+                    \ (v:event['regname'] == '' && &clipboard == 'unnamedplus')
+            let job = job_start("wl-copy", {
+                \   "in_io": "pipe", "out_io": "null", "err_io": "null",
+                \   "stoponexit": "",
+                \ })
+
+            call ch_sendraw(job, getreg(v:event['regname']))
+            call ch_close(job)
+
+            " keeping a reference to the last job until after the next one
+            " replaces it ensures that the process gets reaped
+            let s:last_job = job
+        endif
+    endfunction
+
+    " run s:WaylandYank() after every time text is yanked
+    augroup waylandyank
+        autocmd!
+        autocmd TextYankPost * call s:WaylandYank()
+    augroup END
+
+    " remap paste commands to first pull in clipboard contents with wl-paste
+    function! s:wayland_clipboard_to_unnamed(p)
+        silent let @+=substitute(system('wl-paste --no-newline'), "\r", '', 'g')
+        return '"+' . a:p
+    endfunction
+
+    nnoremap <expr> <silent> "+p <SID>wayland_clipboard_to_unnamed('p')
+    nnoremap <expr> <silent> "+P <SID>wayland_clipboard_to_unnamed('P')
+    vnoremap <expr> <silent> "+p <SID>wayland_clipboard_to_unnamed('p')
+    vnoremap <expr> <silent> "+P <SID>wayland_clipboard_to_unnamed('P')
+endif
+
+"}}}
+
+" vim:foldmethod=marker:foldlevel=0
+
