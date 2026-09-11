@@ -21,17 +21,9 @@ augroup END
 augroup jamin.global_marks
     autocmd!
     " Clear actively used file marks to prevent jumping to other projects
-    autocmd VimEnter *  delmarks REWQAZ
+    " autocmd VimEnter *  delmarks REWQAZ
 
     " Create marks for specific filetypes when leaving buffer
-    autocmd BufLeave,BufWinLeave,BufFilePost
-                \ \(//:\)\@<!*.html
-                \ normal! mH
-
-    autocmd BufLeave,BufWinLeave,BufFilePost
-                \ \(//:\)\@<!*.\(css\|scss\|sass\)
-                \ normal! mC
-
     autocmd BufLeave,BufWinLeave,BufFilePost
                 \ \(//:\)\@<!*.js
                 \ normal! mJ
@@ -44,22 +36,17 @@ augroup jamin.global_marks
                 \ \(//:\)\@<!*.\(jsx\|tsx\|mdx\)
                 \ normal! mX
 
-    " Web [F]rameworks
     autocmd BufLeave,BufWinLeave,BufFilePost
-                \ \(//:\)\@<!*.\(svelte\|vue\|astro\)
-                \ normal! mF
+                \ \(//:\)\@<!*.\(html\|svelte\|vue\|astro\)
+                \ normal! mW
 
-    " [S]hell scripts
     autocmd BufLeave,BufWinLeave,BufFilePost
-                \ \(//:\)\@<!*.\(sh\|bash\),
-                \\(//:\)\@<!$DOTFILES/bin/*,
-                \\(//:\)\@<!$HOME/.\(profile\|bashrc\|bash_profile\|bash_logout\|bash_login\)
+                \ \(//:\)\@<!*.\(css\|scss\|sass\)
                 \ normal! mS
 
-    " [D]ata/metadata files
     autocmd BufLeave,BufWinLeave,BufFilePost
                 \ \(//:\)\@<!*.\(csv\|tsv\|json\|jsonc\|toml\)
-                \ normal! mD
+                \ normal! mO
 
     autocmd BufLeave,BufWinLeave,BufFilePost
                 \ \(//:\)\@<!*.\(yml\|yaml\)
@@ -69,9 +56,9 @@ augroup jamin.global_marks
                 \ \(//:\)\@<!*.md
                 \ normal! mM
 
-    autocmd BufLeave,BufWinLeave,BufFilePost
-                \ \(//:\)\@<!*.go
-                \ normal! mG
+    " autocmd BufLeave,BufWinLeave,BufFilePost
+    "             \ \(//:\)\@<!*.go
+    "             \ normal! mG
 
     " autocmd BufLeave,BufWinLeave,BufFilePost
     "             \ \(//:\)\@<!*.rs
@@ -92,6 +79,12 @@ augroup jamin.global_marks
     autocmd BufLeave,BufWinLeave,BufFilePost
                 \ \(//:\)\@<!$NOTES/**.md
                 \ normal! mN
+
+    autocmd BufLeave,BufWinLeave,BufFilePost
+                \ \(//:\)\@<!*.\(zsh\|sh\|bash\),
+                \\(//:\)\@<!$DOTFILES/bin/*,
+                \\(//:\)\@<!$HOME/.\(profile\|bashrc\|bash_profile\|bash_logout\|bash_login\)
+                \ normal! mZ
 augroup END
 
 "" setup compilers, formatters, etc. per filetype {{{1

@@ -49,7 +49,7 @@ require("jamin.options")
 require("jamin.keymaps")
 require("jamin.autocommands")
 require("jamin.lsp")
-
+require("jamin.utils.marks")
 require("jamin.utils.rooter").setup()
 require("jamin.utils.togglers").setup()
 require("jamin.utils.statusline").setup()
