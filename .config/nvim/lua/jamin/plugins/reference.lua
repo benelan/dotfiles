@@ -58,67 +58,49 @@ return {
     },
 
     keys = {
-      { "<leader>r<Tab>", "<CMD>DevdocsToggle<CR>", desc = "Toggle floating ref (devdocs)" },
-      { "<leader>r<CR>", "<CMD>DevdocsOpenFloat<CR>", desc = "Open floating ref (devdocs)" },
-      {
-        "<leader>ro",
-        "<CMD>DevdocsOpenCurrentFloat<CR>",
-        desc = "Open floating ref by filetype (devdocs)",
-      },
-      { "<leader>rs", "<CMD>vsplit <BAR> DevdocsOpen<CR>", desc = "Open ref in split (devdocs)" },
+      { "<leader>r<Tab>", "<CMD>DevdocsToggle<CR>", desc = "Toggle devdocs" },
+      { "<leader>r<CR>", "<CMD>DevdocsOpenFloat<CR>", desc = "Open devdocs" },
+      { "<leader>ro", "<CMD>DevdocsOpenCurrentFloat<CR>", desc = "Open devdocs by filetype" },
+      { "<leader>rs", "<CMD>vsplit <BAR> DevdocsOpen<CR>", desc = "Open devdocs in split" },
     },
 
-    opts = function()
-      -- use glow to render docs, if installed - https://github.com/charmbracelet/glow
-      local glow_opts = vim.fn.executable("glow") ~= 1 and {}
-        or {
-          previewer_cmd = "glow",
-          picker_cmd = true,
-          cmd_args = { "-s", "dark" },
-          picker_cmd_args = { "-s", "dark" },
-        }
-
-      -- ensure glow output has color
-      vim.env.CLICOLOR_FORCE = 1
-
-      local open_in_browser_map = "<localleader>o"
-
-      return vim.tbl_deep_extend("keep", glow_opts, {
-        mappings = { open_in_browser = open_in_browser_map },
-        -- stylua: ignore
-        filetypes = {
-          sh = { "jq", "bash" },
-          lua = { "lua", "nginx_lua_module" },
-          css = { "css", "tailwindcss" },
-          scss = { "css", "sass", "tailwindcss" },
-          html = { "javascript", "dom", "html", "css" },
-          javascript = { "javascript", "dom", "node", "jsdoc", "lodash", "moment", "moment_timezone", "d3", "eslint" },
-          typescript = { "javascript", "typescript", "dom", "node", "jsdoc", "vitest", "lodash", "moment", "moment_timezone", "eslint" },
-          javascriptreact = { "javascript", "dom", "html", "jsdoc", "react", "react_router", "css", "tailwindcss", "eslint" },
-          typescriptreact = { "javascript", "typescript", "dom", "html", "jsdoc", "react", "react_router", "nextjs", "css", "tailwindcss", "eslint" },
-          vue = { "javascript", "dom", "html", "jsdoc", "vue", "vuex", "vueuse", "vue_router", "css", "tailwindcss", "eslint" },
-          svelte = { "javascript", "typescript", "dom", "html", "jsdoc", "svelte", "css", "tailwindcss", "eslint" },
-          astro = { "javascript", "typescript", "dom", "node", "html", "jsdoc", "astro", "css", "tailwindcss", "eslint" },
-        },
-        float_win = {
-          relative = "editor",
-          width = math.floor(Jamin.ui.width / 2),
-          height = Jamin.ui.height - 7,
-          col = Jamin.ui.width - 1,
-          row = Jamin.ui.height - 3,
-          anchor = "SE",
-          style = "minimal",
-          border = Jamin.icons.border,
-        },
-        after_open = function(bufnr)
-          vim.keymap.set("n", "q", "<CMD>bd!<CR>", { buffer = bufnr })
-          vim.keymap.set("n", "<M-o>", open_in_browser_map, { buffer = bufnr })
-          vim.keymap.set({ "n", "v" }, "gd", "viWolK", { buffer = bufnr })
-          vim.keymap.set({ "n", "v" }, "gf", "viWholK", { buffer = bufnr })
-          vim.opt_local.conceallevel = 2
-          vim.opt_local.wrap = false
-        end,
-      })
-    end,
+    opts = {
+      -- stylua: ignore
+      filetypes = {
+        sh = { "jq", "bash" },
+        lua = { "lua", "nginx_lua_module" },
+        css = { "css", "tailwindcss" },
+        scss = { "css", "sass", "tailwindcss" },
+        html = { "javascript", "dom", "html", "css" },
+        javascript = { "javascript", "dom", "node", "jsdoc", "lodash", "moment", "moment_timezone", "d3", "eslint" },
+        typescript = { "javascript", "typescript", "dom", "node", "jsdoc", "vitest", "lodash", "moment", "moment_timezone", "eslint" },
+        javascriptreact = { "javascript", "dom", "html", "jsdoc", "react", "react_router", "css", "tailwindcss", "eslint" },
+        typescriptreact = { "javascript", "typescript", "dom", "html", "jsdoc", "react", "react_router", "nextjs", "css", "tailwindcss", "eslint" },
+        vue = { "javascript", "dom", "html", "jsdoc", "vue", "vuex", "vueuse", "vue_router", "css", "tailwindcss", "eslint" },
+        svelte = { "javascript", "typescript", "dom", "html", "jsdoc", "svelte", "css", "tailwindcss", "eslint" },
+        astro = { "javascript", "typescript", "dom", "node", "html", "jsdoc", "astro", "css", "tailwindcss", "eslint" },
+      },
+      float_win = {
+        relative = "editor",
+        width = math.floor(Jamin.ui.width / 2),
+        height = Jamin.ui.height - 7,
+        col = Jamin.ui.width - 1,
+        row = Jamin.ui.height - 3,
+        anchor = "SE",
+        style = "minimal",
+        border = Jamin.icons.border,
+      },
+      mappings = { open_in_browser = "<localleader>o" },
+      after_open = function(bufnr)
+        vim.keymap.set("n", "q", "<CMD>bd!<CR>", { buffer = bufnr })
+        vim.keymap.set("n", "<M-o>", "<localleader>o", { buffer = bufnr })
+        vim.keymap.set({ "n", "v" }, "gd", "viWolK", { buffer = bufnr })
+        vim.keymap.set({ "n", "v" }, "gf", "viWholK", { buffer = bufnr })
+        vim.opt_local.conceallevel = 2
+        vim.opt_local.wrap = true
+        vim.opt_local.linebreak = true
+        vim.opt.showbreak = nil
+      end,
+    },
   },
 }
