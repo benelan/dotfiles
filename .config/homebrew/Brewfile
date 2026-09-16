@@ -1,7 +1,7 @@
 # vim:ft=ruby
 
 if OS.mac?
-  brew 'noti'                          # utility to display notifications from scripts
+  brew 'terminal-notifier'             # utility to display notifications from scripts
   brew 'trash'                         # rm, but put in the trash rather than completely delete
 
   # Applications
@@ -38,7 +38,6 @@ brew 'fd'                              # find alternative
 brew 'fzf'                             # Fuzzy file searcher, used in scripts and in vim
 brew 'gh'                              # GitHub CLI
 brew 'git-delta'                       # a better git diff
-brew 'glow'                            # markdown viewer
 brew 'gnupg'                           # GPG
 brew 'highlight'                       # code syntax highlighting
 brew 'jq'                              # work with JSON files in shell scripts
